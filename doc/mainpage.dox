@@ -1,0 +1,22 @@
+/*! \mainpage The Surface_mesh Manual
+
+
+Surface_mesh is a halfedge-based mesh data structure for representing and
+processing polygonal surface meshes. It has been designed and implemented
+with a focus on ease of use and performance while maintaining high
+flexibility. Surface_mesh was originally derived from <a
+href="http://www.openmesh.org">OpenMesh</a> and is developed by the <a
+href="http://graphics.uni-bielefeld.de">Bielefeld Graphics & Geometry
+Group</a>.
+
+This manual is organized into the following subsections:
+
+\li \subpage installation
+\li \subpage usage
+\li \subpage development
+
+The <a href="./annotated.html">Reference Manual</a> provides
+detailed information on the classes and functions provided by
+Surface_mesh.
+
+*/

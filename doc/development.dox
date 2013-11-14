@@ -1,0 +1,162 @@
+<!-- ====================================================================== -->
+/*! \page development Development
+<!-- ====================================================================== -->
+
+\tableofcontents
+
+
+<!-- ---------------------------------------------------------------------- -->
+\section coding_conventions Coding Conventions
+<!-- ---------------------------------------------------------------------- -->
+
+If you would like to contribute to Surface_mesh please make sure
+your code adheres to the following coding conventions. For
+general best practices we recommend consulting the JSF coding
+standard available
+<a href="www.stroustrup.com/JSF-AV-rules.pdf">here</a>.
+
+
+<!-- ---------------------------------------------------------------------- -->
+\subsection naming_conventions Naming
+<!-- ---------------------------------------------------------------------- -->
+
+
+\subsubsection types Types
+
+The names of user-defined types (such as classes, structs and
+enums) are begin with a capital letter. Words within the name are
+written using lower-case letters only and separated by
+underscores. Acronyms are written in all capital letters. The
+names of persons such as Cholesky or Delaunay are properly
+capitalized as well.
+
+\code
+class Sparse_matrix { ... };
+enum RGB_colors { red, green, blue };
+class Sparse_Cholesky_solver { ... };
+\endcode
+
+
+\subsubsection functions Functions
+
+Function names are written in lower-case letters only. Words
+within the function name are separated by underscores.
+
+\code
+class Example_class_name
+{
+public:
+    double example_function_name(void);
+};
+\endcode
+
+
+\subsubsection variables Variables
+
+Variables are named in lower-case letters only. Words within
+the variable name are separated by underscores. Member
+variables have a trailing underscore as a suffix.
+
+\code
+int globals_considered_harmful;
+
+class Example_class_name
+{
+protected:
+    double member_variable_name_;
+    static double static_variable_name_;
+};
+\endcode
+
+
+\subsubsection filenames File Names
+
+ File names follow the naming rules for user-defined types. Implementation
+files end with <code>.cpp</code> and header files end with
+<code>.h</code>. Examples: <code>Sparse_matrix.cpp</code> for the
+implementation file. <code>Sparse_matrix.h</code> for the header
+file.
+
+
+<!-- ---------------------------------------------------------------------- -->
+\subsection formatting Formatting
+<!-- ---------------------------------------------------------------------- -->
+
+\subsubsection blocks Blocks
+The expressions following an <code>if, else, while, do ... while </code> or
+<code>for</code> statement should always be enclosed in braces. The braces
+enclosing a block should be placed in the same column, on separate lines.
+
+\code
+if (foo_bar == baz)
+{
+    std::cout << "hurz" << std::endl;
+}
+else
+{
+    std::cout << "asdf" << std::endl;
+}
+\endcode
+
+\subsubsection comments Comments
+C++-style comments should be used, i.e. <code>// My important comment.</code>
+
+\subsubsection linelength Line Length
+Lines should not exceed more than 80 characters.
+There should only be one statement per line.
+
+\subsubsection indentation Indentation
+Use spaces instead of tabs. Indent the code by four spaces for each
+level of indentation. Avoid trailing whitespaces at the end of a
+line as well as on empty lines.
+
+
+<!-- ---------------------------------------------------------------------- -->
+\subsection programming_conventions Programming Conventions
+<!-- ---------------------------------------------------------------------- -->
+
+This section describes some basic programming conventions
+developers should adhere to in order to avoid common pitfalls.
+
+<ul>
+<li>
+<p>
+        Use header guards in order to protect against multiple
+        inclusion. The name of the guard should be prefixed with
+        SURFACE_MESH in order to avoid any conflicts with external
+        libraries. For the file Your_class.h
+        the header guard should look like this:
+</p>
+<p>
+\code
+#ifndef SURFACE_MESH_YOUR_CLASS_H
+#define SURFACE_MESH_TOUR_CLASS_H
+...
+#endif // SURFACE_MESH_YOUR_CLASS_H
+\endcode
+</p>
+</li>
+<li>
+<p>
+        Use the surface_mesh namespace in order to avoid
+        conflicts. In source files, do not add an additional level of
+        indentation due to the namespace:
+</p>
+<p>
+\code
+namespace surface_mesh {
+
+class Example_class
+{
+...
+};
+
+}
+\endcode
+</p>
+</li>
+</ul>
+
+<!-- ====================================================================== -->
+*/
+<!-- ====================================================================== -->

@@ -1,0 +1,78 @@
+.contents
+{
+    width: 70em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.textblock
+{
+    width: 50em;
+    text-align: justify;
+}
+
+#nav-sync
+{
+    visibility: hidden;
+}
+
+#titlearea
+{
+    padding: 2em;
+}
+
+#projectlogo
+{
+    padding: 15px;
+    padding-right: 5px;
+}
+
+#projectname
+{
+    font-size: 250%;
+    font-weight: bold;
+}
+
+
+#MSearchBox
+{
+    position: absolute;
+    top: 20px;
+}
+
+.title
+{
+    font-size: 200%;
+}
+
+h1
+{
+    font-size: 175%;
+    padding-top: 2ex;
+}
+
+h2
+{
+    font-size: 125%;
+    padding-top: 1.5ex;
+}
+
+h3
+{
+    font-size: 100%;
+    padding-top: 1ex;
+}
+
+.caption
+{
+    margin-top: 1.5em;
+    margin-bottom: 2em;
+    font-style: italic;
+    font-weight: normal;
+}
+
+#footer
+{
+    padding: 0.5em;
+    text-align: center;
+}

@@ -1,0 +1,160 @@
+<!-- ====================================================================== -->
+/*! \page installation Installation
+<!-- ====================================================================== -->
+
+
+<!-- ---------------------------------------------------------------------- -->
+\section system_requirements System Requirements
+<!-- ---------------------------------------------------------------------- -->
+
+<p>
+Surface_mesh uses <a href="http://www.cmake.org">CMake</a> as its
+build system. Version 2.6.4 or greater is required.
+</p>
+
+<p>
+Surface_mesh has been tested to build with the following
+compilers:
+</p>
+
+<table>
+  <tr><th> Operating System </th> <th> Compiler </th></tr>
+  <tr><td> Linux </td> <td> gcc </td> </tr>
+  <tr><td> Mac OS-X </td> <td> gcc, clang </td> </tr>
+  <tr><td> Windows </td> <td> Visual Studio 2008 </td> </tr>
+</table>
+
+
+<!-- ---------------------------------------------------------------------- -->
+\section obtaining Obtaining the Sources
+<!-- ---------------------------------------------------------------------- -->
+
+The latest release is available from the
+official <a href="https://opensource.cit-ec.de/projects/surface_mesh">project
+page</a>. A snapshot of the current sources can be obtained from
+the git repository at
+\verbatim
+https://opensource.cit-ec.de/git/surface_mesh/
+\endverbatim
+
+
+<!-- ---------------------------------------------------------------------- -->
+\section configuration Configuration
+<!-- ---------------------------------------------------------------------- -->
+
+Surface_mesh relies on <code>CMake</code> as its build and configuration
+system. <code>CMake</code> is a cross-platform build-system capable of
+generating different build files (so-called <em>generators</em>) for a
+specific platform, e.g., Makefiles for Linux/Unix, Xcode projects for Mac
+OS-X and Visual Studio projects for Windows.
+
+\subsection configuration_cmake_cli CMake Command Line Tool
+
+On the comamnd line change to the top-level Surface_mesh directory, create a
+build directory and run <code>cmake</code>:
+
+\verbatim
+$ cd surface_mesh
+$ mkdir build
+$ cd build
+$ cmake ..
+\endverbatim
+
+The configuration procedure can be fine-tuned by specifying
+flags using the <code>-D</code> option of
+<code>cmake</code>:
+
+\verbatim
+$ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=/usr/bin/g++
+\endverbatim
+
+The command above would configure <code>CMake</code> to use release mode as
+its build type and <code>/usr/bin/g++</code> as its C++ compiler.
+
+In order to compile the included examples configure CMake with
+
+\verbatim
+$ cmake -DWITH_EXAMPLES=true ..
+\endverbatim
+
+Commonly used flags are shown below.
+
+<table>
+<tr><th>Flag</th><th>Description</th></tr>
+<tr>
+  <td>CMAKE_BUILD_TYPE</td>
+  <td>Specify the build type, e.g. Debug or Release.</td>
+</tr>
+<tr>
+  <td>CMAKE_CXX_COMPILER</td>
+  <td>Specify the compiler to be used.</td>
+</tr>
+<tr>
+  <td>CMAKE_CXX_FLAGS</td>
+  <td>Specify additional compiler flags, e.g. "-DNDEBUG"</td>
+</tr>
+</table>
+
+For additional information on using <code>cmake</code> and
+customizing its configuration see the <a
+href="http://cmake.org/cmake/help/documentation.html">CMake
+documentation</a>.
+
+
+<!-- ---------------------------------------------------------------------- -->
+\section builing Building Surface_mesh
+<!-- ---------------------------------------------------------------------- -->
+
+After successful configuration Surface_mesh can be build using
+the chosen build system. For a Unix-like environment the default
+generator is Makefiles. In order to build Surface_mesh just call
+
+\verbatim
+$ make
+\endverbatim
+
+from the top-level build directory. In order to build
+Surface_mesh in parallel use the <code>-j</code> option of
+<code>make</code>:
+
+\verbatim
+$ make -j
+\endverbatim
+
+The resulting library program is named <code>libsurface_mesh.so</code> and
+located in the current working directory.
+
+In order to build the full HTML manual and reference
+documentation call
+
+\verbatim
+$ make doxygen
+\endverbatim
+
+The resulting HTML documentation can be found in the doc/ subdirectory.
+
+
+
+<!-- ---------------------------------------------------------------------- -->
+\section installation Installation
+<!-- ---------------------------------------------------------------------- -->
+
+In order to install Surface_mesh just call
+
+\verbatim
+$ sudo make install
+\endverbatim
+
+Upon installation, both the library and headers will be installed
+to the directory given via CMAKE_INSTALL_PREFIX, which defaults
+to /usr/local/ on Unix-like systems. If you need to install to a
+custom location set the install prefix during build
+configuration:
+
+\verbatim
+$ cmake -DCMAKE_INSTALL_PREFIX=<your custom path> ..
+\endverbatim
+
+<!-- ====================================================================== -->
+*/
+<!-- ====================================================================== -->
