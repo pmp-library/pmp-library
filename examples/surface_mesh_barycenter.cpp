@@ -28,23 +28,21 @@ using namespace surface_mesh;
 //=============================================================================
 
 
-int main(int /*argc*/, char** argv)
+int main(int argc, char** argv)
 {
     Surface_mesh mesh;
 
     mesh.read(argv[1]);
 
     // get (pre-defined) property storing vertex positions
-    Surface_mesh::Vertex_property<Point> points = mesh.get_vertex_property<Point>("v:point");
-
-    Surface_mesh::Vertex_iterator vit, vend = mesh.vertices_end();
+    auto points = mesh.get_vertex_property<Point>("v:point");
 
     Point p(0,0,0);
 
-    for (vit = mesh.vertices_begin(); vit != vend; ++vit)
+    for (auto vit : mesh.vertices())
     {
         // access point property like an array
-        p += points[*vit];
+        p += points[vit];
     }
 
     p /= mesh.n_vertices();

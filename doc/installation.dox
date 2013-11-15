@@ -13,16 +13,20 @@ build system. Version 2.6.4 or greater is required.
 </p>
 
 <p>
-Surface_mesh has been tested to build with the following
+For the current relase Surface_mesh has been tested to build with the following
 compilers:
 </p>
 
 <table>
   <tr><th> Operating System </th> <th> Compiler </th></tr>
-  <tr><td> Linux </td> <td> gcc </td> </tr>
-  <tr><td> Mac OS-X </td> <td> gcc, clang </td> </tr>
-  <tr><td> Windows </td> <td> Visual Studio 2008 </td> </tr>
+  <tr><td> Linux </td> <td> gcc version 4.6.3 </td> </tr>
+  <tr><td> Mac OS-X </td> <td> LLVM version 5.0 </td> </tr>
+  <tr><td> Windows </td> <td> Visual Studio 2012 </td> </tr>
 </table>
+
+In general, any reasonably current C++ compiler should be
+working. However, to fully exploit the capabilites of
+Surface_mesh, we recommend to use a C++11-compliant compiler.
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -76,6 +80,10 @@ In order to compile the included examples configure CMake with
 \verbatim
 $ cmake -DWITH_EXAMPLES=true ..
 \endverbatim
+
+\note Building the examples requires a C++ compiler with
+support for range-based <code>for</code> loops and
+the <code>auto</code>-keyword.
 
 Commonly used flags are shown below.
 

@@ -28,7 +28,7 @@ using namespace surface_mesh;
 //=============================================================================
 
 
-int main(int /*argc*/, char** argv)
+int main(int argc, char** argv)
 {
     Surface_mesh mesh;
 
@@ -37,25 +37,18 @@ int main(int /*argc*/, char** argv)
     float mean_valence = 0.0f;
     unsigned int vertex_valence;
 
-    // instantiate iterator and circulators
-    Surface_mesh::Vertex_iterator vit;
-    Surface_mesh::Vertex_around_vertex_circulator vc, vc_end;
 
     // loop over all vertices
-    for (vit = mesh.vertices_begin(); vit != mesh.vertices_end(); ++vit)
+    for (auto vit : mesh.vertices())
     {
-        // initialize circulators
-        vc = mesh.vertices(*vit);
-        vc_end = vc;
-
         // reset counter
         vertex_valence = 0;
 
         // loop over all incident vertices
-        do
+        for (auto vc : mesh.vertices(vit))
         {
             ++vertex_valence;
-        } while (++vc != vc_end);
+        }
 
         // sum up vertex valences
         mean_valence += vertex_valence;

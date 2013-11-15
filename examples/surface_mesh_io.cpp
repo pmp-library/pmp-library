@@ -28,10 +28,11 @@ using namespace surface_mesh;
 //=============================================================================
 
 
-int main(int /*argc*/, char** argv)
+int main(int argc, char** argv)
 {
     // instantiate a Surface_mesh object
     Surface_mesh mesh;
+
 
     // read a mesh specified as the first command line argument
     mesh.read(argv[1]);

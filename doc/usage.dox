@@ -25,8 +25,15 @@ The halfedge connectivity is illustrated in the figure below:
 
 \section surface_mesh_usage Usage
 
-In the following sections we describe the basic usage of Surface_mesh by
-means of simple example programs and code excerpts.
+In the following sections we describe the basic usage of
+Surface_mesh by means of simple example programs and code
+excerpts.
+
+\note Note that in order to keep the code concise and simple
+we use the C++11 <code>auto</code>-keyword as well as
+range-based <code>for</code> loops. In case your compiler does
+not support these features you need to write out the types
+explicitly.
 
 
 \subsection surface_mesh_basics Basics
@@ -131,7 +138,7 @@ edge property.
 Surface_mesh mesh;
 
 // allocate property storing a point per edge
-Surface_mesh::Edge_property<Point> edge_points = mesh.add_edge_property<Point>("property-name");
+auto edge_points = mesh.add_edge_property<Point>("property-name");
 
 // access the edge property like an array
 Surface_mesh::Edge e;
@@ -152,12 +159,12 @@ halfedge or the target vertex of an halfedge are illustrated below.
 <td>
 \code
 Surface_mesh::Halfedge h;
-Surface_mesh::Halfedge h0 = mesh.next_halfedge_handle(h);
-Surface_mesh::Halfedge h1 = mesh.prev_halfedge_handle(h);
-Surface_mesh::Halfedge h2 = mesh.opposite_halfedge_handle(h);
-Surface_mesh::Face     f  = mesh.face_handle(h);
-Surface_mesh::Vertex   v0 = mesh.from_vertex_handle(h);
-Surface_mesh::Vertex   v1 = mesh.to_vertex_handle(h);
+auto h0 = mesh.next_halfedge(h);
+auto h1 = mesh.prev_halfedge(h);
+auto h2 = mesh.opposite_halfedge(h);
+auto f  = mesh.face(h);
+auto v0 = mesh.from_vertex(h);
+auto v1 = mesh.to_vertex(h);
 \endcode
 </td>
 <td>
