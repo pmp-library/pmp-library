@@ -1415,9 +1415,13 @@ delete_vertex(Vertex v)
     for (; fit != fend; ++fit)
         delete_face(*fit);
 
-    vdeleted_[v] = true;
-    deleted_vertices_++;
-    garbage_ = true;
+    // mark v as deleted if not yet done by delete_face()
+    if (!vdeleted_[v])
+    {
+        vdeleted_[v] = true;
+        deleted_vertices_++;
+        garbage_ = true;
+    }
 }
 
 
