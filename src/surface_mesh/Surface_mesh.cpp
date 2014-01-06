@@ -907,7 +907,7 @@ split(Face f, Vertex v)
 //-----------------------------------------------------------------------------
 
 
-void
+Surface_mesh::Halfedge
 Surface_mesh::
 split(Edge e, Vertex v)
 {
@@ -1002,6 +1002,8 @@ split(Edge e, Vertex v)
 
     if (halfedge(v2) == h0)
         set_halfedge(v2, t1);
+
+    return t1;
 }
 
 
@@ -1058,7 +1060,7 @@ insert_vertex(Halfedge h0, Vertex v)
     if (fh.is_valid()) set_halfedge(fh, h0);
     if (fo.is_valid()) set_halfedge(fo, o1);
 
-    return h0;
+    return o1;
 }
 
 

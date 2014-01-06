@@ -1560,23 +1560,30 @@ public: //--------------------------------------------- higher-level operations
 
     /** Split the edge \c e by first adding point \c p to the mesh and then
      connecting it to the two vertices of the adjacent triangles that are
-     opposite to edge \c e.
+     opposite to edge \c e. Returns the halfedge pointing to \c p that is
+     created by splitting the existing edge \c e.
+
      \attention This function is only valid for triangle meshes.
      \sa split(Edge, Vertex)
      */
-    Vertex split(Edge e, const Point& p) { Vertex v=add_vertex(p); split(e,v); return v; }
+    Halfedge split(Edge e, const Point& p) { return split(e, add_vertex(p)); }
 
-    /** Split the edge \c e by connecting vertex \c v it to the two vertices
-     of the adjacent triangles that are opposite to edge \c e.
+
+    /** Split the edge \c e by connecting vertex \c v it to the two
+     vertices of the adjacent triangles that are opposite to edge \c
+     e. Returns the halfedge pointing to \c p that is created by splitting
+     the existing edge \c e.
+
      \attention This function is only valid for triangle meshes.
      \sa split(Edge, Point)
      */
-    void split(Edge e, Vertex v);
+    Halfedge split(Edge e, Vertex v);
 
 
     /** Subdivide the edge \c e = (v0,v1) by splitting it into the two edge
-     (v0,p) and (p,v1). Note that this function does not introduce any other
-     edge or faces. It simply splits the edge. Returns halfedge that points to \c p.
+     (v0,p) and (p,v1). Note that this function does not introduce any
+     other edge or faces. It simply splits the edge. Returns halfedge that
+     points to \c p.
      \sa insert_vertex(Edge, Vertex)
      \sa insert_vertex(Halfedge, Vertex)
      */
