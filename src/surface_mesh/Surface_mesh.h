@@ -261,6 +261,29 @@ public: //------------------------------------------------------ property types
     };
 
 
+    /// Mesh property of type T
+    /// \sa Vertex_property, Halfedge_property, Edge_property
+    template <class T> class Mesh_property : public Property<T>
+    {
+    public:
+
+        /// default constructor
+        explicit Mesh_property() {}
+        explicit Mesh_property(Property<T> p) : Property<T>(p) {}
+
+        /// access the data stored for the mesh
+        typename Property<T>::reference operator[](size_t idx)
+        {
+            return Property<T>::operator[](idx);
+        }
+
+        /// access the data stored for the mesh
+        typename Property<T>::const_reference operator[](size_t idx) const
+        {
+            return Property<T>::operator[](idx);
+        }
+    };
+
 
 
 public: //------------------------------------------------------ iterator types
@@ -1261,6 +1284,13 @@ public: //--------------------------------------------------- property handling
     {
         return Face_property<T>(fprops_.add<T>(name, t));
     }
+    /** add a mesh property of type \c T with name \c name and default value \c t.
+     fails if a property named \c name exists already, since the name has to be unique.
+     in this case it returns an invalid property */
+    template <class T> Mesh_property<T> add_mesh_property(const std::string& name, const T t=T())
+    {
+        return Mesh_property<T>(mprops_.add<T>(name, t));
+    }
 
 
     /** get the vertex property named \c name of type \c T. returns an invalid
@@ -1286,6 +1316,12 @@ public: //--------------------------------------------------- property handling
     template <class T> Face_property<T> get_face_property(const std::string& name) const
     {
         return Face_property<T>(fprops_.get<T>(name));
+    }
+    /** get the mesh property named \c name of type \c T. returns an invalid
+     Mesh_property if the property does not exist or if the type does not match. */
+    template <class T> Mesh_property<T> get_mesh_property(const std::string& name) const
+    {
+        return Mesh_property<T>(mprops_.get<T>(name));
     }
 
 
@@ -1314,6 +1350,13 @@ public: //--------------------------------------------------- property handling
         return Face_property<T>(fprops_.get_or_add<T>(name, t));
     }
 
+     /** if a mesh property of type \c T with name \c name exists, it is returned.
+     otherwise this property is added (with default value \c t) */
+    template <class T> Mesh_property<T> mesh_property(const std::string& name, const T t=T())
+    {
+        return Mesh_property<T>(mprops_.get_or_add<T>(name, t));
+    }
+
 
     /// remove the vertex property \c p
     template <class T> void remove_vertex_property(Vertex_property<T>& p)
@@ -1334,6 +1377,11 @@ public: //--------------------------------------------------- property handling
     template <class T> void remove_face_property(Face_property<T>& p)
     {
         fprops_.remove(p);
+    }
+    /// remove the mesh property \c p
+    template <class T> void remove_mesh_property(Mesh_property<T>& p)
+    {
+        mprops_.remove(p);
     }
 
 
@@ -1361,6 +1409,12 @@ public: //--------------------------------------------------- property handling
     {
         return fprops_.get_type(name);
     }
+    /** get the type_info \c T of face property named \c. returns an typeid(void)
+     if the property does not exist or if the type does not match. */
+    const std::type_info& get_mesh_property_type(const std::string& name)
+    {
+        return mprops_.get_type(name);
+    }
 
 
     /// returns the names of all vertex properties
@@ -1383,6 +1437,12 @@ public: //--------------------------------------------------- property handling
     {
         return fprops_.properties();
     }
+    /// returns the names of all face properties
+    std::vector<std::string> mesh_properties() const
+    {
+        return mprops_.properties();
+    }
+
     /// prints the names of all properties
     void property_stats() const;
 
@@ -1753,6 +1813,7 @@ private: //------------------------------------------------------- private data
     Property_container hprops_;
     Property_container eprops_;
     Property_container fprops_;
+    Property_container mprops_;
 
     Vertex_property<Vertex_connectivity>      vconn_;
     Halfedge_property<Halfedge_connectivity>  hconn_;

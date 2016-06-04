@@ -48,6 +48,8 @@ Surface_mesh()
     edeleted_ = add_edge_property<bool>("e:deleted", false);
     fdeleted_ = add_face_property<bool>("f:deleted", false);
 
+    mprops_.push_back();
+
     deleted_vertices_ = deleted_edges_ = deleted_faces_ = 0;
     garbage_ = false;
 }
@@ -76,6 +78,7 @@ operator=(const Surface_mesh& rhs)
         hprops_ = rhs.hprops_;
         eprops_ = rhs.eprops_;
         fprops_ = rhs.fprops_;
+        mprops_ = rhs.mprops_;
 
         // property handles contain pointers, have to be reassigned
         vconn_    = vertex_property<Vertex_connectivity>("v:connectivity");
@@ -115,6 +118,7 @@ assign(const Surface_mesh& rhs)
         hprops_.clear();
         eprops_.clear();
         fprops_.clear();
+        mprops_.clear();
 
         // allocate standard properties
         vconn_    = add_vertex_property<Vertex_connectivity>("v:connectivity");
@@ -143,6 +147,7 @@ assign(const Surface_mesh& rhs)
         hprops_.resize(rhs.halfedges_size());
         eprops_.resize(rhs.edges_size());
         fprops_.resize(rhs.faces_size());
+        mprops_.resize(1);
 
         // how many elements are deleted?
         deleted_vertices_ = rhs.deleted_vertices_;
@@ -188,11 +193,13 @@ clear()
     hprops_.resize(0);
     eprops_.resize(0);
     fprops_.resize(0);
+    mprops_.resize(0);
 
     vprops_.free_memory();
     hprops_.free_memory();
     eprops_.free_memory();
     fprops_.free_memory();
+    mprops_.free_memory();
 
     deleted_vertices_ = deleted_edges_ = deleted_faces_ = 0;
     garbage_ = false;
@@ -210,6 +217,7 @@ free_memory()
     hprops_.free_memory();
     eprops_.free_memory();
     fprops_.free_memory();
+    mprops_.free_memory();
 }
 
 
@@ -226,6 +234,7 @@ reserve(unsigned int nvertices,
     hprops_.reserve(2*nedges);
     eprops_.reserve(nedges);
     fprops_.reserve(nfaces);
+    mprops_.reserve(1);
 }
 
 
