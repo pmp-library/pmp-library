@@ -35,10 +35,11 @@ namespace surface_mesh {
 
 
 // helper function
-template <typename T> void read(FILE* in, T& t)
+template <typename T> int read(FILE* in, T& t)
 {
     int err = 0;
     err = fread(&t, 1, sizeof(t), in);
+    return err;
 }
 
 

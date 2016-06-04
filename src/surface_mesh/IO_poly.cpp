@@ -53,8 +53,6 @@ template <typename T> size_t write(FILE* out, T& t)
 
 bool read_poly(Surface_mesh& mesh, const std::string& filename)
 {
-    unsigned int n_items;
-
     // open file (in binary mode)
     FILE* in = fopen(filename.c_str(), "rb");
     if (!in) return false;
@@ -86,10 +84,10 @@ bool read_poly(Surface_mesh& mesh, const std::string& filename)
     Surface_mesh::Vertex_property<Point>                                  point = mesh.vertex_property<Point>("v:point");
 
     // read properties from file
-    n_items = fread((char*)vconn.data(), sizeof(Surface_mesh::Vertex_connectivity),   nv, in);
-    n_items = fread((char*)hconn.data(), sizeof(Surface_mesh::Halfedge_connectivity), nh, in);
-    n_items = fread((char*)fconn.data(), sizeof(Surface_mesh::Face_connectivity),     nf, in);
-    n_items = fread((char*)point.data(), sizeof(Point),                               nv, in);
+    fread((char*)vconn.data(), sizeof(Surface_mesh::Vertex_connectivity),   nv, in);
+    fread((char*)hconn.data(), sizeof(Surface_mesh::Halfedge_connectivity), nh, in);
+    fread((char*)fconn.data(), sizeof(Surface_mesh::Face_connectivity),     nf, in);
+    fread((char*)point.data(), sizeof(Point),                               nv, in);
 
     fclose(in);
     return true;
@@ -101,9 +99,6 @@ bool read_poly(Surface_mesh& mesh, const std::string& filename)
 
 bool write_poly(const Surface_mesh& mesh, const std::string& filename)
 {
-    unsigned int n_items;
-
-
     // check for colors
     auto color = mesh.get_vertex_property<Color>("v:color");
     bool has_colors = color;
