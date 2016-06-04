@@ -1,6 +1,6 @@
 //=============================================================================
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-// Copyright (C) 2011-2013 by Graphics & Geometry Group, Bielefeld University
+// Copyright (C) 2011-2016 by Graphics & Geometry Group, Bielefeld University
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public License
@@ -46,6 +46,7 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename);
 bool write_mesh(const Surface_mesh& mesh, const std::string& filename);
 bool write_off(const Surface_mesh& mesh, const std::string& filename);
 bool write_obj(const Surface_mesh& mesh, const std::string& filename);
+bool write_poly(const Surface_mesh& mesh, const std::string& filename);
 
 
 //=============================================================================

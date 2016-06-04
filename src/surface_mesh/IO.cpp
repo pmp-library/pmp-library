@@ -1,6 +1,6 @@
 //=============================================================================
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-// Copyright (C) 2011-2013 by Graphics & Geometry Group, Bielefeld University
+// Copyright (C) 2011-2016 by Graphics & Geometry Group, Bielefeld University
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public License
@@ -59,6 +59,10 @@ bool read_mesh(Surface_mesh& mesh, const std::string& filename)
     {
         return read_stl(mesh, filename);
     }
+    else if (ext == "poly")
+    {
+        return read_poly(mesh, filename);
+    }
 
     // we didn't find a reader module
     return false;
@@ -82,9 +86,13 @@ bool write_mesh(const Surface_mesh& mesh, const std::string& filename)
     {
         return write_off(mesh, filename);
     }
-    else if(ext=="obj")
+    else if (ext=="obj")
     {
         return write_obj(mesh, filename);
+    }
+    else if (ext=="poly")
+    {
+        return write_poly(mesh, filename);
     }
 
     // we didn't find a writer module
