@@ -94,6 +94,10 @@ bool write_mesh(const Surface_mesh& mesh, const std::string& filename)
     {
         return write_poly(mesh, filename);
     }
+    else if (ext=="stl")
+    {
+        return write_stl(mesh, filename);
+    }
 
     // we didn't find a writer module
     return false;

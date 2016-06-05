@@ -24,6 +24,7 @@
 #include <cstdio>
 #include <cfloat>
 #include <map>
+#include <fstream>
 
 
 //== NAMESPACES ===============================================================
@@ -211,6 +212,52 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename)
 
 
     fclose(in);
+    return true;
+}
+
+
+//-----------------------------------------------------------------------------
+
+
+bool write_stl(const Surface_mesh& mesh, const std::string& filename)
+{
+    if (!mesh.is_triangle_mesh())
+    {
+        std::cerr << "write_stl: not a triangle mesh!" << std::endl;
+        return false;
+    }
+
+    auto fnormals = mesh.get_face_property<Normal>("f:normal");
+    if (!fnormals)
+    {
+        std::cerr << "write_stl: no a face normals present!" << std::endl;
+        return false;
+    }
+
+    std::ofstream ofs(filename.c_str());
+    auto points = mesh.get_vertex_property<Point>("v:point");
+
+    ofs << "solid stl" << std::endl;
+    Normal n;
+    Point p;
+
+    for (auto f : mesh.faces())
+    {
+        n = fnormals[f];
+        ofs << "  facet normal ";
+        ofs << n[0] << " " << n[1] << " " << n[2] << std::endl;
+        ofs << "    outer loop" << std::endl;
+        for (auto v : mesh.vertices(f))
+        {
+            p = points[v];
+            ofs << "      vertex ";
+            ofs << p[0] << " " << p[1] << " " << p[2] << std::endl;
+        }
+        ofs << "    endloop" << std::endl;
+        ofs << "  endfacet" << std::endl;
+    }
+    ofs << "endsolid" << std::endl;
+    ofs.close();
     return true;
 }
 
