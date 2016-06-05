@@ -304,15 +304,20 @@ bool write_off(const Surface_mesh& mesh, const std::string& filename)
 
     bool  has_normals   = false;
     bool  has_texcoords = false;
+    bool  has_colors = false;
     Surface_mesh::Vertex_property<Normal> normals = mesh.get_vertex_property<Normal>("v:normal");
     Surface_mesh::Vertex_property<Texture_coordinate>  texcoords = mesh.get_vertex_property<Texture_coordinate>("v:texcoord");
+    Surface_mesh::Vertex_property<Color> colors = mesh.get_vertex_property<Color>("v:color");
     if (normals)   has_normals = true;
     if (texcoords) has_texcoords = true;
+    if (colors) has_colors = true;
 
 
     // header
     if(has_texcoords)
         fprintf(out, "ST");
+    if(has_colors)
+        fprintf(out, "C");
     if(has_normals)
         fprintf(out, "N");
     fprintf(out, "OFF\n%d %d 0\n", mesh.n_vertices(), mesh.n_faces());
@@ -331,10 +336,16 @@ bool write_off(const Surface_mesh& mesh, const std::string& filename)
             fprintf(out, " %.10f %.10f %.10f", n[0], n[1], n[2]);
         }
 
+        if (has_colors)
+        {
+            const Color& c = colors[*vit];
+            fprintf(out, " %.10f %.10f %.10f", c[0], c[1], c[2]);
+        }
+
         if (has_texcoords)
         {
             const Texture_coordinate& t = texcoords[*vit];
-            fprintf(out, "% .10f %.10f", t[0], t[1]);
+            fprintf(out, " %.10f %.10f", t[0], t[1]);
         }
 
         fprintf(out, "\n");
