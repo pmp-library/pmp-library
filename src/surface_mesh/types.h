@@ -19,6 +19,7 @@
 #ifndef SURFACE_MESH_TYPES_H
 #define SURFACE_MESH_TYPES_H
 
+#define SURFACE_MESH_VERSION 1.1
 
 //== INCLUDES =================================================================
 

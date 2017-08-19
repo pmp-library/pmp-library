@@ -1,6 +1,8 @@
-project(surface_mesh)
+cmake_policy(SET CMP0048 NEW) # for project versioning
 
-cmake_minimum_required(VERSION 2.6.4)
+project(surface_mesh VERSION 1.1.0.0)
+
+cmake_minimum_required(VERSION 3.0.2)
 
 # set output paths
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
@@ -39,3 +41,9 @@ endif()
 add_subdirectory(src/surface_mesh)
 add_subdirectory(doc)
 add_subdirectory(examples)
+
+set(CPACK_PACKAGE_VERSION 1.1)
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}")
+set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
+set(CPACK_SOURCE_GENERATOR "ZIP")
+include(CPack)
