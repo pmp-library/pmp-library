@@ -42,6 +42,9 @@ add_subdirectory(src/surface_mesh)
 add_subdirectory(doc)
 add_subdirectory(examples)
 
+enable_testing()
+add_subdirectory(tests)
+
 set(CPACK_PACKAGE_VERSION 1.1)
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}")
 set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
