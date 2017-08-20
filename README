@@ -1,9 +1,0 @@
-Surface mesh is a simple and efficient halfedge-based mesh data
-structure for representing and processing 2-manifold polygonal
-surface meshes.
-
-See the INSTALL file for a quick guide on how to build and
-install Surface_mesh.
-
-See the CHANGES file for a concise overview about recent changes
-to Surface_mesh.
