@@ -33,7 +33,7 @@ namespace surface_mesh {
 //== IMPLEMENTATION ===========================================================
 
 
-bool read_mesh(Surface_mesh& mesh, const std::string& filename)
+bool readMesh(SurfaceMesh& mesh, const std::string& filename)
 {
     std::setlocale(LC_NUMERIC, "C");
 
@@ -49,19 +49,19 @@ bool read_mesh(Surface_mesh& mesh, const std::string& filename)
     // extension determines reader
     if (ext == "off")
     {
-        return read_off(mesh, filename);
+        return readOFF(mesh, filename);
     }
     else if (ext == "obj")
     {
-        return read_obj(mesh, filename);
+        return readOBJ(mesh, filename);
     }
     else if (ext == "stl")
     {
-        return read_stl(mesh, filename);
+        return readSTL(mesh, filename);
     }
     else if (ext == "poly")
     {
-        return read_poly(mesh, filename);
+        return readPoly(mesh, filename);
     }
 
     // we didn't find a reader module
@@ -72,7 +72,7 @@ bool read_mesh(Surface_mesh& mesh, const std::string& filename)
 //-----------------------------------------------------------------------------
 
 
-bool write_mesh(const Surface_mesh& mesh, const std::string& filename)
+bool writeMesh(const SurfaceMesh& mesh, const std::string& filename)
 {
     // extract file extension
     std::string::size_type dot(filename.rfind("."));
@@ -84,20 +84,21 @@ bool write_mesh(const Surface_mesh& mesh, const std::string& filename)
     // extension determines reader
     if (ext == "off")
     {
-        return write_off(mesh, filename);
+        return writeOFF(mesh, filename);
     }
     else if (ext=="obj")
     {
-        return write_obj(mesh, filename);
-    }
-    else if (ext=="poly")
-    {
-        return write_poly(mesh, filename);
+        return writeOBJ(mesh, filename);
     }
     else if (ext=="stl")
     {
-        return write_stl(mesh, filename);
+        return writeSTL(mesh, filename);
     }
+    else if (ext=="poly")
+    {
+        return writePoly(mesh, filename);
+    }
+
 
     // we didn't find a writer module
     return false;

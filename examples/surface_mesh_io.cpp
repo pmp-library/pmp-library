@@ -16,7 +16,7 @@
 //=============================================================================
 
 
-#include <surface_mesh/Surface_mesh.h>
+#include <surface_mesh/SurfaceMesh.h>
 
 
 //=============================================================================
@@ -30,19 +30,20 @@ using namespace surface_mesh;
 
 int main(int argc, char** argv)
 {
-    // instantiate a Surface_mesh object
-    Surface_mesh mesh;
-
+    // instantiate a SurfaceMesh object
+    SurfaceMesh mesh;
 
     // read a mesh specified as the first command line argument
-    mesh.read(argv[1]);
+    if (argc > 1)
+        mesh.read(argv[1]);
 
     // ...
     // do fancy stuff with the mesh
     // ...
 
     // write the mesh to the file specified as second argument
-    mesh.write(argv[2]);
+    if (argc > 2)
+        mesh.write(argv[2]);
 
     return 0;
 }

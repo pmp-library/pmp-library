@@ -39,9 +39,9 @@ namespace surface_mesh {
 // helper function
 template <typename T> void read(FILE* in, T& t)
 {
-    size_t n_items(0);
-    n_items = fread((char*)&t, 1, sizeof(t), in);
-    assert(n_items > 0);
+    size_t nItems(0);
+    nItems = fread((char*)&t, 1, sizeof(t), in);
+    SM_ASSERT(nItems > 0);
 }
 
 
@@ -52,42 +52,41 @@ template <typename T> void read(FILE* in, T& t)
 class CmpVec
 {
 public:
-
-    CmpVec(float _eps=FLT_MIN) : eps_(_eps) {}
+    CmpVec(float eps=FLT_MIN) : m_eps(eps) {}
 
     bool operator()(const Vec3f& v0, const Vec3f& v1) const
     {
-        if (fabs(v0[0] - v1[0]) <= eps_)
+        if (fabs(v0[0] - v1[0]) <= m_eps)
         {
-            if (fabs(v0[1] - v1[1]) <= eps_)
+            if (fabs(v0[1] - v1[1]) <= m_eps)
             {
-                return (v0[2] < v1[2] - eps_);
+                return (v0[2] < v1[2] - m_eps);
             }
-            else return (v0[1] < v1[1] - eps_);
+            else return (v0[1] < v1[1] - m_eps);
         }
-        else return (v0[0] < v1[0] - eps_);
+        else return (v0[0] < v1[0] - m_eps);
     }
 
 private:
-    float eps_;
+    float m_eps;
 };
 
 
 //-----------------------------------------------------------------------------
 
 
-bool read_stl(Surface_mesh& mesh, const std::string& filename)
+bool readSTL(SurfaceMesh& mesh, const std::string& filename)
 {
     char                            line[100], *c;
     unsigned int                    i, nT;
     Vec3f                           p;
-    Surface_mesh::Vertex               v;
-    std::vector<Surface_mesh::Vertex>  vertices(3);
-    size_t n_items(0);
+    SurfaceMesh::Vertex               v;
+    std::vector<SurfaceMesh::Vertex>  vertices(3);
+    size_t nItems(0);
 
     CmpVec comp(FLT_MIN);
-    std::map<Vec3f, Surface_mesh::Vertex, CmpVec>            vMap(comp);
-    std::map<Vec3f, Surface_mesh::Vertex, CmpVec>::iterator  vMapIt;
+    std::map<Vec3f, SurfaceMesh::Vertex, CmpVec>            vMap(comp);
+    std::map<Vec3f, SurfaceMesh::Vertex, CmpVec>::iterator  vMapIt;
 
 
     // clear mesh
@@ -101,7 +100,7 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename)
 
     // ASCII or binary STL?
     c = fgets(line, 6, in);
-    assert(c != NULL);
+    SM_ASSERT(c != NULL);
     const bool binary = ((strncmp(line, "SOLID", 5) != 0) &&
                          (strncmp(line, "solid", 5) != 0));
 
@@ -115,8 +114,8 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename)
         if (!in) return false;
 
         // skip dummy header
-        n_items = fread(line, 1, 80, in);
-        assert(n_items > 0);
+        nItems = fread(line, 1, 80, in);
+        SM_ASSERT(nItems > 0);
 
         // read number of triangles
         read(in, nT);
@@ -125,8 +124,8 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename)
         while (nT)
         {
             // skip triangle normal
-            n_items = fread(line, 1, 12, in);
-            assert(n_items > 0);
+            nItems = fread(line, 1, 12, in);
+            SM_ASSERT(nItems > 0);
             // triangle's vertices
             for (i=0; i<3; ++i)
             {
@@ -136,7 +135,7 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename)
                 if ((vMapIt=vMap.find(p)) == vMap.end())
                 {
                     // No : add vertex and remember idx/vector mapping
-                    v = mesh.add_vertex((Point)p);
+                    v = mesh.addVertex((Point)p);
                     vertices[i] = v;
                     vMap[p] = v;
                 }
@@ -151,10 +150,10 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename)
             if ((vertices[0] != vertices[1]) &&
                 (vertices[0] != vertices[2]) &&
                 (vertices[1] != vertices[2]))
-                mesh.add_face(vertices);
+                mesh.addFace(vertices);
 
-            n_items = fread(line, 1, 2, in);
-            assert(n_items > 0);
+            nItems = fread(line, 1, 2, in);
+            SM_ASSERT(nItems > 0);
             --nT;
         }
     }
@@ -178,7 +177,7 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename)
                 {
                     // read line
                     c = fgets(line, 100, in);
-                    assert(c != NULL);
+                    SM_ASSERT(c != NULL);
 
                     // skip white-space
                     for (c=line; isspace(*c) && *c!='\0'; ++c) {};
@@ -190,7 +189,7 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename)
                     if ((vMapIt=vMap.find(p)) == vMap.end())
                     {
                         // No : add vertex and remember idx/vector mapping
-                        v = mesh.add_vertex((Point)p);
+                        v = mesh.addVertex((Point)p);
                         vertices[i] = v;
                         vMap[p] = v;
                     }
@@ -205,7 +204,7 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename)
                 if ((vertices[0] != vertices[1]) &&
                     (vertices[0] != vertices[2]) &&
                     (vertices[1] != vertices[2]))
-                    mesh.add_face(vertices);
+                    mesh.addFace(vertices);
             }
         }
     }
@@ -219,23 +218,23 @@ bool read_stl(Surface_mesh& mesh, const std::string& filename)
 //-----------------------------------------------------------------------------
 
 
-bool write_stl(const Surface_mesh& mesh, const std::string& filename)
+bool writeSTL(const SurfaceMesh& mesh, const std::string& filename)
 {
-    if (!mesh.is_triangle_mesh())
+    if (!mesh.isTriangleMesh())
     {
-        std::cerr << "write_stl: not a triangle mesh!" << std::endl;
+        std::cerr << "writeSTL: not a triangle mesh!" << std::endl;
         return false;
     }
 
-    auto fnormals = mesh.get_face_property<Normal>("f:normal");
+    auto fnormals = mesh.getFaceProperty<Normal>("f:normal");
     if (!fnormals)
     {
-        std::cerr << "write_stl: no a face normals present!" << std::endl;
+        std::cerr << "writeSTL: no face normals present!" << std::endl;
         return false;
     }
 
     std::ofstream ofs(filename.c_str());
-    auto points = mesh.get_vertex_property<Point>("v:point");
+    auto points = mesh.getVertexProperty<Point>("v:point");
 
     ofs << "solid stl" << std::endl;
     Normal n;

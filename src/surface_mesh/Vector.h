@@ -1,6 +1,7 @@
 //=============================================================================
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Copyright (C) 2011-2013 by Graphics & Geometry Group, Bielefeld University
+// Copyright (C) 2017 Daniel Sieger
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public License
@@ -15,14 +16,8 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //=============================================================================
-
-
-#ifndef SURFACE_MESH_VECTOR_H
-#define SURFACE_MESH_VECTOR_H
-
-
-//== INCLUDES =================================================================
-
+#pragma once
+//=============================================================================
 
 #include <cassert>
 #include <cmath>
@@ -785,6 +780,4 @@ typedef Vector<double,4> Vec4d;
 
 //=============================================================================
 } // namespace surface_mesh
-//=============================================================================
-#endif // SURFACE_MESH_VECTOR_H
 //=============================================================================

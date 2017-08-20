@@ -1,6 +1,7 @@
 //=============================================================================
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Copyright (C) 2011-2016 by Graphics & Geometry Group, Bielefeld University
+// Copyright (C) 2017 Daniel Sieger
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public License
@@ -15,16 +16,10 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //=============================================================================
+#pragma once
+//=============================================================================
 
-
-#ifndef SURFACE_MESH_IO_H
-#define SURFACE_MESH_IO_H
-
-
-//== INCLUDES =================================================================
-
-
-#include <surface_mesh/Surface_mesh.h>
+#include <surface_mesh/SurfaceMesh.h>
 
 #include <string>
 
@@ -38,21 +33,19 @@ namespace surface_mesh {
 //=============================================================================
 
 
-bool read_mesh(Surface_mesh& mesh, const std::string& filename);
-bool read_off(Surface_mesh& mesh, const std::string& filename);
-bool read_obj(Surface_mesh& mesh, const std::string& filename);
-bool read_poly(Surface_mesh& mesh, const std::string& filename);
-bool read_stl(Surface_mesh& mesh, const std::string& filename);
+bool readMesh(SurfaceMesh& mesh, const std::string& filename);
+bool readOFF(SurfaceMesh& mesh, const std::string& filename);
+bool readOBJ(SurfaceMesh& mesh, const std::string& filename);
+bool readPoly(SurfaceMesh& mesh, const std::string& filename);
+bool readSTL(SurfaceMesh& mesh, const std::string& filename);
 
-bool write_mesh(const Surface_mesh& mesh, const std::string& filename);
-bool write_off(const Surface_mesh& mesh, const std::string& filename);
-bool write_obj(const Surface_mesh& mesh, const std::string& filename);
-bool write_poly(const Surface_mesh& mesh, const std::string& filename);
-bool write_stl(const Surface_mesh& mesh, const std::string& filename);
+bool writeMesh(const SurfaceMesh& mesh, const std::string& filename);
+bool writeOFF(const SurfaceMesh& mesh, const std::string& filename);
+bool writeOBJ(const SurfaceMesh& mesh, const std::string& filename);
+bool writePoly(const SurfaceMesh& mesh, const std::string& filename);
+bool writeSTL(const SurfaceMesh& mesh, const std::string& filename);
 
 
 //=============================================================================
 } // namespace surface_mesh
-//=============================================================================
-#endif // SURFACE_MESH_IO_H
 //=============================================================================

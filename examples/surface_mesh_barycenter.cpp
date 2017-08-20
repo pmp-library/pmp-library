@@ -16,7 +16,7 @@
 //=============================================================================
 
 
-#include <surface_mesh/Surface_mesh.h>
+#include <surface_mesh/SurfaceMesh.h>
 
 
 //=============================================================================
@@ -30,12 +30,13 @@ using namespace surface_mesh;
 
 int main(int argc, char** argv)
 {
-    Surface_mesh mesh;
+    SurfaceMesh mesh;
 
-    mesh.read(argv[1]);
+    if (argc > 1)
+        mesh.read(argv[1]);
 
     // get (pre-defined) property storing vertex positions
-    auto points = mesh.get_vertex_property<Point>("v:point");
+    auto points = mesh.getVertexProperty<Point>("v:point");
 
     Point p(0,0,0);
 
@@ -45,7 +46,7 @@ int main(int argc, char** argv)
         p += points[vit];
     }
 
-    p /= mesh.n_vertices();
+    p /= mesh.nVertices();
 
     std::cout << "barycenter: " << p << std::endl;
 }

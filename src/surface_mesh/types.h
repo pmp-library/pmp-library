@@ -1,5 +1,6 @@
 //=============================================================================
 // Copyright (C) 2013 Graphics & Geometry Group, Bielefeld University
+// Copyright (C) 2017 Daniel Sieger
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Library General Public License
@@ -14,49 +15,47 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //=============================================================================
-
-
-#ifndef SURFACE_MESH_TYPES_H
-#define SURFACE_MESH_TYPES_H
-
-#define SURFACE_MESH_VERSION 1.1
-
-//== INCLUDES =================================================================
-
+#pragma once
+//=============================================================================
 
 #include <surface_mesh/Vector.h>
 
+#ifdef NDEBUG
+// this macro allows to avoid unused variable warnings with no overhead
+#define SM_ASSERT(x)        \
+    do                   \
+    {                    \
+        (void)sizeof(x); \
+    } while (0)
+#else
+#define SM_ASSERT(x) assert(x)
+#endif
 
 //=============================================================================
 
-
+//! surface_mesh library namespace
 namespace surface_mesh {
 
-
 //=============================================================================
 
-
-/// Scalar type
+//! Scalar type
 typedef float Scalar;
 
-/// Point type
-typedef Vector<Scalar,3> Point;
+//! Point type
+typedef Vector<Scalar, 3> Point;
 
-/// 3D vector type
-typedef Vector<Scalar,3> Vec3;
+//! 3D vector type
+typedef Vector<Scalar, 3> Vec3;
 
-/// Normal type
-typedef Vector<Scalar,3> Normal;
+//! Normal type
+typedef Vector<Scalar, 3> Normal;
 
-/// Color type
-typedef Vector<Scalar,3> Color;
+//! Color type
+typedef Vector<Scalar, 3> Color;
 
-/// Texture coordinate type
-typedef Vector<Scalar,3> Texture_coordinate;
-
+//! Texture coordinate type
+typedef Vector<Scalar, 3> TextureCoordinate;
 
 //=============================================================================
 } // namespace surface_mesh
 //=============================================================================
-#endif // SURFACE_MESH_TYPES_H
-//============================================================================

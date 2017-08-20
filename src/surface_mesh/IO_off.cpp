@@ -24,7 +24,6 @@
 
 #include <cstdio>
 
-
 //== NAMESPACE ================================================================
 
 
@@ -46,11 +45,11 @@ template <typename T> int read(FILE* in, T& t)
 //-----------------------------------------------------------------------------
 
 
-bool read_off_ascii(Surface_mesh& mesh,
+bool readOFFAscii(SurfaceMesh& mesh,
                     FILE* in,
-                    const bool has_normals,
-                    const bool has_texcoords,
-                    const bool has_colors)
+                    const bool hasNormals,
+                    const bool hasTexcoords,
+                    const bool hasColors)
 {
     char                 line[200], *lp;
     int                  nc;
@@ -58,20 +57,22 @@ bool read_off_ascii(Surface_mesh& mesh,
     unsigned int         nV, nF, nE;
     Vec3f                p, n, c;
     Vec2f                t;
-    Surface_mesh::Vertex v;
+    SurfaceMesh::Vertex v;
 
 
     // properties
-    Surface_mesh::Vertex_property<Normal>              normals;
-    Surface_mesh::Vertex_property<Texture_coordinate>  texcoords;
-    Surface_mesh::Vertex_property<Color>               colors;
-    if (has_normals)   normals   = mesh.vertex_property<Normal>("v:normal");
-    if (has_texcoords) texcoords = mesh.vertex_property<Texture_coordinate>("v:texcoord");
-    if (has_colors)    colors    = mesh.vertex_property<Color>("v:color");
+    SurfaceMesh::VertexProperty<Normal>              normals;
+    SurfaceMesh::VertexProperty<TextureCoordinate>  texcoords;
+    SurfaceMesh::VertexProperty<Color>               colors;
+    if (hasNormals)   normals   = mesh.vertexProperty<Normal>("v:normal");
+    if (hasTexcoords) texcoords = mesh.vertexProperty<TextureCoordinate>("v:texcoord");
+    if (hasColors)    colors    = mesh.vertexProperty<Color>("v:color");
 
 
     // #Vertice, #Faces, #Edges
     items = fscanf(in, "%d %d %d\n", (int*)&nV, (int*)&nF, (int*)&nE);
+    SM_ASSERT(items);
+
     mesh.clear();
     mesh.reserve(nV, std::max(3*nV, nE), nF);
 
@@ -86,11 +87,11 @@ bool read_off_ascii(Surface_mesh& mesh,
         // position
         items = sscanf(lp, "%f %f %f%n", &p[0], &p[1], &p[2], &nc);
         assert(items==3);
-        v = mesh.add_vertex((Point)p);
+        v = mesh.addVertex((Point)p);
         lp += nc;
 
         // normal
-        if (has_normals)
+        if (hasNormals)
         {
             if (sscanf(lp, "%f %f %f%n", &n[0], &n[1], &n[2], &nc) == 3)
             {
@@ -100,7 +101,7 @@ bool read_off_ascii(Surface_mesh& mesh,
         }
 
         // color
-        if (has_colors)
+        if (hasColors)
         {
             if (sscanf(lp, "%f %f %f%n", &c[0], &c[1], &c[2], &nc) == 3)
             {
@@ -111,7 +112,7 @@ bool read_off_ascii(Surface_mesh& mesh,
         }
 
         // tex coord
-        if (has_texcoords)
+        if (hasTexcoords)
         {
             items = sscanf(lp, "%f %f%n", &t[0], &t[1], &nc);
             assert(items == 2);
@@ -124,7 +125,7 @@ bool read_off_ascii(Surface_mesh& mesh,
 
 
     // read faces: #N v[1] v[2] ... v[n-1]
-    std::vector<Surface_mesh::Vertex> vertices;
+    std::vector<SurfaceMesh::Vertex> vertices;
     for (i=0; i<nF; ++i)
     {
         // read line
@@ -142,10 +143,10 @@ bool read_off_ascii(Surface_mesh& mesh,
         {
             items = sscanf(lp, "%d%n", (int*)&idx, &nc);
             assert(items == 1);
-            vertices[j] = Surface_mesh::Vertex(idx);
+            vertices[j] = SurfaceMesh::Vertex(idx);
             lp += nc;
         }
-        mesh.add_face(vertices);
+        mesh.addFace(vertices);
     }
 
 
@@ -156,28 +157,28 @@ bool read_off_ascii(Surface_mesh& mesh,
 //-----------------------------------------------------------------------------
 
 
-bool read_off_binary(Surface_mesh& mesh,
+bool readOFFBinary(SurfaceMesh& mesh,
                      FILE* in,
-                     const bool has_normals,
-                     const bool has_texcoords,
-                     const bool has_colors)
+                     const bool hasNormals,
+                     const bool hasTexcoords,
+                     const bool hasColors)
 {
     unsigned int       i, j, idx;
     unsigned int       nV, nF, nE;
     Vec3f              p, n, c;
     Vec2f              t;
-    Surface_mesh::Vertex  v;
+    SurfaceMesh::Vertex  v;
 
 
     // binary cannot (yet) read colors
-    if (has_colors) return false;
+    if (hasColors) return false;
 
 
     // properties
-    Surface_mesh::Vertex_property<Normal>              normals;
-    Surface_mesh::Vertex_property<Texture_coordinate>  texcoords;
-    if (has_normals)   normals   = mesh.vertex_property<Normal>("v:normal");
-    if (has_texcoords) texcoords = mesh.vertex_property<Texture_coordinate>("v:texcoord");
+    SurfaceMesh::VertexProperty<Normal>              normals;
+    SurfaceMesh::VertexProperty<TextureCoordinate>  texcoords;
+    if (hasNormals)   normals   = mesh.vertexProperty<Normal>("v:normal");
+    if (hasTexcoords) texcoords = mesh.vertexProperty<TextureCoordinate>("v:texcoord");
 
 
     // #Vertice, #Faces, #Edges
@@ -193,17 +194,17 @@ bool read_off_binary(Surface_mesh& mesh,
     {
         // position
         read(in, p);
-        v = mesh.add_vertex((Point)p);
+        v = mesh.addVertex((Point)p);
 
         // normal
-        if (has_normals)
+        if (hasNormals)
         {
             read(in, n);
             normals[v] = n;
         }
 
         // tex coord
-        if (has_texcoords)
+        if (hasTexcoords)
         {
             read(in, t);
             texcoords[v][0] = t[0];
@@ -213,7 +214,7 @@ bool read_off_binary(Surface_mesh& mesh,
 
 
     // read faces: #N v[1] v[2] ... v[n-1]
-    std::vector<Surface_mesh::Vertex> vertices;
+    std::vector<SurfaceMesh::Vertex> vertices;
     for (i=0; i<nF; ++i)
     {
         read(in, nV);
@@ -221,9 +222,9 @@ bool read_off_binary(Surface_mesh& mesh,
         for (j=0; j<nV; ++j)
         {
             read(in, idx);
-            vertices[j] = Surface_mesh::Vertex(idx);
+            vertices[j] = SurfaceMesh::Vertex(idx);
         }
-        mesh.add_face(vertices);
+        mesh.addFace(vertices);
     }
 
 
@@ -234,15 +235,15 @@ bool read_off_binary(Surface_mesh& mesh,
 //-----------------------------------------------------------------------------
 
 
-bool read_off(Surface_mesh& mesh, const std::string& filename)
+bool readOFF(SurfaceMesh& mesh, const std::string& filename)
 {
     char  line[200];
-    bool  has_texcoords = false;
-    bool  has_normals   = false;
-    bool  has_colors    = false;
-    bool  has_hcoords   = false;
-    bool  has_dim       = false;
-    bool  is_binary     = false;
+    bool  hasTexcoords = false;
+    bool  hasNormals   = false;
+    bool  hasColors    = false;
+    bool  hasHcoords   = false;
+    bool  hasDim       = false;
+    bool  isBinary     = false;
 
 
     // open file (in ASCII mode)
@@ -254,17 +255,17 @@ bool read_off(Surface_mesh& mesh, const std::string& filename)
     char *c = fgets(line, 200, in);
     assert(c != NULL);
     c = line;
-    if (c[0] == 'S' && c[1] == 'T') { has_texcoords = true; c += 2; }
-    if (c[0] == 'C') { has_colors  = true; ++c; }
-    if (c[0] == 'N') { has_normals = true; ++c; }
-    if (c[0] == '4') { has_hcoords = true; ++c; }
-    if (c[0] == 'n') { has_dim     = true; ++c; }
+    if (c[0] == 'S' && c[1] == 'T') { hasTexcoords = true; c += 2; }
+    if (c[0] == 'C') { hasColors  = true; ++c; }
+    if (c[0] == 'N') { hasNormals = true; ++c; }
+    if (c[0] == '4') { hasHcoords = true; ++c; }
+    if (c[0] == 'n') { hasDim     = true; ++c; }
     if (strncmp(c, "OFF", 3) != 0) { fclose(in); return false; } // no OFF
-    if (strncmp(c+4, "BINARY", 6) == 0) is_binary = true;
+    if (strncmp(c+4, "BINARY", 6) == 0) isBinary = true;
 
 
     // homogeneous coords, and vertex dimension != 3 are not supported
-    if (has_hcoords || has_dim)
+    if (hasHcoords || hasDim)
     {
         fclose(in);
         return false;
@@ -272,7 +273,7 @@ bool read_off(Surface_mesh& mesh, const std::string& filename)
 
 
     // if binary: reopen file in binary mode
-    if (is_binary)
+    if (isBinary)
     {
         fclose(in);
         in = fopen(filename.c_str(), "rb");
@@ -282,9 +283,9 @@ bool read_off(Surface_mesh& mesh, const std::string& filename)
 
 
     // read as ASCII or binary
-    bool ok = (is_binary ?
-               read_off_binary(mesh, in, has_normals, has_texcoords, has_colors) :
-               read_off_ascii(mesh, in, has_normals, has_texcoords, has_colors));
+    bool ok = (isBinary ?
+               readOFFBinary(mesh, in, hasNormals, hasTexcoords, hasColors) :
+               readOFFAscii(mesh, in, hasNormals, hasTexcoords, hasColors));
 
 
     fclose(in);
@@ -295,56 +296,56 @@ bool read_off(Surface_mesh& mesh, const std::string& filename)
 //-----------------------------------------------------------------------------
 
 
-bool write_off(const Surface_mesh& mesh, const std::string& filename)
+bool writeOFF(const SurfaceMesh& mesh, const std::string& filename)
 {
     FILE* out = fopen(filename.c_str(), "w");
     if (!out)
         return false;
 
 
-    bool  has_normals   = false;
-    bool  has_texcoords = false;
-    bool  has_colors = false;
-    Surface_mesh::Vertex_property<Normal> normals = mesh.get_vertex_property<Normal>("v:normal");
-    Surface_mesh::Vertex_property<Texture_coordinate>  texcoords = mesh.get_vertex_property<Texture_coordinate>("v:texcoord");
-    Surface_mesh::Vertex_property<Color> colors = mesh.get_vertex_property<Color>("v:color");
-    if (normals)   has_normals = true;
-    if (texcoords) has_texcoords = true;
-    if (colors) has_colors = true;
+    bool  hasNormals   = false;
+    bool  hasTexcoords = false;
+    bool  hasColors = false;
+    SurfaceMesh::VertexProperty<Normal> normals = mesh.getVertexProperty<Normal>("v:normal");
+    SurfaceMesh::VertexProperty<TextureCoordinate>  texcoords = mesh.getVertexProperty<TextureCoordinate>("v:texcoord");
+    SurfaceMesh::VertexProperty<Color> colors = mesh.getVertexProperty<Color>("v:color");
+    if (normals)   hasNormals = true;
+    if (texcoords) hasTexcoords = true;
+    if (colors) hasColors = true;
 
 
     // header
-    if(has_texcoords)
+    if(hasTexcoords)
         fprintf(out, "ST");
-    if(has_colors)
+    if(hasColors)
         fprintf(out, "C");
-    if(has_normals)
+    if(hasNormals)
         fprintf(out, "N");
-    fprintf(out, "OFF\n%d %d 0\n", mesh.n_vertices(), mesh.n_faces());
+    fprintf(out, "OFF\n%d %d 0\n", mesh.nVertices(), mesh.nFaces());
 
 
     // vertices, and optionally normals and texture coordinates
-    Surface_mesh::Vertex_property<Point> points = mesh.get_vertex_property<Point>("v:point");
-    for (Surface_mesh::Vertex_iterator vit=mesh.vertices_begin(); vit!=mesh.vertices_end(); ++vit)
+    SurfaceMesh::VertexProperty<Point> points = mesh.getVertexProperty<Point>("v:point");
+    for (SurfaceMesh::VertexIterator vit=mesh.verticesBegin(); vit!=mesh.verticesEnd(); ++vit)
     {
         const Point& p = points[*vit];
         fprintf(out, "%.10f %.10f %.10f", p[0], p[1], p[2]);
 
-        if (has_normals)
+        if (hasNormals)
         {
             const Normal& n = normals[*vit];
             fprintf(out, " %.10f %.10f %.10f", n[0], n[1], n[2]);
         }
 
-        if (has_colors)
+        if (hasColors)
         {
             const Color& c = colors[*vit];
             fprintf(out, " %.10f %.10f %.10f", c[0], c[1], c[2]);
         }
 
-        if (has_texcoords)
+        if (hasTexcoords)
         {
-            const Texture_coordinate& t = texcoords[*vit];
+            const TextureCoordinate& t = texcoords[*vit];
             fprintf(out, " %.10f %.10f", t[0], t[1]);
         }
 
@@ -353,11 +354,11 @@ bool write_off(const Surface_mesh& mesh, const std::string& filename)
 
 
     // faces
-    for (Surface_mesh::Face_iterator fit=mesh.faces_begin(); fit!=mesh.faces_end(); ++fit)
+    for (SurfaceMesh::FaceIterator fit=mesh.facesBegin(); fit!=mesh.facesEnd(); ++fit)
     {
         int nV = mesh.valence(*fit);
         fprintf(out, "%d", nV);
-        Surface_mesh::Vertex_around_face_circulator fvit=mesh.vertices(*fit), fvend=fvit;
+        SurfaceMesh::VertexAroundFaceCirculator fvit=mesh.vertices(*fit), fvend=fvit;
         do
         {
             fprintf(out, " %d", (*fvit).idx());

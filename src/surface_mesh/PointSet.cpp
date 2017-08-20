@@ -1,0 +1,260 @@
+//=============================================================================
+// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
+// Copyright (C) 2011 by Graphics & Geometry Group, Bielefeld University
+// Copyright (C) 2017 Daniel Sieger
+//=============================================================================
+
+#include <surface_mesh/PointSet.h>
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
+
+//=============================================================================
+
+namespace surface_mesh {
+
+//=============================================================================
+
+PointSet::PointSet() : GeometryObject()
+{
+    // allocate standard properties
+    // same list is used in operator=() and assign()
+    m_vpoint   = addVertexProperty<Point>("v:point");
+    m_vnormal  = addVertexProperty<Normal>("v:normal");
+    m_vdeleted = addVertexProperty<bool>("v:deleted", false);
+
+    m_deletedVertices = 0;
+    m_garbage         = false;
+}
+
+//-----------------------------------------------------------------------------
+
+PointSet::~PointSet()
+{
+}
+
+//-----------------------------------------------------------------------------
+
+PointSet& PointSet::operator=(const PointSet& rhs)
+{
+    GeometryObject::operator=(rhs);
+
+    if (this != &rhs)
+    {
+        // deep copy of property containers
+        m_vprops = rhs.m_vprops;
+
+        // property handles contain pointers, have to be reassigned
+        m_vpoint   = vertexProperty<Point>("v:point");
+        m_vnormal  = vertexProperty<Normal>("v:normal");
+        m_vdeleted = vertexProperty<bool>("v:deleted");
+
+        // how many elements are deleted?
+        m_deletedVertices = rhs.m_deletedVertices;
+        m_garbage         = rhs.m_garbage;
+    }
+
+    return *this;
+}
+
+//-----------------------------------------------------------------------------
+
+PointSet& PointSet::assign(const PointSet& rhs)
+{
+    GeometryObject::operator=(rhs);
+
+    if (this != &rhs)
+    {
+        // clear properties
+        m_vprops.clear();
+
+        // allocate standard properties
+        m_vpoint   = addVertexProperty<Point>("v:point");
+        m_vnormal  = addVertexProperty<Point>("v:normal");
+        m_vdeleted = addVertexProperty<bool>("v:deleted", false);
+
+        // copy properties from other point set
+        m_vpoint.array()   = rhs.m_vpoint.array();
+        m_vnormal.array()  = rhs.m_vnormal.array();
+        m_vdeleted.array() = rhs.m_vdeleted.array();
+
+        // resize (needed by property containers)
+        m_vprops.resize(rhs.verticesSize());
+
+        // how many elements are deleted?
+        m_deletedVertices = rhs.m_deletedVertices;
+        m_garbage         = rhs.m_garbage;
+    }
+
+    return *this;
+}
+
+//-----------------------------------------------------------------------------
+
+bool PointSet::read(const std::string& filename)
+{
+    if (filename.size() < 4 || filename.compare(filename.size() - 4, 4, ".xyz"))
+        return false;
+
+    std::ifstream ifs(filename);
+    float         x, y, z;
+    float         nx, ny, nz;
+
+    clear();
+
+    std::string line;
+    while (getline(ifs, line))
+    {
+        std::stringstream sstr(line.c_str());
+        sstr >> x >> y >> z;
+        sstr >> nx >> ny >> nz;
+        Vertex v     = addVertex(Point(x, y, z));
+        m_vnormal[v] = Normal(nx, ny, nz);
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool PointSet::write(const std::string& filename) const
+{
+    std::ofstream ofs(filename);
+
+    for (auto v : vertices())
+    {
+        ofs << position(v);
+        ofs << " ";
+        ofs << m_vnormal[v];
+        ofs << std::endl;
+    }
+
+    ofs.close();
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+void PointSet::clear()
+{
+    m_vprops.resize(0);
+
+    freeMemory();
+
+    m_deletedVertices = 0;
+    m_garbage         = false;
+}
+
+//-----------------------------------------------------------------------------
+
+void PointSet::freeMemory()
+{
+    m_vprops.freeMemory();
+}
+
+//-----------------------------------------------------------------------------
+
+void PointSet::reserve(unsigned int nvertices)
+{
+    GeometryObject::reserve();
+    m_vprops.reserve(nvertices);
+}
+
+//-----------------------------------------------------------------------------
+
+void PointSet::propertyStats() const
+{
+    std::vector<std::string> props;
+
+    std::cout << "point properties:\n";
+    props = vertexProperties();
+    for (unsigned int i = 0; i < props.size(); ++i)
+        std::cout << "\t" << props[i] << std::endl;
+}
+
+//-----------------------------------------------------------------------------
+
+PointSet::Vertex PointSet::addVertex(const Point& p)
+{
+    Vertex v    = newVertex();
+    m_vpoint[v] = p;
+    return v;
+}
+
+//-----------------------------------------------------------------------------
+
+void PointSet::deleteVertex(Vertex v)
+{
+    if (m_vdeleted[v])
+        return;
+
+    // mark v as deleted
+    m_vdeleted[v] = true;
+    m_deletedVertices++;
+
+    setGarbage();
+}
+
+//-----------------------------------------------------------------------------
+
+void PointSet::beginGarbage()
+{
+    int nV(verticesSize());
+
+    // setup handle mapping
+    VertexProperty<Vertex> vmap =
+        addVertexProperty<Vertex>("v:garbage-collection");
+    for (int i          = 0; i < nV; ++i)
+        vmap[Vertex(i)] = Vertex(i);
+
+    // remove deleted vertices
+    if (nV > 0)
+    {
+        int i0 = 0;
+        int i1 = nV - 1;
+
+        while (1)
+        {
+            // find first deleted and last un-deleted
+            while (!isDeleted(Vertex(i0)) && i0 < i1)
+                ++i0;
+            while (isDeleted(Vertex(i1)) && i0 < i1)
+                --i1;
+            if (i0 >= i1)
+                break;
+
+            // swap
+            m_vprops.swap(i0, i1);
+        };
+
+        // remember new size
+        nV = isDeleted(Vertex(i0)) ? i0 : i0 + 1;
+    }
+
+    m_garbageprops["nV"] = nV;
+}
+
+//-----------------------------------------------------------------------------
+
+void PointSet::finalizeGarbage()
+{
+    VertexProperty<Vertex> vmap =
+        getVertexProperty<Vertex>("v:garbage-collection");
+
+    // remove handle maps
+    removeVertexProperty(vmap);
+
+    // finally resize arrays
+    m_vprops.resize(m_garbageprops["nV"]);
+    m_vprops.freeMemory();
+
+    m_deletedVertices = 0;
+
+    GeometryObject::finalizeGarbage();
+}
+
+//=============================================================================
+} // namespace surface_mesh
+//=============================================================================

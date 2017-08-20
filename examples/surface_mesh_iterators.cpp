@@ -16,7 +16,7 @@
 //=============================================================================
 
 
-#include <surface_mesh/Surface_mesh.h>
+#include <surface_mesh/SurfaceMesh.h>
 
 
 //=============================================================================
@@ -30,33 +30,23 @@ using namespace surface_mesh;
 
 int main(int argc, char** argv)
 {
-    Surface_mesh mesh;
+    SurfaceMesh mesh;
 
-    mesh.read(argv[1]);
+    if (argc > 1)
+        mesh.read(argv[1]);
 
-    float mean_valence = 0.0f;
-    unsigned int vertex_valence;
-
+    float meanValence = 0.0f;
 
     // loop over all vertices
     for (auto vit : mesh.vertices())
     {
-        // reset counter
-        vertex_valence = 0;
-
-        // loop over all incident vertices
-        for (auto vc : mesh.vertices(vit))
-        {
-            ++vertex_valence;
-        }
-
         // sum up vertex valences
-        mean_valence += vertex_valence;
+        meanValence += mesh.valence(vit);
     }
 
-    mean_valence /= mesh.n_vertices();
+    meanValence /= mesh.nVertices();
 
-    std::cout << "mean valence: " << mean_valence << std::endl;
+    std::cout << "mean valence: " << meanValence << std::endl;
 }
 
 
