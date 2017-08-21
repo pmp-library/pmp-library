@@ -12,6 +12,37 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 include(AddFileDependencies)
 include_directories(${CMAKE_SOURCE_DIR}/src/)
 
+# setup for code coverage testing
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCXX)
+  enable_testing()
+
+  # set compiler flags
+  set(CMAKE_CXX_FLAGS "-g -O0 --coverage")
+
+  # find required tools
+  find_program(GCOV gcov)
+  find_program(LCOV lcov)
+  find_program(GENHTML genhtml)
+
+  # add coverage target
+  add_custom_target(coverage
+
+    # cleanup old counters
+    ${LCOV} --directory . --zerocounters
+
+    # run test command
+    COMMAND make test
+
+    # gather data, generate report
+    COMMAND ${LCOV} --directory . --capture --output-file coverage.info
+    COMMAND ${LCOV} --remove coverage.info 'tests/*' '/usr/*' 'googletest/*' --output-file coverage.info.cleaned
+    COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info.cleaned
+    COMMAND ${CMAKE_COMMAND} -E remove coverage.info coverage.info.cleaned
+
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+endif()
+
 
 # set default compiler flags
 if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
