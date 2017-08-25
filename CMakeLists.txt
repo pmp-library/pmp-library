@@ -72,6 +72,7 @@ endif()
 add_subdirectory(src/surface_mesh)
 add_subdirectory(doc)
 add_subdirectory(examples)
+add_subdirectory(benchmarks)
 
 enable_testing()
 add_subdirectory(tests)
