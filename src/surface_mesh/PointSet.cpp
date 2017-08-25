@@ -170,6 +170,8 @@ void PointSet::clear()
 
     m_deletedVertices = 0;
     m_garbage         = false;
+
+    GeometryObject::clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -177,6 +179,7 @@ void PointSet::clear()
 void PointSet::freeMemory()
 {
     m_vprops.freeMemory();
+    GeometryObject::freeMemory();
 }
 
 //-----------------------------------------------------------------------------
