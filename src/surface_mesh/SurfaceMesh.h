@@ -544,13 +544,13 @@ public:
     //! sets the incident face to halfedge \c h to \c f
     void setFace(Halfedge h, Face f) { m_hfconn[h].m_face = f; }
 
-    /// returns whether h is a boundary halfege, i.e., if its face does not exist.
+    //! returns whether h is a boundary halfege, i.e., if its face does not exist.
     virtual bool isBoundary(Halfedge h) const override
     {
         return !face(h).isValid();
     }
 
-    /// returns the face incident to the \c i'th halfedge of edge \c e. \c i has to be 0 or 1.
+    //! returns the face incident to the \c i'th halfedge of edge \c e. \c i has to be 0 or 1.
     Face face(Edge e, unsigned int i) const
     {
         assert(i <= 1);
@@ -758,8 +758,8 @@ public:
     //! \attention h0 and h1 have to belong to the same face
     Halfedge insertEdge(Halfedge h0, Halfedge h1);
 
-    /// insert edge between v0 and v1
-    /// returns the new halfedge from v0 to v1
+    //! insert edge between v0 and v1
+    //! returns the new halfedge from v0 to v1
     virtual Halfedge insertEdge(Vertex v0, Vertex v1) override;
 
     //! Check whether flipping edge \c e is topologically
