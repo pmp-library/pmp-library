@@ -91,3 +91,14 @@ Unix-like systems. If you need to install to a custom location set the install
 prefix during build configuration:
 
     $ cmake -DCMAKE_INSTALL_PREFIX=<your custom path> ..
+
+# Build Options {#build_options}
+
+By default, surface_mesh uses 32-bit unsigned integers as internal index type to
+reference entities. However, if you need to process very large data sets this
+might not be sufficient. In this case, you can change the index type to be
+64-bit by specifying
+
+    $ cmake -DSM_INDEX_TYPE=64
+
+during build configuration.

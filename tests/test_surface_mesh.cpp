@@ -258,7 +258,7 @@ TEST_F(SurfaceMeshTest, polyIO)
     addTriangle();
     mesh.write("test.poly");
     mesh.clear();
-    EXPECT_TRUE(mesh.empty());
+    EXPECT_TRUE(mesh.isEmpty());
     mesh.read("test.poly");
     EXPECT_EQ(mesh.nVertices(), 3);
     EXPECT_EQ(mesh.nFaces(), 1);
@@ -271,7 +271,7 @@ TEST_F(SurfaceMeshTest, objIO)
     mesh.addHalfedgeProperty<TextureCoordinate>("h:texcoord",TextureCoordinate(0,0,0));
     mesh.write("test.obj");
     mesh.clear();
-    EXPECT_TRUE(mesh.empty());
+    EXPECT_TRUE(mesh.isEmpty());
     mesh.read("test.obj");
     EXPECT_EQ(mesh.nVertices(), 3);
     EXPECT_EQ(mesh.nFaces(), 1);
@@ -285,7 +285,7 @@ TEST_F(SurfaceMeshTest, offIO)
     mesh.addVertexProperty<Color>("v:color",Color(0,0,0));
     mesh.write("test.off");
     mesh.clear();
-    EXPECT_TRUE(mesh.empty());
+    EXPECT_TRUE(mesh.isEmpty());
     mesh.read("test.off");
     EXPECT_EQ(mesh.nVertices(), 3);
     EXPECT_EQ(mesh.nFaces(), 1);

@@ -470,13 +470,10 @@ public:
     //!@{
 
     //! returns number of (deleted and valid)faces in the mesh
-    unsigned int facesSize() const { return (unsigned int)m_fprops.size(); }
+    size_t facesSize() const { return m_fprops.size(); }
 
     //! returns number of faces in the mesh
-    unsigned int nFaces() const { return facesSize() - m_deletedFaces; }
-
-    //! returns true iff the mesh is empty, i.e., has no vertices
-    unsigned int empty() const { return nVertices() == 0; }
+    size_t nFaces() const { return facesSize() - m_deletedFaces; }
 
     //! clear mesh: remove all vertices, edges, faces
     void clear();
@@ -810,6 +807,12 @@ private:
     //! allocate a new face, resize face properties accordingly.
     Face newFace()
     {
+        if (facesSize() == SM_MAX_INDEX - 1)
+        {
+            std::cerr << "newFacec: cannot allocate face, max. index reached" << std::endl;
+            return Face();
+        }
+
         m_fprops.pushBack();
         return Face(facesSize() - 1);
     }
@@ -845,7 +848,7 @@ private:
 
     FaceProperty<Normal> m_fnormal;
 
-    unsigned int m_deletedFaces;
+    size_t m_deletedFaces;
 
     // helper data for addFace()
     typedef std::pair<Halfedge, Halfedge> NextCacheEntry;

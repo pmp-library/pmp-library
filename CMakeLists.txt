@@ -68,6 +68,10 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 endif()
 
+# choose size of the index type
+if(SM_INDEX_TYPE EQUAL 64)
+  add_definitions(-DSM_INDEX_TYPE_64)
+endif()
 
 add_subdirectory(src/surface_mesh)
 add_subdirectory(doc)

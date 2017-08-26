@@ -31,6 +31,9 @@
 //=============================================================================
 
 #include <surface_mesh/Vector.h>
+#include <cstdint> // for std::uint_least32_t
+
+//=============================================================================
 
 #ifdef NDEBUG
 // this macro allows to avoid unused variable warnings with no overhead
@@ -42,6 +45,9 @@
 #else
 #define SM_ASSERT(x) assert(x)
 #endif
+
+// simple pretty-printing debug macro
+#define SM_SHOW(x) std::cerr << #x " = '" << x << "'" << std::endl;
 
 //=============================================================================
 
@@ -67,6 +73,17 @@ typedef Vector<Scalar, 3> Color;
 
 //! Texture coordinate type
 typedef Vector<Scalar, 3> TextureCoordinate;
+
+
+// define index type to be used
+#ifdef SM_INDEX_TYPE_64
+typedef std::uint_least64_t IndexType;
+#define SM_MAX_INDEX UINT_LEAST64_MAX
+#else
+typedef std::uint_least32_t IndexType;
+#define SM_MAX_INDEX UINT_LEAST32_MAX
+#endif
+
 
 //=============================================================================
 } // namespace surface_mesh

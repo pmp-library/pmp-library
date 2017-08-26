@@ -333,7 +333,7 @@ bool writeOFF(const SurfaceMesh& mesh, const std::string& filename)
         fprintf(out, "C");
     if(hasNormals)
         fprintf(out, "N");
-    fprintf(out, "OFF\n%d %d 0\n", mesh.nVertices(), mesh.nFaces());
+    fprintf(out, "OFF\n%zu %zu 0\n", mesh.nVertices(), mesh.nFaces());
 
 
     // vertices, and optionally normals and texture coordinates

@@ -184,10 +184,10 @@ void PointSet::freeMemory()
 
 //-----------------------------------------------------------------------------
 
-void PointSet::reserve(unsigned int nvertices)
+void PointSet::reserve(size_t nVertices)
 {
     GeometryObject::reserve();
-    m_vprops.reserve(nvertices);
+    m_vprops.reserve(nVertices);
 }
 
 //-----------------------------------------------------------------------------
@@ -206,8 +206,9 @@ void PointSet::propertyStats() const
 
 PointSet::Vertex PointSet::addVertex(const Point& p)
 {
-    Vertex v    = newVertex();
-    m_vpoint[v] = p;
+    Vertex v = newVertex();
+    if (v.isValid())
+        m_vpoint[v] = p;
     return v;
 }
 

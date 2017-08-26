@@ -205,16 +205,16 @@ public:
     //!@{
 
     //! returns number of (deleted and valid) vertices in the point set
-    unsigned int verticesSize() const { return (unsigned int)m_vprops.size(); }
+    size_t verticesSize() const { return m_vprops.size(); }
 
     //! returns number of vertices in the point set
-    unsigned int nVertices() const
+    size_t nVertices() const
     {
         return verticesSize() - m_deletedVertices;
     }
 
     //! returns true iff the point set is empty, i.e., has no vertices
-    unsigned int empty() const { return nVertices() == 0; }
+    bool isEmpty() const { return nVertices() == 0; }
 
     //! clear mesh: remove all vertices
     virtual void clear();
@@ -240,7 +240,7 @@ public:
     }
 
     //! reserve memory (mainly used in file readers)
-    void reserve(unsigned int nvertices);
+    void reserve(size_t nvertices);
 
     //!@}
     //! \name Property handling
@@ -371,6 +371,11 @@ private:
     //! allocate a new vertex, resize vertex properties accordingly.
     Vertex newVertex()
     {
+        if (verticesSize() == SM_MAX_INDEX - 1)
+        {
+            std::cerr << "newVertex: cannot allocate vertex, max. index reached" << std::endl;
+            return Vertex();
+        }
         m_vprops.pushBack();
         return Vertex(verticesSize() - 1);
     }

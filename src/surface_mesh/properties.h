@@ -130,16 +130,16 @@ public:
     std::vector<T>& vector() { return m_data; }
 
     //! Access the i'th element. No range check is performed!
-    Reference operator[](int idx)
+    Reference operator[](size_t idx)
     {
-        assert(size_t(idx) < m_data.size());
+        assert(idx < m_data.size());
         return m_data[idx];
     }
 
     //! Const access to the i'th element. No range check is performed!
-    ConstReference operator[](int idx) const
+    ConstReference operator[](size_t idx) const
     {
-        assert(size_t(idx) < m_data.size());
+        assert(idx < m_data.size());
         return m_data[idx];
     }
 
@@ -177,13 +177,13 @@ public:
 
     operator bool() const { return m_parray != NULL; }
 
-    Reference operator[](int i)
+    Reference operator[](size_t i)
     {
         assert(m_parray != NULL);
         return (*m_parray)[i];
     }
 
-    ConstReference operator[](int i) const
+    ConstReference operator[](size_t i) const
     {
         assert(m_parray != NULL);
         return (*m_parray)[i];
@@ -240,8 +240,8 @@ public:
             clear();
             m_parrays.resize(rhs.n_properties());
             m_size = rhs.size();
-            for (unsigned int i = 0; i < m_parrays.size(); ++i)
-                m_parrays[i]    = rhs.m_parrays[i]->clone();
+            for (size_t i = 0; i < m_parrays.size(); ++i)
+                m_parrays[i] = rhs.m_parrays[i]->clone();
         }
         return *this;
     }
@@ -256,7 +256,7 @@ public:
     std::vector<std::string> properties() const
     {
         std::vector<std::string> names;
-        for (unsigned int i = 0; i < m_parrays.size(); ++i)
+        for (size_t i = 0; i < m_parrays.size(); ++i)
             names.push_back(m_parrays[i]->name());
         return names;
     }
@@ -266,7 +266,7 @@ public:
     Property<T> add(const std::string& name, const T t = T())
     {
         // if a property with this name already exists, return an invalid property
-        for (unsigned int i = 0; i < m_parrays.size(); ++i)
+        for (size_t i = 0; i < m_parrays.size(); ++i)
         {
             if (m_parrays[i]->name() == name)
             {
@@ -288,7 +288,7 @@ public:
     template <class T>
     Property<T> get(const std::string& name) const
     {
-        for (unsigned int i = 0; i < m_parrays.size(); ++i)
+        for (size_t i = 0; i < m_parrays.size(); ++i)
             if (m_parrays[i]->name() == name)
                 return Property<T>(
                     dynamic_cast<PropertyArray<T>*>(m_parrays[i]));
@@ -308,7 +308,7 @@ public:
     // get the type of property by its name. returns typeid(void) if it does not exist.
     const std::type_info& getType(const std::string& name)
     {
-        for (unsigned int i = 0; i < m_parrays.size(); ++i)
+        for (size_t i = 0; i < m_parrays.size(); ++i)
             if (m_parrays[i]->name() == name)
                 return m_parrays[i]->type();
         return typeid(void);
@@ -335,7 +335,7 @@ public:
     // delete all properties
     void clear()
     {
-        for (unsigned int i = 0; i < m_parrays.size(); ++i)
+        for (size_t i = 0; i < m_parrays.size(); ++i)
             delete m_parrays[i];
         m_parrays.clear();
         m_size = 0;
@@ -344,14 +344,14 @@ public:
     // reserve memory for n entries in all arrays
     void reserve(size_t n) const
     {
-        for (unsigned int i = 0; i < m_parrays.size(); ++i)
+        for (size_t i = 0; i < m_parrays.size(); ++i)
             m_parrays[i]->reserve(n);
     }
 
     // resize all arrays to size n
     void resize(size_t n)
     {
-        for (unsigned int i = 0; i < m_parrays.size(); ++i)
+        for (size_t i = 0; i < m_parrays.size(); ++i)
             m_parrays[i]->resize(n);
         m_size = n;
     }
@@ -359,14 +359,14 @@ public:
     // free unused space in all arrays
     void freeMemory() const
     {
-        for (unsigned int i = 0; i < m_parrays.size(); ++i)
+        for (size_t i = 0; i < m_parrays.size(); ++i)
             m_parrays[i]->freeMemory();
     }
 
     // add a new element to each vector
     void pushBack()
     {
-        for (unsigned int i = 0; i < m_parrays.size(); ++i)
+        for (size_t i = 0; i < m_parrays.size(); ++i)
             m_parrays[i]->pushBack();
         ++m_size;
     }
@@ -374,7 +374,7 @@ public:
     // swap elements i0 and i1 in all arrays
     void swap(size_t i0, size_t i1) const
     {
-        for (unsigned int i = 0; i < m_parrays.size(); ++i)
+        for (size_t i = 0; i < m_parrays.size(); ++i)
             m_parrays[i]->swap(i0, i1);
     }
 

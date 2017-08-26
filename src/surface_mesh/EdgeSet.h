@@ -478,21 +478,22 @@ public:
     //!@{
 
     //! returns number of (deleted and valid)halfedge in the mesh
-    unsigned int halfedgesSize() const
+    size_t halfedgesSize() const
     {
-        return (unsigned int)m_hprops.size();
+        return m_hprops.size();
     }
 
     //! returns number of (deleted and valid)edges in the mesh
-    unsigned int edgesSize() const { return (unsigned int)m_eprops.size(); }
+    size_t edgesSize() const { return m_eprops.size(); }
 
     //! returns number of halfedge in the mesh
-    unsigned int nHalfedges() const
+    size_t nHalfedges() const
     {
         return halfedgesSize() - 2 * m_deletedEdges;
     }
+
     //! returns number of edges in the mesh
-    unsigned int nEdges() const { return edgesSize() - m_deletedEdges; }
+    size_t nEdges() const { return edgesSize() - m_deletedEdges; }
 
     //! clear mesh: remove all vertices, edges, faces
     virtual void clear() override;
@@ -987,6 +988,12 @@ protected:
     Halfedge newEdge(Vertex start, Vertex end)
     {
         assert(start != end);
+
+        if (halfedgesSize() == SM_MAX_INDEX - 1)
+        {
+            std::cerr << "newEdge: cannot allocate edge, max. index reached" << std::endl;
+            return Halfedge();
+        }
 
         m_eprops.pushBack();
         m_hprops.pushBack();
