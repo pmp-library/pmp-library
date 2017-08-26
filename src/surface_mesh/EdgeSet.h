@@ -593,45 +593,45 @@ public:
     }
 
     //! returns the vertex the halfedge \c h points to
-    Vertex toVertex(Halfedge h) const { return m_hconn[h].m_vertex; }
+    inline Vertex toVertex(Halfedge h) const { return m_hconn[h].m_vertex; }
 
     //! returns the vertex the halfedge \c h emanates from
-    Vertex fromVertex(Halfedge h) const
+    inline Vertex fromVertex(Halfedge h) const
     {
         return toVertex(oppositeHalfedge(h));
     }
 
     //! sets the vertex the halfedge \c h points to to \c v
-    void setVertex(Halfedge h, Vertex v) { m_hconn[h].m_vertex = v; }
+    inline void setVertex(Halfedge h, Vertex v) { m_hconn[h].m_vertex = v; }
 
     //! returns the next halfedge within the incident face
-    Halfedge nextHalfedge(Halfedge h) const
+    inline Halfedge nextHalfedge(Halfedge h) const
     {
         return m_hconn[h].m_nextHalfedge;
     }
 
     //! sets the next halfedge of \c h within the face to \c nh
-    void setNextHalfedge(Halfedge h, Halfedge nh)
+    inline void setNextHalfedge(Halfedge h, Halfedge nh)
     {
         m_hconn[h].m_nextHalfedge  = nh;
         m_hconn[nh].m_prevHalfedge = h;
     }
 
     //! sets the previous halfedge of \c h and the next halfedge of \c ph to \c nh
-    void setPrevHalfedge(Halfedge h, Halfedge ph)
+    inline void setPrevHalfedge(Halfedge h, Halfedge ph)
     {
         m_hconn[h].m_prevHalfedge  = ph;
         m_hconn[ph].m_nextHalfedge = h;
     }
 
     //! returns the previous halfedge within the incident face
-    Halfedge prevHalfedge(Halfedge h) const
+    inline Halfedge prevHalfedge(Halfedge h) const
     {
         return m_hconn[h].m_prevHalfedge;
     }
 
     //! returns the opposite halfedge of \c h
-    Halfedge oppositeHalfedge(Halfedge h) const
+    inline Halfedge oppositeHalfedge(Halfedge h) const
     {
         return Halfedge((h.idx() & 1) ? h.idx() - 1 : h.idx() + 1);
     }
@@ -639,7 +639,7 @@ public:
     //! returns the halfedge that is rotated counter-clockwise around the
     //! start vertex of \c h. it is the opposite halfedge of the previous
     //! halfedge of \c h.
-    Halfedge ccwRotatedHalfedge(Halfedge h) const
+    inline Halfedge ccwRotatedHalfedge(Halfedge h) const
     {
         return oppositeHalfedge(prevHalfedge(h));
     }
@@ -647,14 +647,14 @@ public:
     //! returns the halfedge that is rotated clockwise around the start
     //! vertex of \c h. it is the next halfedge of the opposite halfedge of
     //! \c h.
-    Halfedge cwRotatedHalfedge(Halfedge h) const
+    inline Halfedge cwRotatedHalfedge(Halfedge h) const
     {
         return nextHalfedge(oppositeHalfedge(h));
     }
 
     //! return the edge that contains halfedge \c h as one of its two
     //! halfedges.
-    Edge edge(Halfedge h) const { return Edge(h.idx() >> 1); }
+    inline Edge edge(Halfedge h) const { return Edge(h.idx() >> 1); }
 
     //! returns whether h is a "boundary" halfedge
     virtual bool isBoundary(Halfedge h) const
@@ -664,14 +664,14 @@ public:
     }
 
     //! returns the \c i'th halfedge of edge \c e. \c i has to be 0 or 1.
-    Halfedge halfedge(Edge e, unsigned int i) const
+    inline Halfedge halfedge(Edge e, unsigned int i) const
     {
         assert(i <= 1);
         return Halfedge((e.idx() << 1) + i);
     }
 
     //! returns the \c i'th vertex of edge \c e. \c i has to be 0 or 1.
-    Vertex vertex(Edge e, unsigned int i) const
+    inline Vertex vertex(Edge e, unsigned int i) const
     {
         assert(i <= 1);
         return toVertex(halfedge(e, i));

@@ -1012,10 +1012,11 @@ void SurfaceMesh::removeEdge(Halfedge h)
     setHalfedge(vo, Halfedge());
 
     // delete stuff
-    EdgeSet::markEdgeRemoved(edge(h));
-    deleteVertex(vo);
-
-    setGarbage();
+    if (!m_vdeleted) m_vdeleted = vertexProperty<bool>("v:deleted", false);
+    if (!m_edeleted) m_edeleted = edgeProperty<bool>("e:deleted", false);
+    m_vdeleted[vo]      = true; ++m_deletedVertices;
+    m_edeleted[edge(h)] = true; ++m_deletedEdges;
+    m_garbage = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1055,16 +1056,15 @@ void SurfaceMesh::removeLoop(Halfedge h)
         setHalfedge(fo, h1);
 
     // delete stuff
-    if (!m_fdeleted)
-        m_fdeleted = faceProperty<bool>("f:deleted", false);
+    if (!m_edeleted) m_edeleted = edgeProperty<bool>("e:deleted", false);
+    if (!m_fdeleted) m_fdeleted = faceProperty<bool>("f:deleted", false);
     if (fh.isValid())
     {
         m_fdeleted[fh] = true;
         ++m_deletedFaces;
     }
-    EdgeSet::markEdgeRemoved(edge(h0));
-
-    setGarbage();
+    m_edeleted[edge(h)] = true; ++m_deletedEdges;
+    m_garbage = true;
 }
 
 //-----------------------------------------------------------------------------

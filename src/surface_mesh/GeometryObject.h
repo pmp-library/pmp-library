@@ -269,10 +269,10 @@ protected:
     virtual void finalizeGarbage() { m_garbage = false; };
 
     //! are there any deleted entities?
-    bool garbage() const { return m_garbage; }
+    inline bool garbage() const { return m_garbage; }
 
     //! sets the garbage flag to true (means garbage collection has to be run)
-    void setGarbage() { m_garbage = true; }
+    inline void setGarbage() { m_garbage = true; }
 
     //!@}
     //! \name Protected Members

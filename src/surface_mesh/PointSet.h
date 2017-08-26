@@ -356,9 +356,11 @@ protected:
     //! \name Protected Members
     //!@{
 
-    PropertyContainer      m_vprops;  //!< property container for vertices
-    VertexProperty<Point>  m_vpoint;  //!< point coordinates
-    VertexProperty<Normal> m_vnormal; //!< normal vectors
+    PropertyContainer      m_vprops;   //!< property container for vertices
+    VertexProperty<Point>  m_vpoint;   //!< point coordinates
+    VertexProperty<Normal> m_vnormal;  //!< normal vectors
+    VertexProperty<bool>   m_vdeleted; //!< for marking deleted vertices
+    unsigned int           m_deletedVertices; //!< number of deleted vertices
 
     //!@}
 
@@ -372,10 +374,6 @@ private:
         m_vprops.pushBack();
         return Vertex(verticesSize() - 1);
     }
-
-private:
-    VertexProperty<bool>   m_vdeleted; //!< for marking deleted vertices
-    unsigned int           m_deletedVertices; //!< number of deleted vertices
 
     //!@}
 };
