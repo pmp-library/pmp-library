@@ -30,7 +30,7 @@ handles. These handles, as well as the handles for the other mesh entities
 mesh, as well as four triangular faces composing a tetrahedron. Finally, the
 number of vertices, edges, and faces is printed to standard output.
 
-\include surface_mesh_basics.cpp
+\snippet surface_mesh_basics.cpp basics
 
 # File I/O {#fileio}
 
@@ -39,7 +39,7 @@ currently limited to OFF files. All I/O operations are handled by the
 surface_mesh::SurfaceMesh::read() and surface_mesh::SurfaceMesh::write() member functions, with
 the target file name being their only argument. An example is given below.
 
-\include surface_mesh_io.cpp
+\snippet surface_mesh_io.cpp io
 
 
 # Iterators and Circulators {#iterators}
@@ -52,7 +52,7 @@ circulators for the ordered enumeration of all incident vertices, halfedges, or
 faces around a given face or vertex. The example below demonstrates the use of
 iterators and circulators for computing the mean valence of a mesh.
 
-\include surface_mesh_iterators.cpp
+\snippet surface_mesh_iterators.cpp iterators
 
 # Dynamic Properties {#properties}
 
@@ -63,7 +63,7 @@ are also used internally, e.g., to store vertex coordinates. The example
 program below shows how to access vertex coordinates through the
 (pre-defined) point property.
 
-\include surface_mesh_barycenter.cpp
+\snippet surface_mesh_barycenter.cpp barycenter
 
 The dynamic (de-)allocation of properties at run-time is managed by a set
 of four different functions:
