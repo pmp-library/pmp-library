@@ -146,11 +146,11 @@ public:
     {
     public:
         //! Default constructor
-        HalfedgeIterator(Halfedge h = Halfedge(), const EdgeSet* m = NULL)
-            : m_hnd(h), m_mesh(m)
+        HalfedgeIterator(Halfedge h = Halfedge(), const EdgeSet* es = nullptr)
+            : m_hnd(h), m_edges(es)
         {
-            if (m_mesh && m_mesh->garbage())
-                while (m_mesh->isValid(m_hnd) && m_mesh->isDeleted(m_hnd))
+            if (m_edges && m_edges->garbage())
+                while (m_edges->isValid(m_hnd) && m_edges->isDeleted(m_hnd))
                     ++m_hnd.m_idx;
         }
 
@@ -173,9 +173,9 @@ public:
         HalfedgeIterator& operator++()
         {
             ++m_hnd.m_idx;
-            assert(m_mesh);
-            while (m_mesh->garbage() && m_mesh->isValid(m_hnd) &&
-                   m_mesh->isDeleted(m_hnd))
+            assert(m_edges);
+            while (m_edges->garbage() && m_edges->isValid(m_hnd) &&
+                   m_edges->isDeleted(m_hnd))
                 ++m_hnd.m_idx;
             return *this;
         }
@@ -184,16 +184,16 @@ public:
         HalfedgeIterator& operator--()
         {
             --m_hnd.m_idx;
-            assert(m_mesh);
-            while (m_mesh->garbage() && m_mesh->isValid(m_hnd) &&
-                   m_mesh->isDeleted(m_hnd))
+            assert(m_edges);
+            while (m_edges->garbage() && m_edges->isValid(m_hnd) &&
+                   m_edges->isDeleted(m_hnd))
                 --m_hnd.m_idx;
             return *this;
         }
 
     private:
         Halfedge       m_hnd;
-        const EdgeSet* m_mesh;
+        const EdgeSet* m_edges;
     };
 
     //! this class iterates linearly over all edges
@@ -203,11 +203,11 @@ public:
     {
     public:
         //! Default constructor
-        EdgeIterator(Edge e = Edge(), const EdgeSet* m = NULL)
-            : m_hnd(e), m_mesh(m)
+        EdgeIterator(Edge e = Edge(), const EdgeSet* es = nullptr)
+            : m_hnd(e), m_edges(es)
         {
-            if (m_mesh && m_mesh->garbage())
-                while (m_mesh->isValid(m_hnd) && m_mesh->isDeleted(m_hnd))
+            if (m_edges && m_edges->garbage())
+                while (m_edges->isValid(m_hnd) && m_edges->isDeleted(m_hnd))
                     ++m_hnd.m_idx;
         }
 
@@ -230,9 +230,9 @@ public:
         EdgeIterator& operator++()
         {
             ++m_hnd.m_idx;
-            assert(m_mesh);
-            while (m_mesh->garbage() && m_mesh->isValid(m_hnd) &&
-                   m_mesh->isDeleted(m_hnd))
+            assert(m_edges);
+            while (m_edges->garbage() && m_edges->isValid(m_hnd) &&
+                   m_edges->isDeleted(m_hnd))
                 ++m_hnd.m_idx;
             return *this;
         }
@@ -241,16 +241,16 @@ public:
         EdgeIterator& operator--()
         {
             --m_hnd.m_idx;
-            assert(m_mesh);
-            while (m_mesh->garbage() && m_mesh->isValid(m_hnd) &&
-                   m_mesh->isDeleted(m_hnd))
+            assert(m_edges);
+            while (m_edges->garbage() && m_edges->isValid(m_hnd) &&
+                   m_edges->isDeleted(m_hnd))
                 --m_hnd.m_idx;
             return *this;
         }
 
     private:
         Edge           m_hnd;
-        const EdgeSet* m_mesh;
+        const EdgeSet* m_edges;
     };
 
     //!@}
@@ -298,19 +298,19 @@ public:
     {
     public:
         //! default constructor
-        VertexAroundVertexCirculator(const EdgeSet* m = NULL,
+        VertexAroundVertexCirculator(const EdgeSet* es = nullptr,
                                      Vertex         v = Vertex())
-            : m_mesh(m), m_active(true)
+            : m_edges(es), m_active(true)
         {
-            if (m_mesh)
-                m_halfedge = m_mesh->halfedge(v);
+            if (m_edges)
+                m_halfedge = m_edges->halfedge(v);
         }
 
         //! are two circulators equal?
         bool operator==(const VertexAroundVertexCirculator& rhs) const
         {
-            assert(m_mesh);
-            return (m_active && (m_mesh == rhs.m_mesh) &&
+            assert(m_edges);
+            return (m_active && (m_edges == rhs.m_edges) &&
                     (m_halfedge == rhs.m_halfedge));
         }
 
@@ -323,8 +323,8 @@ public:
         //! pre-increment (rotate couter-clockwise)
         VertexAroundVertexCirculator& operator++()
         {
-            assert(m_mesh);
-            m_halfedge = m_mesh->ccwRotatedHalfedge(m_halfedge);
+            assert(m_edges);
+            m_halfedge = m_edges->ccwRotatedHalfedge(m_halfedge);
             m_active   = true;
             return *this;
         }
@@ -332,16 +332,16 @@ public:
         //! pre-decrement (rotate clockwise)
         VertexAroundVertexCirculator& operator--()
         {
-            assert(m_mesh);
-            m_halfedge = m_mesh->cwRotatedHalfedge(m_halfedge);
+            assert(m_edges);
+            m_halfedge = m_edges->cwRotatedHalfedge(m_halfedge);
             return *this;
         }
 
         //! get the vertex the circulator refers to
         Vertex operator*() const
         {
-            assert(m_mesh);
-            return m_mesh->toVertex(m_halfedge);
+            assert(m_edges);
+            return m_edges->toVertex(m_halfedge);
         }
 
         //! cast to bool: true if vertex is not isolated
@@ -364,7 +364,7 @@ public:
         }
 
     private:
-        const EdgeSet* m_mesh;
+        const EdgeSet* m_edges;
         Halfedge       m_halfedge;
         bool           m_active; // helper for C++11 range-based for-loops
     };
@@ -376,19 +376,19 @@ public:
     {
     public:
         //! default constructor
-        HalfedgeAroundVertexCirculator(const EdgeSet* m = NULL,
+        HalfedgeAroundVertexCirculator(const EdgeSet* es = nullptr,
                                        Vertex         v = Vertex())
-            : m_mesh(m), m_active(true)
+            : m_edges(es), m_active(true)
         {
-            if (m_mesh)
-                m_halfedge = m_mesh->halfedge(v);
+            if (m_edges)
+                m_halfedge = m_edges->halfedge(v);
         }
 
         //! are two circulators equal?
         bool operator==(const HalfedgeAroundVertexCirculator& rhs) const
         {
-            assert(m_mesh);
-            return (m_active && (m_mesh == rhs.m_mesh) &&
+            assert(m_edges);
+            return (m_active && (m_edges == rhs.m_edges) &&
                     (m_halfedge == rhs.m_halfedge));
         }
 
@@ -401,8 +401,8 @@ public:
         //! pre-increment (rotate couter-clockwise)
         HalfedgeAroundVertexCirculator& operator++()
         {
-            assert(m_mesh);
-            m_halfedge = m_mesh->ccwRotatedHalfedge(m_halfedge);
+            assert(m_edges);
+            m_halfedge = m_edges->ccwRotatedHalfedge(m_halfedge);
             m_active   = true;
             return *this;
         }
@@ -410,8 +410,8 @@ public:
         //! pre-decrement (rotate clockwise)
         HalfedgeAroundVertexCirculator& operator--()
         {
-            assert(m_mesh);
-            m_halfedge = m_mesh->cwRotatedHalfedge(m_halfedge);
+            assert(m_edges);
+            m_halfedge = m_edges->cwRotatedHalfedge(m_halfedge);
             return *this;
         }
 
@@ -435,7 +435,7 @@ public:
         }
 
     private:
-        const EdgeSet* m_mesh;
+        const EdgeSet* m_edges;
         Halfedge       m_halfedge;
         bool           m_active; // helper for C++11 range-based for-loops
     };
