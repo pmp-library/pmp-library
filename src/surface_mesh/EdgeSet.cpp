@@ -138,7 +138,7 @@ void EdgeSet::freeMemory()
 
 //-----------------------------------------------------------------------------
 
-void EdgeSet::reserve(unsigned int nvertices, unsigned int nedges)
+void EdgeSet::reserve(size_t nvertices, size_t nedges)
 {
     PointSet::reserve(nvertices);
 
@@ -156,12 +156,12 @@ void EdgeSet::propertyStats() const
 
     std::cout << "halfedge properties:\n";
     props = halfedgeProperties();
-    for (unsigned int i = 0; i < props.size(); ++i)
+    for (size_t i = 0; i < props.size(); ++i)
         std::cout << "\t" << props[i] << std::endl;
 
     std::cout << "edge properties:\n";
     props = edgeProperties();
-    for (unsigned int i = 0; i < props.size(); ++i)
+    for (size_t i = 0; i < props.size(); ++i)
         std::cout << "\t" << props[i] << std::endl;
 }
 
@@ -197,9 +197,9 @@ EdgeSet::Edge EdgeSet::findEdge(Vertex a, Vertex b) const
 
 //-----------------------------------------------------------------------------
 
-unsigned int EdgeSet::valence(Vertex v) const
+size_t EdgeSet::valence(Vertex v) const
 {
-    unsigned int count(0);
+    size_t count(0);
 
     VertexAroundVertexCirculator vvit  = vertices(v);
     VertexAroundVertexCirculator vvend = vvit;

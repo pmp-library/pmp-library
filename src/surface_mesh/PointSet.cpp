@@ -198,7 +198,7 @@ void PointSet::propertyStats() const
 
     std::cout << "point properties:\n";
     props = vertexProperties();
-    for (unsigned int i = 0; i < props.size(); ++i)
+    for (size_t i = 0; i < props.size(); ++i)
         std::cout << "\t" << props[i] << std::endl;
 }
 

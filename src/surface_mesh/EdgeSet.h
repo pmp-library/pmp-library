@@ -502,7 +502,7 @@ public:
     virtual void freeMemory() override;
 
     //! reserve memory (mainly used in file readers)
-    void reserve(unsigned int nvertices, unsigned int nedges);
+    void reserve(size_t nvertices, size_t nedges);
 
     //! collect initialize garbage collection
     virtual void beginGarbage() override;
@@ -566,7 +566,7 @@ public:
     virtual bool isManifold(Vertex v) const
     {
         // The vertex is manifold, if it has exactly 2 incident edges.
-        unsigned int count(0);
+        size_t count(0);
 
         auto hc    = halfedges(v);
         auto hcend = hc;
@@ -947,7 +947,7 @@ public:
 
     //! returns the valence (number of incident edges or neighboring
     //! vertices) of vertex \c v.
-    unsigned int valence(Vertex v) const;
+    size_t valence(Vertex v) const;
 
     //! find the halfedge from start to end
     Halfedge findHalfedge(Vertex start, Vertex end) const;
@@ -1024,7 +1024,7 @@ protected:
 
     EdgeProperty<bool> m_edeleted; //!< mark deleted edges
 
-    unsigned int m_deletedEdges; //!< number of deleted edges
+    size_t m_deletedEdges; //!< number of deleted edges
 
     //!@}
 };

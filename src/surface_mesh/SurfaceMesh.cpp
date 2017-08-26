@@ -159,8 +159,7 @@ void SurfaceMesh::freeMemory()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceMesh::reserve(unsigned int nvertices, unsigned int nedges,
-                          unsigned int nfaces)
+void SurfaceMesh::reserve(size_t nvertices, size_t nedges, size_t nfaces)
 {
     EdgeSet::reserve(nvertices, nedges);
     m_fprops.reserve(nfaces);
@@ -176,7 +175,7 @@ void SurfaceMesh::propertyStats() const
 
     std::cout << "face properties:\n";
     props = faceProperties();
-    for (unsigned int i = 0; i < props.size(); ++i)
+    for (size_t i = 0; i < props.size(); ++i)
         std::cout << "\t" << props[i] << std::endl;
 }
 
@@ -229,11 +228,11 @@ SurfaceMesh::Face SurfaceMesh::addQuad(Vertex v0, Vertex v1, Vertex v2,
 
 SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
 {
-    const unsigned int n(vertices.size());
+    const size_t n(vertices.size());
     assert(n > 2);
 
     Vertex       v;
-    unsigned int i, ii, id;
+    size_t i, ii, id;
     Halfedge     innerNext, innerPrev, outerNext, outerPrev, boundaryNext,
         boundaryPrev, patchStart, patchEnd;
 
@@ -414,9 +413,9 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
 
 //-----------------------------------------------------------------------------
 
-unsigned int SurfaceMesh::valence(Face f) const
+size_t SurfaceMesh::valence(Face f) const
 {
-    unsigned int count(0);
+    size_t count(0);
 
     VertexAroundFaceCirculator fvit  = vertices(f);
     VertexAroundFaceCirculator fvend = fvit;

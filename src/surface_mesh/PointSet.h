@@ -360,7 +360,7 @@ protected:
     VertexProperty<Point>  m_vpoint;   //!< point coordinates
     VertexProperty<Normal> m_vnormal;  //!< normal vectors
     VertexProperty<bool>   m_vdeleted; //!< for marking deleted vertices
-    unsigned int           m_deletedVertices; //!< number of deleted vertices
+    size_t                 m_deletedVertices; //!< number of deleted vertices
 
     //!@}
 

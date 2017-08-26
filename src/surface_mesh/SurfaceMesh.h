@@ -482,8 +482,7 @@ public:
     void freeMemory();
 
     //! reserve memory (mainly used in file readers)
-    void reserve(unsigned int nvertices, unsigned int nedges,
-                 unsigned int nfaces);
+    void reserve(size_t nvertices, size_t nedges, size_t nfaces);
 
     //! remove deleted vertices/edges/faces
     using PointSet::garbageCollection;
@@ -777,7 +776,7 @@ public:
     using EdgeSet::valence;
 
     //! returns the valence of face \c f (its number of vertices)
-    unsigned int valence(Face f) const;
+    size_t valence(Face f) const;
 
     //! deletes the vertex \c v from the mesh
     virtual void deleteVertex(Vertex v) override;
