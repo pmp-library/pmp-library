@@ -61,18 +61,18 @@ public:
 
 TEST_F(SurfaceMeshTest, emptyMesh)
 {
-    EXPECT_EQ(mesh.nVertices(), 0);
-    EXPECT_EQ(mesh.nEdges(), 0);
-    EXPECT_EQ(mesh.nFaces(), 0);
+    EXPECT_EQ(mesh.nVertices(), size_t(0));
+    EXPECT_EQ(mesh.nEdges(), size_t(0));
+    EXPECT_EQ(mesh.nFaces(), size_t(0));
 }
 
 TEST_F(SurfaceMeshTest, insertRemoveSingleVertex)
 {
     auto v0 = mesh.addVertex(Point(0, 0, 0));
-    EXPECT_EQ(mesh.nVertices(), 1);
+    EXPECT_EQ(mesh.nVertices(), size_t(1));
     mesh.deleteVertex(v0);
     mesh.garbageCollection();
-    EXPECT_EQ(mesh.nVertices(), 0);
+    EXPECT_EQ(mesh.nVertices(), size_t(0));
 }
 
 TEST_F(SurfaceMeshTest, insertRemoveSingleTriangle)
@@ -81,14 +81,14 @@ TEST_F(SurfaceMeshTest, insertRemoveSingleTriangle)
     auto v1 = mesh.addVertex(Point(1, 0, 0));
     auto v2 = mesh.addVertex(Point(0, 1, 0));
     auto f0 = mesh.addTriangle(v0, v1, v2);
-    EXPECT_EQ(mesh.nVertices(), 3);
-    EXPECT_EQ(mesh.nEdges(), 3);
-    EXPECT_EQ(mesh.nFaces(), 1);
+    EXPECT_EQ(mesh.nVertices(), size_t(3));
+    EXPECT_EQ(mesh.nEdges(), size_t(3));
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
     mesh.deleteFace(f0);
     mesh.garbageCollection();
-    EXPECT_EQ(mesh.nVertices(), 0);
-    EXPECT_EQ(mesh.nEdges(), 0);
-    EXPECT_EQ(mesh.nFaces(), 0);
+    EXPECT_EQ(mesh.nVertices(), size_t(0));
+    EXPECT_EQ(mesh.nEdges(), size_t(0));
+    EXPECT_EQ(mesh.nFaces(), size_t(0));
 }
 
 TEST_F(SurfaceMeshTest, insertRemoveSingleQuad)
@@ -98,14 +98,14 @@ TEST_F(SurfaceMeshTest, insertRemoveSingleQuad)
     auto v2 = mesh.addVertex(Point(1, 1, 0));
     auto v3 = mesh.addVertex(Point(0, 1, 0));
     auto f0 = mesh.addQuad(v0, v1, v2, v3);
-    EXPECT_EQ(mesh.nVertices(), 4);
-    EXPECT_EQ(mesh.nEdges(), 4);
-    EXPECT_EQ(mesh.nFaces(), 1);
+    EXPECT_EQ(mesh.nVertices(), size_t(4));
+    EXPECT_EQ(mesh.nEdges(), size_t(4));
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
     mesh.deleteFace(f0);
     mesh.garbageCollection();
-    EXPECT_EQ(mesh.nVertices(), 0);
-    EXPECT_EQ(mesh.nEdges(), 0);
-    EXPECT_EQ(mesh.nFaces(), 0);
+    EXPECT_EQ(mesh.nVertices(), size_t(0));
+    EXPECT_EQ(mesh.nEdges(), size_t(0));
+    EXPECT_EQ(mesh.nFaces(), size_t(0));
 }
 
 TEST_F(SurfaceMeshTest, insertRemoveSinglePolygonalFace)
@@ -117,33 +117,33 @@ TEST_F(SurfaceMeshTest, insertRemoveSinglePolygonalFace)
     vertices[3] = mesh.addVertex(Point(0, 1, 0));
 
     auto f0 = mesh.addFace(vertices);
-    EXPECT_EQ(mesh.nVertices(), 4);
-    EXPECT_EQ(mesh.nEdges(), 4);
-    EXPECT_EQ(mesh.nFaces(), 1);
+    EXPECT_EQ(mesh.nVertices(), size_t(4));
+    EXPECT_EQ(mesh.nEdges(), size_t(4));
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
     mesh.deleteFace(f0);
     mesh.garbageCollection();
-    EXPECT_EQ(mesh.nVertices(), 0);
-    EXPECT_EQ(mesh.nEdges(), 0);
-    EXPECT_EQ(mesh.nFaces(), 0);
+    EXPECT_EQ(mesh.nVertices(), size_t(0));
+    EXPECT_EQ(mesh.nEdges(), size_t(0));
+    EXPECT_EQ(mesh.nFaces(), size_t(0));
 }
 
 TEST_F(SurfaceMeshTest, deleteCenterVertex)
 {
     ASSERT_TRUE(mesh.read("data/vertex_onering.off"));
-    EXPECT_EQ(mesh.nVertices(), 7);
-    EXPECT_EQ(mesh.nFaces(), 6);
+    EXPECT_EQ(mesh.nVertices(), size_t(7));
+    EXPECT_EQ(mesh.nFaces(), size_t(6));
     SurfaceMesh::Vertex v0(3); // the central vertex
     mesh.deleteVertex(v0);
     mesh.garbageCollection();
-    EXPECT_EQ(mesh.nVertices(), 0);
-    EXPECT_EQ(mesh.nFaces(), 0);
+    EXPECT_EQ(mesh.nVertices(), size_t(0));
+    EXPECT_EQ(mesh.nFaces(), size_t(0));
 }
 
 TEST_F(SurfaceMeshTest, deleteCenterEdge)
 {
     ASSERT_TRUE(mesh.read("data/edge_onering.off"));
-    EXPECT_EQ(mesh.nVertices(), 10);
-    EXPECT_EQ(mesh.nFaces(), 10);
+    EXPECT_EQ(mesh.nVertices(), size_t(10));
+    EXPECT_EQ(mesh.nFaces(), size_t(10));
     // the two vertices of the center edge
     SurfaceMesh::Vertex v0(4);
     SurfaceMesh::Vertex v1(5);
@@ -151,8 +151,8 @@ TEST_F(SurfaceMeshTest, deleteCenterEdge)
     auto e = mesh.findEdge(v0, v1);
     mesh.deleteEdge(e);
     mesh.garbageCollection();
-    EXPECT_EQ(mesh.nVertices(), 10);
-    EXPECT_EQ(mesh.nFaces(), 8);
+    EXPECT_EQ(mesh.nVertices(), size_t(10));
+    EXPECT_EQ(mesh.nFaces(), size_t(8));
 }
 
 TEST_F(SurfaceMeshTest, copy)
@@ -163,9 +163,9 @@ TEST_F(SurfaceMeshTest, copy)
     mesh.addTriangle(v0,v1,v2);
 
     SurfaceMesh m2 = mesh;
-    EXPECT_EQ(m2.nVertices(), 3);
-    EXPECT_EQ(m2.nEdges(), 3);
-    EXPECT_EQ(m2.nFaces(), 1);
+    EXPECT_EQ(m2.nVertices(), size_t(3));
+    EXPECT_EQ(m2.nEdges(), size_t(3));
+    EXPECT_EQ(m2.nFaces(), size_t(1));
 }
 
 TEST_F(SurfaceMeshTest, assignment)
@@ -177,9 +177,9 @@ TEST_F(SurfaceMeshTest, assignment)
 
     SurfaceMesh m2;
     m2.assign(mesh);
-    EXPECT_EQ(m2.nVertices(), 3);
-    EXPECT_EQ(m2.nEdges(), 3);
-    EXPECT_EQ(m2.nFaces(), 1);
+    EXPECT_EQ(m2.nVertices(), size_t(3));
+    EXPECT_EQ(m2.nEdges(), size_t(3));
+    EXPECT_EQ(m2.nFaces(), size_t(1));
 }
 
 TEST_F(SurfaceMeshTest, vertexProperties)
@@ -188,15 +188,15 @@ TEST_F(SurfaceMeshTest, vertexProperties)
     // explicit add
     auto vidx = mesh.addVertexProperty<int>("v:idx");
     vidx[v0] = 0;
-    EXPECT_EQ(mesh.vertexProperties().size(), 5);
+    EXPECT_EQ(mesh.vertexProperties().size(), size_t(5));
     mesh.removeVertexProperty(vidx);
-    EXPECT_EQ(mesh.vertexProperties().size(), 4);
+    EXPECT_EQ(mesh.vertexProperties().size(), size_t(4));
 
     // implicit add
     vidx = mesh.vertexProperty<int>("v:idx2");
-    EXPECT_EQ(mesh.vertexProperties().size(), 5);
+    EXPECT_EQ(mesh.vertexProperties().size(), size_t(5));
     mesh.removeVertexProperty(vidx);
-    EXPECT_EQ(mesh.vertexProperties().size(), 4);
+    EXPECT_EQ(mesh.vertexProperties().size(), size_t(4));
 }
 
 TEST_F(SurfaceMeshTest, halfedgeProperties)
@@ -206,15 +206,15 @@ TEST_F(SurfaceMeshTest, halfedgeProperties)
     auto hidx = mesh.addHalfedgeProperty<int>("h:idx");
     auto h = mesh.halfedge(v0);
     hidx[h] = 0;
-    EXPECT_EQ(mesh.halfedgeProperties().size(), 3);
+    EXPECT_EQ(mesh.halfedgeProperties().size(), size_t(3));
     mesh.removeHalfedgeProperty(hidx);
-    EXPECT_EQ(mesh.halfedgeProperties().size(), 2);
+    EXPECT_EQ(mesh.halfedgeProperties().size(), size_t(2));
 
     // implicit add
     hidx = mesh.halfedgeProperty<int>("h:idx2");
-    EXPECT_EQ(mesh.halfedgeProperties().size(), 3);
+    EXPECT_EQ(mesh.halfedgeProperties().size(), size_t(3));
     mesh.removeHalfedgeProperty(hidx);
-    EXPECT_EQ(mesh.halfedgeProperties().size(), 2);
+    EXPECT_EQ(mesh.halfedgeProperties().size(), size_t(2));
 }
 
 TEST_F(SurfaceMeshTest, edgeProperties)
@@ -224,15 +224,15 @@ TEST_F(SurfaceMeshTest, edgeProperties)
     auto eidx = mesh.addEdgeProperty<int>("e:idx");
     auto e = mesh.edge(mesh.halfedge(v0));
     eidx[e] = 0;
-    EXPECT_EQ(mesh.edgeProperties().size(), 2);
+    EXPECT_EQ(mesh.edgeProperties().size(), size_t(2));
     mesh.removeEdgeProperty(eidx);
-    EXPECT_EQ(mesh.edgeProperties().size(), 1);
+    EXPECT_EQ(mesh.edgeProperties().size(), size_t(1));
 
     // implicit add
     eidx = mesh.edgeProperty<int>("e:idx2");
-    EXPECT_EQ(mesh.edgeProperties().size(), 2);
+    EXPECT_EQ(mesh.edgeProperties().size(), size_t(2));
     mesh.removeEdgeProperty(eidx);
-    EXPECT_EQ(mesh.edgeProperties().size(), 1);
+    EXPECT_EQ(mesh.edgeProperties().size(), size_t(1));
 }
 
 TEST_F(SurfaceMeshTest, faceProperties)
@@ -241,15 +241,15 @@ TEST_F(SurfaceMeshTest, faceProperties)
     // explicit add
     auto fidx = mesh.addFaceProperty<int>("f:idx");
     fidx[f0] = 0;
-    EXPECT_EQ(mesh.faceProperties().size(), 3);
+    EXPECT_EQ(mesh.faceProperties().size(), size_t(3));
     mesh.removeFaceProperty(fidx);
-    EXPECT_EQ(mesh.faceProperties().size(), 2);
+    EXPECT_EQ(mesh.faceProperties().size(), size_t(2));
 
     // implicit add
     fidx = mesh.faceProperty<int>("f:idx2");
-    EXPECT_EQ(mesh.faceProperties().size(), 3);
+    EXPECT_EQ(mesh.faceProperties().size(), size_t(3));
     mesh.removeFaceProperty(fidx);
-    EXPECT_EQ(mesh.faceProperties().size(), 2);
+    EXPECT_EQ(mesh.faceProperties().size(), size_t(2));
 }
 
 
@@ -260,8 +260,8 @@ TEST_F(SurfaceMeshTest, polyIO)
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
     mesh.read("test.poly");
-    EXPECT_EQ(mesh.nVertices(), 3);
-    EXPECT_EQ(mesh.nFaces(), 1);
+    EXPECT_EQ(mesh.nVertices(), size_t(3));
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
 }
 
 TEST_F(SurfaceMeshTest, objIO)
@@ -273,8 +273,8 @@ TEST_F(SurfaceMeshTest, objIO)
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
     mesh.read("test.obj");
-    EXPECT_EQ(mesh.nVertices(), 3);
-    EXPECT_EQ(mesh.nFaces(), 1);
+    EXPECT_EQ(mesh.nVertices(), size_t(3));
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
 }
 
 TEST_F(SurfaceMeshTest, offIO)
@@ -287,21 +287,21 @@ TEST_F(SurfaceMeshTest, offIO)
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
     mesh.read("test.off");
-    EXPECT_EQ(mesh.nVertices(), 3);
-    EXPECT_EQ(mesh.nFaces(), 1);
+    EXPECT_EQ(mesh.nVertices(), size_t(3));
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
 }
 
 TEST_F(SurfaceMeshTest, stlIO)
 {
     mesh.read("data/icosahedron_ascii.stl");
-    EXPECT_EQ(mesh.nVertices(), 12);
-    EXPECT_EQ(mesh.nFaces(), 20);
-    EXPECT_EQ(mesh.nEdges(), 30);
+    EXPECT_EQ(mesh.nVertices(), size_t(12));
+    EXPECT_EQ(mesh.nFaces(), size_t(20));
+    EXPECT_EQ(mesh.nEdges(), size_t(30));
     mesh.clear();
     mesh.read("data/icosahedron_binary.stl");
-    EXPECT_EQ(mesh.nVertices(), 12);
-    EXPECT_EQ(mesh.nFaces(), 20);
-    EXPECT_EQ(mesh.nEdges(), 30);
+    EXPECT_EQ(mesh.nVertices(), size_t(12));
+    EXPECT_EQ(mesh.nFaces(), size_t(20));
+    EXPECT_EQ(mesh.nEdges(), size_t(30));
     mesh.updateFaceNormals();
     mesh.write("test.stl");
 }
@@ -346,7 +346,7 @@ TEST_F(SurfaceMeshTest, vertexIterators)
     {
         sumIdx += v.idx();
     }
-    EXPECT_EQ(sumIdx, 3);
+    EXPECT_EQ(sumIdx, size_t(3));
 }
 
 TEST_F(SurfaceMeshTest, edgeIterators)
@@ -357,7 +357,7 @@ TEST_F(SurfaceMeshTest, edgeIterators)
     {
         sumIdx += e.idx();
     }
-    EXPECT_EQ(sumIdx, 3);
+    EXPECT_EQ(sumIdx, size_t(3));
 }
 
 TEST_F(SurfaceMeshTest, halfedgeIterators)
@@ -368,7 +368,7 @@ TEST_F(SurfaceMeshTest, halfedgeIterators)
     {
         sumIdx += h.idx();
     }
-    EXPECT_EQ(sumIdx, 15);
+    EXPECT_EQ(sumIdx, size_t(15));
 }
 
 TEST_F(SurfaceMeshTest, faceIterators)
@@ -379,7 +379,7 @@ TEST_F(SurfaceMeshTest, faceIterators)
     {
         sumIdx += f.idx();
     }
-    EXPECT_EQ(sumIdx, 0);
+    EXPECT_EQ(sumIdx, size_t(0));
 }
 
 
@@ -425,47 +425,47 @@ TEST_F(SurfaceMeshTest, valence)
     {
         sumValence += mesh.valence(v);
     }
-    EXPECT_EQ(sumValence, 6);
+    EXPECT_EQ(sumValence, size_t(6));
 }
 
 TEST_F(SurfaceMeshTest, collapse)
 {
     addQuad();
     mesh.triangulate();
-    EXPECT_EQ(mesh.nFaces(), 2);
+    EXPECT_EQ(mesh.nFaces(), size_t(2));
     auto h0  = mesh.findHalfedge(v3,v2);
     if (mesh.isCollapseOk(h0))
         mesh.collapse(h0);
     mesh.garbageCollection();
-    EXPECT_EQ(mesh.nFaces(), 1);
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
 }
 
 TEST_F(SurfaceMeshTest, faceSplit)
 {
     addQuad();
-    EXPECT_EQ(mesh.nFaces(), 1);
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
     Point p(0.5,0.5,0);
     mesh.split(f0,p);
-    EXPECT_EQ(mesh.nFaces(), 4);
+    EXPECT_EQ(mesh.nFaces(), size_t(4));
 }
 
 TEST_F(SurfaceMeshTest, edgeSplit)
 {
     addTriangle();
-    EXPECT_EQ(mesh.nFaces(), 1);
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
     auto e = mesh.findEdge(v0,v1);
     Point p0 = mesh.position(v0);
     Point p1 = mesh.position(v1);
     Point p = (p0 + p1) * 0.5;
     mesh.split(e,p);
-    EXPECT_EQ(mesh.nFaces(), 2);
+    EXPECT_EQ(mesh.nFaces(), size_t(2));
 }
 
 TEST_F(SurfaceMeshTest, edgeFlip)
 {
     mesh.read("data/edge_onering.off");
-    EXPECT_EQ(mesh.nVertices(), 10);
-    EXPECT_EQ(mesh.nFaces(), 10);
+    EXPECT_EQ(mesh.nVertices(), size_t(10));
+    EXPECT_EQ(mesh.nFaces(), size_t(10));
 
     // the two vertices of the center edge
     SurfaceMesh::Vertex v0(4);
@@ -473,6 +473,6 @@ TEST_F(SurfaceMeshTest, edgeFlip)
     auto e = mesh.findEdge(v0,v1);
     if (mesh.isFlipOk(e))
         mesh.flip(e);
-    EXPECT_EQ(mesh.nVertices(), 10);
-    EXPECT_EQ(mesh.nFaces(), 10);
+    EXPECT_EQ(mesh.nVertices(), size_t(10));
+    EXPECT_EQ(mesh.nFaces(), size_t(10));
 }

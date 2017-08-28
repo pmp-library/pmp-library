@@ -46,7 +46,7 @@ public:
 TEST_F(PointSetTest, instantiate)
 {
     PointSet* ps = new PointSet();
-    EXPECT_EQ(ps->nVertices(), 0);
+    EXPECT_EQ(ps->nVertices(), size_t(0));
 }
 
 TEST_F(PointSetTest, operatorEq)
@@ -54,7 +54,7 @@ TEST_F(PointSetTest, operatorEq)
     ps.addVertex(p0);
     ps.addVertex(p1);
     PointSet ps2 = ps;
-    EXPECT_EQ(ps2.nVertices(), 2);
+    EXPECT_EQ(ps2.nVertices(), size_t(2));
 }
 
 TEST_F(PointSetTest, assignment)
@@ -63,7 +63,7 @@ TEST_F(PointSetTest, assignment)
     ps.addVertex(p1);
     PointSet ps2;
     ps2.assign(ps);
-    EXPECT_EQ(ps2.nVertices(), 2);
+    EXPECT_EQ(ps2.nVertices(), size_t(2));
 }
 
 TEST_F(PointSetTest, addRemove)
@@ -72,15 +72,15 @@ TEST_F(PointSetTest, addRemove)
     ps.reserve(2);
     auto  v1 = ps.addVertex(p0);
     ps.addVertex(p1);
-    EXPECT_EQ(ps.nVertices(), 2);
-    EXPECT_EQ(ps.pointVector().size(), 2);
+    EXPECT_EQ(ps.nVertices(), size_t(2));
+    EXPECT_EQ(ps.pointVector().size(), size_t(2));
     ps.deleteVertex(v1);
     ps.garbageCollection();
-    EXPECT_EQ(ps.nVertices(), 1);
-    EXPECT_EQ(ps.pointVector().size(), 1);
+    EXPECT_EQ(ps.nVertices(), size_t(1));
+    EXPECT_EQ(ps.pointVector().size(), size_t(1));
     ps.clear();
-    EXPECT_EQ(ps.nVertices(), 0);
-    EXPECT_EQ(ps.pointVector().size(), 0);
+    EXPECT_EQ(ps.nVertices(), size_t(0));
+    EXPECT_EQ(ps.pointVector().size(), size_t(0));
 }
 
 TEST_F(PointSetTest, iterators)
@@ -93,7 +93,7 @@ TEST_F(PointSetTest, iterators)
         SM_ASSERT(v.isValid());
         nv++;
     }
-    EXPECT_EQ(nv, 2);
+    EXPECT_EQ(nv, size_t(2));
 }
 
 TEST_F(PointSetTest, skipDeleted)
@@ -107,7 +107,7 @@ TEST_F(PointSetTest, skipDeleted)
         SM_ASSERT(v.isValid());
         nv++;
     }
-    EXPECT_EQ(nv, 1);
+    EXPECT_EQ(nv, size_t(1));
 }
 
 TEST_F(PointSetTest, vertexProperties)
@@ -116,15 +116,15 @@ TEST_F(PointSetTest, vertexProperties)
     auto v0 = ps.addVertex(p1);
     auto vidx = ps.addVertexProperty<int>("v:idx");
     vidx[v0] = 0;
-    EXPECT_EQ(ps.vertexProperties().size(), 4);
+    EXPECT_EQ(ps.vertexProperties().size(), size_t(4));
     ps.removeVertexProperty(vidx);
-    EXPECT_EQ(ps.vertexProperties().size(), 3);
+    EXPECT_EQ(ps.vertexProperties().size(), size_t(3));
 
     // implicit add
     vidx = ps.vertexProperty<int>("v:idx2");
-    EXPECT_EQ(ps.vertexProperties().size(), 4);
+    EXPECT_EQ(ps.vertexProperties().size(), size_t(4));
     ps.removeVertexProperty(vidx);
-    EXPECT_EQ(ps.vertexProperties().size(), 3);
+    EXPECT_EQ(ps.vertexProperties().size(), size_t(3));
 }
 
 TEST_F(PointSetTest, write)
@@ -133,13 +133,13 @@ TEST_F(PointSetTest, write)
     ps.addVertex(p1);
     ps.write("test.xyz");
     ps.clear();
-    EXPECT_EQ(ps.nVertices(), 0);
+    EXPECT_EQ(ps.nVertices(), size_t(0));
 }
 
 TEST_F(PointSetTest, read)
 {
     ps.read("test.xyz"); // bad test dependency
-    EXPECT_EQ(ps.nVertices(), 2);
+    EXPECT_EQ(ps.nVertices(), size_t(2));
 }
 
 TEST_F(PointSetTest, readFailure)
