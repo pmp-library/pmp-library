@@ -846,23 +846,8 @@ public:
     //! \name Iterators & Circulators
     //!@{
 
-    //! returns start iterator for vertices
-    VertexIterator verticesBegin() const
-    {
-        return VertexIterator(Vertex(0), this);
-    }
-
-    //! returns end iterator for vertices
-    VertexIterator verticesEnd() const
-    {
-        return VertexIterator(Vertex(verticesSize()), this);
-    }
-
     //! returns vertex container for C++11 range-based for-loops
-    VertexContainer vertices() const
-    {
-        return VertexContainer(verticesBegin(), verticesEnd());
-    }
+    using PointSet::vertices;
 
     //! returns start iterator for halfedges
     HalfedgeIterator halfedgesBegin() const

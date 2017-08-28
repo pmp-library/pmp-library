@@ -443,11 +443,11 @@ public:
 
     //! read mesh from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
-    bool read(const std::string& filename);
+    bool read(const std::string& filename) override;
 
     //! write mesh to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
-    bool write(const std::string& filename) const;
+    bool write(const std::string& filename) const override;
 
     //!@}
     //! \name Add new elements by hand
@@ -476,10 +476,10 @@ public:
     size_t nFaces() const { return facesSize() - m_deletedFaces; }
 
     //! clear mesh: remove all vertices, edges, faces
-    void clear();
+    void clear() override;
 
     //! remove unused memory from vectors
-    void freeMemory();
+    void freeMemory() override;
 
     //! reserve memory (mainly used in file readers)
     void reserve(size_t nvertices, size_t nedges, size_t nfaces);
