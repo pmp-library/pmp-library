@@ -76,9 +76,6 @@ SurfaceMesh& SurfaceMesh::operator=(const SurfaceMesh& rhs)
         m_fconn    = faceProperty<FaceConnectivity>("f:connectivity");
         m_fdeleted = faceProperty<bool>("f:deleted");
 
-        // normals might be there, therefore use getFaceroperty
-        m_fnormal = getFaceProperty<Point>("f:normal");
-
         // how many elements are deleted?
         m_deletedFaces = rhs.m_deletedFaces;
     }
@@ -102,9 +99,6 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
             addHalfedgeProperty<HalfedgeFaceFonnectivity>("hf:connectivity");
         m_fconn    = addFaceProperty<FaceConnectivity>("f:connectivity");
         m_fdeleted = addFaceProperty<bool>("f:deleted", false);
-
-        // normals might be there, therefore use getFaceProperty
-        m_fnormal = getFaceProperty<Normal>("f:normal");
 
         // copy properties from other mesh
         m_hfconn.array()   = rhs.m_hfconn.array();
@@ -514,13 +508,9 @@ void SurfaceMesh::triangulate(Face f)
 
 void SurfaceMesh::updateFaceNormals()
 {
-    if (!m_fnormal)
-        m_fnormal = faceProperty<Point>("f:normal");
-
-    FaceIterator fit, fend = facesEnd();
-
-    for (fit            = facesBegin(); fit != fend; ++fit)
-        m_fnormal[*fit] = computeFaceNormal(*fit);
+    auto fnormal = faceProperty<Point>("f:normal");
+    for (auto f : faces())
+        fnormal[f] = computeFaceNormal(f);
 }
 
 //-----------------------------------------------------------------------------

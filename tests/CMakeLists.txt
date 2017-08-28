@@ -18,11 +18,6 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 # copy test data
 file(COPY data DESTINATION  ${CMAKE_CURRENT_BINARY_DIR})
 
-# silence gtest sign comparison warnings
-if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-sign-compare")
-endif()
-
 # build test runnger
 add_executable(gtest_runner
   test_geometry_object.cpp

@@ -216,11 +216,10 @@ size_t EdgeSet::valence(Vertex v) const
 
 void EdgeSet::updateVertexNormals()
 {
-    if (!m_vnormal)
-        m_vnormal = vertexProperty<Point>("v:normal");
+    auto vnormal = vertexProperty<Point>("v:normal");
 
     for (auto v : vertices())
-        m_vnormal[v] = computeVertexNormal(v);
+        vnormal[v] = computeVertexNormal(v);
 }
 
 //-----------------------------------------------------------------------------

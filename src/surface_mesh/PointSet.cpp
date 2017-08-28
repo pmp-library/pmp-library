@@ -31,10 +31,6 @@
 
 #include <surface_mesh/PointSet.h>
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
 //=============================================================================
 
 namespace surface_mesh {
@@ -46,7 +42,6 @@ PointSet::PointSet() : GeometryObject()
     // allocate standard properties
     // same list is used in operator=() and assign()
     m_vpoint   = addVertexProperty<Point>("v:point");
-    m_vnormal  = addVertexProperty<Normal>("v:normal");
     m_vdeleted = addVertexProperty<bool>("v:deleted", false);
 
     m_deletedVertices = 0;
@@ -72,7 +67,6 @@ PointSet& PointSet::operator=(const PointSet& rhs)
 
         // property handles contain pointers, have to be reassigned
         m_vpoint   = vertexProperty<Point>("v:point");
-        m_vnormal  = vertexProperty<Normal>("v:normal");
         m_vdeleted = vertexProperty<bool>("v:deleted");
 
         // how many elements are deleted?
@@ -96,12 +90,10 @@ PointSet& PointSet::assign(const PointSet& rhs)
 
         // allocate standard properties
         m_vpoint   = addVertexProperty<Point>("v:point");
-        m_vnormal  = addVertexProperty<Point>("v:normal");
         m_vdeleted = addVertexProperty<bool>("v:deleted", false);
 
         // copy properties from other point set
         m_vpoint.array()   = rhs.m_vpoint.array();
-        m_vnormal.array()  = rhs.m_vnormal.array();
         m_vdeleted.array() = rhs.m_vdeleted.array();
 
         // resize (needed by property containers)
@@ -113,51 +105,6 @@ PointSet& PointSet::assign(const PointSet& rhs)
     }
 
     return *this;
-}
-
-//-----------------------------------------------------------------------------
-
-bool PointSet::read(const std::string& filename)
-{
-    if (filename.size() < 4 || filename.compare(filename.size() - 4, 4, ".xyz"))
-        return false;
-
-    std::ifstream ifs(filename);
-    float         x, y, z;
-    float         nx, ny, nz;
-
-    clear();
-
-    std::string line;
-    while (getline(ifs, line))
-    {
-        std::stringstream sstr(line.c_str());
-        sstr >> x >> y >> z;
-        sstr >> nx >> ny >> nz;
-        Vertex v     = addVertex(Point(x, y, z));
-        m_vnormal[v] = Normal(nx, ny, nz);
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-
-bool PointSet::write(const std::string& filename) const
-{
-    std::ofstream ofs(filename);
-
-    for (auto v : vertices())
-    {
-        ofs << position(v);
-        ofs << " ";
-        ofs << m_vnormal[v];
-        ofs << std::endl;
-    }
-
-    ofs.close();
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------

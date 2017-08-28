@@ -443,11 +443,11 @@ public:
 
     //! read mesh from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
-    bool read(const std::string& filename) override;
+    bool read(const std::string& filename);
 
     //! write mesh to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
-    bool write(const std::string& filename) const override;
+    bool write(const std::string& filename) const;
 
     //!@}
     //! \name Add new elements by hand
@@ -844,8 +844,6 @@ private:
     FaceProperty<FaceConnectivity>             m_fconn;
 
     FaceProperty<bool> m_fdeleted;
-
-    FaceProperty<Normal> m_fnormal;
 
     size_t m_deletedFaces;
 

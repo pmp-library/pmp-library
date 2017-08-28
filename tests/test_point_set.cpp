@@ -30,6 +30,7 @@
 #include "gtest/gtest.h"
 
 #include <surface_mesh/PointSet.h>
+#include <surface_mesh/IO_xyz.h>
 #include <vector>
 
 using namespace surface_mesh;
@@ -114,35 +115,37 @@ TEST_F(PointSetTest, vertexProperties)
 {
     // explicit add
     auto v0 = ps.addVertex(p1);
+    auto osize = ps.vertexProperties().size();
     auto vidx = ps.addVertexProperty<int>("v:idx");
+    EXPECT_EQ(ps.vertexProperties().size(), osize+1);
     vidx[v0] = 0;
-    EXPECT_EQ(ps.vertexProperties().size(), size_t(4));
+
     ps.removeVertexProperty(vidx);
-    EXPECT_EQ(ps.vertexProperties().size(), size_t(3));
+    EXPECT_EQ(ps.vertexProperties().size(), osize);
 
     // implicit add
     vidx = ps.vertexProperty<int>("v:idx2");
-    EXPECT_EQ(ps.vertexProperties().size(), size_t(4));
+    EXPECT_EQ(ps.vertexProperties().size(), osize+1);
     ps.removeVertexProperty(vidx);
-    EXPECT_EQ(ps.vertexProperties().size(), size_t(3));
+    EXPECT_EQ(ps.vertexProperties().size(), osize);
 }
 
 TEST_F(PointSetTest, write)
 {
     ps.addVertex(p0);
     ps.addVertex(p1);
-    ps.write("test.xyz");
+    write_xyz(ps,"test.xyz");
     ps.clear();
     EXPECT_EQ(ps.nVertices(), size_t(0));
 }
 
 TEST_F(PointSetTest, read)
 {
-    ps.read("test.xyz"); // bad test dependency
+    read_xyz(ps,"test.xyz"); // bad test dependency
     EXPECT_EQ(ps.nVertices(), size_t(2));
 }
 
 TEST_F(PointSetTest, readFailure)
 {
-    ASSERT_FALSE(ps.read("test.off"));
+    ASSERT_FALSE(read_xyz(ps,"test.off"));
 }

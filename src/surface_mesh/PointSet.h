@@ -184,16 +184,6 @@ public:
     PointSet& assign(const PointSet& rhs);
 
     //!@}
-    //! \name File IO
-    //!@{
-
-    //! read mesh from file \c filename. file extension determines file type.
-    virtual bool read(const std::string& filename);
-
-    //! write mesh to file \c filename. file extensions determines file type.
-    virtual bool write(const std::string& filename) const;
-
-    //!@}
     //! \name Add new elements by hand
     //!@{
 
@@ -341,15 +331,6 @@ public:
     //! vector of point positions, re-implemented from \c GeometryObject
     std::vector<Point>& pointVector() { return m_vpoint.vector(); }
 
-    //! normal for a vertex
-    const Normal& normal(Vertex v) const { return m_vnormal[v]; }
-
-    //! vector of vertex normals
-    std::vector<Normal>& normals() { return m_vnormal.vector(); }
-
-    //! check if the point set has normals
-    bool hasNormals() const { return m_vnormal; }
-
     //!@}
 
 protected:
@@ -358,7 +339,6 @@ protected:
 
     PropertyContainer      m_vprops;   //!< property container for vertices
     VertexProperty<Point>  m_vpoint;   //!< point coordinates
-    VertexProperty<Normal> m_vnormal;  //!< normal vectors
     VertexProperty<bool>   m_vdeleted; //!< for marking deleted vertices
     size_t                 m_deletedVertices; //!< number of deleted vertices
 

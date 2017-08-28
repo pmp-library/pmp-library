@@ -185,18 +185,21 @@ TEST_F(SurfaceMeshTest, assignment)
 TEST_F(SurfaceMeshTest, vertexProperties)
 {
     addTriangle();
+
+    auto osize = mesh.vertexProperties().size();
+
     // explicit add
     auto vidx = mesh.addVertexProperty<int>("v:idx");
     vidx[v0] = 0;
-    EXPECT_EQ(mesh.vertexProperties().size(), size_t(5));
+    EXPECT_EQ(mesh.vertexProperties().size(), osize+1);
     mesh.removeVertexProperty(vidx);
-    EXPECT_EQ(mesh.vertexProperties().size(), size_t(4));
+    EXPECT_EQ(mesh.vertexProperties().size(), osize);
 
     // implicit add
     vidx = mesh.vertexProperty<int>("v:idx2");
-    EXPECT_EQ(mesh.vertexProperties().size(), size_t(5));
+    EXPECT_EQ(mesh.vertexProperties().size(), osize+1);
     mesh.removeVertexProperty(vidx);
-    EXPECT_EQ(mesh.vertexProperties().size(), size_t(4));
+    EXPECT_EQ(mesh.vertexProperties().size(), osize);
 }
 
 TEST_F(SurfaceMeshTest, halfedgeProperties)
