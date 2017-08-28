@@ -438,18 +438,6 @@ public:
     SurfaceMesh& assign(const SurfaceMesh& rhs);
 
     //!@}
-    //! \name File IO
-    //!@{
-
-    //! read mesh from file \c filename. file extension determines file type.
-    //! \sa write(const std::string& filename)
-    bool read(const std::string& filename);
-
-    //! write mesh to file \c filename. file extensions determines file type.
-    //! \sa read(const std::string& filename)
-    bool write(const std::string& filename) const;
-
-    //!@}
     //! \name Add new elements by hand
     //!@{
 

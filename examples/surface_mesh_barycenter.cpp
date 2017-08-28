@@ -29,6 +29,7 @@
 //=============================================================================
 
 #include <surface_mesh/SurfaceMesh.h>
+#include <surface_mesh/IO.h>
 
 //=============================================================================
 
@@ -44,7 +45,7 @@ int main(int argc, char** argv)
     SurfaceMesh mesh;
 
     if (argc > 1)
-        mesh.read(argv[1]);
+        readMesh(mesh,argv[1]);
 
     // get (pre-defined) property storing vertex positions
     auto points = mesh.getVertexProperty<Point>("v:point");

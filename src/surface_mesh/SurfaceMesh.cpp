@@ -117,25 +117,6 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceMesh::read(const std::string& filename)
-{
-    // can also read point sets of course. leave this out for now since file
-    // name conflicts could arise, e.g., edge set in .obj or .ply files
-    // if(EdgeSet::read(filename))
-    //     return true;
-
-    return readMesh(*this, filename);
-}
-
-//-----------------------------------------------------------------------------
-
-bool SurfaceMesh::write(const std::string& filename) const
-{
-    return writeMesh(*this, filename);
-}
-
-//-----------------------------------------------------------------------------
-
 void SurfaceMesh::clear()
 {
     m_fprops.resize(0);

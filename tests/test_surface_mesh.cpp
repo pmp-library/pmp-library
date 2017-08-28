@@ -30,6 +30,7 @@
 #include "gtest/gtest.h"
 
 #include <surface_mesh/SurfaceMesh.h>
+#include <surface_mesh/IO.h>
 #include <vector>
 
 using namespace surface_mesh;
@@ -129,7 +130,7 @@ TEST_F(SurfaceMeshTest, insertRemoveSinglePolygonalFace)
 
 TEST_F(SurfaceMeshTest, deleteCenterVertex)
 {
-    ASSERT_TRUE(mesh.read("data/vertex_onering.off"));
+    ASSERT_TRUE(readMesh(mesh,"data/vertex_onering.off"));
     EXPECT_EQ(mesh.nVertices(), size_t(7));
     EXPECT_EQ(mesh.nFaces(), size_t(6));
     SurfaceMesh::Vertex v0(3); // the central vertex
@@ -141,7 +142,7 @@ TEST_F(SurfaceMeshTest, deleteCenterVertex)
 
 TEST_F(SurfaceMeshTest, deleteCenterEdge)
 {
-    ASSERT_TRUE(mesh.read("data/edge_onering.off"));
+    ASSERT_TRUE(readMesh(mesh,"data/edge_onering.off"));
     EXPECT_EQ(mesh.nVertices(), size_t(10));
     EXPECT_EQ(mesh.nFaces(), size_t(10));
     // the two vertices of the center edge
@@ -259,10 +260,10 @@ TEST_F(SurfaceMeshTest, faceProperties)
 TEST_F(SurfaceMeshTest, polyIO)
 {
     addTriangle();
-    mesh.write("test.poly");
+    writeMesh(mesh,"test.poly");
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
-    mesh.read("test.poly");
+    readMesh(mesh,"test.poly");
     EXPECT_EQ(mesh.nVertices(), size_t(3));
     EXPECT_EQ(mesh.nFaces(), size_t(1));
 }
@@ -272,10 +273,10 @@ TEST_F(SurfaceMeshTest, objIO)
     addTriangle();
     mesh.updateVertexNormals();
     mesh.addHalfedgeProperty<TextureCoordinate>("h:texcoord",TextureCoordinate(0,0,0));
-    mesh.write("test.obj");
+    writeMesh(mesh,"test.obj");
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
-    mesh.read("test.obj");
+    readMesh(mesh,"test.obj");
     EXPECT_EQ(mesh.nVertices(), size_t(3));
     EXPECT_EQ(mesh.nFaces(), size_t(1));
 }
@@ -286,33 +287,33 @@ TEST_F(SurfaceMeshTest, offIO)
     mesh.updateVertexNormals();
     mesh.addVertexProperty<TextureCoordinate>("v:texcoord",TextureCoordinate(0,0,0));
     mesh.addVertexProperty<Color>("v:color",Color(0,0,0));
-    mesh.write("test.off");
+    writeMesh(mesh,"test.off");
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
-    mesh.read("test.off");
+    readMesh(mesh,"test.off");
     EXPECT_EQ(mesh.nVertices(), size_t(3));
     EXPECT_EQ(mesh.nFaces(), size_t(1));
 }
 
 TEST_F(SurfaceMeshTest, stlIO)
 {
-    mesh.read("data/icosahedron_ascii.stl");
+    readMesh(mesh,"data/icosahedron_ascii.stl");
     EXPECT_EQ(mesh.nVertices(), size_t(12));
     EXPECT_EQ(mesh.nFaces(), size_t(20));
     EXPECT_EQ(mesh.nEdges(), size_t(30));
     mesh.clear();
-    mesh.read("data/icosahedron_binary.stl");
+    readMesh(mesh,"data/icosahedron_binary.stl");
     EXPECT_EQ(mesh.nVertices(), size_t(12));
     EXPECT_EQ(mesh.nFaces(), size_t(20));
     EXPECT_EQ(mesh.nEdges(), size_t(30));
     mesh.updateFaceNormals();
-    mesh.write("test.stl");
+    writeMesh(mesh,"test.stl");
 }
 
 
 TEST_F(SurfaceMeshTest, faceNormals)
 {
-    mesh.read("data/icosahedron_ascii.stl");
+    readMesh(mesh,"data/icosahedron_ascii.stl");
     mesh.updateFaceNormals();
     auto fnormals = mesh.getFaceProperty<Normal>("f:normal");
     auto fn0 = fnormals[SurfaceMesh::Face(0)];
@@ -321,7 +322,7 @@ TEST_F(SurfaceMeshTest, faceNormals)
 
 TEST_F(SurfaceMeshTest, vertexNormals)
 {
-    mesh.read("data/icosahedron_ascii.stl");
+    readMesh(mesh,"data/icosahedron_ascii.stl");
     mesh.updateVertexNormals();
     auto vnormals = mesh.getVertexProperty<Normal>("v:normal");
     auto vn0 = vnormals[SurfaceMesh::Vertex(0)];
@@ -466,7 +467,7 @@ TEST_F(SurfaceMeshTest, edgeSplit)
 
 TEST_F(SurfaceMeshTest, edgeFlip)
 {
-    mesh.read("data/edge_onering.off");
+    readMesh(mesh,"data/edge_onering.off");
     EXPECT_EQ(mesh.nVertices(), size_t(10));
     EXPECT_EQ(mesh.nFaces(), size_t(10));
 

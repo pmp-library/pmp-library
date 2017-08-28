@@ -29,6 +29,7 @@
 //=============================================================================
 
 #include <surface_mesh/SurfaceMesh.h>
+#include <surface_mesh/IO.h>
 
 //=============================================================================
 
@@ -45,7 +46,7 @@ int main(int argc, char** argv)
 
     // read a mesh specified as the first command line argument
     if (argc > 1)
-        mesh.read(argv[1]);
+        readMesh(mesh,argv[1]);
 
     // ...
     // do fancy stuff with the mesh
@@ -53,7 +54,7 @@ int main(int argc, char** argv)
 
     // write the mesh to the file specified as second argument
     if (argc > 2)
-        mesh.write(argv[2]);
+        writeMesh(mesh,argv[2]);
 
     //! [io]
     return 0;
