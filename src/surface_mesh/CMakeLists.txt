@@ -12,3 +12,5 @@ set_target_properties(surface_mesh PROPERTIES VERSION 1.0)
 install(TARGETS surface_mesh DESTINATION lib)
 
 install(FILES ${HEADERS} DESTINATION include/surface_mesh/)
+
+add_subdirectory(gl)
