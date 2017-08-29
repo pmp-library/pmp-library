@@ -81,7 +81,7 @@ MeshViewer::~MeshViewer()
 bool MeshViewer::loadMesh(const char* filename)
 {
     // load mesh
-    if (readMesh(m_mesh,filename))
+    if (m_mesh.read(filename))
     {
         auto points = m_mesh.vertexProperty<Point>("v:point");
 
