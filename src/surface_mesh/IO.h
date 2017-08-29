@@ -44,20 +44,14 @@ namespace surface_mesh {
 
 //=============================================================================
 
-//! \brief read \c mesh from file \c filename. file extension determines file type.
-//! \note clears mesh before reading
-//! \sa write(const std::string& filename)
-bool readMesh(SurfaceMesh& mesh, const std::string& filename);
 
+bool readMesh(SurfaceMesh& mesh, const std::string& filename);
 bool readOFF(SurfaceMesh& mesh, const std::string& filename);
 bool readOBJ(SurfaceMesh& mesh, const std::string& filename);
 bool readPoly(SurfaceMesh& mesh, const std::string& filename);
 bool readSTL(SurfaceMesh& mesh, const std::string& filename);
 
-//! \brief write \c mesh to file \c filename. file extensions determines file type.
-//! \sa read(const std::string& filename)
 bool writeMesh(const SurfaceMesh& mesh, const std::string& filename);
-
 bool writeOFF(const SurfaceMesh& mesh, const std::string& filename);
 bool writeOBJ(const SurfaceMesh& mesh, const std::string& filename);
 bool writePoly(const SurfaceMesh& mesh, const std::string& filename);

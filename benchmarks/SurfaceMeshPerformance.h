@@ -33,7 +33,6 @@
 #include "PerformanceTest.h"
 
 #include <surface_mesh/SurfaceMesh.h>
-#include <surface_mesh/IO.h>
 
 //=============================================================================
 
@@ -58,11 +57,11 @@ private:
     SurfaceMesh::FaceProperty<Point>   fnormals;
 
 private:
-    virtual bool read_mesh(const char* filename) { return readMesh(mesh,filename); }
+    virtual bool read_mesh(const char* filename) { return mesh.read(filename); }
 
     virtual bool write_mesh(const char* filename)
     {
-        return writeMesh(mesh,filename);
+        return mesh.write(filename);
     }
 
     virtual int circulator_test()

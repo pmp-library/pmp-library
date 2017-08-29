@@ -29,7 +29,6 @@
 //=============================================================================
 
 #include <surface_mesh/SurfaceMesh.h>
-#include <surface_mesh/IO.h>
 
 //=============================================================================
 
@@ -44,7 +43,7 @@ int main(int argc, char** argv)
     SurfaceMesh mesh;
 
     if (argc > 1)
-        readMesh(mesh,argv[1]);
+        mesh.read(argv[1]);
 
     float meanValence = 0.0f;
 
