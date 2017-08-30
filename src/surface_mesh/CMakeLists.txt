@@ -14,3 +14,5 @@ install(TARGETS surface_mesh DESTINATION lib)
 install(FILES ${HEADERS} DESTINATION include/surface_mesh/)
 
 add_subdirectory(gl)
+
+include(algorithms/CMakeLists.txt)
