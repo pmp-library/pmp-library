@@ -64,6 +64,15 @@ GlfwViewer::GlfwViewer(const char* title, int width, int height)
 
     m_instance = this;
 
+    // detect highDPI scaling
+    int windowWidth, windowHeight, framebufferWidth, framebufferHeight;
+    glfwGetWindowSize(m_window, &windowWidth, &windowHeight);
+    glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
+    m_scaling = framebufferWidth / windowWidth;
+    m_width   = framebufferWidth;
+    m_height  = framebufferHeight;
+    if (m_scaling != 1) std::cout << "highDPI scaling: " << m_scaling << std::endl;
+
     // register glfw callbacks
     glfwSetKeyCallback(m_window, glfwKeyboard);
     glfwSetCursorPosCallback(m_window, glfwMotion);
@@ -166,7 +175,7 @@ void GlfwViewer::glfwKeyboard(GLFWwindow* window, int key, int scancode,
 
 void GlfwViewer::glfwMotion(GLFWwindow* window, double xpos, double ypos)
 {
-    m_instance->motion(window, xpos, ypos);
+    m_instance->motion(window, m_instance->m_scaling*xpos, m_instance->m_scaling*ypos);
 }
 
 //-----------------------------------------------------------------------------
@@ -297,6 +306,10 @@ void GlfwViewer::scroll(GLFWwindow* /*window*/, double /*xoffset*/,
 
 void GlfwViewer::motion(GLFWwindow* /*window*/, double xpos, double ypos)
 {
+    std::cerr << xpos << ", " << ypos << std::endl;
+    std::cerr << m_width << ", " << m_height << std::endl;
+
+
     // zoom
     if ((m_buttonDown[GLFW_MOUSE_BUTTON_LEFT] &&
          m_buttonDown[GLFW_MOUSE_BUTTON_MIDDLE]) ||

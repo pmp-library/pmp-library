@@ -143,6 +143,9 @@ protected: //----------------------------------------------------- private data
 
     //! current viewport dimension
     int m_width, m_height;
+    
+    //! highDPI scaling
+    int m_scaling;
 
     //! draw modes
     unsigned int             m_drawMode;
