@@ -29,13 +29,12 @@
 //=============================================================================
 
 #include "MeshViewer.h"
+
 #include "cold_warm_texture.h"
 
 #include <cfloat>
 #include <iostream>
 #include <sstream>
-
-#include <surface_mesh/IO.h>
 
 //=============================================================================
 
@@ -53,7 +52,7 @@ MeshViewer::MeshViewer(const char* title, int width, int height)
     addDrawMode("Flat Shading");
     addDrawMode("Smooth Shading");
     addDrawMode("Vertex Curvature");
-    setDrawMode("Flat Shading");
+    setDrawMode("Hidden Line");
 
     // initialize curvature texture
     glGenTextures(1, &m_curvatureTexture);
