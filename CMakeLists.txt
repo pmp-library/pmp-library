@@ -99,6 +99,7 @@ if(SM_INDEX_TYPE EQUAL 64)
 endif()
 
 add_subdirectory(src/surface_mesh)
+add_subdirectory(src/apps)
 add_subdirectory(doc)
 add_subdirectory(examples)
 add_subdirectory(benchmarks)
