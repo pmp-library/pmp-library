@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2016 by Graphics & Geometry Group, Bielefeld University
-// Copyright (C) 2017 Daniel Sieger
+// Copyright (C) 2013 Graphics & Geometry Group, Bielefeld University
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,37 +26,74 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
+#pragma once
+//=============================================================================
 
-#include "MeshProcessingViewer.h"
-
-#include <surface_mesh/algorithms/SurfaceSubdivider.h>
-#include <surface_mesh/algorithms/FeatureDetection.h>
-
-using namespace surface_mesh;
+#include <surface_mesh/types.h>
 
 //=============================================================================
 
-void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-    if (action != GLFW_PRESS) // only react on key press events
-        return;
+namespace surface_mesh {
 
-    switch (key)
+//=============================================================================
+
+//! Simple class for representing a bounding box
+class BoundingBox
+{
+
+public:
+    //! construct from min and max points
+    BoundingBox(const Point& min, const Point& max) : m_min(min), m_max(max) {}
+
+    //! add point to bbox
+    BoundingBox& operator+=(const Point& p)
     {
-        case GLFW_KEY_L:
+        for (int i = 0; i < 3; ++i)
         {
-            FeatureDetection fd(m_mesh);
-            fd.detectAngle(18);
-            SurfaceSubdivider sd(m_mesh);
-            sd.catmullClark();
-            setDrawMode("Hidden Line");
-            updateMesh();
-            break;
+            if (p[i] < m_min[i])
+                m_min[i] = p[i];
+            else if (p[i] > m_max[i])
+                m_max[i] = p[i];
         }
-        default:
-        {
-            MeshViewer::keyboard(window, key, scancode, action, mods);
-            break;
-        }
+        return *this;
     }
-}
+
+    //! add two bboxes
+    BoundingBox& operator+=(const BoundingBox& bb)
+    {
+        for (int i = 0; i < 3; ++i)
+        {
+            if (bb.m_min[i] < m_min[i])
+                m_min[i] = bb.m_min[i];
+            if (bb.m_max[i] > m_max[i])
+                m_max[i] = bb.m_max[i];
+        }
+        return *this;
+    }
+
+    //! get min point
+    Point& min() { return m_min; }
+
+    //! get max point
+    Point& max() { return m_max; }
+
+    //! get center point
+    Point center() const { return 0.5f * (m_min + m_max); }
+
+    //! indicate if bbox is empty
+    bool isEmpty() const
+    {
+        return (m_max[0] < m_min[0] || m_max[1] < m_min[1] ||
+                m_max[2] < m_min[2]);
+    }
+
+    //! get size of the bbox
+    Scalar size() const { return isEmpty() ? 0.0 : distance(m_max, m_min); }
+
+private:
+    Point m_min, m_max;
+};
+
+//=============================================================================
+} // namespace surface_mesh
+//=============================================================================

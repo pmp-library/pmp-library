@@ -31,9 +31,11 @@
 
 #include <surface_mesh/properties.h>
 #include <surface_mesh/types.h>
+#include <surface_mesh/BoundingBox.h>
 
 #include <map>
 #include <vector>
+#include <limits>
 
 //=============================================================================
 
@@ -243,6 +245,20 @@ public:
 
     //! return a vector of points compromising the geometry of the object
     virtual std::vector<Point>& pointVector() = 0;
+
+    //! compute the bounding box of the object
+    BoundingBox bounds()
+    {
+        Point min(std::numeric_limits<Scalar>::max());
+        Point max(std::numeric_limits<Scalar>::min());
+
+        for (auto p : pointVector())
+        {
+            min.minimize(p);
+            max.maximize(p);
+        }
+        return BoundingBox(min,max);
+    }
 
     //!@}
 

@@ -306,10 +306,6 @@ void GlfwViewer::scroll(GLFWwindow* /*window*/, double /*xoffset*/,
 
 void GlfwViewer::motion(GLFWwindow* /*window*/, double xpos, double ypos)
 {
-    std::cerr << xpos << ", " << ypos << std::endl;
-    std::cerr << m_width << ", " << m_height << std::endl;
-
-
     // zoom
     if ((m_buttonDown[GLFW_MOUSE_BUTTON_LEFT] &&
          m_buttonDown[GLFW_MOUSE_BUTTON_MIDDLE]) ||
