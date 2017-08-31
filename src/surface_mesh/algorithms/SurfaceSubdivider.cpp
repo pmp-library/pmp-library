@@ -178,7 +178,8 @@ void SurfaceSubdivider::catmullClark()
         auto h1 = m_mesh.nextHalfedge(h0);
         m_mesh.insertVertex(m_mesh.edge(h1), fpoint[f]);
 
-        auto h = m_mesh.nextHalfedge(m_mesh.nextHalfedge(m_mesh.nextHalfedge(h1)));
+        auto h =
+            m_mesh.nextHalfedge(m_mesh.nextHalfedge(m_mesh.nextHalfedge(h1)));
         while (h != h0)
         {
             m_mesh.insertEdge(h1, h);
@@ -274,7 +275,8 @@ void SurfaceSubdivider::loop()
             }
             p /= k;
 
-            Scalar beta = (0.625 - pow(0.375 + 0.25 * cos(2.0 * M_PI / k), 2.0));
+            Scalar beta =
+                (0.625 - pow(0.375 + 0.25 * cos(2.0 * M_PI / k), 2.0));
 
             vpoint[v] = m_points[v] * (Scalar)(1.0 - beta) + beta * p;
         }
@@ -294,9 +296,9 @@ void SurfaceSubdivider::loop()
         // interior edge
         else
         {
-            auto h0 = m_mesh.halfedge(e, 0);
-            auto h1 = m_mesh.halfedge(e, 1);
-            Point p = m_points[m_mesh.toVertex(h0)];
+            auto  h0 = m_mesh.halfedge(e, 0);
+            auto  h1 = m_mesh.halfedge(e, 1);
+            Point p  = m_points[m_mesh.toVertex(h0)];
             p += m_points[m_mesh.toVertex(h1)];
             p *= 3.0;
             p += m_points[m_mesh.toVertex(m_mesh.nextHalfedge(h0))];
@@ -323,9 +325,9 @@ void SurfaceSubdivider::loop()
             auto e0 = m_mesh.edge(h);
             auto e1 = m_mesh.edge(m_mesh.nextHalfedge(h));
 
-            m_vfeature[v]            = true;
-            m_efeature[e0]           = true;
-            m_efeature[e1]           = true;
+            m_vfeature[v]  = true;
+            m_efeature[e0] = true;
+            m_efeature[e1] = true;
         }
 
         // normal edge
@@ -360,7 +362,7 @@ void SurfaceSubdivider::sqrt3()
     int nv = m_mesh.nVertices();
     int ne = m_mesh.nEdges();
     int nf = m_mesh.nFaces();
-    m_mesh.reserve(nv+nf, ne+3*nf, 3*nf);
+    m_mesh.reserve(nv + nf, ne + 3 * nf, 3 * nf);
 
     auto points = m_mesh.vertexProperty<Point>("v:point");
 
@@ -369,19 +371,19 @@ void SurfaceSubdivider::sqrt3()
     auto eend = m_mesh.edgesEnd();
 
     // compute new positions of old vertices
-    auto  new_pos = m_mesh.addVertexProperty<Point>("v:np");
+    auto new_pos = m_mesh.addVertexProperty<Point>("v:np");
     for (auto v : m_mesh.vertices())
     {
         if (!m_mesh.isBoundary(v))
         {
-            Scalar n = m_mesh.valence(v);
-            Scalar alpha = (4.0 - 2.0*cos(2.0*M_PI/n)) / 9.0;
-            Point  p(0,0,0);
+            Scalar n     = m_mesh.valence(v);
+            Scalar alpha = (4.0 - 2.0 * cos(2.0 * M_PI / n)) / 9.0;
+            Point  p(0, 0, 0);
 
             for (auto vv : m_mesh.vertices(v))
                 p += m_points[vv];
 
-            p = (1.0f-alpha) * m_points[v] + alpha/n*p;
+            p          = (1.0f - alpha) * m_points[v] + alpha / n * p;
             new_pos[v] = p;
         }
     }
@@ -389,7 +391,7 @@ void SurfaceSubdivider::sqrt3()
     // split faces
     for (auto f : m_mesh.faces())
     {
-        Point  p(0,0,0);
+        Point  p(0, 0, 0);
         Scalar c(0);
 
         for (auto fv : m_mesh.vertices(f))
