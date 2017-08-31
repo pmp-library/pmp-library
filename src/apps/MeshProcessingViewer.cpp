@@ -33,6 +33,7 @@
 #include <surface_mesh/algorithms/SurfaceSubdivider.h>
 #include <surface_mesh/algorithms/FeatureDetection.h>
 #include <surface_mesh/algorithms/SurfaceSimplification.h>
+#include <surface_mesh/algorithms/SurfaceRemeshing.h>
 
 using namespace surface_mesh;
 
@@ -47,16 +48,41 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
     {
         case GLFW_KEY_L:
         {
-            FeatureDetection fd(m_mesh);
-            fd.detectAngle(90);
+            // FeatureDetection fd(m_mesh);
+            // fd.detectAngle(90);
             SurfaceSubdivider sd(m_mesh);
             sd.catmullClark();
             updateMesh();
             break;
         }
+        case GLFW_KEY_R:
+        {
+            Scalar l(0);
+            for (auto eit : m_mesh.edges())
+                l += distance(m_mesh.position(m_mesh.vertex(eit, 0)),
+                              m_mesh.position(m_mesh.vertex(eit, 1)));
+            l /= (Scalar)m_mesh.nEdges();
+
+            //uniformRemeshing(m_mesh,l);
+
+            auto bb = m_mesh.bounds().size();
+            adaptiveRemeshing(m_mesh,
+                              0.001*bb,  // min length
+                              0.2*bb,    // max length
+                              0.001*bb); // approx. error
+            updateMesh();
+            break;
+        }
         case GLFW_KEY_S:
         {
-            simplify(m_mesh,m_mesh.nVertices() * 0.9, 5);
+            simplify(m_mesh,m_mesh.nVertices() * 0.1, 5);
+            updateMesh();
+            break;
+        }
+        case GLFW_KEY_T:
+        {
+            if (!m_mesh.isTriangleMesh())
+                m_mesh.triangulate();
             updateMesh();
             break;
         }
