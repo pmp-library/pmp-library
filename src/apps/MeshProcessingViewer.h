@@ -40,7 +40,10 @@ class MeshProcessingViewer : public surface_mesh::MeshViewer
 public:
     //! constructor
     MeshProcessingViewer(const char* title, int width, int height)
-        : MeshViewer(title,width, height) {}
+        : MeshViewer(title,width, height)
+    {
+        setDrawMode("Hidden Line");
+    }
 
 protected:
     //! this function handles keyboard events

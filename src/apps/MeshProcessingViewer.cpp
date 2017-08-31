@@ -32,6 +32,7 @@
 
 #include <surface_mesh/algorithms/SurfaceSubdivider.h>
 #include <surface_mesh/algorithms/FeatureDetection.h>
+#include <surface_mesh/algorithms/SurfaceSimplification.h>
 
 using namespace surface_mesh;
 
@@ -50,7 +51,12 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             fd.detectAngle(90);
             SurfaceSubdivider sd(m_mesh);
             sd.catmullClark();
-            setDrawMode("Hidden Line");
+            updateMesh();
+            break;
+        }
+        case GLFW_KEY_S:
+        {
+            simplify(m_mesh,m_mesh.nVertices() * 0.9, 5);
             updateMesh();
             break;
         }
