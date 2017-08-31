@@ -47,7 +47,6 @@ class Window
 {
 
 public: //------------------------------------------------------ public methods
-    
     //! constructor
     Window(const char* title, int width = 0, int height = 0);
 
@@ -57,57 +56,51 @@ public: //------------------------------------------------------ public methods
     //! main window loop
     int run();
 
-
 private: //----------------------------- static wrapper functions for callbacks
-
     static void glfwError(int error, const char* description);
-    static void glfwKeyboard(GLFWwindow* window, int key, int scancode,
-                             int action, int mods);
+    static void glfwKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void glfwMouse(GLFWwindow* window, int button, int action, int mods);
     static void glfwMotion(GLFWwindow* window, double xpos, double ypos);
     static void glfwScroll(GLFWwindow* window, double xoffset, double yoffset);
     static void glfwResize(GLFWwindow* window, int width, int height);
 
     static void emscripten_render_loop();
-    
+
     static Window* m_instance;
 
 protected: //----------------------------------- callbacks as member functions
-
     //! this function is called when the scene has to be rendered. it
     //! clears the buffers, calls the draw() method, and performs buffer swap
-    virtual void display(void) {}
+    virtual void display(void) = 0;
 
     //! this function handles keyboard events
-    virtual void keyboard(GLFWwindow* window, int key, int scancode, int action,
-                          int mods) {}
+    virtual void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) = 0;
 
     //! this function handles mouse button events
-    virtual void mouse(GLFWwindow* window, int button, int action, int mods) {}
+    virtual void mouse(GLFWwindow* window, int button, int action, int mods) = 0;
 
     //! this function handles mouse motion (passive/active position)
-    virtual void motion(GLFWwindow* window, double xpos, double ypos) {}
+    virtual void motion(GLFWwindow* window, double xpos, double ypos) = 0;
 
     //! this function handles mouse scroll events
-    virtual void scroll(GLFWwindow* window, double xoffset, double yoffset) {}
+    virtual void scroll(GLFWwindow* window, double xoffset, double yoffset) = 0;
 
     //! this function is called if the window is resized
-    virtual void resize(GLFWwindow* window, int width, int height) {}
+    virtual void resize(GLFWwindow* window, int width, int height) = 0;
 
-
-protected: //----------------------------------------------------- private data
+protected:
     //! GLFW window pointer
     GLFWwindow* m_window;
 
     //! current viewport dimension
     int m_width, m_height;
-    
+
     //! highDPI scaling
     int m_scaling;
 };
 
+//=============================================================================
 //! @}
-
 //=============================================================================
 } // namespace surface_mesh
 //=============================================================================
