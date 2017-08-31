@@ -242,7 +242,7 @@ template <typename Scalar>
 Mat4<Scalar>
 Mat4<Scalar>::viewport(Scalar l, Scalar b, Scalar w, Scalar h)
 {
-    Mat4<Scalar> m(Scalar(0));    
+    Mat4<Scalar> m(Scalar(0));
 
     m(0,0) = 0.5*w;
     m(0,3) = 0.5*w + l;
@@ -260,7 +260,7 @@ template <typename Scalar>
 Mat4<Scalar>
 Mat4<Scalar>::inverse_viewport(Scalar l, Scalar b, Scalar w, Scalar h)
 {
-    Mat4<Scalar> m(Scalar(0));    
+    Mat4<Scalar> m(Scalar(0));
 
     m(0,0) = 2.0/w;
     m(0,3) = -1.0 - (l+l)/w;
@@ -993,13 +993,13 @@ operator>>(std::istream& is, Mat3<Scalar>& m)
 
 template <typename Scalar>
 bool
-symmetric_eigendecomposition(const Mat3<Scalar>& m,
-                             Scalar& eval1,
-                             Scalar& eval2,
-                             Scalar& eval3,
-                             Vector<Scalar,3>& evec1,
-                             Vector<Scalar,3>& evec2,
-                             Vector<Scalar,3>& evec3)
+symmetricEigendecomposition(const Mat3<Scalar>& m,
+                            Scalar& eval1,
+                            Scalar& eval2,
+                            Scalar& eval3,
+                            Vector<Scalar,3>& evec1,
+                            Vector<Scalar,3>& evec2,
+                            Vector<Scalar,3>& evec3)
 {
     unsigned int   i, j;
     Scalar         theta, t, c, s;
@@ -1128,5 +1128,5 @@ typedef Mat4<float>    mat4;
 typedef Mat4<double>  dmat4;
 
 //=============================================================================
-} // namespace 
+} // namespace
 //=============================================================================
