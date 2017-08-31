@@ -66,7 +66,7 @@ class CmpVec
 public:
     CmpVec(float eps=FLT_MIN) : m_eps(eps) {}
 
-    bool operator()(const Vec3f& v0, const Vec3f& v1) const
+    bool operator()(const vec3& v0, const vec3& v1) const
     {
         if (fabs(v0[0] - v1[0]) <= m_eps)
         {
@@ -91,14 +91,14 @@ bool readSTL(SurfaceMesh& mesh, const std::string& filename)
 {
     char                            line[100], *c;
     unsigned int                    i, nT;
-    Vec3f                           p;
+    vec3                            p;
     SurfaceMesh::Vertex               v;
     std::vector<SurfaceMesh::Vertex>  vertices(3);
     size_t nItems(0);
 
     CmpVec comp(FLT_MIN);
-    std::map<Vec3f, SurfaceMesh::Vertex, CmpVec>            vMap(comp);
-    std::map<Vec3f, SurfaceMesh::Vertex, CmpVec>::iterator  vMapIt;
+    std::map<vec3, SurfaceMesh::Vertex, CmpVec>            vMap(comp);
+    std::map<vec3, SurfaceMesh::Vertex, CmpVec>::iterator  vMapIt;
 
 
     // clear mesh

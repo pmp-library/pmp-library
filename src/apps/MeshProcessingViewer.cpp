@@ -47,7 +47,7 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
         case GLFW_KEY_L:
         {
             FeatureDetection fd(m_mesh);
-            fd.detectAngle(18);
+            fd.detectAngle(90);
             SurfaceSubdivider sd(m_mesh);
             sd.catmullClark();
             setDrawMode("Hidden Line");

@@ -30,8 +30,8 @@
 #pragma once
 //=============================================================================
 
-#include <surface_mesh/SurfaceMesh.h>
-#include <surface_mesh/gl/GlfwViewer.h>
+#include <surface_mesh/gl/SurfaceMeshGL.h>
+#include <surface_mesh/gl/TrackballViewer.h>
 
 //=============================================================================
 
@@ -43,7 +43,7 @@ namespace surface_mesh {
 //! @{
 
 //! Simple viewer for a SurfaceMesh
-class MeshViewer : public GlfwViewer
+class MeshViewer : public TrackballViewer
 {
 public:
     //! constructor
@@ -63,21 +63,9 @@ public:
     //! draw the scene in different draw modes
     virtual void draw(const std::string& _draw_mode);
 
-protected:
-    //! this function handles keyboard events
-    virtual void keyboard(GLFWwindow* window, int key, int scancode, int action,
-                          int mods);
 
 protected:
-    SurfaceMesh m_mesh; //!< the mesh
-
-    size_t m_nVertices; //!< number of vertices
-    size_t m_nFaces;    //!< number of faces
-
-    std::vector<unsigned int> m_triangles; //!< triangle indices
-    std::vector<unsigned int> m_edges;     //!< edge indices
-
-    GLuint m_curvatureTexture; //!< texture for curvature and mesh
+    SurfaceMeshGL m_mesh; //!< the mesh
 };
 
 //=============================================================================

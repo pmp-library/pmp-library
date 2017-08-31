@@ -32,6 +32,7 @@
 
 // Mac OS X
 #ifdef __APPLE__
+#include <GL/glew.h>
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
 
@@ -46,8 +47,72 @@
 
 // Unix
 #else
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #endif
+
+
+#include <stdlib.h>
+#include <iostream>
+
+
+//=============================================================================
+
+
+/// Check for OpenGL errors.
+inline void glCheckError(bool _force=false)
+{
+  GLenum error = glGetError();
+
+  if (error == GL_NO_ERROR)
+    {
+      if (_force)
+        {
+          std::cout << " No GL error!" << std::endl;
+        }
+    }
+
+  else
+    {
+      do
+        {
+          switch (error)
+            {
+            case GL_INVALID_ENUM:
+              std::cerr << " GL error: invalid enum\n";
+              break;
+
+            case GL_INVALID_VALUE:
+              std::cerr << " GL error: invalid value (out of range)\n";
+              break;
+
+            case GL_INVALID_OPERATION:
+              std::cerr << " GL error: invalid operation (not allowed in current state)\n";
+              break;
+
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+              std::cerr << " GL error: invalid framebuffer operation (framebuffer not complete)\n";
+              break;
+
+            case GL_OUT_OF_MEMORY:
+              std::cerr << " GL error: out of memory\n";
+              break;
+
+            case GL_STACK_UNDERFLOW:
+              std::cerr << " GL error: stack underflow\n";
+              break;
+
+            case GL_STACK_OVERFLOW:
+              std::cerr << " GL error: stack overflow\n";
+              break;
+            }
+
+          error = glGetError();
+        }
+      while (error != GL_NO_ERROR);
+    }
+}
+
 
 //=============================================================================

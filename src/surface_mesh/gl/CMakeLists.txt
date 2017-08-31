@@ -2,8 +2,8 @@ find_package(OpenGL REQUIRED)
 
 if(OpenGL_FOUND)
 
-file(GLOB_RECURSE SRCS ./*.cpp)
-file(GLOB_RECURSE HDRS ./*.h)
+file(GLOB SRCS ./*.cpp)
+file(GLOB HDRS ./*.h)
 
 set(HDRS ${HDRS} "../Vector.h")
 

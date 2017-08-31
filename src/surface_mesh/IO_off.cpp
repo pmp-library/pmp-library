@@ -67,9 +67,9 @@ bool readOFFAscii(SurfaceMesh& mesh,
     int                  nc;
     unsigned int         i, j, items, idx;
     unsigned int         nV, nF, nE;
-    Vec3f                p, n, c;
-    Vec2f                t;
-    SurfaceMesh::Vertex v;
+    vec3                 p, n, c;
+    vec3                 t;
+    SurfaceMesh::Vertex  v;
 
 
     // properties
@@ -177,8 +177,8 @@ bool readOFFBinary(SurfaceMesh& mesh,
 {
     unsigned int       i, j, idx;
     unsigned int       nV, nF, nE;
-    Vec3f              p, n, c;
-    Vec2f              t;
+    vec3               p, n, c;
+    vec2               t;
     SurfaceMesh::Vertex  v;
 
 
