@@ -8,6 +8,7 @@ AlignConsecutiveAssignments: true
 AlignConsecutiveDeclarations: true
 AlignTrailingComments: true
 SpacesBeforeTrailingComments: 1
+SortIncludes: false
 AccessModifierOffset: -4
 Standard: Cpp11
 KeepEmptyLinesAtTheStartOfBlocks: true
