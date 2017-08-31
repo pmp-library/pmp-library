@@ -227,9 +227,9 @@ void TrackballViewer::motion(GLFWwindow* /*window*/, double xpos, double ypos)
 void TrackballViewer::init()
 {
     // set initial state
-    glClearColor(0.8,0.8,0.8,0);
+    glClearColor(1.0,1.0,1.0,0);
     glEnable(GL_DEPTH_TEST);
-    
+
     // init modelview
     m_modelviewMatrix = mat4::identity();
 
@@ -358,7 +358,7 @@ void TrackballViewer::rotate(const vec3& axis, float angle)
     vec4 ec = m_modelviewMatrix * mc;
     vec3  c(ec[0]/ec[3], ec[1]/ec[3], ec[2]/ec[3]);
 
-    m_modelviewMatrix = mat4::translate(c) * 
+    m_modelviewMatrix = mat4::translate(c) *
                         mat4::rotate(axis, angle) *
                         mat4::translate(-c) *
                         m_modelviewMatrix;

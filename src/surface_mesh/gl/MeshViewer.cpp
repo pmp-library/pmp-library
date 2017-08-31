@@ -73,7 +73,7 @@ bool MeshViewer::loadMesh(const char* filename)
         // compute face & vertex normals, update face indices
         updateMesh();
 
-        std::cout << "Load " << filename << ": " 
+        std::cout << "Load " << filename << ": "
             << m_mesh.nVertices() << " vertices, "
             << m_mesh.nFaces() << " faces\n";
 
@@ -100,7 +100,7 @@ void MeshViewer::draw(const std::string& drawMode)
     if (m_mesh.isEmpty())
         return;
 
-    
+
     // setup matrices
     mat4 mv_matrix  = m_modelviewMatrix;
     mat4 mvp_matrix = m_projectionMatrix * m_modelviewMatrix;
@@ -114,9 +114,9 @@ void MeshViewer::draw(const std::string& drawMode)
     m_phongShader.set_uniform("normal_matrix", n_matrix);
     m_phongShader.set_uniform("light1", normalize(vec3( 1.0, 1.0, 1.0)));
     m_phongShader.set_uniform("light2", normalize(vec3(-1.0, 1.0, 1.0)));
-    m_phongShader.set_uniform("color", vec3(0.6, 0.0, 0.0));
-   
-    
+    m_phongShader.set_uniform("color", vec3(0.45, 0.5, 0.55));
+
+
     if (drawMode == "Points")
     {
         m_mesh.drawPoints();
@@ -131,7 +131,7 @@ void MeshViewer::draw(const std::string& drawMode)
         // overlay edges
         glDepthRange(0.0, 1.0);
         glDepthFunc(GL_LEQUAL);
-        m_phongShader.set_uniform("color", vec3(0.2, 0.0, 0.0));
+        m_phongShader.set_uniform("color", vec3(0.1, 0.1, 0.1));
         m_mesh.drawEdges();
         glDepthFunc(GL_LESS);
     }
