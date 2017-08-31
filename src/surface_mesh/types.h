@@ -62,9 +62,6 @@ typedef float Scalar;
 //! Point type
 typedef Vector<Scalar, 3> Point;
 
-//! 3D vector type
-//typedef Vector<Scalar, 3> Vec3;
-
 //! Normal type
 typedef Vector<Scalar, 3> Normal;
 
