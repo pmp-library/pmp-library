@@ -102,6 +102,9 @@ void SurfaceSimplification::initialize(Scalar aspectRatio, Scalar edgeLength,
                                        Scalar       normalDeviation,
                                        Scalar       hausdorffError)
 {
+    if (!m_mesh.isTriangleMesh())
+        return;
+
     // store parameters
     m_aspectRatio     = aspectRatio;
     m_maxValence      = maxValence;
@@ -192,6 +195,12 @@ void SurfaceSimplification::initialize(Scalar aspectRatio, Scalar edgeLength,
 
 void SurfaceSimplification::simplify(unsigned int NVertices)
 {
+    if (!m_mesh.isTriangleMesh())
+    {
+        std::cerr << "Not a triangle mesh!" << std::endl;
+        return;
+    }
+
     // make sure the decimater is initialized
     if (!m_initialized)
         initialize();
