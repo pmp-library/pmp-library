@@ -86,7 +86,8 @@ void SurfaceCurvature::analyze(unsigned int smoothingSteps)
             for (auto vh : m_mesh.halfedges(v))
             {
                 p1 = m_mesh.position(m_mesh.toVertex(vh));
-                p2 = m_mesh.position(m_mesh.toVertex(m_mesh.ccwRotatedHalfedge(vh)));
+                p2 = m_mesh.position(
+                    m_mesh.toVertex(m_mesh.ccwRotatedHalfedge(vh)));
 
                 weight = cotan[m_mesh.edge(vh)];
                 sumWeights += weight;
@@ -153,114 +154,92 @@ void SurfaceCurvature::analyze(unsigned int smoothingSteps)
 //-----------------------------------------------------------------------------
 
 void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
-                                      bool         twoRingNeighborhood)
+                                     bool         twoRingNeighborhood)
 {
-    SurfaceMesh::VertexProperty<double> area =
-        m_mesh.addVertexProperty<double>("curv:area", 0.0);
-    SurfaceMesh::FaceProperty<dvec3> normal =
-        m_mesh.addFaceProperty<dvec3>("curv:normal");
-    SurfaceMesh::EdgeProperty<dvec3> evec =
-        m_mesh.addEdgeProperty<dvec3>("curv:evec", dvec3(0, 0, 0));
-    SurfaceMesh::EdgeProperty<double> angle =
-        m_mesh.addEdgeProperty<double>("curv:angle", 0.0);
+    auto area   = m_mesh.addVertexProperty<double>("curv:area", 0.0);
+    auto normal = m_mesh.addFaceProperty<dvec3>("curv:normal");
+    auto evec   = m_mesh.addEdgeProperty<dvec3>("curv:evec", dvec3(0, 0, 0));
+    auto angle  = m_mesh.addEdgeProperty<double>("curv:angle", 0.0);
 
-    SurfaceMesh::VertexIterator vit, vend = m_mesh.verticesEnd();
-    SurfaceMesh::EdgeIterator   eit, eend = m_mesh.edgesEnd();
-    SurfaceMesh::FaceIterator   fit, fend = m_mesh.facesEnd();
-
-    SurfaceMesh::VertexAroundVertexCirculator   vvit, vvend;
-    SurfaceMesh::VertexAroundFaceCirculator     vfit;
-    SurfaceMesh::HalfedgeAroundVertexCirculator hvit, hvend;
-
-    SurfaceMesh::Vertex   v;
-    SurfaceMesh::Halfedge h0, h1;
-    SurfaceMesh::Edge     ee;
-    SurfaceMesh::Face     f0, f1;
-    dvec3                 p0, p1, n0, n1, e;
-    double                l, A, beta, a1, a2, a3;
-    dmat3                 tensor;
+    dvec3  p0, p1, n0, n1, ev;
+    double l, A, beta, a1, a2, a3;
+    dmat3  tensor;
 
     double eval1, eval2, eval3, kmin, kmax;
     dvec3  evec1, evec2, evec3;
 
-    std::vector<SurfaceMesh::Vertex>                 neighborhood;
-    std::vector<SurfaceMesh::Vertex>::const_iterator nit, nend;
+    std::vector<SurfaceMesh::Vertex> neighborhood;
     neighborhood.reserve(15);
 
     // precompute Voronoi area per vertex
-    for (vit = m_mesh.verticesBegin(); vit != vend; ++vit)
+    for (auto v : m_mesh.vertices())
     {
-        area[*vit] = voronoiArea(m_mesh, *vit);
+        area[v] = voronoiArea(m_mesh, v);
     }
 
     // precompute face normals
-    for (fit = m_mesh.facesBegin(); fit != fend; ++fit)
+    for (auto f : m_mesh.faces())
     {
-        normal[*fit] = (dvec3)m_mesh.computeFaceNormal(*fit);
+        normal[f] = (dvec3)m_mesh.computeFaceNormal(f);
     }
 
     // precompute dihedralAngle*edgeLength*edge per edge
-    for (eit = m_mesh.edgesBegin(); eit != eend; ++eit)
+    for (auto e : m_mesh.edges())
     {
-        h0 = m_mesh.halfedge(*eit, 0);
-        h1 = m_mesh.halfedge(*eit, 1);
-        f0 = m_mesh.face(h0);
-        f1 = m_mesh.face(h1);
+        auto h0 = m_mesh.halfedge(e, 0);
+        auto h1 = m_mesh.halfedge(e, 1);
+        auto f0 = m_mesh.face(h0);
+        auto f1 = m_mesh.face(h1);
         if (f0.isValid() && f1.isValid())
         {
             n0 = normal[f0];
             n1 = normal[f1];
-            e  = m_mesh.position(m_mesh.toVertex(h0));
-            e -= m_mesh.position(m_mesh.toVertex(h1));
-            l = norm(e);
-            e /= l;
+            ev = m_mesh.position(m_mesh.toVertex(h0));
+            ev -= m_mesh.position(m_mesh.toVertex(h1));
+            l = norm(ev);
+            ev /= l;
             l *= 0.5; // only consider half of the edge (matchig Voronoi area)
-            angle[*eit] = atan2(dot(cross(n0, n1), e), dot(n0, n1));
-            evec[*eit]  = sqrt(l) * e;
+            angle[e] = atan2(dot(cross(n0, n1), ev), dot(n0, n1));
+            evec[e]  = sqrt(l) * ev;
         }
     }
 
     // compute curvature tensor for each vertex
-    for (vit = m_mesh.verticesBegin(); vit != vend; ++vit)
+    for (auto v : m_mesh.vertices())
     {
         kmin = 0.0;
         kmax = 0.0;
 
-        if (!m_mesh.isIsolated(*vit))
+        if (!m_mesh.isIsolated(v))
         {
             // one-ring or two-ring neighborhood?
             neighborhood.clear();
-            neighborhood.push_back(*vit);
+            neighborhood.push_back(v);
             if (twoRingNeighborhood)
             {
-                vvit = vvend = m_mesh.vertices(*vit);
-                do
-                {
-                    neighborhood.push_back(*vvit);
-                } while (++vvit != vvend);
+                for (auto vv : m_mesh.vertices(v))
+                    neighborhood.push_back(vv);
             }
 
             A      = 0.0;
             tensor = dmat3::zero();
 
             // compute tensor over vertex neighborhood stored in vertices
-            for (nit = neighborhood.begin(), nend = neighborhood.end();
-                 nit != nend; ++nit)
+            for (auto nit : neighborhood)
             {
                 // accumulate tensor from dihedral angles around vertices
-                hvit = hvend = m_mesh.halfedges(*nit);
-                do
+                for (auto hv : m_mesh.halfedges(nit))
                 {
-                    ee   = m_mesh.edge(*hvit);
-                    e    = evec[ee];
-                    beta = angle[ee];
+                    auto ee = m_mesh.edge(hv);
+                    ev      = evec[ee];
+                    beta    = angle[ee];
                     for (int i = 0; i < 3; ++i)
                         for (int j = 0; j < 3; ++j)
-                            tensor(i, j) += beta * e[i] * e[j];
-                } while (++hvit != hvend);
+                            tensor(i, j) += beta * ev[i] * ev[j];
+                }
 
                 // accumulate area
-                A += area[*nit];
+                A += area[nit];
             }
 
             // normalize tensor by accumulated
@@ -312,8 +291,8 @@ void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
 
         assert(kmin <= kmax);
 
-        m_minCurvature[*vit] = kmin;
-        m_maxCurvature[*vit] = kmax;
+        m_minCurvature[v] = kmin;
+        m_maxCurvature[v] = kmax;
     }
 
     // clean-up properties
@@ -330,55 +309,47 @@ void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
 
 void SurfaceCurvature::smoothCurvatures(unsigned int iterations)
 {
-    SurfaceMesh::VertexIterator                 vit, vend = m_mesh.verticesEnd();
-    SurfaceMesh::EdgeIterator                   eit, eend = m_mesh.edgesEnd();
-    SurfaceMesh::HalfedgeAroundVertexCirculator vhit, vhend;
-
-    SurfaceMesh::Vertex v;
-    Scalar              kmin, kmax;
-    Scalar              weight, sumWeights;
+    Scalar kmin, kmax;
+    Scalar weight, sumWeights;
 
     // properties
     auto vfeature = m_mesh.getVertexProperty<bool>("v:feature");
     auto cotan    = m_mesh.addEdgeProperty<double>("curv:cotan");
 
     // cotan weight per edge
-    for (eit = m_mesh.edgesBegin(); eit != eend; ++eit)
+    for (auto e : m_mesh.edges())
     {
-        cotan[*eit] = cotanWeight(m_mesh, *eit);
+        cotan[e] = cotanWeight(m_mesh, e);
     }
 
     for (unsigned int i = 0; i < iterations; ++i)
     {
-        for (vit = m_mesh.verticesBegin(); vit != vend; ++vit)
+        for (auto v : m_mesh.vertices())
         {
             // don't smooth feature vertices
-            if (vfeature && vfeature[*vit])
+            if (vfeature && vfeature[v])
                 continue;
 
             kmin = kmax = sumWeights = 0.0;
 
-            vhit = vhend = m_mesh.halfedges(*vit);
-            if (vhit)
-                do
-                {
-                    v = m_mesh.toVertex(*vhit);
+            for (auto vh : m_mesh.halfedges(v))
+            {
+                auto tv = m_mesh.toVertex(vh);
 
-                    // don't consider feature vertices (high curvature)
-                    if (vfeature && vfeature[v])
-                        continue;
+                // don't consider feature vertices (high curvature)
+                if (vfeature && vfeature[tv])
+                    continue;
 
-                    weight =
-                        std::max(0.0, cotanWeight(m_mesh, m_mesh.edge(*vhit)));
-                    sumWeights += weight;
-                    kmin += weight * m_minCurvature[v];
-                    kmax += weight * m_maxCurvature[v];
-                } while (++vhit != vhend);
+                weight = std::max(0.0, cotanWeight(m_mesh, m_mesh.edge(vh)));
+                sumWeights += weight;
+                kmin += weight * m_minCurvature[tv];
+                kmax += weight * m_maxCurvature[tv];
+            }
 
             if (sumWeights)
             {
-                m_minCurvature[*vit] = kmin / sumWeights;
-                m_maxCurvature[*vit] = kmax / sumWeights;
+                m_minCurvature[v] = kmin / sumWeights;
+                m_maxCurvature[v] = kmax / sumWeights;
             }
         }
     }
