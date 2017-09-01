@@ -689,42 +689,6 @@ public:
     //! \name Property Handling
     //!@{
 
-    //! add a vertex property of type \c T with name \c name and default
-    //! value \c t.  fails if a property named \c name exists already,
-    //! since the name has to be unique. in this case it returns an invalid
-    //! property.
-    template <class T>
-    VertexProperty<T> addVertexProperty(const std::string& name,
-                                          const T            t = T())
-    {
-        return VertexProperty<T>(m_vprops.add<T>(name, t));
-    }
-
-    //! get the vertex property named \c name of type \c T. returns an invalid
-    //! VertexProperty if the property does not exist or if the type does
-    //! not match.
-    template <class T>
-    VertexProperty<T> getVertexProperty(const std::string& name) const
-    {
-        return VertexProperty<T>(m_vprops.get<T>(name));
-    }
-
-    //! if a vertex property of type \c T with name \c name exists, it is
-    //! returned. otherwise this property is added (with default value \c
-    //! t).
-    template <class T>
-    VertexProperty<T> vertexProperty(const std::string& name, const T t = T())
-    {
-        return VertexProperty<T>(m_vprops.getOrAdd<T>(name, t));
-    }
-
-    //! remove the vertex property \c p
-    template <class T>
-    void removeVertexProperty(VertexProperty<T>& p)
-    {
-        m_vprops.remove(p);
-    }
-
     //! get the type_info \c T of vertex property named \c name. returns an
     //! typeid(void) if the property does not exist or if the type does not
     //! match.
