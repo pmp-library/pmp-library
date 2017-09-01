@@ -38,6 +38,11 @@ namespace surface_mesh {
 
 //=============================================================================
 
+//! \addtogroup algorithms algorithms
+//! @{
+
+//=============================================================================
+
 //! \brief Compute per-vertex curvature (min,max,mean,Gaussian).
 //! Curvature values for boundary vertices are interpolated from their interior
 //! neighbors. Curvature values can be smoothed
@@ -99,6 +104,8 @@ private:
     SurfaceMesh::VertexProperty<Scalar> m_maxCurvature;
 };
 
+//=============================================================================
+//! @}
 //=============================================================================
 } // namespace surface_mesh
 //=============================================================================

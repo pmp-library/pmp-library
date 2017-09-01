@@ -38,6 +38,11 @@ namespace surface_mesh {
 
 //=============================================================================
 
+//! \addtogroup algorithms algorithms
+//! @{
+
+//=============================================================================
+
 //! \brief A class for uniform and adaptive surface remeshing using edge
 //! collapse, split, flip, and tangential relaxation.
 class SurfaceRemeshing
@@ -49,13 +54,14 @@ public:
     // destructor
     ~SurfaceRemeshing();
 
-    // uniform remeshing with target edge length
-    void remesh(Scalar edgeLength, unsigned int iterations = 10,
-                bool useProjection = true);
+    //! uniform remeshing with target edge length
+    void uniformRemeshing(Scalar edgeLength, unsigned int iterations = 10,
+                          bool useProjection = true);
 
-    // adaptive remeshing with min/max edge length and approximation error
-    void remesh(Scalar minEdgeLength, Scalar maxEdgeLength, Scalar approxError,
-                unsigned int iterations = 10, bool useProjection = true);
+    //! adaptive remeshing with min/max edge length and approximation error
+    void adaptiveRemeshing(Scalar minEdgeLength, Scalar maxEdgeLength,
+                           Scalar approxError, unsigned int iterations = 10,
+                           bool useProjection = true);
 
 private:
     void preprocessing();
@@ -107,16 +113,8 @@ private:
     SurfaceMesh::VertexProperty<Scalar> m_refsizing;
 };
 
-
-//-----------------------------------------------------------------------------
-
-void uniformRemeshing(SurfaceMesh& mesh, Scalar edgeLength,
-                      unsigned int iterations = 10, bool useProjection = true);
-
-void adaptiveRemeshing(SurfaceMesh& mesh, Scalar minEdgeLength,
-                       Scalar maxEdgeLength, Scalar approxError,
-                       unsigned int iterations = 10, bool useProjection = true);
-
+//=============================================================================
+//! @}
 //=============================================================================
 } // namespace surface_mesh
 //=============================================================================

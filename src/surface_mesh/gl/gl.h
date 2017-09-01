@@ -60,7 +60,7 @@
 //=============================================================================
 
 
-/// Check for OpenGL errors.
+//! Check for OpenGL errors.
 inline void glCheckError(bool _force=false)
 {
   GLenum error = glGetError();

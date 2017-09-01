@@ -179,14 +179,6 @@ private: //------------------------------------------------------- private data
     unsigned int m_maxValence;
 };
 
-//-----------------------------------------------------------------------------
-
-//! Simplify mesh subject to given parameters
-void simplify(SurfaceMesh& mesh, unsigned int nVertices = 0,
-              Scalar aspectRatio = 0.0, Scalar maxEdgeLength = 0.0,
-              unsigned int maxValence = 0, Scalar normalDeviation = 0.0,
-              Scalar hausdorffError = 0.0);
-
 //=============================================================================
 //! @}
 //=============================================================================

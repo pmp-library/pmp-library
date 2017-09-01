@@ -36,29 +36,11 @@
 #include <cfloat>
 #include <cmath>
 
-//== NAMESPACES ===============================================================
+//=============================================================================
 
 namespace surface_mesh {
 
-//== IMPLEMENTATION ==========================================================
-
-void uniformRemeshing(SurfaceMesh& mesh, Scalar edgeLength,
-                      unsigned int iterations, bool useProjection)
-{
-    SurfaceRemeshing(mesh).remesh(edgeLength, iterations, useProjection);
-}
-
-//-----------------------------------------------------------------------------
-
-void adaptiveRemeshing(SurfaceMesh& mesh, Scalar minEdgeLength,
-                       Scalar maxEdgeLength, Scalar approxError,
-                       unsigned int iterations, bool useProjection)
-{
-    SurfaceRemeshing(mesh).remesh(minEdgeLength, maxEdgeLength, approxError,
-                                  iterations, useProjection);
-}
-
-//-----------------------------------------------------------------------------
+//=============================================================================
 
 SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
     : m_mesh(mesh), m_refmesh(NULL), m_kDTree(NULL)
@@ -75,8 +57,9 @@ SurfaceRemeshing::~SurfaceRemeshing()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::remesh(Scalar edgeLength, unsigned int iterations,
-                              bool useProjection)
+void SurfaceRemeshing::uniformRemeshing(Scalar       edgeLength,
+                                        unsigned int iterations,
+                                        bool         useProjection)
 {
     if (!m_mesh.isTriangleMesh())
     {
@@ -145,9 +128,11 @@ void SurfaceRemeshing::remesh(Scalar edgeLength, unsigned int iterations,
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::remesh(Scalar minEdgeLength, Scalar maxEdgeLength,
-                              Scalar approxError, unsigned int iterations,
-                              bool useProjection)
+void SurfaceRemeshing::adaptiveRemeshing(Scalar       minEdgeLength,
+                                         Scalar       maxEdgeLength,
+                                         Scalar       approxError,
+                                         unsigned int iterations,
+                                         bool         useProjection)
 {
     if (!m_mesh.isTriangleMesh())
     {

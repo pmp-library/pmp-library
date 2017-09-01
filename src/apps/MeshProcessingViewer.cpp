@@ -48,34 +48,26 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
     {
         case GLFW_KEY_L:
         {
-            // SurfaceFeatures fd(m_mesh);
-            // fd.detectAngle(90);
-            SurfaceSubdivision sd(m_mesh);
-            sd.catmullClark();
+            SurfaceSubdivision(m_mesh).catmullClark();
             updateMesh();
             break;
         }
         case GLFW_KEY_R:
         {
-            Scalar l(0);
-            for (auto eit : m_mesh.edges())
-                l += distance(m_mesh.position(m_mesh.vertex(eit, 0)),
-                              m_mesh.position(m_mesh.vertex(eit, 1)));
-            l /= (Scalar)m_mesh.nEdges();
-
-            //uniformRemeshing(m_mesh,l);
-
+            // adaptive remeshing
             auto bb = m_mesh.bounds().size();
-            adaptiveRemeshing(m_mesh,
-                              0.001*bb,  // min length
-                              0.2*bb,    // max length
-                              0.001*bb); // approx. error
+            SurfaceRemeshing(m_mesh).adaptiveRemeshing(
+                0.001 * bb,  // min length
+                1.0 * bb,    // max length
+                0.001 * bb); // approx. error
             updateMesh();
             break;
         }
         case GLFW_KEY_S:
         {
-            simplify(m_mesh,m_mesh.nVertices() * 0.1, 5);
+            SurfaceSimplification ss(m_mesh);
+            ss.initialize(5); // aspect ratio
+            ss.simplify(m_mesh.nVertices() * 0.1);
             updateMesh();
             break;
         }
@@ -83,6 +75,17 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
         {
             if (!m_mesh.isTriangleMesh())
                 m_mesh.triangulate();
+            updateMesh();
+            break;
+        }
+        case GLFW_KEY_U:
+        {
+            Scalar l(0);
+            for (auto eit : m_mesh.edges())
+                l += distance(m_mesh.position(m_mesh.vertex(eit, 0)),
+                              m_mesh.position(m_mesh.vertex(eit, 1)));
+            l /= (Scalar)m_mesh.nEdges();
+            SurfaceRemeshing(m_mesh).uniformRemeshing(l);
             updateMesh();
             break;
         }

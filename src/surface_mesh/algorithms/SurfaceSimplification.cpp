@@ -646,18 +646,6 @@ Scalar SurfaceSimplification::distance(SurfaceMesh::Face f,
     return distPointTriangle(p, p0, p1, p2, n);
 }
 
-//-----------------------------------------------------------------------------
-
-void simplify(SurfaceMesh& mesh, unsigned int nVertices, Scalar aspectRatio,
-              Scalar maxEdgeLength, unsigned int maxValence,
-              Scalar normalDeviation, Scalar hausdorffError)
-{
-    SurfaceSimplification ss(mesh);
-    ss.initialize(aspectRatio, maxEdgeLength, maxValence, normalDeviation,
-                  hausdorffError);
-    ss.simplify(nVertices);
-}
-
 //=============================================================================
 } // namespace surface_mesh
 //=============================================================================
