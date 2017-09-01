@@ -793,6 +793,13 @@ public:
     //! \name Geometry-related Functions
     //!@{
 
+    //! compute vertex normals by calling computeVertexNormal(Vertex) for
+    //! each vertex.
+    void updateVertexNormals();
+
+    //! compute normal vector of vertex \c v.
+    Normal computeVertexNormal(Vertex v) const;
+
     //! compute face normals by calling computeFaceNormal(Face) for each face.
     void updateFaceNormals();
 

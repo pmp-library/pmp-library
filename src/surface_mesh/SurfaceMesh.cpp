@@ -501,6 +501,73 @@ void SurfaceMesh::triangulate(Face f)
 
 //-----------------------------------------------------------------------------
 
+void SurfaceMesh::updateVertexNormals()
+{
+    auto vnormal = vertexProperty<Point>("v:normal");
+
+    for (auto v : vertices())
+        vnormal[v] = computeVertexNormal(v);
+}
+
+//-----------------------------------------------------------------------------
+
+Normal SurfaceMesh::computeVertexNormal(Vertex v) const
+{
+    Point    nn(0, 0, 0);
+    Halfedge h = halfedge(v);
+
+    if (h.isValid())
+    {
+        const Halfedge hend = h;
+        const Point    p0   = m_vpoint[v];
+
+        Point  n, p1, p2;
+        Scalar cosine, angle, denom;
+
+        do
+        {
+            if (!isBoundary(h))
+            {
+                p1 = m_vpoint[toVertex(h)];
+                p1 -= p0;
+
+                p2 = m_vpoint[fromVertex(prevHalfedge(h))];
+                p2 -= p0;
+
+                // check whether we can robustly compute angle
+                denom = sqrt(dot(p1, p1) * dot(p2, p2));
+                if (denom > std::numeric_limits<Scalar>::min())
+                {
+                    cosine = dot(p1, p2) / denom;
+                    if (cosine < -1.0)
+                        cosine = -1.0;
+                    else if (cosine > 1.0)
+                        cosine = 1.0;
+                    angle      = acos(cosine);
+
+                    n = cross(p1, p2);
+
+                    // check whether normal is != 0
+                    denom = norm(n);
+                    if (denom > std::numeric_limits<Scalar>::min())
+                    {
+                        n *= angle / denom;
+                        nn += n;
+                    }
+                }
+            }
+
+            h = cwRotatedHalfedge(h);
+        } while (h != hend);
+
+        nn.normalize();
+    }
+
+    return nn;
+}
+
+//-----------------------------------------------------------------------------
+
 void SurfaceMesh::updateFaceNormals()
 {
     auto fnormal = faceProperty<Point>("f:normal");
