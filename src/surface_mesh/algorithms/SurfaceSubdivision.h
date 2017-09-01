@@ -41,11 +41,11 @@ namespace surface_mesh {
 //! @{
 
 //! A class providing surface subdivision algorithms
-class SurfaceSubdivider
+class SurfaceSubdivision
 {
 
 public:
-    SurfaceSubdivider(SurfaceMesh& mesh);
+    SurfaceSubdivision(SurfaceMesh& mesh);
 
     //! Perform one step of Loop subdivision
     void catmullClark();

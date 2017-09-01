@@ -27,7 +27,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
 
-#include <surface_mesh/algorithms/SurfaceSubdivider.h>
+#include <surface_mesh/algorithms/SurfaceSubdivision.h>
 
 //=============================================================================
 
@@ -35,7 +35,7 @@ namespace surface_mesh {
 
 //=============================================================================
 
-SurfaceSubdivider::SurfaceSubdivider(SurfaceMesh& mesh) : m_mesh(mesh)
+SurfaceSubdivision::SurfaceSubdivision(SurfaceMesh& mesh) : m_mesh(mesh)
 {
     m_points   = m_mesh.vertexProperty<Point>("v:point");
     m_vfeature = m_mesh.getVertexProperty<bool>("v:feature");
@@ -44,7 +44,7 @@ SurfaceSubdivider::SurfaceSubdivider(SurfaceMesh& mesh) : m_mesh(mesh)
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSubdivider::catmullClark()
+void SurfaceSubdivision::catmullClark()
 {
     // reserve memory
     size_t nv = m_mesh.nVertices();
@@ -223,7 +223,7 @@ void SurfaceSubdivider::catmullClark()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSubdivider::loop()
+void SurfaceSubdivision::loop()
 {
     if (!m_mesh.isTriangleMesh())
         return;
@@ -383,7 +383,7 @@ void SurfaceSubdivider::loop()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSubdivider::sqrt3()
+void SurfaceSubdivision::sqrt3()
 {
     // reserve memory
     int nv = m_mesh.nVertices();
