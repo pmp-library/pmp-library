@@ -244,7 +244,7 @@ public:
     //!@{
 
     //! return a vector of points compromising the geometry of the object
-    virtual std::vector<Point>& pointVector() = 0;
+    virtual std::vector<Point>& positions() = 0;
 
     //! compute the bounding box of the object
     BoundingBox bounds()
@@ -252,7 +252,7 @@ public:
         Point min(std::numeric_limits<Scalar>::max());
         Point max(std::numeric_limits<Scalar>::min());
 
-        for (auto p : pointVector())
+        for (auto p : positions())
         {
             min.minimize(p);
             max.maximize(p);

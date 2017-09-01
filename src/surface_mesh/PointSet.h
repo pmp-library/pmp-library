@@ -335,7 +335,7 @@ public:
     Point& position(Vertex v) { return m_vpoint[v]; }
 
     //! vector of point positions, re-implemented from \c GeometryObject
-    std::vector<Point>& pointVector() { return m_vpoint.vector(); }
+    std::vector<Point>& positions() { return m_vpoint.vector(); }
 
     //!@}
 

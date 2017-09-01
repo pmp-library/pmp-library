@@ -74,14 +74,14 @@ TEST_F(PointSetTest, addRemove)
     auto  v1 = ps.addVertex(p0);
     ps.addVertex(p1);
     EXPECT_EQ(ps.nVertices(), size_t(2));
-    EXPECT_EQ(ps.pointVector().size(), size_t(2));
+    EXPECT_EQ(ps.positions().size(), size_t(2));
     ps.deleteVertex(v1);
     ps.garbageCollection();
     EXPECT_EQ(ps.nVertices(), size_t(1));
-    EXPECT_EQ(ps.pointVector().size(), size_t(1));
+    EXPECT_EQ(ps.positions().size(), size_t(1));
     ps.clear();
     EXPECT_EQ(ps.nVertices(), size_t(0));
-    EXPECT_EQ(ps.pointVector().size(), size_t(0));
+    EXPECT_EQ(ps.positions().size(), size_t(0));
 }
 
 TEST_F(PointSetTest, iterators)
