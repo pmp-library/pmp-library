@@ -46,7 +46,7 @@ SurfaceMesh::SurfaceMesh() : EdgeSet()
 {
     // allocate standard properties
     // same list is used in operator=() and assign()
-    m_hfconn = addHalfedgeProperty<HalfedgeFaceFonnectivity>("hf:connectivity");
+    m_hfconn = addHalfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
     m_fconn  = addFaceProperty<FaceConnectivity>("f:connectivity");
     m_fdeleted = addFaceProperty<bool>("f:deleted", false);
 
@@ -72,7 +72,7 @@ SurfaceMesh& SurfaceMesh::operator=(const SurfaceMesh& rhs)
 
         // property handles contain pointers, have to be reassigned
         m_hfconn =
-            halfedgeProperty<HalfedgeFaceFonnectivity>("hf:connectivity");
+            halfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
         m_fconn    = faceProperty<FaceConnectivity>("f:connectivity");
         m_fdeleted = faceProperty<bool>("f:deleted");
 
@@ -96,7 +96,7 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
 
         // allocate standard properties
         m_hfconn =
-            addHalfedgeProperty<HalfedgeFaceFonnectivity>("hf:connectivity");
+            addHalfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
         m_fconn    = addFaceProperty<FaceConnectivity>("f:connectivity");
         m_fdeleted = addFaceProperty<bool>("f:deleted", false);
 

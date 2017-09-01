@@ -68,7 +68,7 @@ public:
 
     //! This type stores the halfedge connectivity
     //! \sa VertexConnectivity, FaceConnectivity
-    struct HalfedgeFaceFonnectivity
+    struct HalfedgeFaceConnectivity
     {
         //! face incident to halfedge
         Face m_face;
@@ -857,7 +857,7 @@ private:
 
     PropertyContainer m_fprops;
 
-    HalfedgeProperty<HalfedgeFaceFonnectivity> m_hfconn;
+    HalfedgeProperty<HalfedgeFaceConnectivity> m_hfconn;
     FaceProperty<FaceConnectivity>             m_fconn;
 
     FaceProperty<bool> m_fdeleted;
