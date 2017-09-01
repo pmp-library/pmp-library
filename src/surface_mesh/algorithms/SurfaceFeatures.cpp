@@ -27,7 +27,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
 
-#include "FeatureDetection.h"
+#include "SurfaceFeatures.h"
 
 //=============================================================================
 
@@ -35,7 +35,7 @@ namespace surface_mesh {
 
 //=============================================================================
 
-FeatureDetection::FeatureDetection(SurfaceMesh& mesh) : m_mesh(mesh)
+SurfaceFeatures::SurfaceFeatures(SurfaceMesh& mesh) : m_mesh(mesh)
 {
     m_vfeature = m_mesh.vertexProperty("v:feature", false);
     m_efeature = m_mesh.edgeProperty("e:feature", false);
@@ -43,7 +43,7 @@ FeatureDetection::FeatureDetection(SurfaceMesh& mesh) : m_mesh(mesh)
 
 //-----------------------------------------------------------------------------
 
-void FeatureDetection::clear()
+void SurfaceFeatures::clear()
 {
     for (auto v : m_mesh.vertices())
         m_vfeature[v] = false;
@@ -54,7 +54,7 @@ void FeatureDetection::clear()
 
 //-----------------------------------------------------------------------------
 
-void FeatureDetection::detectBoundary()
+void SurfaceFeatures::detectBoundary()
 {
     for (auto v : m_mesh.vertices())
         if (m_mesh.isBoundary(v))
@@ -67,7 +67,7 @@ void FeatureDetection::detectBoundary()
 
 //-----------------------------------------------------------------------------
 
-void FeatureDetection::detectAngle(Scalar angle)
+void SurfaceFeatures::detectAngle(Scalar angle)
 {
     const Scalar feature_cosine = cos(angle / 180.0 * M_PI);
 

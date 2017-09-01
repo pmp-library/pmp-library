@@ -31,7 +31,7 @@
 #include "MeshProcessingViewer.h"
 
 #include <surface_mesh/algorithms/SurfaceSubdivision.h>
-#include <surface_mesh/algorithms/FeatureDetection.h>
+#include <surface_mesh/algorithms/SurfaceFeatures.h>
 #include <surface_mesh/algorithms/SurfaceSimplification.h>
 #include <surface_mesh/algorithms/SurfaceRemeshing.h>
 
@@ -48,7 +48,7 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
     {
         case GLFW_KEY_L:
         {
-            // FeatureDetection fd(m_mesh);
+            // SurfaceFeatures fd(m_mesh);
             // fd.detectAngle(90);
             SurfaceSubdivision sd(m_mesh);
             sd.catmullClark();

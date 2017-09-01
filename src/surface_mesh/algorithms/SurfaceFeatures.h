@@ -43,11 +43,11 @@ namespace surface_mesh {
 //=============================================================================
 
 //! Detect and mark feature edges based on boundary or dihedral angle
-class FeatureDetection
+class SurfaceFeatures
 {
 public:
     //! constructor
-    FeatureDetection(SurfaceMesh& mesh);
+    SurfaceFeatures(SurfaceMesh& mesh);
 
     //! clear features
     void clear();
