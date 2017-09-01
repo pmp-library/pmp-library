@@ -504,12 +504,6 @@ public:
     //! reserve memory (mainly used in file readers)
     void reserve(size_t nvertices, size_t nedges);
 
-    //! collect initialize garbage collection
-    virtual void beginGarbage() override;
-
-    //! finalize garbage collection
-    virtual void finalizeGarbage() override;
-
     // tell the compiler that we're overloading the superclass' method here
     using PointSet::isDeleted;
 
@@ -923,6 +917,18 @@ public:
     //!@}
 
 protected:
+
+    //! \name Garbage Collection
+    //!@{
+
+    //! initialize garbage collection
+    virtual void beginGarbage() override;
+
+    //! finalize garbage collection
+    virtual void finalizeGarbage() override;
+
+    //!@}
+
     //! \name Entity Allocation
     //!@{
 

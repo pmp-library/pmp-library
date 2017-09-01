@@ -224,12 +224,6 @@ public:
     //! remove unused memory from vectors
     virtual void freeMemory();
 
-    //! collect information and delete vertices, edges, etc.
-    virtual void beginGarbage();
-
-    //! resize the property vectors accordingly
-    virtual void finalizeGarbage();
-
     //! returns whether vertex \c v is deleted
     //! \sa garbageCollection()
     bool isDeleted(Vertex v) const { return m_vdeleted[v]; }
@@ -342,6 +336,18 @@ public:
 
     //! vector of point positions, re-implemented from \c GeometryObject
     std::vector<Point>& pointVector() { return m_vpoint.vector(); }
+
+    //!@}
+
+protected:
+    //! \name Protected Functions
+    //!@{
+
+    //! initialize garbage collection
+    virtual void beginGarbage();
+
+    //! resize the property vectors accordingly
+    virtual void finalizeGarbage();
 
     //!@}
 

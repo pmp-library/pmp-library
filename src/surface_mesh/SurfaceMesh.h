@@ -486,11 +486,6 @@ public:
     //! reserve memory (mainly used in file readers)
     void reserve(size_t nvertices, size_t nedges, size_t nfaces);
 
-    //! remove deleted vertices/edges/faces
-    using PointSet::garbageCollection;
-    virtual void beginGarbage() override;
-    virtual void finalizeGarbage() override;
-
     // tell the compiler that we're overloading the superclass' method here
     using PointSet::isDeleted;
     using EdgeSet::isDeleted;
@@ -805,6 +800,18 @@ public:
 
     //! compute normal vector of face \c f.
     Normal computeFaceNormal(Face f) const;
+
+    //!@}
+
+protected:
+    //! \name Garbage Collection
+    //!@{
+
+    //! initialize garbage collection
+    virtual void beginGarbage() override;
+
+    //! finalize garbage collection
+    virtual void finalizeGarbage() override;
 
     //!@}
 
