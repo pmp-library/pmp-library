@@ -29,7 +29,7 @@
 
 #include <surface_mesh/algorithms/SurfaceRemeshing.h>
 #include <surface_mesh/algorithms/distancePointTriangle.h>
-#include <surface_mesh/algorithms/CurvatureAnalyzer.h>
+#include <surface_mesh/algorithms/SurfaceCurvature.h>
 #include <surface_mesh/algorithms/barycentricCoordinates.h>
 #include <surface_mesh/Timer.h>
 
@@ -304,7 +304,7 @@ void SurfaceRemeshing::preprocessing()
     {
         // compute curvature for all mesh vertices, using cotan or Cohen-Steiner
         // do 2 post-smoothing steps to get a smoother sizing field
-        CurvatureAnalyzer curv(m_mesh);
+        SurfaceCurvature curv(m_mesh);
         //curv.analyze(1);
         curv.analyzeTensor(1, true);
 

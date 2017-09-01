@@ -27,7 +27,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
 
-#include <surface_mesh/algorithms/CurvatureAnalyzer.h>
+#include <surface_mesh/algorithms/SurfaceCurvature.h>
 #include <surface_mesh/Matrix.h>
 
 //=============================================================================
@@ -36,7 +36,7 @@ namespace surface_mesh {
 
 //=============================================================================
 
-CurvatureAnalyzer::CurvatureAnalyzer(SurfaceMesh& mesh) : m_mesh(mesh)
+SurfaceCurvature::SurfaceCurvature(SurfaceMesh& mesh) : m_mesh(mesh)
 {
     m_minCurvature = m_mesh.addVertexProperty<Scalar>("curv:min");
     m_maxCurvature = m_mesh.addVertexProperty<Scalar>("curv:max");
@@ -44,7 +44,7 @@ CurvatureAnalyzer::CurvatureAnalyzer(SurfaceMesh& mesh) : m_mesh(mesh)
 
 //-----------------------------------------------------------------------------
 
-CurvatureAnalyzer::~CurvatureAnalyzer()
+SurfaceCurvature::~SurfaceCurvature()
 {
     m_mesh.removeVertexProperty(m_minCurvature);
     m_mesh.removeVertexProperty(m_maxCurvature);
@@ -52,7 +52,7 @@ CurvatureAnalyzer::~CurvatureAnalyzer()
 
 //-----------------------------------------------------------------------------
 
-void CurvatureAnalyzer::analyze(unsigned int smoothingSteps)
+void SurfaceCurvature::analyze(unsigned int smoothingSteps)
 {
     Scalar kmin, kmax, mean, gauss;
     Scalar area, sumAngles;
@@ -152,7 +152,7 @@ void CurvatureAnalyzer::analyze(unsigned int smoothingSteps)
 
 //-----------------------------------------------------------------------------
 
-void CurvatureAnalyzer::analyzeTensor(unsigned int smoothingSteps,
+void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
                                       bool         twoRingNeighborhood)
 {
     SurfaceMesh::VertexProperty<double> area =
@@ -328,7 +328,7 @@ void CurvatureAnalyzer::analyzeTensor(unsigned int smoothingSteps,
 
 //-----------------------------------------------------------------------------
 
-void CurvatureAnalyzer::smoothCurvatures(unsigned int iterations)
+void SurfaceCurvature::smoothCurvatures(unsigned int iterations)
 {
     SurfaceMesh::VertexIterator                 vit, vend = m_mesh.verticesEnd();
     SurfaceMesh::EdgeIterator                   eit, eend = m_mesh.edgesEnd();

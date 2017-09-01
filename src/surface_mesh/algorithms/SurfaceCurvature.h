@@ -41,14 +41,14 @@ namespace surface_mesh {
 //! \brief Compute per-vertex curvature (min,max,mean,Gaussian).
 //! Curvature values for boundary vertices are interpolated from their interior
 //! neighbors. Curvature values can be smoothed
-class CurvatureAnalyzer
+class SurfaceCurvature
 {
 public:
     //! construct with mesh to be analyzed
-    CurvatureAnalyzer(SurfaceMesh& mesh);
+    SurfaceCurvature(SurfaceMesh& mesh);
 
     // destructor
-    ~CurvatureAnalyzer();
+    ~SurfaceCurvature();
 
     //! compute curvature information for each vertex, optionally followed
     //! by some smoothing iterations of the curvature values
