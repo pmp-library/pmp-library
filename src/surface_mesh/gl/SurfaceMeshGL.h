@@ -17,46 +17,45 @@ class SurfaceMeshGL : public SurfaceMesh
 {
 public:
 
-  //! Constructor
-  SurfaceMeshGL();
+    //! Constructor
+    SurfaceMeshGL();
 
-  //! default destructor
-  ~SurfaceMeshGL();
+    //! default destructor
+    ~SurfaceMeshGL();
 
-  // draw mesh elements
-  void drawPoints();
-  void drawEdges();
-  void drawFaces();
+    // draw mesh elements
+    void drawPoints();
+    void drawEdges();
+    void drawFaces();
 
-  //! update all opengl buffers for efficient core profile rendering
-  void updateOpenGLBuffers();
+    //! update all opengl buffers for efficient core profile rendering
+    void updateOpenGLBuffers();
 
 
 private:
 
-  //! OpenGL vertex array buffer
-  GLuint vertex_array_object_;
+    void crease_normals(std::vector<Point>& vertex_normals);
 
-  //! OpenGL buffer object for vertex positions
-  GLuint vertex_buffer_;
 
-  //! OpenGL buffer object for vertex normals
-  GLuint normal_buffer_;
+private:
 
-  //! OpenGL buffer object for triangle indices
-  GLuint triangle_buffer_;
+    // material parameters
+    vec3  front_color_;
+    vec3  back_color_;
+    vec3  wire_color_;
+    vec4  material_;
+    float crease_angle_;
 
-  //! OpenGL buffer object for edge indices
-  GLuint edge_buffer_;
+    //! OpenGL buffers 
+    GLuint vertex_array_object_;
+    GLuint vertex_buffer_;
+    GLuint normal_buffer_;
+    GLuint edge_buffer_;
 
-  //! number of vertices
-  unsigned int n_vertices_;
-
-  //! number of edges
-  unsigned int n_edges_;
-
-  //! number of triangles (might be tessellated polygons!)
-  unsigned int n_triangles_;
+    //! buffer sizes
+    GLsizei n_vertices_;
+    GLsizei n_edges_;
+    GLsizei n_triangles_;
 };
 
 

@@ -2,7 +2,7 @@
 #ifndef __EMSCRIPTEN__  // standard version (OpenGL 3.2 and higher)
 
 
-const char* phong_vshader =
+static const char* phong_vshader =
     "#version 150\n"
     "\n"
     "in vec4 v_position;\n"
@@ -21,7 +21,7 @@ const char* phong_vshader =
     "} \n";
 
 
-const char* phong_fshader = 
+static const char* phong_fshader = 
     "#version 150\n"
     "\n"
     "in vec3 v2f_normal;\n"
@@ -53,7 +53,7 @@ const char* phong_fshader =
 #else // emscripten WebGL-friendly version
 
 
-const char* phong_vshader = 
+static const char* phong_vshader = 
     "attribute vec4 v_position;\n"
     "attribute vec3 v_normal;\n"
     "varying vec3 v2f_normal;\n"
@@ -70,7 +70,7 @@ const char* phong_vshader =
     "   gl_Position = modelview_projection_matrix * v_position;\n"
     "}\n";
 
-const char* phong_fshader = 
+static const char* phong_fshader = 
     "precision highp float;\n"
     "varying vec3 v2f_normal;\n"
     "varying vec3 v2f_view;\n"
