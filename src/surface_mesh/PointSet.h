@@ -184,6 +184,18 @@ public:
     PointSet& assign(const PointSet& rhs);
 
     //!@}
+    //! \name File IO
+    //!@{
+
+    //! read point set from file \c filename. file extension determines file type.
+    //! \sa write(const std::string& filename)
+    bool read(const std::string& filename);
+
+    //! write point set to file \c filename. file extensions determines file type.
+    //! \sa read(const std::string& filename)
+    bool write(const std::string& filename) const;
+
+    //!@}
     //! \name Add new elements by hand
     //!@{
 

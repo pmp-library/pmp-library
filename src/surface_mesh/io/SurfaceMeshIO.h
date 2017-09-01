@@ -35,28 +35,29 @@
 
 #include <string>
 
-
-//== NAMESPACE ================================================================
-
+//=============================================================================
 
 namespace surface_mesh {
 
-
 //=============================================================================
 
+class SurfaceMeshIO
+{
+public:
+   static bool read(SurfaceMesh& mesh, const std::string& filename);
+   static bool write(const SurfaceMesh& mesh, const std::string& filename);
 
-bool readMesh(SurfaceMesh& mesh, const std::string& filename);
-bool readOFF(SurfaceMesh& mesh, const std::string& filename);
-bool readOBJ(SurfaceMesh& mesh, const std::string& filename);
-bool readPoly(SurfaceMesh& mesh, const std::string& filename);
-bool readSTL(SurfaceMesh& mesh, const std::string& filename);
+private:
+   static bool readOFF(SurfaceMesh& mesh, const std::string& filename);
+   static bool readOBJ(SurfaceMesh& mesh, const std::string& filename);
+   static bool readPoly(SurfaceMesh& mesh, const std::string& filename);
+   static bool readSTL(SurfaceMesh& mesh, const std::string& filename);
 
-bool writeMesh(const SurfaceMesh& mesh, const std::string& filename);
-bool writeOFF(const SurfaceMesh& mesh, const std::string& filename);
-bool writeOBJ(const SurfaceMesh& mesh, const std::string& filename);
-bool writePoly(const SurfaceMesh& mesh, const std::string& filename);
-bool writeSTL(const SurfaceMesh& mesh, const std::string& filename);
-
+   static bool writeOFF(const SurfaceMesh& mesh, const std::string& filename);
+   static bool writeOBJ(const SurfaceMesh& mesh, const std::string& filename);
+   static bool writePoly(const SurfaceMesh& mesh, const std::string& filename);
+   static bool writeSTL(const SurfaceMesh& mesh, const std::string& filename);
+};
 
 //=============================================================================
 } // namespace surface_mesh

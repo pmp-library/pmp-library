@@ -27,10 +27,12 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
-#pragma once
-//=============================================================================
 
-#include <surface_mesh/PointSet.h>
+#include <surface_mesh/io/PointSetIO.h>
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 //=============================================================================
 
@@ -38,12 +40,57 @@ namespace surface_mesh {
 
 //=============================================================================
 
-//! \brief read point set from \c filename
-//! \note any previous data in \c ps will be removed
-bool read_xyz(PointSet& ps, const std::string& filename);
+bool PointSetIO::readXYZ(PointSet& ps, const std::string& filename)
+{
+    // check proper file name
+    if (filename.size() < 4 || filename.compare(filename.size() - 4, 4, ".xyz"))
+        return false;
 
-//! \brief write point set from \c filename
-bool write_xyz(const PointSet& ps, const std::string& filename);
+    // clear old data
+    ps.clear();
+
+    // add normal property
+    auto vnormal = ps.addVertexProperty<Normal>("v:normal");
+
+    // read data
+    std::ifstream ifs(filename);
+    std::string line;
+    while (std::getline(ifs, line))
+    {
+        float x, y, z;
+        float nx, ny, nz;
+        std::stringstream sstr(line.c_str());
+        sstr >> x >> y >> z;
+        sstr >> nx >> ny >> nz;
+        auto v     = ps.addVertex(Point(x, y, z));
+        vnormal[v] = Normal(nx, ny, nz);
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool PointSetIO::writeXYZ(const PointSet& ps, const std::string& filename)
+{
+    std::ofstream ofs(filename);
+
+    auto vnormal = ps.getVertexProperty<Normal>("v:normal");
+    for (auto v : ps.vertices())
+    {
+        ofs << ps.position(v);
+        ofs << " ";
+        if (vnormal)
+        {
+            ofs << vnormal[v];
+        }
+        ofs << std::endl;
+    }
+
+    ofs.close();
+
+    return true;
+}
 
 //=============================================================================
 } // namespace surface_mesh

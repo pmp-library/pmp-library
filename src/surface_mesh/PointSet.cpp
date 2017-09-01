@@ -30,6 +30,7 @@
 //=============================================================================
 
 #include <surface_mesh/PointSet.h>
+#include <surface_mesh/io/PointSetIO.h>
 
 //=============================================================================
 
@@ -105,6 +106,20 @@ PointSet& PointSet::assign(const PointSet& rhs)
     }
 
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+
+bool PointSet::read(const std::string& filename)
+{
+    return PointSetIO::read(*this,filename);
+}
+
+//-----------------------------------------------------------------------------
+
+bool PointSet::write(const std::string& filename) const
+{
+    return PointSetIO::write((*this),filename);
 }
 
 //-----------------------------------------------------------------------------

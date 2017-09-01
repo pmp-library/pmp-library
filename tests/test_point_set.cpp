@@ -30,7 +30,7 @@
 #include "gtest/gtest.h"
 
 #include <surface_mesh/PointSet.h>
-#include <surface_mesh/IO_xyz.h>
+#include <surface_mesh/io/PointSetIO.h>
 #include <vector>
 
 using namespace surface_mesh;
@@ -134,18 +134,18 @@ TEST_F(PointSetTest, write)
 {
     ps.addVertex(p0);
     ps.addVertex(p1);
-    write_xyz(ps,"test.xyz");
+    ps.write("test.xyz");
     ps.clear();
     EXPECT_EQ(ps.nVertices(), size_t(0));
 }
 
 TEST_F(PointSetTest, read)
 {
-    read_xyz(ps,"test.xyz"); // bad test dependency
+    ps.read("test.xyz"); // bad test dependency
     EXPECT_EQ(ps.nVertices(), size_t(2));
 }
 
 TEST_F(PointSetTest, readFailure)
 {
-    ASSERT_FALSE(read_xyz(ps,"test.off"));
+    ASSERT_FALSE(ps.read("test.off"));
 }

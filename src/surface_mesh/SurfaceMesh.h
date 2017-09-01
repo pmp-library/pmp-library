@@ -37,6 +37,8 @@
 
 namespace surface_mesh {
 
+class SurfaceMeshIO;
+
 //=============================================================================
 
 //! \addtogroup geometry geometry
@@ -836,7 +838,8 @@ private:
     //! \name Private members
     //!@{
 
-    friend bool readPoly(SurfaceMesh& mesh, const std::string& filename);
+    friend SurfaceMeshIO;
+    //friend bool readPoly(SurfaceMesh& mesh, const std::string& filename);
 
     PropertyContainer m_fprops;
 
