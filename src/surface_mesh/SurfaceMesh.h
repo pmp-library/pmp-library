@@ -59,7 +59,7 @@ public:
     struct Face : public BaseHandle
     {
         //! default constructor (with invalid index)
-        explicit Face(int idx = -1) : BaseHandle(idx) {}
+        explicit Face(IndexType idx = SM_MAX_INDEX) : BaseHandle(idx) {}
     };
 
     //!@}

@@ -56,7 +56,7 @@ public:
     struct Halfedge : public BaseHandle
     {
         //! default constructor (with invalid index)
-        explicit Halfedge(int idx = -1) : BaseHandle(idx) {}
+        explicit Halfedge(IndexType idx = SM_MAX_INDEX) : BaseHandle(idx) {}
     };
 
     //! this type represents an edge (internally it is basically an index)
@@ -64,7 +64,7 @@ public:
     struct Edge : public BaseHandle
     {
         //! default constructor (with invalid index)
-        explicit Edge(int idx = -1) : BaseHandle(idx) {}
+        explicit Edge(IndexType idx = SM_MAX_INDEX) : BaseHandle(idx) {}
     };
 
     //!@}

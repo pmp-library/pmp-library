@@ -56,7 +56,7 @@ public:
     struct Vertex : public BaseHandle
     {
         //! default constructor (with invalid index)
-        explicit Vertex(int idx = -1) : BaseHandle(idx){};
+        explicit Vertex(IndexType idx = SM_MAX_INDEX) : BaseHandle(idx) {};
     };
 
     //!@}
