@@ -24,6 +24,9 @@ public:
   ~Shader();
 
 
+  //! is shader valid (ID != 0)
+  bool isValid() const { return pid_!=0; }
+
   //! get source from strings, compile, and link vertex and fragment shader,
   //! \param vshader string with the adress to the vertex shader
   //! \param fshader string with the adress to the fragment shader

@@ -34,11 +34,7 @@ SurfaceMeshGL::SurfaceMeshGL()
 
 
     // material parameters
-    front_color_  = vec3(0.4, 0.425, 0.475);
-    back_color_   = vec3(0.5, 0.3, 0.3);
-    wire_color_   = vec3(0,0,0);
-    material_     = vec4(0.1, 1.0, 1.0, 100.0);
-    crease_angle_ = 0.0;
+    crease_angle_ = 70.0;
 }
 
 
@@ -54,6 +50,17 @@ SurfaceMeshGL::~SurfaceMeshGL()
     glDeleteVertexArrays(1, &vertex_array_object_);
 }
 
+
+//-----------------------------------------------------------------------------
+
+void SurfaceMeshGL::setCreaseAngle(Scalar ca)
+{
+    if (ca != crease_angle_)
+    {
+        crease_angle_ = std::max(Scalar(0), std::min(Scalar(180), ca));
+        updateOpenGLBuffers();
+    }
+}
 
 //-----------------------------------------------------------------------------
 
@@ -77,54 +84,51 @@ void SurfaceMeshGL::updateOpenGLBuffers()
 
 
     // produce arrays of points and normals (duplicate vertices to allow for flat shading)
-    std::vector<vec3>  positionArray; positionArray.reserve(3*nFaces());
-    std::vector<vec3>  normalArray; normalArray.reserve(3*nFaces());
+    std::vector<vec3>  positionArray;  positionArray.reserve(3*nFaces());
+    std::vector<vec3>  normalArray;    normalArray.reserve(3*nFaces());
+    
+    std::vector<Vertex>  corners;
+    std::vector<vec3>    cornerPositions;
+    std::vector<vec3>    cornerNormals;
+
+    // convert from degrees to radians
+    const Scalar creaseAngle = crease_angle_ / 180.0 * M_PI;
 
     auto vertex_indices = addVertexProperty<size_t>("v:index");
+    size_t vidx(0);
 
-    size_t i(0);
-    for (auto f : faces())
+    // loop over all faces
+    for (auto f: faces())
     {
-        SurfaceMesh::VertexAroundFaceCirculator fvit, fvend;
-        SurfaceMesh::Vertex v0, v1, v2;
-        Point p0, p1, p2, n0, n1, n2;
-
-        fvit = fvend = vertices(f);
-        v0 = *fvit; ++fvit;
-        v2 = *fvit; ++fvit;
-        do
+        // collect corner positions and normals
+        corners.clear();
+        cornerPositions.clear();
+        cornerNormals.clear();
+        for (auto h: halfedges(f))
         {
-            v1 = v2;
-            v2 = *fvit;
-
-            p0 = position(v0);
-            p1 = position(v1);
-            p2 = position(v2);
-
-            positionArray.push_back(p0);
-            positionArray.push_back(p1);
-            positionArray.push_back(p2);
-
-            if (crease_angle_ < 0.1) 
-            {
-                n0 = n1 = n2 = computeFaceNormal(f);
-            }
-            else
-            {
-                n0 = computeVertexNormal(v0);
-                n1 = computeVertexNormal(v1);
-                n2 = computeVertexNormal(v2);
-            }
-
-            normalArray.push_back(n0);
-            normalArray.push_back(n1);
-            normalArray.push_back(n2);
-
-            vertex_indices[v0] = i++;
-            vertex_indices[v1] = i++;
-            vertex_indices[v2] = i++;
+            corners.push_back(toVertex(h));
+            cornerPositions.push_back(position(toVertex(h)));
+            cornerNormals.push_back(computeCornerNormal(h, creaseAngle));
         }
-        while (++fvit != fvend);
+        assert(corners.size() >= 3);
+
+
+        // tessellate face into triangles 
+        int i0, i1, i2, nc = cornerPositions.size();
+        for (i0=0, i1=1, i2=2; i2<nc; ++i1, ++i2)
+        {
+            positionArray.push_back( cornerPositions[i0] );
+            positionArray.push_back( cornerPositions[i1] );
+            positionArray.push_back( cornerPositions[i2] );
+
+            normalArray.push_back( cornerNormals[i0] );
+            normalArray.push_back( cornerNormals[i1] );
+            normalArray.push_back( cornerNormals[i2] );
+
+            vertex_indices[ corners[i0] ] = vidx++;
+            vertex_indices[ corners[i1] ] = vidx++;
+            vertex_indices[ corners[i2] ] = vidx++;
+        }
     }
 
 
@@ -138,7 +142,6 @@ void SurfaceMeshGL::updateOpenGLBuffers()
 
 
     // normals
-    //crease_normals(normals);
     glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
     glBufferData(GL_ARRAY_BUFFER, normalArray.size()*3*sizeof(float), normalArray.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -168,74 +171,87 @@ void SurfaceMeshGL::updateOpenGLBuffers()
 
 //-----------------------------------------------------------------------------
 
-
-void
-SurfaceMeshGL::
-drawPoints()
+void SurfaceMeshGL::draw(const mat4& projectionMatrix,
+                         const mat4& modelviewMatrix,
+                         const std::string drawMode)
 {
     // did we generate buffers already?
     if (!vertex_array_object_)
     {
         updateOpenGLBuffers();
     }
+
+
+    // load shader?
+    if (!m_phongShader.isValid())
+    {
+        m_phongShader.source(phong_vshader, phong_fshader);
+        //m_phongShader.load("phong.vert", "phong.frag");
+        m_phongShader.use();
+        m_phongShader.bind_attrib("v_position", 0);
+        m_phongShader.bind_attrib("v_normal",   1);
+    }
+
+
+    // empty mesh?
+    if (isEmpty())
+        return;
+
     
-    if (!n_vertices_) return;
+    // setup matrices
+    mat4 mv_matrix  = modelviewMatrix;
+    mat4 mvp_matrix = projectionMatrix * modelviewMatrix;
+    mat3 n_matrix   = inverse(transpose(mat3(mv_matrix)));
 
-    // set point size
+
+    // setup shader
+    m_phongShader.use();
+    m_phongShader.set_uniform("modelview_projection_matrix", mvp_matrix);
+    m_phongShader.set_uniform("modelview_matrix", mv_matrix);
+    m_phongShader.set_uniform("normal_matrix", n_matrix);
+    m_phongShader.set_uniform("light1", vec3(1.0, 1.0, 1.0));
+    m_phongShader.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
+    m_phongShader.set_uniform("front_color", vec3(0.6, 0.6, 0.6));
+    m_phongShader.set_uniform("back_color",  vec3(0.3, 0.0, 0.0));
+    m_phongShader.set_uniform("use_lighting", true);
+
+
+    glBindVertexArray(vertex_array_object_);
+
+
+    if (drawMode == "Points")
+    {
 #ifndef __EMSCRIPTEN__
-    glPointSize(5.0);
+        glPointSize(5.0);
 #endif
-
-    // draw vertices of mesh
-    glBindVertexArray(vertex_array_object_);
-    glDrawArrays(GL_POINTS, 0, n_vertices_);
-    glBindVertexArray(0);
-}
-
-
-//-----------------------------------------------------------------------------
-
-
-void
-SurfaceMeshGL::
-drawEdges()
-{
-    // did we generate buffers already?
-    if (!vertex_array_object_)
-    {
-        updateOpenGLBuffers();
+        glDrawArrays(GL_POINTS, 0, n_vertices_);
     }
 
-    if (!n_edges_) return;
-
-    // draw edges of mesh
-    glBindVertexArray(vertex_array_object_);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
-    glDrawElements(GL_LINES, 2*n_edges_, GL_UNSIGNED_INT, NULL);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-}
-
-
-//-----------------------------------------------------------------------------
-
-
-void
-SurfaceMeshGL::
-drawFaces()
-{
-    // did we generate buffers already?
-    if (!vertex_array_object_)
+    else if (drawMode == "Hidden Line")
     {
-        updateOpenGLBuffers();
+        // draw faces
+        glDepthRange(0.01, 1.0);
+        glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+
+        // overlay edges
+        glDepthRange(0.0, 1.0);
+        glDepthFunc(GL_LEQUAL);
+        m_phongShader.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
+        m_phongShader.set_uniform("back_color",  vec3(0.1, 0.1, 0.1));
+        m_phongShader.set_uniform("use_lighting",  false);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
+        glDrawElements(GL_LINES, n_edges_, GL_UNSIGNED_INT, NULL);
+        glDepthFunc(GL_LESS);
     }
 
-    if (!n_vertices_) return;
+    else if (drawMode == "Smooth Shading")
+    {
+        glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+    }
 
-    // draw triangles (might be tessellated polygons)
-    glBindVertexArray(vertex_array_object_);
-    glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+
     glBindVertexArray(0);
+    glCheckError();
 }
 
 

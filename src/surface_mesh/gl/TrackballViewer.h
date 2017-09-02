@@ -31,7 +31,6 @@
 //=============================================================================
 
 #include <surface_mesh/gl/Window.h>
-#include <surface_mesh/gl/Shader.h>
 
 #include <surface_mesh/Vector.h>
 #include <surface_mesh/Matrix.h>
@@ -141,9 +140,6 @@ protected: //----------------------------------------------------- private data
     //! OpenGL matrices
     mat4 m_projectionMatrix;
     mat4 m_modelviewMatrix;
-
-    //! shaders
-    Shader  m_phongShader;
 
     //! trackball helpers
     vec2  m_mousePos2D;

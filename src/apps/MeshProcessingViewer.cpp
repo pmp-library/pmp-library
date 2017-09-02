@@ -48,7 +48,10 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
     {
         case GLFW_KEY_L:
         {
-            SurfaceSubdivision(m_mesh).catmullClark();
+            if (m_mesh.isTriangleMesh())
+                SurfaceSubdivision(m_mesh).loop();
+            else
+                SurfaceSubdivision(m_mesh).catmullClark();
             updateMesh();
             break;
         }

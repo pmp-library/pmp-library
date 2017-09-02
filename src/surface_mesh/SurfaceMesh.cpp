@@ -568,6 +568,84 @@ Normal SurfaceMesh::computeVertexNormal(Vertex v) const
 
 //-----------------------------------------------------------------------------
 
+Normal SurfaceMesh::computeCornerNormal(Halfedge h, Scalar creaseAngle) const
+{
+    // avoid numerical problems
+    if (creaseAngle < 0.001) creaseAngle = 0.001;
+
+    const Scalar cosCreaseAngle = cos(creaseAngle);
+    Point nn(0, 0, 0);
+
+    if (!isBoundary(h))
+    {
+        const Halfedge hend = h;
+        const Vertex   v0   = toVertex(h);
+        const Point    p0   = m_vpoint[v0];
+
+        Point  n, p1, p2;
+        Scalar cosine, angle, denom;
+
+
+        // compute normal of h's face   
+        p1 = m_vpoint[toVertex(nextHalfedge(h))];
+        p1 -= p0;
+        p2 = m_vpoint[fromVertex(h)];
+        p2 -= p0;
+        const Point nf = normalize(cross(p1, p2));
+
+
+        // average over all incident faces
+        do
+        {
+            if (!isBoundary(h))
+            {
+                p1 = m_vpoint[toVertex(nextHalfedge(h))];
+                p1 -= p0;
+                p2 = m_vpoint[fromVertex(h)];
+                p2 -= p0;
+
+                n = cross(p1, p2);
+
+                // check whether normal is != 0
+                denom = norm(n);
+                if (denom > std::numeric_limits<Scalar>::min())
+                {
+                    n /= denom;
+                        
+                    // check whether normal is withing creaseAngle bound
+                    if (dot(n, nf) >= cosCreaseAngle)
+                    {
+                        // check whether we can robustly compute angle
+                        denom = sqrt(dot(p1, p1) * dot(p2, p2));
+                        if (denom > std::numeric_limits<Scalar>::min())
+                        {
+                            cosine = dot(p1, p2) / denom;
+                            if (cosine < -1.0)
+                                cosine = -1.0;
+                            else if (cosine > 1.0)
+                                cosine = 1.0;
+                            angle = acos(cosine);
+
+                            n *= angle;
+                            nn += n;
+                        }
+                    }
+                }
+            }   
+
+            //h = cwRotatedHalfedge(h);
+            h = oppositeHalfedge(nextHalfedge(h));
+        } 
+        while (h != hend);
+
+        nn.normalize();
+    }
+    
+    return nn;
+}
+
+//-----------------------------------------------------------------------------
+
 void SurfaceMesh::updateFaceNormals()
 {
     auto fnormal = faceProperty<Point>("f:normal");

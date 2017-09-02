@@ -801,6 +801,12 @@ public:
     //! compute normal vector of face \c f.
     Normal computeFaceNormal(Face f) const;
 
+    //! compute normal vector of polygon corner specified to target vertex
+    //! of halfedge \c h. averages incident corner normals if they are
+    //! within \c creaseAngle of the face normal
+    //! \c creaseAngle is in radians, not degrees
+    Normal computeCornerNormal(Halfedge h, Scalar creaseAngle) const;
+
     //!@}
 
 protected:

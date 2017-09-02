@@ -29,7 +29,6 @@
 //=============================================================================
 
 #include "TrackballViewer.h"
-#include "phong_shader.h"
 #include <algorithm>
 
 //=============================================================================
@@ -232,12 +231,6 @@ void TrackballViewer::init()
 
     // init modelview
     m_modelviewMatrix = mat4::identity();
-
-    // load wireframe & Phong shaders
-    m_phongShader.source(phong_vshader, phong_fshader);
-    m_phongShader.use();
-    m_phongShader.bind_attrib("v_position", 0);
-    m_phongShader.bind_attrib("v_normal",   1);
 
     // turn on multi-sampling to anti-alias lines
     glEnable(GL_MULTISAMPLE);

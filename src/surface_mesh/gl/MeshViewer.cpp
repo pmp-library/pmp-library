@@ -88,8 +88,6 @@ bool MeshViewer::loadMesh(const char* filename)
 void MeshViewer::updateMesh()
 {
     // re-compute face and vertex normals
-    m_mesh.updateFaceNormals();
-    m_mesh.updateVertexNormals();
     m_mesh.updateOpenGLBuffers();
 }
 
@@ -97,54 +95,35 @@ void MeshViewer::updateMesh()
 
 void MeshViewer::draw(const std::string& drawMode)
 {
-    if (m_mesh.isEmpty())
-        return;
-
-
-    // setup matrices
-    mat4 mv_matrix  = m_modelviewMatrix;
-    mat4 mvp_matrix = m_projectionMatrix * m_modelviewMatrix;
-    mat3 n_matrix   = inverse(transpose(mat3(mv_matrix)));
-
-
-    // render filled surface triangles with Phong lighting
-    m_phongShader.use();
-    m_phongShader.set_uniform("modelview_projection_matrix", mvp_matrix);
-    m_phongShader.set_uniform("modelview_matrix", mv_matrix);
-    m_phongShader.set_uniform("normal_matrix", n_matrix);
-    m_phongShader.set_uniform("light1", normalize(vec3( 1.0, 1.0, 1.0)));
-    m_phongShader.set_uniform("light2", normalize(vec3(-1.0, 1.0, 1.0)));
-    m_phongShader.set_uniform("color", vec3(0.45, 0.5, 0.55));
-
-
-    if (drawMode == "Points")
-    {
-        m_mesh.drawPoints();
-    }
-
-    else if (drawMode == "Hidden Line")
-    {
-        // draw faces
-        glDepthRange(0.01, 1.0);
-        m_mesh.drawFaces();
-
-        // overlay edges
-        glDepthRange(0.0, 1.0);
-        glDepthFunc(GL_LEQUAL);
-        m_phongShader.set_uniform("color", vec3(0.1, 0.1, 0.1));
-        m_mesh.drawEdges();
-        glDepthFunc(GL_LESS);
-    }
-
-    else if (drawMode == "Smooth Shading")
-    {
-        m_mesh.drawFaces();
-    }
-
-
-    glCheckError();
+    m_mesh.draw(m_projectionMatrix, m_modelviewMatrix, drawMode);
 }
 
+//-----------------------------------------------------------------------------
+//
+void MeshViewer::keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (action != GLFW_PRESS) // only react on key press events
+        return;
+
+    switch (key)
+    {
+        case GLFW_KEY_C:
+        {
+            if (mods & GLFW_MOD_SHIFT)
+                m_mesh.setCreaseAngle( m_mesh.creaseAngle() + 10 );
+            else
+                m_mesh.setCreaseAngle( m_mesh.creaseAngle() - 10 );
+            std::cout << "crease angle: " << m_mesh.creaseAngle() << std::endl;
+            break;
+        }
+
+        default:
+        {
+            TrackballViewer::keyboard(window, key, scancode, action, mods);
+            break;
+        }
+    }
+}
 
 //=============================================================================
 } // namespace surface_mesh

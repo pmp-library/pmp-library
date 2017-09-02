@@ -3,6 +3,7 @@
 //=============================================================================
 
 #include <surface_mesh/gl/gl.h>
+#include <surface_mesh/gl/Shader.h>
 #include <surface_mesh/Vector.h>
 #include <surface_mesh/Matrix.h>
 #include <surface_mesh/SurfaceMesh.h>
@@ -23,10 +24,16 @@ public:
     //! default destructor
     ~SurfaceMeshGL();
 
-    // draw mesh elements
-    void drawPoints();
-    void drawEdges();
-    void drawFaces();
+    //! get crease angle (in degrees) for visualization of sharp edges
+    Scalar creaseAngle() const { return crease_angle_; }
+
+    //! set crease angle (in degrees) for visualization of sharp edges
+    void setCreaseAngle(Scalar ca);
+
+    //! draw the mesh
+    void draw(const mat4& projectionMatrix,
+              const mat4& modelviewMatrix,
+              const std::string drawMode);
 
     //! update all opengl buffers for efficient core profile rendering
     void updateOpenGLBuffers();
@@ -34,16 +41,7 @@ public:
 
 private:
 
-    void crease_normals(std::vector<Point>& vertex_normals);
-
-
-private:
-
     // material parameters
-    vec3  front_color_;
-    vec3  back_color_;
-    vec3  wire_color_;
-    vec4  material_;
     float crease_angle_;
 
     //! OpenGL buffers 
@@ -56,6 +54,9 @@ private:
     GLsizei n_vertices_;
     GLsizei n_edges_;
     GLsizei n_triangles_;
+
+    //! shaders
+    Shader  m_phongShader;
 };
 
 
