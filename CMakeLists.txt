@@ -11,7 +11,6 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
 
 set(GLFW_SOURCE_DIR "external/glfw")
-# set(GLM_SOURCE_DIR "external/glm")
 set(GLEW_SOURCE_DIR "external/glew")
 
 # Building only the GLFW lib
@@ -21,18 +20,24 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
 set(GLFW_INSTALL OFF CACHE BOOL "")
 
-add_subdirectory(${GLFW_SOURCE_DIR} ${GLEW_SOURCE_DIR})
 
-include_directories(${GLFW_SOURCE_DIR}/include
-  ${GLFW_SOURCE_DIR}/deps
-  ${GLEW_SOURCE_DIR}/include)
+# setup use of GLFW and GLEW
+if (NOT EMSCRIPTEN)
+    add_subdirectory(${GLFW_SOURCE_DIR} ${GLEW_SOURCE_DIR})
 
-add_definitions(-DGLEW_STATIC)
-add_library(glew STATIC
-  ${GLEW_SOURCE_DIR}/src/glew.c
-  ${GLEW_SOURCE_DIR}/include
-)
-target_link_libraries(glew ${GLFW_LIBRARIES})
+    include_directories(${GLFW_SOURCE_DIR}/include
+                        ${GLFW_SOURCE_DIR}/deps
+                        ${GLEW_SOURCE_DIR}/include)
+
+    add_definitions(-DGLEW_STATIC)
+    add_library(glew STATIC
+                ${GLEW_SOURCE_DIR}/src/glew.c
+                ${GLEW_SOURCE_DIR}/include)
+    target_link_libraries(glew ${GLFW_LIBRARIES})
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_GLFW=3")
+endif()
+
 
 include(AddFileDependencies)
 include_directories(${CMAKE_SOURCE_DIR}/src/)
@@ -69,17 +74,23 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 
+
 # set default compiler flags
 if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pedantic -Wall -Wextra")
 endif()
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND NOT EMSCRIPTEN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pedantic -Wall -Wextra -Wno-unused-parameter")
 endif()
 
 if(WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_USE_MATH_DEFINES")
+endif()
+
+if (EMSCRIPTEN)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -s ALLOW_MEMORY_GROWTH=1")
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
 
@@ -98,17 +109,28 @@ if(SM_INDEX_TYPE EQUAL 64)
   add_definitions(-DSM_INDEX_TYPE_64)
 endif()
 
-add_subdirectory(src/surface_mesh)
-add_subdirectory(src/apps)
-add_subdirectory(doc)
-add_subdirectory(examples)
-add_subdirectory(benchmarks)
 
-enable_testing()
-add_subdirectory(tests)
+# which directories to process
+if (EMSCRIPTEN)
+    add_subdirectory(src/surface_mesh)
+    add_subdirectory(src/apps)
+else()
+    add_subdirectory(src/surface_mesh)
+    add_subdirectory(src/apps)
+    add_subdirectory(doc)
+    add_subdirectory(examples)
+    add_subdirectory(benchmarks)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
 
 set(CPACK_PACKAGE_VERSION 1.1)
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}")
 set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
 set(CPACK_SOURCE_GENERATOR "ZIP")
 include(CPack)
+
+
+
+

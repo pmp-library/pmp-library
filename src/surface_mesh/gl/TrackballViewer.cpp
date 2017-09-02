@@ -103,12 +103,14 @@ void TrackballViewer::keyboard(GLFWwindow* /*window*/, int key, int /*scancode*/
 
     switch (key)
     {
+#ifndef __EMSCRIPTEN__
         case GLFW_KEY_ESCAPE:
         case GLFW_KEY_Q:
         {
             exit(0);
             break;
         }
+#endif
         case GLFW_KEY_SPACE:
         {
             if (++m_drawMode >= m_nDrawModes)

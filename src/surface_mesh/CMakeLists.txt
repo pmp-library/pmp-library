@@ -1,10 +1,10 @@
 file(GLOB SOURCES ./*.cpp)
 file(GLOB HEADERS ./*.h)
 
-if(UNIX)
-  add_library(surface_mesh SHARED ${SOURCES} ${HEADERS})
-elseif(WIN32)
+if (WIN32 OR EMSCRIPTEN)
   add_library(surface_mesh STATIC ${SOURCES} ${HEADERS})
+elseif(UNIX)
+  add_library(surface_mesh SHARED ${SOURCES} ${HEADERS})
 endif()
 
 set_target_properties(surface_mesh PROPERTIES VERSION 1.0)

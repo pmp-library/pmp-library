@@ -77,6 +77,7 @@ bool MeshViewer::loadMesh(const char* filename)
             << m_mesh.nVertices() << " vertices, "
             << m_mesh.nFaces() << " faces\n";
 
+        m_filename = filename;
         return true;
     }
 
@@ -107,7 +108,13 @@ void MeshViewer::keyboard(GLFWwindow* window, int key, int scancode, int action,
 
     switch (key)
     {
-        case GLFW_KEY_C:
+        case GLFW_KEY_BACKSPACE: // reload model
+        {
+            loadMesh(m_filename.c_str());
+            break;
+        }
+
+        case GLFW_KEY_C: // adjust crease angle
         {
             if (mods & GLFW_MOD_SHIFT)
                 m_mesh.setCreaseAngle( m_mesh.creaseAngle() + 10 );

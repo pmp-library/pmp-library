@@ -69,6 +69,7 @@ public:
 
 protected:
     SurfaceMeshGL m_mesh; //!< the mesh
+    std::string m_filename; //!< the current file
 };
 
 //=============================================================================
