@@ -123,5 +123,12 @@ TEST_F(EdgeSetTest, addRemove)
     EXPECT_EQ(es.nVertices(), size_t(0));
 }
 
+TEST_F(EdgeSetTest, read)
+{
+    es.read("data/3rings.knt");
+    EXPECT_EQ(es.nVertices(), size_t(36));
+    EXPECT_EQ(es.nEdges(), size_t(36));
+}
+
 
 //=============================================================================

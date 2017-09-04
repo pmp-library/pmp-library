@@ -30,6 +30,8 @@
 //=============================================================================
 
 #include <surface_mesh/EdgeSet.h>
+#include <surface_mesh/io/EdgeSetIO.h>
+
 #include <cmath>
 #include <exception>
 
@@ -110,6 +112,13 @@ EdgeSet& EdgeSet::assign(const EdgeSet& rhs)
     }
 
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+
+bool EdgeSet::read(const std::string& filename)
+{
+    return EdgeSetIO::read(*this,filename);
 }
 
 //-----------------------------------------------------------------------------
