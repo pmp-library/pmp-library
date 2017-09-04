@@ -33,8 +33,8 @@ public:
   bool source(const char* vshader, const char* fshader);
 
   //! load (from file), compile, and link vertex and fragment shader,
-  //! \param vshader string with the adress to the vertex shader
-  //! \param fshader string with the adress to the fragment shader
+  //! \param vfile string with the adress to the vertex shader
+  //! \param ffile string with the adress to the fragment shader
   bool load(const char* vfile, const char* ffile);
 
   //! enable/bind this shader program
