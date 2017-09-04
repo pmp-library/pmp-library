@@ -699,6 +699,7 @@ template<typename T> using HalfedgeProperty = SurfaceMesh::HalfedgeProperty<T>;
 template<typename T> using FaceProperty = SurfaceMesh::FaceProperty<T>;
 typedef SurfaceMesh::VertexConnectivity VertexConnectivity;
 typedef SurfaceMesh::HalfedgeConnectivity HalfedgeConnectivity;
+typedef SurfaceMesh::HalfedgeFaceConnectivity HalfedgeFaceConnectivity;
 typedef SurfaceMesh::FaceConnectivity FaceConnectivity;
 
 //== IMPLEMENTATION ===========================================================
@@ -745,19 +746,21 @@ bool SurfaceMeshIO::readPoly(SurfaceMesh& mesh, const std::string& filename)
     mesh.m_fprops.resize(nf);
 
     // get properties
-    auto vconn = mesh.vertexProperty<VertexConnectivity>("v:connectivity");
-    auto hconn = mesh.halfedgeProperty<HalfedgeConnectivity>("h:connectivity");
-    auto fconn = mesh.faceProperty<FaceConnectivity>("f:connectivity");
-    auto point = mesh.vertexProperty<Point>("v:point");
+    auto vconn  = mesh.vertexProperty<VertexConnectivity>("v:connectivity");
+    auto hconn  = mesh.halfedgeProperty<HalfedgeConnectivity>("h:connectivity");
+    auto hfconn = mesh.halfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
+    auto fconn  = mesh.faceProperty<FaceConnectivity>("f:connectivity");
+    auto point  = mesh.vertexProperty<Point>("v:point");
 
     // read properties from file
-    size_t nvc = fread((char*)vconn.data(), sizeof(VertexConnectivity), nv, in);
-    size_t nhc = fread((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, in);
-    size_t nfc = fread((char*)fconn.data(), sizeof(FaceConnectivity), nf, in);
-    size_t np  = fread((char*)point.data(), sizeof(Point), nv, in);
-
+    size_t nvc  = fread((char*)vconn.data(),  sizeof(VertexConnectivity), nv, in);
+    size_t nhc  = fread((char*)hconn.data(),  sizeof(HalfedgeConnectivity), nh, in);
+    size_t nhfc = fread((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, in);
+    size_t nfc  = fread((char*)fconn.data(),  sizeof(FaceConnectivity), nf, in);
+    size_t np   = fread((char*)point.data(),  sizeof(Point), nv, in);
     SM_ASSERT(nvc == nv);
     SM_ASSERT(nhc == nh);
+    SM_ASSERT(nhfc == nh);
     SM_ASSERT(nfc == nf);
     SM_ASSERT(np  == nv);
 
@@ -769,10 +772,6 @@ bool SurfaceMeshIO::readPoly(SurfaceMesh& mesh, const std::string& filename)
 
 bool SurfaceMeshIO::writePoly(const SurfaceMesh& mesh, const std::string& filename)
 {
-    // check for colors
-    auto color     = mesh.getVertexProperty<Color>("v:color");
-    bool hasColors = color;
-
     // open file (in binary mode)
     FILE* out = fopen(filename.c_str(), "wb");
     if (!out)
@@ -788,23 +787,21 @@ bool SurfaceMeshIO::writePoly(const SurfaceMesh& mesh, const std::string& filena
     tfwrite(out, nv);
     tfwrite(out, ne);
     tfwrite(out, nf);
-    tfwrite(out, hasColors);
     nh = 2 * ne;
 
     // get properties
-    auto vconn = mesh.getVertexProperty<VertexConnectivity>("v:connectivity");
-    auto hconn = mesh.getHalfedgeProperty<HalfedgeConnectivity>("h:connectivity");
-    auto fconn = mesh.getFaceProperty<FaceConnectivity>("f:connectivity");
-    auto point = mesh.getVertexProperty<Point>("v:point");
+    auto vconn  = mesh.getVertexProperty<VertexConnectivity>("v:connectivity");
+    auto hconn  = mesh.getHalfedgeProperty<HalfedgeConnectivity>("h:connectivity");
+    auto hfconn = mesh.getHalfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
+    auto fconn  = mesh.getFaceProperty<FaceConnectivity>("f:connectivity");
+    auto point  = mesh.getVertexProperty<Point>("v:point");
 
     // write properties to file
-    fwrite((char*)vconn.data(), sizeof(VertexConnectivity), nv, out);
-    fwrite((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, out);
-    fwrite((char*)fconn.data(), sizeof(FaceConnectivity), nf, out);
-    fwrite((char*)point.data(), sizeof(Point), nv, out);
-
-    if (hasColors)
-        fwrite((char*)color.data(), sizeof(Color), nv, out);
+    fwrite((char*)vconn.data(),  sizeof(VertexConnectivity), nv, out);
+    fwrite((char*)hconn.data(),  sizeof(HalfedgeConnectivity), nh, out);
+    fwrite((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, out);
+    fwrite((char*)fconn.data(),  sizeof(FaceConnectivity), nf, out);
+    fwrite((char*)point.data(),  sizeof(Point), nv, out);
 
     fclose(out);
 
