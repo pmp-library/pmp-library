@@ -46,6 +46,12 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
 
     switch (key)
     {
+        case GLFW_KEY_F:
+        {
+            SurfaceFeatures sf(m_mesh);
+            sf.detectAngle(70);
+            break;
+        }
         case GLFW_KEY_L:
         {
             if (m_mesh.isTriangleMesh())
