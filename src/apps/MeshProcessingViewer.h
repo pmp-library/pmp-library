@@ -30,7 +30,6 @@
 #pragma once
 //=============================================================================
 
-#include <surface_mesh/SurfaceMesh.h>
 #include <surface_mesh/gl/MeshViewer.h>
 
 //=============================================================================
@@ -50,3 +49,5 @@ protected:
     void keyboard(GLFWwindow* window, int key, int scancode,
                   int action, int mod);
 };
+
+//=============================================================================
