@@ -52,7 +52,7 @@ bool EdgeSetIO::read(EdgeSet& es, const std::string& filename)
 
     if (ext == "knt")
     {
-        readKNT(es,filename);
+        return readKNT(es,filename);
     }
 
     return false;
