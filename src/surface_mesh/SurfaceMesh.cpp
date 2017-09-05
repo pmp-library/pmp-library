@@ -586,7 +586,7 @@ Normal SurfaceMesh::computeCornerNormal(Halfedge h, Scalar creaseAngle) const
         Scalar cosine, angle, denom;
 
 
-        // compute normal of h's face   
+        // compute normal of h's face
         p1 = m_vpoint[toVertex(nextHalfedge(h))];
         p1 -= p0;
         p2 = m_vpoint[fromVertex(h)];
@@ -611,7 +611,7 @@ Normal SurfaceMesh::computeCornerNormal(Halfedge h, Scalar creaseAngle) const
                 if (denom > std::numeric_limits<Scalar>::min())
                 {
                     n /= denom;
-                        
+
                     // check whether normal is withing creaseAngle bound
                     if (dot(n, nf) >= cosCreaseAngle)
                     {
@@ -631,16 +631,16 @@ Normal SurfaceMesh::computeCornerNormal(Halfedge h, Scalar creaseAngle) const
                         }
                     }
                 }
-            }   
+            }
 
             //h = cwRotatedHalfedge(h);
             h = oppositeHalfedge(nextHalfedge(h));
-        } 
+        }
         while (h != hend);
 
         nn.normalize();
     }
-    
+
     return nn;
 }
 
@@ -1141,10 +1141,10 @@ void SurfaceMesh::removeEdge(Halfedge h)
     setHalfedge(vo, Halfedge());
 
     // delete stuff
-    if (!m_vdeleted) m_vdeleted = vertexProperty<bool>("v:deleted", false);
-    if (!m_edeleted) m_edeleted = edgeProperty<bool>("e:deleted", false);
-    m_vdeleted[vo]      = true; ++m_deletedVertices;
-    m_edeleted[edge(h)] = true; ++m_deletedEdges;
+    m_vdeleted[vo] = true;
+    ++m_deletedVertices;
+    m_edeleted[edge(h)] = true;
+    ++m_deletedEdges;
     m_garbage = true;
 }
 
@@ -1185,8 +1185,6 @@ void SurfaceMesh::removeLoop(Halfedge h)
         setHalfedge(fo, h1);
 
     // delete stuff
-    if (!m_edeleted) m_edeleted = edgeProperty<bool>("e:deleted", false);
-    if (!m_fdeleted) m_fdeleted = faceProperty<bool>("f:deleted", false);
     if (fh.isValid())
     {
         m_fdeleted[fh] = true;
