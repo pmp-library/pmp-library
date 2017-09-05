@@ -902,9 +902,6 @@ public:
     //! deletes the edge \c e from the mesh
     virtual void deleteEdge(Edge e);
 
-    //! marks the edge as deleted
-    void markEdgeRemoved(Edge e);
-
     //!@}
     //! \name Geometry-related Functions
     //!@{

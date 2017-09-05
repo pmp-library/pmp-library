@@ -391,22 +391,10 @@ void EdgeSet::deleteEdge(Edge e)
             setHalfedge(v1, next1);
     }
 
-    // mark the edge for deletion
-    markEdgeRemoved(e);
-}
-
-//-----------------------------------------------------------------------------
-
-void EdgeSet::markEdgeRemoved(Edge e)
-{
-    if (!m_edeleted)
-        m_edeleted = edgeProperty<bool>("e:deleted", false);
-
+    // mark edge deleted
     m_edeleted[e] = true;
-
     ++m_deletedEdges;
-
-    setGarbage();
+    m_garbage = true;
 }
 
 //-----------------------------------------------------------------------------
