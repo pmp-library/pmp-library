@@ -14,6 +14,12 @@ namespace surface_mesh {
 
 //=============================================================================
 
+//! \addtogroup gl gl
+//! @{
+
+//=============================================================================
+
+//! Class for rendering surface meshes using OpenGL
 class SurfaceMeshGL : public SurfaceMesh
 {
 public:
@@ -44,7 +50,7 @@ private:
     // material parameters
     float crease_angle_;
 
-    //! OpenGL buffers 
+    //! OpenGL buffers
     GLuint vertex_array_object_;
     GLuint vertex_buffer_;
     GLuint normal_buffer_;
@@ -59,7 +65,8 @@ private:
     Shader  m_phongShader;
 };
 
-
+//=============================================================================
+//! @}
 //=============================================================================
 } // namespace
 //=============================================================================

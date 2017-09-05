@@ -42,6 +42,8 @@ namespace surface_mesh {
 //! \addtogroup gl gl
 //! @{
 
+//=============================================================================
+
 //! Simple viewer for a SurfaceMesh
 class MeshViewer : public TrackballViewer
 {
