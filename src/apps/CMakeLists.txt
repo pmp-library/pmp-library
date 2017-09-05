@@ -16,9 +16,12 @@ if (EMSCRIPTEN)
 
 else()
 
-    if(OpenGL_FOUND)
-        add_executable(mview mview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h)
-        target_link_libraries(mview surface_mesh_gl glew)
-    endif() 
+  if(OpenGL_FOUND)
+    add_executable(mview mview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h)
+    target_link_libraries(mview surface_mesh_gl glew)
+
+    add_executable(eview eview.cpp EdgeSetProcessingViewer.cpp EdgeSetProcessingViewer.h)
+    target_link_libraries(eview surface_mesh_gl glew)
+  endif()
 
 endif()
