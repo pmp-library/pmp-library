@@ -42,7 +42,7 @@ namespace surface_mesh {
 //! \addtogroup gl gl
 //! @{
 
-//! Simple viewer for a SurfaceEdgeSet
+//! Simple viewer for a EdgeSet
 class EdgeSetViewer : public TrackballViewer
 {
 public:
@@ -52,7 +52,7 @@ public:
     //! destructor
     virtual ~EdgeSetViewer();
 
-    //! load a mesh from file \c filename
+    //! load a edge set from file \c filename
     virtual bool loadEdgeSet(const char* filename);
 
     //! update all buffers for OpenGL rendering.  call this function whenever

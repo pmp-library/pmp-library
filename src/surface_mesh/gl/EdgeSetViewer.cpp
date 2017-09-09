@@ -59,7 +59,7 @@ EdgeSetViewer::~EdgeSetViewer()
 
 bool EdgeSetViewer::loadEdgeSet(const char* filename)
 {
-    // load mesh
+    // load edge set
     if (m_edgeSet.read(filename))
     {
         // update scene center and bounds
