@@ -22,6 +22,9 @@ else()
 
     add_executable(eview eview.cpp EdgeSetProcessingViewer.cpp EdgeSetProcessingViewer.h)
     target_link_libraries(eview surface_mesh_gl glew)
+
+    add_executable(pview pview.cpp PointSetProcessingViewer.cpp PointSetProcessingViewer.h)
+    target_link_libraries(pview surface_mesh_gl glew)
   endif()
 
 endif()
