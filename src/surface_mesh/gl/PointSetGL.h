@@ -68,6 +68,7 @@ private:
     //! OpenGL buffers
     GLuint vertex_array_object_;
     GLuint vertex_buffer_;
+    GLuint normal_buffer_;
 
     //! buffer sizes
     GLsizei n_vertices_;

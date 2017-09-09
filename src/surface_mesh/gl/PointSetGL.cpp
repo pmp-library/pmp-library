@@ -43,6 +43,7 @@ PointSetGL::PointSetGL()
     // initialize GL buffers to zero
     vertex_array_object_ = 0;
     vertex_buffer_       = 0;
+    normal_buffer_       = 0;
 
     // initialize buffer sizes
     n_vertices_ = 0;
@@ -54,6 +55,7 @@ PointSetGL::~PointSetGL()
 {
     // delete OpenGL buffers
     glDeleteBuffers(1, &vertex_buffer_);
+    glDeleteBuffers(1, &normal_buffer_);
     glDeleteVertexArrays(1, &vertex_array_object_);
 }
 
@@ -67,19 +69,28 @@ void PointSetGL::updateOpenGLBuffers()
         glGenVertexArrays(1, &vertex_array_object_);
         glBindVertexArray(vertex_array_object_);
         glGenBuffers(1, &vertex_buffer_);
+        glGenBuffers(1, &normal_buffer_);
     }
 
     // activate VAO
     glBindVertexArray(vertex_array_object_);
 
-    auto positions = getVertexProperty<Point>("v:point");
     // vertices
+    auto positions = getVertexProperty<Point>("v:point");
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
     glBufferData(GL_ARRAY_BUFFER, nVertices() * 3 * sizeof(float),
                  positions.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
     n_vertices_ = nVertices();
+
+    // normals
+    auto normals = getVertexProperty<Normal>("v:normal");
+    glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
+    glBufferData(GL_ARRAY_BUFFER, nVertices() * 3 * sizeof(float),
+                 normals.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(1);
 
     // unbind vertex array
     glBindVertexArray(0);
@@ -102,6 +113,7 @@ void PointSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
         m_phongShader.source(phong_vshader, phong_fshader);
         m_phongShader.use();
         m_phongShader.bind_attrib("v_position", 0);
+        m_phongShader.bind_attrib("v_normal",   1);
     }
 
     // empty point set?
