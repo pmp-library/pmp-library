@@ -34,7 +34,6 @@
 
 //=============================================================================
 
-//! Simple viewer for a SurfaceEdgeSet
 class EdgeSetProcessingViewer : public surface_mesh::EdgeSetViewer
 {
 public:

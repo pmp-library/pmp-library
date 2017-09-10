@@ -34,7 +34,6 @@
 
 //=============================================================================
 
-//! Simple viewer for a SurfacePointSet
 class PointSetProcessingViewer : public surface_mesh::PointSetViewer
 {
 public:
