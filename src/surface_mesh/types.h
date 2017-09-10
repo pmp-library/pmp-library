@@ -82,6 +82,19 @@ typedef std::uint_least32_t IndexType;
 #endif
 
 
+//! \defgroup algorithms algorithms
+//! \brief Geometry processing algorithms.
+
+//! \defgroup geometry geometry
+//! \brief Data structures for representing geometric data sets.
+
+//! \defgroup gl gl
+//! \brief Visualization tools using OpenGL.
+
+//! \defgroup io io
+//! \brief Classes for reading and writing geometry data structures.
+
+
 //=============================================================================
 } // namespace surface_mesh
 //=============================================================================
