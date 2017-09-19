@@ -105,6 +105,7 @@ Window::Window(const char* title, int width, int height)
     if (m_scaling != 1) std::cout << "highDPI scaling: " << m_scaling << std::endl;
 
     // register glfw callbacks
+    glfwSetErrorCallback(glfwError);
     glfwSetKeyCallback(m_window, glfwKeyboard);
     glfwSetCursorPosCallback(m_window, glfwMotion);
     glfwSetMouseButtonCallback(m_window, glfwMouse);
