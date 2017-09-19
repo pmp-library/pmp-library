@@ -47,7 +47,10 @@ int main(int argc, char **argv)
 {
 #ifdef __EMSCRIPTEN__
     Viewer window("Subdivision", 800, 600);
-    window.loadMesh("input.obj");
+    if (argc == 2)
+        window.loadMesh(argv[1]);
+    else
+        window.loadMesh("input.obj");
     return window.run();
 #endif
 }

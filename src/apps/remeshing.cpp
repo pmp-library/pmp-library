@@ -61,7 +61,10 @@ int main(int argc, char **argv)
 {
 #ifdef __EMSCRIPTEN__
     Viewer window("Remeshing", 800, 600);
-    window.loadMesh("input.off");
+    if (argc == 2)
+        window.loadMesh(argv[1]);
+    else
+        window.loadMesh("input.off");
     return window.run();
 #endif
 }

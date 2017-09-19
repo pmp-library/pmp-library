@@ -66,8 +66,27 @@
       var statusElement = document.getElementById('status');
       var progressElement = document.getElementById('progress');
 
+      function getUrlVars() 
+      {
+          var vars = {};
+          var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+              vars[key] = value;
+          });
+          return vars;
+      }
+
       var Module = {
-        preRun: [],
+        preRun: [ function(){
+	          var modelFileName = getUrlVars()["model"];
+	          if ( modelFileName )
+              {
+                  var filename = modelFileName.split('/').pop();
+                  console.log("reading " + modelFileName);
+                  Module.arguments = [filename];
+                  FS.createPreloadedFile('./', filename, modelFileName, true, false);
+              }
+        }],
+        <!--preRun: [],-->
         postRun: [],
         print: (function() {
           var element = document.getElementById('output');
