@@ -18,12 +18,11 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 # copy test data
 file(COPY data DESTINATION  ${CMAKE_CURRENT_BINARY_DIR})
 
+# source files
+file(GLOB SOURCES ./*.cpp)
+
 # build test runnger
-add_executable(gtest_runner
-  test_geometry_object.cpp
-  test_point_set.cpp
-  test_edge_set.cpp
-  test_surface_mesh.cpp)
+add_executable(gtest_runner ${SOURCES})
 
 if(UNIX OR APPLE)
   target_link_libraries(gtest_runner surface_mesh googletest pthread)
