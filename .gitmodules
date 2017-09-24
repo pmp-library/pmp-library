@@ -4,3 +4,6 @@
 [submodule "external/glfw"]
 	path = external/glfw
 	url = https://github.com/glfw/glfw.git
+[submodule "external/pmp-data"]
+	path = external/pmp-data
+	url = https://github.com/pmp-library/pmp-data.git
