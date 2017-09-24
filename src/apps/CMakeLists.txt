@@ -4,15 +4,15 @@ if (EMSCRIPTEN)
 
     add_executable(mview mview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h)
     target_link_libraries(mview surface_mesh_gl surface_mesh)
-    set_target_properties(mview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/data/suzanne.obj@input.obj")
+    set_target_properties(mview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/obj/suzanne.obj@input.obj")
 
     add_executable(subdiv subdiv.cpp)
     target_link_libraries(subdiv surface_mesh_gl surface_mesh)
-    set_target_properties(subdiv PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/data/suzanne.obj@input.obj")
+    set_target_properties(subdiv PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/obj/suzanne.obj@input.obj")
 
     add_executable(remeshing remeshing.cpp)
     target_link_libraries(remeshing surface_mesh_gl surface_mesh)
-    set_target_properties(remeshing PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/data/bunny.off@input.off")
+    set_target_properties(remeshing PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
 
 else()
 
