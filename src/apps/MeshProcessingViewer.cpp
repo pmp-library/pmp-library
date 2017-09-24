@@ -61,6 +61,11 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             updateMesh();
             break;
         }
+        case GLFW_KEY_O:
+        {
+            m_mesh.write("output.off");
+            break;
+        }
         case GLFW_KEY_R:
         {
             // adaptive remeshing
