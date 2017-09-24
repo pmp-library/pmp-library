@@ -71,59 +71,24 @@ void SurfaceRemeshing::uniformRemeshing(Scalar       edgeLength,
     m_useProjection    = useProjection;
     m_targetEdgeLength = edgeLength;
 
-    double tPre(0);
-    double tSplit(0);
-    double tCollapse(0);
-    double tFlip(0);
-    double tSmooth(0);
-    double tCaps(0);
-    Timer  timer;
-
-    timer.start();
     preprocessing();
-    timer.stop();
-    tPre = timer.elapsed();
 
     for (unsigned int i = 0; i < iterations; ++i)
     {
-        timer.start();
         splitLongEdges();
-        timer.stop();
-        tSplit += timer.elapsed();
 
         m_mesh.updateVertexNormals();
 
-        timer.start();
         collapseShortEdges();
-        timer.stop();
-        tCollapse += timer.elapsed();
 
-        timer.start();
         flipEdges();
-        timer.stop();
-        tFlip += timer.elapsed();
 
-        timer.start();
         tangentialSmoothing(5);
-        timer.stop();
-        tSmooth += timer.elapsed();
     }
 
-    timer.start();
     removeCaps();
-    timer.stop();
-    tCaps += timer.elapsed();
 
     postprocessing();
-
-    // std::cout << "Remeshing times:\n";
-    // std::cout << "preproc:  " << tPre << "ms\n";
-    // std::cout << "split:    " << tSplit << "ms\n";
-    // std::cout << "collapse: " << tCollapse << "ms\n";
-    // std::cout << "flip:     " << tFlip << "ms\n";
-    // std::cout << "smooth:   " << tSmooth << "ms\n";
-    // std::cout << "caps:     " << tCaps << "ms\n";
-    // std::cout << std::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -146,59 +111,24 @@ void SurfaceRemeshing::adaptiveRemeshing(Scalar       minEdgeLength,
     m_approxError   = approxError;
     m_useProjection = useProjection;
 
-    double tPre(0);
-    double tSplit(0);
-    double tCollapse(0);
-    double tFlip(0);
-    double tSmooth(0);
-    double tCaps(0);
-    Timer  timer;
-
-    timer.start();
     preprocessing();
-    timer.stop();
-    tPre = timer.elapsed();
 
     for (unsigned int i = 0; i < iterations; ++i)
     {
-        timer.start();
         splitLongEdges();
-        timer.stop();
-        tSplit += timer.elapsed();
 
         m_mesh.updateVertexNormals();
 
-        timer.start();
         collapseShortEdges();
-        timer.stop();
-        tCollapse += timer.elapsed();
 
-        timer.start();
         flipEdges();
-        timer.stop();
-        tFlip += timer.elapsed();
 
-        timer.start();
         tangentialSmoothing(5);
-        timer.stop();
-        tSmooth += timer.elapsed();
     }
 
-    timer.start();
     removeCaps();
-    timer.stop();
-    tCaps += timer.elapsed();
 
     postprocessing();
-
-    // std::cout << "Remeshing times:\n";
-    // std::cout << "preproc:  " << tPre << "ms\n";
-    // std::cout << "split:    " << tSplit << "ms\n";
-    // std::cout << "collapse: " << tCollapse << "ms\n";
-    // std::cout << "flip:     " << tFlip << "ms\n";
-    // std::cout << "smooth:   " << tSmooth << "ms\n";
-    // std::cout << "caps:     " << tCaps << "ms\n";
-    // std::cout << std::endl;
 }
 
 //-----------------------------------------------------------------------------
