@@ -51,9 +51,11 @@ namespace surface_mesh {
 class MemoryUsage
 {
 public:
+    //! \brief Get the maximum memory size the application has used so far.
     //! \return the max. resident set size (RSS) in bytes
     static size_t maxSize();
 
+    //! \brief Get the currently used memory.
     //! \return the current resident set size (RSS) in bytes
     static size_t currentSize();
 };
@@ -123,7 +125,7 @@ size_t MemoryUsage::currentSize()
     {
         std::cerr << "Failed to retrieve task information" << std::endl;
         return 0;
-    }xs
+    }
     return (size_t)info.resident_size;
 
 #else
