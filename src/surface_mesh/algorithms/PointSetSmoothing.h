@@ -27,38 +27,72 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
+#pragma once
+//=============================================================================
 
-#include "PointSetProcessingViewer.h"
-
-#include <surface_mesh/algorithms/PointSetSmoothing.h>
+#include <surface_mesh/PointSet.h>
 
 //=============================================================================
 
-using namespace surface_mesh;
+namespace surface_mesh {
 
 //=============================================================================
 
-void PointSetProcessingViewer::keyboard(GLFWwindow* window, int key,
-                                       int scancode, int action, int mods)
+class PointBSPTree;
+
+//=============================================================================
+
+//! \addtogroup algorithms
+//! @{
+
+//=============================================================================
+
+//! \brief A class for point set smoothing.
+//! \details Smoothing is performed based on Moving Least Squares projection.
+//! \pre Requires a PointSet with vertex normals
+class PointSetSmoothing
 {
-    if (action != GLFW_PRESS) // only react on key press events
-        return;
+public:
+    //! Constructor
+    PointSetSmoothing(PointSet& pointSet);
 
-    switch (key)
+    //! \brief Smooth all points through MLS projection.
+    void smooth();
+
+private:
+    //! Project a point \c x with normal \c n to the MLS surface
+    void project(Point& x, Point& n, const PointBSPTree& tree) const;
+
+    //! \brief Weight function.
+    //! \details We use Wendland's compactly supported C2 function
+    inline Scalar theta(Scalar x) const
     {
-        case GLFW_KEY_S:
+        if (x < m_radius)
         {
-            PointSetSmoothing pss(m_pointSet);
-            pss.smooth();
-            updatePointSet();
-            break;
+            x /= m_radius;
+            return pow((1.0 - x), 4.0) * (4.0 * x + 1.0);
         }
-        default:
+        else
         {
-            PointSetViewer::keyboard(window, key, scancode, action, mods);
-            break;
+            return 0;
         }
     }
-}
 
+    //! Weighted average for point position
+    Point weightedAveragePosition(const Point& x, std::vector<int>& ball) const;
+
+    //! weighted average for point normal
+    Point weightedAverageNormal(const Point& x, std::vector<int>& ball) const;
+
+private:
+    PointSet&    m_pointSet; //!< the point set
+    Scalar       m_radius;   //!< radius for ball queries
+    Scalar       m_epsilon;  //!< projection error threshold
+    unsigned int m_maxIter;  //!< maximal number of iterations threshold
+};
+
+//=============================================================================
+//! @}
+//=============================================================================
+} // namespace surface_mesh
 //=============================================================================
