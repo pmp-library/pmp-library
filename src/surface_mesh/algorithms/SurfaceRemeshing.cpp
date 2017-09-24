@@ -116,14 +116,14 @@ void SurfaceRemeshing::uniformRemeshing(Scalar       edgeLength,
 
     postprocessing();
 
-    std::cout << "Remeshing times:\n";
-    std::cout << "preproc:  " << tPre << "ms\n";
-    std::cout << "split:    " << tSplit << "ms\n";
-    std::cout << "collapse: " << tCollapse << "ms\n";
-    std::cout << "flip:     " << tFlip << "ms\n";
-    std::cout << "smooth:   " << tSmooth << "ms\n";
-    std::cout << "caps:     " << tCaps << "ms\n";
-    std::cout << std::endl;
+    // std::cout << "Remeshing times:\n";
+    // std::cout << "preproc:  " << tPre << "ms\n";
+    // std::cout << "split:    " << tSplit << "ms\n";
+    // std::cout << "collapse: " << tCollapse << "ms\n";
+    // std::cout << "flip:     " << tFlip << "ms\n";
+    // std::cout << "smooth:   " << tSmooth << "ms\n";
+    // std::cout << "caps:     " << tCaps << "ms\n";
+    // std::cout << std::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -191,14 +191,14 @@ void SurfaceRemeshing::adaptiveRemeshing(Scalar       minEdgeLength,
 
     postprocessing();
 
-    std::cout << "Remeshing times:\n";
-    std::cout << "preproc:  " << tPre << "ms\n";
-    std::cout << "split:    " << tSplit << "ms\n";
-    std::cout << "collapse: " << tCollapse << "ms\n";
-    std::cout << "flip:     " << tFlip << "ms\n";
-    std::cout << "smooth:   " << tSmooth << "ms\n";
-    std::cout << "caps:     " << tCaps << "ms\n";
-    std::cout << std::endl;
+    // std::cout << "Remeshing times:\n";
+    // std::cout << "preproc:  " << tPre << "ms\n";
+    // std::cout << "split:    " << tSplit << "ms\n";
+    // std::cout << "collapse: " << tCollapse << "ms\n";
+    // std::cout << "flip:     " << tFlip << "ms\n";
+    // std::cout << "smooth:   " << tSmooth << "ms\n";
+    // std::cout << "caps:     " << tCaps << "ms\n";
+    // std::cout << std::endl;
 }
 
 //-----------------------------------------------------------------------------
