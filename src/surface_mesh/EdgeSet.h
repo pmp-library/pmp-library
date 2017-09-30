@@ -467,10 +467,6 @@ public:
     //! \sa write(const std::string& filename)
     virtual bool read(const std::string& filename) override;
 
-    //     //! write mesh to file \c filename. file extensions determines file type.
-    //     //! \sa read(const std::string& filename)
-    //     virtual bool write(const std::string& filename) const override;
-
     //!@}
     //! \name Memory Management
     //!@{
@@ -572,17 +568,6 @@ public:
         } while (++hc != hcend);
 
         return count == 2;
-
-        /*Halfedge h = halfedge(v);
-          if(!h.isValid())
-          return false;
-
-          Halfedge nh = nextHalfedge(oppositeHalfedge(h));
-
-          if(!nh.isValid())
-          return false;
-
-          return nextHalfedge(oppositeHalfedge(nh)) == h;*/
     }
 
     //! returns the vertex the halfedge \c h points to
