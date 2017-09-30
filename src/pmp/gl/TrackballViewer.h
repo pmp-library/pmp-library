@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2016 by Graphics & Geometry Group, Bielefeld University
-// Copyright (C) 2017 Daniel Sieger
+// Copyright (C) 2011-2017 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -124,7 +123,7 @@ protected: //-------------------------------------------- trackball interaction
     bool mapToSphere(const ivec2& point, vec3& result);
 
 protected: //----------------------------------------------------- private data
-    
+
     //! draw modes
     unsigned int             m_drawMode;
     unsigned int             m_nDrawModes;

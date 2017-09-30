@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2013 Graphics & Geometry Group, Bielefeld University
+// Copyright (C) 2013-2017 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
