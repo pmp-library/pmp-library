@@ -29,13 +29,13 @@
 
 #include "gtest/gtest.h"
 
-#include <surface_mesh/EdgeSet.h>
-#include <surface_mesh/algorithms/EdgeSetSmoothing.h>
-#include <surface_mesh/algorithms/EdgeSetSubdivision.h>
+#include <pmp/EdgeSet.h>
+#include <pmp/algorithms/EdgeSetSmoothing.h>
+#include <pmp/algorithms/EdgeSetSubdivision.h>
 
 #include <vector>
 
-using namespace surface_mesh;
+using namespace pmp;
 
 class EdgeSetAlgorithmsTest : public ::testing::Test
 {

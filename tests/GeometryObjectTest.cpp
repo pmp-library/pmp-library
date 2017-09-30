@@ -29,9 +29,9 @@
 
 #include "gtest/gtest.h"
 
-#include <surface_mesh/PointSet.h>
+#include <pmp/PointSet.h>
 
-using namespace surface_mesh;
+using namespace pmp;
 
 TEST(GeometryObjectTest, properties)
 {

@@ -30,12 +30,12 @@
 
 #include "EdgeSetProcessingViewer.h"
 
-#include <surface_mesh/algorithms/EdgeSetSmoothing.h>
-#include <surface_mesh/algorithms/EdgeSetSubdivision.h>
+#include <pmp/algorithms/EdgeSetSmoothing.h>
+#include <pmp/algorithms/EdgeSetSubdivision.h>
 
 //=============================================================================
 
-using namespace surface_mesh;
+using namespace pmp;
 
 //=============================================================================
 

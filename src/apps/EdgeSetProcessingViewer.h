@@ -30,11 +30,11 @@
 #pragma once
 //=============================================================================
 
-#include <surface_mesh/gl/EdgeSetViewer.h>
+#include <pmp/gl/EdgeSetViewer.h>
 
 //=============================================================================
 
-class EdgeSetProcessingViewer : public surface_mesh::EdgeSetViewer
+class EdgeSetProcessingViewer : public pmp::EdgeSetViewer
 {
 public:
     //! constructor

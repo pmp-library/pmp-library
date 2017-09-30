@@ -14,7 +14,7 @@
 
 # Coding Conventions {#codingConventions}
 
-If you would like to contribute to surface_mesh please make sure
+If you would like to contribute to pmp please make sure
 your code adheres to the following coding conventions.
 
 ## Naming {#naming}
@@ -97,10 +97,10 @@ adhere to.
 - Use the <tt>\#pragma once</tt> compiler directive at the beginning of each
   header file in order to protect against multiple inclusion.
 
-- Use the `surface_mesh` namespace in order to avoid conflicts. In source files, do not
+- Use the `pmp` namespace in order to avoid conflicts. In source files, do not
   add an additional level of indentation due to the namespace:
 
-        namespace surface_mesh {
+        namespace pmp {
 
         class ExampleClass
         {

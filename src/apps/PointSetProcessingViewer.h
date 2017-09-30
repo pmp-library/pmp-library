@@ -30,11 +30,11 @@
 #pragma once
 //=============================================================================
 
-#include <surface_mesh/gl/PointSetViewer.h>
+#include <pmp/gl/PointSetViewer.h>
 
 //=============================================================================
 
-class PointSetProcessingViewer : public surface_mesh::PointSetViewer
+class PointSetProcessingViewer : public pmp::PointSetViewer
 {
 public:
     //! constructor

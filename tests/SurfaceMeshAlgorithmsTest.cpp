@@ -29,16 +29,16 @@
 
 #include "gtest/gtest.h"
 
-#include <surface_mesh/SurfaceMesh.h>
-#include <surface_mesh/algorithms/SurfaceSimplification.h>
-#include <surface_mesh/algorithms/SurfaceFeatures.h>
-#include <surface_mesh/algorithms/SurfaceSubdivision.h>
-#include <surface_mesh/algorithms/SurfaceRemeshing.h>
-#include <surface_mesh/algorithms/SurfaceCurvature.h>
+#include <pmp/SurfaceMesh.h>
+#include <pmp/algorithms/SurfaceSimplification.h>
+#include <pmp/algorithms/SurfaceFeatures.h>
+#include <pmp/algorithms/SurfaceSubdivision.h>
+#include <pmp/algorithms/SurfaceRemeshing.h>
+#include <pmp/algorithms/SurfaceCurvature.h>
 
 #include <vector>
 
-using namespace surface_mesh;
+using namespace pmp;
 
 class SurfaceMeshAlgorithmsTest : public ::testing::Test
 {

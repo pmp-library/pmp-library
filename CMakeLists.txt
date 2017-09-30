@@ -1,6 +1,6 @@
 #cmake_policy(SET CMP0048 NEW) # for project versioning
 
-project(surface_mesh)
+project(pmp)
 
 cmake_minimum_required(VERSION 3.0.2)
 
@@ -112,10 +112,10 @@ endif()
 
 # which directories to process
 if (EMSCRIPTEN)
-    add_subdirectory(src/surface_mesh)
+    add_subdirectory(src/pmp)
     add_subdirectory(src/apps)
 else()
-    add_subdirectory(src/surface_mesh)
+    add_subdirectory(src/pmp)
     add_subdirectory(src/apps)
     add_subdirectory(doc)
     add_subdirectory(examples)
@@ -130,7 +130,3 @@ set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSIO
 set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
 set(CPACK_SOURCE_GENERATOR "ZIP")
 include(CPack)
-
-
-
-

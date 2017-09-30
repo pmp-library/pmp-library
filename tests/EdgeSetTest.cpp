@@ -29,10 +29,10 @@
 
 #include "gtest/gtest.h"
 
-#include <surface_mesh/EdgeSet.h>
+#include <pmp/EdgeSet.h>
 #include <vector>
 
-using namespace surface_mesh;
+using namespace pmp;
 
 class EdgeSetTest : public ::testing::Test
 {

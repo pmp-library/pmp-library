@@ -30,29 +30,29 @@ handles. These handles, as well as the handles for the other mesh entities
 mesh, as well as four triangular faces composing a tetrahedron. Finally, the
 number of vertices, edges, and faces is printed to standard output.
 
-\snippet surface_mesh_basics.cpp basics
+\snippet SurfaceMeshBasics.cpp basics
 
 # File I/O {#fileio}
 
 SurfaceMesh currently supports reading OFF, OBJ, and STL files. Write support is
 currently limited to OFF files. All I/O operations are handled by the
-surface_mesh::SurfaceMesh::read() and surface_mesh::SurfaceMesh::write() member functions, with
+pmp::SurfaceMesh::read() and pmp::SurfaceMesh::write() member functions, with
 the target file name being their only argument. An example is given below.
 
-\snippet surface_mesh_io.cpp io
+\snippet SurfaceMeshIO.cpp io
 
 
 # Iterators and Circulators {#iterators}
 
 In order to sequentially access mesh entities SurfaceMesh provides iterators for
-each entity type, namely surface_mesh::PointSet::VertexIterator,
-surface_mesh::EdgeSet::HalfedgeIterator, surface_mesh::EdgeSet::EdgeIterator, and
-surface_mesh::SurfaceMesh::FaceIterator. Similar to iterators, SurfaceMesh also provides
+each entity type, namely pmp::PointSet::VertexIterator,
+pmp::EdgeSet::HalfedgeIterator, pmp::EdgeSet::EdgeIterator, and
+pmp::SurfaceMesh::FaceIterator. Similar to iterators, SurfaceMesh also provides
 circulators for the ordered enumeration of all incident vertices, halfedges, or
 faces around a given face or vertex. The example below demonstrates the use of
 iterators and circulators for computing the mean valence of a mesh.
 
-\snippet surface_mesh_iterators.cpp iterators
+\snippet SurfaceMeshIterators.cpp iterators
 
 # Dynamic Properties {#properties}
 
@@ -63,7 +63,7 @@ are also used internally, e.g., to store vertex coordinates. The example
 program below shows how to access vertex coordinates through the
 (pre-defined) point property.
 
-\snippet surface_mesh_barycenter.cpp barycenter
+\snippet SurfaceMeshBarycenter.cpp barycenter
 
 The dynamic (de-)allocation of properties at run-time is managed by a set
 of four different functions:

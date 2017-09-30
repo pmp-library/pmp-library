@@ -1,9 +1,9 @@
 //=============================================================================
 
-#include <surface_mesh/gl/MeshViewer.h>
-#include <surface_mesh/algorithms/SurfaceRemeshing.h>
+#include <pmp/gl/MeshViewer.h>
+#include <pmp/algorithms/SurfaceRemeshing.h>
 
-using namespace surface_mesh;
+using namespace pmp;
 
 //=============================================================================
 

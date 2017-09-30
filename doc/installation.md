@@ -2,10 +2,10 @@
 
 # System Requirements {#system_requirements}
 
-surface_mesh uses [CMake](http://www.cmake.org) as its build configuration
+pmp uses [CMake](http://www.cmake.org) as its build configuration
 system. Version 3.1 or greater is required.
 
-surface_mesh requires a C++11-compliant compiler. For the current release surface_mesh has
+pmp requires a C++11-compliant compiler. For the current release pmp has
 been tested to build with the following compilers:
 
 Operating System | Compiler
@@ -16,16 +16,16 @@ Windows          | Visual Studio 2012
 
 # Configuration {#configuration}
 
-surface_mesh relies on [CMake](http://www.cmake.org) as its build and configuration
+pmp relies on [CMake](http://www.cmake.org) as its build and configuration
 system. `CMake` is a cross-platform build-system capable of generating different
 build files (so-called _generators_) for a specific platform, e.g., Makefiles
 for Linux/Unix, Xcode projects for Mac OS-X and Visual Studio projects for
 Windows.
 
-On the command line change to the top-level surface_mesh directory, create a
+On the command line change to the top-level pmp directory, create a
 build directory and run `cmake`:
 
-    $ cd surface_mesh
+    $ cd pmp
     $ mkdir build
     $ cd build
     $ cmake ..
@@ -55,21 +55,21 @@ customizing its configuration see
 the [CMake documentation](http://cmake.org/cmake/help/documentation.html).
 
 
-# Building surface_mesh {#building}
+# Building pmp {#building}
 
-After successful configuration surface_mesh can be build using
+After successful configuration pmp can be build using
 the chosen build system. For a Unix-like environment the default
-generator is Makefiles. In order to build surface_mesh just call
+generator is Makefiles. In order to build pmp just call
 
     $ make
 
 from the top-level build directory. In order to build
-surface_mesh in parallel use the `-j` option of
+pmp in parallel use the `-j` option of
 `make`:
 
     $ make -j
 
-The resulting library is named <code>surface_mesh.so</code> and
+The resulting library is named <code>pmp.so</code> and
 located in the current working directory.
 
 In order to build the full HTML manual and reference
@@ -81,7 +81,7 @@ The resulting HTML documentation can be found in the `doc/` sub-directory.
 
 # Installation {#make_installation}
 
-In order to install surface_mesh just call
+In order to install pmp just call
 
     $ sudo make install
 
@@ -94,7 +94,7 @@ prefix during build configuration:
 
 # Build Options {#build_options}
 
-By default, surface_mesh uses 32-bit unsigned integers as internal index type to
+By default, pmp uses 32-bit unsigned integers as internal index type to
 reference entities. However, if you need to process very large data sets this
 might not be sufficient. In this case, you can change the index type to be
 64-bit by specifying

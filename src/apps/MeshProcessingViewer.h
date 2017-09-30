@@ -30,11 +30,11 @@
 #pragma once
 //=============================================================================
 
-#include <surface_mesh/gl/MeshViewer.h>
+#include <pmp/gl/MeshViewer.h>
 
 //=============================================================================
 
-class MeshProcessingViewer : public surface_mesh::MeshViewer
+class MeshProcessingViewer : public pmp::MeshViewer
 {
 public:
     //! constructor

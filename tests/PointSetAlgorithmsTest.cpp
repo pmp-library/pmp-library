@@ -29,12 +29,12 @@
 
 #include "gtest/gtest.h"
 
-#include <surface_mesh/PointSet.h>
-#include <surface_mesh/algorithms/PointSetSmoothing.h>
+#include <pmp/PointSet.h>
+#include <pmp/algorithms/PointSetSmoothing.h>
 
 #include <vector>
 
-using namespace surface_mesh;
+using namespace pmp;
 
 class PointSetAlgorithmsTest : public ::testing::Test
 {

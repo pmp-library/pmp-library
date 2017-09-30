@@ -30,11 +30,11 @@
 
 #include "PointSetProcessingViewer.h"
 
-#include <surface_mesh/algorithms/PointSetSmoothing.h>
+#include <pmp/algorithms/PointSetSmoothing.h>
 
 //=============================================================================
 
-using namespace surface_mesh;
+using namespace pmp;
 
 //=============================================================================
 

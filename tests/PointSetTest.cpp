@@ -29,11 +29,11 @@
 
 #include "gtest/gtest.h"
 
-#include <surface_mesh/PointSet.h>
-#include <surface_mesh/io/PointSetIO.h>
+#include <pmp/PointSet.h>
+#include <pmp/io/PointSetIO.h>
 #include <vector>
 
-using namespace surface_mesh;
+using namespace pmp;
 
 class PointSetTest : public ::testing::Test
 {

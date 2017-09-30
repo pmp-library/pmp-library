@@ -1,16 +1,16 @@
 if(WITH_EXAMPLES)
 
-  add_executable(surface_mesh_basics surface_mesh_basics.cpp)
-  target_link_libraries(surface_mesh_basics surface_mesh)
+  add_executable(SurfaceMeshBasics SurfaceMeshBasics.cpp)
+  target_link_libraries(SurfaceMeshBasics pmp)
 
-  add_executable(surface_mesh_io surface_mesh_io.cpp)
-  target_link_libraries(surface_mesh_io surface_mesh)
+  add_executable(SurfaceMeshIO SurfaceMeshIO.cpp)
+  target_link_libraries(SurfaceMeshIO pmp)
 
-  add_executable(surface_mesh_iterators surface_mesh_iterators.cpp)
-  target_link_libraries(surface_mesh_iterators surface_mesh)
+  add_executable(SurfaceMeshIterators SurfaceMeshIterators.cpp)
+  target_link_libraries(SurfaceMeshIterators pmp)
 
-  add_executable(surface_mesh_barycenter surface_mesh_barycenter.cpp)
-  target_link_libraries(surface_mesh_barycenter surface_mesh)
+  add_executable(SurfaceMeshBarycenter SurfaceMeshBarycenter.cpp)
+  target_link_libraries(SurfaceMeshBarycenter pmp)
 
   add_custom_target(examples
     COMMAND
@@ -18,13 +18,10 @@ if(WITH_EXAMPLES)
     COMMENT "")
 
   add_dependencies(examples
-    surface_mesh_basics
-    surface_mesh_io
-    surface_mesh_iterators
-    surface_mesh_barycenter
+    SurfaceMeshBasics
+    SurfaceMeshIO
+    SurfaceMeshIterators
+    SurfaceMeshBarycenter
     )
 
 endif(WITH_EXAMPLES)
-
-
-

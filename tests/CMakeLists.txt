@@ -27,9 +27,9 @@ file(GLOB SOURCES ./*.cpp)
 add_executable(gtest_runner ${SOURCES})
 
 if(UNIX OR APPLE)
-  target_link_libraries(gtest_runner surface_mesh googletest pthread)
+  target_link_libraries(gtest_runner pmp googletest pthread)
 elseif(WIN32)
-  target_link_libraries(gtest_runner surface_mesh googletest)
+  target_link_libraries(gtest_runner pmp googletest)
 endif()
 
 add_dependencies(gtest_runner googletest)

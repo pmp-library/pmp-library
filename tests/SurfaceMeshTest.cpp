@@ -29,10 +29,10 @@
 
 #include "gtest/gtest.h"
 
-#include <surface_mesh/SurfaceMesh.h>
+#include <pmp/SurfaceMesh.h>
 #include <vector>
 
-using namespace surface_mesh;
+using namespace pmp;
 
 class SurfaceMeshTest : public ::testing::Test
 {
