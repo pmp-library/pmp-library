@@ -321,12 +321,12 @@ template <typename Scalar>
 Mat4<Scalar>
 Mat4<Scalar>::perspective(Scalar fovy, Scalar aspect, Scalar near, Scalar far)
 {
-    Scalar t = near * tan( fovy * M_PI / 360.0 );
+    Scalar t = Scalar(near) * tan( fovy * M_PI / 360.0 );
     Scalar b = -t;
     Scalar l = b * aspect;
     Scalar r = t * aspect;
 
-    return Mat4<Scalar>::frustum(l, r, b, t, near, far);
+    return Mat4<Scalar>::frustum(l, r, b, t, Scalar(near), Scalar(far));
 }
 
 
