@@ -1,6 +1,4 @@
-#cmake_policy(SET CMP0048 NEW) # for project versioning
-
-project(pmp)
+project(pmp-library)
 
 cmake_minimum_required(VERSION 3.0.2)
 
