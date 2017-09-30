@@ -28,9 +28,9 @@ matrix:
 sudo: false
 dist: trusty
 before_install:
+  - if [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y xorg-dev ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then pip install --user cpp-coveralls ; fi
 before_script:
-  - git submodule update --init --recursive
   - mkdir build
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=${CONFIG} ..
