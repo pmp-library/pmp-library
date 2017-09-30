@@ -43,41 +43,6 @@
 namespace surface_mesh {
 
 //=============================================================================
-
-/* Store data for an halfedge collapse
-
-        vl
-        *
-       / \
-      /   \
-     / fl  \
- v0 *------>* v1
-     \ fr  /
-      \   /
-       \ /
-        *
-        vr
-*/
-
-struct CollapseData
-{
-public:
-    CollapseData(SurfaceMesh& mesh, SurfaceMesh::Halfedge h);
-
-    SurfaceMesh& mesh;
-
-    SurfaceMesh::Halfedge v0v1; // Halfedge to be collapsed
-    SurfaceMesh::Halfedge v1v0; // Reverse halfedge
-    SurfaceMesh::Vertex   v0;   // Vertex to be removed
-    SurfaceMesh::Vertex   v1;   // Remaining vertex
-    SurfaceMesh::Face     fl;   // Left face
-    SurfaceMesh::Face     fr;   // Right face
-    SurfaceMesh::Vertex   vl;   // Left vertex
-    SurfaceMesh::Vertex   vr;   // Right vertex
-    SurfaceMesh::Halfedge v1vl, vlv0, v0vr, vrv1;
-};
-
-//=============================================================================
 //! \addtogroup algorithms algorithms
 //! @{
 //=============================================================================
@@ -100,6 +65,70 @@ public:
     //! decimate down to n vertices
     void simplify(unsigned int n);
 
+private: //------------------------------------------------------ private types
+
+    //! Store data for an halfedge collapse
+    /*
+                vl
+                *
+               / \
+              /   \
+             / fl  \
+         v0 *------>* v1
+             \ fr  /
+              \   /
+               \ /
+                *
+                vr
+    */
+    struct CollapseData
+    {
+    public:
+        CollapseData(SurfaceMesh& mesh, SurfaceMesh::Halfedge h);
+
+        SurfaceMesh& mesh;
+
+        SurfaceMesh::Halfedge v0v1; // Halfedge to be collapsed
+        SurfaceMesh::Halfedge v1v0; // Reverse halfedge
+        SurfaceMesh::Vertex   v0;   // Vertex to be removed
+        SurfaceMesh::Vertex   v1;   // Remaining vertex
+        SurfaceMesh::Face     fl;   // Left face
+        SurfaceMesh::Face     fr;   // Right face
+        SurfaceMesh::Vertex   vl;   // Left vertex
+        SurfaceMesh::Vertex   vr;   // Right vertex
+        SurfaceMesh::Halfedge v1vl, vlv0, v0vr, vrv1;
+    };
+
+    //! Heap interface
+    class HeapInterface
+    {
+    public:
+        HeapInterface(SurfaceMesh::VertexProperty<float> prio,
+                      SurfaceMesh::VertexProperty<int>   pos)
+            : m_prio(prio), m_pos(pos)
+        {
+        }
+
+        bool less(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1)
+        {
+            return m_prio[v0] < m_prio[v1];
+        }
+        bool greater(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1)
+        {
+            return m_prio[v0] > m_prio[v1];
+        }
+        int getHeapPosition(SurfaceMesh::Vertex v) { return m_pos[v]; }
+        void setHeapPosition(SurfaceMesh::Vertex v, int pos) { m_pos[v] = pos; }
+
+    private:
+        SurfaceMesh::VertexProperty<float> m_prio;
+        SurfaceMesh::VertexProperty<int>   m_pos;
+    };
+
+    typedef HeapT<SurfaceMesh::Vertex, HeapInterface> PriorityQueue;
+
+    typedef std::vector<Point> Points;
+
 private: //-------------------------------------------------- private functions
     // put the vertex v in the priority queue
     void enqueueVertex(SurfaceMesh::Vertex v);
@@ -119,36 +148,6 @@ private: //-------------------------------------------------- private functions
     // compute distance from p to triagle f
     Scalar distance(SurfaceMesh::Face f, const Point& p) const;
 
-private: //------------------------------------------------------ private types
-    //! Heap interface
-    class HeapInterface
-    {
-    public:
-        HeapInterface(SurfaceMesh::VertexProperty<float> Prio,
-                      SurfaceMesh::VertexProperty<int>   Pos)
-            : prio_(Prio), pos_(Pos)
-        {
-        }
-
-        bool less(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1)
-        {
-            return prio_[v0] < prio_[v1];
-        }
-        bool greater(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1)
-        {
-            return prio_[v0] > prio_[v1];
-        }
-        int getHeapPosition(SurfaceMesh::Vertex v) { return pos_[v]; }
-        void setHeapPosition(SurfaceMesh::Vertex v, int pos) { pos_[v] = pos; }
-
-    private:
-        SurfaceMesh::VertexProperty<float> prio_;
-        SurfaceMesh::VertexProperty<int>   pos_;
-    };
-
-    typedef HeapT<SurfaceMesh::Vertex, HeapInterface> PriorityQueue;
-
-    typedef std::vector<Point> Points;
 
 private: //------------------------------------------------------- private data
     SurfaceMesh& m_mesh;

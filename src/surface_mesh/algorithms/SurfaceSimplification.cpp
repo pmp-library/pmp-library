@@ -39,34 +39,6 @@ namespace surface_mesh {
 
 //=============================================================================
 
-CollapseData::CollapseData(SurfaceMesh& m, SurfaceMesh::Halfedge h) : mesh(m)
-{
-    v0v1 = h;
-    v1v0 = mesh.oppositeHalfedge(v0v1);
-    v0   = mesh.toVertex(v1v0);
-    v1   = mesh.toVertex(v0v1);
-    fl   = mesh.face(v0v1);
-    fr   = mesh.face(v1v0);
-
-    // get vl
-    if (fl.isValid())
-    {
-        v1vl = mesh.nextHalfedge(v0v1);
-        vlv0 = mesh.nextHalfedge(v1vl);
-        vl   = mesh.toVertex(v1vl);
-    }
-
-    // get vr
-    if (fr.isValid())
-    {
-        v0vr = mesh.nextHalfedge(v1v0);
-        vrv1 = mesh.prevHalfedge(v0vr);
-        vr   = mesh.fromVertex(vrv1);
-    }
-}
-
-//== IMPLEMENTATION ==========================================================
-
 SurfaceSimplification::SurfaceSimplification(SurfaceMesh& mesh)
     : m_mesh(mesh), m_initialized(false), m_queue(NULL)
 
@@ -644,6 +616,36 @@ Scalar SurfaceSimplification::distance(SurfaceMesh::Face f,
     Point n;
 
     return distPointTriangle(p, p0, p1, p2, n);
+}
+
+//-----------------------------------------------------------------------------
+
+SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh&          m,
+                                                  SurfaceMesh::Halfedge h)
+    : mesh(m)
+{
+    v0v1 = h;
+    v1v0 = mesh.oppositeHalfedge(v0v1);
+    v0   = mesh.toVertex(v1v0);
+    v1   = mesh.toVertex(v0v1);
+    fl   = mesh.face(v0v1);
+    fr   = mesh.face(v1v0);
+
+    // get vl
+    if (fl.isValid())
+    {
+        v1vl = mesh.nextHalfedge(v0v1);
+        vlv0 = mesh.nextHalfedge(v1vl);
+        vl   = mesh.toVertex(v1vl);
+    }
+
+    // get vr
+    if (fr.isValid())
+    {
+        v0vr = mesh.nextHalfedge(v1v0);
+        vrv1 = mesh.prevHalfedge(v0vr);
+        vr   = mesh.fromVertex(vrv1);
+    }
 }
 
 //=============================================================================
