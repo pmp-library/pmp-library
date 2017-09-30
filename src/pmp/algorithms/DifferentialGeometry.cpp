@@ -100,12 +100,8 @@ double cotanWeight(const SurfaceMesh& mesh, SurfaceMesh::Edge e)
         }
     }
 
-#ifdef _WIN32
-    assert(Finite(weight)); // checks for NaN and INF
-#else
     assert(!std::isnan(weight));
     assert(!std::isinf(weight));
-#endif
 
     return weight;
 }
@@ -180,12 +176,8 @@ double voronoiArea(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
         } while (++vhit != vhend);
     }
 
-#ifdef _WIN32
-    assert(Finite(area)); // checks for NaN and Inf
-#else
     assert(!std::isnan(area));
     assert(!std::isinf(area));
-#endif
 
     return area;
 }
@@ -297,15 +289,11 @@ VertexCurvature vertexCurvature(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
         c.min          = c.mean - s;
         c.max          = c.mean + s;
 
-#ifdef _WIN32
-        assert(Finite(c.mean));  // checks for NaN and Inf
-        assert(Finite(c.gauss)); // checks for NaN and Inf
-#else
         assert(!std::isnan(c.mean));
         assert(!std::isnan(c.gauss));
         assert(!std::isinf(c.mean));
         assert(!std::isinf(c.gauss));
-#endif
+
         assert(c.min <= c.mean);
         assert(c.mean <= c.max);
     }

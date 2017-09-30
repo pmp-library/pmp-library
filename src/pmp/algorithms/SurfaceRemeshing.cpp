@@ -357,11 +357,7 @@ void SurfaceRemeshing::projectToReference(SurfaceMesh::Vertex v)
     n += (n1 * b[1]);
     n += (n2 * b[2]);
     n.normalize();
-#ifdef _WIN32
-    assert(Finite(n[0]));
-#else
     assert(!std::isnan(n[0]));
-#endif
 
     // interpolate sizing field
     Scalar s;
