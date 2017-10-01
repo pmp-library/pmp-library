@@ -41,7 +41,7 @@ public:
     MeshProcessingViewer(const char* title, int width, int height)
         : MeshViewer(title,width, height)
     {
-        setDrawMode("Hidden Line");
+        setDrawMode("Smooth Shading");
     }
 
 protected:
