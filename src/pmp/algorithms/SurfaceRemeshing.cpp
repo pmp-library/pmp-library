@@ -299,7 +299,7 @@ void SurfaceRemeshing::preprocessing()
             m_refsizing[*vit] = m_vsizing[*vit];
         }
 
-        // build BSP
+        // build kd-tree
         m_kDTree = new TriangleKdTree(*m_refmesh, 0);
     }
 }
@@ -308,7 +308,7 @@ void SurfaceRemeshing::preprocessing()
 
 void SurfaceRemeshing::postprocessing()
 {
-    // delete BSP and reference mesh
+    // delete kd-tree and reference mesh
     if (m_useProjection)
     {
         delete m_kDTree;

@@ -40,7 +40,7 @@ namespace pmp {
 
 //=============================================================================
 
-//! \brief A class for building a BSP tree from a PointSet.
+//! \brief A class for building a kd-tree from a PointSet.
 //! \details Three different query types are supported:
 //! \li nearest neighbor, see nearest()
 //! \li k nearest neighbors, see kNearest()
@@ -58,7 +58,7 @@ public: //------------------------------------------------------- public methods
     //! Destructor
     ~PointKdTree() { delete m_root; }
 
-    //! \brief Build the BSP tree
+    //! \brief Build the kd-tree
     //! \param[in] maxHandles the maximum number of handles per node
     //! \param[in] maxDepth the maximum depth of the tree
     //! \return The number of nodes.
