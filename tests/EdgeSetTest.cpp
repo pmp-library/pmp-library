@@ -130,5 +130,36 @@ TEST_F(EdgeSetTest, read)
     EXPECT_EQ(es.nEdges(), size_t(36));
 }
 
+TEST_F(EdgeSetTest, isBoundary)
+{
+    es.read("pmp-data/knt/3rings.knt");
+    bool boundary = false;
+    for (auto v : es.vertices())
+    {
+        if (es.isBoundary(v))
+        {
+            boundary = true;
+            break;
+        }
+    }
+    EXPECT_FALSE(boundary);
+}
+
+TEST_F(EdgeSetTest, isManifold)
+{
+    es.read("pmp-data/knt/3rings.knt");
+    bool nonManifold = false;
+    for (auto v : es.vertices())
+    {
+        if (!es.isManifold(v))
+        {
+            nonManifold = true;
+            break;
+        }
+    }
+    EXPECT_FALSE(nonManifold);
+}
+
+
 
 //=============================================================================
