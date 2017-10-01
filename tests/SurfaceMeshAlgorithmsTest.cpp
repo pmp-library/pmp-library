@@ -116,10 +116,17 @@ TEST_F(SurfaceMeshAlgorithmsTest, featureBoundary)
 // plain simplification test
 TEST_F(SurfaceMeshAlgorithmsTest, simplification)
 {
+    mesh.clear();
+    mesh.read("pmp-data/off/bunny_adaptive.off");
     SurfaceSimplification ss(mesh);
-    ss.initialize(5); // aspect ratio
+    ss.initialize(5, // aspect ratio
+                  0.01, // edge length
+                  10, // max valence
+                  10, // normal deviation
+                  0.001); // Hausdorff
     ss.simplify(mesh.nVertices() * 0.1);
-    EXPECT_EQ(mesh.nVertices(),size_t(64));
+    EXPECT_EQ(mesh.nVertices(),size_t(3800));
+    EXPECT_EQ(mesh.nFaces(),size_t(7596));
 }
 
 // simplify with feature edge preservation enabled
