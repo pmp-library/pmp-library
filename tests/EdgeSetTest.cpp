@@ -125,7 +125,7 @@ TEST_F(EdgeSetTest, addRemove)
 
 TEST_F(EdgeSetTest, read)
 {
-    es.read("data/3rings.knt");
+    es.read("pmp-data/knt/3rings.knt");
     EXPECT_EQ(es.nVertices(), size_t(36));
     EXPECT_EQ(es.nEdges(), size_t(36));
 }

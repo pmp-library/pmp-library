@@ -98,7 +98,7 @@ TEST_F(SurfaceMeshAlgorithmsTest, featureAngle)
 TEST_F(SurfaceMeshAlgorithmsTest, featureBoundary)
 {
     mesh.clear();
-    mesh.read("data/vertex_onering.off");
+    mesh.read("pmp-data/off/vertex_onering.off");
     SurfaceFeatures sf(mesh);
     sf.detectBoundary();
 
