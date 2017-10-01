@@ -104,9 +104,10 @@ TEST_F(PointKdTreeTest, kNearest)
     }
 
     // sort based on distance
-    std::sort(distances.begin(), distances.end(), [](Elem &left, Elem &right) {
+    auto cmp = [](const Elem& left, const Elem& right) -> bool {
         return left.second < right.second;
-    });
+    };
+    std::sort(distances.begin(), distances.end(), cmp);
 
     // check indices for equality
     size_t i(0);
