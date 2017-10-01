@@ -28,7 +28,7 @@
 //=============================================================================
 
 #include <pmp/algorithms/PointSetSmoothing.h>
-#include <pmp/algorithms/PointBSPTree.h>
+#include <pmp/algorithms/PointKdTree.h>
 
 #include <limits>
 
@@ -54,7 +54,7 @@ PointSetSmoothing::PointSetSmoothing(PointSet& pointSet) : m_pointSet(pointSet)
 
 void PointSetSmoothing::smooth()
 {
-    PointBSPTree tree(m_pointSet);
+    PointKdTree tree(m_pointSet);
     tree.build(10, 99);
 
     PointSet projected = m_pointSet;
@@ -84,7 +84,7 @@ void PointSetSmoothing::smooth()
 //-----------------------------------------------------------------------------
 
 void PointSetSmoothing::project(Point& x, Normal& n,
-                                const PointBSPTree& tree) const
+                                const PointKdTree& tree) const
 {
     // Get ball
     std::vector<int> ball;

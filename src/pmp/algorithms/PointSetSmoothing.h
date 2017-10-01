@@ -37,7 +37,7 @@ namespace pmp {
 
 //=============================================================================
 
-class PointBSPTree;
+class PointKdTree;
 
 //=============================================================================
 
@@ -60,7 +60,7 @@ public:
 
 private:
     //! Project a point \c x with normal \c n to the MLS surface
-    void project(Point& x, Point& n, const PointBSPTree& tree) const;
+    void project(Point& x, Point& n, const PointKdTree& tree) const;
 
     //! \brief Weight function.
     //! \details We use Wendland's compactly supported C2 function

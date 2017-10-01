@@ -27,7 +27,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
 
-#include <pmp/algorithms/PointBSPTree.h>
+#include <pmp/algorithms/PointKdTree.h>
 
 #include <algorithm>
 #include <cfloat>
@@ -38,7 +38,7 @@ namespace pmp {
 
 //=============================================================================
 
-unsigned int PointBSPTree::build(unsigned int maxHandles, unsigned int maxDepth)
+unsigned int PointKdTree::build(unsigned int maxHandles, unsigned int maxDepth)
 {
     // copy points to element array
     m_elements.clear();
@@ -60,7 +60,7 @@ unsigned int PointBSPTree::build(unsigned int maxHandles, unsigned int maxDepth)
 
 //-----------------------------------------------------------------------------
 
-void PointBSPTree::buildRecurse(Node* node, unsigned int maxHandles,
+void PointKdTree::buildRecurse(Node* node, unsigned int maxHandles,
                                 unsigned int depth)
 {
     const unsigned int n = node->m_end - node->m_begin;
@@ -109,7 +109,7 @@ void PointBSPTree::buildRecurse(Node* node, unsigned int maxHandles,
 
 //-----------------------------------------------------------------------------
 
-int PointBSPTree::nearest(const Point& p, Point& result, int& idx) const
+int PointKdTree::nearest(const Point& p, Point& result, int& idx) const
 {
     // init data
     NearestNeighborData data;
@@ -132,7 +132,7 @@ int PointBSPTree::nearest(const Point& p, Point& result, int& idx) const
 
 //-----------------------------------------------------------------------------
 
-void PointBSPTree::nearestRecurse(Node* node, NearestNeighborData& data) const
+void PointKdTree::nearestRecurse(Node* node, NearestNeighborData& data) const
 {
     if (node->m_leftChild)
     {
@@ -177,7 +177,7 @@ void PointBSPTree::nearestRecurse(Node* node, NearestNeighborData& data) const
 
 //-----------------------------------------------------------------------------
 
-int PointBSPTree::kNearest(const Point& p, unsigned int k,
+int PointKdTree::kNearest(const Point& p, unsigned int k,
                            std::vector<int>& knn) const
 {
     KNearestNeighborData data;
@@ -200,7 +200,7 @@ int PointBSPTree::kNearest(const Point& p, unsigned int k,
 
 //-----------------------------------------------------------------------------
 
-void PointBSPTree::kNearestRecurse(Node* node, KNearestNeighborData& data) const
+void PointKdTree::kNearestRecurse(Node* node, KNearestNeighborData& data) const
 {
     // non-terminal node
     if (node->m_leftChild)
@@ -246,7 +246,7 @@ void PointBSPTree::kNearestRecurse(Node* node, KNearestNeighborData& data) const
 
 //-----------------------------------------------------------------------------
 
-int PointBSPTree::ball(const Point& p, Scalar radius,
+int PointKdTree::ball(const Point& p, Scalar radius,
                        std::vector<int>& ball) const
 {
     ball.clear();
@@ -264,7 +264,7 @@ int PointBSPTree::ball(const Point& p, Scalar radius,
 
 //-----------------------------------------------------------------------------
 
-void PointBSPTree::ballRecurse(Node* node, BallData& data, Scalar squaredRadius,
+void PointKdTree::ballRecurse(Node* node, BallData& data, Scalar squaredRadius,
                                std::vector<int>& ball) const
 {
     // non-terminal node

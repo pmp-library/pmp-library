@@ -45,18 +45,18 @@ namespace pmp {
 //! \li nearest neighbor, see nearest()
 //! \li k nearest neighbors, see kNearest()
 //! \li points within ball, see ball()
-class PointBSPTree
+class PointKdTree
 {
 public: //------------------------------------------------------- public methods
 
     //! Constructor
-    PointBSPTree(const PointSet& pointSet)
+    PointKdTree(const PointSet& pointSet)
         : m_pointSet(pointSet), m_root(nullptr)
     {
     }
 
     //! Destructor
-    ~PointBSPTree() { delete m_root; }
+    ~PointKdTree() { delete m_root; }
 
     //! \brief Build the BSP tree
     //! \param[in] maxHandles the maximum number of handles per node
