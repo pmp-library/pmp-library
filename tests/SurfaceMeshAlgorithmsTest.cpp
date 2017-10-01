@@ -148,6 +148,29 @@ TEST_F(SurfaceMeshAlgorithmsTest, loopSubdivision)
     EXPECT_EQ(mesh.nVertices(),size_t(2562));
 }
 
+// loop subdivision with features
+TEST_F(SurfaceMeshAlgorithmsTest, loopWithFeatures)
+{
+    mesh.clear();
+    mesh.read("pmp-data/off/fandisk.off");
+
+    SurfaceFeatures sf(mesh);
+    sf.detectAngle(25);
+
+    SurfaceSubdivision(mesh).loop();
+    EXPECT_EQ(mesh.nVertices(),size_t(25894));
+}
+
+// loop subdivision with features
+TEST_F(SurfaceMeshAlgorithmsTest, loopWithBoundary)
+{
+    mesh.clear();
+    mesh.read("pmp-data/off/hemisphere.off");
+
+    SurfaceSubdivision(mesh).loop();
+    EXPECT_EQ(mesh.nVertices(),size_t(7321));
+}
+
 // Catmull-Clark subdivision on suzanne quad mesh
 TEST_F(SurfaceMeshAlgorithmsTest, catmullClarkSubdivision)
 {
@@ -155,6 +178,19 @@ TEST_F(SurfaceMeshAlgorithmsTest, catmullClarkSubdivision)
     mesh.read("pmp-data/obj/suzanne.obj");
     SurfaceSubdivision(mesh).catmullClark();
     EXPECT_EQ(mesh.nVertices(),size_t(2012));
+}
+
+// Catmull-Clark subdivision on fandisk quad mesh
+TEST_F(SurfaceMeshAlgorithmsTest, catmullClarkWithFeatures)
+{
+    mesh.clear();
+    mesh.read("pmp-data/off/fandisk_quads.off");
+
+    SurfaceFeatures sf(mesh);
+    sf.detectAngle(25);
+
+    SurfaceSubdivision(mesh).catmullClark();
+    EXPECT_EQ(mesh.nVertices(),size_t(3058));
 }
 
 // plain sqrt3 subdivision
@@ -178,9 +214,9 @@ TEST_F(SurfaceMeshAlgorithmsTest, adaptiveRemeshingWithFeatures)
         0.001 * bb,  // min length
         1.0 * bb,    // max length
         0.001 * bb, // approx. error
-        10, // iterations
+        1, // iterations
         false); // no projection
-    EXPECT_EQ(mesh.nVertices(),size_t(2776));
+    EXPECT_EQ(mesh.nVertices(),size_t(3216));
 }
 
 TEST_F(SurfaceMeshAlgorithmsTest, adaptiveRemeshingWithBoundary)
