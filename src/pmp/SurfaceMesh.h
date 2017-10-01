@@ -444,7 +444,7 @@ public:
 
     //! read mesh from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
-    bool read(const std::string& filename);
+    bool read(const std::string& filename) override;
 
     //! write mesh to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
