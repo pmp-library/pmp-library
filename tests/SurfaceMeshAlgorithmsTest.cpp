@@ -165,16 +165,56 @@ TEST_F(SurfaceMeshAlgorithmsTest, sqrt3Subdivision)
 }
 
 // adaptive remeshing
-TEST_F(SurfaceMeshAlgorithmsTest, adaptiveRemeshing)
+TEST_F(SurfaceMeshAlgorithmsTest, adaptiveRemeshingWithFeatures)
 {
-    // adaptive remeshing
-    SurfaceSubdivision(mesh).loop();
+    mesh.clear();
+    mesh.read("pmp-data/off/fandisk.off");
+
+    SurfaceFeatures sf(mesh);
+    sf.detectAngle(25);
+
+    auto bb = mesh.bounds().size();
+    SurfaceRemeshing(mesh).adaptiveRemeshing(
+        0.001 * bb,  // min length
+        1.0 * bb,    // max length
+        0.001 * bb, // approx. error
+        10, // iterations
+        false); // no projection
+    EXPECT_EQ(mesh.nVertices(),size_t(2776));
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, adaptiveRemeshingWithBoundary)
+{
+    // mesh with boundary
+    mesh.clear();
+    mesh.read("pmp-data/off/hemisphere.off");
     auto bb = mesh.bounds().size();
     SurfaceRemeshing(mesh).adaptiveRemeshing(
         0.001 * bb,  // min length
         1.0 * bb,    // max length
         0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.nVertices(),size_t(2142));
+    EXPECT_EQ(mesh.nVertices(),size_t(452));
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, adaptiveRemeshingWithSelection)
+{
+    // mesh with boundary
+    mesh.clear();
+    mesh.read("pmp-data/off/hemisphere.off");
+
+    // select half of the hemisphere
+    auto selected = mesh.addVertexProperty<bool>("v:selected");
+    for (auto v : mesh.vertices())
+        if (mesh.position(v)[0] > 0.0)
+        {
+            selected[v] = true;
+        }
+    auto bb = mesh.bounds().size();
+    SurfaceRemeshing(mesh).adaptiveRemeshing(
+        0.001 * bb,  // min length
+        1.0 * bb,    // max length
+        0.001 * bb); // approx. error
+    EXPECT_EQ(mesh.nVertices(),size_t(1182));
 }
 
 TEST_F(SurfaceMeshAlgorithmsTest, uniformRemeshing)
