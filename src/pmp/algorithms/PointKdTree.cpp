@@ -183,17 +183,15 @@ int PointKdTree::kNearest(const Point& p, unsigned int k,
     KNearestNeighborData data;
     data.m_ref  = p;
     data.m_dist = FLT_MAX;
-    data.m_kNearest.push(std::make_pair<int, float>(-1, FLT_MAX));
+    data.m_kNearest.insert(std::make_pair<int, float>(-1, FLT_MAX));
+    data.m_k = k;
     data.m_leafTests = 0;
 
     kNearestRecurse(m_root, data);
 
-    knn.resize(k);
-    for (int i = k - 1; i >= 0; --i)
-    {
-        knn[i] = data.m_kNearest.top().first;
-        data.m_kNearest.pop();
-    }
+    knn.clear();
+    for (auto el : data.m_kNearest)
+        knn.push_back(el.first);
 
     return data.m_leafTests;
 }
@@ -237,8 +235,18 @@ void PointKdTree::kNearestRecurse(Node* node, KNearestNeighborData& data) const
             dist = sqrnorm(it->m_point - data.m_ref);
             if (dist < data.m_dist)
             {
-                data.m_kNearest.push(std::make_pair(it->m_idx, dist));
-                data.m_dist = data.m_kNearest.top().second;
+                auto& set = data.m_kNearest;
+                set.insert(std::make_pair(it->m_idx, dist));
+
+                // resize if larger than k
+                if (set.size() > data.m_k)
+                {
+                    auto it = set.begin();
+                    std::advance(it,data.m_k);
+                    set.erase(it,set.end());
+                }
+
+                data.m_dist = (*set.rbegin()).second;
             }
         }
     }

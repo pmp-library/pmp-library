@@ -32,7 +32,7 @@
 #include <pmp/PointSet.h>
 
 #include <vector>
-#include <queue>
+#include <set>
 
 //=============================================================================
 
@@ -136,14 +136,12 @@ private: //------------------------------------------------------- private types
     {
         bool operator()(const QueueElement& lhs, const QueueElement& rhs) const
         {
-            return (lhs.second > rhs.second);
+            return (lhs.second < rhs.second);
         }
     };
 
-    //! priority queue for kNN
-    typedef std::priority_queue<QueueElement,
-                                std::vector<QueueElement>,
-                                MyComparison> PriorityQueue;
+    //! Priority queue
+    typedef std::set<QueueElement, MyComparison> PriorityQueue;
 
     //! Store kNN information
     struct KNearestNeighborData
@@ -151,6 +149,7 @@ private: //------------------------------------------------------- private types
         Point         m_ref;       //!< The query point
         Scalar        m_dist;      //!< The distance to the query point
         PriorityQueue m_kNearest;  //!< The priority queue
+        size_t        m_k;         //!< The number of neighbors
         unsigned int  m_leafTests; //!< The number of leaf tests performed
     };
 
