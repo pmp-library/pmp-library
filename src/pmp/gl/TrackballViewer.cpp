@@ -187,6 +187,9 @@ void TrackballViewer::scroll(GLFWwindow* /*window*/, double /*xoffset*/,
 {
     m_wheelPos += yoffset;
     float d = -(float)yoffset * 0.12 * m_radius;
+#ifdef __EMSCRIPTEN__
+    d = -d; // emscripten behavior is the opposite
+#endif
     translate(vec3(0.0, 0.0, d));
 }
 
@@ -227,7 +230,7 @@ void TrackballViewer::motion(GLFWwindow* /*window*/, double xpos, double ypos)
 void TrackballViewer::init()
 {
     // set initial state
-    glClearColor(1.0,1.0,1.0,0);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     glEnable(GL_DEPTH_TEST);
 
     // init modelview

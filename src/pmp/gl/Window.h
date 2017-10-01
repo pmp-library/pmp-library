@@ -63,7 +63,9 @@ private: //----------------------------- static wrapper functions for callbacks
     static void glfwScroll(GLFWwindow* window, double xoffset, double yoffset);
     static void glfwResize(GLFWwindow* window, int width, int height);
 
+#if __EMSCRIPTEN__
     static void emscripten_render_loop();
+#endif
 
     static Window* m_instance;
 

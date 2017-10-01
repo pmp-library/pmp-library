@@ -32,6 +32,7 @@
 
 #if __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
+#include <emscripten/html5.h>
 #endif
 
 //=============================================================================
@@ -150,17 +151,33 @@ int Window::run()
 //-----------------------------------------------------------------------------
 
 
+#if __EMSCRIPTEN__
+
 void Window::emscripten_render_loop()
 {
-      // draw scene
-      m_instance->display();
+    // determine correct canvas/framebuffer size
+    int w, h, f;
+    double dw, dh;
+    emscripten_get_canvas_size(&w, &h, &f);
+    emscripten_get_element_css_size(nullptr, &dw, &dh);
+    if (w!=int(dw) || h!=int(dh))
+    {
+        w = int(dw); h = int(dh);
+        emscripten_set_canvas_size(w, h);
+        glfwResize(m_instance->m_window, w, h);;
+    }
 
-      // swap buffers
-      glfwSwapBuffers(m_instance->m_window);
+    // draw scene
+    m_instance->display();
 
-      // handle events
-      glfwPollEvents();
+    // swap buffers
+    glfwSwapBuffers(m_instance->m_window);
+
+    // handle events
+    glfwPollEvents();
 }
+
+#endif
 
 
 //-----------------------------------------------------------------------------
