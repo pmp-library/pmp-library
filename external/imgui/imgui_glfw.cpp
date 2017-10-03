@@ -8,6 +8,12 @@
 
 // GL and GLFW
 #include <GL/glew.h>
+
+#ifdef _WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GL/GLFW/glfw3native.h>
+#endif
 #include <GLFW/glfw3.h>
 
 #include "imgui_glfw.h"
@@ -25,7 +31,7 @@ static int          g_AttribLocationPosition = 0, g_AttribLocationUV = 0, g_Attr
 static unsigned int g_VboHandle = 0, g_VaoHandle = 0, g_ElementsHandle = 0;
 
 // This is the main rendering function that you have to implement and provide to ImGui (via setting up 'RenderDrawListsFn' in the ImGuiIO structure)
-// Note that this implementation is little overcomplicated because we are saving/setting up/restoring every OpenGL state explicitly, in order to be able to run within any OpenGL engine that doesn't do so. 
+// Note that this implementation is little overcomplicated because we are saving/setting up/restoring every OpenGL state explicitly, in order to be able to run within any OpenGL engine that doesn't do so.
 // If text or lines are blurry when integrating ImGui in your engine: in your Render function, try translating your projection matrix by (0.5f,0.5f) or (0.375f,0.375f)
 void ImGui_RenderDrawLists(ImDrawData* draw_data)
 {
@@ -44,7 +50,7 @@ void ImGui_RenderDrawLists(ImDrawData* draw_data)
     GLint last_texture; glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
     GLint last_array_buffer; glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &last_array_buffer);
     GLint last_element_array_buffer; glGetIntegerv(GL_ELEMENT_ARRAY_BUFFER_BINDING, &last_element_array_buffer);
-#ifndef __EMSCRIPTEN__    
+#ifndef __EMSCRIPTEN__
     GLint last_vertex_array; glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &last_vertex_array);
 #endif
     GLint last_viewport[4]; glGetIntegerv(GL_VIEWPORT, last_viewport);
@@ -114,7 +120,7 @@ void ImGui_RenderDrawLists(ImDrawData* draw_data)
     glUseProgram(last_program);
     glBindTexture(GL_TEXTURE_2D, last_texture);
     glActiveTexture(last_active_texture);
-#ifndef __EMSCRIPTEN__    
+#ifndef __EMSCRIPTEN__
     glBindVertexArray(last_vertex_array);
 #endif
     glBindBuffer(GL_ARRAY_BUFFER, last_array_buffer);
@@ -211,7 +217,7 @@ bool ImGui_CreateDeviceObjects()
     GLint last_texture, last_array_buffer, last_vertex_array;
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &last_texture);
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &last_array_buffer);
-#ifndef __EMSCRIPTEN__    
+#ifndef __EMSCRIPTEN__
     glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &last_vertex_array);
 #endif
 
@@ -250,7 +256,7 @@ bool ImGui_CreateDeviceObjects()
     const GLchar *vertex_shader =
 #ifndef __EMSCRIPTEN__
         "#version 100                                     \n"
-#endif        
+#endif
         "uniform mat4 ProjMtx;                            \n"
         "attribute vec2 Position;                         \n"
         "attribute vec2 UV;                               \n"
@@ -266,8 +272,8 @@ bool ImGui_CreateDeviceObjects()
     const GLchar* fragment_shader =
 #ifndef __EMSCRIPTEN__
         "#version 100                                     \n"
-#endif        
-        "precision mediump float;                         \n"        
+#endif
+        "precision mediump float;                         \n"
         "uniform sampler2D Texture;                       \n"
         "varying vec2 Frag_UV;                            \n"
         "varying vec4 Frag_Color;                         \n"
@@ -276,7 +282,7 @@ bool ImGui_CreateDeviceObjects()
         "                 texture2D(Texture, Frag_UV.st); \n"
         "}                                                \n";
 #endif
-    
+
 
     g_ShaderHandle = glCreateProgram();
     g_VertHandle = glCreateShader(GL_VERTEX_SHADER);
@@ -316,7 +322,7 @@ bool ImGui_CreateDeviceObjects()
     // Restore modified GL state
     glBindTexture(GL_TEXTURE_2D, last_texture);
     glBindBuffer(GL_ARRAY_BUFFER, last_array_buffer);
-#ifndef __EMSCRIPTEN__    
+#ifndef __EMSCRIPTEN__
     glBindVertexArray(last_vertex_array);
 #endif
 
@@ -378,7 +384,7 @@ bool    ImGui_Init(GLFWwindow* window, bool install_callbacks)
 
 // [Bruno] 01/06/2017 Do not use GLFW3 clipboard under emscripten, use built-in
 // ImGUI clipboard instead.
-#ifndef __EMSCRIPTEN__    
+#ifndef __EMSCRIPTEN__
     io.SetClipboardTextFn = ImGui_SetClipboardText;
     io.GetClipboardTextFn = ImGui_GetClipboardText;
     io.ClipboardUserData = g_Window;
@@ -427,7 +433,7 @@ void ImGui_NewFrame()
     // Setup inputs
     // (we already got mouse wheel, keyboard keys & characters from glfw callbacks polled in glfwPollEvents())
     //[Bruno] 05/16/2016 Under emscripten, it seems that the window is never focused (so I bypass the test).
-#ifndef __EMSCRIPTEN__    
+#ifndef __EMSCRIPTEN__
     if (glfwGetWindowAttrib(g_Window, GLFW_FOCUSED))
 #endif
     {
@@ -442,7 +448,7 @@ void ImGui_NewFrame()
             io.MousePos = ImVec2((float)mouse_x, (float)mouse_y);   // Get mouse position in screen coordinates (set to -1,-1 if no mouse / on another screen, etc.)
         }
     }
-#ifndef __EMSCRIPTEN__    
+#ifndef __EMSCRIPTEN__
     else
     {
         io.MousePos = ImVec2(-FLT_MAX,-FLT_MAX);
