@@ -10,6 +10,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
 set(GLFW_SOURCE_DIR "external/glfw")
 set(GLEW_SOURCE_DIR "external/glew")
+set(IMGUI_SOURCE_DIR "external/imgui")
 
 # Building only the GLFW lib
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
@@ -19,7 +20,7 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
 set(GLFW_INSTALL OFF CACHE BOOL "")
 
 
-# setup use of GLFW and GLEW
+# setup use of GLFW, GLEW, and IMGUI
 if (NOT EMSCRIPTEN)
     add_subdirectory(${GLFW_SOURCE_DIR} ${GLEW_SOURCE_DIR})
 
@@ -32,8 +33,16 @@ if (NOT EMSCRIPTEN)
                 ${GLEW_SOURCE_DIR}/src/glew.c
                 ${GLEW_SOURCE_DIR}/include)
     target_link_libraries(glew ${GLFW_LIBRARIES})
+
+    include_directories(${IMGUI_SOURCE_DIR})
+    add_subdirectory(${IMGUI_SOURCE_DIR})
 else()
+    # GLEW and GLFW are built-in
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_GLFW=3")
+
+    # setup IMGUI
+    include_directories(${IMGUI_SOURCE_DIR})
+    add_subdirectory(${IMGUI_SOURCE_DIR})
 endif()
 
 

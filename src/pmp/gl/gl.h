@@ -29,28 +29,14 @@
 #pragma once
 //=============================================================================
 
-// Mac OS X
-#ifdef __APPLE__
-#include <GL/glew.h>
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-
 // Windows
-#elif _WIN32
+#if _WIN32
 #define NOMINMAX
 #include <Windows.h>
 #undef NOMINMAX
-#include <GL/glew.h>
-#include <GL/glu.h>
-#include <stdlib.h>
-
-// Unix
-#else
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 #endif
 
+#include <GL/glew.h>
 
 #include <stdlib.h>
 #include <iostream>

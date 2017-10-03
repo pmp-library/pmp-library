@@ -12,7 +12,7 @@ int main(int argc, char **argv)
         window.loadMesh(argv[1]);
 #ifdef __EMSCRIPTEN__
     else
-        window.loadMesh("input.off");
+        window.loadMesh("input.obj");
 #endif
 
     return window.run();

@@ -29,6 +29,8 @@
 
 #include "MeshViewer.h"
 
+#include <imgui.h>
+
 #include "cold_warm_texture.h"
 
 #include <cfloat>
@@ -50,6 +52,8 @@ MeshViewer::MeshViewer(const char* title, int width, int height)
     addDrawMode("Hidden Line");
     addDrawMode("Smooth Shading");
     setDrawMode("Smooth Shading");
+
+    m_creaseAngle = 90.0;
 }
 
 //-----------------------------------------------------------------------------
@@ -95,6 +99,19 @@ void MeshViewer::updateMesh()
 
 void MeshViewer::draw(const std::string& drawMode)
 {
+    // uncomment next line to showcase imgui!
+    //ImGui::ShowTestWindow();
+    
+    // draw GUI
+    ImGui::Text("#vertices: %d", (int)m_mesh.nVertices());
+    ImGui::Text("#faces:    %d", (int)m_mesh.nFaces());
+    ImGui::SliderFloat("Crease Angle", &m_creaseAngle, 0.0f, 180.0f);
+    if (m_creaseAngle != m_mesh.creaseAngle())
+    {
+        m_mesh.setCreaseAngle(m_creaseAngle);
+    }
+
+    // draw mesh
     m_mesh.draw(m_projectionMatrix, m_modelviewMatrix, drawMode);
 }
 

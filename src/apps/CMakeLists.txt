@@ -3,15 +3,15 @@ find_package(OpenGL REQUIRED)
 if (EMSCRIPTEN)
 
     add_executable(mview mview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h)
-    target_link_libraries(mview pmp_gl pmp)
+    target_link_libraries(mview pmp_gl pmp imgui)
     set_target_properties(mview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/obj/suzanne.obj@input.obj")
 
     add_executable(subdiv subdiv.cpp)
-    target_link_libraries(subdiv pmp_gl pmp)
+    target_link_libraries(subdiv pmp_gl pmp imgui)
     set_target_properties(subdiv PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/obj/suzanne.obj@input.obj")
 
     add_executable(remeshing remeshing.cpp)
-    target_link_libraries(remeshing pmp_gl pmp)
+    target_link_libraries(remeshing pmp_gl pmp imgui)
     set_target_properties(remeshing PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
 
 else()

@@ -30,6 +30,8 @@
 #include "Window.h"
 #include <algorithm>
 
+#include <imgui_glfw.h>
+
 #if __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
@@ -111,12 +113,18 @@ Window::Window(const char* title, int width, int height)
     glfwSetMouseButtonCallback(m_window, glfwMouse);
     glfwSetScrollCallback(m_window, glfwScroll);
     glfwSetFramebufferSizeCallback(m_window, glfwResize);
+
+    // setup imgui
+    ImGui_Init(m_window, false);
 }
 
 //-----------------------------------------------------------------------------
 
 Window::~Window()
 {
+    // terminate imgui
+    ImGui_Shutdown();
+
     // terminate GLFW
     glfwTerminate();
 }
@@ -130,8 +138,14 @@ int Window::run()
 #else
     while (!glfwWindowShouldClose(m_window))
     {
+        // prepare GUI
+        ImGui_NewFrame();
+
         // draw scene
         display();
+
+        // draw GUI
+        ImGui::Render();
 
         // swap buffers
         glfwSwapBuffers(m_window);
@@ -167,8 +181,14 @@ void Window::emscripten_render_loop()
         glfwResize(m_instance->m_window, w, h);;
     }
 
+    // prepare GUI
+    ImGui_NewFrame();
+
     // draw scene
     m_instance->display();
+
+    // draw GUI
+    ImGui::Render();
 
     // swap buffers
     glfwSwapBuffers(m_instance->m_window);
@@ -192,7 +212,11 @@ void Window::glfwError(int error, const char* description)
 void Window::glfwKeyboard(GLFWwindow* window, int key, int scancode,
                               int action, int mods)
 {
-    m_instance->keyboard(window, key, scancode, action, mods);
+    ImGui_KeyCallback(window, key, scancode, action, mods);
+    if (!ImGui::GetIO().WantCaptureKeyboard)
+    {
+        m_instance->keyboard(window, key, scancode, action, mods);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -207,14 +231,26 @@ void Window::glfwMotion(GLFWwindow* window, double xpos, double ypos)
 
 void Window::glfwMouse(GLFWwindow* window, int button, int action, int mods)
 {
-    m_instance->mouse(window, button, action, mods);
+    ImGui_MouseButtonCallback(window, button, action, mods);
+    if (!ImGui::GetIO().WantCaptureMouse)
+    {
+        m_instance->mouse(window, button, action, mods);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void Window::glfwScroll(GLFWwindow* window, double xoffset, double yoffset)
 {
-    m_instance->scroll(window, xoffset, yoffset);
+#ifdef __EMSCRIPTEN__
+    yoffset *= -1.0;
+#endif    
+    
+    ImGui_ScrollCallback(window, xoffset, yoffset);
+    if (!ImGui::GetIO().WantCaptureMouse)
+    {
+        m_instance->scroll(window, xoffset, yoffset);
+    }
 }
 
 //-----------------------------------------------------------------------------

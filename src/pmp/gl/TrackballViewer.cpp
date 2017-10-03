@@ -187,9 +187,6 @@ void TrackballViewer::scroll(GLFWwindow* /*window*/, double /*xoffset*/,
 {
     m_wheelPos += yoffset;
     float d = -(float)yoffset * 0.12 * m_radius;
-#ifdef __EMSCRIPTEN__
-    d = -d; // emscripten behavior is the opposite
-#endif
     translate(vec3(0.0, 0.0, d));
 }
 
