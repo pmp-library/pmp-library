@@ -6,12 +6,13 @@
     <style>
       .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
       div.emscripten { text-align: center; }
-      /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
       canvas.emscripten { 
-          border:           0px none;
-          background-color: white;
-          width:            100%;
-          height:           100%;
+          border:           0px none;  /* no border, otherwise mouse coords will be wrong */
+          padding:          0px;       /* no padding, otherwise mouse coords will be wrong */
+          background-color: black; /* keep it black, otherwise rendering problems occur */
+          width:            100%;  /* be as wide as possible */
+          height:           100%;  /* be as tall as possible */
+          max-height:       100vh; /* don't grow more than screen height */
           display:          block;
       }
     </style>

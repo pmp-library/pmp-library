@@ -226,34 +226,7 @@ bool ImGui_CreateDeviceObjects()
     // so that it works in Emscripten. We keep the original shaders
     // (GLSL 3.30) because Apple seemingly does not support earlier
     // GLSL dialects.
-
-#ifdef __APPLE__
-    const GLchar *vertex_shader =
-        "#version 330\n"
-        "uniform mat4 ProjMtx;\n"
-        "in vec2 Position;\n"
-        "in vec2 UV;\n"
-        "in vec4 Color;\n"
-        "out vec2 Frag_UV;\n"
-        "out vec4 Frag_Color;\n"
-        "void main()\n"
-        "{\n"
-        "       Frag_UV = UV;\n"
-        "       Frag_Color = Color;\n"
-        "       gl_Position = ProjMtx * vec4(Position.xy,0,1);\n"
-        "}\n";
-
-    const GLchar* fragment_shader =
-        "#version 330\n"
-        "uniform sampler2D Texture;\n"
-        "in vec2 Frag_UV;\n"
-        "in vec4 Frag_Color;\n"
-        "out vec4 Out_Color;\n"
-        "void main()\n"
-        "{\n"
-        "       Out_Color = Frag_Color * texture( Texture, Frag_UV.st);\n"
-        "}\n";
-#else
+    // [Mario] works on my apple...
     const GLchar *vertex_shader =
 #ifndef __EMSCRIPTEN__
         "#version 100                                     \n"
@@ -282,7 +255,6 @@ bool ImGui_CreateDeviceObjects()
         "  gl_FragColor = Frag_Color *                    \n"
         "                 texture2D(Texture, Frag_UV.st); \n"
         "}                                                \n";
-#endif
 
 
     g_ShaderHandle = glCreateProgram();

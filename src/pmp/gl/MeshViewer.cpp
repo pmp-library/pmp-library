@@ -101,15 +101,24 @@ void MeshViewer::draw(const std::string& drawMode)
 {
     // uncomment next line to showcase imgui!
     //ImGui::ShowTestWindow();
+    //ImGui::ShowStyleEditor();
     
     // draw GUI
+    ImGui::SetNextWindowPos(ImVec2(10,10));
+#ifndef __EMSCRIPTEN__
+    ImGui::SetNextWindowSize(ImVec2(0,0));
+#endif
+    ImGui::Begin("Mesh Info");
     ImGui::Text("#vertices: %d", (int)m_mesh.nVertices());
     ImGui::Text("#faces:    %d", (int)m_mesh.nFaces());
-    ImGui::SliderFloat("Crease Angle", &m_creaseAngle, 0.0f, 180.0f);
+    ImGui::PushItemWidth(100);
+    ImGui::SliderFloat("Crease Angle", &m_creaseAngle, 0.0f, 180.0f, "%.0f");
+    ImGui::PopItemWidth();
     if (m_creaseAngle != m_mesh.creaseAngle())
     {
         m_mesh.setCreaseAngle(m_creaseAngle);
     }
+    ImGui::End();
 
     // draw mesh
     m_mesh.draw(m_projectionMatrix, m_modelviewMatrix, drawMode);

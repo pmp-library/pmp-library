@@ -234,10 +234,12 @@ void TrackballViewer::init()
     m_modelviewMatrix = mat4::identity();
 
     // turn on multi-sampling to anti-alias lines
+#ifndef __EMSCRIPTEN__
     glEnable(GL_MULTISAMPLE);
     GLint n_samples;
     glGetIntegerv(GL_SAMPLES, &n_samples);
     std::cout << "Multi-sampling uses " << n_samples << " per pixel\n";
+#endif
 }
 
 //-----------------------------------------------------------------------------

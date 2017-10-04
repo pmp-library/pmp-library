@@ -17,13 +17,13 @@ if (EMSCRIPTEN)
 else()
 
   if(OpenGL_FOUND)
-    add_executable(mview mview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h)
+    add_executable(mview mview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h data/shell.html)
     target_link_libraries(mview pmp_gl glew)
 
-    add_executable(eview eview.cpp EdgeSetProcessingViewer.cpp EdgeSetProcessingViewer.h)
+    add_executable(eview eview.cpp EdgeSetProcessingViewer.cpp EdgeSetProcessingViewer.h data/shell.html)
     target_link_libraries(eview pmp_gl glew)
 
-    add_executable(pview pview.cpp PointSetProcessingViewer.cpp PointSetProcessingViewer.h)
+    add_executable(pview pview.cpp PointSetProcessingViewer.cpp PointSetProcessingViewer.h data/shell.html)
     target_link_libraries(pview pmp_gl glew)
   endif()
 

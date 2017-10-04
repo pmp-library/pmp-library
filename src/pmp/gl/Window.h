@@ -90,6 +90,10 @@ protected: //----------------------------------- callbacks as member functions
     virtual void resize(GLFWwindow* window, int width, int height) = 0;
 
 protected:
+    //! setup imgui style
+    void init_gui();
+
+protected:
     //! GLFW window pointer
     GLFWwindow* m_window;
 
