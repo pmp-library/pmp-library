@@ -97,20 +97,20 @@ void MeshViewer::updateMesh()
 
 //-----------------------------------------------------------------------------
 
-void MeshViewer::draw(const std::string& drawMode)
+void MeshViewer::processImGUI()
 {
-    // uncomment next line to showcase imgui!
-    //ImGui::ShowTestWindow();
-    //ImGui::ShowStyleEditor();
-    
-    // draw GUI
     ImGui::SetNextWindowPos(ImVec2(10,10));
-#ifndef __EMSCRIPTEN__
+#ifndef __EMSCRIPTEN__ // this does not work in emscripten
     ImGui::SetNextWindowSize(ImVec2(0,0));
 #endif
     ImGui::Begin("Mesh Info");
-    ImGui::Text("#vertices: %d", (int)m_mesh.nVertices());
-    ImGui::Text("#faces:    %d", (int)m_mesh.nFaces());
+
+    // output mesh statistics
+    ImGui::BulletText("%d vertices", (int)m_mesh.nVertices());
+    ImGui::BulletText("%d edges", (int)m_mesh.nEdges());
+    ImGui::BulletText("%d faces", (int)m_mesh.nFaces());
+
+    // control crease angle
     ImGui::PushItemWidth(100);
     ImGui::SliderFloat("Crease Angle", &m_creaseAngle, 0.0f, 180.0f, "%.0f");
     ImGui::PopItemWidth();
@@ -118,8 +118,14 @@ void MeshViewer::draw(const std::string& drawMode)
     {
         m_mesh.setCreaseAngle(m_creaseAngle);
     }
-    ImGui::End();
 
+    ImGui::End();
+}
+
+//-----------------------------------------------------------------------------
+
+void MeshViewer::draw(const std::string& drawMode)
+{
     // draw mesh
     m_mesh.draw(m_projectionMatrix, m_modelviewMatrix, drawMode);
 }

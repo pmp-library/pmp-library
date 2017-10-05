@@ -62,11 +62,14 @@ public:
     virtual void updateMesh();
 
     //! draw the scene in different draw modes
-    virtual void draw(const std::string& _draw_mode);
+    virtual void draw(const std::string& _draw_mode) override;
+
+    //! handle ImGUI interface
+    virtual void processImGUI() override;
 
     //! this function handles keyboard events
-    void keyboard(GLFWwindow* window, int key, int scancode,
-                  int action, int mod);
+    virtual void keyboard(GLFWwindow* window, int key, int scancode,
+                          int action, int mod) override;
 
 protected:
     SurfaceMeshGL m_mesh; //!< the mesh

@@ -116,13 +116,12 @@ Window::Window(const char* title, int width, int height)
     glfwSetFramebufferSizeCallback(m_window, glfwResize);
 
     // setup imgui
-    init_gui();
+    initImGUI();
 }
 
 //-----------------------------------------------------------------------------
 
-
-void Window::init_gui()
+void Window::initImGUI()
 {
     ImGui_Init(m_window, false);
     
@@ -188,7 +187,6 @@ void Window::init_gui()
     style.Colors[ImGuiCol_ModalWindowDarkening]  = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 }
 
-
 //-----------------------------------------------------------------------------
 
 Window::~Window()
@@ -205,41 +203,22 @@ Window::~Window()
 int Window::run()
 {
 #if __EMSCRIPTEN__
-    emscripten_set_main_loop(Window::emscripten_render_loop, 0, 1);
+    emscripten_set_main_loop(Window::render_frame, 0, 1);
 #else
     while (!glfwWindowShouldClose(m_window))
     {
-        // prepare GUI
-        ImGui_NewFrame();
-
-        // draw scene
-        display();
-
-        // draw GUI
-        ImGui::Render();
-
-        // swap buffers
-        glfwSwapBuffers(m_window);
-
-        // handle events
-        //glfwPollEvents();
-        glfwWaitEvents();
+        Window::render_frame();
     }
 #endif
-
     glfwDestroyWindow(m_window);
-
     return EXIT_SUCCESS;
 }
 
-
 //-----------------------------------------------------------------------------
 
-
-#if __EMSCRIPTEN__
-
-void Window::emscripten_render_loop()
+void Window::render_frame()
 {
+#if __EMSCRIPTEN__
     // determine correct canvas/framebuffer size
     int w, h, f;
     double dw, dh;
@@ -251,9 +230,11 @@ void Window::emscripten_render_loop()
         emscripten_set_canvas_size(w, h);
         glfwResize(m_instance->m_window, w, h);;
     }
+#endif
 
-    // prepare GUI
+    // preapre and process ImGUI elements
     ImGui_NewFrame();
+    m_instance->processImGUI();
 
     // draw scene
     m_instance->display();
@@ -265,11 +246,9 @@ void Window::emscripten_render_loop()
     glfwSwapBuffers(m_instance->m_window);
 
     // handle events
-    glfwPollEvents();
+    glfwWaitEvents();
+    //glfwPollEvents();
 }
-
-#endif
-
 
 //-----------------------------------------------------------------------------
 

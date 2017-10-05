@@ -47,7 +47,10 @@ public:
 protected:
     //! this function handles keyboard events
     void keyboard(GLFWwindow* window, int key, int scancode,
-                  int action, int mod);
+                  int action, int mod) override;
+    
+    //! draw the scene in different draw modes
+    virtual void processImGUI() override;
 };
 
 //=============================================================================

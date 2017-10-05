@@ -35,6 +35,8 @@
 #include <pmp/algorithms/SurfaceSimplification.h>
 #include <pmp/algorithms/SurfaceRemeshing.h>
 
+#include <imgui.h>
+
 using namespace pmp;
 
 //=============================================================================
@@ -110,3 +112,56 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
         }
     }
 }
+
+//----------------------------------------------------------------------------
+
+void MeshProcessingViewer::processImGUI()
+{
+    MeshViewer::processImGUI();
+
+#ifndef __EMSCRIPTEN__
+    ImGui::SetNextWindowSize(ImVec2(0,0));
+#endif
+    ImGui::Begin("Mesh Processing");
+
+    if (ImGui::Button("Decimate"))
+    {
+        SurfaceSimplification ss(m_mesh);
+        ss.initialize(5); // aspect ratio
+        ss.simplify(m_mesh.nVertices() * 0.1);
+        updateMesh();
+    }
+
+    if (ImGui::Button("Subdivision"))
+    {
+        if (m_mesh.isTriangleMesh())
+            SurfaceSubdivision(m_mesh).loop();
+        else
+            SurfaceSubdivision(m_mesh).catmullClark();
+        updateMesh();
+    }
+
+    if (ImGui::Button("Adaptive Remeshing"))
+    {
+        auto bb = m_mesh.bounds().size();
+        SurfaceRemeshing(m_mesh).adaptiveRemeshing(
+                0.001 * bb,  // min length
+                1.0 * bb,    // max length
+                0.001 * bb); // approx. error
+        updateMesh();
+    }
+
+    if (ImGui::Button("Uniform Remeshing"))
+    {
+        Scalar l(0);
+        for (auto eit : m_mesh.edges())
+            l += distance(m_mesh.position(m_mesh.vertex(eit, 0)),
+                    m_mesh.position(m_mesh.vertex(eit, 1)));
+        l /= (Scalar)m_mesh.nEdges();
+        SurfaceRemeshing(m_mesh).uniformRemeshing(l);
+        updateMesh();
+    }
+
+    ImGui::End();
+}
+

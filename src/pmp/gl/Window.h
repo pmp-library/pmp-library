@@ -63,9 +63,7 @@ private: //----------------------------- static wrapper functions for callbacks
     static void glfwScroll(GLFWwindow* window, double xoffset, double yoffset);
     static void glfwResize(GLFWwindow* window, int width, int height);
 
-#if __EMSCRIPTEN__
-    static void emscripten_render_loop();
-#endif
+    static void render_frame();
 
     static Window* m_instance;
 
@@ -89,9 +87,12 @@ protected: //----------------------------------- callbacks as member functions
     //! this function is called if the window is resized
     virtual void resize(GLFWwindow* window, int width, int height) = 0;
 
+    //! this function renders the ImGUI elements and handles their events
+    virtual void processImGUI() {}
+
 protected:
-    //! setup imgui style
-    void init_gui();
+    //! setup ImGUI user interface
+    void initImGUI();
 
 protected:
     //! GLFW window pointer
