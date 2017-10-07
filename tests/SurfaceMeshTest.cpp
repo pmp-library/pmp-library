@@ -479,3 +479,10 @@ TEST_F(SurfaceMeshTest, edgeFlip)
     EXPECT_EQ(mesh.nVertices(), size_t(10));
     EXPECT_EQ(mesh.nFaces(), size_t(10));
 }
+
+TEST_F(SurfaceMeshTest, isManifold)
+{
+    mesh.read("pmp-data/off/vertex_onering.off");
+    for (auto v : mesh.vertices())
+        EXPECT_TRUE(mesh.isManifold(v));
+}
