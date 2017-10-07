@@ -754,9 +754,14 @@ public:
     //! \attention h0 and h1 have to belong to the same face
     Halfedge insertEdge(Halfedge h0, Halfedge h1);
 
-    //! insert edge between v0 and v1
-    //! returns the new halfedge from v0 to v1
-    virtual Halfedge insertEdge(Vertex v0, Vertex v1) override;
+    //! invalidate insertEdge()
+    virtual Halfedge insertEdge(Vertex v0, Vertex v1) override
+    {
+        std::cerr << "insertEdge() is invalid for SurfaceMesh" << std::endl;
+        SM_ASSERT(v0.isValid());
+        SM_ASSERT(v1.isValid());
+        return Halfedge();
+    }
 
     //! Check whether flipping edge \c e is topologically
     //! \attention This function is only valid for triangle meshes.

@@ -486,3 +486,12 @@ TEST_F(SurfaceMeshTest, isManifold)
     for (auto v : mesh.vertices())
         EXPECT_TRUE(mesh.isManifold(v));
 }
+
+TEST_F(SurfaceMeshTest, insertEdge)
+{
+    // check that insertEdge() is invalid
+    addQuad();
+    size_t ne = mesh.nEdges();
+    mesh.insertEdge(v0,v2);
+    EXPECT_EQ(mesh.nEdges(), ne);
+}

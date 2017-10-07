@@ -918,36 +918,6 @@ SurfaceMesh::Halfedge SurfaceMesh::insertEdge(Halfedge h0, Halfedge h1)
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Halfedge SurfaceMesh::insertEdge(Vertex v0, Vertex v1)
-{
-    Halfedge h0 = EdgeSet::insertEdge(v0, v1);
-    if (!h0.isValid())
-        return h0;
-
-    Halfedge h1 = oppositeHalfedge(h0);
-
-    Face f0 = face(nextHalfedge(h0));
-    assert(f0.isValid());
-    assert(f0 == face(oppositeHalfedge(nextHalfedge(h1))));
-    setFace(h0, f0);
-
-    Face f1 = newFace();
-
-    setHalfedge(f0, h0);
-    setHalfedge(f1, h1);
-
-    Halfedge h = h1;
-    do
-    {
-        setFace(h, f1);
-        h = nextHalfedge(h);
-    } while (h != h1);
-
-    return h0;
-}
-
-//-----------------------------------------------------------------------------
-
 bool SurfaceMesh::isFlipOk(Edge e) const
 {
     // boundary edges cannot be flipped
