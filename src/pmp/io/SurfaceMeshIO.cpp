@@ -34,6 +34,22 @@
 #include <cfloat>
 #include <fstream>
 
+// helper function
+template <typename T>
+void tfread(FILE* in, const T& t)
+{
+    size_t nItems = fread((char*)&t, 1, sizeof(t), in);
+    PMP_ASSERT(nItems > 0);
+}
+
+// helper function
+template <typename T>
+void tfwrite(FILE* out, const T& t)
+{
+    size_t nItems = fwrite((char*)&t, 1, sizeof(t), out);
+    PMP_ASSERT(nItems > 0);
+}
+
 //=============================================================================
 
 namespace pmp {
@@ -353,18 +369,6 @@ bool SurfaceMeshIO::writeOBJ(const SurfaceMesh& mesh, const std::string& filenam
 
 //-----------------------------------------------------------------------------
 
-// helper function
-template <typename T> int read(FILE* in, T& t)
-{
-    int err = 0;
-    err = fread(&t, 1, sizeof(t), in);
-    return err;
-}
-
-
-//-----------------------------------------------------------------------------
-
-
 bool readOFFAscii(SurfaceMesh& mesh,
                     FILE* in,
                     const bool hasNormals,
@@ -502,31 +506,30 @@ bool readOFFBinary(SurfaceMesh& mesh,
 
 
     // #Vertice, #Faces, #Edges
-    read(in, nV);
-    read(in, nF);
-    read(in, nE);
+    tfread(in, nV);
+    tfread(in, nF);
+    tfread(in, nE);
     mesh.clear();
     mesh.reserve(nV, std::max(3*nV, nE), nF);
-
 
     // read vertices: pos [normal] [color] [texcoord]
     for (i=0; i<nV && !feof(in); ++i)
     {
         // position
-        read(in, p);
+        tfread(in, p);
         v = mesh.addVertex((Point)p);
 
         // normal
         if (hasNormals)
         {
-            read(in, n);
+            tfread(in, n);
             normals[v] = n;
         }
 
         // tex coord
         if (hasTexcoords)
         {
-            read(in, t);
+            tfread(in, t);
             texcoords[v][0] = t[0];
             texcoords[v][1] = t[1];
         }
@@ -537,11 +540,11 @@ bool readOFFBinary(SurfaceMesh& mesh,
     std::vector<SurfaceMesh::Vertex> vertices;
     for (i=0; i<nF; ++i)
     {
-        read(in, nV);
+        tfread(in, nV);
         vertices.resize(nV);
         for (j=0; j<nV; ++j)
         {
-            read(in, idx);
+            tfread(in, idx);
             vertices[j] = SurfaceMesh::Vertex(idx);
         }
         mesh.addFace(vertices);
@@ -551,6 +554,38 @@ bool readOFFBinary(SurfaceMesh& mesh,
     return true;
 }
 
+//-----------------------------------------------------------------------------
+
+bool SurfaceMeshIO::writeOFFBinary(const SurfaceMesh& mesh, const std::string& filename)
+{
+    FILE* out = fopen(filename.c_str(), "w");
+    if (!out)
+        return false;
+
+    fprintf(out, "OFF BINARY\n");
+    fclose(out);
+
+    out = fopen(filename.c_str(), "ab");
+    tfwrite(out,(unsigned int)mesh.nVertices());
+    tfwrite(out,(unsigned int)mesh.nFaces());
+    tfwrite(out,(unsigned int)0);
+    auto points = mesh.getVertexProperty<Point>("v:point");
+    for (auto v : mesh.vertices())
+    {
+        const Point& p = points[v];
+        tfwrite(out,p);
+    }
+
+    for (auto f : mesh.faces())
+    {
+        unsigned int nV = mesh.valence(f);
+        tfwrite(out, nV);
+        for (auto fv : mesh.vertices(f))
+            tfwrite(out, (unsigned int)fv.idx());
+    }
+    fclose(out);
+    return true;
+}
 
 //-----------------------------------------------------------------------------
 
@@ -703,21 +738,6 @@ typedef SurfaceMesh::FaceConnectivity FaceConnectivity;
 
 //== IMPLEMENTATION ===========================================================
 
-// helper function
-template <typename T>
-void tfread(FILE* in, T& t)
-{
-    size_t nItems = fread((char*)&t, 1, sizeof(t), in);
-    PMP_ASSERT(nItems > 0);
-}
-
-// helper function
-template <typename T>
-void tfwrite(FILE* out, T& t)
-{
-    size_t nItems = fwrite((char*)&t, 1, sizeof(t), out);
-    PMP_ASSERT(nItems > 0);
-}
 
 //-----------------------------------------------------------------------------
 

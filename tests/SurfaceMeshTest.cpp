@@ -30,6 +30,7 @@
 #include "gtest/gtest.h"
 
 #include <pmp/SurfaceMesh.h>
+#include <pmp/io/SurfaceMeshIO.h>
 #include <vector>
 
 using namespace pmp;
@@ -290,6 +291,17 @@ TEST_F(SurfaceMeshTest, offIO)
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
     mesh.read("test.off");
+    EXPECT_EQ(mesh.nVertices(), size_t(3));
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
+}
+
+TEST_F(SurfaceMeshTest, offIOBinary)
+{
+    addTriangle();
+    SurfaceMeshIO::writeOFFBinary(mesh,"binary.off");
+    mesh.clear();
+    EXPECT_TRUE(mesh.isEmpty());
+    mesh.read("binary.off");
     EXPECT_EQ(mesh.nVertices(), size_t(3));
     EXPECT_EQ(mesh.nFaces(), size_t(1));
 }
