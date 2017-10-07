@@ -495,3 +495,10 @@ TEST_F(SurfaceMeshTest, insertEdge)
     mesh.insertEdge(v0,v2);
     EXPECT_EQ(mesh.nEdges(), ne);
 }
+
+TEST_F(SurfaceMeshTest, propertyStats)
+{
+    mesh.propertyStats();
+}
+
+//=============================================================================

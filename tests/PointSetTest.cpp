@@ -149,3 +149,8 @@ TEST_F(PointSetTest, readFailure)
 {
     ASSERT_FALSE(ps.read("test.off"));
 }
+
+TEST_F(PointSetTest, propertyStats)
+{
+    ps.propertyStats();
+}

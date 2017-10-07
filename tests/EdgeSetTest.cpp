@@ -172,4 +172,9 @@ TEST_F(EdgeSetTest, edgeLength)
     EXPECT_FLOAT_EQ(sum,0.52385628);
 }
 
+TEST_F(EdgeSetTest, propertyStats)
+{
+    es.propertyStats();
+}
+
 //=============================================================================
