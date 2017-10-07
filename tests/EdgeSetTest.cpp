@@ -160,6 +160,16 @@ TEST_F(EdgeSetTest, isManifold)
     EXPECT_FALSE(nonManifold);
 }
 
-
+TEST_F(EdgeSetTest, edgeLength)
+{
+    es.read("pmp-data/knt/3rings.knt");
+    Scalar sum(0);
+    for (auto e : es.edges())
+    {
+        sum += es.edgeLength(e);
+    }
+    sum /= (Scalar)es.nEdges();
+    EXPECT_FLOAT_EQ(sum,0.52385628);
+}
 
 //=============================================================================
