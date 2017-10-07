@@ -128,6 +128,11 @@ TEST_F(PointSetTest, vertexProperties)
     EXPECT_EQ(ps.vertexProperties().size(), osize+1);
     ps.removeVertexProperty(vidx);
     EXPECT_EQ(ps.vertexProperties().size(), osize);
+
+    // add existing, #props increases only once
+    ps.addVertexProperty<int>("v:idx");
+    ps.addVertexProperty<int>("v:idx");
+    EXPECT_EQ(ps.vertexProperties().size(), osize+1);
 }
 
 TEST_F(PointSetTest, write)
