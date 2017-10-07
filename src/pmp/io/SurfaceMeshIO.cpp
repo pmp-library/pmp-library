@@ -391,7 +391,7 @@ bool readOFFAscii(SurfaceMesh& mesh,
 
     // #Vertice, #Faces, #Edges
     items = fscanf(in, "%d %d %d\n", (int*)&nV, (int*)&nF, (int*)&nE);
-    SM_ASSERT(items);
+    PMP_ASSERT(items);
 
     mesh.clear();
     mesh.reserve(nV, std::max(3*nV, nE), nF);
@@ -708,7 +708,7 @@ template <typename T>
 void tfread(FILE* in, T& t)
 {
     size_t nItems = fread((char*)&t, 1, sizeof(t), in);
-    SM_ASSERT(nItems > 0);
+    PMP_ASSERT(nItems > 0);
 }
 
 // helper function
@@ -716,7 +716,7 @@ template <typename T>
 void tfwrite(FILE* out, T& t)
 {
     size_t nItems = fwrite((char*)&t, 1, sizeof(t), out);
-    SM_ASSERT(nItems > 0);
+    PMP_ASSERT(nItems > 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -757,11 +757,11 @@ bool SurfaceMeshIO::readPoly(SurfaceMesh& mesh, const std::string& filename)
     size_t nhfc = fread((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, in);
     size_t nfc  = fread((char*)fconn.data(),  sizeof(FaceConnectivity), nf, in);
     size_t np   = fread((char*)point.data(),  sizeof(Point), nv, in);
-    SM_ASSERT(nvc == nv);
-    SM_ASSERT(nhc == nh);
-    SM_ASSERT(nhfc == nh);
-    SM_ASSERT(nfc == nf);
-    SM_ASSERT(np  == nv);
+    PMP_ASSERT(nvc == nv);
+    PMP_ASSERT(nhc == nh);
+    PMP_ASSERT(nhfc == nh);
+    PMP_ASSERT(nfc == nf);
+    PMP_ASSERT(np  == nv);
 
     fclose(in);
     return true;
@@ -863,7 +863,7 @@ bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
 
     // ASCII or binary STL?
     c = fgets(line, 6, in);
-    SM_ASSERT(c != NULL);
+    PMP_ASSERT(c != NULL);
     const bool binary = ((strncmp(line, "SOLID", 5) != 0) &&
                          (strncmp(line, "solid", 5) != 0));
 
@@ -878,7 +878,7 @@ bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
 
         // skip dummy header
         nItems = fread(line, 1, 80, in);
-        SM_ASSERT(nItems > 0);
+        PMP_ASSERT(nItems > 0);
 
         // read number of triangles
         tfread(in, nT);
@@ -888,7 +888,7 @@ bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
         {
             // skip triangle normal
             nItems = fread(line, 1, 12, in);
-            SM_ASSERT(nItems > 0);
+            PMP_ASSERT(nItems > 0);
             // triangle's vertices
             for (i=0; i<3; ++i)
             {
@@ -916,7 +916,7 @@ bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
                 mesh.addFace(vertices);
 
             nItems = fread(line, 1, 2, in);
-            SM_ASSERT(nItems > 0);
+            PMP_ASSERT(nItems > 0);
             --nT;
         }
     }
@@ -940,7 +940,7 @@ bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
                 {
                     // read line
                     c = fgets(line, 100, in);
-                    SM_ASSERT(c != NULL);
+                    PMP_ASSERT(c != NULL);
 
                     // skip white-space
                     for (c=line; isspace(*c) && *c!='\0'; ++c) {};

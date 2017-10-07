@@ -61,16 +61,16 @@ public:
     {
     public:
         //! constructor
-        explicit BaseHandle(IndexType idx = SM_MAX_INDEX) : m_idx(idx) {}
+        explicit BaseHandle(IndexType idx = PMP_MAX_INDEX) : m_idx(idx) {}
 
         //! Get the underlying index of this handle
         int idx() const { return m_idx; }
 
-        //! reset handle to be invalid (index=SM_MAX_INDEX.)
-        void reset() { m_idx = SM_MAX_INDEX; }
+        //! reset handle to be invalid (index=PMP_MAX_INDEX.)
+        void reset() { m_idx = PMP_MAX_INDEX; }
 
-        //! return whether the handle is valid, i.e., the index is not equal to SM_MAX_INDEX.
-        bool isValid() const { return m_idx != SM_MAX_INDEX; }
+        //! return whether the handle is valid, i.e., the index is not equal to PMP_MAX_INDEX.
+        bool isValid() const { return m_idx != PMP_MAX_INDEX; }
 
         //! are two handles equal?
         bool operator==(const BaseHandle& rhs) const

@@ -58,7 +58,7 @@ public:
     struct Face : public BaseHandle
     {
         //! default constructor (with invalid index)
-        explicit Face(IndexType idx = SM_MAX_INDEX) : BaseHandle(idx) {}
+        explicit Face(IndexType idx = PMP_MAX_INDEX) : BaseHandle(idx) {}
     };
 
     //!@}
@@ -758,8 +758,8 @@ public:
     virtual Halfedge insertEdge(Vertex v0, Vertex v1) override
     {
         std::cerr << "insertEdge() is invalid for SurfaceMesh" << std::endl;
-        SM_ASSERT(v0.isValid());
-        SM_ASSERT(v1.isValid());
+        PMP_ASSERT(v0.isValid());
+        PMP_ASSERT(v1.isValid());
         return Halfedge();
     }
 
@@ -832,7 +832,7 @@ private:
     //! allocate a new face, resize face properties accordingly.
     Face newFace()
     {
-        if (facesSize() == SM_MAX_INDEX - 1)
+        if (facesSize() == PMP_MAX_INDEX - 1)
         {
             std::cerr << "newFacec: cannot allocate face, max. index reached" << std::endl;
             return Face();

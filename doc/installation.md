@@ -99,6 +99,6 @@ reference entities. However, if you need to process very large data sets this
 might not be sufficient. In this case, you can change the index type to be
 64-bit by specifying
 
-    $ cmake -DSM_INDEX_TYPE=64
+    $ cmake -DPMP_INDEX_TYPE=64
 
 during build configuration.

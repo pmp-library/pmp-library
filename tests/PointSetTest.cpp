@@ -91,7 +91,7 @@ TEST_F(PointSetTest, iterators)
     ps.addVertex(p1);
     for (auto v : ps.vertices())
     {
-        SM_ASSERT(v.isValid());
+        PMP_ASSERT(v.isValid());
         nv++;
     }
     EXPECT_EQ(nv, size_t(2));
@@ -105,7 +105,7 @@ TEST_F(PointSetTest, skipDeleted)
     ps.deleteVertex(v1);
     for (auto v : ps.vertices())
     {
-        SM_ASSERT(v.isValid());
+        PMP_ASSERT(v.isValid());
         nv++;
     }
     EXPECT_EQ(nv, size_t(1));

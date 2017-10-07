@@ -88,7 +88,7 @@ bool EdgeSetIO::readKNT(EdgeSet& es, const std::string& filename)
 
     // read #vertices, #edges
     items = sscanf(line, "%s %u %s %u", dummy, &nV, dummy, &nE);
-    SM_ASSERT(items > 0);
+    PMP_ASSERT(items > 0);
 
     // read vertices
     for (i = 0; i < nV && !feof(in); ++i)
