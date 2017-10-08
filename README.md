@@ -19,12 +19,10 @@ Fetch the repository:
 
 Configure and build:
 
-    $ cd pmp-library
-    $ mkdir build
-    $ cd build
-    $ cmake ..
+    $ cd pmp-library && mkdir build && cd build && cmake .. && make
 
-See the doc/installation.md file for the full installation guide.
+See the [installation guide](doc/installation.md) file for more
+detailed installation instructions.
 
 ## License
 
