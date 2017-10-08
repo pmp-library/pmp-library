@@ -7,3 +7,10 @@ body, table, div, p, dl
 {
     visibility: hidden;
 }
+
+#projectlogo img
+{
+	border: 0px none;
+    margin: 10px;
+    height: 55px;
+}

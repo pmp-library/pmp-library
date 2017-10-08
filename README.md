@@ -3,6 +3,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/pmp-library/pmp-library/badge.svg?branch=master)](https://coveralls.io/github/pmp-library/pmp-library?branch=master)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
+![](./doc/images/pmp-logo.png | width=500)
+
 # The Polygon Mesh Processing Library
 
 The pmp-library is a modern C++ open-source library for digital geometry
@@ -11,7 +13,7 @@ in geometry processing tasks as well as implementations of canonical
 algorithms. It has been designed and implemented with a focus on ease of
 use and performance while maintaining high flexibility.
 
-# Quickstart
+## Quickstart
 
 Fetch the repository:
 
@@ -26,7 +28,7 @@ Configure and build:
 
 See the doc/installation.md file for the full installation guide.
 
-# License
+## License
 
 The pmp-library is provided under a flexible 3-clause
 BSD [license](./LICENSE.txt), thereby allowing for both open-source and
