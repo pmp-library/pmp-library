@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/pmp-library/pmp-library/badge.svg?branch=master)](https://coveralls.io/github/pmp-library/pmp-library?branch=master)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-![](./doc/images/pmp-logo.png | width=500)
+![](doc/images/pmp-logo.png | width=500)
 
 # The Polygon Mesh Processing Library
 
