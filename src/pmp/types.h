@@ -36,17 +36,17 @@
 
 #ifdef NDEBUG
 // this macro allows to avoid unused variable warnings with no overhead
-#define SM_ASSERT(x)        \
+#define PMP_ASSERT(x)        \
     do                   \
     {                    \
         (void)sizeof(x); \
     } while (0)
 #else
-#define SM_ASSERT(x) assert(x)
+#define PMP_ASSERT(x) assert(x)
 #endif
 
 // simple pretty-printing debug macro
-#define SM_SHOW(x) std::cerr << #x " = '" << x << "'" << std::endl;
+#define PMP_SHOW(x) std::cerr << #x " = '" << x << "'" << std::endl;
 
 //=============================================================================
 
@@ -72,12 +72,12 @@ typedef Vector<Scalar, 3> TextureCoordinate;
 
 
 // define index type to be used
-#ifdef SM_INDEX_TYPE_64
+#ifdef PMP_INDEX_TYPE_64
 typedef std::uint_least64_t IndexType;
-#define SM_MAX_INDEX UINT_LEAST64_MAX
+#define PMP_MAX_INDEX UINT_LEAST64_MAX
 #else
 typedef std::uint_least32_t IndexType;
-#define SM_MAX_INDEX UINT_LEAST32_MAX
+#define PMP_MAX_INDEX UINT_LEAST32_MAX
 #endif
 
 

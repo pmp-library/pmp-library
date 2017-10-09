@@ -58,7 +58,7 @@ public:
     struct Face : public BaseHandle
     {
         //! default constructor (with invalid index)
-        explicit Face(IndexType idx = SM_MAX_INDEX) : BaseHandle(idx) {}
+        explicit Face(IndexType idx = PMP_MAX_INDEX) : BaseHandle(idx) {}
     };
 
     //!@}
@@ -754,9 +754,14 @@ public:
     //! \attention h0 and h1 have to belong to the same face
     Halfedge insertEdge(Halfedge h0, Halfedge h1);
 
-    //! insert edge between v0 and v1
-    //! returns the new halfedge from v0 to v1
-    virtual Halfedge insertEdge(Vertex v0, Vertex v1) override;
+    //! invalidate insertEdge()
+    virtual Halfedge insertEdge(Vertex v0, Vertex v1) override
+    {
+        std::cerr << "insertEdge() is invalid for SurfaceMesh" << std::endl;
+        PMP_ASSERT(v0.isValid());
+        PMP_ASSERT(v1.isValid());
+        return Halfedge();
+    }
 
     //! Check whether flipping edge \c e is topologically
     //! \attention This function is only valid for triangle meshes.
@@ -827,7 +832,7 @@ private:
     //! allocate a new face, resize face properties accordingly.
     Face newFace()
     {
-        if (facesSize() == SM_MAX_INDEX - 1)
+        if (facesSize() == PMP_MAX_INDEX - 1)
         {
             std::cerr << "newFacec: cannot allocate face, max. index reached" << std::endl;
             return Face();

@@ -160,6 +160,37 @@ TEST_F(EdgeSetTest, isManifold)
     EXPECT_FALSE(nonManifold);
 }
 
+TEST_F(EdgeSetTest, edgeLength)
+{
+    es.read("pmp-data/knt/3rings.knt");
+    Scalar sum(0);
+    for (auto e : es.edges())
+    {
+        sum += es.edgeLength(e);
+    }
+    sum /= (Scalar)es.nEdges();
+    EXPECT_FLOAT_EQ(sum,0.52385628);
+}
 
+TEST_F(EdgeSetTest, isBoundaryHalfedge)
+{
+    es.read("pmp-data/knt/3rings.knt");
+    bool boundary = false;
+    for (auto e : es.edges())
+    {
+        auto h = es.halfedge(e,0);
+        if (es.isBoundary(h))
+        {
+            boundary = true;
+            break;
+        }
+    }
+    EXPECT_FALSE(boundary);
+}
+
+TEST_F(EdgeSetTest, propertyStats)
+{
+    es.propertyStats();
+}
 
 //=============================================================================

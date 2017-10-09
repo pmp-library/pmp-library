@@ -1,9 +1,35 @@
 body, table, div, p, dl
 {
-    font: 400 14px/22px Open Sans,sans-serif;
+    font: 400 14px/22px Lato,Open Sans,sans-serif;
 }
 
 #nav-sync
 {
     visibility: hidden;
+}
+
+#projectname
+{
+    visibility: hidden;
+}
+
+#projectlogo img
+{
+	border: 0px none;
+    margin: 10px;
+    height: 55px;
+}
+
+#footer hr
+{
+    margin: 0;
+    padding: 0;
+}
+
+#footer address
+{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: normal;
+    text-align: center;
 }

@@ -55,7 +55,7 @@ public:
     struct Vertex : public BaseHandle
     {
         //! default constructor (with invalid index)
-        explicit Vertex(IndexType idx = SM_MAX_INDEX) : BaseHandle(idx) {};
+        explicit Vertex(IndexType idx = PMP_MAX_INDEX) : BaseHandle(idx) {};
     };
 
     //!@}
@@ -368,7 +368,7 @@ private:
     //! allocate a new vertex, resize vertex properties accordingly.
     Vertex newVertex()
     {
-        if (verticesSize() == SM_MAX_INDEX - 1)
+        if (verticesSize() == PMP_MAX_INDEX - 1)
         {
             std::cerr << "newVertex: cannot allocate vertex, max. index reached" << std::endl;
             return Vertex();

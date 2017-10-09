@@ -53,8 +53,8 @@ public:
     //! \brief write edge set \c es to file \c filename
     static bool write(const EdgeSet& es, const std::string& filename)
     {
-        SM_ASSERT(es.nVertices() > 0);
-        SM_ASSERT(filename.length() > 0);
+        PMP_ASSERT(es.nVertices() > 0);
+        PMP_ASSERT(filename.length() > 0);
         return false;
     }
 

@@ -47,7 +47,7 @@ class SurfaceSubdivision
 public:
     SurfaceSubdivision(SurfaceMesh& mesh);
 
-    //! Perform one step of Loop subdivision
+    //! Perform one step of Catmull-Clark subdivision
     void catmullClark();
 
     //! Perform one step of Loop subdivision

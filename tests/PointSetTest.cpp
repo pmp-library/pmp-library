@@ -91,7 +91,7 @@ TEST_F(PointSetTest, iterators)
     ps.addVertex(p1);
     for (auto v : ps.vertices())
     {
-        SM_ASSERT(v.isValid());
+        PMP_ASSERT(v.isValid());
         nv++;
     }
     EXPECT_EQ(nv, size_t(2));
@@ -105,7 +105,7 @@ TEST_F(PointSetTest, skipDeleted)
     ps.deleteVertex(v1);
     for (auto v : ps.vertices())
     {
-        SM_ASSERT(v.isValid());
+        PMP_ASSERT(v.isValid());
         nv++;
     }
     EXPECT_EQ(nv, size_t(1));
@@ -128,6 +128,11 @@ TEST_F(PointSetTest, vertexProperties)
     EXPECT_EQ(ps.vertexProperties().size(), osize+1);
     ps.removeVertexProperty(vidx);
     EXPECT_EQ(ps.vertexProperties().size(), osize);
+
+    // add existing, #props increases only once
+    ps.addVertexProperty<int>("v:idx");
+    ps.addVertexProperty<int>("v:idx");
+    EXPECT_EQ(ps.vertexProperties().size(), osize+1);
 }
 
 TEST_F(PointSetTest, write)
@@ -148,4 +153,9 @@ TEST_F(PointSetTest, read)
 TEST_F(PointSetTest, readFailure)
 {
     ASSERT_FALSE(ps.read("test.off"));
+}
+
+TEST_F(PointSetTest, propertyStats)
+{
+    ps.propertyStats();
 }

@@ -52,6 +52,8 @@ public:
    static bool read(SurfaceMesh& mesh, const std::string& filename);
    static bool write(const SurfaceMesh& mesh, const std::string& filename);
 
+    static bool writeOFFBinary(const SurfaceMesh& mesh, const std::string& filename);
+
 private:
    static bool readOFF(SurfaceMesh& mesh, const std::string& filename);
    static bool readOBJ(SurfaceMesh& mesh, const std::string& filename);

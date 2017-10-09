@@ -30,6 +30,7 @@
 #include "gtest/gtest.h"
 
 #include <pmp/SurfaceMesh.h>
+#include <pmp/io/SurfaceMeshIO.h>
 #include <vector>
 
 using namespace pmp;
@@ -294,6 +295,17 @@ TEST_F(SurfaceMeshTest, offIO)
     EXPECT_EQ(mesh.nFaces(), size_t(1));
 }
 
+TEST_F(SurfaceMeshTest, offIOBinary)
+{
+    addTriangle();
+    SurfaceMeshIO::writeOFFBinary(mesh,"binary.off");
+    mesh.clear();
+    EXPECT_TRUE(mesh.isEmpty());
+    mesh.read("binary.off");
+    EXPECT_EQ(mesh.nVertices(), size_t(3));
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
+}
+
 TEST_F(SurfaceMeshTest, stlIO)
 {
     mesh.read("pmp-data/stl/icosahedron_ascii.stl");
@@ -479,3 +491,26 @@ TEST_F(SurfaceMeshTest, edgeFlip)
     EXPECT_EQ(mesh.nVertices(), size_t(10));
     EXPECT_EQ(mesh.nFaces(), size_t(10));
 }
+
+TEST_F(SurfaceMeshTest, isManifold)
+{
+    mesh.read("pmp-data/off/vertex_onering.off");
+    for (auto v : mesh.vertices())
+        EXPECT_TRUE(mesh.isManifold(v));
+}
+
+TEST_F(SurfaceMeshTest, insertEdge)
+{
+    // check that insertEdge() is invalid
+    addQuad();
+    size_t ne = mesh.nEdges();
+    mesh.insertEdge(v0,v2);
+    EXPECT_EQ(mesh.nEdges(), ne);
+}
+
+TEST_F(SurfaceMeshTest, propertyStats)
+{
+    mesh.propertyStats();
+}
+
+//=============================================================================

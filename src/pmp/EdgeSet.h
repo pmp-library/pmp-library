@@ -55,7 +55,7 @@ public:
     struct Halfedge : public BaseHandle
     {
         //! default constructor (with invalid index)
-        explicit Halfedge(IndexType idx = SM_MAX_INDEX) : BaseHandle(idx) {}
+        explicit Halfedge(IndexType idx = PMP_MAX_INDEX) : BaseHandle(idx) {}
     };
 
     //! this type represents an edge (internally it is basically an index)
@@ -63,7 +63,7 @@ public:
     struct Edge : public BaseHandle
     {
         //! default constructor (with invalid index)
-        explicit Edge(IndexType idx = SM_MAX_INDEX) : BaseHandle(idx) {}
+        explicit Edge(IndexType idx = PMP_MAX_INDEX) : BaseHandle(idx) {}
     };
 
     //!@}
@@ -916,7 +916,7 @@ protected:
     {
         assert(start != end);
 
-        if (halfedgesSize() == SM_MAX_INDEX - 1)
+        if (halfedgesSize() == PMP_MAX_INDEX - 1)
         {
             std::cerr << "newEdge: cannot allocate edge, max. index reached" << std::endl;
             return Halfedge();
