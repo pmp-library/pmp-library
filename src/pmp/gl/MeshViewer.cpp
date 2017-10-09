@@ -99,11 +99,9 @@ void MeshViewer::updateMesh()
 
 void MeshViewer::processImGUI()
 {
-    ImGui::SetNextWindowPos(ImVec2(10,10));
-#ifndef __EMSCRIPTEN__ // this does not work in emscripten
-    ImGui::SetNextWindowSize(ImVec2(0,0));
-#endif
-    ImGui::Begin("Mesh Info");
+    ImGui::SetNextWindowPos(ImVec2(10,10), ImGuiCond_Once);
+    //ImGui::SetNextWindowCollapsed(true, ImGuiCond_Once);
+    ImGui::Begin("Mesh Info", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
     // output mesh statistics
     ImGui::BulletText("%d vertices", (int)m_mesh.nVertices());

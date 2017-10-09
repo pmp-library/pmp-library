@@ -110,6 +110,12 @@ void TrackballViewer::keyboard(GLFWwindow* /*window*/, int key, int /*scancode*/
             break;
         }
 #endif
+        case GLFW_KEY_G:
+        {
+            showImGUI(!showImGUI());
+            break;
+        }
+
         case GLFW_KEY_SPACE:
         {
             if (++m_drawMode >= m_nDrawModes)

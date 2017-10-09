@@ -109,6 +109,7 @@ Window::Window(const char* title, int width, int height)
 
     // register glfw callbacks
     glfwSetErrorCallback(glfwError);
+    glfwSetCharCallback(m_window, glfwCharacter);
     glfwSetKeyCallback(m_window, glfwKeyboard);
     glfwSetCursorPosCallback(m_window, glfwMotion);
     glfwSetMouseButtonCallback(m_window, glfwMouse);
@@ -123,6 +124,8 @@ Window::Window(const char* title, int width, int height)
 
 void Window::initImGUI()
 {
+    m_showImGUI = true;
+
     ImGui_Init(m_window, false);
     
     // load Lato font from pre-compiled ttf file
@@ -147,6 +150,7 @@ void Window::initImGUI()
     style.Colors[ImGuiCol_TextDisabled]          = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
     style.Colors[ImGuiCol_WindowBg]              = ImVec4(0.90f, 0.90f, 0.90f, 0.70f);
     style.Colors[ImGuiCol_ChildWindowBg]         = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    style.Colors[ImGuiCol_PopupBg]               = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
     style.Colors[ImGuiCol_Border]                = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
     style.Colors[ImGuiCol_BorderShadow]          = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
     style.Colors[ImGuiCol_FrameBg]               = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
@@ -233,21 +237,27 @@ void Window::render_frame()
 #endif
 
     // preapre and process ImGUI elements
-    ImGui_NewFrame();
-    m_instance->processImGUI();
+    if (m_instance->showImGUI())
+    {
+        ImGui_NewFrame();
+        m_instance->processImGUI();
+    }
 
     // draw scene
     m_instance->display();
 
     // draw GUI
-    ImGui::Render();
+    if (m_instance->showImGUI())
+    {
+        ImGui::Render();
+    }
 
     // swap buffers
     glfwSwapBuffers(m_instance->m_window);
 
     // handle events
-    glfwWaitEvents();
-    //glfwPollEvents();
+    //glfwWaitEvents();
+    glfwPollEvents();
 }
 
 //-----------------------------------------------------------------------------
@@ -255,6 +265,17 @@ void Window::render_frame()
 void Window::glfwError(int error, const char* description)
 {
     std::cerr << "error (" << error << "):" << description << std::endl;
+}
+
+//-----------------------------------------------------------------------------
+
+void Window::glfwCharacter(GLFWwindow* window, unsigned int c)
+{
+    ImGui_CharCallback(window, c);
+    if (!ImGui::GetIO().WantCaptureKeyboard)
+    {
+        m_instance->character(window, c);
+    }
 }
 
 //-----------------------------------------------------------------------------

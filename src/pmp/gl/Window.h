@@ -58,6 +58,7 @@ public: //------------------------------------------------------ public methods
 private: //----------------------------- static wrapper functions for callbacks
     static void glfwError(int error, const char* description);
     static void glfwKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void glfwCharacter(GLFWwindow* window, unsigned int c);
     static void glfwMouse(GLFWwindow* window, int button, int action, int mods);
     static void glfwMotion(GLFWwindow* window, double xpos, double ypos);
     static void glfwScroll(GLFWwindow* window, double xoffset, double yoffset);
@@ -74,6 +75,9 @@ protected: //----------------------------------- callbacks as member functions
 
     //! this function handles keyboard events
     virtual void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) = 0;
+
+    //! this function handles unicode character events
+    virtual void character(GLFWwindow* window, unsigned int c) {}
 
     //! this function handles mouse button events
     virtual void mouse(GLFWwindow* window, int button, int action, int mods) = 0;
@@ -93,6 +97,10 @@ protected: //----------------------------------- callbacks as member functions
 protected:
     //! setup ImGUI user interface
     void initImGUI();
+
+    bool showImGUI() const { return m_showImGUI; }
+    void showImGUI(bool b) { m_showImGUI = b; }
+    bool m_showImGUI;
 
 protected:
     //! GLFW window pointer
