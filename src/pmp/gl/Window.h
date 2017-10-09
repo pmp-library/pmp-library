@@ -47,7 +47,7 @@ class Window
 
 public: //------------------------------------------------------ public methods
     //! constructor
-    Window(const char* title, int width = 0, int height = 0);
+    Window(const char* title, int width, int height, bool showgui=true);
 
     //! destructor
     virtual ~Window();

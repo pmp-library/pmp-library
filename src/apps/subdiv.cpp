@@ -10,8 +10,8 @@ using namespace pmp;
 class Viewer : public MeshViewer
 {
 public:
-    Viewer(const char* title, int width, int height)
-        : MeshViewer(title,width, height)
+    Viewer(const char* title, int width, int height, bool showgui)
+        : MeshViewer(title, width, height, showgui)
     {
         setDrawMode("Hidden Line");
     }
@@ -45,12 +45,13 @@ protected:
 
 int main(int argc, char **argv)
 {
-#ifdef __EMSCRIPTEN__
+#ifndef __EMSCRIPTEN__
     Viewer window("Subdivision", 800, 600);
-    if (argc == 2)
-        window.loadMesh(argv[1]);
-    else
-        window.loadMesh("input.obj");
+    if (argc == 2) window.loadMesh(argv[1]);
+    return window.run();
+#else
+    Viewer window("Subdivision", 800, 600, false);
+    window.loadMesh(argc==2 ? argv[1] : "input.obj");
     return window.run();
 #endif
 }

@@ -48,8 +48,8 @@ Window* Window::m_instance = nullptr;
 
 //-----------------------------------------------------------------------------
 
-Window::Window(const char* title, int width, int height)
-    : m_width(width), m_height(height)
+Window::Window(const char* title, int width, int height, bool showgui)
+    : m_width(width), m_height(height), m_showImGUI(showgui)
 {
     // initialize glfw window
     if (!glfwInit())
@@ -124,8 +124,6 @@ Window::Window(const char* title, int width, int height)
 
 void Window::initImGUI()
 {
-    m_showImGUI = true;
-
     ImGui_Init(m_window, false);
     
     // load Lato font from pre-compiled ttf file

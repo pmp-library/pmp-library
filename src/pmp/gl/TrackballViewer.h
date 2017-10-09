@@ -52,7 +52,7 @@ class TrackballViewer : public Window
 
 public: //------------------------------------------------------ public methods
     //! constructor
-    TrackballViewer(const char* title, int width = 0, int height = 0);
+    TrackballViewer(const char* title, int width, int height, bool showgui=true);
 
     //! destructor
     virtual ~TrackballViewer();

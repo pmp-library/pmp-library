@@ -48,7 +48,7 @@ class MeshViewer : public TrackballViewer
 {
 public:
     //! constructor
-    MeshViewer(const char* title, int width, int height);
+    MeshViewer(const char* title, int width, int height, bool showgui=true);
 
     //! destructor
     virtual ~MeshViewer();

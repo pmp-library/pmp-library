@@ -36,8 +36,8 @@ namespace pmp {
 
 //=============================================================================
 
-TrackballViewer::TrackballViewer(const char* title, int width, int height)
-    : Window(title, width, height)
+TrackballViewer::TrackballViewer(const char* title, int width, int height, bool showgui)
+    : Window(title, width, height, showgui)
 {
     // init mouse buttons
     for (int i          = 0; i < 7; ++i)

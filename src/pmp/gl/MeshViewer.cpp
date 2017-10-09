@@ -43,8 +43,8 @@ namespace pmp {
 
 //=============================================================================
 
-MeshViewer::MeshViewer(const char* title, int width, int height)
-    : TrackballViewer(title, width, height)
+MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
+    : TrackballViewer(title, width, height, showgui)
 {
     // setup draw modes
     clearDrawModes();
