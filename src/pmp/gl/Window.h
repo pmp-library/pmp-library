@@ -77,7 +77,7 @@ protected: //----------------------------------- callbacks as member functions
     virtual void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) = 0;
 
     //! this function handles unicode character events
-    virtual void character(GLFWwindow* window, unsigned int c) {}
+    virtual void character(GLFWwindow*, unsigned int) {}
 
     //! this function handles mouse button events
     virtual void mouse(GLFWwindow* window, int button, int action, int mods) = 0;
@@ -100,7 +100,6 @@ protected:
 
     bool showImGUI() const { return m_showImGUI; }
     void showImGUI(bool b) { m_showImGUI = b; }
-    bool m_showImGUI;
 
 protected:
     //! GLFW window pointer
@@ -111,6 +110,8 @@ protected:
 
     //! highDPI scaling
     int m_scaling;
+
+    bool m_showImGUI;
 };
 
 //=============================================================================
