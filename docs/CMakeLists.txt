@@ -13,7 +13,7 @@ endif()
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
 # add doxygen as target
-add_custom_target(doxygen ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+add_custom_target(docs ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
   # POST_BUILD
   # COMMAND ${CMAKE_COMMAND} -E copy_if_different
   # "${CMAKE_CURRENT_SOURCE_DIR}/navtree.js" ${CMAKE_CURRENT_BINARY_DIR}/html/navtree.js
