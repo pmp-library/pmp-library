@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/pmp-library/pmp-library/badge.svg?branch=master)](https://coveralls.io/github/pmp-library/pmp-library?branch=master)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
-<img src="doc/images/pmp-logo-text.png" alt="logo" width="750px"/>
+<img src="docs/images/pmp-logo-text.png" alt="logo" width="750px"/>
 
 The pmp-library is a modern C++ open-source library for digital geometry
 processing. It provides a set of geometric data structures frequently used
