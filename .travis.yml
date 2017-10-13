@@ -32,6 +32,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y xorg-dev ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then pip install --user cpp-coveralls ; fi
   - if [ "$BUILD_DOCS" = true ] ; then sudo apt-get install -y doxygen ; fi
+  - if [ "$BUILD_DOCS" = true ] ; then export DOXYGEN_URL="http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.13.linux.bin.tar.gz" && mkdir doxygen && travis_retry wget --quiet -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && export PATH=`pwd`/doxygen/bin:${PATH} && doxygen --version ; fi
 before_script:
   - mkdir build
   - cd build
