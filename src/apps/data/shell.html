@@ -10,10 +10,10 @@
       canvas.emscripten { 
           border:           0px none;  /* no border, otherwise mouse coords will be wrong */
           padding:          0px;       /* no padding, otherwise mouse coords will be wrong */
-          background-color: black; /* keep it black, otherwise rendering problems occur */
-          width:            100%;  /* be as wide as possible */
-          height:           100%;  /* be as tall as possible */
-          max-height:       100vh; /* don't grow more than screen height */
+          background-color: black;     /* keep it black, otherwise rendering problems occur */
+          width:            100vw;     /* be as wide as possible */
+          height:           100vh;     /* be as tall as possible */
+          max-height:       100vh;     /* don't grow more than screen height */
           display:          block;
           overflow:         hidden;
       }

@@ -193,6 +193,9 @@ void TrackballViewer::scroll(GLFWwindow* /*window*/, double /*xoffset*/,
 {
     m_wheelPos += yoffset;
     float d = -(float)yoffset * 0.12 * m_radius;
+#ifdef __EMSCRIPTEN__
+    d *= 0.5; // scrolling in browser is faster
+#endif
     translate(vec3(0.0, 0.0, d));
 }
 
@@ -263,7 +266,7 @@ void TrackballViewer::viewAll()
 {
     vec4 c = vec4(m_center, 1.0);
     vec4 t = m_modelviewMatrix * c;
-    translate( vec3(-t[0], -t[1], -t[2]-3.0*m_radius ) );
+    translate( vec3(-t[0], -t[1], -t[2]-2.0*m_radius ) );
 }
 
 //-----------------------------------------------------------------------------
