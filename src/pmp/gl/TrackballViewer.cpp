@@ -266,7 +266,7 @@ void TrackballViewer::viewAll()
 {
     vec4 c = vec4(m_center, 1.0);
     vec4 t = m_modelviewMatrix * c;
-    translate( vec3(-t[0], -t[1], -t[2]-2.0*m_radius ) );
+    translate( vec3(-t[0], -t[1], -t[2]-2.5*m_radius ) );
 }
 
 //-----------------------------------------------------------------------------
