@@ -31,8 +31,6 @@
 
 #include <imgui.h>
 
-#include "cold_warm_texture.h"
-
 #include <cfloat>
 #include <iostream>
 #include <sstream>
@@ -51,6 +49,7 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
     addDrawMode("Points");
     addDrawMode("Hidden Line");
     addDrawMode("Smooth Shading");
+    addDrawMode("Scalar Field");
     setDrawMode("Smooth Shading");
 
     m_creaseAngle = 90.0;

@@ -81,6 +81,7 @@ private:
     GLuint vertex_array_object_;
     GLuint vertex_buffer_;
     GLuint normal_buffer_;
+    GLuint texcoord_buffer_;
     GLuint edge_buffer_;
 
     //! buffer sizes
@@ -90,6 +91,9 @@ private:
 
     //! shaders
     Shader  m_phongShader;
+
+    //! 1D texture for scalar field rendering
+    GLuint texture_;
 };
 
 //=============================================================================

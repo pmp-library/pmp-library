@@ -29,7 +29,7 @@
 #pragma once
 //=============================================================================
 
-const GLubyte mean_curvature_texture[768] = {
+const GLubyte cold_warm_texture[768] = {
 59,76,192,
 60,78,194,
 61,80,195,

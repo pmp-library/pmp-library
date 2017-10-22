@@ -6,6 +6,10 @@ if (EMSCRIPTEN)
     target_link_libraries(mview pmp_gl pmp imgui)
     set_target_properties(mview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
 
+    add_executable(curview curview.cpp data/shell.html)
+    target_link_libraries(curview pmp_gl pmp imgui)
+    set_target_properties(curview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
+
     add_executable(mpview mpview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h data/shell.html)
     target_link_libraries(mpview pmp_gl pmp imgui)
     set_target_properties(mpview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
@@ -23,6 +27,9 @@ else()
   if(OpenGL_FOUND)
     add_executable(mview mview.cpp)
     target_link_libraries(mview pmp_gl glew)
+
+    add_executable(curview curview.cpp)
+    target_link_libraries(curview pmp_gl glew)
 
     add_executable(mpview mpview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h)
     target_link_libraries(mpview pmp_gl glew)

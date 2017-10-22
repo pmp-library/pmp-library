@@ -358,6 +358,87 @@ void SurfaceCurvature::smoothCurvatures(unsigned int iterations)
     m_mesh.removeEdgeProperty(cotan);
 }
 
+//-----------------------------------------------------------------------------
+
+void SurfaceCurvature::meanCurvatureToTextureCoordinates() const
+{
+    auto curvatures = m_mesh.addVertexProperty<Scalar>("v:curv");
+    for (auto v: m_mesh.vertices())
+    {
+        curvatures[v] = fabs(meanCurvature(v));
+    }
+    curvatureToTextureCoordinates();
+    m_mesh.removeVertexProperty<Scalar>(curvatures);
+}
+
+//-----------------------------------------------------------------------------
+
+void SurfaceCurvature::gaussCurvatureToTextureCoordinates() const
+{
+    auto curvatures = m_mesh.addVertexProperty<Scalar>("v:curv");
+    for (auto v: m_mesh.vertices())
+    {
+        curvatures[v] = gaussCurvature(v);
+    }
+    curvatureToTextureCoordinates();
+    m_mesh.removeVertexProperty<Scalar>(curvatures);
+}
+
+//-----------------------------------------------------------------------------
+
+void SurfaceCurvature::maxCurvatureToTextureCoordinates() const
+{
+    auto curvatures = m_mesh.addVertexProperty<Scalar>("v:curv");
+    for (auto v: m_mesh.vertices())
+    {
+        curvatures[v] = maxAbsCurvature(v);
+    }
+    curvatureToTextureCoordinates();
+    m_mesh.removeVertexProperty<Scalar>(curvatures);
+}
+
+//-----------------------------------------------------------------------------
+
+void SurfaceCurvature::curvatureToTextureCoordinates() const
+{
+    auto curvatures = m_mesh.getVertexProperty<Scalar>("v:curv");
+    assert(curvatures);
+
+    // sort curvature values
+    std::vector<Scalar> values;
+    values.reserve(m_mesh.nVertices());
+    for (auto v: m_mesh.vertices())
+    {
+        values.push_back( curvatures[v] );
+    }
+    std::sort(values.begin(), values.end());
+    unsigned int n = values.size()-1;
+    std::cout << "curvature: [" << values[0] << ", " << values[n-1] << "]\n";
+
+    // clamp upper/lower 5%
+    unsigned int i = n / 20;
+    Scalar kmin = values[i];
+    Scalar kmax = values[n-1-i];
+
+    // generate 1D texture coordiantes
+    auto tex = m_mesh.vertexProperty<TextureCoordinate>("v:tex");
+    if (kmin < 0.0) // signed
+    {
+        kmax = std::max(fabs(kmin), fabs(kmax));
+        for (auto v: m_mesh.vertices())
+        {
+            tex[v] = TextureCoordinate((0.5f * curvatures[v] / kmax) + 0.5f, 0.0);
+        }
+    }
+    else // unsigned
+    {
+        for (auto v: m_mesh.vertices())
+        {
+            tex[v] = TextureCoordinate((curvatures[v] - kmin) / (kmax - kmin), 0.0);
+        }
+    }
+}
+
 //=============================================================================
 } // namespace pmp
 //=============================================================================

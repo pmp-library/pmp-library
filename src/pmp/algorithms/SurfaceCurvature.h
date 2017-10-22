@@ -94,9 +94,21 @@ public:
         return std::max(fabs(m_minCurvature[v]), fabs(m_maxCurvature[v]));
     }
 
+    //! convert (precomputed) mean curvature to 1D texture coordinates
+    void meanCurvatureToTextureCoordinates() const;
+
+    //! convert (precomputed) Gauss curvature to 1D texture coordinates
+    void gaussCurvatureToTextureCoordinates() const;
+
+    //! convert (precomputed) max. abs. curvature to 1D texture coordinates
+    void maxCurvatureToTextureCoordinates() const;
+
 private:
     //! smooth curvature values
     void smoothCurvatures(unsigned int iterations);
+
+    //! convert curvature values ("v:curv") to 1D texture coordinates
+    void curvatureToTextureCoordinates() const;
 
 private:
     SurfaceMesh&                        m_mesh;

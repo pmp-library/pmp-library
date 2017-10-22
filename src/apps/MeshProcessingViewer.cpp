@@ -34,6 +34,7 @@
 #include <pmp/algorithms/SurfaceFeatures.h>
 #include <pmp/algorithms/SurfaceSimplification.h>
 #include <pmp/algorithms/SurfaceRemeshing.h>
+#include <pmp/algorithms/SurfaceCurvature.h>
 
 #include <imgui.h>
 
@@ -48,6 +49,33 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
 
     switch (key)
     {
+        case GLFW_KEY_G: // Gauss curvature
+        {
+            SurfaceCurvature analyzer(m_mesh);
+            analyzer.analyzeTensor(1, true);
+            analyzer.gaussCurvatureToTextureCoordinates();
+            updateMesh();
+            setDrawMode("Scalar Field");
+            break;
+        }
+        case GLFW_KEY_M: // mean curvature
+        {
+            SurfaceCurvature analyzer(m_mesh);
+            analyzer.analyzeTensor(1, true);
+            analyzer.meanCurvatureToTextureCoordinates();
+            updateMesh();
+            setDrawMode("Scalar Field");
+            break;
+        }
+        case GLFW_KEY_X: // mean curvature
+        {
+            SurfaceCurvature analyzer(m_mesh);
+            analyzer.analyzeTensor(1, true);
+            analyzer.maxCurvatureToTextureCoordinates();
+            updateMesh();
+            setDrawMode("Scalar Field");
+            break;
+        }
         case GLFW_KEY_F:
         {
             SurfaceFeatures sf(m_mesh);

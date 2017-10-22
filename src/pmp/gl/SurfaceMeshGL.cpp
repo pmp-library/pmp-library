@@ -29,6 +29,7 @@
 
 #include <pmp/gl/SurfaceMeshGL.h>
 #include <pmp/gl/phong_shader.h>
+#include "cold_warm_texture.h"
 #include <float.h>
 
 //=============================================================================
@@ -44,6 +45,7 @@ SurfaceMeshGL::SurfaceMeshGL()
     vertex_array_object_    = 0;
     vertex_buffer_          = 0;
     normal_buffer_          = 0;
+    texcoord_buffer_        = 0;
     edge_buffer_            = 0;
 
 
@@ -55,6 +57,9 @@ SurfaceMeshGL::SurfaceMeshGL()
 
     // material parameters
     crease_angle_ = 70.0;
+
+    // initialize texture
+    texture_ = 0;
 }
 
 
@@ -66,8 +71,10 @@ SurfaceMeshGL::~SurfaceMeshGL()
     // delete OpenGL buffers
     glDeleteBuffers(1, &vertex_buffer_);
     glDeleteBuffers(1, &normal_buffer_);
+    glDeleteBuffers(1, &texcoord_buffer_);
     glDeleteBuffers(1, &edge_buffer_);
     glDeleteVertexArrays(1, &vertex_array_object_);
+    glDeleteTextures(1, &texture_);
 }
 
 
@@ -94,7 +101,22 @@ void SurfaceMeshGL::updateOpenGLBuffers()
         glBindVertexArray(vertex_array_object_);
         glGenBuffers(1, &vertex_buffer_);
         glGenBuffers(1, &normal_buffer_);
+        glGenBuffers(1, &texcoord_buffer_);
         glGenBuffers(1, &edge_buffer_);
+    }
+
+
+    // has cold-warm-texture been generated?
+    if (!texture_)
+    {
+        glGenTextures(1, &texture_);
+        glBindTexture(GL_TEXTURE_2D, texture_);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, cold_warm_texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
 
 
@@ -102,13 +124,19 @@ void SurfaceMeshGL::updateOpenGLBuffers()
     glBindVertexArray(vertex_array_object_);
 
 
+    // get vertex properties
+    auto vpos = getVertexProperty<Point>("v:point");
+    auto vtex = getVertexProperty<TexCoord>("v:tex");
 
-    // produce arrays of points and normals (duplicate vertices to allow for flat shading)
+
+    // produce arrays of points, normals, and texcoords
+    // (duplicate vertices to allow for flat shading)
     std::vector<vec3>  positionArray;  positionArray.reserve(3*nFaces());
     std::vector<vec3>  normalArray;    normalArray.reserve(3*nFaces());
+    std::vector<vec2>  texArray;       texArray.reserve(3*nFaces());
 
+    // data per face (for all corners)
     std::vector<Vertex>  corners;
-    std::vector<vec3>    cornerPositions;
     std::vector<vec3>    cornerNormals;
 
     // convert from degrees to radians
@@ -122,28 +150,33 @@ void SurfaceMeshGL::updateOpenGLBuffers()
     {
         // collect corner positions and normals
         corners.clear();
-        cornerPositions.clear();
         cornerNormals.clear();
         for (auto h: halfedges(f))
         {
             corners.push_back(toVertex(h));
-            cornerPositions.push_back(position(toVertex(h)));
             cornerNormals.push_back(computeCornerNormal(h, creaseAngle));
         }
         assert(corners.size() >= 3);
 
 
         // tessellate face into triangles
-        int i0, i1, i2, nc = cornerPositions.size();
+        int i0, i1, i2, nc = corners.size();
         for (i0=0, i1=1, i2=2; i2<nc; ++i1, ++i2)
         {
-            positionArray.push_back( cornerPositions[i0] );
-            positionArray.push_back( cornerPositions[i1] );
-            positionArray.push_back( cornerPositions[i2] );
+            positionArray.push_back( vpos[corners[i0]] );
+            positionArray.push_back( vpos[corners[i1]] );
+            positionArray.push_back( vpos[corners[i2]] );
 
             normalArray.push_back( cornerNormals[i0] );
             normalArray.push_back( cornerNormals[i1] );
             normalArray.push_back( cornerNormals[i2] );
+
+            if (vtex)
+            {
+                texArray.push_back( vtex[corners[i0]] );
+                texArray.push_back( vtex[corners[i1]] );
+                texArray.push_back( vtex[corners[i2]] );
+            }
 
             vertex_indices[ corners[i0] ] = vidx++;
             vertex_indices[ corners[i1] ] = vidx++;
@@ -166,6 +199,16 @@ void SurfaceMeshGL::updateOpenGLBuffers()
     glBufferData(GL_ARRAY_BUFFER, normalArray.size()*3*sizeof(float), normalArray.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(1);
+
+
+    // texture coordinates
+    if (vtex)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, texcoord_buffer_);
+        glBufferData(GL_ARRAY_BUFFER, texArray.size()*2*sizeof(float), texArray.data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glEnableVertexAttribArray(2);
+    }
 
 
     // edge indices
@@ -205,11 +248,14 @@ void SurfaceMeshGL::draw(const mat4& projectionMatrix,
     // load shader?
     if (!m_phongShader.isValid())
     {
-        m_phongShader.source(phong_vshader, phong_fshader);
-        //m_phongShader.load("phong.vert", "phong.frag");
+        if (!m_phongShader.source(phong_vshader, phong_fshader))
+        {
+            exit(1);
+        }
         m_phongShader.use();
         m_phongShader.bind_attrib("v_position", 0);
         m_phongShader.bind_attrib("v_normal",   1);
+        m_phongShader.bind_attrib("v_tex1D",    2);
     }
 
 
@@ -234,6 +280,7 @@ void SurfaceMeshGL::draw(const mat4& projectionMatrix,
     m_phongShader.set_uniform("front_color", vec3(0.6, 0.6, 0.6));
     m_phongShader.set_uniform("back_color",  vec3(0.3, 0.0, 0.0));
     m_phongShader.set_uniform("use_lighting", true);
+    m_phongShader.set_uniform("use_texture",  false);
 
 
     glBindVertexArray(vertex_array_object_);
@@ -266,6 +313,15 @@ void SurfaceMeshGL::draw(const mat4& projectionMatrix,
 
     else if (drawMode == "Smooth Shading")
     {
+        glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+    }
+
+    else if (drawMode == "Scalar Field")
+    {
+        m_phongShader.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
+        m_phongShader.set_uniform("back_color",  vec3(0.3, 0.3, 0.3));
+        m_phongShader.set_uniform("use_texture", true);
+        glBindTexture(GL_TEXTURE_2D, texture_);
         glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
     }
 
