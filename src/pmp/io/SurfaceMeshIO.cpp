@@ -177,8 +177,7 @@ bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
         {
           if (sscanf(s, "vt %f %f", &x, &y))
           {
-            z=1;
-            allTexCoords.push_back(TextureCoordinate(x,y,z));
+            allTexCoords.push_back(TextureCoordinate(x,y));
           }
         }
 
@@ -335,7 +334,7 @@ bool SurfaceMeshIO::writeOBJ(const SurfaceMesh& mesh, const std::string& filenam
         for (SurfaceMesh::HalfedgeIterator hit=mesh.halfedgesBegin(); hit!=mesh.halfedgesEnd(); ++hit)
         {
             const TextureCoordinate& pt = texCoord[*hit];
-            fprintf(out, "vt %.10f %.10f %.10f\n", pt[0], pt[1], pt[2]);
+            fprintf(out, "vt %.10f %.10f \n", pt[0], pt[1]);
         }
     }
 
@@ -487,8 +486,8 @@ bool readOFFBinary(SurfaceMesh& mesh,
                      const bool hasTexcoords,
                      const bool hasColors)
 {
-    unsigned int       i, j, idx;
-    unsigned int       nV, nF, nE;
+    unsigned int       i, j, idx(0);
+    unsigned int       nV(0), nF(0), nE(0);
     vec3               p, n, c;
     vec2               t;
     SurfaceMesh::Vertex  v;
@@ -752,7 +751,7 @@ bool SurfaceMeshIO::readPoly(SurfaceMesh& mesh, const std::string& filename)
     mesh.clear();
 
     // how many elements?
-    unsigned int nv, ne, nh, nf;
+    unsigned int nv(0), ne(0), nh(0), nf(0);
     tfread(in, nv);
     tfread(in, ne);
     tfread(in, nf);
@@ -861,7 +860,7 @@ private:
 bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
 {
     char                            line[100], *c;
-    unsigned int                    i, nT;
+    unsigned int                    i, nT(0);
     vec3                            p;
     SurfaceMesh::Vertex               v;
     std::vector<SurfaceMesh::Vertex>  vertices(3);

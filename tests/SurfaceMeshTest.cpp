@@ -272,7 +272,7 @@ TEST_F(SurfaceMeshTest, objIO)
 {
     addTriangle();
     mesh.updateVertexNormals();
-    mesh.addHalfedgeProperty<TextureCoordinate>("h:texcoord",TextureCoordinate(0,0,0));
+    mesh.addHalfedgeProperty<TextureCoordinate>("h:texcoord",TextureCoordinate(0,0));
     mesh.write("test.obj");
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
@@ -285,7 +285,7 @@ TEST_F(SurfaceMeshTest, offIO)
 {
     addTriangle();
     mesh.updateVertexNormals();
-    mesh.addVertexProperty<TextureCoordinate>("v:texcoord",TextureCoordinate(0,0,0));
+    mesh.addVertexProperty<TextureCoordinate>("v:texcoord",TextureCoordinate(0,0));
     mesh.addVertexProperty<Color>("v:color",Color(0,0,0));
     mesh.write("test.off");
     mesh.clear();

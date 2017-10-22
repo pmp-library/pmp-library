@@ -68,7 +68,7 @@ typedef Vector<Scalar, 3> Normal;
 typedef Vector<Scalar, 3> Color;
 
 //! Texture coordinate type
-typedef Vector<Scalar, 3> TextureCoordinate;
+typedef Vector<Scalar, 2> TextureCoordinate, TexCoord;
 
 
 // define index type to be used
