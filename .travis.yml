@@ -40,8 +40,9 @@ before_script:
 script:
   - make
   - make test
-  - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then coveralls --gcov-options '\-lp' --root .. -E ".*external.*" -E ".*CMakeFiles.*" -E ".*tests/.*.cpp.*" ; fi
   - if [ "$BUILD_DOCS" = true ] ; then make docs ; fi
+after_success:
+  - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then coveralls --gcov-options '\-lp' --root .. -E ".*external.*" -E ".*CMakeFiles.*" -E ".*tests/.*.cpp.*" ; fi
 deploy:
   provider: pages
   skip_cleanup: true
