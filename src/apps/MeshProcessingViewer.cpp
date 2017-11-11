@@ -33,6 +33,9 @@
 #include <pmp/algorithms/SurfaceSubdivision.h>
 #include <pmp/algorithms/SurfaceFeatures.h>
 #include <pmp/algorithms/SurfaceSimplification.h>
+#ifdef PMP_HAS_EIGEN
+#include <pmp/algorithms/SurfaceSmoothing.h>
+#endif
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 
@@ -82,6 +85,37 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             sf.detectAngle(70);
             break;
         }
+#ifdef PMP_HAS_EIGEN
+        case GLFW_KEY_I:
+        {
+            // auto bb = m_mesh.bounds();
+            // Scalar yrange = bb.max()[1] - bb.min()[1];
+            // auto vselected = m_mesh.vertexProperty<bool>("v:selected",false);
+            // for (auto v : m_mesh.vertices())
+            // {
+            //     auto p = m_mesh.position(v);
+            //     if (p[1] >= (bb.max()[1] - 0.2*yrange))
+            //     {
+            //         vselected[v] = false;
+            //     }
+            //     else if (p[1] < (bb.max()[1] - 0.2*yrange) &&
+            //              p[1] > (bb.max()[1] - 0.8*yrange))
+            //     {
+            //         vselected[v] = true;
+            //     }
+            //     else
+            //     {
+            //         vselected[v] = false;
+            //     }
+            // }
+
+            SurfaceSmoothing ss(m_mesh);
+            ss.implicitSmooth(1,0.000001);
+            //ss.fair();
+            updateMesh();
+            break;
+        }
+#endif
         case GLFW_KEY_L:
         {
             if (m_mesh.isTriangleMesh())
@@ -192,4 +226,3 @@ void MeshProcessingViewer::processImGUI()
 
     ImGui::End();
 }
-

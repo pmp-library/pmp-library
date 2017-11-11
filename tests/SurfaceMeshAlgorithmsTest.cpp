@@ -33,6 +33,9 @@
 #include <pmp/algorithms/SurfaceSimplification.h>
 #include <pmp/algorithms/SurfaceFeatures.h>
 #include <pmp/algorithms/SurfaceSubdivision.h>
+#ifdef PMP_HAS_EIGEN
+#include <pmp/algorithms/SurfaceSmoothing.h>
+#endif
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 
@@ -263,3 +266,83 @@ TEST_F(SurfaceMeshAlgorithmsTest, uniformRemeshing)
     SurfaceRemeshing(mesh).uniformRemeshing(l);
     EXPECT_EQ(mesh.nVertices(),size_t(642));
 }
+
+#ifdef PMP_HAS_EIGEN
+TEST_F(SurfaceMeshAlgorithmsTest, implicitSmoothing)
+{
+    mesh.read("pmp-data/off/hemisphere.off");
+    auto bbz = mesh.bounds().max()[2];
+    SurfaceSmoothing ss(mesh);
+    ss.implicitSmooth(3,0.01);
+    auto bbs = mesh.bounds().max()[2];
+    EXPECT_LT(bbs,bbz);
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, implicitSmoothingSelected)
+{
+    mesh.read("pmp-data/off/sphere_low.off");
+    auto bb = mesh.bounds();
+    Scalar yrange = bb.max()[1] - bb.min()[1];
+    auto vselected = mesh.vertexProperty<bool>("v:selected",false);
+    for (auto v : mesh.vertices())
+    {
+        auto p = mesh.position(v);
+        if (p[1] >= (bb.max()[1] - 0.2*yrange))
+        {
+            vselected[v] = false;
+        }
+        else if (p[1] < (bb.max()[1] - 0.2*yrange) &&
+                 p[1] > (bb.max()[1] - 0.8*yrange))
+        {
+            vselected[v] = true;
+        }
+        else
+        {
+            vselected[v] = false;
+        }
+    }
+    SurfaceSmoothing ss(mesh);
+    ss.implicitSmooth(3,0.1);
+    auto bb2 = mesh.bounds();
+    EXPECT_LT(bb2.size(),bb.size());
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, fairing)
+{
+    mesh.read("pmp-data/off/hemisphere.off");
+    auto bbz = mesh.bounds().max()[2];
+    SurfaceSmoothing ss(mesh);
+    ss.fair();
+    auto bbs = mesh.bounds().max()[2];
+    EXPECT_LT(bbs,bbz);
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, fairingSelected)
+{
+    mesh.read("pmp-data/off/sphere_low.off");
+    auto bb = mesh.bounds();
+    Scalar yrange = bb.max()[1] - bb.min()[1];
+    auto vselected = mesh.vertexProperty<bool>("v:selected",false);
+    for (auto v : mesh.vertices())
+    {
+        auto p = mesh.position(v);
+        if (p[1] >= (bb.max()[1] - 0.2*yrange))
+        {
+            vselected[v] = false;
+        }
+        else if (p[1] < (bb.max()[1] - 0.2*yrange) &&
+                 p[1] > (bb.max()[1] - 0.8*yrange))
+        {
+            vselected[v] = true;
+        }
+        else
+        {
+            vselected[v] = false;
+        }
+    }
+    SurfaceSmoothing ss(mesh);
+    ss.fair();
+    auto bb2 = mesh.bounds();
+    EXPECT_LT(bb2.size(),bb.size());
+}
+#endif

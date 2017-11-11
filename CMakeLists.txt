@@ -7,6 +7,7 @@ set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 set(GLFW_SOURCE_DIR "external/glfw")
 set(GLEW_SOURCE_DIR "external/glew")
@@ -45,6 +46,13 @@ else()
     add_subdirectory(${IMGUI_SOURCE_DIR})
 endif()
 
+find_package(Eigen3)
+if(EIGEN3_FOUND)
+  include_directories(${EIGEN3_INCLUDE_DIR})
+  add_definitions(-DPMP_HAS_EIGEN)
+endif()
+
+
 
 include(AddFileDependencies)
 include_directories(${CMAKE_SOURCE_DIR}/src/)
@@ -72,15 +80,13 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCXX)
 
     # gather data, generate report
     COMMAND ${LCOV} --directory . --capture --output-file coverage.info
-    COMMAND ${LCOV} --remove coverage.info 'tests/*' '/usr/*' 'googletest/*' --output-file coverage.info.cleaned
+    COMMAND ${LCOV} --remove coverage.info 'Eigen/*' 'tests/*' '/usr/*' 'googletest/*' --output-file coverage.info.cleaned
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info.cleaned
     COMMAND ${CMAKE_COMMAND} -E remove coverage.info coverage.info.cleaned
 
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 endif()
-
-
 
 # set default compiler flags
 if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
