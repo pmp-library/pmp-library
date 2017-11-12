@@ -149,7 +149,7 @@ void MeshViewer::keyboard(GLFWwindow* window, int key, int scancode, int action,
             else
                 m_mesh.setCreaseAngle( m_mesh.creaseAngle() - 10 );
             m_creaseAngle = m_mesh.creaseAngle();
-            processImGUI();
+
             std::cout << "crease angle: " << m_mesh.creaseAngle() << std::endl;
             break;
         }
