@@ -21,7 +21,7 @@ Configure and build:
 
     $ cd pmp-library && mkdir build && cd build && cmake .. && make
 
-See the [installation guide](doc/installation.md) file for more
+See the [installation guide](docs/installation.md) file for more
 detailed installation instructions.
 
 ## License

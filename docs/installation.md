@@ -75,7 +75,7 @@ located in the current working directory.
 In order to build the full HTML manual and reference
 documentation call
 
-    $ make doxygen
+    $ make docs
 
 The resulting HTML documentation can be found in the `doc/` sub-directory.
 
