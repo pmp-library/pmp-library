@@ -48,7 +48,7 @@ class MeshViewer : public TrackballViewer
 {
 public:
     //! constructor
-    MeshViewer(const char* title, int width, int height, bool showgui=true);
+    MeshViewer(const char* title, int width, int height, bool showgui = true);
 
     //! destructor
     virtual ~MeshViewer();
@@ -68,13 +68,13 @@ public:
     virtual void processImGUI() override;
 
     //! this function handles keyboard events
-    virtual void keyboard(GLFWwindow* window, int key, int scancode,
-                          int action, int mod) override;
+    virtual void keyboard(GLFWwindow* window, int key, int scancode, int action,
+                          int mod) override;
 
 protected:
-    SurfaceMeshGL m_mesh; //!< the mesh
-    std::string m_filename; //!< the current file
-    float m_creaseAngle;
+    SurfaceMeshGL m_mesh;     //!< the mesh
+    std::string   m_filename; //!< the current file
+    float         m_creaseAngle;
 };
 
 //=============================================================================

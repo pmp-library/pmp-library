@@ -65,12 +65,12 @@ public:
 
 private:
     //! OpenGL buffers
-    GLuint vertex_array_object_;
-    GLuint vertex_buffer_;
-    GLuint normal_buffer_;
+    GLuint m_vertexArrayObject;
+    GLuint m_vertexBuffer;
+    GLuint m_normalBuffer;
 
     //! buffer sizes
-    GLsizei n_vertices_;
+    GLsizei m_nVertices;
 
     //! shaders
     Shader m_phongShader;

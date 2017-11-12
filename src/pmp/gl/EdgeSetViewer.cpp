@@ -63,13 +63,12 @@ bool EdgeSetViewer::loadEdgeSet(const char* filename)
     {
         // update scene center and bounds
         BoundingBox bb = m_edgeSet.bounds();
-        setScene(bb.center(), 0.5*bb.size());
+        setScene(bb.center(), 0.5 * bb.size());
 
         updateEdgeSet();
 
-        std::cout << "Load " << filename << ": "
-            << m_edgeSet.nVertices() << " vertices, "
-            << m_edgeSet.nEdges() << " edges\n";
+        std::cout << "Load " << filename << ": " << m_edgeSet.nVertices()
+                  << " vertices, " << m_edgeSet.nEdges() << " edges\n";
 
         m_filename = filename;
         return true;
@@ -94,8 +93,9 @@ void EdgeSetViewer::draw(const std::string& drawMode)
 }
 
 //-----------------------------------------------------------------------------
-//
-void EdgeSetViewer::keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+
+void EdgeSetViewer::keyboard(GLFWwindow* window, int key, int scancode,
+                             int action, int mods)
 {
     if (action != GLFW_PRESS) // only react on key press events
         return;

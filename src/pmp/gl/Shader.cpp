@@ -39,109 +39,101 @@ namespace pmp {
 
 //=============================================================================
 
-
-Shader::Shader() :
-  pid_(0), vid_(0), fid_(0)
+Shader::Shader() : m_pid(0), m_vid(0), m_fid(0)
 {
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 Shader::~Shader()
 {
-  cleanup();
+    cleanup();
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void Shader::cleanup()
 {
-  if (pid_) glDeleteProgram(pid_);
-  if (vid_) glDeleteShader(vid_);
-  if (fid_) glDeleteShader(fid_);
+    if (m_pid)
+        glDeleteProgram(m_pid);
+    if (m_vid)
+        glDeleteShader(m_vid);
+    if (m_fid)
+        glDeleteShader(m_fid);
 
-  pid_ = vid_ = fid_ = 0;
+    m_pid = m_vid = m_fid = 0;
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 bool Shader::source(const char* vshader, const char* fshader)
 {
-  // cleanup existing shaders first
-  cleanup();
+    // cleanup existing shaders first
+    cleanup();
 
-  // create program
-  pid_ = glCreateProgram();
+    // create program
+    m_pid = glCreateProgram();
 
-  // vertex shader
-  vid_ = compile(vshader, GL_VERTEX_SHADER);
-  if (!vid_)  return false;
-  glAttachShader(pid_, vid_);
+    // vertex shader
+    m_vid = compile(vshader, GL_VERTEX_SHADER);
+    if (!m_vid)
+        return false;
+    glAttachShader(m_pid, m_vid);
 
-  // fragment shader
-  fid_ = compile(fshader, GL_FRAGMENT_SHADER);
-  if (!fid_)  return false;
-  glAttachShader(pid_, fid_);
+    // fragment shader
+    m_fid = compile(fshader, GL_FRAGMENT_SHADER);
+    if (!m_fid)
+        return false;
+    glAttachShader(m_pid, m_fid);
 
-  // link program
-  if (!link()) return false;
+    // link program
+    if (!link())
+        return false;
 
-  return true;
+    return true;
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 bool Shader::load(const char* vfile, const char* ffile)
 {
-  // cleanup existing shaders first
-  cleanup();
+    // cleanup existing shaders first
+    cleanup();
 
+    // create program
+    m_pid = glCreateProgram();
 
-  // create program
-  pid_ = glCreateProgram();
+    // vertex shader
+    m_vid = load_and_compile(vfile, GL_VERTEX_SHADER);
+    if (m_vid)
+        glAttachShader(m_pid, m_vid);
 
+    // fragment shader
+    m_fid = load_and_compile(ffile, GL_FRAGMENT_SHADER);
+    if (m_fid)
+        glAttachShader(m_pid, m_fid);
 
-  // vertex shader
-  vid_ = load_and_compile(vfile, GL_VERTEX_SHADER);
-  if (vid_)  glAttachShader(pid_, vid_);
+    // link program
+    if (!link())
+        return false;
 
-
-  // fragment shader
-  fid_ = load_and_compile(ffile, GL_FRAGMENT_SHADER);
-  if (fid_)  glAttachShader(pid_, fid_);
-
-
-  // link program
-  if (!link()) return false;
-
-
-  return true;
+    return true;
 }
-
 
 //-----------------------------------------------------------------------------
 
-
 bool Shader::link()
 {
-    glLinkProgram(pid_);
+    glLinkProgram(m_pid);
     GLint status;
-    glGetProgramiv(pid_, GL_LINK_STATUS, &status);
+    glGetProgramiv(m_pid, GL_LINK_STATUS, &status);
     if (status == GL_FALSE)
     {
         GLint length;
-        glGetProgramiv(pid_, GL_INFO_LOG_LENGTH, &length);
+        glGetProgramiv(m_pid, GL_INFO_LOG_LENGTH, &length);
 
-        GLchar *info = new GLchar[length+1];
-        glGetProgramInfoLog(pid_, length, NULL, info);
+        GLchar* info = new GLchar[length + 1];
+        glGetProgramInfoLog(m_pid, length, NULL, info);
         std::cerr << "Shader: Cannot link program:\n" << info << std::endl;
         delete[] info;
 
@@ -153,21 +145,20 @@ bool Shader::link()
     return true;
 }
 
-
 //-----------------------------------------------------------------------------
 
 bool Shader::load(const char* filename, std::string& source)
 {
-    std::ifstream  ifs(filename);
+    std::ifstream ifs(filename);
     if (!ifs)
     {
-        std::cerr << "Shader: Cannot open file \""  << filename << "\"\n";
+        std::cerr << "Shader: Cannot open file \"" << filename << "\"\n";
         return false;
     }
 
-    std::stringstream  ss;
+    std::stringstream ss;
     ss << ifs.rdbuf();
-    source  = ss.str();
+    source = ss.str();
 
     ifs.close();
     return true;
@@ -185,11 +176,9 @@ GLint Shader::compile(const char* source, GLenum type)
         return 0;
     }
 
-
     // compile vertex shader
     glShaderSource(id, 1, &source, NULL);
     glCompileShader(id);
-
 
     // check compile status
     GLint status;
@@ -199,7 +188,7 @@ GLint Shader::compile(const char* source, GLenum type)
         GLint length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 
-        GLchar *info = new GLchar[length+1];
+        GLchar* info = new GLchar[length + 1];
         glGetShaderInfoLog(id, length, NULL, info);
 
         std::cerr << "Shader: Cannot compile shader\n" << info << std::endl;
@@ -220,133 +209,128 @@ GLint Shader::load_and_compile(const char* filename, GLenum type)
     std::string source;
     if (!load(filename, source))
     {
-        std::cerr << "Shader: Cannot open file \""  << filename << "\"\n";
+        std::cerr << "Shader: Cannot open file \"" << filename << "\"\n";
         return 0;
     }
 
     return compile(source.c_str(), type);
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void Shader::use()
 {
-  if (pid_) glUseProgram(pid_);
+    if (m_pid)
+        glUseProgram(m_pid);
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void Shader::disable()
 {
-  glUseProgram(0);
+    glUseProgram(0);
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void Shader::bind_attrib(const char* name, GLuint index)
 {
-  if (!pid_) return;
-  glBindAttribLocation(pid_, index, name);
-  link(); // have to re-link now!
+    if (!m_pid)
+        return;
+    glBindAttribLocation(m_pid, index, name);
+    link(); // have to re-link now!
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void Shader::set_uniform(const char* name, float value)
 {
-  if (!pid_) return;
-  int location = glGetUniformLocation(pid_, name);
-  if (location == -1) {
-      std::cerr<<"Invalid uniform location for: "<<name<<std::endl;
-      return;
+    if (!m_pid)
+        return;
+    int location = glGetUniformLocation(m_pid, name);
+    if (location == -1)
+    {
+        std::cerr << "Invalid uniform location for: " << name << std::endl;
+        return;
     }
-  glUniform1f(location, value);
+    glUniform1f(location, value);
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void Shader::set_uniform(const char* name, int value)
 {
-  if (!pid_) return;
-  int location = glGetUniformLocation(pid_, name);
-  if (location == -1){
-      std::cerr<<"Invalid uniform location for: "<<name<<std::endl;
-      return;
+    if (!m_pid)
+        return;
+    int location = glGetUniformLocation(m_pid, name);
+    if (location == -1)
+    {
+        std::cerr << "Invalid uniform location for: " << name << std::endl;
+        return;
     }
-  glUniform1i(location, value);
+    glUniform1i(location, value);
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void Shader::set_uniform(const char* name, const vec3& vec)
 {
-  if (!pid_) return;
-  int location = glGetUniformLocation(pid_, name);
-  if(location == -1) {
-      std::cerr<<"Invalid uniform location for: "<<name<<std::endl;
-      return;
+    if (!m_pid)
+        return;
+    int location = glGetUniformLocation(m_pid, name);
+    if (location == -1)
+    {
+        std::cerr << "Invalid uniform location for: " << name << std::endl;
+        return;
     };
-  glUniform3f(location, vec[0], vec[1], vec[2]);
+    glUniform3f(location, vec[0], vec[1], vec[2]);
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void Shader::set_uniform(const char* name, const vec4& vec)
 {
-  if (!pid_) return;
-  int location = glGetUniformLocation(pid_, name);
-  if(location == -1) {
-      std::cerr<<"Invalid uniform location for: "<<name<<std::endl;
-      return;
+    if (!m_pid)
+        return;
+    int location = glGetUniformLocation(m_pid, name);
+    if (location == -1)
+    {
+        std::cerr << "Invalid uniform location for: " << name << std::endl;
+        return;
     }
-  glUniform4f(location, vec[0], vec[1], vec[2], vec[3]);
+    glUniform4f(location, vec[0], vec[1], vec[2], vec[3]);
 }
-
 
 //-----------------------------------------------------------------------------
 
-
-void  Shader::set_uniform(const char* name, const mat3& mat)
+void Shader::set_uniform(const char* name, const mat3& mat)
 {
-  if (!pid_) return;
-  int location = glGetUniformLocation(pid_, name);
-  if(location == -1) {
-      std::cerr<<"Invalid uniform location for: "<<name<<std::endl;
-      return;
+    if (!m_pid)
+        return;
+    int location = glGetUniformLocation(m_pid, name);
+    if (location == -1)
+    {
+        std::cerr << "Invalid uniform location for: " << name << std::endl;
+        return;
     }
-  glUniformMatrix3fv(location, 1, false, mat.data());
+    glUniformMatrix3fv(location, 1, false, mat.data());
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 void Shader::set_uniform(const char* name, const mat4& mat)
 {
-  if (!pid_) return;
-  int location = glGetUniformLocation(pid_, name);
-  if(location == -1){
-      std::cerr<<"Invalid uniform location for: "<<name<<std::endl;
-      return;
+    if (!m_pid)
+        return;
+    int location = glGetUniformLocation(m_pid, name);
+    if (location == -1)
+    {
+        std::cerr << "Invalid uniform location for: " << name << std::endl;
+        return;
     }
-  glUniformMatrix4fv(location, 1, false, mat.data());
+    glUniformMatrix4fv(location, 1, false, mat.data());
 }
 
-
 //=============================================================================
-} // namespace
+} // namespace pmp
 //=============================================================================

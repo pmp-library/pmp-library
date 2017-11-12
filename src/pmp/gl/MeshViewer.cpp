@@ -70,14 +70,13 @@ bool MeshViewer::loadMesh(const char* filename)
     {
         // update scene center and bounds
         BoundingBox bb = m_mesh.bounds();
-        setScene(bb.center(), 0.5*bb.size());
+        setScene(bb.center(), 0.5 * bb.size());
 
         // compute face & vertex normals, update face indices
         updateMesh();
 
-        std::cout << "Load " << filename << ": "
-            << m_mesh.nVertices() << " vertices, "
-            << m_mesh.nFaces() << " faces\n";
+        std::cout << "Load " << filename << ": " << m_mesh.nVertices()
+                  << " vertices, " << m_mesh.nFaces() << " faces\n";
 
         m_filename = filename;
         return true;
@@ -98,7 +97,7 @@ void MeshViewer::updateMesh()
 
 void MeshViewer::processImGUI()
 {
-    ImGui::SetNextWindowPos(ImVec2(10,10), ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
     //ImGui::SetNextWindowCollapsed(true, ImGuiCond_Once);
     ImGui::Begin("Mesh Info", NULL, ImGuiWindowFlags_AlwaysAutoResize);
 
@@ -129,7 +128,8 @@ void MeshViewer::draw(const std::string& drawMode)
 
 //-----------------------------------------------------------------------------
 //
-void MeshViewer::keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+void MeshViewer::keyboard(GLFWwindow* window, int key, int scancode, int action,
+                          int mods)
 {
     if (action != GLFW_PRESS) // only react on key press events
         return;
@@ -145,9 +145,9 @@ void MeshViewer::keyboard(GLFWwindow* window, int key, int scancode, int action,
         case GLFW_KEY_C: // adjust crease angle
         {
             if (mods & GLFW_MOD_SHIFT)
-                m_mesh.setCreaseAngle( m_mesh.creaseAngle() + 10 );
+                m_mesh.setCreaseAngle(m_mesh.creaseAngle() + 10);
             else
-                m_mesh.setCreaseAngle( m_mesh.creaseAngle() - 10 );
+                m_mesh.setCreaseAngle(m_mesh.creaseAngle() - 10);
             m_creaseAngle = m_mesh.creaseAngle();
 
             std::cout << "crease angle: " << m_mesh.creaseAngle() << std::endl;

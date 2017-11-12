@@ -64,7 +64,6 @@ Window::Window(const char* title, int width, int height, bool showgui)
 
     m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
-
     if (!m_window)
     {
         glfwTerminate();
@@ -78,22 +77,21 @@ Window::Window(const char* title, int width, int height, bool showgui)
     // enable v-sync
     glfwSwapInterval(1);
 
-
     // now that we have a GL context, initialize GLEW
     glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
-    if(err != GLEW_OK)
+    GLenum err       = glewInit();
+    if (err != GLEW_OK)
     {
-        std::cerr << "Error initializing GLEW: " << glewGetErrorString(err) << std::endl;
+        std::cerr << "Error initializing GLEW: " << glewGetErrorString(err)
+                  << std::endl;
         exit(1);
     }
-
 
     // debug: print GL and GLSL version
     std::cout << "GLEW   " << glewGetString(GLEW_VERSION) << std::endl;
     std::cout << "GL     " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "GLSL   " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-
+    std::cout << "GLSL   " << glGetString(GL_SHADING_LANGUAGE_VERSION)
+              << std::endl;
 
     // call glGetError once to clear error queue
     glGetError();
@@ -105,7 +103,8 @@ Window::Window(const char* title, int width, int height, bool showgui)
     m_scaling = framebufferWidth / windowWidth;
     m_width   = framebufferWidth;
     m_height  = framebufferHeight;
-    if (m_scaling != 1) std::cout << "highDPI scaling: " << m_scaling << std::endl;
+    if (m_scaling != 1)
+        std::cout << "highDPI scaling: " << m_scaling << std::endl;
 
     // register glfw callbacks
     glfwSetErrorCallback(glfwError);
@@ -125,68 +124,78 @@ Window::Window(const char* title, int width, int height, bool showgui)
 void Window::initImGUI()
 {
     ImGui_Init(m_window, false);
-    
+
     // load Lato font from pre-compiled ttf file
     ImFontConfig config;
     config.OversampleH = 2;
     config.OversampleV = 2;
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO& io        = ImGui::GetIO();
     io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
                                              LatoLatin_compressed_size, 14);
-    
+
     // window style
-    ImGuiStyle& style = ImGui::GetStyle();
+    ImGuiStyle& style    = ImGui::GetStyle();
     style.WindowRounding = 4.0f;
     style.FrameRounding  = 4.0f;
     style.GrabMinSize    = 10.0f;
     style.GrabRounding   = 4.0f;
-    
-    
+
     // color scheme adapted from
     // https://github.com/ocornut/imgui/pull/511#issuecomment-175719267
-    style.Colors[ImGuiCol_Text]                  = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_TextDisabled]          = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
-    style.Colors[ImGuiCol_WindowBg]              = ImVec4(0.90f, 0.90f, 0.90f, 0.70f);
-    style.Colors[ImGuiCol_ChildWindowBg]         = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-    style.Colors[ImGuiCol_PopupBg]               = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
-    style.Colors[ImGuiCol_Border]                = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
-    style.Colors[ImGuiCol_BorderShadow]          = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
-    style.Colors[ImGuiCol_FrameBg]               = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-    style.Colors[ImGuiCol_FrameBgHovered]        = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_FrameBgActive]         = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
-    style.Colors[ImGuiCol_TitleBg]               = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_TitleBgCollapsed]      = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_TitleBgActive]         = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_MenuBarBg]             = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
-    style.Colors[ImGuiCol_ScrollbarBg]           = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
-    style.Colors[ImGuiCol_ScrollbarGrab]         = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
-    style.Colors[ImGuiCol_ScrollbarGrabHovered]  = ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
-    style.Colors[ImGuiCol_ScrollbarGrabActive]   = ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
-    style.Colors[ImGuiCol_ComboBg]               = ImVec4(0.86f, 0.86f, 0.86f, 0.99f);
-    style.Colors[ImGuiCol_CheckMark]             = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_SliderGrab]            = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
-    style.Colors[ImGuiCol_SliderGrabActive]      = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Button]                = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_ButtonHovered]         = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_ButtonActive]          = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Header]                = ImVec4(0.16f, 0.62f, 0.87f, 0.31f);
-    style.Colors[ImGuiCol_HeaderHovered]         = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_HeaderActive]          = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Column]                = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
-    style.Colors[ImGuiCol_ColumnHovered]         = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
-    style.Colors[ImGuiCol_ColumnActive]          = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_ResizeGrip]            = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
-    style.Colors[ImGuiCol_ResizeGripHovered]     = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
-    style.Colors[ImGuiCol_ResizeGripActive]      = ImVec4(0.16f, 0.62f, 0.87f, 0.95f);
-    style.Colors[ImGuiCol_CloseButton]           = ImVec4(0.59f, 0.59f, 0.59f, 0.50f);
-    style.Colors[ImGuiCol_CloseButtonHovered]    = ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
-    style.Colors[ImGuiCol_CloseButtonActive]     = ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
-    style.Colors[ImGuiCol_PlotLines]             = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
-    style.Colors[ImGuiCol_PlotLinesHovered]      = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
-    style.Colors[ImGuiCol_PlotHistogram]         = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_PlotHistogramHovered]  = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_TextSelectedBg]        = ImVec4(0.16f, 0.62f, 0.87f, 0.35f);
-    style.Colors[ImGuiCol_ModalWindowDarkening]  = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+    style.Colors[ImGuiCol_Text]           = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+    style.Colors[ImGuiCol_TextDisabled]   = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+    style.Colors[ImGuiCol_WindowBg]       = ImVec4(0.90f, 0.90f, 0.90f, 0.70f);
+    style.Colors[ImGuiCol_ChildWindowBg]  = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    style.Colors[ImGuiCol_PopupBg]        = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
+    style.Colors[ImGuiCol_Border]         = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
+    style.Colors[ImGuiCol_BorderShadow]   = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
+    style.Colors[ImGuiCol_FrameBg]        = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+    style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
+    style.Colors[ImGuiCol_FrameBgActive]  = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
+    style.Colors[ImGuiCol_TitleBg]        = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
+    style.Colors[ImGuiCol_TitleBgCollapsed] =
+        ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
+    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
+    style.Colors[ImGuiCol_MenuBarBg]     = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+    style.Colors[ImGuiCol_ScrollbarBg]   = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
+    style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
+    style.Colors[ImGuiCol_ScrollbarGrabHovered] =
+        ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
+    style.Colors[ImGuiCol_ScrollbarGrabActive] =
+        ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
+    style.Colors[ImGuiCol_ComboBg]    = ImVec4(0.86f, 0.86f, 0.86f, 0.99f);
+    style.Colors[ImGuiCol_CheckMark]  = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
+    style.Colors[ImGuiCol_SliderGrabActive] =
+        ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_Button]        = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
+    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_ButtonActive]  = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_Header]        = ImVec4(0.16f, 0.62f, 0.87f, 0.31f);
+    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
+    style.Colors[ImGuiCol_HeaderActive]  = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_Column]        = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+    style.Colors[ImGuiCol_ColumnHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
+    style.Colors[ImGuiCol_ColumnActive]  = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_ResizeGrip]    = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
+    style.Colors[ImGuiCol_ResizeGripHovered] =
+        ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
+    style.Colors[ImGuiCol_ResizeGripActive] =
+        ImVec4(0.16f, 0.62f, 0.87f, 0.95f);
+    style.Colors[ImGuiCol_CloseButton] = ImVec4(0.59f, 0.59f, 0.59f, 0.50f);
+    style.Colors[ImGuiCol_CloseButtonHovered] =
+        ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
+    style.Colors[ImGuiCol_CloseButtonActive] =
+        ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
+    style.Colors[ImGuiCol_PlotLines] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+    style.Colors[ImGuiCol_PlotLinesHovered] =
+        ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+    style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+    style.Colors[ImGuiCol_PlotHistogramHovered] =
+        ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+    style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.16f, 0.62f, 0.87f, 0.35f);
+    style.Colors[ImGuiCol_ModalWindowDarkening] =
+        ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 }
 
 //-----------------------------------------------------------------------------
@@ -222,15 +231,17 @@ void Window::render_frame()
 {
 #if __EMSCRIPTEN__
     // determine correct canvas/framebuffer size
-    int w, h, f;
+    int    w, h, f;
     double dw, dh;
     emscripten_get_canvas_size(&w, &h, &f);
     emscripten_get_element_css_size(nullptr, &dw, &dh);
-    if (w!=int(dw) || h!=int(dh))
+    if (w != int(dw) || h != int(dh))
     {
-        w = int(dw); h = int(dh);
+        w = int(dw);
+        h = int(dh);
         emscripten_set_canvas_size(w, h);
-        glfwResize(m_instance->m_window, w, h);;
+        glfwResize(m_instance->m_window, w, h);
+        ;
     }
 #endif
 
@@ -254,7 +265,6 @@ void Window::render_frame()
     glfwSwapBuffers(m_instance->m_window);
 
     // handle events
-    //glfwWaitEvents();
     glfwPollEvents();
 }
 
@@ -278,8 +288,8 @@ void Window::glfwCharacter(GLFWwindow* window, unsigned int c)
 
 //-----------------------------------------------------------------------------
 
-void Window::glfwKeyboard(GLFWwindow* window, int key, int scancode,
-                              int action, int mods)
+void Window::glfwKeyboard(GLFWwindow* window, int key, int scancode, int action,
+                          int mods)
 {
     ImGui_KeyCallback(window, key, scancode, action, mods);
     if (!ImGui::GetIO().WantCaptureKeyboard)
@@ -293,7 +303,8 @@ void Window::glfwKeyboard(GLFWwindow* window, int key, int scancode,
 void Window::glfwMotion(GLFWwindow* window, double xpos, double ypos)
 {
     // correct for highDPI scaling
-    m_instance->motion(window, m_instance->m_scaling*xpos, m_instance->m_scaling*ypos);
+    m_instance->motion(window, m_instance->m_scaling * xpos,
+                       m_instance->m_scaling * ypos);
 }
 
 //-----------------------------------------------------------------------------
@@ -313,8 +324,8 @@ void Window::glfwScroll(GLFWwindow* window, double xoffset, double yoffset)
 {
 #ifdef __EMSCRIPTEN__
     yoffset *= -1.0;
-#endif    
-    
+#endif
+
     ImGui_ScrollCallback(window, xoffset, yoffset);
     if (!ImGui::GetIO().WantCaptureMouse)
     {

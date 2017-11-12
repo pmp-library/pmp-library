@@ -47,7 +47,7 @@ class Window
 
 public: //------------------------------------------------------ public methods
     //! constructor
-    Window(const char* title, int width, int height, bool showgui=true);
+    Window(const char* title, int width, int height, bool showgui = true);
 
     //! destructor
     virtual ~Window();
@@ -57,7 +57,8 @@ public: //------------------------------------------------------ public methods
 
 private: //----------------------------- static wrapper functions for callbacks
     static void glfwError(int error, const char* description);
-    static void glfwKeyboard(GLFWwindow* window, int key, int scancode, int action, int mods);
+    static void glfwKeyboard(GLFWwindow* window, int key, int scancode,
+                             int action, int mods);
     static void glfwCharacter(GLFWwindow* window, unsigned int c);
     static void glfwMouse(GLFWwindow* window, int button, int action, int mods);
     static void glfwMotion(GLFWwindow* window, double xpos, double ypos);
@@ -74,13 +75,15 @@ protected: //----------------------------------- callbacks as member functions
     virtual void display(void) = 0;
 
     //! this function handles keyboard events
-    virtual void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods) = 0;
+    virtual void keyboard(GLFWwindow* window, int key, int scancode, int action,
+                          int mods) = 0;
 
     //! this function handles unicode character events
     virtual void character(GLFWwindow*, unsigned int) {}
 
     //! this function handles mouse button events
-    virtual void mouse(GLFWwindow* window, int button, int action, int mods) = 0;
+    virtual void mouse(GLFWwindow* window, int button, int action,
+                       int mods) = 0;
 
     //! this function handles mouse motion (passive/active position)
     virtual void motion(GLFWwindow* window, double xpos, double ypos) = 0;

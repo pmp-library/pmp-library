@@ -50,7 +50,6 @@ namespace pmp {
 class EdgeSetGL : public EdgeSet
 {
 public:
-
     //! Constructor
     EdgeSetGL();
 
@@ -58,27 +57,24 @@ public:
     ~EdgeSetGL();
 
     //! draw the edges
-    void draw(const mat4& projectionMatrix,
-              const mat4& modelviewMatrix,
+    void draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
               const std::string drawMode);
 
     //! update all opengl buffers for efficient core profile rendering
     void updateOpenGLBuffers();
 
-
 private:
-
     //! OpenGL buffers
-    GLuint vertex_array_object_;
-    GLuint vertex_buffer_;
-    GLuint edge_buffer_;
+    GLuint m_vertexArrayObject;
+    GLuint m_vertexBuffer;
+    GLuint m_edgeBuffer;
 
     //! buffer sizes
-    GLsizei n_vertices_;
-    GLsizei n_edges_;
+    GLsizei m_nVertices;
+    GLsizei m_nEdges;
 
     //! shaders
-    Shader  m_phongShader;
+    Shader m_phongShader;
 };
 
 //=============================================================================

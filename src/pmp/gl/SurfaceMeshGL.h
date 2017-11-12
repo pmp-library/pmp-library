@@ -50,7 +50,6 @@ namespace pmp {
 class SurfaceMeshGL : public SurfaceMesh
 {
 public:
-
     //! Constructor
     SurfaceMeshGL();
 
@@ -58,42 +57,39 @@ public:
     ~SurfaceMeshGL();
 
     //! get crease angle (in degrees) for visualization of sharp edges
-    Scalar creaseAngle() const { return crease_angle_; }
+    Scalar creaseAngle() const { return m_creaseAngle; }
 
     //! set crease angle (in degrees) for visualization of sharp edges
     void setCreaseAngle(Scalar ca);
 
     //! draw the mesh
-    void draw(const mat4& projectionMatrix,
-              const mat4& modelviewMatrix,
+    void draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
               const std::string drawMode);
 
     //! update all opengl buffers for efficient core profile rendering
     void updateOpenGLBuffers();
 
-
 private:
-
     // material parameters
-    float crease_angle_;
+    float m_creaseAngle;
 
     //! OpenGL buffers
-    GLuint vertex_array_object_;
-    GLuint vertex_buffer_;
-    GLuint normal_buffer_;
-    GLuint texcoord_buffer_;
-    GLuint edge_buffer_;
+    GLuint m_vertexArrayObject;
+    GLuint m_vertexBuffer;
+    GLuint m_normalBuffer;
+    GLuint m_texCoordBuffer;
+    GLuint m_edgeBuffer;
 
     //! buffer sizes
-    GLsizei n_vertices_;
-    GLsizei n_edges_;
-    GLsizei n_triangles_;
+    GLsizei m_nVertices;
+    GLsizei m_nEdges;
+    GLsizei m_nTriangles;
 
     //! shaders
-    Shader  m_phongShader;
+    Shader m_phongShader;
 
     //! 1D texture for scalar field rendering
-    GLuint texture_;
+    GLuint m_texture;
 };
 
 //=============================================================================

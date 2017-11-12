@@ -52,7 +52,8 @@ class TrackballViewer : public Window
 
 public: //------------------------------------------------------ public methods
     //! constructor
-    TrackballViewer(const char* title, int width, int height, bool showgui=true);
+    TrackballViewer(const char* title, int width, int height,
+                    bool showgui = true);
 
     //! destructor
     virtual ~TrackballViewer();
@@ -64,7 +65,6 @@ public: //------------------------------------------------------ public methods
     //! adjust camera such that the whole scene (defined by set_scene()) is visible
     void viewAll();
 
-
 protected: //----------------------------------- callbacks as member functions
     //! this function is called when the scene has to be rendered. it
     //! clears the buffers, calls the draw() method, and performs buffer swap
@@ -75,13 +75,15 @@ protected: //----------------------------------- callbacks as member functions
                           int mods) override;
 
     //! this function handles mouse button events
-    virtual void mouse(GLFWwindow* window, int button, int action, int mods) override;
+    virtual void mouse(GLFWwindow* window, int button, int action,
+                       int mods) override;
 
     //! this function handles mouse motion (passive/active position)
     virtual void motion(GLFWwindow* window, double xpos, double ypos) override;
 
     //! this function handles mouse scroll events
-    virtual void scroll(GLFWwindow* window, double xoffset, double yoffset) override;
+    virtual void scroll(GLFWwindow* window, double xoffset,
+                        double yoffset) override;
 
     //! this function is called if the window is resized
     virtual void resize(GLFWwindow* window, int width, int height) override;
@@ -123,7 +125,6 @@ protected: //-------------------------------------------- trackball interaction
     bool mapToSphere(const ivec2& point, vec3& result);
 
 protected: //----------------------------------------------------- private data
-
     //! draw modes
     unsigned int             m_drawMode;
     unsigned int             m_nDrawModes;
@@ -150,8 +151,8 @@ protected: //----------------------------------------------------- private data
     int   m_wheelPos;
 };
 
+//=============================================================================
 //! @}
-
 //=============================================================================
 } // namespace pmp
 //=============================================================================

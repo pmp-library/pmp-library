@@ -38,80 +38,73 @@ namespace pmp {
 
 //=============================================================================
 
-
 SurfaceMeshGL::SurfaceMeshGL()
 {
     // initialize GL buffers to zero
-    vertex_array_object_    = 0;
-    vertex_buffer_          = 0;
-    normal_buffer_          = 0;
-    texcoord_buffer_        = 0;
-    edge_buffer_            = 0;
-
+    m_vertexArrayObject = 0;
+    m_vertexBuffer      = 0;
+    m_normalBuffer      = 0;
+    m_texCoordBuffer    = 0;
+    m_edgeBuffer        = 0;
 
     // initialize buffer sizes
-    n_vertices_  = 0;
-    n_edges_     = 0;
-    n_triangles_ = 0;
-
+    m_nVertices  = 0;
+    m_nEdges     = 0;
+    m_nTriangles = 0;
 
     // material parameters
-    crease_angle_ = 70.0;
+    m_creaseAngle = 70.0;
 
     // initialize texture
-    texture_ = 0;
+    m_texture = 0;
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 SurfaceMeshGL::~SurfaceMeshGL()
 {
     // delete OpenGL buffers
-    glDeleteBuffers(1, &vertex_buffer_);
-    glDeleteBuffers(1, &normal_buffer_);
-    glDeleteBuffers(1, &texcoord_buffer_);
-    glDeleteBuffers(1, &edge_buffer_);
-    glDeleteVertexArrays(1, &vertex_array_object_);
-    glDeleteTextures(1, &texture_);
+    glDeleteBuffers(1, &m_vertexBuffer);
+    glDeleteBuffers(1, &m_normalBuffer);
+    glDeleteBuffers(1, &m_texCoordBuffer);
+    glDeleteBuffers(1, &m_edgeBuffer);
+    glDeleteVertexArrays(1, &m_vertexArrayObject);
+    glDeleteTextures(1, &m_texture);
 }
-
 
 //-----------------------------------------------------------------------------
 
 void SurfaceMeshGL::setCreaseAngle(Scalar ca)
 {
-    if (ca != crease_angle_)
+    if (ca != m_creaseAngle)
     {
-        crease_angle_ = std::max(Scalar(0), std::min(Scalar(180), ca));
+        m_creaseAngle = std::max(Scalar(0), std::min(Scalar(180), ca));
         updateOpenGLBuffers();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-
 void SurfaceMeshGL::updateOpenGLBuffers()
 {
     // are buffers already initialized?
-    if (!vertex_array_object_)
+    if (!m_vertexArrayObject)
     {
-        glGenVertexArrays(1, &vertex_array_object_);
-        glBindVertexArray(vertex_array_object_);
-        glGenBuffers(1, &vertex_buffer_);
-        glGenBuffers(1, &normal_buffer_);
-        glGenBuffers(1, &texcoord_buffer_);
-        glGenBuffers(1, &edge_buffer_);
+        glGenVertexArrays(1, &m_vertexArrayObject);
+        glBindVertexArray(m_vertexArrayObject);
+        glGenBuffers(1, &m_vertexBuffer);
+        glGenBuffers(1, &m_normalBuffer);
+        glGenBuffers(1, &m_texCoordBuffer);
+        glGenBuffers(1, &m_edgeBuffer);
     }
 
-
     // has cold-warm-texture been generated?
-    if (!texture_)
+    if (!m_texture)
     {
-        glGenTextures(1, &texture_);
-        glBindTexture(GL_TEXTURE_2D, texture_);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, cold_warm_texture);
+        glGenTextures(1, &m_texture);
+        glBindTexture(GL_TEXTURE_2D, m_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 1, 0, GL_RGB,
+                     GL_UNSIGNED_BYTE, cold_warm_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -119,131 +112,127 @@ void SurfaceMeshGL::updateOpenGLBuffers()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
 
-
     // activate VAO
-    glBindVertexArray(vertex_array_object_);
-
+    glBindVertexArray(m_vertexArrayObject);
 
     // get vertex properties
     auto vpos = getVertexProperty<Point>("v:point");
     auto vtex = getVertexProperty<TexCoord>("v:tex");
 
-
     // produce arrays of points, normals, and texcoords
     // (duplicate vertices to allow for flat shading)
-    std::vector<vec3>  positionArray;  positionArray.reserve(3*nFaces());
-    std::vector<vec3>  normalArray;    normalArray.reserve(3*nFaces());
-    std::vector<vec2>  texArray;       texArray.reserve(3*nFaces());
+    std::vector<vec3> positionArray;
+    positionArray.reserve(3 * nFaces());
+    std::vector<vec3> normalArray;
+    normalArray.reserve(3 * nFaces());
+    std::vector<vec2> texArray;
+    texArray.reserve(3 * nFaces());
 
     // data per face (for all corners)
-    std::vector<Vertex>  corners;
-    std::vector<vec3>    cornerNormals;
+    std::vector<Vertex> corners;
+    std::vector<vec3>   cornerNormals;
 
     // convert from degrees to radians
-    const Scalar creaseAngle = crease_angle_ / 180.0 * M_PI;
+    const Scalar creaseAngle = m_creaseAngle / 180.0 * M_PI;
 
-    auto vertex_indices = addVertexProperty<size_t>("v:index");
+    auto   vertex_indices = addVertexProperty<size_t>("v:index");
     size_t vidx(0);
 
     // loop over all faces
-    for (auto f: faces())
+    for (auto f : faces())
     {
         // collect corner positions and normals
         corners.clear();
         cornerNormals.clear();
-        for (auto h: halfedges(f))
+        for (auto h : halfedges(f))
         {
             corners.push_back(toVertex(h));
             cornerNormals.push_back(computeCornerNormal(h, creaseAngle));
         }
         assert(corners.size() >= 3);
 
-
         // tessellate face into triangles
         int i0, i1, i2, nc = corners.size();
-        for (i0=0, i1=1, i2=2; i2<nc; ++i1, ++i2)
+        for (i0 = 0, i1 = 1, i2 = 2; i2 < nc; ++i1, ++i2)
         {
-            positionArray.push_back( vpos[corners[i0]] );
-            positionArray.push_back( vpos[corners[i1]] );
-            positionArray.push_back( vpos[corners[i2]] );
+            positionArray.push_back(vpos[corners[i0]]);
+            positionArray.push_back(vpos[corners[i1]]);
+            positionArray.push_back(vpos[corners[i2]]);
 
-            normalArray.push_back( cornerNormals[i0] );
-            normalArray.push_back( cornerNormals[i1] );
-            normalArray.push_back( cornerNormals[i2] );
+            normalArray.push_back(cornerNormals[i0]);
+            normalArray.push_back(cornerNormals[i1]);
+            normalArray.push_back(cornerNormals[i2]);
 
             if (vtex)
             {
-                texArray.push_back( vtex[corners[i0]] );
-                texArray.push_back( vtex[corners[i1]] );
-                texArray.push_back( vtex[corners[i2]] );
+                texArray.push_back(vtex[corners[i0]]);
+                texArray.push_back(vtex[corners[i1]]);
+                texArray.push_back(vtex[corners[i2]]);
             }
 
-            vertex_indices[ corners[i0] ] = vidx++;
-            vertex_indices[ corners[i1] ] = vidx++;
-            vertex_indices[ corners[i2] ] = vidx++;
+            vertex_indices[corners[i0]] = vidx++;
+            vertex_indices[corners[i1]] = vidx++;
+            vertex_indices[corners[i2]] = vidx++;
         }
     }
 
-
-
     // vertices
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-    glBufferData(GL_ARRAY_BUFFER, positionArray.size()*3*sizeof(float), positionArray.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, positionArray.size() * 3 * sizeof(float),
+                 positionArray.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(0);
-    n_vertices_ = positionArray.size();
-
+    m_nVertices = positionArray.size();
 
     // normals
-    glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
-    glBufferData(GL_ARRAY_BUFFER, normalArray.size()*3*sizeof(float), normalArray.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
+    glBufferData(GL_ARRAY_BUFFER, normalArray.size() * 3 * sizeof(float),
+                 normalArray.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glEnableVertexAttribArray(1);
-
 
     // texture coordinates
     if (vtex)
     {
-        glBindBuffer(GL_ARRAY_BUFFER, texcoord_buffer_);
-        glBufferData(GL_ARRAY_BUFFER, texArray.size()*2*sizeof(float), texArray.data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, m_texCoordBuffer);
+        glBufferData(GL_ARRAY_BUFFER, texArray.size() * 2 * sizeof(float),
+                     texArray.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
         glEnableVertexAttribArray(2);
     }
 
-
     // edge indices
-    std::vector<unsigned int> edgeArray;  edgeArray.reserve(nEdges());
+    std::vector<unsigned int> edgeArray;
+    edgeArray.reserve(nEdges());
     for (auto e : edges())
     {
         edgeArray.push_back(vertex_indices[vertex(e, 0)]);
         edgeArray.push_back(vertex_indices[vertex(e, 1)]);
     }
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, edgeArray.size()*sizeof(unsigned int), edgeArray.data(), GL_STATIC_DRAW);
-    n_edges_ = edgeArray.size();
-
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_edgeBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                 edgeArray.size() * sizeof(unsigned int), edgeArray.data(),
+                 GL_STATIC_DRAW);
+    m_nEdges = edgeArray.size();
 
     // unbind vertex arry
     glBindVertexArray(0);
-
 
     // remove vertex index property again
     removeVertexProperty(vertex_indices);
 }
 
-
 //-----------------------------------------------------------------------------
 
-void SurfaceMeshGL::draw(const mat4& projectionMatrix,
-                         const mat4& modelviewMatrix,
+void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
+                         const mat4&       modelviewMatrix,
                          const std::string drawMode)
 {
     // did we generate buffers already?
-    if (!vertex_array_object_)
+    if (!m_vertexArrayObject)
     {
         updateOpenGLBuffers();
     }
-
 
     // load shader?
     if (!m_phongShader.isValid())
@@ -254,21 +243,18 @@ void SurfaceMeshGL::draw(const mat4& projectionMatrix,
         }
         m_phongShader.use();
         m_phongShader.bind_attrib("v_position", 0);
-        m_phongShader.bind_attrib("v_normal",   1);
-        m_phongShader.bind_attrib("v_tex1D",    2);
+        m_phongShader.bind_attrib("v_normal", 1);
+        m_phongShader.bind_attrib("v_tex1D", 2);
     }
-
 
     // empty mesh?
     if (isEmpty())
         return;
 
-
     // setup matrices
     mat4 mv_matrix  = modelviewMatrix;
     mat4 mvp_matrix = projectionMatrix * modelviewMatrix;
     mat3 n_matrix   = inverse(transpose(mat3(mv_matrix)));
-
 
     // setup shader
     m_phongShader.use();
@@ -278,58 +264,54 @@ void SurfaceMeshGL::draw(const mat4& projectionMatrix,
     m_phongShader.set_uniform("light1", vec3(1.0, 1.0, 1.0));
     m_phongShader.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
     m_phongShader.set_uniform("front_color", vec3(0.6, 0.6, 0.6));
-    m_phongShader.set_uniform("back_color",  vec3(0.3, 0.0, 0.0));
+    m_phongShader.set_uniform("back_color", vec3(0.3, 0.0, 0.0));
     m_phongShader.set_uniform("use_lighting", true);
-    m_phongShader.set_uniform("use_texture",  false);
+    m_phongShader.set_uniform("use_texture", false);
 
-
-    glBindVertexArray(vertex_array_object_);
-
+    glBindVertexArray(m_vertexArrayObject);
 
     if (drawMode == "Points")
     {
 #ifndef __EMSCRIPTEN__
         glPointSize(5.0);
 #endif
-        glDrawArrays(GL_POINTS, 0, n_vertices_);
+        glDrawArrays(GL_POINTS, 0, m_nVertices);
     }
 
     else if (drawMode == "Hidden Line")
     {
         // draw faces
         glDepthRange(0.01, 1.0);
-        glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+        glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
 
         // overlay edges
         glDepthRange(0.0, 1.0);
         glDepthFunc(GL_LEQUAL);
         m_phongShader.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
-        m_phongShader.set_uniform("back_color",  vec3(0.1, 0.1, 0.1));
-        m_phongShader.set_uniform("use_lighting",  false);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
-        glDrawElements(GL_LINES, n_edges_, GL_UNSIGNED_INT, NULL);
+        m_phongShader.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
+        m_phongShader.set_uniform("use_lighting", false);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_edgeBuffer);
+        glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, NULL);
         glDepthFunc(GL_LESS);
     }
 
     else if (drawMode == "Smooth Shading")
     {
-        glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+        glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
     }
 
     else if (drawMode == "Scalar Field")
     {
         m_phongShader.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
-        m_phongShader.set_uniform("back_color",  vec3(0.3, 0.3, 0.3));
+        m_phongShader.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
         m_phongShader.set_uniform("use_texture", true);
-        glBindTexture(GL_TEXTURE_2D, texture_);
-        glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+        glBindTexture(GL_TEXTURE_2D, m_texture);
+        glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
     }
-
 
     glBindVertexArray(0);
     glCheckError();
 }
-
 
 //=============================================================================
 } // namespace

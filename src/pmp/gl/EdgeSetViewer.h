@@ -63,12 +63,12 @@ public:
     virtual void draw(const std::string& _draw_mode);
 
     //! this function handles keyboard events
-    void keyboard(GLFWwindow* window, int key, int scancode,
-                  int action, int mod);
+    void keyboard(GLFWwindow* window, int key, int scancode, int action,
+                  int mod);
 
 protected:
-    EdgeSetGL m_edgeSet;  //!< the edge set
-    std::string      m_filename; //!< the current file
+    EdgeSetGL   m_edgeSet;  //!< the edge set
+    std::string m_filename; //!< the current file
 };
 
 //=============================================================================
