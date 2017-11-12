@@ -118,8 +118,8 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
 endif()
 
 # choose size of the index type
-if(SM_INDEX_TYPE EQUAL 64)
-  add_definitions(-DSM_INDEX_TYPE_64)
+if(PMP_INDEX_TYPE EQUAL 64)
+  add_definitions(-DPMP_INDEX_TYPE_64)
 endif()
 
 
