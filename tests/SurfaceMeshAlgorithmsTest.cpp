@@ -62,13 +62,60 @@ TEST_F(SurfaceMeshAlgorithmsTest, curvature)
     curvature.analyze(1);
     Scalar kmin = std::numeric_limits<Scalar>::max();
     Scalar kmax = std::numeric_limits<Scalar>::min();
+    Scalar mmin = std::numeric_limits<Scalar>::max();
+    Scalar mmax = std::numeric_limits<Scalar>::min();
+    Scalar gmin = std::numeric_limits<Scalar>::max();
+    Scalar gmax = std::numeric_limits<Scalar>::min();
+
     for (auto v : mesh.vertices())
     {
         kmin = std::min(kmin, curvature.minCurvature(v));
         kmax = std::max(kmax, curvature.maxCurvature(v));
+        mmin = std::min(mmin, curvature.meanCurvature(v));
+        mmax = std::max(mmax, curvature.meanCurvature(v));
+        gmin = std::min(gmin, curvature.gaussCurvature(v));
+        gmax = std::max(gmax, curvature.gaussCurvature(v));
     }
+
     EXPECT_FLOAT_EQ(kmin,0.50240648);
     EXPECT_FLOAT_EQ(kmax,1.0003014);
+    EXPECT_FLOAT_EQ(mmin,0.50240648);
+    EXPECT_FLOAT_EQ(mmax,1.0003014);
+    EXPECT_FLOAT_EQ(gmin,0.25241226);
+    EXPECT_FLOAT_EQ(gmax,1.0006028);
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, meanCurvatureToTextureCoordinates)
+{
+    mesh.clear();
+    mesh.read("pmp-data/off/hemisphere.off");
+    SurfaceCurvature curvature(mesh);
+    curvature.analyze(1);
+    curvature.meanCurvatureToTextureCoordinates();
+    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    EXPECT_TRUE(tex);
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, maxCurvatureToTextureCoordinates)
+{
+    mesh.clear();
+    mesh.read("pmp-data/off/hemisphere.off");
+    SurfaceCurvature curvature(mesh);
+    curvature.analyze(1);
+    curvature.maxCurvatureToTextureCoordinates();
+    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    EXPECT_TRUE(tex);
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, gaussCurvatureToTextureCoordinates)
+{
+    mesh.clear();
+    mesh.read("pmp-data/off/hemisphere.off");
+    SurfaceCurvature curvature(mesh);
+    curvature.analyze(1);
+    curvature.gaussCurvatureToTextureCoordinates();
+    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    EXPECT_TRUE(tex);
 }
 
 // feature angle
