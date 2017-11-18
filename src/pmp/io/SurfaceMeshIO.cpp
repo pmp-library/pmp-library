@@ -652,31 +652,36 @@ bool SurfaceMeshIO::readOFF(SurfaceMesh& mesh, const std::string& filename)
 
 bool SurfaceMeshIO::writeOFF(const SurfaceMesh& mesh, const std::string& filename)
 {
+    if (m_options.doBinary())
+        return writeOFFBinary(mesh,filename);
+
     FILE* out = fopen(filename.c_str(), "w");
     if (!out)
         return false;
 
+    bool hasNormals   = false;
+    bool hasTexcoords = false;
+    bool hasColors    = false;
 
-    bool  hasNormals   = false;
-    bool  hasTexcoords = false;
-    bool  hasColors = false;
-    SurfaceMesh::VertexProperty<Normal> normals = mesh.getVertexProperty<Normal>("v:normal");
-    SurfaceMesh::VertexProperty<TextureCoordinate>  texcoords = mesh.getVertexProperty<TextureCoordinate>("v:texcoord");
-    SurfaceMesh::VertexProperty<Color> colors = mesh.getVertexProperty<Color>("v:color");
-    if (normals)   hasNormals = true;
-    if (texcoords) hasTexcoords = true;
-    if (colors) hasColors = true;
+    auto normals   = mesh.getVertexProperty<Normal>("v:normal");
+    auto texcoords = mesh.getVertexProperty<TextureCoordinate>("v:texcoord");
+    auto colors    = mesh.getVertexProperty<Color>("v:color");
 
+    if (normals && m_options.doNormals())
+        hasNormals = true;
+    if (texcoords && m_options.doTexcoords())
+        hasTexcoords = true;
+    if (colors && m_options.doColors())
+        hasColors = true;
 
     // header
-    if(hasTexcoords)
+    if (hasTexcoords)
         fprintf(out, "ST");
-    if(hasColors)
+    if (hasColors)
         fprintf(out, "C");
-    if(hasNormals)
+    if (hasNormals)
         fprintf(out, "N");
     fprintf(out, "OFF\n%zu %zu 0\n", mesh.nVertices(), mesh.nFaces());
-
 
     // vertices, and optionally normals and texture coordinates
     SurfaceMesh::VertexProperty<Point> points = mesh.getVertexProperty<Point>("v:point");

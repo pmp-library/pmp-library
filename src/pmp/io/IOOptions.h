@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2017 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -30,13 +29,6 @@
 #pragma once
 //=============================================================================
 
-#include <pmp/SurfaceMesh.h>
-#include <pmp/io/IOOptions.h>
-
-#include <string>
-
-//=============================================================================
-
 namespace pmp {
 
 //=============================================================================
@@ -46,35 +38,35 @@ namespace pmp {
 
 //=============================================================================
 
-//! Class for reading and writing surface meshes from and to files
-class SurfaceMeshIO
+//! Common IO options for reading and writing
+class IOOptions
 {
 public:
+    //! Default constructor with all options set to false.
+    IOOptions(bool binary = false, bool normals = false, bool colors = false,
+              bool texcoords = false)
+        : m_binary(binary),
+          m_normals(normals),
+          m_colors(colors),
+          m_texcoords(texcoords){};
 
-    //! Construct with default IO options
-    SurfaceMeshIO(const IOOptions& options = IOOptions())
-        : m_options(options){};
+    //! Read / write binary files
+    bool doBinary() { return m_binary; };
 
-    //! Read surface mesh from file \c filename
-    bool read(SurfaceMesh& mesh, const std::string& filename);
+    //! Read / write normals
+    bool doNormals() { return m_normals; };
 
-    //! Write surface mesh \c mesh to file \c filename
-    bool write(const SurfaceMesh& mesh, const std::string& filename);
+    //! Read / write colors
+    bool doColors() { return m_colors; };
 
-private:
-    bool readOFF(SurfaceMesh& mesh, const std::string& filename);
-    bool readOBJ(SurfaceMesh& mesh, const std::string& filename);
-    bool readPoly(SurfaceMesh& mesh, const std::string& filename);
-    bool readSTL(SurfaceMesh& mesh, const std::string& filename);
-
-    bool writeOFF(const SurfaceMesh& mesh, const std::string& filename);
-    bool writeOFFBinary(const SurfaceMesh& mesh, const std::string& filename);
-    bool writeOBJ(const SurfaceMesh& mesh, const std::string& filename);
-    bool writePoly(const SurfaceMesh& mesh, const std::string& filename);
-    bool writeSTL(const SurfaceMesh& mesh, const std::string& filename);
+    //! Read / write texcoords
+    bool doTexcoords() { return m_texcoords; };
 
 private:
-    IOOptions m_options;
+    bool m_binary;
+    bool m_normals;
+    bool m_colors;
+    bool m_texcoords;
 };
 
 //=============================================================================

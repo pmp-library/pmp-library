@@ -30,6 +30,7 @@
 //=============================================================================
 
 #include <pmp/EdgeSet.h>
+#include <pmp/io/IOOptions.h>
 
 //=============================================================================
 
@@ -46,12 +47,16 @@ namespace pmp {
 class EdgeSetIO
 {
 public:
+
+    //! Construct with default IO opttions
+    EdgeSetIO(const IOOptions& options = IOOptions()) : m_options(options) {};
+
     //! \brief read edge set from file \c filename into \c es
     //! \note any previous data in \c es will be removed
-    static bool read(EdgeSet& es, const std::string& filename);
+    bool read(EdgeSet& es, const std::string& filename);
 
     //! \brief write edge set \c es to file \c filename
-    static bool write(const EdgeSet& es, const std::string& filename)
+    bool write(const EdgeSet& es, const std::string& filename)
     {
         PMP_ASSERT(es.nVertices() > 0);
         PMP_ASSERT(filename.length() > 0);
@@ -60,6 +65,9 @@ public:
 
 private:
     static bool readKNT(EdgeSet& ps, const std::string& filename);
+
+private:
+    IOOptions m_options;
 };
 
 //=============================================================================

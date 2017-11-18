@@ -287,7 +287,11 @@ TEST_F(SurfaceMeshTest, offIO)
     mesh.updateVertexNormals();
     mesh.addVertexProperty<TextureCoordinate>("v:texcoord",TextureCoordinate(0,0));
     mesh.addVertexProperty<Color>("v:color",Color(0,0,0));
-    mesh.write("test.off");
+    IOOptions options(false, // binary
+                      true, // normals
+                      true, // colors
+                      true); // texcoords
+    mesh.write("test.off",options);
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
     mesh.read("test.off");
@@ -298,7 +302,8 @@ TEST_F(SurfaceMeshTest, offIO)
 TEST_F(SurfaceMeshTest, offIOBinary)
 {
     addTriangle();
-    SurfaceMeshIO::writeOFFBinary(mesh,"binary.off");
+    IOOptions options(true);
+    mesh.write("binary.off", options);
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
     mesh.read("binary.off");

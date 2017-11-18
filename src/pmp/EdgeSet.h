@@ -462,9 +462,9 @@ public:
     //! \name File IO
     //!@{
 
-    //! read mesh from file \c filename. file extension determines file type.
+    //! read edge set from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
-    virtual bool read(const std::string& filename) override;
+    virtual bool read(const std::string& filename, const IOOptions& options = IOOptions()) override;
 
     //!@}
     //! \name Memory Management

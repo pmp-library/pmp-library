@@ -30,6 +30,7 @@
 //=============================================================================
 
 #include <pmp/PointSet.h>
+#include <pmp/io/IOOptions.h>
 
 //=============================================================================
 
@@ -46,23 +47,32 @@ namespace pmp {
 class PointSetIO
 {
 public:
-    static bool read(PointSet& ps, const std::string& filename)
+
+    //! Construct with default options
+    PointSetIO(const IOOptions& options = IOOptions()) : m_options(options) {};
+
+    //! Read point set from file \c filename
+    //! \note any previous data in \c ps will be removed
+    bool read(PointSet& ps, const std::string& filename)
     {
         return readXYZ(ps,filename);
     }
 
-    static bool write(const PointSet& ps, const std::string& filename)
+    //! Write point set \c ps to file \c filename
+    bool write(const PointSet& ps, const std::string& filename)
     {
         return writeXYZ(ps,filename);
     }
 
 protected:
     //! \brief read point set from \c filename
-    //! \note any previous data in \c ps will be removed
-    static bool readXYZ(PointSet& ps, const std::string& filename);
+    bool readXYZ(PointSet& ps, const std::string& filename);
 
     //! \brief write point set from \c filename
-    static bool writeXYZ(const PointSet& ps, const std::string& filename);
+    bool writeXYZ(const PointSet& ps, const std::string& filename);
+
+private:
+    IOOptions m_options;
 };
 
 //=============================================================================

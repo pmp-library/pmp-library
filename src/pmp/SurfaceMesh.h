@@ -31,6 +31,7 @@
 //=============================================================================
 
 #include <pmp/EdgeSet.h>
+#include <pmp/io/IOOptions.h>
 
 //=============================================================================
 
@@ -444,11 +445,11 @@ public:
 
     //! read mesh from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
-    bool read(const std::string& filename) override;
+    bool read(const std::string& filename, const IOOptions& options = IOOptions());
 
     //! write mesh to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
-    bool write(const std::string& filename) const;
+    bool write(const std::string& filename, const IOOptions& options = IOOptions()) const;
 
     //!@}
     //! \name Add new elements by hand

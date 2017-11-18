@@ -115,9 +115,10 @@ EdgeSet& EdgeSet::assign(const EdgeSet& rhs)
 
 //-----------------------------------------------------------------------------
 
-bool EdgeSet::read(const std::string& filename)
+bool EdgeSet::read(const std::string& filename, const IOOptions& options)
 {
-    return EdgeSetIO::read(*this,filename);
+    EdgeSetIO reader(options);
+    return reader.read(*this,filename);
 }
 
 //-----------------------------------------------------------------------------

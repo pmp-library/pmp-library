@@ -116,16 +116,18 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceMesh::read(const std::string& filename)
+bool SurfaceMesh::read(const std::string& filename, const IOOptions& options)
 {
-    return SurfaceMeshIO::read(*this, filename);
+    SurfaceMeshIO reader(options);
+    return reader.read(*this, filename);
 }
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceMesh::write(const std::string& filename) const
+bool SurfaceMesh::write(const std::string& filename, const IOOptions& options) const
 {
-    return SurfaceMeshIO::write(*this, filename);
+    SurfaceMeshIO writer(options);
+    return writer.write(*this, filename);
 }
 
 //-----------------------------------------------------------------------------
