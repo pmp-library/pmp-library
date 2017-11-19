@@ -31,6 +31,9 @@ else()
     add_executable(curview curview.cpp)
     target_link_libraries(curview pmp_gl glew)
 
+    add_executable(remeshing remeshing.cpp)
+    target_link_libraries(remeshing pmp_gl glew)
+
     add_executable(mpview mpview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h)
     target_link_libraries(mpview pmp_gl glew)
 

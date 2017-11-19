@@ -97,25 +97,22 @@ void MeshViewer::updateMesh()
 
 void MeshViewer::processImGUI()
 {
-    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
-    //ImGui::SetNextWindowCollapsed(true, ImGuiCond_Once);
-    ImGui::Begin("Mesh Info", NULL, ImGuiWindowFlags_AlwaysAutoResize);
-
-    // output mesh statistics
-    ImGui::BulletText("%d vertices", (int)m_mesh.nVertices());
-    ImGui::BulletText("%d edges", (int)m_mesh.nEdges());
-    ImGui::BulletText("%d faces", (int)m_mesh.nFaces());
-
-    // control crease angle
-    ImGui::PushItemWidth(100);
-    ImGui::SliderFloat("Crease Angle", &m_creaseAngle, 0.0f, 180.0f, "%.0f");
-    ImGui::PopItemWidth();
-    if (m_creaseAngle != m_mesh.creaseAngle())
+    if (ImGui::CollapsingHeader("Mesh Info", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        m_mesh.setCreaseAngle(m_creaseAngle);
-    }
+        // output mesh statistics
+        ImGui::BulletText("%d vertices", (int)m_mesh.nVertices());
+        ImGui::BulletText("%d edges", (int)m_mesh.nEdges());
+        ImGui::BulletText("%d faces", (int)m_mesh.nFaces());
 
-    ImGui::End();
+        // control crease angle
+        ImGui::PushItemWidth(100);
+        ImGui::SliderFloat("Crease Angle", &m_creaseAngle, 0.0f, 180.0f, "%.0f");
+        ImGui::PopItemWidth();
+        if (m_creaseAngle != m_mesh.creaseAngle())
+        {
+            m_mesh.setCreaseAngle(m_creaseAngle);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

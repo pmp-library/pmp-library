@@ -11,21 +11,27 @@ using namespace pmp;
 class Viewer : public MeshViewer
 {
 public:
-    Viewer(const char* title, int width, int height, bool showgui)
-        : MeshViewer(title, width, height, showgui)
-    {
-        setDrawMode("Solid Smooth");
-    }
-
+    Viewer(const char* title, int width, int height, bool showgui);
 protected:
+    virtual void processImGUI();
+};
 
-    void processImGUI()
+//=============================================================================
+
+Viewer::Viewer(const char* title, int width, int height, bool showgui)
+    : MeshViewer(title, width, height, showgui)
+{
+    setDrawMode("Solid Smooth");
+}
+
+//=============================================================================
+
+void Viewer::processImGUI()
+{
+    MeshViewer::processImGUI();
+
+    if (ImGui::CollapsingHeader("Curvature", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        //MeshViewer::processImGUI();
-
-        ImGui::SetNextWindowPos(ImVec2(10,10), ImGuiCond_Once);
-        ImGui::Begin("Curvature", NULL, ImGuiWindowFlags_AlwaysAutoResize);
-
         if (ImGui::Button("Mean Curvature"))
         {
             SurfaceCurvature analyzer(m_mesh);
@@ -50,10 +56,8 @@ protected:
             updateMesh();
             setDrawMode("Scalar Field");
         }
-
-        ImGui::End();
     }
-};
+}
 
 //=============================================================================
 

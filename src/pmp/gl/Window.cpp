@@ -249,7 +249,10 @@ void Window::render_frame()
     if (m_instance->showImGUI())
     {
         ImGui_NewFrame();
+        ImGui::SetNextWindowPos(ImVec2(10,10), ImGuiCond_Once);
+        ImGui::Begin("Mesh Info", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
         m_instance->processImGUI();
+        ImGui::End();
     }
 
     // draw scene
