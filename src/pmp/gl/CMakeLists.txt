@@ -1,5 +1,3 @@
-find_package(OpenGL REQUIRED)
-
 file(GLOB SRCS ./*.cpp)
 file(GLOB HDRS ./*.h)
 set(HDRS ${HDRS} "../Vector.h")
@@ -10,6 +8,8 @@ if (EMSCRIPTEN)
     target_link_libraries(pmp_gl imgui pmp)
 
 else()
+
+    find_package(OpenGL REQUIRED)
 
     if (OpenGL_FOUND)
         add_library(pmp_gl STATIC ${SRCS} ${HDRS})

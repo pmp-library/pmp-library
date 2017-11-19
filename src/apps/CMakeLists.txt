@@ -1,4 +1,3 @@
-find_package(OpenGL REQUIRED)
 
 if (EMSCRIPTEN)
 
@@ -24,24 +23,25 @@ if (EMSCRIPTEN)
 
 else()
 
-  if(OpenGL_FOUND)
-    add_executable(mview mview.cpp)
-    target_link_libraries(mview pmp_gl)
+    find_package(OpenGL REQUIRED)
+    if(OpenGL_FOUND)
+        add_executable(mview mview.cpp)
+        target_link_libraries(mview pmp_gl)
 
-    add_executable(curview curview.cpp)
-    target_link_libraries(curview pmp_gl)
+        add_executable(curview curview.cpp)
+        target_link_libraries(curview pmp_gl)
 
-    add_executable(remeshing remeshing.cpp)
-    target_link_libraries(remeshing pmp_gl)
+        add_executable(remeshing remeshing.cpp)
+        target_link_libraries(remeshing pmp_gl)
 
-    add_executable(mpview mpview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h)
-    target_link_libraries(mpview pmp_gl)
+        add_executable(mpview mpview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h)
+        target_link_libraries(mpview pmp_gl)
 
-    add_executable(eview eview.cpp EdgeSetProcessingViewer.cpp EdgeSetProcessingViewer.h)
-    target_link_libraries(eview pmp_gl)
+        add_executable(eview eview.cpp EdgeSetProcessingViewer.cpp EdgeSetProcessingViewer.h)
+        target_link_libraries(eview pmp_gl)
 
-    add_executable(pview pview.cpp PointSetProcessingViewer.cpp PointSetProcessingViewer.h)
-    target_link_libraries(pview pmp_gl)
-  endif()
+        add_executable(pview pview.cpp PointSetProcessingViewer.cpp PointSetProcessingViewer.h)
+        target_link_libraries(pview pmp_gl)
+    endif()
 
 endif()
