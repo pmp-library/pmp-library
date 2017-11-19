@@ -13,7 +13,7 @@ else()
 
     if (OpenGL_FOUND)
         add_library(pmp_gl STATIC ${SRCS} ${HDRS})
-        target_link_libraries(pmp_gl imgui glfw ${OPENGL_LIBRARIES} pmp)
+        target_link_libraries(pmp_gl pmp imgui glfw glew ${OPENGL_LIBRARIES})
     endif()
 
 endif()
