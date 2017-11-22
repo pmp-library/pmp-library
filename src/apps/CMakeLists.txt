@@ -23,7 +23,11 @@ if (EMSCRIPTEN)
 
 else()
 
-    find_package(OpenGL REQUIRED)
+    find_package(OpenGL)
+
+    add_executable(mconvert mconvert.cpp)
+    target_link_libraries(mconvert pmp)
+
     if(OpenGL_FOUND)
         add_executable(mview mview.cpp)
         target_link_libraries(mview pmp_gl)
