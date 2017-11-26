@@ -29,8 +29,11 @@ else()
 
     find_package(OpenGL)
 
-    add_executable(mconvert mconvert.cpp)
-    target_link_libraries(mconvert pmp)
+    # build mconvert only on unix / OS-X
+    if(NOT WIN32)
+      add_executable(mconvert mconvert.cpp)
+      target_link_libraries(mconvert pmp)
+    endif()
 
     if(OpenGL_FOUND)
         add_executable(mview mview.cpp)
