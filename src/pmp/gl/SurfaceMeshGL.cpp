@@ -46,11 +46,13 @@ SurfaceMeshGL::SurfaceMeshGL()
     m_normalBuffer      = 0;
     m_texCoordBuffer    = 0;
     m_edgeBuffer        = 0;
+    m_featureBuffer     = 0;
 
     // initialize buffer sizes
     m_nVertices  = 0;
     m_nEdges     = 0;
     m_nTriangles = 0;
+    m_nFeatures  = 0;
 
     // material parameters
     m_creaseAngle = 70.0;
@@ -68,6 +70,7 @@ SurfaceMeshGL::~SurfaceMeshGL()
     glDeleteBuffers(1, &m_normalBuffer);
     glDeleteBuffers(1, &m_texCoordBuffer);
     glDeleteBuffers(1, &m_edgeBuffer);
+    glDeleteBuffers(1, &m_featureBuffer);
     glDeleteVertexArrays(1, &m_vertexArrayObject);
     glDeleteTextures(1, &m_texture);
 }
@@ -96,6 +99,7 @@ void SurfaceMeshGL::updateOpenGLBuffers()
         glGenBuffers(1, &m_normalBuffer);
         glGenBuffers(1, &m_texCoordBuffer);
         glGenBuffers(1, &m_edgeBuffer);
+        glGenBuffers(1, &m_featureBuffer);
     }
 
     // has cold-warm-texture been generated?
@@ -215,6 +219,36 @@ void SurfaceMeshGL::updateOpenGLBuffers()
                  GL_STATIC_DRAW);
     m_nEdges = edgeArray.size();
 
+
+    // feature edges
+    auto efeature = getEdgeProperty<bool>("e:feature");
+    if (efeature)
+    {
+        std::vector<unsigned int> features;
+
+        for (auto e: edges())
+        {
+            if (efeature[e])
+            {
+                features.push_back(vertex_indices[vertex(e, 0)]);
+                features.push_back(vertex_indices[vertex(e, 1)]);
+            }
+        }
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_featureBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                features.size()*sizeof(unsigned int),
+                features.data(),
+                GL_STATIC_DRAW);
+        m_nFeatures = features.size();
+        std::cout << "detected " << m_nFeatures << " feature edges\n";
+    }
+    else
+    {
+        m_nFeatures = 0;
+    }
+
+
     // unbind vertex arry
     glBindVertexArray(0);
 
@@ -308,6 +342,22 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         glBindTexture(GL_TEXTURE_2D, m_texture);
         glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
     }
+
+
+    // draw feature edges
+    if (m_nFeatures)
+    {
+        m_phongShader.set_uniform("front_color",  vec3(0,1,0));
+        m_phongShader.set_uniform("back_color",   vec3(0,1,0));
+        m_phongShader.set_uniform("use_lighting", false);
+        glDepthRange(0.0, 1.0);
+        glDepthFunc(GL_LEQUAL);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_featureBuffer);
+        glDrawElements(GL_LINES, m_nFeatures, GL_UNSIGNED_INT, NULL);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glDepthFunc(GL_LESS);
+    }
+
 
     glBindVertexArray(0);
     glCheckError();

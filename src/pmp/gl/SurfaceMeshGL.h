@@ -79,11 +79,13 @@ private:
     GLuint m_normalBuffer;
     GLuint m_texCoordBuffer;
     GLuint m_edgeBuffer;
+    GLuint m_featureBuffer;
 
     //! buffer sizes
     GLsizei m_nVertices;
     GLsizei m_nEdges;
     GLsizei m_nTriangles;
+    GLsizei m_nFeatures;
 
     //! shaders
     Shader m_phongShader;
