@@ -20,6 +20,10 @@ if (EMSCRIPTEN)
     add_executable(remeshing remeshing.cpp data/shell.html)
     target_link_libraries(remeshing pmp_gl)
     set_target_properties(remeshing PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
+    
+    add_executable(decimation decimation.cpp data/shell.html)
+    target_link_libraries(decimation pmp_gl)
+    set_target_properties(decimation PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/fandisk.off@input.off")
 
 else()
 
@@ -34,6 +38,9 @@ else()
 
         add_executable(curview curview.cpp)
         target_link_libraries(curview pmp_gl)
+
+        add_executable(decimation decimation.cpp)
+        target_link_libraries(decimation pmp_gl)
 
         add_executable(remeshing remeshing.cpp)
         target_link_libraries(remeshing pmp_gl)
