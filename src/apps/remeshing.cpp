@@ -1,6 +1,7 @@
 //=============================================================================
 
 #include <pmp/gl/MeshViewer.h>
+#include <pmp/algorithms/SurfaceFeatures.h>
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <imgui.h>
 
@@ -22,6 +23,7 @@ Viewer::Viewer(const char* title, int width, int height)
     : MeshViewer(title,width, height)
 {
     setDrawMode("Hidden Line");
+    m_creaseAngle = 0.0;
 }
 
 //=============================================================================
@@ -30,19 +32,25 @@ void Viewer::processImGUI()
 {
     MeshViewer::processImGUI();
 
+    ImGui::Spacing();
+
     if (ImGui::CollapsingHeader("Remeshing", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        if (ImGui::Button("Adaptive Remeshing"))
+        static int featureAngle = 70;
+        ImGui::PushItemWidth(80);
+        ImGui::SliderInt("", &featureAngle, 1, 180);
+        ImGui::PopItemWidth();
+        ImGui::SameLine();
+        if (ImGui::Button("Detect Features"))
         {
-            auto bb = m_mesh.bounds().size();
-            SurfaceRemeshing(m_mesh).adaptiveRemeshing(
-                    0.001 * bb,  // min length
-                    1.0 * bb,    // max length
-                    0.001 * bb); // approx. error
+            SurfaceFeatures(m_mesh).detectAngle(featureAngle);
             updateMesh();
         }
 
-        if (ImGui::Button("Uniform Remeshing"))
+        ImGui::Text("Remeshing:");
+        ImGui::SameLine();
+
+        if (ImGui::Button("Uniform"))
         {
             Scalar l(0);
             for (auto eit : m_mesh.edges())
@@ -50,6 +58,18 @@ void Viewer::processImGUI()
                         m_mesh.position(m_mesh.vertex(eit, 1)));
             l /= (Scalar)m_mesh.nEdges();
             SurfaceRemeshing(m_mesh).uniformRemeshing(l);
+            updateMesh();
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Adaptive"))
+        {
+            auto bb = m_mesh.bounds().size();
+            SurfaceRemeshing(m_mesh).adaptiveRemeshing(
+                    0.001 * bb,  // min length
+                    0.100 * bb,  // max length
+                    0.001 * bb); // approx. error
             updateMesh();
         }
     }
