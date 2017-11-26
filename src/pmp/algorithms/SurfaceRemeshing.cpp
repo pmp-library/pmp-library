@@ -681,7 +681,6 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
     Scalar              w, ww, area;
     Point               u, n, t, b;
 
-    SurfaceMesh::VertexIterator                 vit, vend(m_mesh.verticesEnd());
     SurfaceMesh::HalfedgeAroundVertexCirculator hit, hend;
 
     // add property
@@ -692,10 +691,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
     // for vertices introduced by splitting
     if (m_useProjection)
     {
-        for (vit = m_mesh.verticesBegin(); vit != vend; ++vit)
+        for (auto v: m_mesh.vertices())
         {
-            SurfaceMesh::Vertex v(*vit);
-
             if (!m_mesh.isBoundary(v) && !m_vlocked[v])
             {
                 projectToReference(v);
@@ -705,10 +702,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
 
     for (unsigned int iters = 0; iters < iterations; ++iters)
     {
-        for (vit = m_mesh.verticesBegin(); vit != vend; ++vit)
+        for (auto v: m_mesh.vertices())
         {
-            SurfaceMesh::Vertex v(*vit);
-
             if (!m_mesh.isBoundary(v) && !m_vlocked[v])
             {
                 if (m_vfeature[v])
@@ -755,6 +750,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
                     u -= m_points[v];
                     t = normalize(t);
                     u = t * dot(u, t);
+
+                    update[v] = u; // who deleted this line???
                 }
                 else
                 {
@@ -798,9 +795,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
         }
 
         // update vertex positions
-        for (vit = m_mesh.verticesBegin(); vit != vend; ++vit)
+        for (auto v: m_mesh.vertices())
         {
-            SurfaceMesh::Vertex v(*vit);
             if (!m_mesh.isBoundary(v) && !m_vlocked[v])
             {
                 m_points[v] += update[v];
@@ -814,9 +810,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
     // project at the end
     if (m_useProjection)
     {
-        for (vit = m_mesh.verticesBegin(); vit != vend; ++vit)
+        for (auto v: m_mesh.vertices())
         {
-            SurfaceMesh::Vertex v(*vit);
             if (!m_mesh.isBoundary(v) && !m_vlocked[v])
             {
                 projectToReference(v);
