@@ -7,3 +7,6 @@
 [submodule "external/pmp-data"]
 	path = external/pmp-data
 	url = https://github.com/pmp-library/pmp-data.git
+[submodule "external/eigen"]
+	path = external/eigen
+	url = https://github.com/pmp-library/eigen.git
