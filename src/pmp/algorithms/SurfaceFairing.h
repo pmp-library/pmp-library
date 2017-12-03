@@ -43,18 +43,18 @@ namespace pmp {
 
 //=============================================================================
 
-//! \brief A class for smoothing a surface mesh.
+//! \brief A class for fairing a surface mesh.
 //! \details The class provides two main smoothing functions:
 //!   \li \c implicitSmooth() to perform iterative bi-Laplacian smoothing
 //!   \li \c fair() to compute a limit surface.
-class SurfaceSmoothing
+class SurfaceFairing
 {
 public:
     //! constructor
-    SurfaceSmoothing(SurfaceMesh& mesh);
+    SurfaceFairing(SurfaceMesh& mesh);
 
     //! destructor
-    ~SurfaceSmoothing();
+    ~SurfaceFairing();
 
     //! perform \c n iterations of implicit bi-Laplacian smoothing with
     //! a timestep \c t.

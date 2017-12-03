@@ -27,7 +27,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
 
-#include <pmp/algorithms/SurfaceSmoothing.h>
+#include <pmp/algorithms/SurfaceFairing.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 
 #include <Eigen/Dense>
@@ -44,7 +44,7 @@ typedef Eigen::Triplet<double>      Triplet;
 
 //=============================================================================
 
-SurfaceSmoothing::SurfaceSmoothing(SurfaceMesh& mesh) : m_mesh(mesh)
+SurfaceFairing::SurfaceFairing(SurfaceMesh& mesh) : m_mesh(mesh)
 {
     // get & add properties
     m_points    = m_mesh.vertexProperty<Point>("v:point");
@@ -57,7 +57,7 @@ SurfaceSmoothing::SurfaceSmoothing(SurfaceMesh& mesh) : m_mesh(mesh)
 
 //-----------------------------------------------------------------------------
 
-SurfaceSmoothing::~SurfaceSmoothing()
+SurfaceFairing::~SurfaceFairing()
 {
     // remove properties
     m_mesh.removeVertexProperty(m_vlocked);
@@ -68,7 +68,7 @@ SurfaceSmoothing::~SurfaceSmoothing()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSmoothing::implicitSmooth(unsigned int iterations, Scalar timeStep)
+void SurfaceFairing::implicitSmooth(unsigned int iterations, Scalar timeStep)
 {
     // scale mesh into unit sphere
     auto   bounds = m_mesh.bounds();
@@ -234,7 +234,7 @@ void SurfaceSmoothing::implicitSmooth(unsigned int iterations, Scalar timeStep)
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSmoothing::fair()
+void SurfaceFairing::fair()
 {
     // compute cotan weights
     for (auto v : m_mesh.vertices())
@@ -376,7 +376,7 @@ struct Triple
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSmoothing::setupMatrixRow(
+void SurfaceFairing::setupMatrixRow(
     const SurfaceMesh::Vertex v, SurfaceMesh::VertexProperty<double> vweight,
     SurfaceMesh::EdgeProperty<double> eweight, unsigned int laplaceDegree,
     std::map<SurfaceMesh::Vertex, double>&                  row)

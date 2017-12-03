@@ -34,6 +34,7 @@
 #include <pmp/algorithms/SurfaceFeatures.h>
 #include <pmp/algorithms/SurfaceSimplification.h>
 #include <pmp/algorithms/SurfaceSmoothing.h>
+#include <pmp/algorithms/SurfaceFairing.h>
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 
@@ -106,7 +107,7 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             //     }
             // }
 
-            SurfaceSmoothing ss(m_mesh);
+            SurfaceFairing ss(m_mesh);
             ss.implicitSmooth(1,0.000001);
             //ss.fair();
             updateMesh();
