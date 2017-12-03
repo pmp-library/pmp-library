@@ -249,8 +249,8 @@ public:
     //! compute the bounding box of the object
     BoundingBox bounds()
     {
-        Point min(std::numeric_limits<Scalar>::max());
-        Point max(std::numeric_limits<Scalar>::min());
+        Point min( std::numeric_limits<Scalar>::max());
+        Point max(-std::numeric_limits<Scalar>::max());
 
         for (auto p : positions())
         {
