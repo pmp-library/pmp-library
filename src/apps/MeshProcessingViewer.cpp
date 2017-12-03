@@ -33,9 +33,7 @@
 #include <pmp/algorithms/SurfaceSubdivision.h>
 #include <pmp/algorithms/SurfaceFeatures.h>
 #include <pmp/algorithms/SurfaceSimplification.h>
-#ifdef PMP_HAS_EIGEN
 #include <pmp/algorithms/SurfaceSmoothing.h>
-#endif
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 
@@ -85,7 +83,6 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             sf.detectAngle(70);
             break;
         }
-#ifdef PMP_HAS_EIGEN
         case GLFW_KEY_I:
         {
             // auto bb = m_mesh.bounds();
@@ -115,7 +112,6 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             updateMesh();
             break;
         }
-#endif
         case GLFW_KEY_L:
         {
             if (m_mesh.isTriangleMesh())

@@ -12,6 +12,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 set(GLFW_SOURCE_DIR "external/glfw")
 set(GLEW_SOURCE_DIR "external/glew")
 set(IMGUI_SOURCE_DIR "external/imgui")
+set(EIGEN_SOURCE_DIR "external/eigen")
 
 # Building only the GLFW lib
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
@@ -46,13 +47,8 @@ else()
     add_subdirectory(${IMGUI_SOURCE_DIR})
 endif()
 
-find_package(Eigen3)
-if(EIGEN3_FOUND)
-  include_directories(${EIGEN3_INCLUDE_DIR})
-  add_definitions(-DPMP_HAS_EIGEN)
-endif()
-
-
+# setup Eigen
+include_directories(${EIGEN_SOURCE_DIR})
 
 include(AddFileDependencies)
 include_directories(${PROJECT_SOURCE_DIR}/src/)
