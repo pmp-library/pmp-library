@@ -31,6 +31,9 @@ void Viewer::processImGUI()
 {
     MeshViewer::processImGUI();
 
+    ImGui::Spacing();
+    ImGui::Spacing();
+
     if (ImGui::CollapsingHeader("Decimation", ImGuiTreeNodeFlags_DefaultOpen))
     {
         static int targetPercentage=10;
