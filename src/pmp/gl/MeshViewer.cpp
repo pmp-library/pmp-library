@@ -151,6 +151,12 @@ void MeshViewer::keyboard(GLFWwindow* window, int key, int scancode, int action,
             break;
         }
 
+        case GLFW_KEY_O: // write mesh
+        {
+            m_mesh.write("output.off");
+            break;
+        }
+
         default:
         {
             TrackballViewer::keyboard(window, key, scancode, action, mods);
