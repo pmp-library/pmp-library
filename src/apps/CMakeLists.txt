@@ -9,6 +9,10 @@ if (EMSCRIPTEN)
     target_link_libraries(curview pmp_gl)
     set_target_properties(curview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
 
+    add_executable(smoothing smoothing.cpp data/shell.html)
+    target_link_libraries(smoothing pmp_gl)
+    set_target_properties(smoothing PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/fandisk.off@input.off")
+
     add_executable(mpview mpview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h data/shell.html)
     target_link_libraries(mpview pmp_gl)
     set_target_properties(mpview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
@@ -20,7 +24,7 @@ if (EMSCRIPTEN)
     add_executable(remeshing remeshing.cpp data/shell.html)
     target_link_libraries(remeshing pmp_gl)
     set_target_properties(remeshing PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
-    
+
     add_executable(decimation decimation.cpp data/shell.html)
     target_link_libraries(decimation pmp_gl)
     set_target_properties(decimation PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/fandisk.off@input.off")
@@ -41,6 +45,9 @@ else()
 
         add_executable(curview curview.cpp)
         target_link_libraries(curview pmp_gl)
+
+        add_executable(smoothing smoothing.cpp)
+        target_link_libraries(smoothing pmp_gl)
 
         add_executable(decimation decimation.cpp)
         target_link_libraries(decimation pmp_gl)
