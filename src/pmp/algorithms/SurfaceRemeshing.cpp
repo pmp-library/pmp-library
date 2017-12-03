@@ -158,10 +158,9 @@ void SurfaceRemeshing::preprocessing()
     if (vselected)
     {
         bool hasSelection = false;
-        for (SurfaceMesh::VertexIterator vIt = m_mesh.verticesBegin();
-             vIt != m_mesh.verticesEnd(); ++vIt)
+        for (auto v: m_mesh.vertices())
         {
-            if (vselected[*vIt])
+            if (vselected[v])
             {
                 hasSelection = true;
                 break;
@@ -170,50 +169,41 @@ void SurfaceRemeshing::preprocessing()
 
         if (hasSelection)
         {
-            for (SurfaceMesh::VertexIterator vIt = m_mesh.verticesBegin();
-                 vIt != m_mesh.verticesEnd(); ++vIt)
+            for (auto v: m_mesh.vertices())
             {
-                m_vlocked[*vIt] = !vselected[*vIt];
+                m_vlocked[v] = !vselected[v];
             }
 
             // lock an edge if one of its vertices is locked
-            for (SurfaceMesh::EdgeIterator eIt = m_mesh.edgesBegin();
-                 eIt != m_mesh.edgesEnd(); ++eIt)
+            for (auto e: m_mesh.edges())
             {
-                m_elocked[*eIt] = (m_vlocked[m_mesh.vertex(*eIt, 0)] ||
-                                   m_vlocked[m_mesh.vertex(*eIt, 1)]);
+                m_elocked[e] = (m_vlocked[m_mesh.vertex(e, 0)] ||
+                                m_vlocked[m_mesh.vertex(e, 1)]);
             }
         }
     }
 
     // lock feature corners
-    SurfaceMesh::HalfedgeAroundVertexCirculator vhIt, vhEnd;
-    int                                         c;
-    for (SurfaceMesh::VertexIterator vIt = m_mesh.verticesBegin();
-         vIt != m_mesh.verticesEnd(); ++vIt)
+    for (auto v: m_mesh.vertices())
     {
-        if (m_vfeature[*vIt])
+        if (m_vfeature[v])
         {
-            c    = 0;
-            vhIt = vhEnd = m_mesh.halfedges(*vIt);
-            do
-            {
-                if (m_efeature[m_mesh.edge(*vhIt)])
+            int c = 0;
+            for (auto h: m_mesh.halfedges(v))
+                if (m_efeature[m_mesh.edge(h)])
                     ++c;
-            } while (++vhIt != vhEnd);
 
             if (c != 2)
-                m_vlocked[*vIt] = true;
+                m_vlocked[v] = true;
         }
     }
 
     // compute sizing field
     if (m_uniform)
     {
-        for (SurfaceMesh::VertexIterator vit = m_mesh.verticesBegin();
-             vit != m_mesh.verticesEnd(); ++vit)
+        for (auto v: m_mesh.vertices())
         {
-            m_vsizing[*vit] = m_targetEdgeLength;
+            m_vsizing[v] = m_targetEdgeLength;
         }
     }
     else if (!useSizingField)
@@ -224,33 +214,29 @@ void SurfaceRemeshing::preprocessing()
         //curv.analyze(1);
         curv.analyzeTensor(1, true);
 
-        for (SurfaceMesh::VertexIterator vit = m_mesh.verticesBegin();
-             vit != m_mesh.verticesEnd(); ++vit)
+        for (auto v: m_mesh.vertices())
         {
             // maximum absolute curvature
-            Scalar c = curv.maxAbsCurvature(*vit);
+            Scalar c = curv.maxAbsCurvature(v);
 
             // curvature of feature vertices: average of non-feature neighbors
-            if (m_vfeature[*vit])
+            if (m_vfeature[v])
             {
-                SurfaceMesh::HalfedgeAroundVertexCirculator vhit, vhend;
-                SurfaceMesh::Vertex                         v;
-                Scalar                                      w, ww = 0.0;
+                SurfaceMesh::Vertex  vv;
+                Scalar               w, ww = 0.0;
                 c = 0.0;
 
-                vhit = vhend = m_mesh.halfedges(*vit);
-                if (vhit)
-                    do
+                for (auto h: m_mesh.halfedges(v))
+                {
+                    vv = m_mesh.toVertex(h);
+                    if (!m_vfeature[vv])
                     {
-                        v = m_mesh.toVertex(*vhit);
-                        if (!m_vfeature[v])
-                        {
-                            w = std::max(
-                                0.0, cotanWeight(m_mesh, m_mesh.edge(*vhit)));
-                            ww += w;
-                            c += w * curv.maxAbsCurvature(v);
-                        }
-                    } while (++vhit != vhend);
+                        w = std::max(
+                                0.0, cotanWeight(m_mesh, m_mesh.edge(h)));
+                        ww += w;
+                        c  += w * curv.maxAbsCurvature(vv);
+                    }
+                }
 
                 c /= ww;
             }
@@ -278,7 +264,7 @@ void SurfaceRemeshing::preprocessing()
                 h = m_maxEdgeLength;
 
             // store target edge length
-            m_vsizing[*vit] = h;
+            m_vsizing[v] = h;
         }
     }
 
@@ -293,10 +279,9 @@ void SurfaceRemeshing::preprocessing()
 
         // copy sizing field from m_mesh
         m_refsizing = m_refmesh->addVertexProperty<Scalar>("v:sizing");
-        for (SurfaceMesh::VertexIterator vit = m_refmesh->verticesBegin();
-             vit != m_refmesh->verticesEnd(); ++vit)
+        for (auto v: m_refmesh->vertices())
         {
-            m_refsizing[*vit] = m_vsizing[*vit];
+            m_refsizing[v] = m_vsizing[v];
         }
 
         // build kd-tree
@@ -376,10 +361,8 @@ void SurfaceRemeshing::projectToReference(SurfaceMesh::Vertex v)
 
 void SurfaceRemeshing::splitLongEdges()
 {
-    SurfaceMesh::VertexIterator vIt, vEnd;
-    SurfaceMesh::EdgeIterator   eIt, eEnd;
-    SurfaceMesh::Vertex         v, v0, v1;
-    SurfaceMesh::Edge           e, e0, e1;
+    SurfaceMesh::Vertex         vnew, v0, v1;
+    SurfaceMesh::Edge           enew, e0, e1;
     SurfaceMesh::Face           f0, f1, f2, f3;
     bool                        ok, isFeature, isBoundary;
     int                         i;
@@ -388,38 +371,36 @@ void SurfaceRemeshing::splitLongEdges()
     {
         ok = true;
 
-        for (eIt = m_mesh.edgesBegin(), eEnd = m_mesh.edgesEnd(); eIt != eEnd;
-             ++eIt)
+        for (auto e: m_mesh.edges())
         {
-            v0 = m_mesh.vertex(*eIt, 0);
-            v1 = m_mesh.vertex(*eIt, 1);
+            v0 = m_mesh.vertex(e, 0);
+            v1 = m_mesh.vertex(e, 1);
 
-            if (!m_elocked[*eIt] && isTooLong(v0, v1))
+            if (!m_elocked[e] && isTooLong(v0, v1))
             {
                 const Point& p0 = m_points[v0];
                 const Point& p1 = m_points[v1];
 
-                isFeature  = m_efeature[*eIt];
-                isBoundary = m_mesh.isBoundary(*eIt);
+                isFeature  = m_efeature[e];
+                isBoundary = m_mesh.isBoundary(e);
 
-                v = m_mesh.addVertex((p0 + p1) * 0.5);
-                m_mesh.split(*eIt, v);
+                vnew = m_mesh.addVertex((p0 + p1) * 0.5);
+                m_mesh.split(e, vnew);
 
                 // need normal or sizing for adaptive refinement
-                //m_vnormal[v] = normalize(m_vnormal[v0] + m_vnormal[v1]);
-                m_vnormal[v] = m_mesh.computeVertexNormal(v);
-                m_vsizing[v] = 0.5f * (m_vsizing[v0] + m_vsizing[v1]);
+                m_vnormal[vnew] = m_mesh.computeVertexNormal(vnew);
+                m_vsizing[vnew] = 0.5f * (m_vsizing[v0] + m_vsizing[v1]);
 
                 if (isFeature)
                 {
-                    e = isBoundary ? SurfaceMesh::Edge(m_mesh.nEdges() - 2)
-                                   : SurfaceMesh::Edge(m_mesh.nEdges() - 3);
-                    m_efeature[e] = true;
-                    m_vfeature[v] = true;
+                    enew = isBoundary ? SurfaceMesh::Edge(m_mesh.nEdges() - 2)
+                                      : SurfaceMesh::Edge(m_mesh.nEdges() - 3);
+                    m_efeature[enew] = true;
+                    m_vfeature[vnew] = true;
                 }
                 else
                 {
-                    projectToReference(v);
+                    projectToReference(vnew);
                 }
 
                 ok = false;
@@ -432,7 +413,6 @@ void SurfaceRemeshing::splitLongEdges()
 
 void SurfaceRemeshing::collapseShortEdges()
 {
-    SurfaceMesh::EdgeIterator                 eIt, eEnd;
     SurfaceMesh::VertexAroundVertexCirculator vvIt, vvEnd;
     SurfaceMesh::Vertex                       v0, v1;
     SurfaceMesh::Halfedge                     h0, h1, h01, h10;
@@ -444,13 +424,12 @@ void SurfaceRemeshing::collapseShortEdges()
     {
         ok = true;
 
-        for (eIt = m_mesh.edgesBegin(), eEnd = m_mesh.edgesEnd(); eIt != eEnd;
-             ++eIt)
+        for (auto e: m_mesh.edges())
         {
-            if (!m_mesh.isDeleted(*eIt) && !m_elocked[*eIt])
+            if (!m_mesh.isDeleted(e) && !m_elocked[e])
             {
-                h10 = m_mesh.halfedge(*eIt, 0);
-                h01 = m_mesh.halfedge(*eIt, 1);
+                h10 = m_mesh.halfedge(e, 0);
+                h01 = m_mesh.halfedge(e, 1);
                 v0  = m_mesh.toVertex(h10);
                 v1  = m_mesh.toVertex(h01);
 
@@ -468,7 +447,7 @@ void SurfaceRemeshing::collapseShortEdges()
                     // boundary rules
                     if (b0 && b1)
                     {
-                        if (!m_mesh.isBoundary(*eIt))
+                        if (!m_mesh.isBoundary(e))
                             continue;
                     }
                     else if (b0)
@@ -488,7 +467,7 @@ void SurfaceRemeshing::collapseShortEdges()
                     if (f0 && f1)
                     {
                         // edge must be feature
-                        if (!m_efeature[*eIt])
+                        if (!m_efeature[e])
                             continue;
 
                         // the other two edges removed by collapse must not be features
@@ -497,8 +476,9 @@ void SurfaceRemeshing::collapseShortEdges()
                         if (m_efeature[m_mesh.edge(h0)] ||
                             m_efeature[m_mesh.edge(h1)])
                             hcol01 = false;
-                        h0         = m_mesh.prevHalfedge(h10);
-                        h1         = m_mesh.nextHalfedge(h01);
+                        // the other two edges removed by collapse must not be features
+                        h0 = m_mesh.prevHalfedge(h10);
+                        h1 = m_mesh.nextHalfedge(h01);
                         if (m_efeature[m_mesh.edge(h0)] ||
                             m_efeature[m_mesh.edge(h1)])
                             hcol10 = false;
@@ -529,15 +509,14 @@ void SurfaceRemeshing::collapseShortEdges()
                     if (hcol10)
                     {
                         // don't create too long edges
-                        vvIt = vvEnd = m_mesh.vertices(v1);
-                        do
+                        for (auto vv: m_mesh.vertices(v1))
                         {
-                            if (isTooLong(v0, *vvIt))
+                            if (isTooLong(v0, vv))
                             {
                                 hcol10 = false;
                                 break;
                             }
-                        } while (++vvIt != vvEnd);
+                        }
 
                         if (hcol10)
                         {
@@ -550,15 +529,14 @@ void SurfaceRemeshing::collapseShortEdges()
                     else if (hcol01)
                     {
                         // don't create too long edges
-                        vvIt = vvEnd = m_mesh.vertices(v0);
-                        do
+                        for (auto vv: m_mesh.vertices(v0))
                         {
-                            if (isTooLong(v1, *vvIt))
+                            if (isTooLong(v1, vv))
                             {
                                 hcol01 = false;
                                 break;
                             }
-                        } while (++vvIt != vvEnd);
+                        }
 
                         if (hcol01)
                         {
@@ -578,8 +556,6 @@ void SurfaceRemeshing::collapseShortEdges()
 
 void SurfaceRemeshing::flipEdges()
 {
-    SurfaceMesh::EdgeIterator   eIt, eEnd;
-    SurfaceMesh::VertexIterator vIt, vEnd;
     SurfaceMesh::Vertex         v0, v1, v2, v3;
     SurfaceMesh::Halfedge       h;
     int                         val0, val1, val2, val3;
@@ -591,25 +567,23 @@ void SurfaceRemeshing::flipEdges()
     // precompute valences
     SurfaceMesh::VertexProperty<int> valence =
         m_mesh.addVertexProperty<int>("valence");
-    SurfaceMesh::VertexIterator vit, vend = m_mesh.verticesEnd();
-    for (vit = m_mesh.verticesBegin(); vit != vend; ++vit)
+    for (auto v: m_mesh.vertices())
     {
-        valence[*vit] = m_mesh.valence(*vit);
+        valence[v] = m_mesh.valence(v);
     }
 
     for (ok = false, i = 0; !ok && i < 10; ++i)
     {
         ok = true;
 
-        for (eIt = m_mesh.edgesBegin(), eEnd = m_mesh.edgesEnd(); eIt != eEnd;
-             ++eIt)
+        for (auto e: m_mesh.edges())
         {
-            if (!m_elocked[*eIt] && !m_efeature[*eIt])
+            if (!m_elocked[e] && !m_efeature[e])
             {
-                h  = m_mesh.halfedge(*eIt, 0);
+                h  = m_mesh.halfedge(e, 0);
                 v0 = m_mesh.toVertex(h);
                 v2 = m_mesh.toVertex(m_mesh.nextHalfedge(h));
-                h  = m_mesh.halfedge(*eIt, 1);
+                h  = m_mesh.halfedge(e, 1);
                 v1 = m_mesh.toVertex(h);
                 v3 = m_mesh.toVertex(m_mesh.nextHalfedge(h));
 
@@ -655,9 +629,9 @@ void SurfaceRemeshing::flipEdges()
 
                     veAfter = ve0 + ve1 + ve2 + ve3;
 
-                    if (veBefore > veAfter && m_mesh.isFlipOk(*eIt))
+                    if (veBefore > veAfter && m_mesh.isFlipOk(e))
                     {
-                        m_mesh.flip(*eIt);
+                        m_mesh.flip(e);
                         --valence[v0];
                         --valence[v1];
                         ++valence[v2];
@@ -680,8 +654,6 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
     SurfaceMesh::Edge   e;
     Scalar              w, ww, area;
     Point               u, n, t, b;
-
-    SurfaceMesh::HalfedgeAroundVertexCirculator hit, hend;
 
     // add property
     SurfaceMesh::VertexProperty<Point> update =
@@ -713,11 +685,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
                     ww    = 0;
                     int c = 0;
 
-                    hit = hend = m_mesh.halfedges(v);
-                    do
+                    for (auto h: m_mesh.halfedges(v))
                     {
-                        SurfaceMesh::Halfedge h = *hit;
-
                         if (m_efeature[m_mesh.edge(h)])
                         {
                             vv = m_mesh.toVertex(h);
@@ -742,7 +711,7 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
                                 t -= normalize(m_points[vv] - m_points[v]);
                             }
                         }
-                    } while (++hit != hend);
+                    }
 
                     assert(c == 2);
 
@@ -759,11 +728,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
                     t  = 0.0;
                     ww = 0;
 
-                    hit = hend = m_mesh.halfedges(v);
-                    do
+                    for (auto h: m_mesh.halfedges(v))
                     {
-                        SurfaceMesh::Halfedge h = *hit;
-
                         v1 = v;
                         v2 = m_mesh.toVertex(h);
                         v3 = m_mesh.toVertex(m_mesh.nextHalfedge(h));
@@ -782,7 +748,7 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
 
                         u += w * b;
                         ww += w;
-                    } while (++hit != hend);
+                    }
 
                     u /= ww;
                     u -= m_points[v];
@@ -827,24 +793,23 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
 
 void SurfaceRemeshing::removeCaps()
 {
-    SurfaceMesh::EdgeIterator eIt, eEnd(m_mesh.edgesEnd());
     SurfaceMesh::Halfedge     h;
     SurfaceMesh::Vertex       v, vb, vd;
     SurfaceMesh::Face         fb, fd;
     Scalar                    a0, a1, amin, aa(::cos(170.0 * M_PI / 180.0));
     Point                     a, b, c, d;
 
-    for (eIt = m_mesh.edgesBegin(); eIt != eEnd; ++eIt)
+    for (auto e: m_mesh.edges())
     {
-        if (!m_elocked[*eIt] && m_mesh.isFlipOk(*eIt))
+        if (!m_elocked[e] && m_mesh.isFlipOk(e))
         {
-            h = m_mesh.halfedge(*eIt, 0);
+            h = m_mesh.halfedge(e, 0);
             a = m_points[m_mesh.toVertex(h)];
 
             h = m_mesh.nextHalfedge(h);
             b = m_points[vb = m_mesh.toVertex(h)];
 
-            h = m_mesh.halfedge(*eIt, 1);
+            h = m_mesh.halfedge(e, 1);
             c = m_points[m_mesh.toVertex(h)];
 
             h = m_mesh.nextHalfedge(h);
@@ -868,15 +833,15 @@ void SurfaceRemeshing::removeCaps()
             if (amin < aa)
             {
                 // feature edge and feature vertex -> seems to be intended
-                if (m_efeature[*eIt] && m_vfeature[v])
+                if (m_efeature[e] && m_vfeature[v])
                     continue;
 
                 // project v onto feature edge
-                if (m_efeature[*eIt])
+                if (m_efeature[e])
                     m_points[v] = (a + c) * 0.5;
 
                 // flip
-                m_mesh.flip(*eIt);
+                m_mesh.flip(e);
             }
         }
     }

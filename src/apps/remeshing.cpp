@@ -33,6 +33,7 @@ void Viewer::processImGUI()
     MeshViewer::processImGUI();
 
     ImGui::Spacing();
+    ImGui::Spacing();
 
     if (ImGui::CollapsingHeader("Remeshing", ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -43,7 +44,9 @@ void Viewer::processImGUI()
         ImGui::SameLine();
         if (ImGui::Button("Detect Features"))
         {
-            SurfaceFeatures(m_mesh).detectAngle(featureAngle);
+            SurfaceFeatures sf(m_mesh);
+            sf.clear();
+            sf.detectAngle(featureAngle);
             updateMesh();
         }
 
