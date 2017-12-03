@@ -241,7 +241,6 @@ void SurfaceMeshGL::updateOpenGLBuffers()
                 features.data(),
                 GL_STATIC_DRAW);
         m_nFeatures = features.size();
-        std::cout << "detected " << m_nFeatures << " feature edges\n";
     }
     else
     {
