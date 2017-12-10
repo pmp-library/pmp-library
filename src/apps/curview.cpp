@@ -37,24 +37,27 @@ void Viewer::processImGUI()
             SurfaceCurvature analyzer(m_mesh);
             analyzer.analyzeTensor(1, true);
             analyzer.meanCurvatureToTextureCoordinates();
+            m_mesh.useColdWarmTexture();
             updateMesh();
-            setDrawMode("Scalar Field");
+            setDrawMode("Texture");
         }
         if (ImGui::Button("Gauss Curvature"))
         {
             SurfaceCurvature analyzer(m_mesh);
             analyzer.analyzeTensor(1, true);
             analyzer.gaussCurvatureToTextureCoordinates();
+            m_mesh.useColdWarmTexture();
             updateMesh();
-            setDrawMode("Scalar Field");
+            setDrawMode("Texture");
         }
         if (ImGui::Button("Abs. Max. Curvature"))
         {
             SurfaceCurvature analyzer(m_mesh);
             analyzer.analyzeTensor(1, true);
             analyzer.maxCurvatureToTextureCoordinates();
+            m_mesh.useColdWarmTexture();
             updateMesh();
-            setDrawMode("Scalar Field");
+            setDrawMode("Texture");
         }
     }
 }

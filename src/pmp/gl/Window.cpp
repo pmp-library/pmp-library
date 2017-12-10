@@ -245,6 +245,9 @@ void Window::render_frame()
     }
 #endif
 
+    // do some computations
+    m_instance->doProcessing();
+
     // preapre and process ImGUI elements
     if (m_instance->showImGUI())
     {

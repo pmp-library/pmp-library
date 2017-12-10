@@ -97,6 +97,9 @@ protected: //----------------------------------- callbacks as member functions
     //! this function renders the ImGUI elements and handles their events
     virtual void processImGUI() {}
 
+    //! this function is called just before rendering
+    virtual void doProcessing() {}
+
 protected:
     //! setup ImGUI user interface
     void initImGUI();

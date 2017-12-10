@@ -59,6 +59,7 @@ SurfaceMeshGL::SurfaceMeshGL()
 
     // initialize texture
     m_texture = 0;
+    m_textureMode = OtherTexture;
 }
 
 //-----------------------------------------------------------------------------
@@ -73,6 +74,88 @@ SurfaceMeshGL::~SurfaceMeshGL()
     glDeleteBuffers(1, &m_featureBuffer);
     glDeleteVertexArrays(1, &m_vertexArrayObject);
     glDeleteTextures(1, &m_texture);
+}
+
+//-----------------------------------------------------------------------------
+
+void SurfaceMeshGL::useTexture(GLuint texID)
+{
+    glDeleteTextures(1, &m_texture);
+    m_texture     = texID;
+    m_textureMode = OtherTexture;
+}
+
+//-----------------------------------------------------------------------------
+
+void SurfaceMeshGL::useColdWarmTexture()
+{
+    if (m_textureMode != ColdWarmTexture)
+    {
+        // delete old texture
+        glDeleteTextures(1, &m_texture);
+
+        // setup new texture
+        glGenTextures(1, &m_texture);
+        glBindTexture(GL_TEXTURE_2D, m_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 1, 0, GL_RGB,
+                GL_UNSIGNED_BYTE, cold_warm_texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        m_textureMode = ColdWarmTexture;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SurfaceMeshGL::useCheckerboardTexture()
+{
+    if (m_textureMode != CheckerboardTexture)
+    {
+        // delete old texture
+        glDeleteTextures(1, &m_texture);
+
+        // generate checkerboard-like image
+        GLubyte *tex = new GLubyte[256*256*3];
+        GLubyte *tp  = tex;
+        for (int x=0; x<256; ++x)
+        {
+            for (int y=0; y<256; ++y)
+            {
+                if (((x+2)/4 % 10) == 0 || ((y+2)/4 % 10) == 0)
+                {
+                    *(tp++) = 0;
+                    *(tp++) = 0;
+                    *(tp++) = 0;
+                }
+                else
+                {
+                    *(tp++) = 255;
+                    *(tp++) = 255;
+                    *(tp++) = 255;
+                }
+            }
+        }
+
+        // generate texture
+        glGenTextures(1, &m_texture);
+        glBindTexture(GL_TEXTURE_2D, m_texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, 3, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+        // clean up
+        delete[] tex;
+
+        m_textureMode = CheckerboardTexture;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -100,20 +183,6 @@ void SurfaceMeshGL::updateOpenGLBuffers()
         glGenBuffers(1, &m_texCoordBuffer);
         glGenBuffers(1, &m_edgeBuffer);
         glGenBuffers(1, &m_featureBuffer);
-    }
-
-    // has cold-warm-texture been generated?
-    if (!m_texture)
-    {
-        glGenTextures(1, &m_texture);
-        glBindTexture(GL_TEXTURE_2D, m_texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 1, 0, GL_RGB,
-                     GL_UNSIGNED_BYTE, cold_warm_texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     }
 
     // activate VAO
@@ -333,7 +402,7 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
     }
 
-    else if (drawMode == "Scalar Field")
+    else if (drawMode == "Texture")
     {
         m_phongShader.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
         m_phongShader.set_uniform("back_color", vec3(0.3, 0.3, 0.3));

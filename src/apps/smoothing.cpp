@@ -41,15 +41,8 @@ void Viewer::processImGUI()
             analyzer.analyzeTensor(1, true);
             analyzer.meanCurvatureToTextureCoordinates();
             updateMesh();
-            setDrawMode("Scalar Field");
-        }
-        if (ImGui::Button("Abs. Max. Curvature"))
-        {
-            SurfaceCurvature analyzer(m_mesh);
-            analyzer.analyzeTensor(1, true);
-            analyzer.maxCurvatureToTextureCoordinates();
-            updateMesh();
-            setDrawMode("Scalar Field");
+            m_mesh.useColdWarmTexture();
+            setDrawMode("Texture");
         }
     }
 

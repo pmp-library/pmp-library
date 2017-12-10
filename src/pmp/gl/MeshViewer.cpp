@@ -49,7 +49,7 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
     addDrawMode("Points");
     addDrawMode("Hidden Line");
     addDrawMode("Smooth Shading");
-    addDrawMode("Scalar Field");
+    addDrawMode("Texture");
     setDrawMode("Smooth Shading");
 
     m_creaseAngle = 90.0;
