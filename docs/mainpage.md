@@ -9,13 +9,13 @@ mesh viewers and visualization utilities based on OpenGL&reg; as well as the
 possibility to compile the library into JavaScript
 using [emscripten](https://github.com/kripken/emscripten).
 
-The [User Guide](./userguide.html) describes how to
-quickly [get started](./quickstart.html) using the pmp-library, provides
-an [overview](./overview.html) of the library and its capabilities,
-a [tutorial](./tutorial.html) as well as guidelines
-for [contributing](./contributing.html) patches or new code.
+The [User Guide](userguide.html) describes how to
+quickly [get started](quickstart.html) using the pmp-library, provides
+an [overview](overview.html) of the library and its capabilities,
+a [tutorial](tutorial.html) as well as guidelines
+for [contributing](contributing.html) patches or new code.
 
-The [Reference Documentation](./annotated.html) provides detailed information on
+The [Reference Documentation](annotated.html) provides detailed information on
 the classes and functions provided by the pmp-library.
 
 ## License
