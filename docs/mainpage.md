@@ -1,20 +1,40 @@
-# User Manual {#mainpage}
+# Introduction {#mainpage}
 
 The pmp-library is a modern C++ open-source library for digital geometry
 processing. It provides a set of geometric data structures frequently used
 in geometry processing tasks as well as implementations of canonical
 algorithms. It has been designed and implemented with a focus on ease of
-use and performance while maintaining high flexibility.
+use and performance while maintaining high flexibility. In addition, it provides
+mesh viewers and visualization utilities based on OpenGL&reg; as well as the
+possibility to compile the library into JavaScript
+using [emscripten](https://github.com/kripken/emscripten).
 
-This manual is organized into the following sections:
+The [User Guide](./userguide.html) describes how to
+quickly [get started](./quickstart.html) using the pmp-library, provides
+an [overview](./overview.html) of the library and its capabilities,
+a [tutorial](./tutorial.html) as well as guidelines
+for [contributing](./contributing.html) patches or new code.
 
-- @subpage installation -- How compile and install pmp
-- @subpage quickstart -- How easily to setup your own project using pmp
-- @subpage overview -- An overview of the library components
-- @subpage development -- Guidelines for pmp development and contributions
+The [Reference Documentation](./annotated.html) provides detailed information on
+the classes and functions provided by the pmp-library.
 
-The [Reference Manual](./annotated.html) provides detailed information on the
-classes and functions provided by pmp.
+## License
+
+The pmp-library is provided under a flexible 3-clause BSD
+[license](https://github.com/pmp-library/pmp-library/blob/master/LICENSE.txt),
+thereby allowing for both open-source and commercial usage.
+
+## Acknowledgment
+
+If you are using the pmp-library for research projects, please acknowledge its
+use by referencing
+
+    @misc{pmp-library,
+      title  = {The Polygon Mesh Processing Library},
+      author = {Daniel Sieger and Mario Botsch},
+      note   = {http://pmp-library.github.io/pmp-library/},
+      year   = {2017},
+    }
 
 ## Heritage
 

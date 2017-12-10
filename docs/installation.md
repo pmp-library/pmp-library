@@ -1,28 +1,48 @@
 # Installation {#installation}
 
-# System Requirements {#system_requirements}
+In this section, we describe how to configure, build, and install the
+pmp-library in detail.
 
-pmp uses [CMake](http://www.cmake.org) as its build configuration
-system. Version 3.1 or greater is required.
+## System Requirements
 
-pmp requires a C++11-compliant compiler. For the current release pmp has
-been tested to build with the following compilers:
+The pmp-library uses [CMake](http://www.cmake.org) as its build configuration
+system. Version 3.0.2 or greater is required. The pmp-library requires a
+C++11-compliant compiler. We continuously build and test the pmp-library
+with the following compilers and operating systems:
 
 Operating System | Compiler
 -----------------|--------------------
-Linux            | gcc version 4.8.4
-Mac OS-X         | LLVM version 5.0
-Windows          | Visual Studio 2012
+Linux            | gcc 4.8.4, clang 3.9.0
+Mac OS-X         | AppleClang 8.1.0
+Windows          | Visual Studio 2015, 2017
 
-# Configuration {#configuration}
+## Dependencies
 
-pmp relies on [CMake](http://www.cmake.org) as its build and configuration
-system. `CMake` is a cross-platform build-system capable of generating different
-build files (so-called _generators_) for a specific platform, e.g., Makefiles
-for Linux/Unix, Xcode projects for Mac OS-X and Visual Studio projects for
-Windows.
+Some parts of the pmp-library depends on the following third-party libraries:
 
-On the command line change to the top-level pmp directory, create a
+Library                                   | Description                       | Version
+------------------------------------------|-----------------------------------|--------------
+[Eigen](http://eigen.tuxfamily.org)       | C++ linear algebra library        | &ge; 3.3.4
+[OpenGL](http://opengl.org)               | Open Graphics Library             | &ge; 3.3
+[GLEW](http://glew.sourceforge.net)       | OpenGL Extension Wrangler Library | &ge; 3.3
+[GLFW](http://glfw.org)                   | Graphics Library Framework        | &ge; 3.2.1
+[ImGui](https://github.com/ocornut/imgui) | Immediate Mode GUI                | &ge; 1.51
+[Google Test](https://github.com/google/googletest) | C++ Test Framework      | &ge; 1.8.0
+
+By default, we include the corresponding libraries using git submodules. Note
+that OpenGL and related dependencies are optional. They are only needed if you
+want to use the viewer classes. Google Test is optional as well and only
+required if you want to run the unit test suite.
+
+## Configuration
+
+The pmp-library relies on [CMake](http://www.cmake.org) as its build and
+configuration system. `CMake` is a cross-platform build-system capable of
+generating different build files (so-called _generators_) for a specific
+platform, e.g., Makefiles for Linux/Unix, Xcode projects for Mac OS-X and Visual
+Studio projects for Windows.
+
+On the command line change to the top-level pmp-library directory, create a
 build directory and run `cmake`:
 
     $ cd pmp
@@ -55,33 +75,31 @@ customizing its configuration see
 the [CMake documentation](http://cmake.org/cmake/help/documentation.html).
 
 
-# Building pmp {#building}
+## Building
 
-After successful configuration pmp can be build using
-the chosen build system. For a Unix-like environment the default
-generator is Makefiles. In order to build pmp just call
+After successful configuration pmp-library can be build using the chosen build
+system. For a Unix-like environment the default generator is Makefiles. In order
+to build pmp-library just call
 
     $ make
 
-from the top-level build directory. In order to build
-pmp in parallel use the `-j` option of
-`make`:
+from the top-level build directory. In order to build pmp in parallel use the
+`-j` option of `make`:
 
     $ make -j
 
-The resulting library is named <code>pmp.so</code> and
+The resulting library is named <code>libpmp.so</code> and
 located in the current working directory.
 
-In order to build the full HTML manual and reference
-documentation call
+In order to build the full HTML manual and reference documentation call
 
     $ make docs
 
-The resulting HTML documentation can be found in the `doc/` sub-directory.
+The resulting HTML documentation can be found in the `docs/` sub-directory.
 
-# Installation {#make_installation}
+## Installation
 
-In order to install pmp just call
+In order to install pmp-library just call
 
     $ sudo make install
 
@@ -92,10 +110,10 @@ prefix during build configuration:
 
     $ cmake -DCMAKE_INSTALL_PREFIX=<your custom path> ..
 
-# Build Options {#build_options}
+## Build Options
 
-By default, pmp uses 32-bit unsigned integers as internal index type to
-reference entities. However, if you need to process very large data sets this
+By default, the pmp-libray uses 32-bit unsigned integers as internal index type
+to reference entities. However, if you need to process very large data sets this
 might not be sufficient. In this case, you can change the index type to be
 64-bit by specifying
 

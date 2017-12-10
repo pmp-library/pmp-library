@@ -28,8 +28,59 @@ body, table, div, p, dl
 
 #footer address
 {
+    border-top: 2px solid #09a8ff;
     padding-top: 10px;
     padding-bottom: 10px;
     font-size: normal;
     text-align: center;
+}
+
+div.header
+{
+    background-image:none;
+    background-repeat:repeat-x;
+	background-color: #ffffff;
+	margin:  0px;
+    margin-left: 12px;
+	border-bottom: none;
+}
+
+#nav-tree
+{
+    background-image:none;
+    background-repeat:repeat-x;
+    background-color: #ffffff;
+    -webkit-overflow-scrolling : touch; /* iOS 5+ */
+}
+
+div.contents {
+	margin-top: 10px;
+    margin-left: 24px;
+	margin-right: 8px;
+    width: 60em;
+}
+
+.ui-resizable-e {
+    background:url("splitbar.png") repeat scroll right center transparent;
+    background: #09a8ff;
+  cursor:e-resize;
+  height:100%;
+  right:0;
+  top:0;
+  width:2px;
+}
+
+#titlearea
+{
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+	border-bottom: 2px solid #09a8ff;
+}
+
+.title {
+	font: 400 14px/28px Lato, Open Sans, sans-serif;
+	font-size: 200%;
+	font-weight: bold;
+	margin: 10px 2px 0px 2px;
 }
