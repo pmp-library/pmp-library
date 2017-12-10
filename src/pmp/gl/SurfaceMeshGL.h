@@ -69,6 +69,15 @@ public:
     //! update all opengl buffers for efficient core profile rendering
     void updateOpenGLBuffers();
 
+    //! set a texture to be used for "Solid Texture" draw mode
+    void useTexture(GLuint _tex);
+
+    //! use color map to visualize scalar fields
+    void useColdWarmTexture();
+
+    //! setup checkerboard texture
+    void useCheckerboardTexture();
+
 private:
     // material parameters
     float m_creaseAngle;
@@ -92,6 +101,7 @@ private:
 
     //! 1D texture for scalar field rendering
     GLuint m_texture;
+    enum { ColdWarmTexture, CheckerboardTexture, OtherTexture } m_textureMode;
 };
 
 //=============================================================================
