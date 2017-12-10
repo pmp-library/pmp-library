@@ -126,8 +126,7 @@ void SurfaceMeshGL::useCheckerboardTexture()
         {
             for (unsigned int y=0; y<res; ++y)
             {
-                //if (((x & 0x20) == 0) ^ ((y & 0x20)  == 0))
-                if (((x/32)%2 == 0) ^ ((y/32)%2 == 0))
+                if (((x & 0x20) == 0) ^ ((y & 0x20)  == 0))
                 {
                     *(tp++) = 42;
                     *(tp++) = 157;
