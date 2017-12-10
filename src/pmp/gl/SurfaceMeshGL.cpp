@@ -119,17 +119,19 @@ void SurfaceMeshGL::useCheckerboardTexture()
         glDeleteTextures(1, &m_texture);
 
         // generate checkerboard-like image
-        GLubyte *tex = new GLubyte[256*256*3];
+        const unsigned int res = 512;
+        GLubyte *tex = new GLubyte[res*res*3];
         GLubyte *tp  = tex;
-        for (int x=0; x<256; ++x)
+        for (unsigned int x=0; x<res; ++x)
         {
-            for (int y=0; y<256; ++y)
+            for (unsigned int y=0; y<res; ++y)
             {
-                if (((x+2)/4 % 10) == 0 || ((y+2)/4 % 10) == 0)
+                //if (((x & 0x20) == 0) ^ ((y & 0x20)  == 0))
+                if (((x/32)%2 == 0) ^ ((y/32)%2 == 0))
                 {
-                    *(tp++) = 0;
-                    *(tp++) = 0;
-                    *(tp++) = 0;
+                    *(tp++) = 42;
+                    *(tp++) = 157;
+                    *(tp++) = 223;
                 }
                 else
                 {
@@ -143,8 +145,7 @@ void SurfaceMeshGL::useCheckerboardTexture()
         // generate texture
         glGenTextures(1, &m_texture);
         glBindTexture(GL_TEXTURE_2D, m_texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, 3, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, res, res, 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
