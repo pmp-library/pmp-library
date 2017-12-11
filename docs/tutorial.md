@@ -1,4 +1,4 @@
-# Turorial {#tutorial}
+# Tutorial {#tutorial}
 
 This section provides a hands-on tutorial on the basic usage of the
 pmp-library. Since working with polygon meshes is the focus of the library, this
