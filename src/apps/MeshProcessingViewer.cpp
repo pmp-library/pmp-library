@@ -57,6 +57,7 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             analyzer.analyzeTensor(1, true);
             analyzer.gaussCurvatureToTextureCoordinates();
             updateMesh();
+            m_mesh.useColdWarmTexture();
             setDrawMode("Scalar Field");
             break;
         }
@@ -66,6 +67,7 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             analyzer.analyzeTensor(1, true);
             analyzer.meanCurvatureToTextureCoordinates();
             updateMesh();
+            m_mesh.useColdWarmTexture();
             setDrawMode("Scalar Field");
             break;
         }
@@ -75,6 +77,7 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             analyzer.analyzeTensor(1, true);
             analyzer.maxCurvatureToTextureCoordinates();
             updateMesh();
+            m_mesh.useColdWarmTexture();
             setDrawMode("Scalar Field");
             break;
         }
