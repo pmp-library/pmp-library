@@ -23,9 +23,25 @@ endif()
 
 set_target_properties(pmp PROPERTIES VERSION ${PMP_VERSION})
 
-install(TARGETS pmp DESTINATION lib)
+if(NOT EMSCRIPTEN)
 
-install(FILES ${HEADERS} DESTINATION include/pmp/)
+  target_include_directories(pmp PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
+    $<INSTALL_INTERFACE:include/>)
+
+  if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
+    target_compile_options(pmp PUBLIC "-std=c++11")
+  endif()
+
+  install(TARGETS pmp EXPORT pmpTargets
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include)
+
+  install(FILES ${HEADERS} DESTINATION include/pmp/)
+
+endif()
 
 add_subdirectory(gl)
 

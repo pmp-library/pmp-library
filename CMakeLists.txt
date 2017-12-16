@@ -144,6 +144,33 @@ set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
 set(CPACK_SOURCE_GENERATOR "ZIP")
 include(CPack)
 
+
+# Generate package configuration files
+include(CMakePackageConfigHelpers)
+
+set(PMP_CONFIG_PATH "lib${LIB_SUFFIX}/cmake/pmp")
+
+configure_package_config_file(cmake/pmpConfig.cmake.in
+  pmpConfig.cmake
+  INSTALL_DESTINATION "${PMP_CONFIG_PATH}"
+  NO_CHECK_REQUIRED_COMPONENTS_MACRO)
+
+install(EXPORT pmpTargets FILE pmpTargets.cmake
+  EXPORT_LINK_INTERFACE_LIBRARIES
+  DESTINATION "${PMP_CONFIG_PATH}")
+
+export(TARGETS pmp FILE pmpTargets.cmake)
+
+write_basic_package_version_file(pmpConfigVersion.cmake
+  VERSION ${PMP_VERSION}
+  COMPATIBILITY SameMajorVersion)
+
+
+install(FILES "${PROJECT_BINARY_DIR}/pmpConfig.cmake"
+  "${PROJECT_BINARY_DIR}/pmpConfigVersion.cmake"
+  DESTINATION "${PMP_CONFIG_PATH}")
+
+
 # add uninstall target if none is defined
 if(NOT TARGET uninstall)
 

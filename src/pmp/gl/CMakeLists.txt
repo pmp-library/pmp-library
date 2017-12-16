@@ -15,6 +15,7 @@ else()
         add_library(pmp_gl STATIC ${SRCS} ${HDRS})
         target_link_libraries(pmp_gl pmp imgui glfw glew ${OPENGL_LIBRARIES})
         install(TARGETS pmp_gl DESTINATION lib)
+        install(FILES ${HDRS} DESTINATION include/pmp/gl)
     endif()
 
 endif()

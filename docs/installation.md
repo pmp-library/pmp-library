@@ -114,6 +114,21 @@ The library can be uninstalled using
 
     $ make uninstall
 
+To use the pmp-library in your own CMake-based projects simply include the
+library by using `find_package(pmp)` and point CMake to the directory containing
+the pmp-library CMake configuration file `pmpConfig.cmake`. This can be either
+the pmp-library build directory
+
+    $ cmake -Dpmp_DIR=<path-to-pmp-build-directory>
+
+or the installed version
+
+    $ cmake -Dpmp_DIR=<your custom path>/lib/cmake/pmp
+
+This way, you can simply link your own target against pmp-library
+
+    target_link_libraries(your_target pmp)
+
 ## Build Options
 
 By default, the pmp-libray uses 32-bit unsigned integers as internal index type
