@@ -46,6 +46,9 @@ else()
         add_executable(curview curview.cpp)
         target_link_libraries(curview pmp_gl)
 
+        add_executable(subdiv subdiv.cpp)
+        target_link_libraries(subdiv pmp_gl)
+
         add_executable(smoothing smoothing.cpp)
         target_link_libraries(smoothing pmp_gl)
 
