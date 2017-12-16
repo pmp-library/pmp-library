@@ -139,3 +139,15 @@ set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSIO
 set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
 set(CPACK_SOURCE_GENERATOR "ZIP")
 include(CPack)
+
+# add uninstall target if none is defined
+if(NOT TARGET uninstall)
+
+  configure_file("${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in"
+    cmake_uninstall.cmake IMMEDIATE @ONLY)
+
+  add_custom_target(uninstall
+    "${CMAKE_COMMAND}" -P
+    "${PROJECT_BINARY_DIR}/cmake_uninstall.cmake")
+
+endif()

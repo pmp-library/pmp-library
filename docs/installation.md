@@ -110,6 +110,10 @@ prefix during build configuration:
 
     $ cmake -DCMAKE_INSTALL_PREFIX=<your custom path> ..
 
+The library can be uninstalled using
+
+    $ make uninstall
+
 ## Build Options
 
 By default, the pmp-libray uses 32-bit unsigned integers as internal index type
