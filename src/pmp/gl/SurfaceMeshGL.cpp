@@ -349,6 +349,12 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         m_phongShader.bind_attrib("v_tex1D", 2);
     }
 
+    // we need some texture, otherwise WebGL complains
+    if (!m_texture)
+    {
+        useColdWarmTexture();
+    }
+
     // empty mesh?
     if (isEmpty())
         return;
