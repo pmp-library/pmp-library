@@ -21,7 +21,7 @@ elseif(UNIX)
   add_library(pmp SHARED ${SOURCES} ${HEADERS})
 endif()
 
-set_target_properties(pmp PROPERTIES VERSION 1.0)
+set_target_properties(pmp PROPERTIES VERSION ${PMP_VERSION})
 
 install(TARGETS pmp DESTINATION lib)
 

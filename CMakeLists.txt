@@ -2,6 +2,11 @@ project(pmp-library)
 
 cmake_minimum_required(VERSION 3.0.2)
 
+set(PMP_MAJOR_VERSION 1)
+set(PMP_MINOR_VERSION 0)
+set(PMP_PATCH_VERSION 0)
+set(PMP_VERSION ${PMP_MAJOR_VERSION}.${PMP_MINOR_VERSION}.${PMP_PATCH_VERSION})
+
 # set output paths
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR})
@@ -133,9 +138,20 @@ else()
     add_subdirectory(tests)
 endif()
 
-
-set(CPACK_PACKAGE_VERSION 1.1)
+set(CPACK_PACKAGE_VERSION ${PMP_VERSION})
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}")
 set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
 set(CPACK_SOURCE_GENERATOR "ZIP")
 include(CPack)
+
+# add uninstall target if none is defined
+if(NOT TARGET uninstall)
+
+  configure_file("${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in"
+    cmake_uninstall.cmake IMMEDIATE @ONLY)
+
+  add_custom_target(uninstall
+    "${CMAKE_COMMAND}" -P
+    "${PROJECT_BINARY_DIR}/cmake_uninstall.cmake")
+
+endif()
