@@ -2,5 +2,10 @@
 # included from above
 file(GLOB HEADERS ./io/*.h)
 file(GLOB SOURCES ./io/*.cpp)
-target_sources(pmp PRIVATE "${SOURCES}" PUBLIC "${HEADERS}")
+
 install(FILES ${HEADERS} DESTINATION include/pmp/io)
+
+target_sources(pmp PRIVATE "${SOURCES}")
+target_include_directories(pmp PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include/pmp/io>)
