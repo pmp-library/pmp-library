@@ -125,9 +125,25 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             updateMesh();
             break;
         }
-        case GLFW_KEY_O:
+        case GLFW_KEY_O: // change face orientation
         {
-            m_mesh.write("output.off");
+            SurfaceMeshGL newMesh;
+            for (auto v: m_mesh.vertices())
+            {
+                newMesh.addVertex( m_mesh.position(v) );
+            }
+            for (auto f: m_mesh.faces())
+            {
+                std::vector<SurfaceMesh::Vertex> vertices;
+                for (auto v: m_mesh.vertices(f))
+                {
+                    vertices.push_back(v);
+                }
+                std::reverse(vertices.begin(), vertices.end());
+                newMesh.addFace(vertices);
+            }
+            m_mesh = newMesh;
+            updateMesh();
             break;
         }
         case GLFW_KEY_R:
@@ -167,6 +183,11 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
             updateMesh();
             break;
         }
+        case GLFW_KEY_W:
+        {
+            m_mesh.write("output.off");
+            break;
+        }
         default:
         {
             MeshViewer::keyboard(window, key, scancode, action, mods);
@@ -181,48 +202,47 @@ void MeshProcessingViewer::processImGUI()
 {
     MeshViewer::processImGUI();
 
-#ifndef __EMSCRIPTEN__
-    ImGui::SetNextWindowSize(ImVec2(0,0));
-#endif
-    ImGui::Begin("Mesh Processing");
+    ImGui::Spacing();
+    ImGui::Spacing();
 
-    if (ImGui::Button("Decimate"))
+    if (ImGui::CollapsingHeader("Mesh Processing", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        SurfaceSimplification ss(m_mesh);
-        ss.initialize(5); // aspect ratio
-        ss.simplify(m_mesh.nVertices() * 0.1);
-        updateMesh();
-    }
+        if (ImGui::Button("Decimate"))
+        {
+            SurfaceSimplification ss(m_mesh);
+            ss.initialize(5); // aspect ratio
+            ss.simplify(m_mesh.nVertices() * 0.1);
+            updateMesh();
+        }
 
-    if (ImGui::Button("Subdivision"))
-    {
-        if (m_mesh.isTriangleMesh())
-            SurfaceSubdivision(m_mesh).loop();
-        else
-            SurfaceSubdivision(m_mesh).catmullClark();
-        updateMesh();
-    }
+        if (ImGui::Button("Subdivision"))
+        {
+            if (m_mesh.isTriangleMesh())
+                SurfaceSubdivision(m_mesh).loop();
+            else
+                SurfaceSubdivision(m_mesh).catmullClark();
+            updateMesh();
+        }
 
-    if (ImGui::Button("Adaptive Remeshing"))
-    {
-        auto bb = m_mesh.bounds().size();
-        SurfaceRemeshing(m_mesh).adaptiveRemeshing(
-                0.001 * bb,  // min length
-                1.0 * bb,    // max length
-                0.001 * bb); // approx. error
-        updateMesh();
-    }
+        if (ImGui::Button("Adaptive Remeshing"))
+        {
+            auto bb = m_mesh.bounds().size();
+            SurfaceRemeshing(m_mesh).adaptiveRemeshing(
+                    0.001 * bb,  // min length
+                    1.0 * bb,    // max length
+                    0.001 * bb); // approx. error
+            updateMesh();
+        }
 
-    if (ImGui::Button("Uniform Remeshing"))
-    {
-        Scalar l(0);
-        for (auto eit : m_mesh.edges())
-            l += distance(m_mesh.position(m_mesh.vertex(eit, 0)),
-                    m_mesh.position(m_mesh.vertex(eit, 1)));
-        l /= (Scalar)m_mesh.nEdges();
-        SurfaceRemeshing(m_mesh).uniformRemeshing(l);
-        updateMesh();
+        if (ImGui::Button("Uniform Remeshing"))
+        {
+            Scalar l(0);
+            for (auto eit : m_mesh.edges())
+                l += distance(m_mesh.position(m_mesh.vertex(eit, 0)),
+                        m_mesh.position(m_mesh.vertex(eit, 1)));
+            l /= (Scalar)m_mesh.nEdges();
+            SurfaceRemeshing(m_mesh).uniformRemeshing(l);
+            updateMesh();
+        }
     }
-
-    ImGui::End();
 }
