@@ -75,24 +75,22 @@ protected: //----------------------------------- callbacks as member functions
     virtual void display(void) = 0;
 
     //! this function handles keyboard events
-    virtual void keyboard(GLFWwindow* window, int key, int scancode, int action,
-                          int mods) = 0;
+    virtual void keyboard(int /*key*/, int /*code*/, int /*action*/, int /*mods*/) {}
 
     //! this function handles unicode character events
-    virtual void character(GLFWwindow*, unsigned int) {}
+    virtual void character(unsigned int) {}
 
     //! this function handles mouse button events
-    virtual void mouse(GLFWwindow* window, int button, int action,
-                       int mods) = 0;
+    virtual void mouse(int /*button*/, int /*action*/, int /*mods*/) {}
 
     //! this function handles mouse motion (passive/active position)
-    virtual void motion(GLFWwindow* window, double xpos, double ypos) = 0;
+    virtual void motion(double /*xpos*/, double /*ypos*/) {}
 
     //! this function handles mouse scroll events
-    virtual void scroll(GLFWwindow* window, double xoffset, double yoffset) = 0;
+    virtual void scroll(double /*xoffset*/, double /*yoffset*/) {}
 
     //! this function is called if the window is resized
-    virtual void resize(GLFWwindow* window, int width, int height) = 0;
+    virtual void resize(int /*width*/, int /*height*/) {}
 
     //! this function renders the ImGUI elements and handles their events
     virtual void processImGUI() {}

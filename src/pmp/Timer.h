@@ -29,12 +29,7 @@
 #pragma once
 //=============================================================================
 
-#ifdef _WIN32
-#  include <windows.h>
-#else // Unix
-#  include <sys/time.h>
-#endif
-
+#include <chrono>
 #include <iostream>
 
 //=============================================================================
@@ -49,13 +44,7 @@ class Timer
 public:
 
     //! Constructor
-    Timer()
-        : m_elapsed(0.0), m_isRunning(false)
-    {
-#ifdef _WIN32 // Windows
-        QueryPerformanceFrequency(&m_freq);
-#endif
-    }
+    Timer() : m_elapsed(0.0), m_isRunning(false) {}
 
 
     //! Start time measurement
@@ -69,29 +58,19 @@ public:
     //! Continue measurement, accumulates elapased times
     void cont()
     {
-#ifdef _WIN32
-        QueryPerformanceCounter(&m_startTime);
-#else // Unix
-        gettimeofday(&m_startTime, 0);
-#endif
+        m_startTime = std::chrono::high_resolution_clock::now();
         m_isRunning = true;
     }
 
 
     //! Stop time measurement, return elapsed time in ms
-    double stop()
+    Timer& stop()
     {
-#ifdef _WIN32 // Windows
-        QueryPerformanceCounter(&m_endTime);
-        m_elapsed += ((double)(m_endTime.QuadPart - m_startTime.QuadPart)
-                     / (double)m_freq.QuadPart * 1000.0f);
-#else // Unix
-        gettimeofday(&m_endTime, 0);
-        m_elapsed += ((m_endTime.tv_sec  - m_startTime.tv_sec )*1000.0 +
-                     (m_endTime.tv_usec - m_startTime.tv_usec)*0.001);
-#endif
+        m_endTime = std::chrono::high_resolution_clock::now();
+        duration time_span = std::chrono::duration_cast<duration>(m_endTime-m_startTime);
+        m_elapsed += time_span.count();
         m_isRunning = false;
-        return elapsed();
+        return *this;
     }
 
 
@@ -102,21 +81,18 @@ public:
         {
             std::cerr << "Timer: stop watch before calling elapsed()\n";
         }
-        return m_elapsed;
+        return 1000.0*m_elapsed;
     }
 
 
 private:
 
+    typedef std::chrono::time_point<std::chrono::high_resolution_clock> time_point;
+    typedef std::chrono::duration<double>  duration;
+
+    time_point  m_startTime, m_endTime;
     double  m_elapsed;
     bool    m_isRunning;
-
-#ifdef _WIN32 // Windows
-    LARGE_INTEGER m_startTime, m_endTime;
-    LARGE_INTEGER m_freq;
-#else // Unix
-    timeval m_startTime, m_endTime;
-#endif
 };
 
 

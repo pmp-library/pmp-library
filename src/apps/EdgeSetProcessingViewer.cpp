@@ -39,8 +39,7 @@ using namespace pmp;
 
 //=============================================================================
 
-void EdgeSetProcessingViewer::keyboard(GLFWwindow* window, int key,
-                                       int scancode, int action, int mods)
+void EdgeSetProcessingViewer::keyboard(int key, int code, int action, int mods)
 {
     if (action != GLFW_PRESS) // only react on key press events
         return;
@@ -63,7 +62,7 @@ void EdgeSetProcessingViewer::keyboard(GLFWwindow* window, int key,
         }
         default:
         {
-            EdgeSetViewer::keyboard(window, key, scancode, action, mods);
+            EdgeSetViewer::keyboard(key, code, action, mods);
             break;
         }
     }

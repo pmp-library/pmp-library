@@ -38,8 +38,7 @@ using namespace pmp;
 
 //=============================================================================
 
-void PointSetProcessingViewer::keyboard(GLFWwindow* window, int key,
-                                       int scancode, int action, int mods)
+void PointSetProcessingViewer::keyboard(int key, int code, int action, int mods)
 {
     if (action != GLFW_PRESS) // only react on key press events
         return;
@@ -55,7 +54,7 @@ void PointSetProcessingViewer::keyboard(GLFWwindow* window, int key,
         }
         default:
         {
-            PointSetViewer::keyboard(window, key, scancode, action, mods);
+            PointSetViewer::keyboard(key, code, action, mods);
             break;
         }
     }

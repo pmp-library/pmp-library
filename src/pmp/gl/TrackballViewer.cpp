@@ -95,8 +95,7 @@ void TrackballViewer::setDrawMode(const std::string& _s)
 
 //-----------------------------------------------------------------------------
 
-void TrackballViewer::keyboard(GLFWwindow* /*window*/, int key,
-                               int /*scancode*/, int       action, int /*mods*/)
+void TrackballViewer::keyboard(int key, int /*code*/, int action, int /*mods*/)
 {
     if (action != GLFW_PRESS) // only react on key press events
         return;
@@ -131,7 +130,7 @@ void TrackballViewer::keyboard(GLFWwindow* /*window*/, int key,
 
 //-----------------------------------------------------------------------------
 
-void TrackballViewer::resize(GLFWwindow* /*window*/, int width, int height)
+void TrackballViewer::resize(int width, int height)
 {
     m_width  = width;
     m_height = height;
@@ -169,8 +168,7 @@ void TrackballViewer::display(void)
 
 //-----------------------------------------------------------------------------
 
-void TrackballViewer::mouse(GLFWwindow* /*window*/, int button, int action,
-                            int mods)
+void TrackballViewer::mouse(int button, int action, int mods)
 {
     // mouse press
     if (action == GLFW_PRESS)
@@ -191,8 +189,7 @@ void TrackballViewer::mouse(GLFWwindow* /*window*/, int button, int action,
 
 //-----------------------------------------------------------------------------
 
-void TrackballViewer::scroll(GLFWwindow* /*window*/, double /*xoffset*/,
-                             double yoffset)
+void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 {
     m_wheelPos += yoffset;
     float d = -(float)yoffset * 0.12 * m_radius;
@@ -204,7 +201,7 @@ void TrackballViewer::scroll(GLFWwindow* /*window*/, double /*xoffset*/,
 
 //-----------------------------------------------------------------------------
 
-void TrackballViewer::motion(GLFWwindow* /*window*/, double xpos, double ypos)
+void TrackballViewer::motion(double xpos, double ypos)
 {
     // zoom
     if ((m_buttonDown[GLFW_MOUSE_BUTTON_LEFT] &&

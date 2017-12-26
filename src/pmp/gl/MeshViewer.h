@@ -68,8 +68,7 @@ public:
     virtual void processImGUI() override;
 
     //! this function handles keyboard events
-    virtual void keyboard(GLFWwindow* window, int key, int scancode, int action,
-                          int mod) override;
+    virtual void keyboard(int key, int code, int action, int mod) override;
 
 protected:
     SurfaceMeshGL m_mesh;     //!< the mesh

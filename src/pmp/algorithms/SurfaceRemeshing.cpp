@@ -31,7 +31,6 @@
 #include <pmp/algorithms/distancePointTriangle.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 #include <pmp/algorithms/barycentricCoordinates.h>
-#include <pmp/Timer.h>
 
 #include <cfloat>
 #include <cmath>

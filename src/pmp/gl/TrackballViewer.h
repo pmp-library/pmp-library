@@ -71,22 +71,19 @@ protected: //----------------------------------- callbacks as member functions
     virtual void display(void) override;
 
     //! this function handles keyboard events
-    virtual void keyboard(GLFWwindow* window, int key, int scancode, int action,
-                          int mods) override;
+    virtual void keyboard(int key, int code, int action, int mods) override;
 
     //! this function handles mouse button events
-    virtual void mouse(GLFWwindow* window, int button, int action,
-                       int mods) override;
+    virtual void mouse(int button, int action, int mods) override;
 
     //! this function handles mouse motion (passive/active position)
-    virtual void motion(GLFWwindow* window, double xpos, double ypos) override;
+    virtual void motion(double xpos, double ypos) override;
 
     //! this function handles mouse scroll events
-    virtual void scroll(GLFWwindow* window, double xoffset,
-                        double yoffset) override;
+    virtual void scroll(double xoffset, double yoffset) override;
 
     //! this function is called if the window is resized
-    virtual void resize(GLFWwindow* window, int width, int height) override;
+    virtual void resize(int width, int height) override;
 
 protected: //------------------------------------------- handling of draw modes
     //! reset the list of draw modes

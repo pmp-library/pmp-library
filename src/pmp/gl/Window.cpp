@@ -288,7 +288,7 @@ void Window::glfwCharacter(GLFWwindow* window, unsigned int c)
     ImGui_CharCallback(window, c);
     if (!ImGui::GetIO().WantCaptureKeyboard)
     {
-        m_instance->character(window, c);
+        m_instance->character(c);
     }
 }
 
@@ -300,7 +300,7 @@ void Window::glfwKeyboard(GLFWwindow* window, int key, int scancode, int action,
     ImGui_KeyCallback(window, key, scancode, action, mods);
     if (!ImGui::GetIO().WantCaptureKeyboard)
     {
-        m_instance->keyboard(window, key, scancode, action, mods);
+        m_instance->keyboard(key, scancode, action, mods);
     }
 }
 
@@ -309,7 +309,7 @@ void Window::glfwKeyboard(GLFWwindow* window, int key, int scancode, int action,
 void Window::glfwMotion(GLFWwindow* window, double xpos, double ypos)
 {
     // correct for highDPI scaling
-    m_instance->motion(window, m_instance->m_scaling * xpos,
+    m_instance->motion(m_instance->m_scaling * xpos,
                        m_instance->m_scaling * ypos);
 }
 
@@ -320,7 +320,7 @@ void Window::glfwMouse(GLFWwindow* window, int button, int action, int mods)
     ImGui_MouseButtonCallback(window, button, action, mods);
     if (!ImGui::GetIO().WantCaptureMouse)
     {
-        m_instance->mouse(window, button, action, mods);
+        m_instance->mouse(button, action, mods);
     }
 }
 
@@ -335,7 +335,7 @@ void Window::glfwScroll(GLFWwindow* window, double xoffset, double yoffset)
     ImGui_ScrollCallback(window, xoffset, yoffset);
     if (!ImGui::GetIO().WantCaptureMouse)
     {
-        m_instance->scroll(window, xoffset, yoffset);
+        m_instance->scroll(xoffset, yoffset);
     }
 }
 
@@ -345,7 +345,7 @@ void Window::glfwResize(GLFWwindow* window, int width, int height)
 {
     m_instance->m_width  = width;
     m_instance->m_height = height;
-    m_instance->resize(window, width, height);
+    m_instance->resize(width, height);
 }
 
 //=============================================================================

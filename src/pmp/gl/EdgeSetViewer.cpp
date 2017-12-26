@@ -94,8 +94,7 @@ void EdgeSetViewer::draw(const std::string& drawMode)
 
 //-----------------------------------------------------------------------------
 
-void EdgeSetViewer::keyboard(GLFWwindow* window, int key, int scancode,
-                             int action, int mods)
+void EdgeSetViewer::keyboard(int key, int scancode, int action, int mods)
 {
     if (action != GLFW_PRESS) // only react on key press events
         return;
@@ -109,7 +108,7 @@ void EdgeSetViewer::keyboard(GLFWwindow* window, int key, int scancode,
         }
         default:
         {
-            TrackballViewer::keyboard(window, key, scancode, action, mods);
+            TrackballViewer::keyboard(key, scancode, action, mods);
             break;
         }
     }

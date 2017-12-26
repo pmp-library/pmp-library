@@ -44,7 +44,7 @@ using namespace pmp;
 
 //=============================================================================
 
-void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 {
     if (action != GLFW_PRESS) // only react on key press events
         return;
@@ -190,7 +190,7 @@ void MeshProcessingViewer::keyboard(GLFWwindow* window, int key, int scancode, i
         }
         default:
         {
-            MeshViewer::keyboard(window, key, scancode, action, mods);
+            MeshViewer::keyboard(key, scancode, action, mods);
             break;
         }
     }

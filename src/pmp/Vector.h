@@ -359,7 +359,7 @@ inline Scalar norm(const Vector<Scalar, N>& v)
     return (Scalar)sqrt(s);
 }
 
-//! compute the Euclidean norm of a vector
+//! return a normalized copy of a vector
 template <typename Scalar, int N>
 inline Vector<Scalar, N> normalize(const Vector<Scalar, N>& v)
 {

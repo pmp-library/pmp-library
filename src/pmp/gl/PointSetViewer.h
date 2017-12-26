@@ -62,8 +62,7 @@ public:
     virtual void draw(const std::string& _draw_mode);
 
     //! this function handles keyboard events
-    void keyboard(GLFWwindow* window, int key, int scancode, int action,
-                  int mod);
+    void keyboard(int key, int scancode, int action, int mod);
 
 protected:
     PointSetGL  m_pointSet; //!< the point set

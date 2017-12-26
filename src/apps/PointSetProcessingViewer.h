@@ -42,8 +42,7 @@ public:
         : PointSetViewer(title,width,height) {}
 
     //! this function handles keyboard events
-    void keyboard(GLFWwindow* window, int key, int scancode,
-                  int action, int mod);
+    void keyboard(int key, int scancode, int action, int mod) override;
 };
 
 //=============================================================================

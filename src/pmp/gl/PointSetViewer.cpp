@@ -94,8 +94,7 @@ void PointSetViewer::draw(const std::string& drawMode)
 
 //-----------------------------------------------------------------------------
 //
-void PointSetViewer::keyboard(GLFWwindow* window, int key, int scancode,
-                              int action, int mods)
+void PointSetViewer::keyboard(int key, int scancode, int action, int mods)
 {
     if (action != GLFW_PRESS) // only react on key press events
         return;
@@ -109,7 +108,7 @@ void PointSetViewer::keyboard(GLFWwindow* window, int key, int scancode,
         }
         default:
         {
-            TrackballViewer::keyboard(window, key, scancode, action, mods);
+            TrackballViewer::keyboard(key, scancode, action, mods);
             break;
         }
     }

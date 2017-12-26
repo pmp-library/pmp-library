@@ -60,11 +60,10 @@ public:
     virtual void updateEdgeSet();
 
     //! draw the scene in different draw modes
-    virtual void draw(const std::string& _draw_mode);
+    virtual void draw(const std::string& _draw_mode) override;
 
     //! this function handles keyboard events
-    void keyboard(GLFWwindow* window, int key, int scancode, int action,
-                  int mod);
+    virtual void keyboard(int key, int code, int action, int mod) override;
 
 protected:
     EdgeSetGL   m_edgeSet;  //!< the edge set

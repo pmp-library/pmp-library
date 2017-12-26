@@ -42,6 +42,12 @@ class BoundingBox
 {
 
 public:
+    //! construct infinite/invalid bounding box
+    BoundingBox() :
+        m_min( std::numeric_limits<Scalar>::max()),
+        m_max(-std::numeric_limits<Scalar>::max())
+    {}
+
     //! construct from min and max points
     BoundingBox(const Point& min, const Point& max) : m_min(min), m_max(max) {}
 

@@ -36,6 +36,7 @@
 #include <map>
 #include <vector>
 #include <limits>
+#include <numeric>
 
 //=============================================================================
 
@@ -249,15 +250,10 @@ public:
     //! compute the bounding box of the object
     BoundingBox bounds()
     {
-        Point min( std::numeric_limits<Scalar>::max());
-        Point max(-std::numeric_limits<Scalar>::max());
-
+        BoundingBox bb;
         for (auto p : positions())
-        {
-            min.minimize(p);
-            max.maximize(p);
-        }
-        return BoundingBox(min,max);
+            bb += p;
+        return bb;
     }
 
     //!@}
