@@ -33,6 +33,7 @@
 #include <cmath>
 #include <iostream>
 #include <assert.h>
+#include <limits>
 
 //=============================================================================
 

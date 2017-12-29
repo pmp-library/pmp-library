@@ -33,6 +33,7 @@
 #include <clocale>
 #include <cfloat>
 #include <fstream>
+#include <cstring>
 
 // helper function
 template <typename T>
