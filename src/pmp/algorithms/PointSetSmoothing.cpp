@@ -170,7 +170,7 @@ Point PointSetSmoothing::weightedAverageNormal(const Point&      x,
         Scalar           dist = norm(x - points[v]);
         n += theta(dist) * normals[v];
     }
-    return n.normalize();
+    return normalize(n);
 }
 
 //=============================================================================

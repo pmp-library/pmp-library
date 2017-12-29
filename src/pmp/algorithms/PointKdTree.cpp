@@ -28,6 +28,7 @@
 //=============================================================================
 
 #include <pmp/algorithms/PointKdTree.h>
+#include <pmp/BoundingBox.h>
 
 #include <algorithm>
 #include <cfloat>
@@ -70,31 +71,28 @@ void PointKdTree::buildRecurse(Node* node, unsigned int maxHandles,
         return;
 
     // compute bounding box
-    ElementIter it(node->m_begin);
-    Point       bb_min = it->m_point;
-    Point       bb_max = it->m_point;
-    for (; it != node->m_end; ++it)
+    BoundingBox bbox;
+    for (ElementIter it=node->m_begin; it!=node->m_end; ++it)
     {
-        bb_min.minimize(it->m_point);
-        bb_max.maximize(it->m_point);
+        bbox += it->m_point;
     }
 
     // split longest side of bounding box
-    Point  bb     = bb_max - bb_min;
+    Point  bb     = bbox.max()-bbox.min();
     Scalar length = bb[0];
     int    axis   = 0;
     if (bb[1] > length)
         length = bb[axis = 1];
     if (bb[2] > length)
         length = bb[axis = 2];
-    Scalar cv = 0.5 * (bb_min[axis] + bb_max[axis]);
+    Scalar cv = bbox.center()[axis];
 
     // store cut dimension and value
     node->m_cutDimension = axis;
     node->m_cutValue     = cv;
 
     // partition for left and right child
-    it =
+    ElementIter it =
         std::partition(node->m_begin, node->m_end, PartitioningPlane(axis, cv));
 
     // create children

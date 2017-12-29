@@ -30,9 +30,7 @@
 //=============================================================================
 
 #include <pmp/gl/Window.h>
-
-#include <pmp/Vector.h>
-#include <pmp/Matrix.h>
+#include <pmp/MatVec.h>
 
 #include <string>
 #include <vector>

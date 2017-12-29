@@ -261,8 +261,8 @@ Scalar angleSum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
             const Point& p2 =
                 mesh.position(mesh.toVertex(mesh.ccwRotatedHalfedge(*vhit)));
 
-            const Point p01 = (p1 - p0).normalize();
-            const Point p02 = (p2 - p0).normalize();
+            const Point p01 = normalize(p1 - p0);
+            const Point p02 = normalize(p2 - p0);
 
             Scalar cosAngle = clampCos(dot(p01, p02));
 

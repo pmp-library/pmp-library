@@ -561,7 +561,7 @@ Normal SurfaceMesh::computeVertexNormal(Vertex v) const
             h = cwRotatedHalfedge(h);
         } while (h != hend);
 
-        nn.normalize();
+        nn = normalize(nn);
     }
 
     return nn;
@@ -639,7 +639,7 @@ Normal SurfaceMesh::computeCornerNormal(Halfedge h, Scalar creaseAngle) const
         }
         while (h != hend);
 
-        nn.normalize();
+        nn = normalize(nn);
     }
 
     return nn;
@@ -669,7 +669,7 @@ Normal SurfaceMesh::computeFaceNormal(Face f) const
 
     if (nextHalfedge(h) == hend) // face is a triangle
     {
-        return cross(p2 -= p1, p0 -= p1).normalize();
+        return normalize(cross(p2 -= p1, p0 -= p1));
     }
 
     else // face is a general polygon
@@ -686,7 +686,7 @@ Normal SurfaceMesh::computeFaceNormal(Face f) const
             p2 = m_vpoint[toVertex(h)];
         } while (h != hend);
 
-        return n.normalize();
+        return normalize(n);
     }
 }
 

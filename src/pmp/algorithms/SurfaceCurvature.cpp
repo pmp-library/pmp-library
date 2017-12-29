@@ -28,7 +28,7 @@
 //=============================================================================
 
 #include <pmp/algorithms/SurfaceCurvature.h>
-#include <pmp/Matrix.h>
+#include <pmp/MatVec.h>
 
 //=============================================================================
 
@@ -74,7 +74,7 @@ void SurfaceCurvature::analyze(unsigned int smoothingSteps)
 
         if (!m_mesh.isIsolated(v) && !m_mesh.isBoundary(v))
         {
-            laplace    = 0.0;
+            laplace    = Point(0.0);
             sumWeights = 0.0;
             sumAngles  = 0.0;
             p0         = m_mesh.position(v);
@@ -194,8 +194,8 @@ void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
         {
             n0 = normal[f0];
             n1 = normal[f1];
-            ev = m_mesh.position(m_mesh.toVertex(h0));
-            ev -= m_mesh.position(m_mesh.toVertex(h1));
+            ev  = (dvec3) m_mesh.position(m_mesh.toVertex(h0));
+            ev -= (dvec3) m_mesh.position(m_mesh.toVertex(h1));
             l = norm(ev);
             ev /= l;
             l *= 0.5; // only consider half of the edge (matchig Voronoi area)
@@ -222,7 +222,7 @@ void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
             }
 
             A      = 0.0;
-            tensor = dmat3::zero();
+            tensor = dmat3(0.0);
 
             // compute tensor over vertex neighborhood stored in vertices
             for (auto nit : neighborhood)

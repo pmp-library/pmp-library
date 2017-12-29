@@ -156,7 +156,7 @@ void TrackballViewer::display(void)
     m_far    = std::max(0.002f * m_radius, z + m_radius);
 
     // update projection matrix
-    m_projectionMatrix = mat4::perspective(
+    m_projectionMatrix = perspectiveMatrix(
         m_fovy, (float)m_width / (float)m_height, m_near, m_far);
 
     // draw the scene in current draw mode
@@ -351,7 +351,7 @@ void TrackballViewer::zoom(int, int y)
 
 void TrackballViewer::translate(const vec3& t)
 {
-    m_modelviewMatrix = mat4::translate(t) * m_modelviewMatrix;
+    m_modelviewMatrix = translationMatrix(t) * m_modelviewMatrix;
 }
 
 //-----------------------------------------------------------------------------
@@ -363,8 +363,8 @@ void TrackballViewer::rotate(const vec3& axis, float angle)
     vec4 ec = m_modelviewMatrix * mc;
     vec3 c(ec[0] / ec[3], ec[1] / ec[3], ec[2] / ec[3]);
 
-    m_modelviewMatrix = mat4::translate(c) * mat4::rotate(axis, angle) *
-                        mat4::translate(-c) * m_modelviewMatrix;
+    m_modelviewMatrix = translationMatrix(c)  * rotationMatrix(axis, angle) *
+                        translationMatrix(-c) * m_modelviewMatrix;
 }
 
 //=============================================================================

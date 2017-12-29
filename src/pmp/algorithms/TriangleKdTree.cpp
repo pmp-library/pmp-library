@@ -30,6 +30,7 @@
 #include <pmp/algorithms/TriangleKdTree.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 #include <pmp/algorithms/distancePointTriangle.h>
+#include <pmp/BoundingBox.h>
 #include <cfloat>
 
 //=============================================================================
@@ -82,18 +83,17 @@ unsigned int TriangleKdTree::Build(Node* node, unsigned int maxHandles,
     unsigned int                          i;
 
     // compute bounding box
-    Point bbmax(-FLT_MAX), bbmin(FLT_MAX), p;
+    BoundingBox bbox;
     for (fit = node->m_faces->begin(); fit != fend; ++fit)
     {
         for (i = 0; i < 3; ++i)
         {
-            bbmin.minimize(fit->x[i]);
-            bbmax.maximize(fit->x[i]);
+            bbox += fit->x[i];
         }
     }
 
     // split longest side of bounding box
-    Point  bb     = bbmax - bbmin;
+    Point  bb     = bbox.max() - bbox.min();
     Scalar length = bb[0];
     int    axis   = 0;
     if (bb[1] > length)
@@ -103,7 +103,7 @@ unsigned int TriangleKdTree::Build(Node* node, unsigned int maxHandles,
 
 #if 1
     // split in the middle
-    Scalar split = 0.5 * (bbmin[axis] + bbmax[axis]);
+    Scalar split = bbox.center()[axis];
 #else
     // find split position as median
     std::vector<Scalar> v;

@@ -30,9 +30,9 @@
 #pragma once
 //=============================================================================
 
-#include <pmp/Vector.h>
 #include <cmath>
 #include <iostream>
+#include <assert.h>
 
 //=============================================================================
 
@@ -41,120 +41,111 @@ namespace pmp {
 //=============================================================================
 
 
-//=============================================================================
-
-template <class Scalar>
-class Mat4
+/// Base class for MxN matrix
+template <typename Scalar, int M, int N>
+class Matrix
 {
 public:
 
-    /// constructor
-    Mat4() {}
+    //! the scalar type of the vector
+    typedef Scalar value_type;
 
-    /// construct from 4 column vectors
-    Mat4(Vector<Scalar,4> c0, Vector<Scalar,4> c1, Vector<Scalar,4> c2, Vector<Scalar,4> c3)
-    {
-        (*this)(0,0) = c0[0]; (*this)(0,1) = c1[0]; (*this)(0,2) = c2[0]; (*this)(0,3) = c3[0];
-        (*this)(1,0) = c0[1]; (*this)(1,1) = c1[1]; (*this)(1,2) = c2[1]; (*this)(1,3) = c3[1];
-        (*this)(2,0) = c0[2]; (*this)(2,1) = c1[2]; (*this)(2,2) = c2[2]; (*this)(2,3) = c3[2];
-        (*this)(3,0) = c0[3]; (*this)(3,1) = c1[3]; (*this)(3,2) = c2[3]; (*this)(3,3) = c3[3];
-    }
+    //! returns number of rows of the matrix
+    static constexpr int rows() { return M; }
+    //! returns number of columns of the matrix
+    static constexpr int cols() { return N; }
+    //! returns the dimension of the vector (or size of the matrix, rows*cols)
+    static constexpr int size() { return M*N; }
 
-    /// construct from 16 (row-wise) entries
-    Mat4(Scalar m00, Scalar m01, Scalar m02, Scalar m03,
-         Scalar m10, Scalar m11, Scalar m12, Scalar m13,
-         Scalar m20, Scalar m21, Scalar m22, Scalar m23,
-         Scalar m30, Scalar m31, Scalar m32, Scalar m33)
-    {
-        (*this)(0,0) = m00; (*this)(0,1) = m01; (*this)(0,2) = m02; (*this)(0,3) = m03;
-        (*this)(1,0) = m10; (*this)(1,1) = m11; (*this)(1,2) = m12; (*this)(1,3) = m13;
-        (*this)(2,0) = m20; (*this)(2,1) = m21; (*this)(2,2) = m22; (*this)(2,3) = m23;
-        (*this)(3,0) = m30; (*this)(3,1) = m31; (*this)(3,2) = m32; (*this)(3,3) = m33;
-    }
 
-    /// construct from scalar. sets all matrix entries to s.
-    Mat4(Scalar s)
+    /// empty default constructor
+    Matrix() {}
+
+    /// construct with all entries being a given scalar (matrix and vector)
+    explicit Matrix(Scalar s)
     {
-        int i;
-        for (i=0; i<16; ++i)
-        {
+        for (int i=0; i<size(); ++i)
             data_[i] = s;
-        }
     }
 
-    /// cast to matrix of other scalar type
-    template <typename T> explicit operator Mat4<T>()
+    /// constructor for 2D vectors
+    explicit Matrix(Scalar x, Scalar y)
     {
-        Mat4<T> m;
-        for (int i=0; i<4; ++i)
-            for (int j=0; j<4; ++j)
-                m(i,j) = static_cast<T>((*this)(i,j));
-        return m;
+        static_assert(M==2 && N==1, "only for 2D vectors");
+        data_[0] = x;
+        data_[1] = y;
     }
 
-    /// destructor
-    ~Mat4() {}
+    /// constructor for 3D vectors
+    explicit Matrix(Scalar x, Scalar y, Scalar z)
+    {
+        static_assert(M==3 && N==1, "only for 3D vectors");
+        data_[0] = x;
+        data_[1] = y;
+        data_[2] = z;
+    }
+
+    /// constructor for 4D vectors
+    explicit Matrix(Scalar x, Scalar y, Scalar z, Scalar w)
+    {
+        static_assert(M==4 && N==1, "only for 4D vectors");
+        data_[0] = x;
+        data_[1] = y;
+        data_[2] = z;
+        data_[3] = w;
+    }
+
+    /// constructor for 4D vectors
+    explicit Matrix(Matrix<Scalar,3,1> xyz, Scalar w)
+    {
+        static_assert(M==4 && N==1, "only for 4D vectors");
+        data_[0] = xyz[0];
+        data_[1] = xyz[1];
+        data_[2] = xyz[2];
+        data_[3] = w;
+    }
+
+    /// copy constructor from other scalar type
+    /// is also invoked for type-casting
+    template <typename OtherScalarType>
+    explicit Matrix(const Matrix<OtherScalarType, M, N>& m)
+    {
+        for (int i=0; i<size(); ++i)
+            data_[i] = static_cast<Scalar>(m[i]);
+    }
+
+
+    /// return identity matrix (only for square matrices, N==M)
+    static Matrix<Scalar,M,N> identity();
+
 
     /// access entry at row i and column j
     Scalar& operator()(unsigned int i, unsigned int j)
     {
-        return data_[(j<<2) + i];
+        assert(i<M && j<N);
+        return data_[M*j + i];
     }
 
     /// const-access entry at row i and column j
     const Scalar& operator()(unsigned int i, unsigned int j) const
     {
-        return data_[(j<<2) + i];
+        assert(i<M && j<N);
+        return data_[M*j + i];
     }
 
-    /// this = s / this
-    Mat4& operator/=(const Scalar s)
+    /// access i'th entry (use for vectors)
+    Scalar& operator[](unsigned int i)
     {
-        int i,j; Scalar is(1.0/s);
-        for (i=0; i<4; ++i) for (j=0; j<4; ++j)  (*this)(i,j) *= is;
-        return *this;
+        assert(i<M*N);
+        return data_[i];
     }
 
-    /// this = s * this
-    Mat4& operator*=(const Scalar s)
+    /// const-access i'th entry (use for vectors)
+    Scalar operator[](unsigned int i) const
     {
-        int i,j;
-        for (i=0; i<4; ++i) for (j=0; j<4; ++j)  (*this)(i,j) *= s;
-        return *this;
+        assert(i<M*N);
+        return data_[i];
     }
-
-
-    // matrix += matrix
-    Mat4& operator+=(const Mat4& _M)
-    {
-        for (unsigned int i=0; i<4; ++i)
-            for (unsigned int j=0; j<4; ++j)
-                (*this)(i,j) += _M(i,j);
-        return *this;
-    }
-
-    /// matrix + matrix
-    const Mat4 operator+(const Mat4& _M) const
-    {
-        return Mat4(*this) += _M;
-    }
-
-
-    /// matrix -= matrix
-    Mat4& operator-=(const Mat4& _M)
-    {
-        for (unsigned int i=0; i<4; ++i)
-            for (unsigned int j=0; j<4; ++j)
-                (*this)(i,j) -= _M(i,j);
-        return *this;
-    }
-
-    /// matrix - matrix
-    const Mat4 operator-(const Mat4& _M) const
-    {
-        return Mat4(*this) -= _M;
-    }
-
 
     /// const-access as scalar array
     const Scalar* data() const { return data_; }
@@ -162,84 +153,281 @@ public:
     /// access as scalar array
     Scalar* data()  { return data_; }
 
-    /// return zero matrix
-    static Mat4<Scalar> zero();
+    /// normalize matrix/vector by dividing through Frobenius/Euclidean norm
+    void normalize()
+    {
+        *this /= norm(*this);
+    }
 
-    /// return identity matrix
-    static Mat4<Scalar> identity();
+    /// divide matrix by scalar
+    Matrix<Scalar,M,N>& operator/=(const Scalar s)
+    {
+        for (int i=0; i<size(); ++i) data_[i] /= s;
+        return *this;
+    }
 
-    static Mat4<Scalar> viewport(Scalar l, Scalar r, Scalar b, Scalar t);
-    static Mat4<Scalar> inverse_viewport(Scalar l, Scalar r, Scalar b, Scalar t);
+    /// multply matrix by scalar
+    Matrix<Scalar,M,N>& operator*=(const Scalar s)
+    {
+        for (int i=0; i<size(); ++i) data_[i] *= s;
+        return *this;
+    }
 
-    static Mat4<Scalar> frustum(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n, Scalar f);
-    static Mat4<Scalar> inverse_frustum(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n, Scalar f);
+    // add other matrix to this matrix
+    Matrix<Scalar,M,N>& operator+=(const Matrix<Scalar,M,N>& m)
+    {
+        for (int i=0; i<size(); ++i) data_[i] += m.data_[i];
+        return *this;
+    }
 
-    static Mat4<Scalar> perspective(Scalar fovy, Scalar aspect, Scalar near, Scalar far);
-    static Mat4<Scalar> inverse_perspective(Scalar fovy, Scalar aspect, Scalar near, Scalar far);
+    /// subtract other matrix from this matrix
+    Matrix<Scalar,M,N>& operator-=(const Matrix<Scalar,M,N>& m)
+    {
+        for (int i=0; i<size(); ++i) data_[i] -= m.data_[i];
+        return *this;
+    }
 
-    static Mat4<Scalar> ortho(Scalar left, Scalar right, Scalar bottom, Scalar top, Scalar zNear, Scalar zFar);
+    //! component-wise comparison
+    bool operator==(const Matrix<Scalar,M,N>& other) const
+    {
+        for (int i=0; i<size(); ++i)
+            if (data_[i] != other.data_[i])
+                return false;
+        return true;
+    }
 
-    static Mat4<Scalar> look_at(const Vector<Scalar ,3> &eye, const Vector<Scalar ,3> &center, const Vector<Scalar ,3> &up);
+    //! component-wise comparison
+    bool operator!=(const Matrix<Scalar,M,N>& other) const
+    {
+        for (int i=0; i<size(); ++i)
+            if (data_[i] != other.data_[i])
+                return true;
+        return false;
+    }
 
-    static Mat4<Scalar> translate(const Vector<Scalar ,3> &t);
+    //! return matrix with minimum of this and other in each component
+    [[deprecated]] Matrix<Scalar,M,N> minimize(const Matrix<Scalar,M,N>& other)
+    {
+        for (int i=0; i<size(); ++i)
+            if (other[i] < data_[i])
+                data_[i] = other[i];
+        return *this;
+    }
 
-    static Mat4<Scalar> rotate(const Vector<Scalar ,3> &axis, Scalar angle);
-    static Mat4<Scalar> rotate_x(Scalar angle);
-    static Mat4<Scalar> rotate_y(Scalar angle);
-    static Mat4<Scalar> rotate_z(Scalar angle);
+    //! return matrix with maximum of this and other in each component
+    [[deprecated]] Matrix<Scalar,M,N> maximize(const Matrix<Scalar,M,N>& other)
+    {
+        for (int i=0; i<size(); ++i)
+            if (other[i] > data_[i])
+                data_[i] = other[i];
+        return *this;
+    }
 
+protected:
 
-private:
-
-    Scalar data_[16];
+    Scalar data_[N*M];
 };
 
 
+//== TEMPLATE SPECIALIZATIONS =================================================
+
+/// template specialization for Vector as Nx1 matrix
+template <typename Scalar, int M> using Vector = Matrix<Scalar,M,1>;
+
+/// template specialization for 4x4 matrices
+template <typename Scalar> using Mat4 = Matrix<Scalar,4,4>;
+
+/// template specialization for 3x3 matrices
+template <typename Scalar> using Mat3 = Matrix<Scalar,3,3>;
+
+/// template specialization for 2x2 matrices
+template <typename Scalar> using Mat2 = Matrix<Scalar,2,2>;
 
 
+//== TYPEDEFS =================================================================
 
-//-----------------------------------------------------------------------------
+typedef Vector<float,2>          vec2;
+typedef Vector<double,2>        dvec2;
+typedef Vector<bool,2>          bvec2;
+typedef Vector<int,2>           ivec2;
+typedef Vector<unsigned int,2>  uvec2;
+
+typedef Vector<float,3>          vec3;
+typedef Vector<double,3>        dvec3;
+typedef Vector<bool,3>          bvec3;
+typedef Vector<int,3>           ivec3;
+typedef Vector<unsigned int,3>  uvec3;
+
+typedef Vector<float,4>          vec4;
+typedef Vector<double,4>        dvec4;
+typedef Vector<bool,4>          bvec4;
+typedef Vector<int,4>           ivec4;
+typedef Vector<unsigned int,4>  uvec4;
+
+typedef Mat2<float>              mat2;
+typedef Mat2<double>            dmat2;
+typedef Mat3<float>              mat3;
+typedef Mat3<double>            dmat3;
+typedef Mat4<float>              mat4;
+typedef Mat4<double>            dmat4;
 
 
-template <typename Scalar>
-Mat4<Scalar>
-Mat4<Scalar>::identity()
+//== GENERAL MATRIX FUNCTIONS =================================================
+
+
+/// matrix-matrix multiplication
+template <typename Scalar, int M, int N, int K>
+Matrix<Scalar,M,N>
+operator*(const Matrix<Scalar,M,K>& m1, const Matrix<Scalar,K,N>& m2)
 {
-    Mat4<Scalar> m;
+    Matrix<Scalar,M,N> m;
+    int i,j,k;
 
-    for (int j=0; j<4; ++j)
-        for (int i=0; i<4; ++i)
-            m(i,j) = 0.0;
-
-    m(0,0) = m(1,1) = m(2,2) = m(3,3) = 1.0;
+    for (i=0; i<M; ++i)
+    {
+        for (j=0; j<N; ++j)
+        {
+            m(i,j) = Scalar(0);
+            for (k=0; k<K; ++k)
+                m(i,j) += m1(i,k) * m2(k,j);
+        }
+    }
 
     return m;
 }
 
+//-----------------------------------------------------------------------------
 
+template <typename Scalar, int M, int N>
+Matrix<Scalar,N,M>
+transpose(const Matrix<Scalar,M,N>& m)
+{
+    Matrix<Scalar,N,M> result;
+
+    for (int j=0; j<M; ++j)
+        for (int i=0; i<N; ++i)
+            result(i,j) = m(j,i);
+
+    return result;
+}
 
 //-----------------------------------------------------------------------------
 
-
-template <typename Scalar>
-Mat4<Scalar>
-Mat4<Scalar>::zero()
+template <typename Scalar, int M, int N>
+Matrix<Scalar,M,N>
+Matrix<Scalar,M,N>::identity()
 {
-    Mat4<Scalar> m;
+    static_assert(M==N, "only for square matrices");
 
-    for (int j=0; j<4; ++j)
-        for (int i=0; i<4; ++i)
+    Matrix<Scalar,N,N> m;
+
+    for (int j=0; j<N; ++j)
+        for (int i=0; i<N; ++i)
             m(i,j) = 0.0;
+
+    for (int i=0; i<N; ++i)
+        m(i,i) = 1.0;
 
     return m;
 }
 
 //-----------------------------------------------------------------------------
 
+//! matrix + matrix
+template <typename Scalar, int M, int N>
+inline Matrix<Scalar,M,N> operator+(const Matrix<Scalar,M,N>& m1,
+                                    const Matrix<Scalar,M,N>& m2)
+{
+    return Matrix<Scalar,M,N>(m1) += m2;
+}
+
+//-----------------------------------------------------------------------------
+
+//! matrix - matrix
+template <typename Scalar, int M, int N>
+inline Matrix<Scalar,M,N> operator-(const Matrix<Scalar,M,N>& m1,
+                                    const Matrix<Scalar,M,N>& m2)
+{
+    return Matrix<Scalar,M,N>(m1) -= m2;
+}
+
+//-----------------------------------------------------------------------------
+
+//! negate matrix
+template <typename Scalar, int M, int N>
+inline Matrix<Scalar,M,N> operator-(const Matrix<Scalar,M,N>& m)
+{
+    Matrix<Scalar,M,N> result;
+    for (int i=0; i<result.size(); ++i)
+        result[i] = -m[i];
+    return result;
+}
+
+//-----------------------------------------------------------------------------
+
+//! scalar * matrix
+template <typename Scalar, typename Scalar2, int M, int N>
+inline Matrix<Scalar,M,N> operator*(const Scalar2 s, const Matrix<Scalar,M,N>& m)
+{
+    return Matrix<Scalar,M,N>(m) *= s;
+}
+
+//-----------------------------------------------------------------------------
+
+//! matrix * scalar
+template <typename Scalar, typename Scalar2, int M, int N>
+inline Matrix<Scalar,M,N> operator*(const Matrix<Scalar,M,N>& m, const Scalar2 s)
+{
+    return Matrix<Scalar,M,N>(m) *= s;
+}
+
+//-----------------------------------------------------------------------------
+
+//! matrix / scalar
+template <typename Scalar, typename Scalar2, int M, int N>
+inline Matrix<Scalar,M,N> operator/(const Matrix<Scalar,M,N>& m, const Scalar2 s)
+{
+    return Matrix<Scalar,M,N>(m) /= s;
+}
+
+//-----------------------------------------------------------------------------
+
+//! compute the Frobenius norm of a matrix (or Euclidean norm of a vector)
+template <typename Scalar, int M, int N>
+inline Scalar norm(const Matrix<Scalar,M,N>& m)
+{
+    return sqrt(sqrnorm(m));
+}
+
+//-----------------------------------------------------------------------------
+
+//! compute the squared Frobenius norm of a matrix (or squared Euclidean norm of a vector)
+template <typename Scalar, int M, int N>
+inline Scalar sqrnorm(const Matrix<Scalar,M,N>& m)
+{
+    Scalar s(0.0);
+    for (int i=0; i<m.size(); ++i)
+        s += m[i] * m[i];
+    return s;
+}
+
+//-----------------------------------------------------------------------------
+
+//! return a normalized copy of a vector
+template <typename Scalar, int M, int N>
+inline Matrix<Scalar,M,N> normalize(const Matrix<Scalar,M,N>& m)
+{
+    Scalar n = norm(m);
+    n        = (n > std::numeric_limits<Scalar>::min()) ? 1.0 / n : 0.0;
+    return m * n;
+}
+
+//== Mat4 functions ===========================================================
+
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::viewport(Scalar l, Scalar b, Scalar w, Scalar h)
+viewportMatrix(Scalar l, Scalar b, Scalar w, Scalar h)
 {
     Mat4<Scalar> m(Scalar(0));
 
@@ -254,10 +442,11 @@ Mat4<Scalar>::viewport(Scalar l, Scalar b, Scalar w, Scalar h)
     return m;
 }
 
+//-----------------------------------------------------------------------------
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::inverse_viewport(Scalar l, Scalar b, Scalar w, Scalar h)
+inverseViewportMatrix(Scalar l, Scalar b, Scalar w, Scalar h)
 {
     Mat4<Scalar> m(Scalar(0));
 
@@ -272,13 +461,11 @@ Mat4<Scalar>::inverse_viewport(Scalar l, Scalar b, Scalar w, Scalar h)
     return m;
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::frustum(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n, Scalar f)
+frustumMatrix(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n, Scalar f)
 {
     Mat4<Scalar> m(Scalar(0));
 
@@ -293,10 +480,11 @@ Mat4<Scalar>::frustum(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n, Scalar f
     return m;
 }
 
+//-----------------------------------------------------------------------------
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::inverse_frustum(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n, Scalar f)
+inverseFrustumMatrix(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n, Scalar f)
 {
     Mat4<Scalar> m(Scalar(0));
 
@@ -313,41 +501,39 @@ Mat4<Scalar>::inverse_frustum(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n, 
     return m;
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::perspective(Scalar fovy, Scalar aspect, Scalar near, Scalar far)
+perspectiveMatrix(Scalar fovy, Scalar aspect, Scalar near, Scalar far)
 {
     Scalar t = Scalar(near) * tan( fovy * M_PI / 360.0 );
     Scalar b = -t;
     Scalar l = b * aspect;
     Scalar r = t * aspect;
 
-    return Mat4<Scalar>::frustum(l, r, b, t, Scalar(near), Scalar(far));
+    return frustumMatrix(l, r, b, t, Scalar(near), Scalar(far));
 }
 
+//-----------------------------------------------------------------------------
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::inverse_perspective(Scalar fovy, Scalar aspect, Scalar near, Scalar far)
+inversePerspectiveMatrix(Scalar fovy, Scalar aspect, Scalar near, Scalar far)
 {
     Scalar t = near * tan( fovy * M_PI / 360.0 );
     Scalar b = -t;
     Scalar l = b * aspect;
     Scalar r = t * aspect;
 
-    return Mat4<Scalar>::inverse_frustum(l, r, b, t, near, far);
+    return inverseFrustumMatrix(l, r, b, t, near, far);
 }
-
 
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::ortho(Scalar left, Scalar right, Scalar bottom, Scalar top, Scalar zNear, Scalar zFar)
+orthoMatrix(Scalar left, Scalar right, Scalar bottom, Scalar top, Scalar zNear, Scalar zFar)
 {
     Mat4<Scalar> m(0.0);
 
@@ -366,7 +552,7 @@ Mat4<Scalar>::ortho(Scalar left, Scalar right, Scalar bottom, Scalar top, Scalar
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::look_at(const Vector<Scalar ,3>& eye, const Vector<Scalar ,3>& center, const Vector<Scalar ,3>& up)
+lookAtMatrix(const Vector<Scalar ,3>& eye, const Vector<Scalar ,3>& center, const Vector<Scalar ,3>& up)
 {
 
     Vector<Scalar,3> z = normalize(eye-center);
@@ -386,7 +572,7 @@ Mat4<Scalar>::look_at(const Vector<Scalar ,3>& eye, const Vector<Scalar ,3>& cen
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::translate(const Vector<Scalar ,3>& t)
+translationMatrix(const Vector<Scalar ,3>& t)
 {
     Mat4<Scalar> m(Scalar(0));
     m(0,0) = m(1,1) = m(2,2) = m(3,3) = 1.0f;
@@ -401,7 +587,7 @@ Mat4<Scalar>::translate(const Vector<Scalar ,3>& t)
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::rotate_x(Scalar angle)
+rotationMatrixX(Scalar angle)
 {
   Scalar ca = cos(angle * (M_PI/180.0));
   Scalar sa = sin(angle * (M_PI/180.0));
@@ -421,7 +607,7 @@ Mat4<Scalar>::rotate_x(Scalar angle)
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::rotate_y(Scalar angle)
+rotationMatrixY(Scalar angle)
 {
   Scalar ca = cos(angle * (M_PI/180.0));
   Scalar sa = sin(angle * (M_PI/180.0));
@@ -441,7 +627,7 @@ Mat4<Scalar>::rotate_y(Scalar angle)
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::rotate_z(Scalar angle)
+rotationMatrixZ(Scalar angle)
 {
   Scalar ca = cos(angle * (M_PI/180.0));
   Scalar sa = sin(angle * (M_PI/180.0));
@@ -461,7 +647,7 @@ Mat4<Scalar>::rotate_z(Scalar angle)
 
 template <typename Scalar>
 Mat4<Scalar>
-Mat4<Scalar>::rotate(const Vector<Scalar ,3>& axis, Scalar angle)
+rotationMatrix(const Vector<Scalar ,3>& axis, Scalar angle)
 {
     Mat4<Scalar> m(Scalar(0));
     Scalar a = angle * (M_PI/180.0f);
@@ -489,46 +675,22 @@ Mat4<Scalar>::rotate(const Vector<Scalar ,3>& axis, Scalar angle)
 
 //-----------------------------------------------------------------------------
 
-
-/// output matrix to ostream os
 template <typename Scalar>
-std::ostream&
-operator<<(std::ostream& os, const Mat4<Scalar>& m)
+Mat3<Scalar>
+linearPart(const Mat4<Scalar>& m)
 {
-    os << "# 4x4 matrix" << std::endl;
-    for(int i=0; i<4; i++)
-    {
-        for(int j=0; j<4; j++)
-            os << m(i,j) << " ";
-        os << "\n";
-    }
-    return os;
+    Mat3<Scalar> result;
+    for (int j=0; j<3; ++j)
+        for (int i=0; i<3; ++i)
+            result(i,j) = m(i,j);
+    return result;
 }
 
-
 //-----------------------------------------------------------------------------
-
-
-/// read the space-separated components of a vector from a stream */
-template <typename Scalar>
-std::istream&
-operator>>(std::istream& is, Mat4<Scalar>& m)
-{
-    std::string comment;
-    getline(is,comment);
-    for(int i=0; i<4; i++)
-        for(int j=0; j<4; j++)
-            is >> m(i,j);
-    return is;
-}
-
-
-//-----------------------------------------------------------------------------
-
 
 template <typename Scalar>
 Vector<Scalar,3>
-projective_transform(const Mat4<Scalar>& m, const Vector<Scalar,3>& v)
+projectiveTransform(const Mat4<Scalar>& m, const Vector<Scalar,3>& v)
 {
     const Scalar x = m(0,0)*v[0] + m(0,1)*v[1] + m(0,2)*v[2] + m(0,3);
     const Scalar y = m(1,0)*v[0] + m(1,1)*v[1] + m(1,2)*v[2] + m(1,3);
@@ -537,13 +699,11 @@ projective_transform(const Mat4<Scalar>& m, const Vector<Scalar,3>& v)
     return Vector<Scalar,3>(x/w,y/w,z/w);
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 template <typename Scalar>
 Vector<Scalar,3>
-affine_transform(const Mat4<Scalar>& m, const Vector<Scalar,3>& v)
+affineTransform(const Mat4<Scalar>& m, const Vector<Scalar,3>& v)
 {
     const Scalar x = m(0,0)*v[0] + m(0,1)*v[1] + m(0,2)*v[2] + m(0,3);
     const Scalar y = m(1,0)*v[0] + m(1,1)*v[1] + m(1,2)*v[2] + m(1,3);
@@ -551,13 +711,11 @@ affine_transform(const Mat4<Scalar>& m, const Vector<Scalar,3>& v)
     return Vector<Scalar,3>(x,y,z);
 }
 
-
 //-----------------------------------------------------------------------------
-
 
 template <typename Scalar>
 Vector<Scalar,3>
-linear_transform(const Mat4<Scalar>& m, const Vector<Scalar,3>& v)
+linearTransform(const Mat4<Scalar>& m, const Vector<Scalar,3>& v)
 {
     const Scalar x = m(0,0)*v[0] + m(0,1)*v[1] + m(0,2)*v[2];
     const Scalar y = m(1,0)*v[0] + m(1,1)*v[1] + m(1,2)*v[2];
@@ -565,54 +723,12 @@ linear_transform(const Mat4<Scalar>& m, const Vector<Scalar,3>& v)
     return Vector<Scalar,3>(x,y,z);
 }
 
-
 //-----------------------------------------------------------------------------
-
-
-template <typename Scalar>
-Mat4<Scalar>
-operator*(const Mat4<Scalar>& m0, const Mat4<Scalar>& m1)
-{
-    Mat4<Scalar> m;
-
-    for (int i=0; i<4; ++i)
-    {
-        for (int j=0; j<4; ++j)
-        {
-            m(i,j) = Scalar(0);
-            for (int k=0; k<4; ++k)
-                m(i,j) += m0(i,k) * m1(k,j);
-        }
-    }
-
-    return m;
-}
-
-
-//-----------------------------------------------------------------------------
-
-
-template <typename Scalar>
-Vector<Scalar,4>
-operator*(const Mat4<Scalar>& m, const Vector<Scalar,4>& v)
-{
-    const Scalar x = m(0,0)*v[0] + m(0,1)*v[1] + m(0,2)*v[2] + m(0,3)*v[3];
-    const Scalar y = m(1,0)*v[0] + m(1,1)*v[1] + m(1,2)*v[2] + m(1,3)*v[3];
-    const Scalar z = m(2,0)*v[0] + m(2,1)*v[1] + m(2,2)*v[2] + m(2,3)*v[3];
-    const Scalar w = m(3,0)*v[0] + m(3,1)*v[1] + m(3,2)*v[2] + m(3,3)*v[3];
-
-    return Vector<Scalar,4> (x,y,z,w);
-}
-
-
-//-----------------------------------------------------------------------------
-
 
 template <typename Scalar>
 Mat4<Scalar>
 inverse(const Mat4<Scalar>& m)
 {
-
     Scalar Coef00 = m(2,2) * m(3,3) - m(2,3) * m(3,2);
     Scalar Coef02 = m(2,1) * m(3,3) - m(2,3) * m(3,1);
     Scalar Coef03 = m(2,1) * m(3,2) - m(2,2) * m(3,1);
@@ -670,188 +786,7 @@ inverse(const Mat4<Scalar>& m)
 }
 
 
-//-----------------------------------------------------------------------------
-
-
-template <typename Scalar>
-Mat4<Scalar>
-transpose(const Mat4<Scalar>& m)
-{
-    Mat4<Scalar> result;
-
-    for (int j=0; j<4; ++j)
-        for (int i=0; i<4; ++i)
-            result(i,j) = m(j,i);
-
-    return result;
-}
-
-
-//=============================================================================
-
-
-template <class Scalar>
-class Mat3
-{
-public:
-
-    /// constructor
-    Mat3() {}
-
-    Mat3(Scalar s)
-    {
-        int i,j;
-        for (i=0; i<3; ++i) {
-            for (j=0; j<3; ++j) {
-                data_[j*3+i]= s;
-            }
-        }
-    }
-
-    Mat3(bool identity) :
-        Mat3(Scalar(0))
-    {
-        if (identity) {
-            (*this)(0,0) = (*this)(1,1) = (*this)(2,2) = (*this)(3,3) = 1.0;
-        }
-    }
-
-    Mat3(const Mat4<Scalar>& m)
-    {
-        int i,j;
-        for (i=0; i<3; ++i)
-            for (j=0; j<3; ++j)
-                (*this)(i,j) = m(i,j);
-    }
-
-    /// destructor
-    ~Mat3() {}
-
-    /// access entry at row i and column j
-    Scalar& operator()(unsigned int i, unsigned int j)
-    {
-        return data_[j*3+i];
-    }
-
-    /// const-access entry at row i and column j
-    const Scalar& operator()(unsigned int i, unsigned int j) const
-    {
-        return data_[j*3+i];
-    }
-
-    /// return zero matrix
-    static Mat3<Scalar> zero();
-
-    /// return identity matrix
-    static Mat3<Scalar> identity();
-
-    /// this = this * m
-    Mat3& operator*=(const Mat3& m)
-    {
-        return (*this = *this * m);
-    };
-
-    /// this = this + m
-    Mat3& operator+=(const Mat3& m)
-    {
-        int i,j;
-        for (i=0; i<3; ++i) for (j=0; j<3; ++j)  data_[j*3+i] += m.data_[j*3+i];
-        return *this;
-    };
-
-    /// this = this - m
-    Mat3& operator-=(const Mat3& m)
-    {
-        int i,j;
-        for (i=0; i<3; ++i) for (j=0; j<3; ++j)  data_[j*3+i] -= m.data_[j*3+i];
-        return *this;
-    };
-
-    /// this = s * this
-    Mat3& operator*=(const Scalar s)
-    {
-        int i,j;
-        for (i=0; i<3; ++i) for (j=0; j<3; ++j)  data_[j*3+i] *= s;
-        return *this;
-    };
-
-    /// this = s / this
-    Mat3& operator/=(const Scalar s)
-    {
-        int i,j; Scalar is(1.0/s);
-        for (i=0; i<3; ++i) for (j=0; j<3; ++j)  data_[j*3+i] *= is;
-        return *this;
-    };
-
-    /// Frobenius norm
-    double norm() const
-    {
-        double s(0.0);
-        for (unsigned int i=0; i<3; ++i)
-            for (unsigned int j=0; j<3; ++j)
-                s += (*this)(i,j) * (*this)(i,j);
-        return sqrt(s);
-    }
-
-    /// trace
-    double trace() const
-    {
-        return (*this)(0,0) + (*this)(1,1) + (*this)(2,2);
-    }
-
-
-
-    /// const access to array
-    const Scalar* data() const { return data_; }
-
-    /// acces to array
-    Scalar* data() { return data_; }
-
-private:
-
-    Scalar data_[9];
-};
-
-
-
-//-----------------------------------------------------------------------------
-
-
-template <typename Scalar>
-Mat3<Scalar>
-Mat3<Scalar>::identity()
-{
-    Mat3<Scalar> m;
-
-    for (int j=0; j<3; ++j)
-        for (int i=0; i<3; ++i)
-            m(i,j) = 0.0;
-
-    m(0,0) = m(1,1) = m(2,2) = 1.0;
-
-    return m;
-}
-
-
-//-----------------------------------------------------------------------------
-
-
-template <typename Scalar>
-Mat3<Scalar>
-Mat3<Scalar>::zero()
-{
-    Mat3<Scalar> m;
-
-    for (int j=0; j<3; ++j)
-        for (int i=0; i<3; ++i)
-            m(i,j) = 0.0;
-
-    return m;
-}
-
-
-//-----------------------------------------------------------------------------
-
+//== Mat3 functions ===========================================================
 
 template <typename Scalar>
 Mat3<Scalar>
@@ -878,117 +813,7 @@ inverse(const Mat3<Scalar> &m)
     return inv;
 }
 
-
 //-----------------------------------------------------------------------------
-
-
-
-template <typename Scalar>
-Vector<Scalar,3>
-operator*(const Mat3<Scalar>& m, const Vector<Scalar,3>& v)
-{
-    const Scalar x = m(0,0)*v[0] + m(0,1)*v[1] + m(0,2)*v[2];
-    const Scalar y = m(1,0)*v[0] + m(1,1)*v[1] + m(1,2)*v[2];
-    const Scalar z = m(2,0)*v[0] + m(2,1)*v[1] + m(2,2)*v[2];
-
-    return Vector<Scalar,3> (x,y,z);
-}
-
-
-//-----------------------------------------------------------------------------
-
-
-template <typename Scalar>
-const Mat3<Scalar>
-outer_product(const Vector<Scalar,3>& a, const Vector<Scalar,3>& b)
-{
-    Mat3<Scalar> m;
-
-    for (int j=0; j<3; ++j)
-        for (int i=0; i<3; ++i)
-            m(i,j) = a[i]*b[j];
-
-    return m;
-}
-
-
-//-----------------------------------------------------------------------------
-
-
-template <typename Scalar>
-Mat3<Scalar>
-transpose(const Mat3<Scalar>& m)
-{
-    Mat3<Scalar> result;
-
-    for (int j=0; j<3; ++j)
-        for (int i=0; i<3; ++i)
-            result(i,j) = m(j,i);
-
-    return result;
-}
-
-
-//-----------------------------------------------------------------------------
-
-
-template <typename Scalar>
-Mat3<Scalar>
-operator*(const Mat3<Scalar>& m0, const Mat3<Scalar>& m1)
-{
-    Mat3<Scalar> m;
-
-    for (int i=0; i<3; ++i)
-    {
-        for (int j=0; j<3; ++j)
-        {
-            m(i,j) = 0.0f;
-            for (int k=0; k<3; ++k)
-            {
-                m(i,j) += m0(i,k) * m1(k,j);
-            }
-        }
-    }
-
-    return m;
-}
-
-
-//-----------------------------------------------------------------------------
-
-
-/// output matrix to ostream os
-template <typename Scalar>
-std::ostream&
-operator<<(std::ostream& os, const Mat3<Scalar>& m)
-{
-    for(int i=0; i<3; i++)
-    {
-        for(int j=0; j<3; j++)
-            os << m(i,j) << " ";
-        os << "\n";
-    }
-    return os;
-}
-
-
-//-----------------------------------------------------------------------------
-
-
-/// read the space-separated components of a vector from a stream
-template <typename Scalar>
-std::istream&
-operator>>(std::istream& is, Mat3<Scalar>& m)
-{
-    for(int i=0; i<3; i++)
-        for(int j=0; j<3; j++)
-            is >> m(i,j);
-    return is;
-}
-
-
-//-----------------------------------------------------------------------------
-
 
 template <typename Scalar>
 bool
@@ -1054,7 +879,7 @@ symmetricEigendecomposition(const Mat3<Scalar>& m,
         R(j,i) = -s;
 
         A = transpose(R) * A * R;
-        V *= R;
+        V = V*R;
     }
 
 
@@ -1118,13 +943,61 @@ symmetricEigendecomposition(const Mat3<Scalar>& m,
 }
 
 
-//=============================================================================
+//== Vector functions =========================================================
 
-typedef Mat3<float>    mat3;
-typedef Mat3<double>  dmat3;
+//! read the space-separated components of a vector from a stream
+template <typename Scalar, int N>
+inline std::istream& operator>>(std::istream& is, Vector<Scalar, N>& vec)
+{
+    for (int i = 0; i < N; ++i)
+        is >> vec[i];
+    return is;
+}
 
-typedef Mat4<float>    mat4;
-typedef Mat4<double>  dmat4;
+//! output a vector by printing its space-separated compontens
+template <typename Scalar, int N>
+inline std::ostream& operator<<(std::ostream& os, const Vector<Scalar, N>& vec)
+{
+    for (int i = 0; i < N - 1; ++i)
+        os << vec[i] << " ";
+    os << vec[N - 1];
+    return os;
+}
+
+//! compute the dot product of two vectors
+template <typename Scalar, int N>
+inline Scalar dot(const Vector<Scalar, N>& v0, const Vector<Scalar, N>& v1)
+{
+    Scalar p = v0[0] * v1[0];
+    for (int i = 1; i < N; ++i)
+        p += v0[i] * v1[i];
+    return p;
+}
+
+//! compute the Euclidean distance between two points
+template <typename Scalar, int N>
+inline Scalar distance(const Vector<Scalar, N>& v0, const Vector<Scalar, N>& v1)
+{
+    Scalar dist(0), d;
+    for (int i = 0; i < N; ++i)
+    {
+        d = v0[i] - v1[i];
+        d *= d;
+        dist += d;
+    }
+    return (Scalar)sqrt(dist);
+}
+
+//! compute the cross product of two vectors (only valid for 3D vectors)
+template <typename Scalar>
+inline Vector<Scalar, 3> cross(const Vector<Scalar, 3>& v0,
+                               const Vector<Scalar, 3>& v1)
+{
+    return Vector<Scalar, 3>(v0[1] * v1[2] - v0[2] * v1[1],
+                             v0[2] * v1[0] - v0[0] * v1[2],
+                             v0[0] * v1[1] - v0[1] * v1[0]);
+}
+
 
 //=============================================================================
 } // namespace

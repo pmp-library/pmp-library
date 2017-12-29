@@ -679,8 +679,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
             {
                 if (m_vfeature[v])
                 {
-                    u     = 0.0;
-                    t     = 0.0;
+                    u     = Point(0.0);
+                    t     = Point(0.0);
                     ww    = 0;
                     int c = 0;
 
@@ -723,8 +723,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
                 }
                 else
                 {
-                    u  = 0.0;
-                    t  = 0.0;
+                    u  = Point(0.0);
+                    t  = Point(0.0);
                     ww = 0;
 
                     for (auto h: m_mesh.halfedges(v))
@@ -814,8 +814,8 @@ void SurfaceRemeshing::removeCaps()
             h = m_mesh.nextHalfedge(h);
             d = m_points[vd = m_mesh.toVertex(h)];
 
-            a0 = dot((a - b).normalize(), (c - b).normalize());
-            a1 = dot((a - d).normalize(), (c - d).normalize());
+            a0 = dot( normalize(a - b), normalize(c - b) );
+            a1 = dot( normalize(a - d), normalize(c - d) );
 
             if (a0 < a1)
             {

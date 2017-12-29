@@ -31,8 +31,7 @@
 
 #include <pmp/gl/gl.h>
 #include <pmp/gl/Shader.h>
-#include <pmp/Vector.h>
-#include <pmp/Matrix.h>
+#include <pmp/MatVec.h>
 #include <pmp/PointSet.h>
 
 //=============================================================================

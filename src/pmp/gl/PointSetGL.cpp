@@ -122,7 +122,7 @@ void PointSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
     // setup matrices
     mat4 mv_matrix  = modelviewMatrix;
     mat4 mvp_matrix = projectionMatrix * modelviewMatrix;
-    mat3 n_matrix   = inverse(transpose(mat3(mv_matrix)));
+    mat3 n_matrix   = inverse(transpose(linearPart(mv_matrix)));
 
     // setup shader
     m_phongShader.use();
