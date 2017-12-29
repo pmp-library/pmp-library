@@ -207,22 +207,22 @@ public:
     }
 
     //! return matrix with minimum of this and other in each component
-    [[deprecated]] Matrix<Scalar,M,N> minimize(const Matrix<Scalar,M,N>& other)
-    {
-        for (int i=0; i<size(); ++i)
-            if (other[i] < data_[i])
-                data_[i] = other[i];
-        return *this;
-    }
+    //Matrix<Scalar,M,N> minimize(const Matrix<Scalar,M,N>& other)
+    //{
+        //for (int i=0; i<size(); ++i)
+            //if (other[i] < data_[i])
+                //data_[i] = other[i];
+        //return *this;
+    //}
 
     //! return matrix with maximum of this and other in each component
-    [[deprecated]] Matrix<Scalar,M,N> maximize(const Matrix<Scalar,M,N>& other)
-    {
-        for (int i=0; i<size(); ++i)
-            if (other[i] > data_[i])
-                data_[i] = other[i];
-        return *this;
-    }
+    //Matrix<Scalar,M,N> maximize(const Matrix<Scalar,M,N>& other)
+    //{
+        //for (int i=0; i<size(); ++i)
+            //if (other[i] > data_[i])
+                //data_[i] = other[i];
+        //return *this;
+    //}
 
 protected:
 
