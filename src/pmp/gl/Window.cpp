@@ -306,7 +306,7 @@ void Window::glfwKeyboard(GLFWwindow* window, int key, int scancode, int action,
 
 //-----------------------------------------------------------------------------
 
-void Window::glfwMotion(GLFWwindow* window, double xpos, double ypos)
+void Window::glfwMotion(GLFWwindow* /*window*/, double xpos, double ypos)
 {
     // correct for highDPI scaling
     m_instance->motion(m_instance->m_scaling * xpos,
@@ -341,7 +341,7 @@ void Window::glfwScroll(GLFWwindow* window, double xoffset, double yoffset)
 
 //-----------------------------------------------------------------------------
 
-void Window::glfwResize(GLFWwindow* window, int width, int height)
+void Window::glfwResize(GLFWwindow* /*window*/, int width, int height)
 {
     m_instance->m_width  = width;
     m_instance->m_height = height;
