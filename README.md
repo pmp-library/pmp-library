@@ -8,3 +8,17 @@
 The pmp-library is a modern C++ open-source library for digital geometry
 processing. See the [home page](http://pmp-library.github.io/pmp-library/) for
 details.
+
+## Quickstart
+
+Fetch the repository:
+
+    $ git clone --recursive https://github.com/pmp-library/pmp-library.git
+
+Configure and build:
+
+    $ cd pmp-library && mkdir build && cd build && cmake .. && make
+
+Run the mesh processing app:
+
+    $ ./mpview ../external/pmp-data/off/bunny.off
