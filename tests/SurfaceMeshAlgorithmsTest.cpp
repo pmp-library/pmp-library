@@ -33,9 +33,7 @@
 #include <pmp/algorithms/SurfaceSimplification.h>
 #include <pmp/algorithms/SurfaceFeatures.h>
 #include <pmp/algorithms/SurfaceSubdivision.h>
-#ifdef PMP_HAS_EIGEN
-#include <pmp/algorithms/SurfaceSmoothing.h>
-#endif
+#include <pmp/algorithms/SurfaceFairing.h>
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 
@@ -314,13 +312,12 @@ TEST_F(SurfaceMeshAlgorithmsTest, uniformRemeshing)
     EXPECT_EQ(mesh.nVertices(),size_t(642));
 }
 
-#ifdef PMP_HAS_EIGEN
 TEST_F(SurfaceMeshAlgorithmsTest, implicitSmoothing)
 {
     mesh.read("pmp-data/off/hemisphere.off");
     auto bbz = mesh.bounds().max()[2];
-    SurfaceSmoothing ss(mesh);
-    ss.implicitSmooth(3,0.01);
+    SurfaceFairing sf(mesh);
+    sf.implicitSmooth(3,0.01);
     auto bbs = mesh.bounds().max()[2];
     EXPECT_LT(bbs,bbz);
 }
@@ -348,8 +345,8 @@ TEST_F(SurfaceMeshAlgorithmsTest, implicitSmoothingSelected)
             vselected[v] = false;
         }
     }
-    SurfaceSmoothing ss(mesh);
-    ss.implicitSmooth(3,0.1);
+    SurfaceFairing sf(mesh);
+    sf.implicitSmooth(3,0.1);
     auto bb2 = mesh.bounds();
     EXPECT_LT(bb2.size(),bb.size());
 }
@@ -358,8 +355,8 @@ TEST_F(SurfaceMeshAlgorithmsTest, fairing)
 {
     mesh.read("pmp-data/off/hemisphere.off");
     auto bbz = mesh.bounds().max()[2];
-    SurfaceSmoothing ss(mesh);
-    ss.fair();
+    SurfaceFairing sf(mesh);
+    sf.fair();
     auto bbs = mesh.bounds().max()[2];
     EXPECT_LT(bbs,bbz);
 }
@@ -387,9 +384,8 @@ TEST_F(SurfaceMeshAlgorithmsTest, fairingSelected)
             vselected[v] = false;
         }
     }
-    SurfaceSmoothing ss(mesh);
-    ss.fair();
+    SurfaceFairing sf(mesh);
+    sf.fair();
     auto bb2 = mesh.bounds();
     EXPECT_LT(bb2.size(),bb.size());
 }
-#endif
