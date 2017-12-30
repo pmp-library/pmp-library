@@ -34,6 +34,7 @@
 #include <pmp/algorithms/SurfaceFeatures.h>
 #include <pmp/algorithms/SurfaceSubdivision.h>
 #include <pmp/algorithms/SurfaceFairing.h>
+#include <pmp/algorithms/SurfaceSmoothing.h>
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 
@@ -312,7 +313,7 @@ TEST_F(SurfaceMeshAlgorithmsTest, uniformRemeshing)
     EXPECT_EQ(mesh.nVertices(),size_t(642));
 }
 
-TEST_F(SurfaceMeshAlgorithmsTest, implicitSmoothing)
+TEST_F(SurfaceMeshAlgorithmsTest, implicitSmooth)
 {
     mesh.read("pmp-data/off/hemisphere.off");
     auto bbz = mesh.bounds().max()[2];
@@ -322,7 +323,7 @@ TEST_F(SurfaceMeshAlgorithmsTest, implicitSmoothing)
     EXPECT_LT(bbs,bbz);
 }
 
-TEST_F(SurfaceMeshAlgorithmsTest, implicitSmoothingSelected)
+TEST_F(SurfaceMeshAlgorithmsTest, implicitSmoothSelected)
 {
     mesh.read("pmp-data/off/sphere_low.off");
     auto bb = mesh.bounds();
@@ -388,4 +389,26 @@ TEST_F(SurfaceMeshAlgorithmsTest, fairingSelected)
     sf.fair();
     auto bb2 = mesh.bounds();
     EXPECT_LT(bb2.size(),bb.size());
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, implicitSmoothing)
+{
+    mesh.read("pmp-data/off/hemisphere.off");
+    auto bbz = mesh.bounds().max()[2];
+    SurfaceSmoothing ss(mesh);
+    ss.implicitSmoothing(0.01);
+    ss.implicitSmoothing(0.01,true);
+    auto bbs = mesh.bounds().max()[2];
+    EXPECT_LT(bbs,bbz);
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, explicitSmoothing)
+{
+    mesh.read("pmp-data/off/hemisphere.off");
+    auto bbz = mesh.bounds().max()[2];
+    SurfaceSmoothing ss(mesh);
+    ss.explicitSmoothing(10);
+    ss.explicitSmoothing(10,true);
+    auto bbs = mesh.bounds().max()[2];
+    EXPECT_LT(bbs,bbz);
 }
