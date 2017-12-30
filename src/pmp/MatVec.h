@@ -423,6 +423,30 @@ inline Matrix<Scalar,M,N> normalize(const Matrix<Scalar,M,N>& m)
     return m * n;
 }
 
+//-----------------------------------------------------------------------------
+
+//! return component-wise minimum
+template <typename Scalar, int M, int N>
+inline Matrix<Scalar,M,N> min(const Matrix<Scalar,M,N>& m1, const Matrix<Scalar,M,N>& m2)
+{
+    Matrix<Scalar,M,N> result;
+    for (int i=0; i<result.size(); ++i)
+        result[i] = std::min(m1[i], m2[i]);
+    return result;
+}
+
+//-----------------------------------------------------------------------------
+
+//! return component-wise maximum
+template <typename Scalar, int M, int N>
+inline Matrix<Scalar,M,N> max(const Matrix<Scalar,M,N>& m1, const Matrix<Scalar,M,N>& m2)
+{
+    Matrix<Scalar,M,N> result;
+    for (int i=0; i<result.size(); ++i)
+        result[i] = std::max(m1[i], m2[i]);
+    return result;
+}
+
 //== Mat4 functions ===========================================================
 
 

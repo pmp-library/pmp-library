@@ -52,9 +52,14 @@ public:
     //! solve the parametrization linear system with direct solver
     void parameterize(bool uniformWeight = false);
 
+    void lscm();
+
 private:
     //! setup boundary constraints: map surface boundary to unit circle
     bool setupBoundaryConstraints();
+
+    bool setup_lscm_boundary();
+    void setup_lscm_weights();
 
 private:
     //! the mesh

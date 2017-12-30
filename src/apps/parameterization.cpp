@@ -17,7 +17,6 @@ protected:
     virtual void draw(const std::string& _draw_mode) override;
 private:
     SurfaceParameterization m_param;
-    bool          m_useUniformWeights;
 };
 
 //=============================================================================
@@ -25,8 +24,6 @@ private:
 Viewer::Viewer(const char* title, int width, int height)
     : MeshViewer(title,width, height), m_param(m_mesh)
 {
-    addDrawMode("TextureLayout");
-    m_useUniformWeights = false;
 }
 
 //=============================================================================
@@ -40,17 +37,19 @@ void Viewer::processImGUI()
 
     if (ImGui::CollapsingHeader("Parametrization", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        static int weight = 0;
-        ImGui::RadioButton("Cotan Laplace",  &weight, 0);
-        ImGui::RadioButton("Uniform Laplace", &weight, 1);
-        m_useUniformWeights = (weight == 1);
-
         ImGui::Spacing();
-        ImGui::Spacing();
-
-        if (ImGui::Button("Discrete Harmonic"))
+        if (ImGui::Button("Discrete Harmonic Param"))
         {
-            m_param.parameterize(m_useUniformWeights);
+            m_param.parameterize();
+            m_mesh.useCheckerboardTexture();
+            setDrawMode("Texture");
+            updateMesh();
+        }
+
+        ImGui::Spacing();
+        if (ImGui::Button("Least Squares Conformal Map"))
+        {
+            m_param.lscm();
             m_mesh.useCheckerboardTexture();
             setDrawMode("Texture");
             updateMesh();
