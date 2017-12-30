@@ -63,7 +63,8 @@ void Viewer::processImGUI()
 
         if (ImGui::Button("Explicit Smoothing"))
         {
-            explicit_smoothing(m_mesh, iterations, uniformLaplace);
+            SurfaceSmoothing smoother(m_mesh);
+            smoother.explicitSmoothing(iterations, uniformLaplace);
             updateMesh();
         }
 
@@ -80,7 +81,8 @@ void Viewer::processImGUI()
         if (ImGui::Button("Implicit Smoothing"))
         {
             Scalar dt = uniformLaplace ? timestep : timestep*m_radius*m_radius;
-            implicit_smoothing(m_mesh, dt, uniformLaplace);
+            SurfaceSmoothing smoother(m_mesh);
+            smoother.implicitSmoothing(dt, uniformLaplace);
             updateMesh();
         }
     }

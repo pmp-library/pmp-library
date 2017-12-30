@@ -42,18 +42,25 @@ namespace pmp {
 
 //=============================================================================
 
+//! \brief A class for Laplacian smoothing
+class SurfaceSmoothing
+{
+public:
+    //! give a mesh in the constructor
+    SurfaceSmoothing(SurfaceMesh& mesh) : m_mesh(mesh){};
 
-/// Perform \c iters iterations of explicit Laplacian smoothing.
-void explicit_smoothing(SurfaceMesh& mesh, 
-                        unsigned int iterations=10,
-                        bool uniformLaplace=false);
+    //! Perform \c iters iterations of explicit Laplacian smoothing.
+    void explicitSmoothing(unsigned int iterations     = 10,
+                           bool         uniformLaplace = false);
 
+    //! Perform implicit Laplacian smoothing with \c timestep.
+    void implicitSmoothing(Scalar timestep       = 0.001,
+                           bool   uniformLaplace = false);
 
-/// Perform implicit Laplacian smoothing with \c timestep.
-void implicit_smoothing(SurfaceMesh& mesh, 
-                        Scalar timestep=0.001,
-                        bool uniformLaplace=false);
-
+private:
+    //! the mesh
+    SurfaceMesh& m_mesh;
+};
 
 //=============================================================================
 //! @}
