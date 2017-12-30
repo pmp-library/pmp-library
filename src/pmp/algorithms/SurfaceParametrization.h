@@ -43,29 +43,23 @@ namespace pmp {
 //=============================================================================
 
 //! \brief A class for discrete harmonic parameterization
-class Parameterizer
+class SurfaceParameterization
 {
 public:
+    //! give a mesh in the constructor
+    SurfaceParameterization(SurfaceMesh& mesh);
 
-    /// give a mesh in the constructor
-    Parameterizer(SurfaceMesh& m);
-
-    /// solve the parametrization linear system with direct solver
-    void parameterize(bool uniformWeight=false);
-
+    //! solve the parametrization linear system with direct solver
+    void parameterize(bool uniformWeight = false);
 
 private:
-
-    /// setup boundary constraints: map surface boundary to unit circle
-    bool setup_boundary_constraints();
-
+    //! setup boundary constraints: map surface boundary to unit circle
+    bool setupBoundaryConstraints();
 
 private:
-
-    /// the mesh
-    SurfaceMesh&  mesh;
+    //! the mesh
+    SurfaceMesh& m_mesh;
 };
-
 
 //=============================================================================
 //! @}

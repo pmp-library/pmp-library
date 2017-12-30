@@ -16,7 +16,7 @@ protected:
     virtual void processImGUI() override;
     virtual void draw(const std::string& _draw_mode) override;
 private:
-    Parameterizer m_param;
+    SurfaceParameterization m_param;
     bool          m_useUniformWeights;
 };
 
