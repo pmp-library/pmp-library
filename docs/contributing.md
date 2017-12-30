@@ -16,7 +16,7 @@ code and data to reproduce the behavior in question.
 If you would like to contribute to the development of the pmp-library you should
 start by [forking](https://help.github.com/articles/fork-a-repo) and creating
 a [pull request](https://help.github.com/articles/creating-a-pull-request). Make
-sure that your code follows the [Coding Style](coding_style.html) guidelines. In
+sure that your code follows the [Coding Style](codingstyle.html) guidelines. In
 case you want to contribute a new algorithm make sure the code is properly
 documented using doxygen and is accompanied by a unit test, see below.
 
