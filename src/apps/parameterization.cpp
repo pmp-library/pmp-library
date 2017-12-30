@@ -1,7 +1,7 @@
 //=============================================================================
 
 #include <pmp/gl/MeshViewer.h>
-#include <pmp/algorithms/SurfaceParametrization.h>
+#include <pmp/algorithms/SurfaceParameterization.h>
 #include <imgui.h>
 
 using namespace pmp;

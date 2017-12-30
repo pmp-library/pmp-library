@@ -37,6 +37,7 @@
 #include <pmp/algorithms/SurfaceSmoothing.h>
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
+#include <pmp/algorithms/SurfaceParameterization.h>
 
 #include <vector>
 
@@ -411,4 +412,14 @@ TEST_F(SurfaceMeshAlgorithmsTest, explicitSmoothing)
     ss.explicitSmoothing(10,true);
     auto bbs = mesh.bounds().max()[2];
     EXPECT_LT(bbs,bbz);
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, parameterization)
+{
+    mesh.read("pmp-data/off/hemisphere.off");
+    SurfaceParameterization param(mesh);
+    param.parameterize(false);
+    param.parameterize(true);
+    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    EXPECT_TRUE(tex);
 }
