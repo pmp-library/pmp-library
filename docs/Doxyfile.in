@@ -675,7 +675,8 @@ RECURSIVE              = YES
 # run.
 
 EXCLUDE                = ${CMAKE_SOURCE_DIR}/docs/issue_template.md \
-                         ${CMAKE_SOURCE_DIR}/docs/pull_request_template.md
+                         ${CMAKE_SOURCE_DIR}/docs/pull_request_template.md \
+                         ${CMAKE_SOURCE_DIR}/docs/code_of_conduct.md
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
