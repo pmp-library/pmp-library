@@ -375,6 +375,7 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
     m_phongShader.set_uniform("back_color", vec3(0.3, 0.0, 0.0));
     m_phongShader.set_uniform("use_lighting", true);
     m_phongShader.set_uniform("use_texture", false);
+    m_phongShader.set_uniform("show_texture_layout", false);
 
     glBindVertexArray(m_vertexArrayObject);
 
@@ -416,6 +417,28 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         glBindTexture(GL_TEXTURE_2D, m_texture);
         glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
     }
+
+    else if (drawMode == "Texture Layout")
+    {
+        m_phongShader.set_uniform("show_texture_layout", true);
+        m_phongShader.set_uniform("use_lighting", false);
+
+        // draw faces
+        m_phongShader.set_uniform("front_color", vec3(0.8, 0.8, 0.8));
+        m_phongShader.set_uniform("back_color",  vec3(0.9, 0.0, 0.0));
+        glDepthRange(0.01, 1.0);
+        glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
+
+        // overlay edges
+        glDepthRange(0.0, 1.0);
+        glDepthFunc(GL_LEQUAL);
+        m_phongShader.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
+        m_phongShader.set_uniform("back_color",  vec3(0.1, 0.1, 0.1));
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_edgeBuffer);
+        glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, NULL);
+        glDepthFunc(GL_LESS);
+    }
+
 
 
     // draw feature edges

@@ -52,6 +52,9 @@ else()
         add_executable(smoothing smoothing.cpp)
         target_link_libraries(smoothing pmp_gl)
 
+        add_executable(parameterization parameterization.cpp)
+        target_link_libraries(parameterization pmp_gl)
+
         add_executable(decimation decimation.cpp)
         target_link_libraries(decimation pmp_gl)
 

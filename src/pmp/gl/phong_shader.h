@@ -41,13 +41,15 @@ static const char* phong_vshader =
     "uniform mat4 modelview_projection_matrix;\n"
     "uniform mat4 modelview_matrix;\n"
     "uniform mat3 normal_matrix;\n"
+    "uniform bool show_texture_layout = false;\n"
     "\n"
     "void main()\n"
     "{\n"
     "   v2f_normal  = normal_matrix * v_normal;\n"
     "   v2f_tex     = v_tex;\n"
-    "   v2f_view    = -(modelview_matrix*v_position).xyz;\n"
-    "   gl_Position = modelview_projection_matrix * v_position;\n"
+    "   vec4 pos    = show_texture_layout ? vec4(v_tex, 0.0, 1.0) : v_position;\n"
+    "   v2f_view    = -(modelview_matrix * pos).xyz;\n"
+    "   gl_Position = modelview_projection_matrix * pos;\n"
     "} \n";
 
 
