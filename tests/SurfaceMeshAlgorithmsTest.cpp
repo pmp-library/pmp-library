@@ -59,11 +59,11 @@ TEST_F(SurfaceMeshAlgorithmsTest, curvature)
     SurfaceCurvature curvature(mesh);
     curvature.analyze(1);
     Scalar kmin = std::numeric_limits<Scalar>::max();
-    Scalar kmax = std::numeric_limits<Scalar>::min();
+    Scalar kmax = -std::numeric_limits<Scalar>::max();
     Scalar mmin = std::numeric_limits<Scalar>::max();
-    Scalar mmax = std::numeric_limits<Scalar>::min();
+    Scalar mmax = -std::numeric_limits<Scalar>::max();
     Scalar gmin = std::numeric_limits<Scalar>::max();
-    Scalar gmax = std::numeric_limits<Scalar>::min();
+    Scalar gmax = -std::numeric_limits<Scalar>::max();
 
     for (auto v : mesh.vertices())
     {
