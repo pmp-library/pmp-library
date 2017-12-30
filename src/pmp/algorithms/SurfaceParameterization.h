@@ -42,24 +42,25 @@ namespace pmp {
 
 //=============================================================================
 
-//! \brief A class for discrete harmonic parameterization
+//! \brief A class for surface parameterization.
 class SurfaceParameterization
 {
 public:
     //! give a mesh in the constructor
     SurfaceParameterization(SurfaceMesh& mesh);
 
-    //! solve the parametrization linear system with direct solver
-    void parameterize(bool uniformWeight = false);
+    //! compute discrete harmonic parameterization
+    void harmonic(bool uniformWeight = false);
 
+    //! compute parameterization based on least squares conformal mapping
     void lscm();
 
 private:
     //! setup boundary constraints: map surface boundary to unit circle
     bool setupBoundaryConstraints();
 
-    bool setup_lscm_boundary();
-    void setup_lscm_weights();
+    //! setup boundary: pin the two farthest boundary vertices
+    bool setupLSCMBoundary();
 
 private:
     //! the mesh

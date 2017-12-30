@@ -40,7 +40,7 @@ void Viewer::processImGUI()
         ImGui::Spacing();
         if (ImGui::Button("Discrete Harmonic Param"))
         {
-            m_param.parameterize();
+            m_param.harmonic();
             m_mesh.useCheckerboardTexture();
             setDrawMode("Texture");
             updateMesh();

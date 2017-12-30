@@ -418,8 +418,17 @@ TEST_F(SurfaceMeshAlgorithmsTest, parameterization)
 {
     mesh.read("pmp-data/off/hemisphere.off");
     SurfaceParameterization param(mesh);
-    param.parameterize(false);
-    param.parameterize(true);
+    param.harmonic(false);
+    param.harmonic(true);
+    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    EXPECT_TRUE(tex);
+}
+
+TEST_F(SurfaceMeshAlgorithmsTest, lscm)
+{
+    mesh.read("pmp-data/off/hemisphere.off");
+    SurfaceParameterization param(mesh);
+    param.lscm();
     auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
     EXPECT_TRUE(tex);
 }
