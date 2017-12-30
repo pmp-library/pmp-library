@@ -27,7 +27,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
 
-#include <pmp/algorithms/SurfaceParametrization.h>
+#include <pmp/algorithms/SurfaceParameterization.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 #include <cmath>
 #include <Eigen/Dense>
