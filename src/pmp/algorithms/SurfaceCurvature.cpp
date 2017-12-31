@@ -28,6 +28,7 @@
 //=============================================================================
 
 #include <pmp/algorithms/SurfaceCurvature.h>
+#include <pmp/algorithms/SurfaceNormals.h>
 #include <pmp/MatVec.h>
 
 //=============================================================================
@@ -180,7 +181,7 @@ void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
     // precompute face normals
     for (auto f : m_mesh.faces())
     {
-        normal[f] = (dvec3)m_mesh.computeFaceNormal(f);
+        normal[f] = (dvec3)SurfaceNormals::computeFaceNormal(m_mesh,f);
     }
 
     // precompute dihedralAngle*edgeLength*edge per edge

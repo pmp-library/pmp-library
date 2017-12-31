@@ -30,6 +30,7 @@
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/distancePointTriangle.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
+#include <pmp/algorithms/SurfaceNormals.h>
 #include <pmp/algorithms/barycentricCoordinates.h>
 
 #include <cfloat>
@@ -46,6 +47,8 @@ SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
     : m_mesh(mesh), m_refmesh(NULL), m_kDTree(NULL)
 {
     m_points  = m_mesh.vertexProperty<Point>("v:point");
+
+    SurfaceNormals::computeVertexNormals(m_mesh);
     m_vnormal = m_mesh.vertexProperty<Point>("v:normal");
 }
 
@@ -77,7 +80,7 @@ void SurfaceRemeshing::uniformRemeshing(Scalar       edgeLength,
     {
         splitLongEdges();
 
-        m_mesh.updateVertexNormals();
+        SurfaceNormals::computeVertexNormals(m_mesh);
 
         collapseShortEdges();
 
@@ -117,7 +120,7 @@ void SurfaceRemeshing::adaptiveRemeshing(Scalar       minEdgeLength,
     {
         splitLongEdges();
 
-        m_mesh.updateVertexNormals();
+        SurfaceNormals::computeVertexNormals(m_mesh);
 
         collapseShortEdges();
 
@@ -272,7 +275,7 @@ void SurfaceRemeshing::preprocessing()
         // build reference mesh
         m_refmesh = new SurfaceMesh();
         m_refmesh->assign(m_mesh);
-        m_refmesh->updateVertexNormals();
+        SurfaceNormals::computeVertexNormals(*m_refmesh);
         m_refpoints  = m_refmesh->vertexProperty<Point>("v:point");
         m_refnormals = m_refmesh->vertexProperty<Point>("v:normal");
 
@@ -387,7 +390,7 @@ void SurfaceRemeshing::splitLongEdges()
                 m_mesh.split(e, vnew);
 
                 // need normal or sizing for adaptive refinement
-                m_vnormal[vnew] = m_mesh.computeVertexNormal(vnew);
+                m_vnormal[vnew] = SurfaceNormals::computeVertexNormal(m_mesh,vnew);
                 m_vsizing[vnew] = 0.5f * (m_vsizing[v0] + m_vsizing[v1]);
 
                 if (isFeature)
@@ -768,8 +771,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
             }
         }
 
-        // update normal vectors (if not done so through projection
-        m_mesh.updateVertexNormals();
+        // update normal vectors (if not done so through projection)
+        SurfaceNormals::computeVertexNormals(m_mesh);
     }
 
     // project at the end

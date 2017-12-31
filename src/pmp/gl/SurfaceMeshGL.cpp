@@ -29,6 +29,8 @@
 
 #include <pmp/gl/SurfaceMeshGL.h>
 #include <pmp/gl/phong_shader.h>
+#include <pmp/algorithms/SurfaceNormals.h>
+
 #include "cold_warm_texture.h"
 #include <float.h>
 
@@ -220,7 +222,7 @@ void SurfaceMeshGL::updateOpenGLBuffers()
         for (auto h : halfedges(f))
         {
             corners.push_back(toVertex(h));
-            cornerNormals.push_back(computeCornerNormal(h, creaseAngle));
+            cornerNormals.push_back(SurfaceNormals::computeCornerNormal(*this, h, creaseAngle));
         }
         assert(corners.size() >= 3);
 

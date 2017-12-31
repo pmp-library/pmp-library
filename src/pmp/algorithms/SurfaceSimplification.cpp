@@ -29,6 +29,7 @@
 
 #include <pmp/algorithms/SurfaceSimplification.h>
 #include <pmp/algorithms/distancePointTriangle.h>
+#include <pmp/algorithms/SurfaceNormals.h>
 
 #include <cfloat>
 #include <iterator> // for back_inserter on Windows
@@ -54,6 +55,9 @@ SurfaceSimplification::SurfaceSimplification(SurfaceMesh& mesh)
 
     // get properties
     m_vpoint  = m_mesh.vertexProperty<Point>("v:point");
+
+    // compute face normals
+    SurfaceNormals::computeFaceNormals(m_mesh);
     m_fnormal = m_mesh.faceProperty<Normal>("f:normal");
 }
 
@@ -124,9 +128,6 @@ void SurfaceSimplification::initialize(Scalar aspectRatio, Scalar edgeLength,
             }
         }
     }
-
-    // compute face normals
-    m_mesh.updateFaceNormals();
 
     // initialize quadrics
     for (auto v : m_mesh.vertices())
@@ -361,7 +362,7 @@ bool SurfaceSimplification::isCollapseLegal(const CollapseData& cd)
             if (f != cd.fl && f != cd.fr)
             {
                 Normal n0 = m_fnormal[f];
-                Normal n1 = m_mesh.computeFaceNormal(f);
+                Normal n1 = SurfaceNormals::computeFaceNormal(m_mesh,f);
                 if (dot(n0, n1) < 0.0)
                 {
                     m_vpoint[cd.v0] = p0;
@@ -390,7 +391,7 @@ bool SurfaceSimplification::isCollapseLegal(const CollapseData& cd)
             if (f != cd.fl && f != cd.fr)
             {
                 NormalCone nc = m_normalCone[f];
-                nc.merge(m_mesh.computeFaceNormal(f));
+                nc.merge(SurfaceNormals::computeFaceNormal(m_mesh,f));
 
                 if (f == fll)
                     nc.merge(m_normalCone[cd.fl]);
@@ -498,7 +499,7 @@ void SurfaceSimplification::postprocessCollapse(const CollapseData& cd)
     {
         for (auto f : m_mesh.faces(cd.v1))
         {
-            m_normalCone[f].merge(m_mesh.computeFaceNormal(f));
+            m_normalCone[f].merge(SurfaceNormals::computeFaceNormal(m_mesh,f));
         }
 
         if (cd.vl.isValid())

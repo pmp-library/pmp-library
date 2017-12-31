@@ -790,29 +790,6 @@ public:
     void deleteFace(Face f);
 
     //!@}
-    //! \name Geometry-related Functions
-    //!@{
-
-    //! compute vertex normals by calling computeVertexNormal(Vertex) for
-    //! each vertex.
-    void updateVertexNormals();
-
-    //! compute normal vector of vertex \c v.
-    Normal computeVertexNormal(Vertex v) const;
-
-    //! compute face normals by calling computeFaceNormal(Face) for each face.
-    void updateFaceNormals();
-
-    //! compute normal vector of face \c f.
-    Normal computeFaceNormal(Face f) const;
-
-    //! compute normal vector of polygon corner specified to target vertex
-    //! of halfedge \c h. averages incident corner normals if they are
-    //! within \c creaseAngle of the face normal
-    //! \c creaseAngle is in radians, not degrees
-    Normal computeCornerNormal(Halfedge h, Scalar creaseAngle) const;
-
-    //!@}
 
 protected:
     //! \name Garbage Collection

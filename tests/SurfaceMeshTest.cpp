@@ -31,6 +31,7 @@
 
 #include <pmp/SurfaceMesh.h>
 #include <pmp/io/SurfaceMeshIO.h>
+#include <pmp/algorithms/SurfaceNormals.h>
 #include <vector>
 
 using namespace pmp;
@@ -271,7 +272,7 @@ TEST_F(SurfaceMeshTest, polyIO)
 TEST_F(SurfaceMeshTest, objIO)
 {
     addTriangle();
-    mesh.updateVertexNormals();
+    SurfaceNormals::computeVertexNormals(mesh);
     mesh.addHalfedgeProperty<TextureCoordinate>("h:texcoord",TextureCoordinate(0,0));
     mesh.write("test.obj");
     mesh.clear();
@@ -284,7 +285,7 @@ TEST_F(SurfaceMeshTest, objIO)
 TEST_F(SurfaceMeshTest, offIO)
 {
     addTriangle();
-    mesh.updateVertexNormals();
+    SurfaceNormals::computeVertexNormals(mesh);
     mesh.addVertexProperty<TextureCoordinate>("v:texcoord",TextureCoordinate(0,0));
     mesh.addVertexProperty<Color>("v:color",Color(0,0,0));
     IOOptions options(false, // binary
@@ -322,7 +323,7 @@ TEST_F(SurfaceMeshTest, stlIO)
     EXPECT_EQ(mesh.nVertices(), size_t(12));
     EXPECT_EQ(mesh.nFaces(), size_t(20));
     EXPECT_EQ(mesh.nEdges(), size_t(30));
-    mesh.updateFaceNormals();
+    SurfaceNormals::computeVertexNormals(mesh);
     mesh.write("test.stl");
 }
 
@@ -330,7 +331,7 @@ TEST_F(SurfaceMeshTest, stlIO)
 TEST_F(SurfaceMeshTest, faceNormals)
 {
     mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    mesh.updateFaceNormals();
+    SurfaceNormals::computeFaceNormals(mesh);
     auto fnormals = mesh.getFaceProperty<Normal>("f:normal");
     auto fn0 = fnormals[SurfaceMesh::Face(0)];
     EXPECT_GT(norm(fn0), 0);
@@ -339,7 +340,7 @@ TEST_F(SurfaceMeshTest, faceNormals)
 TEST_F(SurfaceMeshTest, vertexNormals)
 {
     mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    mesh.updateVertexNormals();
+    SurfaceNormals::computeVertexNormals(mesh);
     auto vnormals = mesh.getVertexProperty<Normal>("v:normal");
     auto vn0 = vnormals[SurfaceMesh::Vertex(0)];
     EXPECT_GT(norm(vn0), 0);
@@ -354,7 +355,7 @@ TEST_F(SurfaceMeshTest, polygonalFaceNormal)
     vertices[3] = mesh.addVertex(Point(0.5,1,0));
     vertices[4] = mesh.addVertex(Point(0,1,0));
     auto f0 = mesh.addFace(vertices);
-    auto n0 = mesh.computeFaceNormal(f0);
+    auto n0 = SurfaceNormals::computeFaceNormal(mesh,f0);
     EXPECT_GT(norm(n0), 0);
 }
 
