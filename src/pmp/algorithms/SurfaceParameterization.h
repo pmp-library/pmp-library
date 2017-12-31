@@ -43,6 +43,9 @@ namespace pmp {
 //=============================================================================
 
 //! \brief A class for surface parameterization.
+//! \details See \cite eck_1995_multiresolution for the discrete harmonic
+//! parameterization and \cite levy_2002_least for least squares conformal
+//! mappings.
 class SurfaceParameterization
 {
 public:

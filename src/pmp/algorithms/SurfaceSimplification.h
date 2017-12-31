@@ -47,7 +47,9 @@ namespace pmp {
 //! @{
 //=============================================================================
 
-//! Surface simplification based on error quadrics
+//! \brief Surface mesh simplification based on approximation error and fairness criteria.
+//! \details Performs incremental greedy mesh simplification based on halfedge
+//! collapses. See \cite kobbelt_1998_general for details.
 class SurfaceSimplification
 {
 public:

@@ -43,8 +43,11 @@ namespace pmp {
 
 //=============================================================================
 
-//! \brief A class for uniform and adaptive surface remeshing using edge
-//! collapse, split, flip, and tangential relaxation.
+//! \brief A class for uniform and adaptive surface remeshing.
+//! \details The algorithm implemented here performs incremental remeshing based
+//! on edge collapse, split, flip, and tangential relaxation.
+//! See \cite botsch_2004_remeshing and \cite dunyach_2013_adaptive for a more
+//! detailed description.
 class SurfaceRemeshing
 {
 public:
