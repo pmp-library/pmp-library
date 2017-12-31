@@ -36,6 +36,9 @@ use by referencing
       year   = {2017},
     }
 
+For references to specific algorithms implemented in the library check out
+the [bibliography](citelist.html).
+
 ## Heritage
 
 The pmp-library evolved from the `Surface_mesh` data structure developed by

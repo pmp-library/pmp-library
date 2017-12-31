@@ -580,7 +580,7 @@ LAYOUT_FILE            = ${CMAKE_CURRENT_SOURCE_DIR}/layout.xml
 # feature you need bibtex and perl available in the search path. Do not use
 # file names with spaces, bibtex cannot handle them.
 
-CITE_BIB_FILES         =
+CITE_BIB_FILES         = ${CMAKE_CURRENT_SOURCE_DIR}/bibliography.bib
 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages

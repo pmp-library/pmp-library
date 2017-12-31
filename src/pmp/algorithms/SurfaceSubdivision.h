@@ -47,13 +47,16 @@ class SurfaceSubdivision
 public:
     SurfaceSubdivision(SurfaceMesh& mesh);
 
-    //! Perform one step of Catmull-Clark subdivision
+    //! Perform one step of Catmull-Clark subdivision.
+    //! See \cite catmull_1978_recursively for details.
     void catmullClark();
 
-    //! Perform one step of Loop subdivision
+    //! Perform one step of Loop subdivision.
+    //! See \cite loop_1987_smooth for details.
     void loop();
 
-    //! Perform one step of sqrt3 subdivision
+    //! Perform one step of sqrt3 subdivision.
+    //! See \cite kobbelt_2000_sqrt for details.
     void sqrt3();
 
 private:
