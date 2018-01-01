@@ -1,6 +1,6 @@
 //=============================================================================
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -210,13 +210,11 @@ size_t EdgeSet::valence(Vertex v) const
 {
     size_t count(0);
 
-    VertexAroundVertexCirculator vvit  = vertices(v);
-    VertexAroundVertexCirculator vvend = vvit;
-    if (vvit)
-        do
-        {
-            ++count;
-        } while (++vvit != vvend);
+    for (auto vv : vertices(v))
+    {
+        PMP_ASSERT(vv.isValid());
+        ++count;
+    }
 
     return count;
 }
