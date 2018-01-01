@@ -39,6 +39,10 @@ use by referencing
 For references to specific algorithms implemented in the library check out
 the [bibliography](citelist.html).
 
+If you found the library to be useful for your projects, please drop us a line
+at [info@pmp-library.org](mailto:info@pmp-library.org) and let us know what you
+are using it for.
+
 ## Heritage
 
 The pmp-library evolved from the `Surface_mesh` data structure developed by
