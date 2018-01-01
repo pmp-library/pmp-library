@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ void SurfaceCurvature::analyze(unsigned int smoothingSteps)
     {
         kmin = kmax = 0.0;
 
-        if (!m_mesh.isIsolated(v) && !m_mesh.isBoundary(v))
+        if (!m_mesh.isIsolated(v) && !m_mesh.isSurfaceBoundary(v))
         {
             laplace    = Point(0.0);
             sumWeights = 0.0;
@@ -118,14 +118,14 @@ void SurfaceCurvature::analyze(unsigned int smoothingSteps)
     // boundary vertices: interpolate from interior neighbors
     for (auto v : m_mesh.vertices())
     {
-        if (m_mesh.isBoundary(v))
+        if (m_mesh.isSurfaceBoundary(v))
         {
             kmin = kmax = sumWeights = 0.0;
 
             for (auto vh : m_mesh.halfedges(v))
             {
                 v = m_mesh.toVertex(vh);
-                if (!m_mesh.isBoundary(v))
+                if (!m_mesh.isSurfaceBoundary(v))
                 {
                     weight = cotan[m_mesh.edge(vh)];
                     sumWeights += weight;

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -311,7 +311,7 @@ bool SurfaceSimplification::isCollapseLegal(const CollapseData& cd)
     }
 
     // do not collapse boundary vertices to interior vertices
-    if (m_mesh.isBoundary(cd.v0) && !m_mesh.isBoundary(cd.v1))
+    if (m_mesh.isSurfaceBoundary(cd.v0) && !m_mesh.isSurfaceBoundary(cd.v1))
         return false;
 
     // there should be at least 2 incident faces at v0

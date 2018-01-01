@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -502,16 +502,15 @@ TEST_F(SurfaceMeshTest, isManifold)
 {
     mesh.read("pmp-data/off/vertex_onering.off");
     for (auto v : mesh.vertices())
-        EXPECT_TRUE(mesh.isManifold(v));
+        EXPECT_TRUE(mesh.isTwoManifold(v));
 }
 
 TEST_F(SurfaceMeshTest, insertEdge)
 {
-    // check that insertEdge() is invalid
     addQuad();
     size_t ne = mesh.nEdges();
     mesh.insertEdge(v0,v2);
-    EXPECT_EQ(mesh.nEdges(), ne);
+    EXPECT_EQ(mesh.nEdges(), ne+1);
 }
 
 TEST_F(SurfaceMeshTest, propertyStats)

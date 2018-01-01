@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -108,7 +108,7 @@ void SurfaceFairing::implicitSmooth(unsigned int iterations, Scalar timeStep)
     for (auto v : m_mesh.vertices())
     {
         // lock one-ring of boundary vertices
-        if (m_mesh.isBoundary(v))
+        if (m_mesh.isSurfaceBoundary(v))
         {
             m_vlocked[v] = true;
 
@@ -264,7 +264,7 @@ void SurfaceFairing::fair()
     for (auto v : m_mesh.vertices())
     {
         // lock one-ring of boundary vertices
-        if (m_mesh.isBoundary(v))
+        if (m_mesh.isSurfaceBoundary(v))
         {
             m_vlocked[v] = true;
 
@@ -401,7 +401,7 @@ void SurfaceFairing::setupMatrixRow(
             row[v] += t.m_weight;
         }
 
-        // else if (d == 1 && m_mesh.isBoundary(v))
+        // else if (d == 1 && m_mesh.isSurfaceBoundary(v))
         // {
         //     // ignore?
         // }

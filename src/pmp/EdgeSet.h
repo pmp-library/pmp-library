@@ -1,6 +1,6 @@
 //=============================================================================
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -464,7 +464,11 @@ public:
 
     //! read edge set from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
-    virtual bool read(const std::string& filename, const IOOptions& options = IOOptions()) override;
+    bool read(const std::string& filename, const IOOptions& options = IOOptions()) override;
+
+    //! write edge set to file \c filename. file extensions determines file type.
+    //! \sa read(const std::string& filename)
+    bool write(const std::string& filename, const IOOptions& options = IOOptions()) const override;
 
     //!@}
     //! \name Memory Management
@@ -537,7 +541,7 @@ public:
     void setHalfedge(Vertex v, Halfedge h) { m_vconn[v].m_halfedge = h; }
 
     //! returns whether \c v is a boundary vertex
-    virtual bool isBoundary(Vertex v) const
+    bool isSegmentBoundary(Vertex v) const
     {
         Halfedge h(halfedge(v));
         Halfedge opposite(oppositeHalfedge(h));
@@ -545,28 +549,14 @@ public:
         return !h.isValid() || nextHalfedge(opposite) == h;
     }
 
-    //! returns whether \c v is isolated, i.e., not incident to any face
+    //! returns whether \c v is isolated, i.e., not incident to any edge
     bool isIsolated(Vertex v) const { return !halfedge(v).isValid(); }
 
-    //! returns whether \c v is a manifold vertex (not incident to several
-    //! wires)
-    virtual bool isManifold(Vertex v) const
+    //! returns whether \c v is a 1-manifold vertex, i.e., it has exactly two
+    //! incident edges.
+    bool isOneManifold(Vertex v) const
     {
-        // The vertex is manifold, if it has exactly 2 incident edges.
-        size_t count(0);
-
-        auto hc    = halfedges(v);
-        auto hcend = hc;
-        assert(hc);
-
-        do
-        {
-            ++count;
-            if (count > 2)
-                return false;
-        } while (++hc != hcend);
-
-        return count == 2;
+        return valence(v) == 2;
     }
 
     //! returns the vertex the halfedge \c h points to
@@ -633,8 +623,8 @@ public:
     //! halfedges.
     inline Edge edge(Halfedge h) const { return Edge(h.idx() >> 1); }
 
-    //! returns whether h is a "boundary" halfedge
-    virtual bool isBoundary(Halfedge h) const
+    //! returns whether h is a boundary halfedge
+    bool isSegmentBoundary(Halfedge h) const
     {
         Halfedge next = nextHalfedge(h);
         return !next.isValid() || oppositeHalfedge(next) == h;
@@ -656,9 +646,9 @@ public:
 
     //! returns whether \c e is a boundary edge, i.e., if one of its
     //! halfedges is a boundary halfedge.
-    bool isBoundary(Edge e) const
+    bool isSegmentBoundary(Edge e) const
     {
-        return (isBoundary(halfedge(e, 0)) || isBoundary(halfedge(e, 1)));
+        return (isSegmentBoundary(halfedge(e, 0)) || isSegmentBoundary(halfedge(e, 1)));
     }
 
     //!@}
@@ -868,7 +858,7 @@ public:
 
     //! insert edge between v0 and v1
     //! returns the new halfedge from v0 to v1
-    virtual Halfedge insertEdge(Vertex v0, Vertex v1);
+    Halfedge insertEdge(Vertex v0, Vertex v1);
 
     //! returns the valence (number of incident edges or neighboring
     //! vertices) of vertex \c v.

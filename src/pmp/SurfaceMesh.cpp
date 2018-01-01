@@ -1,6 +1,6 @@
 //=============================================================================
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,7 @@
 
 #include <pmp/SurfaceMesh.h>
 #include <pmp/io/SurfaceMeshIO.h>
+#include <pmp/io/EdgeSetIO.h>
 
 #include <cmath>
 
@@ -119,7 +120,15 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
 bool SurfaceMesh::read(const std::string& filename, const IOOptions& options)
 {
     SurfaceMeshIO reader(options);
-    return reader.read(*this, filename);
+    bool success = reader.read(*this, filename);
+
+    // try parent class if no reader is found
+    if (!success)
+    {
+        success = EdgeSet::read(filename,options);
+    }
+
+    return success;
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +136,15 @@ bool SurfaceMesh::read(const std::string& filename, const IOOptions& options)
 bool SurfaceMesh::write(const std::string& filename, const IOOptions& options) const
 {
     SurfaceMeshIO writer(options);
-    return writer.write(*this, filename);
+    bool success  = writer.write(*this, filename);
+
+    // try parent class if no writer is found
+    if (!success)
+    {
+        success = EdgeSet::write(filename,options);
+    }
+
+    return success;
 }
 
 //-----------------------------------------------------------------------------
@@ -180,7 +197,7 @@ void SurfaceMesh::adjustOutgoingHalfedge(Vertex v)
     {
         do
         {
-            if (isBoundary(h))
+            if (isSurfaceBoundary(h))
             {
                 setHalfedge(v, h);
                 return;
@@ -243,7 +260,7 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
     // test for topological errors
     for (i = 0, ii = 1; i < n; ++i, ++ii, ii %= n)
     {
-        if (!isBoundary(vertices[i]))
+        if (!isSurfaceBoundary(vertices[i]))
         {
             std::cerr << "SurfaceMesh::addFace: complex vertex\n";
             return Face();
@@ -252,7 +269,7 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
         halfedges[i] = findHalfedge(vertices[i], vertices[ii]);
         isNew[i]     = !halfedges[i].isValid();
 
-        if (!isNew[i] && !isBoundary(halfedges[i]))
+        if (!isNew[i] && !isSurfaceBoundary(halfedges[i]))
         {
             std::cerr << "SurfaceMesh::addFace: complex edge\n";
             return Face();
@@ -279,11 +296,11 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
                 do
                 {
                     boundaryPrev = oppositeHalfedge(nextHalfedge(boundaryPrev));
-                } while (!isBoundary(boundaryPrev) ||
+                } while (!isSurfaceBoundary(boundaryPrev) ||
                          boundaryPrev == innerPrev);
                 boundaryNext = nextHalfedge(boundaryPrev);
-                assert(isBoundary(boundaryPrev));
-                assert(isBoundary(boundaryNext));
+                assert(isSurfaceBoundary(boundaryPrev));
+                assert(isSurfaceBoundary(boundaryNext));
 
                 // ok ?
                 if (boundaryNext == innerNext)
@@ -568,7 +585,7 @@ SurfaceMesh::Halfedge SurfaceMesh::split(Edge e, Vertex v)
     setHalfedge(v, h0);
     setVertex(o0, v);
 
-    if (!isBoundary(h0))
+    if (!isSurfaceBoundary(h0))
     {
         Halfedge h1 = nextHalfedge(h0);
         Halfedge h2 = nextHalfedge(h1);
@@ -605,7 +622,7 @@ SurfaceMesh::Halfedge SurfaceMesh::split(Edge e, Vertex v)
         // halfedge handle of vh already is h0
     }
 
-    if (!isBoundary(o0))
+    if (!isSurfaceBoundary(o0))
     {
         Halfedge o1 = nextHalfedge(o0);
         Halfedge o2 = nextHalfedge(o1);
@@ -733,7 +750,7 @@ SurfaceMesh::Halfedge SurfaceMesh::insertEdge(Halfedge h0, Halfedge h1)
 bool SurfaceMesh::isFlipOk(Edge e) const
 {
     // boundary edges cannot be flipped
-    if (isBoundary(e))
+    if (isSurfaceBoundary(e))
         return false;
 
     // check if the flipped edge is already present in the mesh
@@ -816,24 +833,24 @@ bool SurfaceMesh::isCollapseOk(Halfedge v0v1)
     Halfedge h1, h2;
 
     // the edges v1-vl and vl-v0 must not be both boundary edges
-    if (!isBoundary(v0v1))
+    if (!isSurfaceBoundary(v0v1))
     {
         vl = toVertex(nextHalfedge(v0v1));
         h1 = nextHalfedge(v0v1);
         h2 = nextHalfedge(h1);
-        if (isBoundary(oppositeHalfedge(h1)) &&
-            isBoundary(oppositeHalfedge(h2)))
+        if (isSurfaceBoundary(oppositeHalfedge(h1)) &&
+            isSurfaceBoundary(oppositeHalfedge(h2)))
             return false;
     }
 
     // the edges v0-vr and vr-v1 must not be both boundary edges
-    if (!isBoundary(v1v0))
+    if (!isSurfaceBoundary(v1v0))
     {
         vr = toVertex(nextHalfedge(v1v0));
         h1 = nextHalfedge(v1v0);
         h2 = nextHalfedge(h1);
-        if (isBoundary(oppositeHalfedge(h1)) &&
-            isBoundary(oppositeHalfedge(h2)))
+        if (isSurfaceBoundary(oppositeHalfedge(h1)) &&
+            isSurfaceBoundary(oppositeHalfedge(h2)))
             return false;
     }
 
@@ -842,8 +859,8 @@ bool SurfaceMesh::isCollapseOk(Halfedge v0v1)
         return false;
 
     // edge between two boundary vertices should be a boundary edge
-    if (isBoundary(v0) && isBoundary(v1) && !isBoundary(v0v1) &&
-        !isBoundary(v1v0))
+    if (isSurfaceBoundary(v0) && isSurfaceBoundary(v1) && !isSurfaceBoundary(v0v1) &&
+        !isSurfaceBoundary(v1v0))
         return false;
 
     // test intersection of the one-rings of v0 and v1
@@ -1019,6 +1036,10 @@ void SurfaceMesh::deleteEdge(Edge e)
         deleteFace(f0);
     if (f1.isValid())
         deleteFace(f1);
+
+    // edge w/o faces: call the parent's delete function
+    if (!f0.isValid() && !f1.isValid())
+        EdgeSet::deleteEdge(e);
 }
 
 //-----------------------------------------------------------------------------
@@ -1054,7 +1075,7 @@ void SurfaceMesh::deleteFace(Face f)
     {
         setFace(*hc, Face());
 
-        if (isBoundary(oppositeHalfedge(*hc)))
+        if (isSurfaceBoundary(oppositeHalfedge(*hc)))
             deletedEdges.push_back(edge(*hc));
 
         vertices.push_back(toVertex(*hc));
@@ -1135,7 +1156,7 @@ void SurfaceMesh::beginGarbage()
     for (i = 0; i < nH; ++i)
     {
         h = Halfedge(i);
-        if (!isBoundary(h))
+        if (!isSurfaceBoundary(h))
             setFace(h, fmap[face(h)]);
     }
 

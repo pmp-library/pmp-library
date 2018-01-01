@@ -118,7 +118,23 @@ EdgeSet& EdgeSet::assign(const EdgeSet& rhs)
 bool EdgeSet::read(const std::string& filename, const IOOptions& options)
 {
     EdgeSetIO reader(options);
-    return reader.read(*this,filename);
+    bool success = reader.read(*this,filename);
+
+    // try parent class if no reader is found
+    if (!success)
+    {
+        success = PointSet::read(filename,options);
+    }
+
+    return success;
+}
+
+//-----------------------------------------------------------------------------
+
+bool EdgeSet::write(const std::string& filename, const IOOptions& options) const
+{
+    // there currently is no write support for EdgeSet, just call the parent
+    return PointSet::write(filename,options);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 //=============================================================================
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -193,7 +193,7 @@ public:
 
     //! write point set to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
-    bool write(const std::string& filename, const IOOptions& options = IOOptions()) const;
+    virtual bool write(const std::string& filename, const IOOptions& options = IOOptions()) const;
 
     //!@}
     //! \name Add new elements by hand

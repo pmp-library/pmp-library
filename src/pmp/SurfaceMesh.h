@@ -1,6 +1,6 @@
 //=============================================================================
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -207,7 +207,7 @@ public:
             if (m_mesh)
             {
                 m_halfedge = m_mesh->halfedge(v);
-                if (m_halfedge.isValid() && m_mesh->isBoundary(m_halfedge))
+                if (m_halfedge.isValid() && m_mesh->isSurfaceBoundary(m_halfedge))
                     operator++();
             }
         }
@@ -233,7 +233,7 @@ public:
             do
             {
                 m_halfedge = m_mesh->ccwRotatedHalfedge(m_halfedge);
-            } while (m_mesh->isBoundary(m_halfedge));
+            } while (m_mesh->isSurfaceBoundary(m_halfedge));
             m_active = true;
             return *this;
         }
@@ -244,7 +244,7 @@ public:
             assert(m_mesh && m_halfedge.isValid());
             do
                 m_halfedge = m_mesh->cwRotatedHalfedge(m_halfedge);
-            while (m_mesh->isBoundary(m_halfedge));
+            while (m_mesh->isSurfaceBoundary(m_halfedge));
             return *this;
         }
 
@@ -449,7 +449,7 @@ public:
 
     //! write mesh to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
-    bool write(const std::string& filename, const IOOptions& options = IOOptions()) const;
+    bool write(const std::string& filename, const IOOptions& options = IOOptions()) const override;
 
     //!@}
     //! \name Add new elements by hand
@@ -510,17 +510,23 @@ public:
 
     using EdgeSet::halfedge;
     using EdgeSet::halfedges;
-    using EdgeSet::isBoundary; //! CHECK why using? we're overriding
+
+    //! returns whether \c e is a boundary edge, i.e., if one of its
+    //! halfedges is a boundary halfedge.
+    bool isSurfaceBoundary(Edge e) const
+    {
+        return (isSurfaceBoundary(halfedge(e, 0)) || isSurfaceBoundary(halfedge(e, 1)));
+    }
 
     //! returns whether \c v is a boundary vertex
-    virtual bool isBoundary(Vertex v) const override
+    bool isSurfaceBoundary(Vertex v) const
     {
         Halfedge h(halfedge(v));
         return (!(h.isValid() && face(h).isValid()));
     }
 
     //! returns whether \c v is a manifold vertex (not incident to several patches)
-    virtual bool isManifold(Vertex v) const override
+    bool isTwoManifold(Vertex v) const
     {
         // The vertex is non-manifold if more than one gap exists, i.e.
         // more than one outgoing boundary halfedge.
@@ -529,7 +535,7 @@ public:
         if (hit)
             do
             {
-                if (isBoundary(*hit))
+                if (isSurfaceBoundary(*hit))
                     ++n;
             } while (++hit != hend);
         return n < 2;
@@ -542,7 +548,7 @@ public:
     void setFace(Halfedge h, Face f) { m_hfconn[h].m_face = f; }
 
     //! returns whether h is a boundary halfege, i.e., if its face does not exist.
-    virtual bool isBoundary(Halfedge h) const override
+    bool isSurfaceBoundary(Halfedge h) const
     {
         return !face(h).isValid();
     }
@@ -563,13 +569,13 @@ public:
     void setHalfedge(Face f, Halfedge h) { m_fconn[f].m_halfedge = h; }
 
     //! returns whether \c f is a boundary face, i.e., it one of its edges is a boundary edge.
-    bool isBoundary(Face f) const
+    bool isSurfaceBoundary(Face f) const
     {
         Halfedge h  = halfedge(f);
         Halfedge hh = h;
         do
         {
-            if (isBoundary(oppositeHalfedge(h)))
+            if (isSurfaceBoundary(oppositeHalfedge(h)))
                 return true;
             h = nextHalfedge(h);
         } while (h != hh);
@@ -755,14 +761,7 @@ public:
     //! \attention h0 and h1 have to belong to the same face
     Halfedge insertEdge(Halfedge h0, Halfedge h1);
 
-    //! invalidate insertEdge()
-    virtual Halfedge insertEdge(Vertex v0, Vertex v1) override
-    {
-        std::cerr << "insertEdge() is invalid for SurfaceMesh" << std::endl;
-        PMP_ASSERT(v0.isValid());
-        PMP_ASSERT(v1.isValid());
-        return Halfedge();
-    }
+    using EdgeSet::insertEdge;
 
     //! Check whether flipping edge \c e is topologically
     //! \attention This function is only valid for triangle meshes.

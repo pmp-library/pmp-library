@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -72,7 +72,7 @@ double cotanWeight(const SurfaceMesh& mesh, SurfaceMesh::Edge e)
     const dvec3 p0 = (dvec3)mesh.position(mesh.toVertex(h0));
     const dvec3 p1 = (dvec3)mesh.position(mesh.toVertex(h1));
 
-    if (!mesh.isBoundary(h0))
+    if (!mesh.isSurfaceBoundary(h0))
     {
         const dvec3 p2 =
             (dvec3)mesh.position(mesh.toVertex(mesh.nextHalfedge(h0)));
@@ -86,7 +86,7 @@ double cotanWeight(const SurfaceMesh& mesh, SurfaceMesh::Edge e)
         }
     }
 
-    if (!mesh.isBoundary(h1))
+    if (!mesh.isSurfaceBoundary(h1))
     {
         const dvec3 p2 =
             (dvec3)mesh.position(mesh.toVertex(mesh.nextHalfedge(h1)));
@@ -127,7 +127,7 @@ double voronoiArea(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
             h1 = mesh.nextHalfedge(h0);
             h2 = mesh.nextHalfedge(h1);
 
-            if (mesh.isBoundary(h0))
+            if (mesh.isSurfaceBoundary(h0))
                 continue;
 
             // three vertex positions
@@ -198,7 +198,7 @@ double voronoiAreaBarycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
                                                     vhend = vhit;
         do
         {
-            if (mesh.isBoundary(*vhit))
+            if (mesh.isSurfaceBoundary(*vhit))
                 continue;
 
             h0 = *vhit;
@@ -249,7 +249,7 @@ Scalar angleSum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
 {
     Scalar angles(0.0);
 
-    if (!mesh.isBoundary(v))
+    if (!mesh.isSurfaceBoundary(v))
     {
         const Point& p0 = mesh.position(v);
 

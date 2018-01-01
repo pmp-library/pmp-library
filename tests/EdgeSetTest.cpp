@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -136,7 +136,7 @@ TEST_F(EdgeSetTest, isBoundary)
     bool boundary = false;
     for (auto v : es.vertices())
     {
-        if (es.isBoundary(v))
+        if (es.isSegmentBoundary(v))
         {
             boundary = true;
             break;
@@ -151,7 +151,7 @@ TEST_F(EdgeSetTest, isManifold)
     bool nonManifold = false;
     for (auto v : es.vertices())
     {
-        if (!es.isManifold(v))
+        if (!es.isOneManifold(v))
         {
             nonManifold = true;
             break;
@@ -179,7 +179,7 @@ TEST_F(EdgeSetTest, isBoundaryHalfedge)
     for (auto e : es.edges())
     {
         auto h = es.halfedge(e,0);
-        if (es.isBoundary(h))
+        if (es.isSegmentBoundary(h))
         {
             boundary = true;
             break;

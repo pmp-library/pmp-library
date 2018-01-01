@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -366,7 +366,7 @@ void SurfaceRemeshing::splitLongEdges()
     SurfaceMesh::Vertex         vnew, v0, v1;
     SurfaceMesh::Edge           enew, e0, e1;
     SurfaceMesh::Face           f0, f1, f2, f3;
-    bool                        ok, isFeature, isBoundary;
+    bool                        ok, isFeature, isSurfaceBoundary;
     int                         i;
 
     for (ok = false, i = 0; !ok && i < 10; ++i)
@@ -384,7 +384,7 @@ void SurfaceRemeshing::splitLongEdges()
                 const Point& p1 = m_points[v1];
 
                 isFeature  = m_efeature[e];
-                isBoundary = m_mesh.isBoundary(e);
+                isSurfaceBoundary = m_mesh.isSurfaceBoundary(e);
 
                 vnew = m_mesh.addVertex((p0 + p1) * 0.5);
                 m_mesh.split(e, vnew);
@@ -395,7 +395,7 @@ void SurfaceRemeshing::splitLongEdges()
 
                 if (isFeature)
                 {
-                    enew = isBoundary ? SurfaceMesh::Edge(m_mesh.nEdges() - 2)
+                    enew = isSurfaceBoundary ? SurfaceMesh::Edge(m_mesh.nEdges() - 2)
                                       : SurfaceMesh::Edge(m_mesh.nEdges() - 3);
                     m_efeature[enew] = true;
                     m_vfeature[vnew] = true;
@@ -438,8 +438,8 @@ void SurfaceRemeshing::collapseShortEdges()
                 if (isTooShort(v0, v1))
                 {
                     // get status
-                    b0     = m_mesh.isBoundary(v0);
-                    b1     = m_mesh.isBoundary(v1);
+                    b0     = m_mesh.isSurfaceBoundary(v0);
+                    b1     = m_mesh.isSurfaceBoundary(v1);
                     l0     = m_vlocked[v0];
                     l1     = m_vlocked[v1];
                     f0     = m_vfeature[v0];
@@ -449,7 +449,7 @@ void SurfaceRemeshing::collapseShortEdges()
                     // boundary rules
                     if (b0 && b1)
                     {
-                        if (!m_mesh.isBoundary(e))
+                        if (!m_mesh.isSurfaceBoundary(e))
                             continue;
                     }
                     else if (b0)
@@ -597,10 +597,10 @@ void SurfaceRemeshing::flipEdges()
                     val2 = valence[v2];
                     val3 = valence[v3];
 
-                    valOpt0 = (m_mesh.isBoundary(v0) ? 4 : 6);
-                    valOpt1 = (m_mesh.isBoundary(v1) ? 4 : 6);
-                    valOpt2 = (m_mesh.isBoundary(v2) ? 4 : 6);
-                    valOpt3 = (m_mesh.isBoundary(v3) ? 4 : 6);
+                    valOpt0 = (m_mesh.isSurfaceBoundary(v0) ? 4 : 6);
+                    valOpt1 = (m_mesh.isSurfaceBoundary(v1) ? 4 : 6);
+                    valOpt2 = (m_mesh.isSurfaceBoundary(v2) ? 4 : 6);
+                    valOpt3 = (m_mesh.isSurfaceBoundary(v3) ? 4 : 6);
 
                     ve0 = (val0 - valOpt0);
                     ve1 = (val1 - valOpt1);
@@ -667,7 +667,7 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
     {
         for (auto v: m_mesh.vertices())
         {
-            if (!m_mesh.isBoundary(v) && !m_vlocked[v])
+            if (!m_mesh.isSurfaceBoundary(v) && !m_vlocked[v])
             {
                 projectToReference(v);
             }
@@ -678,7 +678,7 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
     {
         for (auto v: m_mesh.vertices())
         {
-            if (!m_mesh.isBoundary(v) && !m_vlocked[v])
+            if (!m_mesh.isSurfaceBoundary(v) && !m_vlocked[v])
             {
                 if (m_vfeature[v])
                 {
@@ -765,7 +765,7 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
         // update vertex positions
         for (auto v: m_mesh.vertices())
         {
-            if (!m_mesh.isBoundary(v) && !m_vlocked[v])
+            if (!m_mesh.isSurfaceBoundary(v) && !m_vlocked[v])
             {
                 m_points[v] += update[v];
             }
@@ -780,7 +780,7 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
     {
         for (auto v: m_mesh.vertices())
         {
-            if (!m_mesh.isBoundary(v) && !m_vlocked[v])
+            if (!m_mesh.isSurfaceBoundary(v) && !m_vlocked[v])
             {
                 projectToReference(v);
             }
