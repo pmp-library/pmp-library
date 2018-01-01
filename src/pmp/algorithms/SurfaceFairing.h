@@ -47,6 +47,8 @@ namespace pmp {
 //! \details The class provides two main smoothing functions:
 //!   \li \c implicitSmooth() to perform iterative bi-Laplacian smoothing
 //!   \li \c fair() to compute a limit surface.
+//!
+//! See also \cite desbrun_1999_implicit .
 class SurfaceFairing
 {
 public:

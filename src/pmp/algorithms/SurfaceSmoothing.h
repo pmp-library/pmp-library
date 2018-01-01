@@ -43,6 +43,7 @@ namespace pmp {
 //=============================================================================
 
 //! \brief A class for Laplacian smoothing
+//! \details See also \cite desbrun_1999_implicit .
 class SurfaceSmoothing
 {
 public:
