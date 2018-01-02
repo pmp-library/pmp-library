@@ -811,7 +811,7 @@ private:
     {
         if (facesSize() == PMP_MAX_INDEX - 1)
         {
-            std::cerr << "newFacec: cannot allocate face, max. index reached" << std::endl;
+            std::cerr << "newFace: cannot allocate face, max. index reached" << std::endl;
             return Face();
         }
 
