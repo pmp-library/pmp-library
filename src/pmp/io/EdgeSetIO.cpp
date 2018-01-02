@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -40,23 +40,52 @@ namespace pmp {
 
 //=============================================================================
 
-bool EdgeSetIO::read(EdgeSet& es, const std::string& filename)
+std::string getExtension(const std::string& filename)
 {
     // check file extension
     std::string::size_type dot(filename.rfind("."));
     if (dot == std::string::npos)
-        return false;
+        return std::string("");
 
     std::string ext = filename.substr(dot + 1, filename.length() - dot - 1);
     std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
+    return ext;
+}
 
-    if (ext == "knt")
+//-----------------------------------------------------------------------------
+
+bool EdgeSetIO::read(EdgeSet& es, const std::string& filename)
+{
+    auto ext = getExtension(filename);
+
+    if (ext == "")
     {
-        return readKNT(es,filename);
+        return false;
+    }
+    else if (ext == "knt")
+    {
+        return readKNT(es, filename);
     }
 
     return false;
+}
 
+//-----------------------------------------------------------------------------
+
+bool EdgeSetIO::write(const EdgeSet& es, const std::string& filename)
+{
+    auto ext = getExtension(filename);
+
+    if (ext == "")
+    {
+        return false;
+    }
+    else if (ext == "knt")
+    {
+        return writeKNT(es, filename);
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -71,11 +100,11 @@ bool EdgeSetIO::readKNT(EdgeSet& es, const std::string& filename)
     // clear edge set
     es.clear();
 
-    char  line[100], dummy[9];
+    char         line[100], dummy[9];
     unsigned int nV, nE;
     unsigned int i, items;
-    int  idx_i, idx_j;
-    Point p;
+    int          idx_i, idx_j;
+    Point        p;
 
     // skip every line before "vertices..."
     do
@@ -85,7 +114,6 @@ bool EdgeSetIO::readKNT(EdgeSet& es, const std::string& filename)
             items = sscanf(line, "%s", dummy);
         }
     } while (std::strncmp(dummy, "vertices", 8));
-
 
     // read #vertices, #edges
     items = sscanf(line, "%s %u %s %u", dummy, &nV, dummy, &nE);
@@ -104,7 +132,7 @@ bool EdgeSetIO::readKNT(EdgeSet& es, const std::string& filename)
     typedef EdgeSet::Vertex Vertex;
 
     // read edges
-    for (i = 0; i<nE && !feof(in); ++i)
+    for (i = 0; i < nE && !feof(in); ++i)
     {
         if (fgets(line, 100, in) != NULL)
         {
@@ -115,6 +143,37 @@ bool EdgeSetIO::readKNT(EdgeSet& es, const std::string& filename)
 
     fclose(in);
 
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool EdgeSetIO::writeKNT(const EdgeSet& es, const std::string& filename)
+{
+    FILE* out = fopen(filename.c_str(), "w");
+    if (!out)
+        return false;
+
+    // header
+    fprintf(out, "%s %f\n", "time", 0.0);
+    fprintf(out, "%s %zi %s %zi\n", "vertices", es.nVertices(), "edges", es.nEdges());
+
+    // vertices
+    for (auto v : es.vertices())
+    {
+        const Point p = es.position(v);
+        fprintf(out, "%f %f %f\n", p[0], p[1], p[2]);
+    }
+
+    // edges
+    for (auto e : es.edges())
+    {
+        const auto v0 = es.toVertex(es.halfedge(e, 0));
+        const auto v1 = es.toVertex(es.halfedge(e, 1));
+        fprintf(out, "%i %i\n", v0.idx(), v1.idx());
+    }
+
+    fclose(out);
     return true;
 }
 

@@ -130,6 +130,18 @@ TEST_F(EdgeSetTest, read)
     EXPECT_EQ(es.nEdges(), size_t(36));
 }
 
+TEST_F(EdgeSetTest, write)
+{
+    es.read("pmp-data/knt/3rings.knt");
+    EXPECT_EQ(es.nVertices(), size_t(36));
+    EXPECT_EQ(es.nEdges(), size_t(36));
+    es.write("test.knt");
+    es.clear();
+    es.read("test.knt");
+    EXPECT_EQ(es.nVertices(), size_t(36));
+    EXPECT_EQ(es.nEdges(), size_t(36));
+}
+
 TEST_F(EdgeSetTest, isBoundary)
 {
     es.read("pmp-data/knt/3rings.knt");

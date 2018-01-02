@@ -60,6 +60,12 @@ void EdgeSetProcessingViewer::keyboard(int key, int code, int action, int mods)
             updateEdgeSet();
             break;
         }
+        case GLFW_KEY_O:
+        {
+            m_edgeSet.write("output.knt");
+            std::cout << "wrote EdgeSet to output.knt" << std::endl;
+            break;
+        }
         default:
         {
             EdgeSetViewer::keyboard(key, code, action, mods);

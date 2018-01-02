@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -56,15 +56,11 @@ public:
     bool read(EdgeSet& es, const std::string& filename);
 
     //! \brief write edge set \c es to file \c filename
-    bool write(const EdgeSet& es, const std::string& filename)
-    {
-        PMP_ASSERT(es.nVertices() > 0);
-        PMP_ASSERT(filename.length() > 0);
-        return false;
-    }
+    bool write(const EdgeSet& es, const std::string& filename);
 
 private:
-    static bool readKNT(EdgeSet& ps, const std::string& filename);
+    static bool readKNT(EdgeSet& es, const std::string& filename);
+    static bool writeKNT(const EdgeSet& es, const std::string& filename);
 
 private:
     IOOptions m_options;
