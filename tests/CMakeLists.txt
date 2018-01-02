@@ -21,7 +21,7 @@ file(COPY ${PROJECT_SOURCE_DIR}/external/pmp-data DESTINATION  ${CMAKE_CURRENT_B
 # source files
 file(GLOB SOURCES ./*.cpp)
 
-# build test runnger
+# build test runner
 add_executable(gtest_runner ${SOURCES})
 
 if(UNIX OR APPLE)
