@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017 The pmp-library developers
+// Copyright (C) 2017-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -142,6 +142,9 @@ TEST_F(PointSetTest, write)
     ps.write("test.xyz");
     ps.clear();
     EXPECT_EQ(ps.nVertices(), size_t(0));
+
+    // check malformed file names
+    EXPECT_FALSE(ps.write("testxxyyzz"));
 }
 
 TEST_F(PointSetTest, read)

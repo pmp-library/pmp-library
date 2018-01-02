@@ -267,6 +267,9 @@ TEST_F(SurfaceMeshTest, polyIO)
     mesh.read("test.poly");
     EXPECT_EQ(mesh.nVertices(), size_t(3));
     EXPECT_EQ(mesh.nFaces(), size_t(1));
+
+    // check malformed file names
+    EXPECT_FALSE(mesh.write("testpolyly"));
 }
 
 TEST_F(SurfaceMeshTest, objIO)
@@ -323,8 +326,18 @@ TEST_F(SurfaceMeshTest, stlIO)
     EXPECT_EQ(mesh.nVertices(), size_t(12));
     EXPECT_EQ(mesh.nFaces(), size_t(20));
     EXPECT_EQ(mesh.nEdges(), size_t(30));
-    SurfaceNormals::computeVertexNormals(mesh);
-    mesh.write("test.stl");
+
+    // try to write without normals being present
+    EXPECT_FALSE(mesh.write("test.stl"));
+
+    // the same with normals computed
+    SurfaceNormals::computeFaceNormals(mesh);
+    EXPECT_TRUE(mesh.write("test.stl"));
+
+    // try to write non-triangle mesh
+    mesh.clear();
+    addQuad();
+    EXPECT_FALSE(mesh.write("test.stl"));
 }
 
 

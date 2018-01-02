@@ -140,6 +140,9 @@ TEST_F(EdgeSetTest, write)
     es.read("test.knt");
     EXPECT_EQ(es.nVertices(), size_t(36));
     EXPECT_EQ(es.nEdges(), size_t(36));
+
+    // check malformed file names
+    EXPECT_FALSE(es.write("testknodde"));
 }
 
 TEST_F(EdgeSetTest, isBoundary)

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -72,6 +72,10 @@ bool PointSetIO::readXYZ(PointSet& ps, const std::string& filename)
 
 bool PointSetIO::writeXYZ(const PointSet& ps, const std::string& filename)
 {
+    // check proper file name
+    if (filename.size() < 4 || filename.compare(filename.size() - 4, 4, ".xyz"))
+        return false;
+
     std::ofstream ofs(filename);
 
     auto vnormal = ps.getVertexProperty<Normal>("v:normal");
