@@ -314,45 +314,6 @@ TEST_F(SurfaceMeshAlgorithmsTest, uniformRemeshing)
     EXPECT_EQ(mesh.nVertices(),size_t(642));
 }
 
-TEST_F(SurfaceMeshAlgorithmsTest, implicitSmooth)
-{
-    mesh.read("pmp-data/off/hemisphere.off");
-    auto bbz = mesh.bounds().max()[2];
-    SurfaceFairing sf(mesh);
-    sf.implicitSmooth(3,0.01);
-    auto bbs = mesh.bounds().max()[2];
-    EXPECT_LT(bbs,bbz);
-}
-
-TEST_F(SurfaceMeshAlgorithmsTest, implicitSmoothSelected)
-{
-    mesh.read("pmp-data/off/sphere_low.off");
-    auto bb = mesh.bounds();
-    Scalar yrange = bb.max()[1] - bb.min()[1];
-    auto vselected = mesh.vertexProperty<bool>("v:selected",false);
-    for (auto v : mesh.vertices())
-    {
-        auto p = mesh.position(v);
-        if (p[1] >= (bb.max()[1] - 0.2*yrange))
-        {
-            vselected[v] = false;
-        }
-        else if (p[1] < (bb.max()[1] - 0.2*yrange) &&
-                 p[1] > (bb.max()[1] - 0.8*yrange))
-        {
-            vselected[v] = true;
-        }
-        else
-        {
-            vselected[v] = false;
-        }
-    }
-    SurfaceFairing sf(mesh);
-    sf.implicitSmooth(3,0.1);
-    auto bb2 = mesh.bounds();
-    EXPECT_LT(bb2.size(),bb.size());
-}
-
 TEST_F(SurfaceMeshAlgorithmsTest, fairing)
 {
     mesh.read("pmp-data/off/hemisphere.off");

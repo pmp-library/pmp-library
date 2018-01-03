@@ -87,35 +87,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             sf.detectAngle(70);
             break;
         }
-        case GLFW_KEY_I:
-        {
-            // auto bb = m_mesh.bounds();
-            // Scalar yrange = bb.max()[1] - bb.min()[1];
-            // auto vselected = m_mesh.vertexProperty<bool>("v:selected",false);
-            // for (auto v : m_mesh.vertices())
-            // {
-            //     auto p = m_mesh.position(v);
-            //     if (p[1] >= (bb.max()[1] - 0.2*yrange))
-            //     {
-            //         vselected[v] = false;
-            //     }
-            //     else if (p[1] < (bb.max()[1] - 0.2*yrange) &&
-            //              p[1] > (bb.max()[1] - 0.8*yrange))
-            //     {
-            //         vselected[v] = true;
-            //     }
-            //     else
-            //     {
-            //         vselected[v] = false;
-            //     }
-            // }
-
-            SurfaceFairing ss(m_mesh);
-            ss.implicitSmooth(1,0.000001);
-            //ss.fair();
-            updateMesh();
-            break;
-        }
         case GLFW_KEY_L:
         {
             if (m_mesh.isTriangleMesh())

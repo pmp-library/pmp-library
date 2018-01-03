@@ -13,6 +13,10 @@ if (EMSCRIPTEN)
     target_link_libraries(smoothing pmp_gl)
     set_target_properties(smoothing PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/fandisk.off@input.off")
 
+    add_executable(fairing fairing.cpp data/shell.html)
+    target_link_libraries(fairing pmp_gl)
+    set_target_properties(fairing PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/hemisphere.off@input.off")
+
     add_executable(mpview mpview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h data/shell.html)
     target_link_libraries(mpview pmp_gl)
     set_target_properties(mpview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
@@ -55,6 +59,9 @@ else()
 
         add_executable(smoothing smoothing.cpp)
         target_link_libraries(smoothing pmp_gl)
+
+        add_executable(fairing fairing.cpp)
+        target_link_libraries(fairing pmp_gl)
 
         add_executable(parameterization parameterization.cpp)
         target_link_libraries(parameterization pmp_gl)

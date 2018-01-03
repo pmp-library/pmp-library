@@ -68,173 +68,7 @@ SurfaceFairing::~SurfaceFairing()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceFairing::implicitSmooth(unsigned int iterations, Scalar timeStep)
-{
-    // scale mesh into unit sphere
-    auto   bounds = m_mesh.bounds();
-    Point  center = 0.5 * (bounds.min() + bounds.max());
-    Scalar radius = 0.5 * distance(bounds.max(), bounds.min());
-    for (auto v : m_mesh.vertices())
-    {
-        m_points[v] -= center;
-        m_points[v] /= radius;
-    }
-
-    // compute weights
-    for (auto v : m_mesh.vertices())
-    {
-        m_vweight[v] = 0.5 / voronoiArea(m_mesh, v);
-    }
-    for (auto e : m_mesh.edges())
-    {
-        m_eweight[e] = std::max(0.0, cotanWeight(m_mesh, e));
-    }
-
-    // check whether some vertices are selected
-    bool noSelection = true;
-    if (m_vselected)
-    {
-        for (auto v : m_mesh.vertices())
-        {
-            if (m_vselected[v])
-            {
-                noSelection = false;
-                break;
-            }
-        }
-    }
-
-    // lock vertices
-    for (auto v : m_mesh.vertices())
-    {
-        // lock one-ring of boundary vertices
-        if (m_mesh.isSurfaceBoundary(v))
-        {
-            m_vlocked[v] = true;
-
-            for (auto vv : m_mesh.vertices(v))
-            {
-                m_vlocked[vv] = true;
-            }
-        }
-
-        if (!noSelection && !m_vselected[v])
-        {
-            m_vlocked[v] = true;
-        }
-
-        if (m_mesh.isIsolated(v))
-        {
-            m_vlocked[v] = true;
-        }
-    }
-
-    // collect free vertices
-    std::vector<SurfaceMesh::Vertex> vertices;
-    vertices.reserve(m_mesh.nVertices());
-    for (auto v : m_mesh.vertices())
-    {
-        if (!m_vlocked[v])
-        {
-            m_idx[v] = vertices.size();
-            vertices.push_back(v);
-        }
-    }
-
-    // construct matrix
-    const unsigned int n = vertices.size();
-    SparseMatrix       A(n, n);
-    Eigen::MatrixXd    X(n, 3), B(n, 3);
-
-    std::map<SurfaceMesh::Vertex, double> row;
-    std::vector<Triplet> triplets;
-
-    for (unsigned int i = 0; i < n; ++i)
-    {
-        auto v = vertices[i];
-
-        setupMatrixRow(v, m_vweight, m_eweight, 2, row);
-
-        for (auto r : row)
-        {
-            auto vv = r.first;
-            auto w  = timeStep * r.second;
-
-            if (m_idx[vv] != -1)
-            {
-                auto value = vv == v ? 1.0 / m_vweight[v] + w : w;
-                triplets.push_back(Triplet(i, m_idx[vv], value));
-            }
-        }
-    }
-
-    A.setFromTriplets(triplets.begin(), triplets.end());
-
-    // factorize matrix
-    Eigen::ConjugateGradient<SparseMatrix, Eigen::Upper | Eigen::Lower> solver;
-    solver.compute(A);
-
-    if (solver.info() != Eigen::Success)
-    {
-        std::cerr << "Factorization failed!" << std::endl;
-        return;
-    }
-
-    // perform smoothing iterations
-    for (unsigned int iter = 0; iter < iterations; ++iter)
-    {
-        // setup rhs
-        for (unsigned int i = 0; i < n; ++i)
-        {
-            auto v = vertices[i];
-
-            B(i, 0) = m_points[v][0] / m_vweight[v];
-            B(i, 1) = m_points[v][1] / m_vweight[v];
-            B(i, 2) = m_points[v][2] / m_vweight[v];
-
-            setupMatrixRow(v, m_vweight, m_eweight, 2, row);
-
-            for (auto r : row)
-            {
-                auto vv = r.first;
-
-                if (m_idx[vv] == -1)
-                {
-                    auto w = timeStep * r.second;
-                    B(i, 0) -= w * m_points[vv][0];
-                    B(i, 1) -= w * m_points[vv][1];
-                    B(i, 2) -= w * m_points[vv][2];
-                }
-            }
-        }
-
-        // solve linear system
-        X = solver.solve(B);
-
-        if (solver.info() != Eigen::Success)
-        {
-            std::cerr << "Solving failed!" << std::endl;
-            return;
-        }
-
-        for (unsigned int i = 0; i < n; ++i)
-        {
-            auto v      = vertices[i];
-            m_points[v] = Point(X(m_idx[v], 0), X(m_idx[v], 1), X(m_idx[v], 2));
-        }
-    }
-
-    // undo unit sphere scaling
-    for (auto v : m_mesh.vertices())
-    {
-        m_points[v] *= radius;
-        m_points[v] += center;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SurfaceFairing::fair()
+void SurfaceFairing::fair(unsigned int _k)
 {
     // compute cotan weights
     for (auto v : m_mesh.vertices())
@@ -260,20 +94,37 @@ void SurfaceFairing::fair()
         }
     }
 
-    // lock vertices
+    // lock _k locked boundary rings
     for (auto v : m_mesh.vertices())
     {
-        // lock one-ring of boundary vertices
+        // lock boundary
         if (m_mesh.isSurfaceBoundary(v))
         {
             m_vlocked[v] = true;
 
-            for (auto vv : m_mesh.vertices(v))
+            // lock one-ring of boundary
+            if (_k > 1)
             {
-                m_vlocked[vv] = true;
+                for (auto vv : m_mesh.vertices(v))
+                {
+                    m_vlocked[vv] = true;
+
+                    // lock two-ring of boundary
+                    if (_k > 2)
+                    {
+                        for (auto vvv : m_mesh.vertices(vv))
+                        {
+                            m_vlocked[vvv] = true;
+                        }
+                    }
+                }
             }
         }
+    }
 
+    // lock un-selected and isolated vertices
+    for (auto v : m_mesh.vertices())
+    {
         if (!noSelection && !m_vselected[v])
         {
             m_vlocked[v] = true;
@@ -300,7 +151,7 @@ void SurfaceFairing::fair()
     // construct matrix & rhs
     const unsigned int n = vertices.size();
     SparseMatrix       A(n, n);
-    Eigen::MatrixXd    X(n, 3), B(n, 3);
+    Eigen::MatrixXd    B(n, 3);
 
     std::map<SurfaceMesh::Vertex, double> row;
     std::vector<Triplet> triplets;
@@ -311,7 +162,7 @@ void SurfaceFairing::fair()
         B(i, 1) = 0.0;
         B(i, 2) = 0.0;
 
-        setupMatrixRow(vertices[i], m_vweight, m_eweight, 2, row);
+        setupMatrixRow(vertices[i], m_vweight, m_eweight, _k, row);
 
         for (auto r : row)
         {
@@ -333,28 +184,20 @@ void SurfaceFairing::fair()
 
     A.setFromTriplets(triplets.begin(), triplets.end());
 
-    Eigen::ConjugateGradient<SparseMatrix, Eigen::Upper | Eigen::Lower> solver;
-    solver.compute(A);
-
+    // solve A*X = B
+    Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver(A);
+    Eigen::MatrixXd                                    X = solver.solve(B);
     if (solver.info() != Eigen::Success)
     {
-        std::cerr << "Factorization failed!" << std::endl;
-        return;
+        std::cerr << "SurfaceFairing: Could not solve linear system\n";
     }
-
-    // solve linear system
-    X = solver.solve(B);
-
-    if (solver.info() != Eigen::Success)
+    else
     {
-        std::cerr << "Solving failed!" << std::endl;
-        return;
-    }
-
-    for (unsigned int i = 0; i < n; ++i)
-    {
-        auto v      = vertices[i];
-        m_points[v] = Point(X(m_idx[v], 0), X(m_idx[v], 1), X(m_idx[v], 2));
+        for (unsigned int i = 0; i < n; ++i)
+        {
+            auto v      = vertices[i];
+            m_points[v] = Point(X(m_idx[v], 0), X(m_idx[v], 1), X(m_idx[v], 2));
+        }
     }
 }
 
@@ -377,9 +220,12 @@ struct Triple
 //-----------------------------------------------------------------------------
 
 void SurfaceFairing::setupMatrixRow(
-    const SurfaceMesh::Vertex v, SurfaceMesh::VertexProperty<double> vweight,
-    SurfaceMesh::EdgeProperty<double> eweight, unsigned int laplaceDegree,
-    std::map<SurfaceMesh::Vertex, double>&                  row)
+    const SurfaceMesh::Vertex v,
+    SurfaceMesh::VertexProperty<double> vweight,
+    SurfaceMesh::EdgeProperty<double> eweight,
+    unsigned int laplaceDegree,
+    std::map<SurfaceMesh::Vertex,
+    double>&                  row)
 {
     Triple t(v, 1.0, laplaceDegree);
 

@@ -58,12 +58,14 @@ public:
     //! destructor
     ~SurfaceFairing();
 
-    //! perform \c n iterations of implicit bi-Laplacian smoothing with
-    //! a timestep \c t.
-    void implicitSmooth(unsigned int n, Scalar t);
+    //! minimize surface area (class SurfaceFairing::fair(1))
+    void minimizeArea() { fair(1); }
 
-    //! compute limit surface (minimize curvature energy)
-    void fair();
+    //! minimize surface curvature (class SurfaceFairing::fair(2))
+    void minimizeCurvature() { fair(2); }
+
+    //! compute surface by solving k-harmonic equation
+    void fair(unsigned int k=2);
 
 private:
     void setupMatrixRow(const SurfaceMesh::Vertex           v,
