@@ -68,7 +68,7 @@ SurfaceFairing::~SurfaceFairing()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceFairing::fair(unsigned int _k)
+void SurfaceFairing::fair(unsigned int k)
 {
     // compute cotan weights
     for (auto v : m_mesh.vertices())
@@ -94,7 +94,7 @@ void SurfaceFairing::fair(unsigned int _k)
         }
     }
 
-    // lock _k locked boundary rings
+    // lock k locked boundary rings
     for (auto v : m_mesh.vertices())
     {
         // lock boundary
@@ -103,14 +103,14 @@ void SurfaceFairing::fair(unsigned int _k)
             m_vlocked[v] = true;
 
             // lock one-ring of boundary
-            if (_k > 1)
+            if (k > 1)
             {
                 for (auto vv : m_mesh.vertices(v))
                 {
                     m_vlocked[vv] = true;
 
                     // lock two-ring of boundary
-                    if (_k > 2)
+                    if (k > 2)
                     {
                         for (auto vvv : m_mesh.vertices(vv))
                         {
@@ -162,7 +162,7 @@ void SurfaceFairing::fair(unsigned int _k)
         B(i, 1) = 0.0;
         B(i, 2) = 0.0;
 
-        setupMatrixRow(vertices[i], m_vweight, m_eweight, _k, row);
+        setupMatrixRow(vertices[i], m_vweight, m_eweight, k, row);
 
         for (auto r : row)
         {
@@ -185,8 +185,9 @@ void SurfaceFairing::fair(unsigned int _k)
     A.setFromTriplets(triplets.begin(), triplets.end());
 
     // solve A*X = B
-    Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver(A);
-    Eigen::MatrixXd                                    X = solver.solve(B);
+    Eigen::SimplicialLDLT<SparseMatrix> solver(A);
+    Eigen::MatrixXd                     X = solver.solve(B);
+
     if (solver.info() != Eigen::Success)
     {
         std::cerr << "SurfaceFairing: Could not solve linear system\n";
@@ -219,13 +220,11 @@ struct Triple
 
 //-----------------------------------------------------------------------------
 
-void SurfaceFairing::setupMatrixRow(
-    const SurfaceMesh::Vertex v,
-    SurfaceMesh::VertexProperty<double> vweight,
-    SurfaceMesh::EdgeProperty<double> eweight,
-    unsigned int laplaceDegree,
-    std::map<SurfaceMesh::Vertex,
-    double>&                  row)
+void SurfaceFairing::setupMatrixRow(const SurfaceMesh::Vertex           v,
+                                    SurfaceMesh::VertexProperty<double> vweight,
+                                    SurfaceMesh::EdgeProperty<double>   eweight,
+                                    unsigned int laplaceDegree,
+                                    std::map<SurfaceMesh::Vertex, double>& row)
 {
     Triple t(v, 1.0, laplaceDegree);
 

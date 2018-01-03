@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,12 +43,8 @@ namespace pmp {
 
 //=============================================================================
 
-//! \brief A class for fairing a surface mesh.
-//! \details The class provides two main smoothing functions:
-//!   \li \c implicitSmooth() to perform iterative bi-Laplacian smoothing
-//!   \li \c fair() to compute a limit surface.
-//!
-//! See also \cite desbrun_1999_implicit .
+//! \brief A class for implicit fairing a surface mesh.
+//! \details See also \cite desbrun_1999_implicit .
 class SurfaceFairing
 {
 public:
@@ -65,7 +61,7 @@ public:
     void minimizeCurvature() { fair(2); }
 
     //! compute surface by solving k-harmonic equation
-    void fair(unsigned int k=2);
+    void fair(unsigned int k = 2);
 
 private:
     void setupMatrixRow(const SurfaceMesh::Vertex           v,
