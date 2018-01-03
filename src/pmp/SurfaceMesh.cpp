@@ -1,6 +1,6 @@
 //=============================================================================
-// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -424,12 +424,11 @@ size_t SurfaceMesh::valence(Face f) const
 {
     size_t count(0);
 
-    VertexAroundFaceCirculator fvit  = vertices(f);
-    VertexAroundFaceCirculator fvend = fvit;
-    do
+    for (auto v : vertices(f))
     {
+        PMP_ASSERT(v.isValid());
         ++count;
-    } while (++fvit != fvend);
+    }
 
     return count;
 }
@@ -438,9 +437,8 @@ size_t SurfaceMesh::valence(Face f) const
 
 bool SurfaceMesh::isTriangleMesh() const
 {
-    FaceIterator fit = facesBegin(), fend = facesEnd();
-    for (; fit != fend; ++fit)
-        if (valence(*fit) != 3)
+    for (auto f : faces())
+        if (valence(f) != 3)
             return false;
 
     return true;
@@ -450,9 +448,8 @@ bool SurfaceMesh::isTriangleMesh() const
 
 bool SurfaceMesh::isQuadMesh() const
 {
-    FaceIterator fit = facesBegin(), fend = facesEnd();
-    for (; fit != fend; ++fit)
-        if (valence(*fit) != 4)
+    for (auto f : faces())
+        if (valence(f) != 4)
             return false;
 
     return true;
@@ -462,12 +459,10 @@ bool SurfaceMesh::isQuadMesh() const
 
 void SurfaceMesh::triangulate()
 {
-    /* The iterators will stay valid, even though new faces are added,
-     because they are now implemented index-based instead of
-     pointer-based.
-     */
-    FaceIterator fit = facesBegin(), fend = facesEnd();
-    for (; fit != fend; ++fit)
+    // The iterators will stay valid, even though new faces are added, because
+    // they are now implemented index-based instead of pointer-based.
+    auto fend = facesEnd();
+    for (auto fit = facesBegin(); fit != fend; ++fit)
         triangulate(*fit);
 }
 
@@ -475,15 +470,10 @@ void SurfaceMesh::triangulate()
 
 void SurfaceMesh::triangulate(Face f)
 {
-    /*
-     Split an arbitrary face into triangles by connecting
-     each vertex of fh after its second to vh.
-
-     - fh will remain valid (it will become one of the
-     triangles)
-     - the halfedge handles of the new triangles will
-     point to the old halfedges
-     */
+    // Split an arbitrary face into triangles by connecting each vertex of \c f
+    // after its second to \c v .\c f will remain valid (it will become one of
+    // the triangles). The halfedge handles of the new triangles will point to
+    // the old halfedges.
 
     Halfedge baseH  = halfedge(f);
     Vertex   startV = fromVertex(baseH);
@@ -521,11 +511,10 @@ void SurfaceMesh::triangulate(Face f)
 
 void SurfaceMesh::split(Face f, Vertex v)
 {
-    /*
-     Split an arbitrary face into triangles by connecting each vertex of fh to vh.
-     - fh will remain valid (it will become one of the triangles)
-     - the halfedge handles of the new triangles will point to the old halfeges
-     */
+    // Split an arbitrary face into triangles by connecting each vertex of \c f
+    // to \c v . \c f will remain valid (it will become one of the
+    // triangles). The halfedge handles of the new triangles will point to the
+    // old halfedges.
 
     Halfedge hend = halfedge(f);
     Halfedge h    = nextHalfedge(hend);
@@ -754,7 +743,6 @@ bool SurfaceMesh::isFlipOk(Edge e) const
         return false;
 
     // check if the flipped edge is already present in the mesh
-
     Halfedge h0 = halfedge(e, 0);
     Halfedge h1 = halfedge(e, 1);
 
@@ -774,10 +762,6 @@ bool SurfaceMesh::isFlipOk(Edge e) const
 
 void SurfaceMesh::flip(Edge e)
 {
-    // CAUTION : Flipping a halfedge may result in
-    // a non-manifold mesh, hence check for yourself
-    // whether this operation is allowed or not!
-
     //let's make it sure it is actually checked
     assert(isFlipOk(e));
 
@@ -1003,21 +987,12 @@ void SurfaceMesh::deleteVertex(Vertex v)
     std::vector<Face> incident_faces;
     incident_faces.reserve(6);
 
-    FaceAroundVertexCirculator fc, fcend;
-    fc = fcend = faces(v);
-
-    if (fc)
-        do
-        {
-            incident_faces.push_back(*fc);
-        } while (++fc != fcend);
+    for (auto f : faces(v))
+        incident_faces.push_back(f);
 
     // delete incident faces
-    std::vector<Face>::iterator fit(incident_faces.begin()),
-        fend(incident_faces.end());
-
-    for (; fit != fend; ++fit)
-        deleteFace(*fit);
+    for (auto f : incident_faces)
+        deleteFace(f);
 
     EdgeSet::deleteVertex(v);
 }
