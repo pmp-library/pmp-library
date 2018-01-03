@@ -34,9 +34,13 @@
 
 //=============================================================================
 
+//! \def PMP_ASSERT(x)
+//! Custom assert macro that allows to silence unused variable warnings with no
+//! overhead. Generates no code in release mode since if the argument to
+//! sizeof() is an expression it is not evaluated. In debug mode we just fall
+//! back to the default assert().
 #ifdef NDEBUG
-// this macro allows to avoid unused variable warnings with no overhead
-#define PMP_ASSERT(x)        \
+#define PMP_ASSERT(x)    \
     do                   \
     {                    \
         (void)sizeof(x); \
@@ -45,7 +49,8 @@
 #define PMP_ASSERT(x) assert(x)
 #endif
 
-// simple pretty-printing debug macro
+//! \def PMP_SHOW(x)
+//! A simple pretty-printing debug macro. Prints the expression and its value.
 #define PMP_SHOW(x) std::cerr << #x " = '" << x << "'" << std::endl;
 
 //=============================================================================
