@@ -119,11 +119,9 @@ double voronoiArea(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
         double                dotP, dotQ, dotR, triArea;
         double                cotQ, cotR;
 
-        SurfaceMesh::HalfedgeAroundVertexCirculator vhit  = mesh.halfedges(v),
-                                                    vhend = vhit;
-        do
+        for (auto h: mesh.halfedges(v))
         {
-            h0 = *vhit;
+            h0 = h;
             h1 = mesh.nextHalfedge(h0);
             h2 = mesh.nextHalfedge(h1);
 
@@ -173,7 +171,7 @@ double voronoiArea(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
                 area += 0.125 * (sqrnorm(PR) * clampCot(cotQ) +
                                  sqrnorm(PQ) * clampCot(cotR));
             }
-        } while (++vhit != vhend);
+        }
     }
 
     assert(!std::isnan(area));
@@ -194,14 +192,12 @@ double voronoiAreaBarycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
         SurfaceMesh::Halfedge h0, h1;
         Point                 Q, R, PQ, PR;
 
-        SurfaceMesh::HalfedgeAroundVertexCirculator vhit  = mesh.halfedges(v),
-                                                    vhend = vhit;
-        do
+        for (auto h: mesh.halfedges(v))
         {
-            if (mesh.isSurfaceBoundary(*vhit))
+            if (mesh.isSurfaceBoundary(h))
                 continue;
 
-            h0 = *vhit;
+            h0 = h;
             h1 = mesh.nextHalfedge(h0);
 
             PQ = mesh.position(mesh.toVertex(h0));
@@ -211,7 +207,7 @@ double voronoiAreaBarycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
             PR -= P;
 
             area += norm(cross(PQ, PR)) / 3.0;
-        } while (++vhit != vhend);
+        }
     }
 
     return area;
@@ -227,14 +223,12 @@ Point laplace(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
     {
         Scalar weight, sumWeights(0.0);
 
-        SurfaceMesh::HalfedgeAroundVertexCirculator vhit  = mesh.halfedges(v),
-                                                    vhend = vhit;
-        do
+        for (auto h: mesh.halfedges(v))
         {
-            weight = cotanWeight(mesh, mesh.edge(*vhit));
+            weight = cotanWeight(mesh, mesh.edge(h));
             sumWeights += weight;
-            laplace += weight * mesh.position(mesh.toVertex(*vhit));
-        } while (++vhit != vhend);
+            laplace += weight * mesh.position(mesh.toVertex(h));
+        }
 
         laplace -= sumWeights * mesh.position(v);
         laplace /= Scalar(2.0) * voronoiArea(mesh, v);
@@ -253,13 +247,11 @@ Scalar angleSum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
     {
         const Point& p0 = mesh.position(v);
 
-        SurfaceMesh::HalfedgeAroundVertexCirculator vhit  = mesh.halfedges(v),
-                                                    vhend = vhit;
-        do
+        for (auto h: mesh.halfedges(v))
         {
-            const Point& p1 = mesh.position(mesh.toVertex(*vhit));
+            const Point& p1 = mesh.position(mesh.toVertex(h));
             const Point& p2 =
-                mesh.position(mesh.toVertex(mesh.ccwRotatedHalfedge(*vhit)));
+                mesh.position(mesh.toVertex(mesh.ccwRotatedHalfedge(h)));
 
             const Point p01 = normalize(p1 - p0);
             const Point p02 = normalize(p2 - p0);
@@ -267,7 +259,7 @@ Scalar angleSum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
             Scalar cosAngle = clampCos(dot(p01, p02));
 
             angles += acos(cosAngle);
-        } while (++vhit != vhend);
+        }
     }
 
     return angles;
