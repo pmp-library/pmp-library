@@ -4,7 +4,9 @@ This section provides a hands-on tutorial on the basic usage of the
 pmp-library. Since working with polygon meshes is the focus of the library, this
 tutorial uses the pmp::SurfaceMesh class throughout the examples. However, the
 general concepts such as iterating through the entities of a data set naturally
-transfer to other representations as well.
+transfer to other representations as well. For a thorough introduction into
+goemetry and polygon mesh processing we refer to the book of Botsch et al.
+\cite botsch_2010_polygon.
 
 ## Introduction
 
