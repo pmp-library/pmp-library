@@ -84,3 +84,15 @@ div.contents {
 	font-weight: bold;
 	margin: 10px 2px 0px 2px;
 }
+
+#MSearchBox {
+    white-space : nowrap;
+    position: absolute;
+    float: none;
+    display: inline;
+    margin-top: 0px;
+    right: 35px;
+    width: 170px;
+    z-index: 102;
+    background-color: white;
+}

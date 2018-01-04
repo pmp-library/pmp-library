@@ -1,6 +1,6 @@
 //=============================================================================
-// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -691,11 +691,11 @@ public:
     bool isQuadMesh() const;
 
     //! triangulate the entire mesh, by calling triangulate(Face) for each face.
-    //! \sa trianglate(Face)
+    //! \sa triangulate(Face)
     void triangulate();
 
     //! triangulate the face \c f.
-    //! \sa trianglate()
+    //! \sa triangulate()
     void triangulate(Face f);
 
     //! returns whether collapsing the halfedge \c h is topologically legal.
@@ -768,10 +768,12 @@ public:
     //! \sa flip(Edge)
     bool isFlipOk(Edge e) const;
 
-    //! Flip edge \c e: Remove edge \c e and add an edge between the two vertices
-    //! opposite to edge \c e of the two incident triangles.
+    //! Flip the edge \c e . Removes the edge \c e and add an edge between the
+    //! two vertices opposite to edge \c e of the two incident triangles.
     //! \attention This function is only valid for triangle meshes.
-    //! \sa isFlipOk(Edge)
+    //! \attention Flipping an edge may result in a non-manifold mesh, hence check
+    //! for yourself whether this operation is allowed or not!
+    //! \sa isFlipOk()
     void flip(Edge e);
 
     using EdgeSet::valence;

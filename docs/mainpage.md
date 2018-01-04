@@ -18,6 +18,9 @@ for [contributing](contributing.html) patches or new code.
 The [Reference Documentation](annotated.html) provides detailed information on
 the classes and functions provided by the pmp-library.
 
+Checkout the [GitHub Project](https://github.com/pmp-library/pmp-library/) to
+browse the source, get the latest development version, or to report any issues.
+
 ## License
 
 The pmp-library is provided under a flexible 3-clause BSD
