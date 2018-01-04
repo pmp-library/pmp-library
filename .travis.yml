@@ -51,3 +51,4 @@ deploy:
     branch: master
     condition: "$CONFIG = Debug && $CXX = g++ && $TRAVIS_OS_NAME = linux"
   local_dir: docs/html
+  fqdn: www.pmp-library.org
