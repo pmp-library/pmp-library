@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2016 by Graphics & Geometry Group, Bielefeld University
-// Copyright (C) 2017 Daniel Sieger
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -41,7 +40,7 @@ public:
     MeshProcessingViewer(const char* title, int width, int height)
         : MeshViewer(title,width, height)
     {
-        setDrawMode("Smooth Shading");
+        setDrawMode("Hidden Line");
     }
 
 protected:

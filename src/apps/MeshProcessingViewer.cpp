@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2016 by Graphics & Geometry Group, Bielefeld University
-// Copyright (C) 2017 Daniel Sieger
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -178,7 +177,7 @@ void MeshProcessingViewer::processImGUI()
 
     if (ImGui::CollapsingHeader("Mesh Processing", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        if (ImGui::Button("Decimate"))
+        if (ImGui::Button("Simplification"))
         {
             SurfaceSimplification ss(m_mesh);
             ss.initialize(5); // aspect ratio
