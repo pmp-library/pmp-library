@@ -106,14 +106,13 @@ void SurfaceSmoothing::explicitSmoothing(unsigned int iters, bool uniform)
 
 void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
 {
-    const int n = m_mesh.nVertices();
-    if (!n)
-        return;
+    if (!m_mesh.nVertices()) return;
 
     // properties
     auto points  = m_mesh.vertexProperty<Point>("v:point");
     auto vweight = m_mesh.addVertexProperty<Scalar>("v:area");
     auto eweight = m_mesh.addEdgeProperty<Scalar>("e:cotan");
+    auto idx     = m_mesh.addVertexProperty<int>("v:idx", -1);
 
     // compute weights: cotan or uniform
     if (uniform)
@@ -131,6 +130,21 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
             eweight[e] = std::max(0.0, cotanWeight(m_mesh, e));
     }
 
+    // collect free (non-boundary) vertices in array free_vertices[]
+    // assign indices such that idx[ free_vertices[i] ] == i
+    unsigned                         i = 0;
+    std::vector<SurfaceMesh::Vertex> free_vertices;
+    free_vertices.reserve(m_mesh.nVertices());
+    for (auto v : m_mesh.vertices())
+    {
+        if (!m_mesh.isSurfaceBoundary(v))
+        {
+            idx[v] = i++;
+            free_vertices.push_back(v);
+        }
+    }
+    const unsigned int n = free_vertices.size();
+
     // A*X = B
     Eigen::SparseMatrix<double> A(n, n);
     Eigen::MatrixXd             B(n, 3);
@@ -140,11 +154,11 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
 
     // setup matrix A and rhs B
     double              ww;
-    SurfaceMesh::Vertex vv;
+    SurfaceMesh::Vertex v, vv;
     SurfaceMesh::Edge   e;
-    for (int i = 0; i < n; ++i)
+    for (unsigned int i = 0; i < n; ++i)
     {
-        SurfaceMesh::Vertex v(i);
+        v = free_vertices[i];
 
         // rhs row
         B(i, 0) = points[v][0] / vweight[v];
@@ -158,9 +172,23 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
             vv = m_mesh.toVertex(h);
             e  = m_mesh.edge(h);
             ww += eweight[e];
-            triplets.push_back(
-                Eigen::Triplet<double>(i, vv.idx(), -timestep * eweight[e]));
+
+            // fixed boundary vertex -> right hand side
+            if (m_mesh.isSurfaceBoundary(vv))
+            {
+                B(i, 0) -= -timestep * eweight[e] * points[vv][0];
+                B(i, 1) -= -timestep * eweight[e] * points[vv][1];
+                B(i, 2) -= -timestep * eweight[e] * points[vv][2];
+            }
+            // free interior vertex -> matrix
+            else
+            {
+                triplets.push_back(
+                        Eigen::Triplet<double>(i, idx[vv], -timestep * eweight[e]));
+            }
         }
+
+        // center vertex -> matrix
         triplets.push_back(
             Eigen::Triplet<double>(i, i, 1.0 / vweight[v] + timestep * ww));
     }
@@ -178,9 +206,9 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
     else
     {
         // copy solution
-        for (int i = 0; i < n; ++i)
+        for (unsigned int i = 0; i < n; ++i)
         {
-            SurfaceMesh::Vertex v(i);
+            v = free_vertices[i];
             points[v][0] = X(i, 0);
             points[v][1] = X(i, 1);
             points[v][2] = X(i, 2);
@@ -188,6 +216,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
     }
 
     // clean-up
+    m_mesh.removeVertexProperty(idx);
     m_mesh.removeVertexProperty(vweight);
     m_mesh.removeEdgeProperty(eweight);
 }
