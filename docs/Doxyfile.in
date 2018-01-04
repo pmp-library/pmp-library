@@ -676,7 +676,8 @@ RECURSIVE              = YES
 
 EXCLUDE                = ${CMAKE_SOURCE_DIR}/docs/issue_template.md \
                          ${CMAKE_SOURCE_DIR}/docs/pull_request_template.md \
-                         ${CMAKE_SOURCE_DIR}/docs/code_of_conduct.md
+                         ${CMAKE_SOURCE_DIR}/docs/code_of_conduct.md \
+                         ${CMAKE_SOURCE_DIR}/docs/mpview.js
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -914,7 +915,12 @@ HTML_EXTRA_STYLESHEET  = ${CMAKE_CURRENT_SOURCE_DIR}/style.css
 # files. In the HTML_STYLESHEET file, use the file name only. Also note that
 # the files will be copied as-is; there are no commands or markers available.
 
-HTML_EXTRA_FILES       = ${CMAKE_CURRENT_SOURCE_DIR}/images/favicon.ico
+HTML_EXTRA_FILES       = ${CMAKE_CURRENT_SOURCE_DIR}/images/favicon.ico \
+                         ${CMAKE_CURRENT_SOURCE_DIR}/mpview.html \
+                         ${CMAKE_CURRENT_SOURCE_DIR}/mpview.html.mem \
+                         ${CMAKE_CURRENT_SOURCE_DIR}/mpview.js \
+                         ${CMAKE_CURRENT_SOURCE_DIR}/mpview.data
+
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output.
 # Doxygen will adjust the colors in the style sheet and background images
