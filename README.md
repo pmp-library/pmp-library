@@ -6,8 +6,7 @@
 <img src="docs/images/pmp-logo-text.png" alt="logo" width="750px"/>
 
 The pmp-library is a modern C++ open-source library for digital geometry
-processing. See the [home page](http://pmp-library.github.io/pmp-library/) for
-details.
+processing. See the [home page](http://www.pmp-library.org) for details.
 
 ## Quickstart
 

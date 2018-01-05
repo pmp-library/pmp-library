@@ -37,7 +37,7 @@ use by referencing
     @misc{pmp-library,
       title  = {The Polygon Mesh Processing Library},
       author = {Daniel Sieger and Mario Botsch},
-      note   = {http://pmp-library.github.io/pmp-library/},
+      note   = {http://www.pmp-library.org},
       year   = {2018},
     }
 
