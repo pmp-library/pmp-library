@@ -186,3 +186,6 @@ if(NOT TARGET uninstall)
     "${PROJECT_BINARY_DIR}/cmake_uninstall.cmake")
 
 endif()
+
+# add clang-format target if program is found
+include("${CMAKE_MODULE_PATH}/clang-format.cmake")
