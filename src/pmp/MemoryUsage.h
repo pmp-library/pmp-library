@@ -119,8 +119,9 @@ size_t MemoryUsage::currentSize()
 #elif defined(__APPLE__)
 
     struct mach_task_basic_info info;
-    mach_msg_type_number_t infoCount = MACH_TASK_BASIC_INFO_COUNT;
-    auto ret = task_info(mach_task_self(), MACH_TASK_BASIC_INFO, (task_info_t)&info, &infoCount);
+    mach_msg_type_number_t      infoCount = MACH_TASK_BASIC_INFO_COUNT;
+    auto ret = task_info(mach_task_self(), MACH_TASK_BASIC_INFO,
+                         (task_info_t)&info, &infoCount);
     if (ret != KERN_SUCCESS)
     {
         std::cerr << "Failed to retrieve task information" << std::endl;

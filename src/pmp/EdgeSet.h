@@ -81,7 +81,7 @@ public:
     //! This type stores the halfedge connectivity
     struct HalfedgeConnectivity
     {
-        Vertex   m_vertex;        //!< vertex the halfedge points to
+        Vertex   m_vertex;       //!< vertex the halfedge points to
         Halfedge m_nextHalfedge; //!< next halfedge
         Halfedge m_prevHalfedge; //!< previous halfedge
     };
@@ -298,7 +298,7 @@ public:
     public:
         //! default constructor
         VertexAroundVertexCirculator(const EdgeSet* es = nullptr,
-                                     Vertex         v = Vertex())
+                                     Vertex         v  = Vertex())
             : m_edges(es), m_active(true)
         {
             if (m_edges)
@@ -376,7 +376,7 @@ public:
     public:
         //! default constructor
         HalfedgeAroundVertexCirculator(const EdgeSet* es = nullptr,
-                                       Vertex         v = Vertex())
+                                       Vertex         v  = Vertex())
             : m_edges(es), m_active(true)
         {
             if (m_edges)
@@ -464,30 +464,26 @@ public:
 
     //! read edge set from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
-    bool read(const std::string& filename, const IOOptions& options = IOOptions()) override;
+    bool read(const std::string& filename,
+              const IOOptions&   options = IOOptions()) override;
 
     //! write edge set to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
-    bool write(const std::string& filename, const IOOptions& options = IOOptions()) const override;
+    bool write(const std::string& filename,
+               const IOOptions&   options = IOOptions()) const override;
 
     //!@}
     //! \name Memory Management
     //!@{
 
     //! returns number of (deleted and valid)halfedge in the mesh
-    size_t halfedgesSize() const
-    {
-        return m_hprops.size();
-    }
+    size_t halfedgesSize() const { return m_hprops.size(); }
 
     //! returns number of (deleted and valid)edges in the mesh
     size_t edgesSize() const { return m_eprops.size(); }
 
     //! returns number of halfedge in the mesh
-    size_t nHalfedges() const
-    {
-        return halfedgesSize() - 2 * m_deletedEdges;
-    }
+    size_t nHalfedges() const { return halfedgesSize() - 2 * m_deletedEdges; }
 
     //! returns number of edges in the mesh
     size_t nEdges() const { return edgesSize() - m_deletedEdges; }
@@ -554,10 +550,7 @@ public:
 
     //! returns whether \c v is a 1-manifold vertex, i.e., it has exactly two
     //! incident edges.
-    bool isOneManifold(Vertex v) const
-    {
-        return valence(v) == 2;
-    }
+    bool isOneManifold(Vertex v) const { return valence(v) == 2; }
 
     //! returns the vertex the halfedge \c h points to
     inline Vertex toVertex(Halfedge h) const { return m_hconn[h].m_vertex; }
@@ -648,7 +641,8 @@ public:
     //! halfedges is a boundary halfedge.
     bool isSegmentBoundary(Edge e) const
     {
-        return (isSegmentBoundary(halfedge(e, 0)) || isSegmentBoundary(halfedge(e, 1)));
+        return (isSegmentBoundary(halfedge(e, 0)) ||
+                isSegmentBoundary(halfedge(e, 1)));
     }
 
     //!@}
@@ -669,7 +663,7 @@ public:
     //! invalid property.
     template <class T>
     HalfedgeProperty<T> addHalfedgeProperty(const std::string& name,
-                                              const T            t = T())
+                                            const T            t = T())
     {
         return HalfedgeProperty<T>(m_hprops.add<T>(name, t));
     }
@@ -707,7 +701,7 @@ public:
     //! t)
     template <class T>
     HalfedgeProperty<T> halfedgeProperty(const std::string& name,
-                                          const T            t = T())
+                                         const T            t = T())
     {
         return HalfedgeProperty<T>(m_hprops.getOrAdd<T>(name, t));
     }
@@ -886,7 +880,6 @@ public:
     //!@}
 
 protected:
-
     //! \name Garbage Collection
     //!@{
 
@@ -908,7 +901,8 @@ protected:
 
         if (halfedgesSize() == PMP_MAX_INDEX - 1)
         {
-            std::cerr << "newEdge: cannot allocate edge, max. index reached" << std::endl;
+            std::cerr << "newEdge: cannot allocate edge, max. index reached"
+                      << std::endl;
             return Halfedge();
         }
 

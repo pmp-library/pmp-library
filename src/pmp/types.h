@@ -75,7 +75,6 @@ typedef Vector<Scalar, 3> Color;
 //! Texture coordinate type
 typedef Vector<Scalar, 2> TextureCoordinate, TexCoord;
 
-
 // define index type to be used
 #ifdef PMP_INDEX_TYPE_64
 typedef std::uint_least64_t IndexType;
@@ -84,7 +83,6 @@ typedef std::uint_least64_t IndexType;
 typedef std::uint_least32_t IndexType;
 #define PMP_MAX_INDEX UINT_LEAST32_MAX
 #endif
-
 
 //! \defgroup algorithms algorithms
 //! \brief Geometry processing algorithms.
@@ -97,7 +95,6 @@ typedef std::uint_least32_t IndexType;
 
 //! \defgroup io io
 //! \brief Classes for reading and writing geometry data structures.
-
 
 //=============================================================================
 } // namespace pmp

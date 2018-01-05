@@ -54,7 +54,7 @@ SurfaceSimplification::SurfaceSimplification(SurfaceMesh& mesh)
     m_vquadric = m_mesh.addVertexProperty<Quadric>("v:quadric");
 
     // get properties
-    m_vpoint  = m_mesh.vertexProperty<Point>("v:point");
+    m_vpoint = m_mesh.vertexProperty<Point>("v:point");
 
     // compute face normals
     SurfaceNormals::computeFaceNormals(m_mesh);
@@ -362,7 +362,7 @@ bool SurfaceSimplification::isCollapseLegal(const CollapseData& cd)
             if (f != cd.fl && f != cd.fr)
             {
                 Normal n0 = m_fnormal[f];
-                Normal n1 = SurfaceNormals::computeFaceNormal(m_mesh,f);
+                Normal n1 = SurfaceNormals::computeFaceNormal(m_mesh, f);
                 if (dot(n0, n1) < 0.0)
                 {
                     m_vpoint[cd.v0] = p0;
@@ -391,7 +391,7 @@ bool SurfaceSimplification::isCollapseLegal(const CollapseData& cd)
             if (f != cd.fl && f != cd.fr)
             {
                 NormalCone nc = m_normalCone[f];
-                nc.merge(SurfaceNormals::computeFaceNormal(m_mesh,f));
+                nc.merge(SurfaceNormals::computeFaceNormal(m_mesh, f));
 
                 if (f == fll)
                     nc.merge(m_normalCone[cd.fl]);
@@ -499,7 +499,7 @@ void SurfaceSimplification::postprocessCollapse(const CollapseData& cd)
     {
         for (auto f : m_mesh.faces(cd.v1))
         {
-            m_normalCone[f].merge(SurfaceNormals::computeFaceNormal(m_mesh,f));
+            m_normalCone[f].merge(SurfaceNormals::computeFaceNormal(m_mesh, f));
         }
 
         if (cd.vl.isValid())

@@ -239,7 +239,7 @@ public:
             clear();
             m_parrays.resize(rhs.n_properties());
             m_size = rhs.size();
-            for (size_t i = 0; i < m_parrays.size(); ++i)
+            for (size_t i    = 0; i < m_parrays.size(); ++i)
                 m_parrays[i] = rhs.m_parrays[i]->clone();
         }
         return *this;

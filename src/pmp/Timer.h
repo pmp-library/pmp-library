@@ -42,10 +42,8 @@ namespace pmp {
 class Timer
 {
 public:
-
     //! Constructor
     Timer() : m_elapsed(0.0), m_isRunning(false) {}
-
 
     //! Start time measurement
     void start()
@@ -54,7 +52,6 @@ public:
         cont();
     }
 
-
     //! Continue measurement, accumulates elapased times
     void cont()
     {
@@ -62,17 +59,16 @@ public:
         m_isRunning = true;
     }
 
-
     //! Stop time measurement, return elapsed time in ms
     Timer& stop()
     {
         m_endTime = std::chrono::high_resolution_clock::now();
-        duration time_span = std::chrono::duration_cast<duration>(m_endTime-m_startTime);
+        duration time_span =
+            std::chrono::duration_cast<duration>(m_endTime - m_startTime);
         m_elapsed += time_span.count();
         m_isRunning = false;
         return *this;
     }
-
 
     //! Return elapsed time in ms (watch has to be stopped).
     double elapsed() const
@@ -81,32 +77,27 @@ public:
         {
             std::cerr << "Timer: stop watch before calling elapsed()\n";
         }
-        return 1000.0*m_elapsed;
+        return 1000.0 * m_elapsed;
     }
 
-
 private:
+    typedef std::chrono::time_point<std::chrono::high_resolution_clock>
+                                          time_point;
+    typedef std::chrono::duration<double> duration;
 
-    typedef std::chrono::time_point<std::chrono::high_resolution_clock> time_point;
-    typedef std::chrono::duration<double>  duration;
-
-    time_point  m_startTime, m_endTime;
-    double  m_elapsed;
-    bool    m_isRunning;
+    time_point m_startTime, m_endTime;
+    double     m_elapsed;
+    bool       m_isRunning;
 };
-
 
 //=============================================================================
 
-
 //! output a timer to a stream
-inline std::ostream&
-operator<<(std::ostream& os, const Timer& timer)
+inline std::ostream& operator<<(std::ostream& os, const Timer& timer)
 {
     os << timer.elapsed() << " ms";
     return os;
 }
-
 
 //=============================================================================
 //! @}

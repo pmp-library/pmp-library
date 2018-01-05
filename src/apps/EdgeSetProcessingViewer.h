@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2016 by Graphics & Geometry Group, Bielefeld University
-// Copyright (C) 2017 Daniel Sieger
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,7 +38,9 @@ class EdgeSetProcessingViewer : public pmp::EdgeSetViewer
 public:
     //! constructor
     EdgeSetProcessingViewer(const char* title, int width, int height)
-        : EdgeSetViewer(title,width,height) {}
+        : EdgeSetViewer(title, width, height)
+    {
+    }
 
     //! this function handles keyboard events
     void keyboard(int key, int scancode, int action, int mod) override;

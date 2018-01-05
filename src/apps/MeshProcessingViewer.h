@@ -38,7 +38,7 @@ class MeshProcessingViewer : public pmp::MeshViewer
 public:
     //! constructor
     MeshProcessingViewer(const char* title, int width, int height)
-        : MeshViewer(title,width, height)
+        : MeshViewer(title, width, height)
     {
         setDrawMode("Hidden Line");
     }

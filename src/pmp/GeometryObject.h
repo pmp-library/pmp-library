@@ -172,10 +172,7 @@ public:
         m_oprops.freeMemory();
     }
 
-    void freeMemory()
-    {
-        m_oprops.freeMemory();
-    }
+    void freeMemory() { m_oprops.freeMemory(); }
 
     //! reserve memory (mainly used in file readers)
     void reserve() { m_oprops.reserve(1); }

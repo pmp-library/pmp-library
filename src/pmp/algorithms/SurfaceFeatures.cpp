@@ -79,8 +79,8 @@ void SurfaceFeatures::detectAngle(Scalar angle)
             const auto f0 = m_mesh.face(m_mesh.halfedge(e, 0));
             const auto f1 = m_mesh.face(m_mesh.halfedge(e, 1));
 
-            const Normal n0 = SurfaceNormals::computeFaceNormal(m_mesh,f0);
-            const Normal n1 = SurfaceNormals::computeFaceNormal(m_mesh,f1);
+            const Normal n0 = SurfaceNormals::computeFaceNormal(m_mesh, f0);
+            const Normal n1 = SurfaceNormals::computeFaceNormal(m_mesh, f1);
 
             if (dot(n0, n1) < feature_cosine)
             {

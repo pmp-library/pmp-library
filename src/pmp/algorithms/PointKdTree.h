@@ -48,7 +48,6 @@ namespace pmp {
 class PointKdTree
 {
 public: //------------------------------------------------------- public methods
-
     //! Constructor
     PointKdTree(const PointSet& pointSet)
         : m_pointSet(pointSet), m_root(nullptr)
@@ -89,7 +88,6 @@ public: //------------------------------------------------------- public methods
     int ball(const Point& p, Scalar radius, std::vector<int>& ball) const;
 
 private: //------------------------------------------------------- private types
-
     //! the elemnent stored in the tree
     struct Element
     {
@@ -187,7 +185,6 @@ private: //------------------------------------------------------- private types
     };
 
 private: //----------------------------------------------------- private methods
-
     //! Recursive part of build()
     void buildRecurse(Node* node, unsigned int maxHandles, unsigned int depth);
 
@@ -202,7 +199,6 @@ private: //----------------------------------------------------- private methods
                      std::vector<int>& ball) const;
 
 private: //-------------------------------------------------------- private data
-
     const PointSet& m_pointSet; //!< The underlying points
     Elements        m_elements; //!< A vector of elements
     Node*           m_root;     //!< The root of the tree

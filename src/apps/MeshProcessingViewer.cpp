@@ -98,14 +98,14 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         case GLFW_KEY_O: // change face orientation
         {
             SurfaceMeshGL newMesh;
-            for (auto v: m_mesh.vertices())
+            for (auto v : m_mesh.vertices())
             {
-                newMesh.addVertex( m_mesh.position(v) );
+                newMesh.addVertex(m_mesh.position(v));
             }
-            for (auto f: m_mesh.faces())
+            for (auto f : m_mesh.faces())
             {
                 std::vector<SurfaceMesh::Vertex> vertices;
-                for (auto v: m_mesh.vertices(f))
+                for (auto v : m_mesh.vertices(f))
                 {
                     vertices.push_back(v);
                 }
@@ -175,7 +175,8 @@ void MeshProcessingViewer::processImGUI()
     ImGui::Spacing();
     ImGui::Spacing();
 
-    if (ImGui::CollapsingHeader("Mesh Processing", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Mesh Processing",
+                                ImGuiTreeNodeFlags_DefaultOpen))
     {
         if (ImGui::Button("Simplification"))
         {
@@ -198,9 +199,9 @@ void MeshProcessingViewer::processImGUI()
         {
             auto bb = m_mesh.bounds().size();
             SurfaceRemeshing(m_mesh).adaptiveRemeshing(
-                    0.001 * bb,  // min length
-                    1.0 * bb,    // max length
-                    0.001 * bb); // approx. error
+                0.001 * bb,  // min length
+                1.0 * bb,    // max length
+                0.001 * bb); // approx. error
             updateMesh();
         }
 
@@ -209,7 +210,7 @@ void MeshProcessingViewer::processImGUI()
             Scalar l(0);
             for (auto eit : m_mesh.edges())
                 l += distance(m_mesh.position(m_mesh.vertex(eit, 0)),
-                        m_mesh.position(m_mesh.vertex(eit, 1)));
+                              m_mesh.position(m_mesh.vertex(eit, 1)));
             l /= (Scalar)m_mesh.nEdges();
             SurfaceRemeshing(m_mesh).uniformRemeshing(l);
             updateMesh();

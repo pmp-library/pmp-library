@@ -112,15 +112,16 @@ PointSet& PointSet::assign(const PointSet& rhs)
 bool PointSet::read(const std::string& filename, const IOOptions& options)
 {
     PointSetIO reader(options);
-    return reader.read(*this,filename);
+    return reader.read(*this, filename);
 }
 
 //-----------------------------------------------------------------------------
 
-bool PointSet::write(const std::string& filename, const IOOptions& options) const
+bool PointSet::write(const std::string& filename,
+                     const IOOptions&   options) const
 {
     PointSetIO writer(options);
-    return writer.write(*this,filename);
+    return writer.write(*this, filename);
 }
 
 //-----------------------------------------------------------------------------

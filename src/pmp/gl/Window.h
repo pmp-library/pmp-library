@@ -75,7 +75,10 @@ protected: //----------------------------------- callbacks as member functions
     virtual void display(void) = 0;
 
     //! this function handles keyboard events
-    virtual void keyboard(int /*key*/, int /*code*/, int /*action*/, int /*mods*/) {}
+    virtual void keyboard(int /*key*/, int /*code*/, int /*action*/,
+                          int /*mods*/)
+    {
+    }
 
     //! this function handles unicode character events
     virtual void character(unsigned int) {}

@@ -156,7 +156,8 @@ bool EdgeSetIO::writeKNT(const EdgeSet& es, const std::string& filename)
 
     // header
     fprintf(out, "%s %f\n", "time", 0.0);
-    fprintf(out, "%s %zi %s %zi\n", "vertices", es.nVertices(), "edges", es.nEdges());
+    fprintf(out, "%s %zi %s %zi\n", "vertices", es.nVertices(), "edges",
+            es.nEdges());
 
     // vertices
     for (auto v : es.vertices())

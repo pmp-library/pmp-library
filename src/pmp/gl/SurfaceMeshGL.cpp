@@ -60,7 +60,7 @@ SurfaceMeshGL::SurfaceMeshGL()
     m_creaseAngle = 70.0;
 
     // initialize texture
-    m_texture = 0;
+    m_texture     = 0;
     m_textureMode = OtherTexture;
 }
 
@@ -100,7 +100,7 @@ void SurfaceMeshGL::useColdWarmTexture()
         glGenTextures(1, &m_texture);
         glBindTexture(GL_TEXTURE_2D, m_texture);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 1, 0, GL_RGB,
-                GL_UNSIGNED_BYTE, cold_warm_texture);
+                     GL_UNSIGNED_BYTE, cold_warm_texture);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -122,13 +122,13 @@ void SurfaceMeshGL::useCheckerboardTexture()
 
         // generate checkerboard-like image
         const unsigned int res = 512;
-        GLubyte *tex = new GLubyte[res*res*3];
-        GLubyte *tp  = tex;
-        for (unsigned int x=0; x<res; ++x)
+        GLubyte*           tex = new GLubyte[res * res * 3];
+        GLubyte*           tp  = tex;
+        for (unsigned int x = 0; x < res; ++x)
         {
-            for (unsigned int y=0; y<res; ++y)
+            for (unsigned int y = 0; y < res; ++y)
             {
-                if (((x & 0x20) == 0) ^ ((y & 0x20)  == 0))
+                if (((x & 0x20) == 0) ^ ((y & 0x20) == 0))
                 {
                     *(tp++) = 42;
                     *(tp++) = 157;
@@ -146,7 +146,8 @@ void SurfaceMeshGL::useCheckerboardTexture()
         // generate texture
         glGenTextures(1, &m_texture);
         glBindTexture(GL_TEXTURE_2D, m_texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, res, res, 0, GL_RGB, GL_UNSIGNED_BYTE, tex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, res, res, 0, GL_RGB,
+                     GL_UNSIGNED_BYTE, tex);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -222,7 +223,8 @@ void SurfaceMeshGL::updateOpenGLBuffers()
         for (auto h : halfedges(f))
         {
             corners.push_back(toVertex(h));
-            cornerNormals.push_back(SurfaceNormals::computeCornerNormal(*this, h, creaseAngle));
+            cornerNormals.push_back(
+                SurfaceNormals::computeCornerNormal(*this, h, creaseAngle));
         }
         assert(corners.size() >= 3);
 
@@ -290,14 +292,13 @@ void SurfaceMeshGL::updateOpenGLBuffers()
                  GL_STATIC_DRAW);
     m_nEdges = edgeArray.size();
 
-
     // feature edges
     auto efeature = getEdgeProperty<bool>("e:feature");
     if (efeature)
     {
         std::vector<unsigned int> features;
 
-        for (auto e: edges())
+        for (auto e : edges())
         {
             if (efeature[e])
             {
@@ -308,16 +309,14 @@ void SurfaceMeshGL::updateOpenGLBuffers()
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_featureBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                features.size()*sizeof(unsigned int),
-                features.data(),
-                GL_STATIC_DRAW);
+                     features.size() * sizeof(unsigned int), features.data(),
+                     GL_STATIC_DRAW);
         m_nFeatures = features.size();
     }
     else
     {
         m_nFeatures = 0;
     }
-
 
     // unbind vertex arry
     glBindVertexArray(0);
@@ -427,7 +426,7 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
 
         // draw faces
         m_phongShader.set_uniform("front_color", vec3(0.8, 0.8, 0.8));
-        m_phongShader.set_uniform("back_color",  vec3(0.9, 0.0, 0.0));
+        m_phongShader.set_uniform("back_color", vec3(0.9, 0.0, 0.0));
         glDepthRange(0.01, 1.0);
         glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
 
@@ -435,19 +434,17 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         glDepthRange(0.0, 1.0);
         glDepthFunc(GL_LEQUAL);
         m_phongShader.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
-        m_phongShader.set_uniform("back_color",  vec3(0.1, 0.1, 0.1));
+        m_phongShader.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_edgeBuffer);
         glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, NULL);
         glDepthFunc(GL_LESS);
     }
 
-
-
     // draw feature edges
     if (m_nFeatures)
     {
-        m_phongShader.set_uniform("front_color",  vec3(0,1,0));
-        m_phongShader.set_uniform("back_color",   vec3(0,1,0));
+        m_phongShader.set_uniform("front_color", vec3(0, 1, 0));
+        m_phongShader.set_uniform("back_color", vec3(0, 1, 0));
         m_phongShader.set_uniform("use_lighting", false);
         glDepthRange(0.0, 1.0);
         glDepthFunc(GL_LEQUAL);
@@ -456,7 +453,6 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glDepthFunc(GL_LESS);
     }
-
 
     glBindVertexArray(0);
     glCheckError();

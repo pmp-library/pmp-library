@@ -106,7 +106,8 @@ void MeshViewer::processImGUI()
 
         // control crease angle
         ImGui::PushItemWidth(100);
-        ImGui::SliderFloat("Crease Angle", &m_creaseAngle, 0.0f, 180.0f, "%.0f");
+        ImGui::SliderFloat("Crease Angle", &m_creaseAngle, 0.0f, 180.0f,
+                           "%.0f");
         ImGui::PopItemWidth();
         if (m_creaseAngle != m_mesh.creaseAngle())
         {

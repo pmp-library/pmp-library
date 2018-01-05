@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,7 @@
 #pragma once
 //=============================================================================
 
+// clang-format off
 const GLubyte cold_warm_texture[768] = {
 59,76,192,
 60,78,194,
@@ -288,3 +289,4 @@ const GLubyte cold_warm_texture[768] = {
 181,11,39,
 // 180,4,38,
 };
+// clang-format on

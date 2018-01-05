@@ -181,7 +181,7 @@ void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
     // precompute face normals
     for (auto f : m_mesh.faces())
     {
-        normal[f] = (dvec3)SurfaceNormals::computeFaceNormal(m_mesh,f);
+        normal[f] = (dvec3)SurfaceNormals::computeFaceNormal(m_mesh, f);
     }
 
     // precompute dihedralAngle*edgeLength*edge per edge
@@ -195,8 +195,8 @@ void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
         {
             n0 = normal[f0];
             n1 = normal[f1];
-            ev  = (dvec3) m_mesh.position(m_mesh.toVertex(h0));
-            ev -= (dvec3) m_mesh.position(m_mesh.toVertex(h1));
+            ev = (dvec3)m_mesh.position(m_mesh.toVertex(h0));
+            ev -= (dvec3)m_mesh.position(m_mesh.toVertex(h1));
             l = norm(ev);
             ev /= l;
             l *= 0.5; // only consider half of the edge (matchig Voronoi area)
@@ -364,7 +364,7 @@ void SurfaceCurvature::smoothCurvatures(unsigned int iterations)
 void SurfaceCurvature::meanCurvatureToTextureCoordinates() const
 {
     auto curvatures = m_mesh.addVertexProperty<Scalar>("v:curv");
-    for (auto v: m_mesh.vertices())
+    for (auto v : m_mesh.vertices())
     {
         curvatures[v] = fabs(meanCurvature(v));
     }
@@ -377,7 +377,7 @@ void SurfaceCurvature::meanCurvatureToTextureCoordinates() const
 void SurfaceCurvature::gaussCurvatureToTextureCoordinates() const
 {
     auto curvatures = m_mesh.addVertexProperty<Scalar>("v:curv");
-    for (auto v: m_mesh.vertices())
+    for (auto v : m_mesh.vertices())
     {
         curvatures[v] = gaussCurvature(v);
     }
@@ -390,7 +390,7 @@ void SurfaceCurvature::gaussCurvatureToTextureCoordinates() const
 void SurfaceCurvature::maxCurvatureToTextureCoordinates() const
 {
     auto curvatures = m_mesh.addVertexProperty<Scalar>("v:curv");
-    for (auto v: m_mesh.vertices())
+    for (auto v : m_mesh.vertices())
     {
         curvatures[v] = maxAbsCurvature(v);
     }
@@ -408,34 +408,36 @@ void SurfaceCurvature::curvatureToTextureCoordinates() const
     // sort curvature values
     std::vector<Scalar> values;
     values.reserve(m_mesh.nVertices());
-    for (auto v: m_mesh.vertices())
+    for (auto v : m_mesh.vertices())
     {
-        values.push_back( curvatures[v] );
+        values.push_back(curvatures[v]);
     }
     std::sort(values.begin(), values.end());
-    unsigned int n = values.size()-1;
-    std::cout << "curvature: [" << values[0] << ", " << values[n-1] << "]\n";
+    unsigned int n = values.size() - 1;
+    std::cout << "curvature: [" << values[0] << ", " << values[n - 1] << "]\n";
 
     // clamp upper/lower 5%
-    unsigned int i = n / 20;
-    Scalar kmin = values[i];
-    Scalar kmax = values[n-1-i];
+    unsigned int i    = n / 20;
+    Scalar       kmin = values[i];
+    Scalar       kmax = values[n - 1 - i];
 
     // generate 1D texture coordiantes
     auto tex = m_mesh.vertexProperty<TextureCoordinate>("v:tex");
     if (kmin < 0.0) // signed
     {
         kmax = std::max(fabs(kmin), fabs(kmax));
-        for (auto v: m_mesh.vertices())
+        for (auto v : m_mesh.vertices())
         {
-            tex[v] = TextureCoordinate((0.5f * curvatures[v] / kmax) + 0.5f, 0.0);
+            tex[v] =
+                TextureCoordinate((0.5f * curvatures[v] / kmax) + 0.5f, 0.0);
         }
     }
     else // unsigned
     {
-        for (auto v: m_mesh.vertices())
+        for (auto v : m_mesh.vertices())
         {
-            tex[v] = TextureCoordinate((curvatures[v] - kmin) / (kmax - kmin), 0.0);
+            tex[v] =
+                TextureCoordinate((curvatures[v] - kmin) / (kmax - kmin), 0.0);
         }
     }
 }

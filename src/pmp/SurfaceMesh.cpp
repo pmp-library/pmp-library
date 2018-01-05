@@ -120,12 +120,12 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
 bool SurfaceMesh::read(const std::string& filename, const IOOptions& options)
 {
     SurfaceMeshIO reader(options);
-    bool success = reader.read(*this, filename);
+    bool          success = reader.read(*this, filename);
 
     // try parent class if no reader is found
     if (!success)
     {
-        success = EdgeSet::read(filename,options);
+        success = EdgeSet::read(filename, options);
     }
 
     return success;
@@ -133,15 +133,16 @@ bool SurfaceMesh::read(const std::string& filename, const IOOptions& options)
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceMesh::write(const std::string& filename, const IOOptions& options) const
+bool SurfaceMesh::write(const std::string& filename,
+                        const IOOptions&   options) const
 {
     SurfaceMeshIO writer(options);
-    bool success  = writer.write(*this, filename);
+    bool          success = writer.write(*this, filename);
 
     // try parent class if no writer is found
     if (!success)
     {
-        success = EdgeSet::write(filename,options);
+        success = EdgeSet::write(filename, options);
     }
 
     return success;
@@ -238,9 +239,9 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
     const size_t n(vertices.size());
     assert(n > 2);
 
-    Vertex       v;
-    size_t i, ii, id;
-    Halfedge     innerNext, innerPrev, outerNext, outerPrev, boundaryNext,
+    Vertex   v;
+    size_t   i, ii, id;
+    Halfedge innerNext, innerPrev, outerNext, outerPrev, boundaryNext,
         boundaryPrev, patchStart, patchEnd;
 
     // use global arrays to avoid new/delete of local arrays!!!
@@ -843,8 +844,8 @@ bool SurfaceMesh::isCollapseOk(Halfedge v0v1)
         return false;
 
     // edge between two boundary vertices should be a boundary edge
-    if (isSurfaceBoundary(v0) && isSurfaceBoundary(v1) && !isSurfaceBoundary(v0v1) &&
-        !isSurfaceBoundary(v1v0))
+    if (isSurfaceBoundary(v0) && isSurfaceBoundary(v1) &&
+        !isSurfaceBoundary(v0v1) && !isSurfaceBoundary(v1v0))
         return false;
 
     // test intersection of the one-rings of v0 and v1
@@ -972,7 +973,8 @@ void SurfaceMesh::removeLoop(Halfedge h)
         m_fdeleted[fh] = true;
         ++m_deletedFaces;
     }
-    m_edeleted[edge(h)] = true; ++m_deletedEdges;
+    m_edeleted[edge(h)] = true;
+    ++m_deletedEdges;
     m_garbage = true;
 }
 

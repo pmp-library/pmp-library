@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -26,9 +26,9 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
-#ifndef __EMSCRIPTEN__  // standard version (OpenGL 3.2 and higher)
+#ifndef __EMSCRIPTEN__ // standard version (OpenGL 3.2 and higher)
 
-
+// clang-format off
 static const char* phong_vshader =
     "#version 150\n"
     "\n"
@@ -228,5 +228,5 @@ static const char* phong_fshader =
     "   gl_FragColor = vec4(rgb, 1.0);\n"
     "}";
 
-
+// clang-format on
 #endif

@@ -53,11 +53,11 @@ bool PointSetIO::readXYZ(PointSet& ps, const std::string& filename)
 
     // read data
     std::ifstream ifs(filename);
-    std::string line;
+    std::string   line;
     while (std::getline(ifs, line))
     {
-        float x, y, z;
-        float nx, ny, nz;
+        float             x, y, z;
+        float             nx, ny, nz;
         std::stringstream sstr(line.c_str());
         sstr >> x >> y >> z;
         sstr >> nx >> ny >> nz;

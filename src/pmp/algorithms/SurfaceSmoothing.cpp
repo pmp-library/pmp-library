@@ -106,7 +106,8 @@ void SurfaceSmoothing::explicitSmoothing(unsigned int iters, bool uniform)
 
 void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
 {
-    if (!m_mesh.nVertices()) return;
+    if (!m_mesh.nVertices())
+        return;
 
     // properties
     auto points  = m_mesh.vertexProperty<Point>("v:point");
@@ -184,7 +185,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
             else
             {
                 triplets.push_back(
-                        Eigen::Triplet<double>(i, idx[vv], -timestep * eweight[e]));
+                    Eigen::Triplet<double>(i, idx[vv], -timestep * eweight[e]));
             }
         }
 
@@ -208,7 +209,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
         // copy solution
         for (unsigned int i = 0; i < n; ++i)
         {
-            v = free_vertices[i];
+            v            = free_vertices[i];
             points[v][0] = X(i, 0);
             points[v][1] = X(i, 1);
             points[v][2] = X(i, 2);

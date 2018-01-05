@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2016 by Graphics & Geometry Group, Bielefeld University
-// Copyright (C) 2017 Daniel Sieger
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,7 +38,9 @@ class PointSetProcessingViewer : public pmp::PointSetViewer
 public:
     //! constructor
     PointSetProcessingViewer(const char* title, int width, int height)
-        : PointSetViewer(title,width,height) {}
+        : PointSetViewer(title, width, height)
+    {
+    }
 
     //! this function handles keyboard events
     void keyboard(int key, int scancode, int action, int mod) override;

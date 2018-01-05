@@ -7,7 +7,6 @@ using namespace pmp;
 
 //=============================================================================
 
-
 void usage_and_exit()
 {
     std::cerr << "Usage:\nmconvert [-b] -i <input> -o <output>\n\nOptions\n"
@@ -16,20 +15,17 @@ void usage_and_exit()
     exit(1);
 }
 
-
 //----------------------------------------------------------------------------
 
-
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-    bool binary = false;
-    const char* input = nullptr;
+    bool        binary = false;
+    const char* input  = nullptr;
     const char* output = nullptr;
-
 
     // parse command line parameters
     int c;
-    while ((c = getopt (argc, argv, "bi:o:")) != -1)
+    while ((c = getopt(argc, argv, "bi:o:")) != -1)
     {
         switch (c)
         {
@@ -50,13 +46,11 @@ int main(int argc, char **argv)
         }
     }
 
-
     // we need input and output mesh
     if (!input || !output)
     {
         usage_and_exit();
     }
-
 
     // load input mesh
     SurfaceMesh mesh;
@@ -74,9 +68,7 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-
     exit(0);
 }
-
 
 //=============================================================================

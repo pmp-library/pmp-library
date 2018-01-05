@@ -363,7 +363,7 @@ void TrackballViewer::rotate(const vec3& axis, float angle)
     vec4 ec = m_modelviewMatrix * mc;
     vec3 c(ec[0] / ec[3], ec[1] / ec[3], ec[2] / ec[3]);
 
-    m_modelviewMatrix = translationMatrix(c)  * rotationMatrix(axis, angle) *
+    m_modelviewMatrix = translationMatrix(c) * rotationMatrix(axis, angle) *
                         translationMatrix(-c) * m_modelviewMatrix;
 }
 

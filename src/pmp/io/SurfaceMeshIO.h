@@ -50,7 +50,6 @@ namespace pmp {
 class SurfaceMeshIO
 {
 public:
-
     //! Construct with default IO options
     SurfaceMeshIO(const IOOptions& options = IOOptions())
         : m_options(options){};

@@ -56,7 +56,7 @@ public:
     struct Vertex : public BaseHandle
     {
         //! default constructor (with invalid index)
-        explicit Vertex(IndexType idx = PMP_MAX_INDEX) : BaseHandle(idx) {};
+        explicit Vertex(IndexType idx = PMP_MAX_INDEX) : BaseHandle(idx){};
     };
 
     //!@}
@@ -189,11 +189,13 @@ public:
 
     //! read point set from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
-    virtual bool read(const std::string& filename, const IOOptions& options = IOOptions());
+    virtual bool read(const std::string& filename,
+                      const IOOptions&   options = IOOptions());
 
     //! write point set to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
-    virtual bool write(const std::string& filename, const IOOptions& options = IOOptions()) const;
+    virtual bool write(const std::string& filename,
+                       const IOOptions&   options = IOOptions()) const;
 
     //!@}
     //! \name Add new elements by hand
@@ -210,10 +212,7 @@ public:
     size_t verticesSize() const { return m_vprops.size(); }
 
     //! returns number of vertices in the point set
-    size_t nVertices() const
-    {
-        return verticesSize() - m_deletedVertices;
-    }
+    size_t nVertices() const { return verticesSize() - m_deletedVertices; }
 
     //! returns true iff the point set is empty, i.e., has no vertices
     bool isEmpty() const { return nVertices() == 0; }
@@ -248,7 +247,7 @@ public:
     //! invalid property
     template <class T>
     VertexProperty<T> addVertexProperty(const std::string& name,
-                                          const T            t = T())
+                                        const T            t = T())
     {
         return VertexProperty<T>(m_vprops.add<T>(name, t));
     }
@@ -355,10 +354,10 @@ protected:
     //! \name Protected Members
     //!@{
 
-    PropertyContainer      m_vprops;   //!< property container for vertices
-    VertexProperty<Point>  m_vpoint;   //!< point coordinates
-    VertexProperty<bool>   m_vdeleted; //!< for marking deleted vertices
-    size_t                 m_deletedVertices; //!< number of deleted vertices
+    PropertyContainer     m_vprops;   //!< property container for vertices
+    VertexProperty<Point> m_vpoint;   //!< point coordinates
+    VertexProperty<bool>  m_vdeleted; //!< for marking deleted vertices
+    size_t                m_deletedVertices; //!< number of deleted vertices
 
     //!@}
 
@@ -371,7 +370,8 @@ private:
     {
         if (verticesSize() == PMP_MAX_INDEX - 1)
         {
-            std::cerr << "newVertex: cannot allocate vertex, max. index reached" << std::endl;
+            std::cerr << "newVertex: cannot allocate vertex, max. index reached"
+                      << std::endl;
             return Vertex();
         }
         m_vprops.pushBack();

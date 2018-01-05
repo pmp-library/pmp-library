@@ -100,7 +100,12 @@ private:
 
     //! 1D texture for scalar field rendering
     GLuint m_texture;
-    enum { ColdWarmTexture, CheckerboardTexture, OtherTexture } m_textureMode;
+    enum
+    {
+        ColdWarmTexture,
+        CheckerboardTexture,
+        OtherTexture
+    } m_textureMode;
 };
 
 //=============================================================================

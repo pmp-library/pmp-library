@@ -119,7 +119,7 @@ double voronoiArea(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
         double                dotP, dotQ, dotR, triArea;
         double                cotQ, cotR;
 
-        for (auto h: mesh.halfedges(v))
+        for (auto h : mesh.halfedges(v))
         {
             h0 = h;
             h1 = mesh.nextHalfedge(h0);
@@ -192,7 +192,7 @@ double voronoiAreaBarycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
         SurfaceMesh::Halfedge h0, h1;
         Point                 Q, R, PQ, PR;
 
-        for (auto h: mesh.halfedges(v))
+        for (auto h : mesh.halfedges(v))
         {
             if (mesh.isSurfaceBoundary(h))
                 continue;
@@ -223,7 +223,7 @@ Point laplace(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
     {
         Scalar weight, sumWeights(0.0);
 
-        for (auto h: mesh.halfedges(v))
+        for (auto h : mesh.halfedges(v))
         {
             weight = cotanWeight(mesh, mesh.edge(h));
             sumWeights += weight;
@@ -247,7 +247,7 @@ Scalar angleSum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
     {
         const Point& p0 = mesh.position(v);
 
-        for (auto h: mesh.halfedges(v))
+        for (auto h : mesh.halfedges(v))
         {
             const Point& p1 = mesh.position(mesh.toVertex(h));
             const Point& p2 =

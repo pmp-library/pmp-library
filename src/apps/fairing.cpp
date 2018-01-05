@@ -13,6 +13,7 @@ class Viewer : public MeshViewer
 {
 public:
     Viewer(const char* title, int width, int height);
+
 protected:
     virtual void processImGUI();
 };
@@ -20,7 +21,7 @@ protected:
 //=============================================================================
 
 Viewer::Viewer(const char* title, int width, int height)
-    : MeshViewer(title,width, height)
+    : MeshViewer(title, width, height)
 {
 }
 
@@ -74,15 +75,16 @@ void Viewer::processImGUI()
 
 //=============================================================================
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 #ifndef __EMSCRIPTEN__
     Viewer window("Decimation", 800, 600);
-    if (argc == 2) window.loadMesh(argv[1]);
+    if (argc == 2)
+        window.loadMesh(argv[1]);
     return window.run();
 #else
     Viewer window("Decimation", 800, 600);
-    window.loadMesh(argc==2 ? argv[1] : "input.off");
+    window.loadMesh(argc == 2 ? argv[1] : "input.off");
     return window.run();
 #endif
 }

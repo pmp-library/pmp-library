@@ -47,21 +47,20 @@ namespace pmp {
 class PointSetIO
 {
 public:
-
     //! Construct with default options
-    PointSetIO(const IOOptions& options = IOOptions()) : m_options(options) {};
+    PointSetIO(const IOOptions& options = IOOptions()) : m_options(options){};
 
     //! Read point set from file \c filename
     //! \note any previous data in \c ps will be removed
     bool read(PointSet& ps, const std::string& filename)
     {
-        return readXYZ(ps,filename);
+        return readXYZ(ps, filename);
     }
 
     //! Write point set \c ps to file \c filename
     bool write(const PointSet& ps, const std::string& filename)
     {
-        return writeXYZ(ps,filename);
+        return writeXYZ(ps, filename);
     }
 
 protected:

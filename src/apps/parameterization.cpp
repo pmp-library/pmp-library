@@ -12,9 +12,11 @@ class Viewer : public MeshViewer
 {
 public:
     Viewer(const char* title, int width, int height);
+
 protected:
     virtual void processImGUI() override;
     virtual void draw(const std::string& _draw_mode) override;
+
 private:
     SurfaceParameterization m_param;
 };
@@ -22,7 +24,7 @@ private:
 //=============================================================================
 
 Viewer::Viewer(const char* title, int width, int height)
-    : MeshViewer(title,width, height), m_param(m_mesh)
+    : MeshViewer(title, width, height), m_param(m_mesh)
 {
 }
 
@@ -35,7 +37,8 @@ void Viewer::processImGUI()
     ImGui::Spacing();
     ImGui::Spacing();
 
-    if (ImGui::CollapsingHeader("Parametrization", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Parametrization",
+                                ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Spacing();
         if (ImGui::Button("Discrete Harmonic Param"))
@@ -72,7 +75,7 @@ void Viewer::draw(const std::string& drawMode)
 
         // setup viewport
         GLint size = std::min(m_width, m_height) / 4;
-        glViewport(m_width-size-1, m_height-size-1, size, size);
+        glViewport(m_width - size - 1, m_height - size - 1, size, size);
 
         // setup matrices
         mat4 P = orthoMatrix(0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
@@ -85,15 +88,16 @@ void Viewer::draw(const std::string& drawMode)
 
 //=============================================================================
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
 #ifndef __EMSCRIPTEN__
     Viewer window("Parametrization", 800, 600);
-    if (argc == 2) window.loadMesh(argv[1]);
+    if (argc == 2)
+        window.loadMesh(argv[1]);
     return window.run();
 #else
     Viewer window("Parametrization", 800, 600);
-    window.loadMesh(argc==2 ? argv[1] : "input.off");
+    window.loadMesh(argc == 2 ? argv[1] : "input.off");
     return window.run();
 #endif
 }

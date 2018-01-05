@@ -62,7 +62,7 @@ unsigned int PointKdTree::build(unsigned int maxHandles, unsigned int maxDepth)
 //-----------------------------------------------------------------------------
 
 void PointKdTree::buildRecurse(Node* node, unsigned int maxHandles,
-                                unsigned int depth)
+                               unsigned int depth)
 {
     const unsigned int n = node->m_end - node->m_begin;
 
@@ -72,13 +72,13 @@ void PointKdTree::buildRecurse(Node* node, unsigned int maxHandles,
 
     // compute bounding box
     BoundingBox bbox;
-    for (ElementIter it=node->m_begin; it!=node->m_end; ++it)
+    for (ElementIter it = node->m_begin; it != node->m_end; ++it)
     {
         bbox += it->m_point;
     }
 
     // split longest side of bounding box
-    Point  bb     = bbox.max()-bbox.min();
+    Point  bb     = bbox.max() - bbox.min();
     Scalar length = bb[0];
     int    axis   = 0;
     if (bb[1] > length)
@@ -176,13 +176,13 @@ void PointKdTree::nearestRecurse(Node* node, NearestNeighborData& data) const
 //-----------------------------------------------------------------------------
 
 int PointKdTree::kNearest(const Point& p, unsigned int k,
-                           std::vector<int>& knn) const
+                          std::vector<int>& knn) const
 {
     KNearestNeighborData data;
     data.m_ref  = p;
     data.m_dist = FLT_MAX;
     data.m_kNearest.insert(std::make_pair<int, float>(-1, FLT_MAX));
-    data.m_k = k;
+    data.m_k         = k;
     data.m_leafTests = 0;
 
     kNearestRecurse(m_root, data);
@@ -240,8 +240,8 @@ void PointKdTree::kNearestRecurse(Node* node, KNearestNeighborData& data) const
                 if (set.size() > data.m_k)
                 {
                     auto it = set.begin();
-                    std::advance(it,data.m_k);
-                    set.erase(it,set.end());
+                    std::advance(it, data.m_k);
+                    set.erase(it, set.end());
                 }
 
                 data.m_dist = (*set.rbegin()).second;
@@ -253,7 +253,7 @@ void PointKdTree::kNearestRecurse(Node* node, KNearestNeighborData& data) const
 //-----------------------------------------------------------------------------
 
 int PointKdTree::ball(const Point& p, Scalar radius,
-                       std::vector<int>& ball) const
+                      std::vector<int>& ball) const
 {
     ball.clear();
     Scalar squaredRadius = radius * radius;
@@ -271,7 +271,7 @@ int PointKdTree::ball(const Point& p, Scalar radius,
 //-----------------------------------------------------------------------------
 
 void PointKdTree::ballRecurse(Node* node, BallData& data, Scalar squaredRadius,
-                               std::vector<int>& ball) const
+                              std::vector<int>& ball) const
 {
     // non-terminal node
     if (node->m_leftChild)

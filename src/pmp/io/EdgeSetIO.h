@@ -47,9 +47,8 @@ namespace pmp {
 class EdgeSetIO
 {
 public:
-
     //! Construct with default IO opttions
-    EdgeSetIO(const IOOptions& options = IOOptions()) : m_options(options) {};
+    EdgeSetIO(const IOOptions& options = IOOptions()) : m_options(options){};
 
     //! \brief read edge set from file \c filename into \c es
     //! \note any previous data in \c es will be removed

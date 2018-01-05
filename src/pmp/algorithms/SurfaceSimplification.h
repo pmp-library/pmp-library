@@ -69,7 +69,6 @@ public:
     void simplify(unsigned int n);
 
 private: //------------------------------------------------------ private types
-
     //! Store data for an halfedge collapse
     /*
                 vl
@@ -150,7 +149,6 @@ private: //-------------------------------------------------- private functions
 
     // compute distance from p to triagle f
     Scalar distance(SurfaceMesh::Face f, const Point& p) const;
-
 
 private: //------------------------------------------------------- private data
     SurfaceMesh& m_mesh;

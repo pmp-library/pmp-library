@@ -118,12 +118,12 @@ EdgeSet& EdgeSet::assign(const EdgeSet& rhs)
 bool EdgeSet::read(const std::string& filename, const IOOptions& options)
 {
     EdgeSetIO reader(options);
-    bool success = reader.read(*this,filename);
+    bool      success = reader.read(*this, filename);
 
     // try parent class if no reader is found
     if (!success)
     {
-        success = PointSet::read(filename,options);
+        success = PointSet::read(filename, options);
     }
 
     return success;
@@ -134,12 +134,12 @@ bool EdgeSet::read(const std::string& filename, const IOOptions& options)
 bool EdgeSet::write(const std::string& filename, const IOOptions& options) const
 {
     EdgeSetIO writer(options);
-    bool success = writer.write(*this,filename);
+    bool      success = writer.write(*this, filename);
 
     // try parent class if no writer is found
     if (!success)
     {
-        success = PointSet::write(filename,options);
+        success = PointSet::write(filename, options);
     }
 
     return success;

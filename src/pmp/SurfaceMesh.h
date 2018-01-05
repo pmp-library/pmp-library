@@ -207,7 +207,8 @@ public:
             if (m_mesh)
             {
                 m_halfedge = m_mesh->halfedge(v);
-                if (m_halfedge.isValid() && m_mesh->isSurfaceBoundary(m_halfedge))
+                if (m_halfedge.isValid() &&
+                    m_mesh->isSurfaceBoundary(m_halfedge))
                     operator++();
             }
         }
@@ -445,11 +446,13 @@ public:
 
     //! read mesh from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
-    bool read(const std::string& filename, const IOOptions& options = IOOptions()) override;
+    bool read(const std::string& filename,
+              const IOOptions&   options = IOOptions()) override;
 
     //! write mesh to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
-    bool write(const std::string& filename, const IOOptions& options = IOOptions()) const override;
+    bool write(const std::string& filename,
+               const IOOptions&   options = IOOptions()) const override;
 
     //!@}
     //! \name Add new elements by hand
@@ -515,7 +518,8 @@ public:
     //! halfedges is a boundary halfedge.
     bool isSurfaceBoundary(Edge e) const
     {
-        return (isSurfaceBoundary(halfedge(e, 0)) || isSurfaceBoundary(halfedge(e, 1)));
+        return (isSurfaceBoundary(halfedge(e, 0)) ||
+                isSurfaceBoundary(halfedge(e, 1)));
     }
 
     //! returns whether \c v is a boundary vertex
@@ -548,10 +552,7 @@ public:
     void setFace(Halfedge h, Face f) { m_hfconn[h].m_face = f; }
 
     //! returns whether h is a boundary halfege, i.e., if its face does not exist.
-    bool isSurfaceBoundary(Halfedge h) const
-    {
-        return !face(h).isValid();
-    }
+    bool isSurfaceBoundary(Halfedge h) const { return !face(h).isValid(); }
 
     //! returns the face incident to the \c i'th halfedge of edge \c e. \c i has to be 0 or 1.
     Face face(Edge e, unsigned int i) const
@@ -813,7 +814,8 @@ private:
     {
         if (facesSize() == PMP_MAX_INDEX - 1)
         {
-            std::cerr << "newFace: cannot allocate face, max. index reached" << std::endl;
+            std::cerr << "newFace: cannot allocate face, max. index reached"
+                      << std::endl;
             return Face();
         }
 

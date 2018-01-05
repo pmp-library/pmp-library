@@ -57,7 +57,7 @@ class SurfaceNormals
 {
 public:
     // delete default and copy constructor
-    SurfaceNormals() = delete;
+    SurfaceNormals()                      = delete;
     SurfaceNormals(const SurfaceNormals&) = delete;
 
     //! \brief Compute vertex normals for the whole \c mesh.
