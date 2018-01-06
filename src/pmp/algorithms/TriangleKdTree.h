@@ -85,27 +85,27 @@ private:
     // Node of the tree: contains parent, children and splitting plane
     struct Node
     {
-        Node() : m_faces(0), m_leftChild(0), m_rightChild(0) {}
+        Node() : faces(nullptr), leftChild(nullptr), rightChild(nullptr) {};
 
         ~Node()
         {
-            delete m_faces;
-            delete m_leftChild;
-            delete m_rightChild;
+            delete faces;
+            delete leftChild;
+            delete rightChild;
         }
 
-        unsigned char m_axis;
-        Scalar        m_split;
-        Triangles*    m_faces;
-        Node*         m_leftChild;
-        Node*         m_rightChild;
+        unsigned char axis;
+        Scalar        split;
+        Triangles*    faces;
+        Node*         leftChild;
+        Node*         rightChild;
     };
 
     // Recursive part of build()
-    unsigned int Build(Node* node, unsigned int maxHandles, unsigned int depth);
+    unsigned int buildRecurse(Node* node, unsigned int maxHandles, unsigned int depth);
 
     // Recursive part of nearest()
-    void Nearest(Node* node, const Point& point, NearestNeighbor& data) const;
+    void nearestRecurse(Node* node, const Point& point, NearestNeighbor& data) const;
 
 private:
     Node* m_root;

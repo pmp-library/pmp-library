@@ -43,14 +43,14 @@ TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int maxFaces,
                                unsigned int maxDepth)
 {
     // init
-    m_root          = new Node();
-    m_root->m_faces = new Triangles();
+    m_root        = new Node();
+    m_root->faces = new Triangles();
     SurfaceMesh::VertexProperty<Point> points =
         mesh.getVertexProperty<Point>("v:point");
 
     // collect triangles
     Triangle tri;
-    m_root->m_faces->reserve(mesh.nFaces());
+    m_root->faces->reserve(mesh.nFaces());
     for (SurfaceMesh::FaceIterator fit = mesh.facesBegin();
          fit != mesh.facesEnd(); ++fit)
     {
@@ -61,30 +61,28 @@ TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int maxFaces,
         ++vfit;
         tri.x[2] = points[*vfit];
         tri.f    = *fit;
-        m_root->m_faces->push_back(tri);
+        m_root->faces->push_back(tri);
     }
 
     // call recursive helper
-    Build(m_root, maxFaces, maxDepth);
-    //int depth = Build(m_root, maxFaces, maxDepth);
-    //LOG(LogInfo) << "kD tree depth: " << maxDepth - depth << std::endl;
+    buildRecurse(m_root, maxFaces, maxDepth);
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int TriangleKdTree::Build(Node* node, unsigned int maxFaces,
-                                   unsigned int depth)
+unsigned int TriangleKdTree::buildRecurse(Node* node, unsigned int maxFaces,
+                                          unsigned int depth)
 {
     // should we stop at this level ?
-    if ((depth == 0) || (node->m_faces->size() <= maxFaces))
+    if ((depth == 0) || (node->faces->size() <= maxFaces))
         return depth;
 
-    std::vector<Triangle>::const_iterator fit, fend = node->m_faces->end();
+    std::vector<Triangle>::const_iterator fit, fend = node->faces->end();
     unsigned int                          i;
 
     // compute bounding box
     BoundingBox bbox;
-    for (fit = node->m_faces->begin(); fit != fend; ++fit)
+    for (fit = node->faces->begin(); fit != fend; ++fit)
     {
         for (i = 0; i < 3; ++i)
         {
@@ -107,8 +105,8 @@ unsigned int TriangleKdTree::Build(Node* node, unsigned int maxFaces,
 #else
     // find split position as median
     std::vector<Scalar> v;
-    v.reserve(node->m_faces->size() * 3);
-    for (fit = node->m_faces->begin(); fit != fend; ++fit)
+    v.reserve(node->faces->size() * 3);
+    for (fit = node->faces->begin(); fit != fend; ++fit)
         for (i = 0; i < 3; ++i)
             v.push_back(fit->x[i][axis]]);
     std::sort(v.begin(), v.end());
@@ -116,15 +114,15 @@ unsigned int TriangleKdTree::Build(Node* node, unsigned int maxFaces,
 #endif
 
     // create children
-    auto* left    = new Node();
-    left->m_faces = new Triangles();
-    left->m_faces->reserve(node->m_faces->size() / 2);
-    auto* right    = new Node();
-    right->m_faces = new Triangles;
-    right->m_faces->reserve(node->m_faces->size() / 2);
+    auto* left  = new Node();
+    left->faces = new Triangles();
+    left->faces->reserve(node->faces->size() / 2);
+    auto* right  = new Node();
+    right->faces = new Triangles;
+    right->faces->reserve(node->faces->size() / 2);
 
     // partition for left and right child
-    for (fit = node->m_faces->begin(); fit != fend; ++fit)
+    for (fit = node->faces->begin(); fit != fend; ++fit)
     {
         bool l = false, r = false;
 
@@ -144,21 +142,21 @@ unsigned int TriangleKdTree::Build(Node* node, unsigned int maxFaces,
 
         if (l)
         {
-            left->m_faces->push_back(t);
+            left->faces->push_back(t);
         }
 
         if (r)
         {
-            right->m_faces->push_back(t);
+            right->faces->push_back(t);
         }
     }
 
     // stop here?
-    if (left->m_faces->size() == node->m_faces->size() ||
-        right->m_faces->size() == node->m_faces->size())
+    if (left->faces->size() == node->faces->size() ||
+        right->faces->size() == node->faces->size())
     {
         // compact my memory
-        node->m_faces->shrink_to_fit();
+        node->faces->shrink_to_fit();
 
         // delete new nodes
         delete left;
@@ -172,18 +170,18 @@ unsigned int TriangleKdTree::Build(Node* node, unsigned int maxFaces,
     else
     {
         // free my memory
-        delete node->m_faces;
-        node->m_faces = nullptr;
+        delete node->faces;
+        node->faces = nullptr;
 
         // store internal data
-        node->m_axis       = axis;
-        node->m_split      = split;
-        node->m_leftChild  = left;
-        node->m_rightChild = right;
+        node->axis       = axis;
+        node->split      = split;
+        node->leftChild  = left;
+        node->rightChild = right;
 
         // recurse to childen
-        int depthLeft  = Build(node->m_leftChild, maxFaces, depth - 1);
-        int depthRight = Build(node->m_rightChild, maxFaces, depth - 1);
+        int depthLeft  = buildRecurse(node->leftChild, maxFaces, depth - 1);
+        int depthRight = buildRecurse(node->rightChild, maxFaces, depth - 1);
 
         return std::min(depthLeft, depthRight);
     }
@@ -196,23 +194,22 @@ TriangleKdTree::NearestNeighbor TriangleKdTree::nearest(const Point& p) const
     NearestNeighbor data;
     data.dist  = FLT_MAX;
     data.tests = 0;
-    Nearest(m_root, p, data);
+    nearestRecurse(m_root, p, data);
     return data;
 }
 
 //-----------------------------------------------------------------------------
 
-void TriangleKdTree::Nearest(Node* node, const Point& point,
-                             NearestNeighbor& data) const
+void TriangleKdTree::nearestRecurse(Node* node, const Point& point,
+                                    NearestNeighbor& data) const
 {
     // terminal node?
-    if (!node->m_leftChild)
+    if (!node->leftChild)
     {
         Scalar d;
         Point  n;
 
-        std::vector<Triangle>::const_iterator fit  = node->m_faces->begin(),
-                                              fend = node->m_faces->end();
+        auto fit = node->faces->begin(), fend = node->faces->end();
         for (; fit != fend; ++fit)
         {
             d = distPointTriangle(point, fit->x[0], fit->x[1], fit->x[2], n);
@@ -229,19 +226,19 @@ void TriangleKdTree::Nearest(Node* node, const Point& point,
     // non-terminal node
     else
     {
-        Scalar dist = point[node->m_axis] - node->m_split;
+        Scalar dist = point[node->axis] - node->split;
 
         if (dist <= 0.0)
         {
-            Nearest(node->m_leftChild, point, data);
+            nearestRecurse(node->leftChild, point, data);
             if (fabs(dist) < data.dist)
-                Nearest(node->m_rightChild, point, data);
+                nearestRecurse(node->rightChild, point, data);
         }
         else
         {
-            Nearest(node->m_rightChild, point, data);
+            nearestRecurse(node->rightChild, point, data);
             if (fabs(dist) < data.dist)
-                Nearest(node->m_leftChild, point, data);
+                nearestRecurse(node->leftChild, point, data);
         }
     }
 }
