@@ -1,6 +1,6 @@
 //=============================================================================
-// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -848,7 +848,7 @@ public:
     //! other edge or faces. It simply splits the edge. Returns halfedge
     //! that points to \c p.  \sa insertVertex(Edge, Point) \sa
     //! insertVertex(Edge, Vertex)
-    virtual Halfedge insertVertex(Halfedge h, Vertex v);
+    virtual Halfedge insertVertex(Halfedge h0, Vertex v);
 
     //! insert edge between v0 and v1
     //! returns the new halfedge from v0 to v1

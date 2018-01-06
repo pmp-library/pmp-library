@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without

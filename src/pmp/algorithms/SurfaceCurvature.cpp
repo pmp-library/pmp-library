@@ -53,7 +53,7 @@ SurfaceCurvature::~SurfaceCurvature()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceCurvature::analyze(unsigned int smoothingSteps)
+void SurfaceCurvature::analyze(unsigned int postSmoothingSteps)
 {
     Scalar kmin, kmax, mean, gauss;
     Scalar area, sumAngles;
@@ -149,12 +149,12 @@ void SurfaceCurvature::analyze(unsigned int smoothingSteps)
     m_mesh.removeEdgeProperty(cotan);
 
     // smooth curvature values
-    smoothCurvatures(smoothingSteps);
+    smoothCurvatures(postSmoothingSteps);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
+void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
                                      bool         twoRingNeighborhood)
 {
     auto area   = m_mesh.addVertexProperty<double>("curv:area", 0.0);
@@ -303,7 +303,7 @@ void SurfaceCurvature::analyzeTensor(unsigned int smoothingSteps,
     m_mesh.removeFaceProperty(normal);
 
     // smooth curvature values
-    smoothCurvatures(smoothingSteps);
+    smoothCurvatures(postSmoothingSteps);
 }
 
 //-----------------------------------------------------------------------------

@@ -462,13 +462,13 @@ public:
     //! \sa addTriangle, addQuad
     Face addFace(const std::vector<Vertex>& vertices);
 
-    //! add a new triangle connecting vertices \c v1, \c v2, \c v3
+    //! add a new triangle connecting vertices \c v0, \c v1, \c v2
     //! \sa addFace, addQuad
-    Face addTriangle(Vertex v1, Vertex v2, Vertex v3);
+    Face addTriangle(Vertex v0, Vertex v1, Vertex v2);
 
-    //! add a new quad connecting vertices \c v1, \c v2, \c v3, \c v4
+    //! add a new quad connecting vertices \c v0, \c v1, \c v2, \c v3
     //! \sa addTriangle, addFace
-    Face addQuad(Vertex v1, Vertex v2, Vertex v3, Vertex v4);
+    Face addQuad(Vertex v0, Vertex v1, Vertex v2, Vertex v3);
 
     //!@}
     //! \name Memory Management
@@ -699,9 +699,9 @@ public:
     //! \sa triangulate()
     void triangulate(Face f);
 
-    //! returns whether collapsing the halfedge \c h is topologically legal.
+    //! returns whether collapsing the halfedge \c v0v1 is topologically legal.
     //! \attention This function is only valid for triangle meshes.
-    bool isCollapseOk(Halfedge h);
+    bool isCollapseOk(Halfedge v0v1);
 
     //! Collapse the halfedge \c h by moving its start vertex into its target
     //! vertex. For non-boundary halfedges this function removes one vertex, three
@@ -755,7 +755,7 @@ public:
     //! edge or faces. It simply splits the edge. Returns halfedge that points to \c p.
     //! \sa insertVertex(Edge, Point)
     //! \sa insertVertex(Edge, Vertex)
-    virtual Halfedge insertVertex(Halfedge h, Vertex v) override;
+    virtual Halfedge insertVertex(Halfedge h0, Vertex v) override;
 
     //! insert edge between the to-vertices v0 of h0 and v1 of h1.
     //! returns the new halfedge from v0 to v1.

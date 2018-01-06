@@ -1,6 +1,6 @@
 //=============================================================================
-// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -235,7 +235,7 @@ public:
     }
 
     //! reserve memory (mainly used in file readers)
-    void reserve(size_t nvertices);
+    void reserve(size_t nVertices);
 
     //!@}
     //! \name Property handling

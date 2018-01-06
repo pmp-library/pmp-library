@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ namespace pmp {
 
 //=============================================================================
 
-TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int maxHandles,
+TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int maxFaces,
                                unsigned int maxDepth)
 {
     // init
@@ -65,18 +65,18 @@ TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int maxHandles,
     }
 
     // call recursive helper
-    Build(m_root, maxHandles, maxDepth);
-    //int depth = Build(m_root, maxHandles, maxDepth);
+    Build(m_root, maxFaces, maxDepth);
+    //int depth = Build(m_root, maxFaces, maxDepth);
     //LOG(LogInfo) << "kD tree depth: " << maxDepth - depth << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int TriangleKdTree::Build(Node* node, unsigned int maxHandles,
+unsigned int TriangleKdTree::Build(Node* node, unsigned int maxFaces,
                                    unsigned int depth)
 {
     // should we stop at this level ?
-    if ((depth == 0) || (node->m_faces->size() <= maxHandles))
+    if ((depth == 0) || (node->m_faces->size() <= maxFaces))
         return depth;
 
     std::vector<Triangle>::const_iterator fit, fend = node->m_faces->end();
@@ -182,8 +182,8 @@ unsigned int TriangleKdTree::Build(Node* node, unsigned int maxHandles,
         node->m_rightChild = right;
 
         // recurse to childen
-        int depthLeft  = Build(node->m_leftChild, maxHandles, depth - 1);
-        int depthRight = Build(node->m_rightChild, maxHandles, depth - 1);
+        int depthLeft  = Build(node->m_leftChild, maxFaces, depth - 1);
+        int depthRight = Build(node->m_rightChild, maxFaces, depth - 1);
 
         return std::min(depthLeft, depthRight);
     }

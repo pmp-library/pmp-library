@@ -114,7 +114,7 @@ bool SurfaceParameterization::setupBoundaryConstraints()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceParameterization::harmonic(bool uniform)
+void SurfaceParameterization::harmonic(bool useUniformWeights)
 {
     // map boundary to circle
     if (!setupBoundaryConstraints())
@@ -131,7 +131,7 @@ void SurfaceParameterization::harmonic(bool uniform)
     // compute Laplace weight per edge: cotan or uniform
     for (auto e : m_mesh.edges())
     {
-        eweight[e] = uniform ? 1.0 : std::max(0.0, cotanWeight(m_mesh, e));
+        eweight[e] = useUniformWeights ? 1.0 : std::max(0.0, cotanWeight(m_mesh, e));
     }
 
     // collect free (non-boundary) vertices in array free_vertices[]

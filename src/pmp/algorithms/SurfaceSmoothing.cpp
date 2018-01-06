@@ -44,14 +44,14 @@ using Triplet      = Eigen::Triplet<double>;
 
 //=============================================================================
 
-void SurfaceSmoothing::explicitSmoothing(unsigned int iters, bool uniform)
+void SurfaceSmoothing::explicitSmoothing(unsigned int iters, bool useUniformLaplace)
 {
     auto points  = m_mesh.vertexProperty<Point>("v:point");
     auto eweight = m_mesh.addEdgeProperty<Scalar>("e:cotan");
     auto laplace = m_mesh.addVertexProperty<Point>("v:laplace");
 
     // compute Laplace weight per edge: cotan or uniform
-    if (uniform)
+    if (useUniformLaplace)
     {
         for (auto e : m_mesh.edges())
             eweight[e] = 1.0;
@@ -104,7 +104,7 @@ void SurfaceSmoothing::explicitSmoothing(unsigned int iters, bool uniform)
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
+void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool useUniformLaplace)
 {
     if (!m_mesh.nVertices())
         return;
@@ -116,7 +116,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
     auto idx     = m_mesh.addVertexProperty<int>("v:idx", -1);
 
     // compute weights: cotan or uniform
-    if (uniform)
+    if (useUniformLaplace)
     {
         for (auto v : m_mesh.vertices())
             vweight[v] = 1.0 / m_mesh.valence(v);
@@ -147,8 +147,8 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
     const unsigned int n = free_vertices.size();
 
     // A*X = B
-    Eigen::SparseMatrix<double> A(n, n);
-    Eigen::MatrixXd             B(n, 3);
+    SparseMatrix    A(n, n);
+    Eigen::MatrixXd B(n, 3);
 
     // nonzero elements of A as triplets: (row, column, value)
     std::vector<Eigen::Triplet<double>> triplets;
@@ -196,8 +196,8 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
     A.setFromTriplets(triplets.begin(), triplets.end());
 
     // solve A*X = B
-    Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver(A);
-    Eigen::MatrixXd                                    X = solver.solve(B);
+    Eigen::SimplicialLDLT<SparseMatrix> solver(A);
+    Eigen::MatrixXd                     X = solver.solve(B);
     if (solver.info() != Eigen::Success)
     {
         std::cerr << "SurfaceSmoothing: Could not solve linear system\n";

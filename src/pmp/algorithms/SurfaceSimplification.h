@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ public:
                     Scalar hausdorffError = 0.0);
 
     //! decimate down to n vertices
-    void simplify(unsigned int n);
+    void simplify(unsigned int nVertices);
 
 private: //------------------------------------------------------ private types
     //! Store data for an halfedge collapse
@@ -86,7 +86,7 @@ private: //------------------------------------------------------ private types
     struct CollapseData
     {
     public:
-        CollapseData(SurfaceMesh& mesh, SurfaceMesh::Halfedge h);
+        CollapseData(SurfaceMesh& sm, SurfaceMesh::Halfedge h);
 
         SurfaceMesh& mesh;
 

@@ -166,7 +166,7 @@ void SurfaceSimplification::initialize(Scalar aspectRatio, Scalar edgeLength,
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSimplification::simplify(unsigned int NVertices)
+void SurfaceSimplification::simplify(unsigned int nVertices)
 {
     if (!m_mesh.isTriangleMesh())
     {
@@ -200,7 +200,7 @@ void SurfaceSimplification::simplify(unsigned int NVertices)
         enqueueVertex(v);
     }
 
-    while (nv > NVertices && !m_queue->empty())
+    while (nv > nVertices && !m_queue->empty())
     {
         // get 1st element
         v = m_queue->front();
@@ -621,9 +621,9 @@ Scalar SurfaceSimplification::distance(SurfaceMesh::Face f,
 
 //-----------------------------------------------------------------------------
 
-SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh&          m,
+SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh&         sm,
                                                   SurfaceMesh::Halfedge h)
-    : mesh(m)
+    : mesh(sm)
 {
     v0v1 = h;
     v1v0 = mesh.oppositeHalfedge(v0v1);
