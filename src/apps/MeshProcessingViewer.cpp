@@ -50,49 +50,10 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 
     switch (key)
     {
-        case GLFW_KEY_G: // Gauss curvature
-        {
-            SurfaceCurvature analyzer(m_mesh);
-            analyzer.analyzeTensor(1, true);
-            analyzer.gaussCurvatureToTextureCoordinates();
-            updateMesh();
-            m_mesh.useColdWarmTexture();
-            setDrawMode("Scalar Field");
-            break;
-        }
-        case GLFW_KEY_M: // mean curvature
-        {
-            SurfaceCurvature analyzer(m_mesh);
-            analyzer.analyzeTensor(1, true);
-            analyzer.meanCurvatureToTextureCoordinates();
-            updateMesh();
-            m_mesh.useColdWarmTexture();
-            setDrawMode("Scalar Field");
-            break;
-        }
-        case GLFW_KEY_X: // mean curvature
-        {
-            SurfaceCurvature analyzer(m_mesh);
-            analyzer.analyzeTensor(1, true);
-            analyzer.maxCurvatureToTextureCoordinates();
-            updateMesh();
-            m_mesh.useColdWarmTexture();
-            setDrawMode("Scalar Field");
-            break;
-        }
         case GLFW_KEY_F:
         {
             SurfaceFeatures sf(m_mesh);
             sf.detectAngle(70);
-            break;
-        }
-        case GLFW_KEY_L:
-        {
-            if (m_mesh.isTriangleMesh())
-                SurfaceSubdivision(m_mesh).loop();
-            else
-                SurfaceSubdivision(m_mesh).catmullClark();
-            updateMesh();
             break;
         }
         case GLFW_KEY_O: // change face orientation
@@ -113,43 +74,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
                 newMesh.addFace(vertices);
             }
             m_mesh = newMesh;
-            updateMesh();
-            break;
-        }
-        case GLFW_KEY_R:
-        {
-            // adaptive remeshing
-            auto bb = m_mesh.bounds().size();
-            SurfaceRemeshing(m_mesh).adaptiveRemeshing(
-                0.001 * bb,  // min length
-                1.0 * bb,    // max length
-                0.001 * bb); // approx. error
-            updateMesh();
-            break;
-        }
-        case GLFW_KEY_S:
-        {
-            SurfaceSimplification ss(m_mesh);
-            ss.initialize(5); // aspect ratio
-            ss.simplify(m_mesh.nVertices() * 0.1);
-            updateMesh();
-            break;
-        }
-        case GLFW_KEY_T:
-        {
-            if (!m_mesh.isTriangleMesh())
-                m_mesh.triangulate();
-            updateMesh();
-            break;
-        }
-        case GLFW_KEY_U:
-        {
-            Scalar l(0);
-            for (auto eit : m_mesh.edges())
-                l += distance(m_mesh.position(m_mesh.vertex(eit, 0)),
-                              m_mesh.position(m_mesh.vertex(eit, 1)));
-            l /= (Scalar)m_mesh.nEdges();
-            SurfaceRemeshing(m_mesh).uniformRemeshing(l);
             updateMesh();
             break;
         }
@@ -175,33 +99,139 @@ void MeshProcessingViewer::processImGUI()
     ImGui::Spacing();
     ImGui::Spacing();
 
-    if (ImGui::CollapsingHeader("Mesh Processing",
-                                ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Curvature"))
     {
-        if (ImGui::Button("Simplification"))
+        if (ImGui::Button("Mean Curvature"))
+        {
+            SurfaceCurvature analyzer(m_mesh);
+            analyzer.analyzeTensor(1, true);
+            analyzer.meanCurvatureToTextureCoordinates();
+            m_mesh.useColdWarmTexture();
+            updateMesh();
+            setDrawMode("Texture");
+        }
+        if (ImGui::Button("Gauss Curvature"))
+        {
+            SurfaceCurvature analyzer(m_mesh);
+            analyzer.analyzeTensor(1, true);
+            analyzer.gaussCurvatureToTextureCoordinates();
+            m_mesh.useColdWarmTexture();
+            updateMesh();
+            setDrawMode("Texture");
+        }
+        if (ImGui::Button("Abs. Max. Curvature"))
+        {
+            SurfaceCurvature analyzer(m_mesh);
+            analyzer.analyzeTensor(1, true);
+            analyzer.maxCurvatureToTextureCoordinates();
+            m_mesh.useColdWarmTexture();
+            updateMesh();
+            setDrawMode("Texture");
+        }
+    }
+
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+
+    if (ImGui::CollapsingHeader("Smoothing"))
+    {
+        static int iterations = 10;
+        ImGui::PushItemWidth(100);
+        ImGui::SliderInt("Iterations", &iterations, 1, 100);
+        ImGui::PopItemWidth();
+
+        if (ImGui::Button("Explicit Smoothing"))
+        {
+            SurfaceSmoothing smoother(m_mesh);
+            smoother.explicitSmoothing(iterations);
+            updateMesh();
+        }
+
+        ImGui::Spacing();
+
+        static float timestep = 0.001;
+        float        lb       = 0.001;
+        float        ub       = 0.1;
+        ImGui::PushItemWidth(100);
+        ImGui::SliderFloat("TimeStep", &timestep, lb, ub);
+        ImGui::PopItemWidth();
+
+        if (ImGui::Button("Implicit Smoothing"))
+        {
+            Scalar dt = timestep * m_radius * m_radius;
+            SurfaceSmoothing smoother(m_mesh);
+            smoother.implicitSmoothing(dt);
+            updateMesh();
+        }
+    }
+
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+
+    if (ImGui::CollapsingHeader("Decimation"))
+    {
+        static int targetPercentage = 10;
+        ImGui::PushItemWidth(100);
+        ImGui::SliderInt("Percentage", &targetPercentage, 1, 99);
+        ImGui::PopItemWidth();
+
+        static int normalDeviation = 180;
+        ImGui::PushItemWidth(100);
+        ImGui::SliderInt("Normal Deviation", &normalDeviation, 1, 180);
+        ImGui::PopItemWidth();
+
+        static int aspectRatio = 10;
+        ImGui::PushItemWidth(100);
+        ImGui::SliderInt("Aspect Ratio", &aspectRatio, 1, 10);
+        ImGui::PopItemWidth();
+
+        if (ImGui::Button("Decimate it!"))
         {
             SurfaceSimplification ss(m_mesh);
-            ss.initialize(5); // aspect ratio
-            ss.simplify(m_mesh.nVertices() * 0.1);
+            ss.initialize(aspectRatio, 0.0, 0.0, normalDeviation, 0.0);
+            ss.simplify(m_mesh.nVertices() * 0.01 * targetPercentage);
             updateMesh();
         }
+    }
 
-        if (ImGui::Button("Subdivision"))
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+
+    if (ImGui::CollapsingHeader("Subdivision"))
+    {
+        if (ImGui::Button("Loop Subdivision"))
         {
-            if (m_mesh.isTriangleMesh())
-                SurfaceSubdivision(m_mesh).loop();
-            else
-                SurfaceSubdivision(m_mesh).catmullClark();
+            SurfaceSubdivision(m_mesh).loop();
             updateMesh();
         }
 
+        if (ImGui::Button("Sqrt(3) Subdivision"))
+        {
+            SurfaceSubdivision(m_mesh).sqrt3();
+            updateMesh();
+        }
+    }
+
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+
+    if (ImGui::CollapsingHeader("Remeshing"))
+    {
         if (ImGui::Button("Adaptive Remeshing"))
         {
             auto bb = m_mesh.bounds().size();
             SurfaceRemeshing(m_mesh).adaptiveRemeshing(
-                0.001 * bb,  // min length
-                1.0 * bb,    // max length
-                0.001 * bb); // approx. error
+                    0.001 * bb,  // min length
+                    1.0 * bb,    // max length
+                    0.001 * bb); // approx. error
             updateMesh();
         }
 
@@ -210,10 +240,13 @@ void MeshProcessingViewer::processImGUI()
             Scalar l(0);
             for (auto eit : m_mesh.edges())
                 l += distance(m_mesh.position(m_mesh.vertex(eit, 0)),
-                              m_mesh.position(m_mesh.vertex(eit, 1)));
+                        m_mesh.position(m_mesh.vertex(eit, 1)));
             l /= (Scalar)m_mesh.nEdges();
             SurfaceRemeshing(m_mesh).uniformRemeshing(l);
             updateMesh();
         }
     }
 }
+
+
+//=============================================================================
