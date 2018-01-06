@@ -92,7 +92,37 @@ adhere to.
 
 ## Comments
 
-Use C++-style comments, i.e., `// my comment.` Use `//!` for doxygen comments.
+Use C++-style comments, i.e., `// my comment.`
+
+### Doxygen Documentation Comments
+
+We use [Doxygen](http://www.doxygen.org/index.html) to generate our API
+documentation. All public types and interfaces should be properly
+documented. This usually includes a short abstract not longer than a sentence as
+well as a more detailed discussion of what the function does. We use `//!` for
+doxygen comments. The following is an example what a fully documentation comment
+could look like:
+
+\verbatim
+//! \brief Does foo.
+//!
+//! \details Does foo and nothing else. If \p useBar argument is true uses the
+//! bar method instead of foo.
+//!
+//! \param[in] useBar toggle to switch method
+//! \param[out] results filled with results from foo
+//!
+//! \returns true on success.
+\endverbatim
+
+Another good practice is to document pre- and post-conditions for performing an
+operation. Those can be documented using the `\pre` and `\post` Doxygen
+[special commands](https://www.stack.nl/~dimitri/doxygen/manual/commands.html).
+
+Use Doxygen comments only in the header file. Do not repeat the same information
+in the implementation file. Instead, provide specific details on the
+implementation at hand, i.e., how was the functionality implemented, and why was
+it implemented in this manner?
 
 ## Include Guards
 
@@ -173,3 +203,23 @@ clang-format on` directives around this block:
     m(3, 0) = 0.0;  m(3, 1) = 0.0;  m(3, 2) = 0.0;  m(3, 3) = 1.0;
     // clang-format on
 ~~~~
+
+# See Also
+
+The above coding standard is necessarily incomplete. Therefore, we list some
+additional references and pointers to useful resources regarding C++ coding
+standards and best practices:
+
+* The [Effective C++ series](https://www.aristeia.com/books.html) of Scott Meyer
+  contains a whealth of guidelines \cite meyers_2005_effective
+  \cite meyers_2014_effective .
+* [C++ Coding Standards](http://www.gotw.ca/publications/c++cs.htm) written by
+  Herb Sutter and Andrei Alexandrescu describes concrete guidelines and best
+  practices \cite sutter_2004_c++ .
+* The [C++ Core Guidelines](https://github.com/isocpp/cppcoreguidelines) are an
+  ongoing effort led by Bjarne Stroustrup to develop guidelines for effecitve
+  modern C++ usage.
+* Other coding standards:
+  * [LLVM Coding Standards](https://llvm.org/docs/CodingStandards.html)
+  * [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
+  * [High Integrity C++ Coding Standard](http://www.codingstandard.com/section/index/)
