@@ -23,6 +23,17 @@ endif()
 
 set_target_properties(pmp PROPERTIES VERSION ${PMP_VERSION})
 
+# check for recent cmake version
+if(${CMAKE_VERSION} VERSION_GREATER "3.6.0")
+  if(CLANG_TIDY_EXE AND FALSE) # disabled by default
+    set_target_properties(
+      pmp PROPERTIES
+      CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}"
+      )
+  endif()
+endif()
+
+
 if(NOT EMSCRIPTEN)
 
   target_include_directories(pmp PUBLIC

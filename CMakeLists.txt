@@ -126,6 +126,9 @@ if(PMP_INDEX_TYPE EQUAL 64)
   add_definitions(-DPMP_INDEX_TYPE_64)
 endif()
 
+# setup clang-tidy if program found
+include(clang-tidy)
+
 
 # which directories to process
 if (EMSCRIPTEN)
@@ -188,4 +191,4 @@ if(NOT TARGET uninstall)
 endif()
 
 # add clang-format target if program is found
-include("${CMAKE_MODULE_PATH}/clang-format.cmake")
+include(clang-format)
