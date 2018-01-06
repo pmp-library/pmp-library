@@ -56,8 +56,7 @@ SurfaceMesh::SurfaceMesh() : EdgeSet()
 //-----------------------------------------------------------------------------
 
 SurfaceMesh::~SurfaceMesh()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -183,8 +182,8 @@ void SurfaceMesh::propertyStats() const
 
     std::cout << "face properties:\n";
     props = faceProperties();
-    for (size_t i = 0; i < props.size(); ++i)
-        std::cout << "\t" << props[i] << std::endl;
+    for (const auto & prop : props)
+        std::cout << "\t" << prop << std::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -316,9 +315,9 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
                 patchEnd   = prevHalfedge(innerNext);
 
                 // relink
-                nextCache.push_back(NextCacheEntry(boundaryPrev, patchStart));
-                nextCache.push_back(NextCacheEntry(patchEnd, boundaryNext));
-                nextCache.push_back(NextCacheEntry(innerPrev, innerNext));
+                nextCache.emplace_back(boundaryPrev, patchStart);
+                nextCache.emplace_back(patchEnd, boundaryNext);
+                nextCache.emplace_back(innerPrev, innerNext);
             }
         }
     }
@@ -359,15 +358,13 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
             {
                 case 1: // prev is new, next is old
                     boundaryPrev = prevHalfedge(innerNext);
-                    nextCache.push_back(
-                        NextCacheEntry(boundaryPrev, outerNext));
+                    nextCache.emplace_back(boundaryPrev, outerNext);
                     setHalfedge(v, outerNext);
                     break;
 
                 case 2: // next is new, prev is old
                     boundaryNext = nextHalfedge(innerPrev);
-                    nextCache.push_back(
-                        NextCacheEntry(outerPrev, boundaryNext));
+                    nextCache.emplace_back(outerPrev, boundaryNext);
                     setHalfedge(v, boundaryNext);
                     break;
 
@@ -375,23 +372,20 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
                     if (!halfedge(v).isValid())
                     {
                         setHalfedge(v, outerNext);
-                        nextCache.push_back(
-                            NextCacheEntry(outerPrev, outerNext));
+                        nextCache.emplace_back(outerPrev, outerNext);
                     }
                     else
                     {
                         boundaryNext = halfedge(v);
                         boundaryPrev = prevHalfedge(boundaryNext);
-                        nextCache.push_back(
-                            NextCacheEntry(boundaryPrev, outerNext));
-                        nextCache.push_back(
-                            NextCacheEntry(outerPrev, boundaryNext));
+                        nextCache.emplace_back(boundaryPrev, outerNext);
+                        nextCache.emplace_back(outerPrev, boundaryNext);
                     }
                     break;
             }
 
             // set inner link
-            nextCache.push_back(NextCacheEntry(innerPrev, innerNext));
+            nextCache.emplace_back(innerPrev, innerNext);
         }
         else
             needsAdjust[ii] = (halfedge(v) == innerNext);
@@ -1063,7 +1057,7 @@ void SurfaceMesh::deleteFace(Face f)
     // delete isolated vertices
     if (!deletedEdges.empty())
     {
-        std::vector<Edge>::iterator delit(deletedEdges.begin()),
+        auto delit(deletedEdges.begin()),
             delend(deletedEdges.end());
 
         Halfedge h0, h1, next0, next1, prev0, prev1;
@@ -1076,7 +1070,7 @@ void SurfaceMesh::deleteFace(Face f)
     }
 
     // update outgoing halfedge handles of remaining vertices
-    std::vector<Vertex>::iterator vit(vertices.begin()), vend(vertices.end());
+    auto vit(vertices.begin()), vend(vertices.end());
     for (; vit != vend; ++vit)
         adjustOutgoingHalfedge(*vit);
 
@@ -1111,7 +1105,7 @@ void SurfaceMesh::beginGarbage()
         i0 = 0;
         i1 = nF - 1;
 
-        while (1)
+        while (true)
         {
             // find 1st deleted and last un-deleted
             while (!m_fdeleted[Face(i0)] && i0 < i1)

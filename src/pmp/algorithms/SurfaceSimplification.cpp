@@ -41,7 +41,7 @@ namespace pmp {
 //=============================================================================
 
 SurfaceSimplification::SurfaceSimplification(SurfaceMesh& mesh)
-    : m_mesh(mesh), m_initialized(false), m_queue(NULL)
+    : m_mesh(mesh), m_initialized(false), m_queue(nullptr)
 
 {
     m_aspectRatio     = 0;
@@ -448,7 +448,7 @@ bool SurfaceSimplification::isCollapseLegal(const CollapseData& cd)
 
         // test points against all faces
         m_vpoint[cd.v0] = p1;
-        for (unsigned int i = 0; i < points.size(); ++i)
+        for (auto point : points)
         {
             ok = false;
 
@@ -456,7 +456,7 @@ bool SurfaceSimplification::isCollapseLegal(const CollapseData& cd)
             {
                 if (f != cd.fl && f != cd.fr)
                 {
-                    if (distance(f, points[i]) < m_hausdorffError)
+                    if (distance(f, point) < m_hausdorffError)
                     {
                         ok = true;
                         break;
@@ -553,13 +553,13 @@ void SurfaceSimplification::postprocessCollapse(const CollapseData& cd)
         points.push_back(m_vpoint[cd.v0]);
 
         // test points against all faces
-        for (unsigned int i = 0; i < points.size(); ++i)
+        for (auto point : points)
         {
             dd = FLT_MAX;
 
             for (auto f : m_mesh.faces(cd.v1))
             {
-                d = distance(f, points[i]);
+                d = distance(f, point);
                 if (d < dd)
                 {
                     ff = f;
@@ -567,7 +567,7 @@ void SurfaceSimplification::postprocessCollapse(const CollapseData& cd)
                 }
             }
 
-            m_facePoints[ff].push_back(points[i]);
+            m_facePoints[ff].push_back(point);
         }
     }
 }

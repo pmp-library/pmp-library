@@ -29,7 +29,7 @@
 
 #include <pmp/gl/EdgeSetGL.h>
 #include <pmp/gl/phong_shader.h>
-#include <float.h>
+#include <cfloat>
 
 //=============================================================================
 
@@ -80,7 +80,7 @@ void EdgeSetGL::updateOpenGLBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, nVertices() * 3 * sizeof(float),
                  positions.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(0);
     m_nVertices = nVertices();
 
@@ -156,7 +156,7 @@ void EdgeSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
         m_phongShader.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
         m_phongShader.set_uniform("use_lighting", false);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_edgeBuffer);
-        glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, NULL);
+        glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, nullptr);
     }
 
     glBindVertexArray(0);

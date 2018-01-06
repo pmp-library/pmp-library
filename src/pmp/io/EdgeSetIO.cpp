@@ -109,7 +109,7 @@ bool EdgeSetIO::readKNT(EdgeSet& es, const std::string& filename)
     // skip every line before "vertices..."
     do
     {
-        if (fgets(line, 100, in) != NULL)
+        if (fgets(line, 100, in) != nullptr)
         {
             items = sscanf(line, "%s", dummy);
         }
@@ -122,19 +122,19 @@ bool EdgeSetIO::readKNT(EdgeSet& es, const std::string& filename)
     // read vertices
     for (i = 0; i < nV && !feof(in); ++i)
     {
-        if (fgets(line, 100, in) != NULL)
+        if (fgets(line, 100, in) != nullptr)
         {
             items = sscanf(line, "%f %f %f", &p[0], &p[1], &p[2]);
             es.addVertex(p);
         }
     }
 
-    typedef EdgeSet::Vertex Vertex;
+    using Vertex = EdgeSet::Vertex;
 
     // read edges
     for (i = 0; i < nE && !feof(in); ++i)
     {
-        if (fgets(line, 100, in) != NULL)
+        if (fgets(line, 100, in) != nullptr)
         {
             items = sscanf(line, "%i %i", &idx_i, &idx_j);
             es.insertEdge(Vertex(idx_i), Vertex(idx_j));

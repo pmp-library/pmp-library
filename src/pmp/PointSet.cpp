@@ -51,8 +51,7 @@ PointSet::PointSet() : GeometryObject()
 //-----------------------------------------------------------------------------
 
 PointSet::~PointSet()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -162,8 +161,8 @@ void PointSet::propertyStats() const
 
     std::cout << "point properties:\n";
     props = vertexProperties();
-    for (size_t i = 0; i < props.size(); ++i)
-        std::cout << "\t" << props[i] << std::endl;
+    for (const auto & prop : props)
+        std::cout << "\t" << prop << std::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -208,7 +207,7 @@ void PointSet::beginGarbage()
         int i0 = 0;
         int i1 = nV - 1;
 
-        while (1)
+        while (true)
         {
             // find first deleted and last un-deleted
             while (!isDeleted(Vertex(i0)) && i0 < i1)

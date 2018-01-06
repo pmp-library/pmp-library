@@ -31,7 +31,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <assert.h>
+#include <cassert>
 
 //=============================================================================
 
@@ -132,8 +132,8 @@ bool Shader::link()
         GLint length;
         glGetProgramiv(m_pid, GL_INFO_LOG_LENGTH, &length);
 
-        GLchar* info = new GLchar[length + 1];
-        glGetProgramInfoLog(m_pid, length, NULL, info);
+        auto* info = new GLchar[length + 1];
+        glGetProgramInfoLog(m_pid, length, nullptr, info);
         std::cerr << "Shader: Cannot link program:\n" << info << std::endl;
         delete[] info;
 
@@ -177,7 +177,7 @@ GLint Shader::compile(const char* source, GLenum type)
     }
 
     // compile vertex shader
-    glShaderSource(id, 1, &source, NULL);
+    glShaderSource(id, 1, &source, nullptr);
     glCompileShader(id);
 
     // check compile status
@@ -188,8 +188,8 @@ GLint Shader::compile(const char* source, GLenum type)
         GLint length;
         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
 
-        GLchar* info = new GLchar[length + 1];
-        glGetShaderInfoLog(id, length, NULL, info);
+        auto* info = new GLchar[length + 1];
+        glGetShaderInfoLog(id, length, nullptr, info);
 
         std::cerr << "Shader: Cannot compile shader\n" << info << std::endl;
 

@@ -29,7 +29,7 @@
 
 #include <pmp/gl/PointSetGL.h>
 #include <pmp/gl/phong_shader.h>
-#include <float.h>
+#include <cfloat>
 
 //=============================================================================
 
@@ -79,7 +79,7 @@ void PointSetGL::updateOpenGLBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, nVertices() * 3 * sizeof(float),
                  positions.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(0);
     m_nVertices = nVertices();
 
@@ -88,7 +88,7 @@ void PointSetGL::updateOpenGLBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
     glBufferData(GL_ARRAY_BUFFER, nVertices() * 3 * sizeof(float),
                  normals.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(1);
 
     // unbind vertex array

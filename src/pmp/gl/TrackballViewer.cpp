@@ -41,8 +41,8 @@ TrackballViewer::TrackballViewer(const char* title, int width, int height,
     : Window(title, width, height, showgui)
 {
     // init mouse buttons
-    for (int i          = 0; i < 7; ++i)
-        m_buttonDown[i] = false;
+    for (bool & i : m_buttonDown)
+        i = false;
     m_wheelPos          = 0;
 
     // define basic draw modes
@@ -58,8 +58,7 @@ TrackballViewer::TrackballViewer(const char* title, int width, int height,
 //-----------------------------------------------------------------------------
 
 TrackballViewer::~TrackballViewer()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -140,7 +139,7 @@ void TrackballViewer::resize(int width, int height)
 
 //-----------------------------------------------------------------------------
 
-void TrackballViewer::display(void)
+void TrackballViewer::display()
 {
     // clear buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

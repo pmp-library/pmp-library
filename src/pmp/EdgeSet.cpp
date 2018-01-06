@@ -53,8 +53,7 @@ EdgeSet::EdgeSet() : PointSet()
 //-----------------------------------------------------------------------------
 
 EdgeSet::~EdgeSet()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -189,13 +188,13 @@ void EdgeSet::propertyStats() const
 
     std::cout << "halfedge properties:\n";
     props = halfedgeProperties();
-    for (size_t i = 0; i < props.size(); ++i)
-        std::cout << "\t" << props[i] << std::endl;
+    for (const auto & prop : props)
+        std::cout << "\t" << prop << std::endl;
 
     std::cout << "edge properties:\n";
     props = edgeProperties();
-    for (size_t i = 0; i < props.size(); ++i)
-        std::cout << "\t" << props[i] << std::endl;
+    for (const auto & prop : props)
+        std::cout << "\t" << prop << std::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -448,7 +447,7 @@ void EdgeSet::beginGarbage()
         i0 = 0;
         i1 = nE - 1;
 
-        while (1)
+        while (true)
         {
             // find first deleted and last un-deleted
             while (!m_edeleted[Edge(i0)] && i0 < i1)

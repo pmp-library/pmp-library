@@ -46,7 +46,7 @@ unsigned int PointKdTree::build(unsigned int maxHandles, unsigned int maxDepth)
     m_elements.reserve(m_pointSet.nVertices());
 
     for (auto v : m_pointSet.vertices())
-        m_elements.push_back(Element(m_pointSet.position(v), v.idx()));
+        m_elements.emplace_back(m_pointSet.position(v), v.idx());
 
     // init
     delete m_root;
@@ -72,7 +72,7 @@ void PointKdTree::buildRecurse(Node* node, unsigned int maxHandles,
 
     // compute bounding box
     BoundingBox bbox;
-    for (ElementIter it = node->m_begin; it != node->m_end; ++it)
+    for (auto it = node->m_begin; it != node->m_end; ++it)
     {
         bbox += it->m_point;
     }
@@ -92,7 +92,7 @@ void PointKdTree::buildRecurse(Node* node, unsigned int maxHandles,
     node->m_cutValue     = cv;
 
     // partition for left and right child
-    ElementIter it =
+    auto it =
         std::partition(node->m_begin, node->m_end, PartitioningPlane(axis, cv));
 
     // create children
@@ -161,7 +161,7 @@ void PointKdTree::nearestRecurse(Node* node, NearestNeighborData& data) const
         ++data.m_leafTests;
         Scalar dist;
 
-        for (ElementIter it = node->m_begin; it != node->m_end; ++it)
+        for (auto it = node->m_begin; it != node->m_end; ++it)
         {
             dist = sqrnorm(it->m_point - data.m_ref);
             if (dist < data.m_dist)

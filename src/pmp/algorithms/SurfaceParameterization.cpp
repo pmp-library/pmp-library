@@ -180,10 +180,10 @@ void SurfaceParameterization::harmonic(bool uniform)
             }
             else
             {
-                triplets.push_back(Eigen::Triplet<double>(i, idx[vv], -w));
+                triplets.emplace_back(i, idx[vv], -w);
             }
         }
-        triplets.push_back(Eigen::Triplet<double>(i, i, ww));
+        triplets.emplace_back(i, i, ww);
     }
 
     // build sparse matrix from triplets
@@ -404,10 +404,8 @@ void SurfaceParameterization::lscm()
 
                 if (!locked[vj])
                 {
-                    triplets.push_back(
-                        Eigen::Triplet<double>(row, idx[vj], sj0));
-                    triplets.push_back(
-                        Eigen::Triplet<double>(row, idx[vj] + N, sj1));
+                    triplets.emplace_back(row, idx[vj], sj0);
+                    triplets.emplace_back(row, idx[vj] + N, sj1);
                 }
                 else
                 {
@@ -416,8 +414,8 @@ void SurfaceParameterization::lscm()
                 }
             }
 
-            triplets.push_back(Eigen::Triplet<double>(
-                row, idx[vi] + (i < nV ? 0 : N), 0.5 * si));
+            triplets.emplace_back(
+                row, idx[vi] + (i < nV ? 0 : N), 0.5 * si);
 
             ++row;
         }

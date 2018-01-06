@@ -51,8 +51,7 @@ PointSetViewer::PointSetViewer(const char* title, int width, int height)
 //-----------------------------------------------------------------------------
 
 PointSetViewer::~PointSetViewer()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

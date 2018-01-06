@@ -44,7 +44,7 @@ namespace pmp {
 //=============================================================================
 
 SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
-    : m_mesh(mesh), m_refmesh(NULL), m_kDTree(NULL)
+    : m_mesh(mesh), m_refmesh(nullptr), m_kDTree(nullptr)
 {
     m_points = m_mesh.vertexProperty<Point>("v:point");
 
@@ -55,8 +55,7 @@ SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
 //-----------------------------------------------------------------------------
 
 SurfaceRemeshing::~SurfaceRemeshing()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

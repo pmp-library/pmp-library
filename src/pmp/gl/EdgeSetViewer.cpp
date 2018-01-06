@@ -51,8 +51,7 @@ EdgeSetViewer::EdgeSetViewer(const char* title, int width, int height)
 //-----------------------------------------------------------------------------
 
 EdgeSetViewer::~EdgeSetViewer()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

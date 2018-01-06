@@ -32,7 +32,7 @@
 #include <pmp/algorithms/SurfaceNormals.h>
 
 #include "cold_warm_texture.h"
-#include <float.h>
+#include <cfloat>
 
 //=============================================================================
 
@@ -122,7 +122,7 @@ void SurfaceMeshGL::useCheckerboardTexture()
 
         // generate checkerboard-like image
         const unsigned int res = 512;
-        GLubyte*           tex = new GLubyte[res * res * 3];
+        auto*           tex = new GLubyte[res * res * 3];
         GLubyte*           tp  = tex;
         for (unsigned int x = 0; x < res; ++x)
         {
@@ -257,7 +257,7 @@ void SurfaceMeshGL::updateOpenGLBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
     glBufferData(GL_ARRAY_BUFFER, positionArray.size() * 3 * sizeof(float),
                  positionArray.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(0);
     m_nVertices = positionArray.size();
 
@@ -265,7 +265,7 @@ void SurfaceMeshGL::updateOpenGLBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, m_normalBuffer);
     glBufferData(GL_ARRAY_BUFFER, normalArray.size() * 3 * sizeof(float),
                  normalArray.data(), GL_STATIC_DRAW);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(1);
 
     // texture coordinates
@@ -274,7 +274,7 @@ void SurfaceMeshGL::updateOpenGLBuffers()
         glBindBuffer(GL_ARRAY_BUFFER, m_texCoordBuffer);
         glBufferData(GL_ARRAY_BUFFER, texArray.size() * 2 * sizeof(float),
                      texArray.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
         glEnableVertexAttribArray(2);
     }
 
@@ -401,7 +401,7 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         m_phongShader.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
         m_phongShader.set_uniform("use_lighting", false);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_edgeBuffer);
-        glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, NULL);
+        glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, nullptr);
         glDepthFunc(GL_LESS);
     }
 
@@ -436,7 +436,7 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         m_phongShader.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
         m_phongShader.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_edgeBuffer);
-        glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, NULL);
+        glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, nullptr);
         glDepthFunc(GL_LESS);
     }
 
@@ -449,7 +449,7 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         glDepthRange(0.0, 1.0);
         glDepthFunc(GL_LEQUAL);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_featureBuffer);
-        glDrawElements(GL_LINES, m_nFeatures, GL_UNSIGNED_INT, NULL);
+        glDrawElements(GL_LINES, m_nFeatures, GL_UNSIGNED_INT, nullptr);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glDepthFunc(GL_LESS);
     }

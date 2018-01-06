@@ -116,10 +116,10 @@ unsigned int TriangleKdTree::Build(Node* node, unsigned int maxHandles,
 #endif
 
     // create children
-    Node* left    = new Node();
+    auto* left    = new Node();
     left->m_faces = new Triangles();
     left->m_faces->reserve(node->m_faces->size() / 2);
-    Node* right    = new Node();
+    auto* right    = new Node();
     right->m_faces = new Triangles;
     right->m_faces->reserve(node->m_faces->size() / 2);
 
@@ -158,7 +158,7 @@ unsigned int TriangleKdTree::Build(Node* node, unsigned int maxHandles,
         right->m_faces->size() == node->m_faces->size())
     {
         // compact my memory
-        std::vector<Triangle>(*node->m_faces).swap(*node->m_faces);
+        node->m_faces->shrink_to_fit();
 
         // delete new nodes
         delete left;
@@ -173,7 +173,7 @@ unsigned int TriangleKdTree::Build(Node* node, unsigned int maxHandles,
     {
         // free my memory
         delete node->m_faces;
-        node->m_faces = 0;
+        node->m_faces = nullptr;
 
         // store internal data
         node->m_axis       = axis;

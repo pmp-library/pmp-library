@@ -39,8 +39,8 @@ namespace pmp {
 
 //=============================================================================
 
-typedef Eigen::SparseMatrix<double> SparseMatrix;
-typedef Eigen::Triplet<double>      Triplet;
+using SparseMatrix = Eigen::SparseMatrix<double>;
+using Triplet = Eigen::Triplet<double>;
 
 //=============================================================================
 
@@ -171,7 +171,7 @@ void SurfaceFairing::fair(unsigned int k)
 
             if (m_idx[v] != -1)
             {
-                triplets.push_back(Triplet(i, m_idx[v], w));
+                triplets.emplace_back(i, m_idx[v], w);
             }
             else
             {
@@ -206,7 +206,7 @@ void SurfaceFairing::fair(unsigned int k)
 
 struct Triple
 {
-    Triple() {}
+    Triple() = default;
 
     Triple(SurfaceMesh::Vertex v, double weight, unsigned int degree)
         : m_v(v), m_weight(weight), m_degree(degree)
@@ -267,10 +267,10 @@ void SurfaceFairing::setupMatrixRow(const SurfaceMesh::Vertex           v,
                 w *= t.m_weight;
                 ww -= w;
 
-                todo.push_back(Triple(vv, w, d - 1));
+                todo.emplace_back(vv, w, d - 1);
             }
 
-            todo.push_back(Triple(v, ww, d - 1));
+            todo.emplace_back(v, ww, d - 1);
         }
     }
 }

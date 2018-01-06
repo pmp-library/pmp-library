@@ -181,7 +181,7 @@ bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
         {
             if (sscanf(s, "vt %f %f", &x, &y))
             {
-                allTexCoords.push_back(TextureCoordinate(x, y));
+                allTexCoords.emplace_back(x, y);
             }
         }
 
@@ -226,7 +226,7 @@ bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
                 // detect end of line and break
                 if (*p1 == '\0' || *p1 == '\n')
                 {
-                    p1 = 0;
+                    p1 = nullptr;
                 }
 
                 // read next vertex component
@@ -236,8 +236,7 @@ bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
                     {
                         case 0: // vertex
                         {
-                            vertices.push_back(
-                                SurfaceMesh::Vertex(atoi(p0) - 1));
+                            vertices.emplace_back(atoi(p0) - 1);
                             break;
                         }
                         case 1: // texture coord
@@ -327,8 +326,8 @@ bool SurfaceMeshIO::writeOBJ(const SurfaceMesh& mesh,
     // do we have them?
     std::vector<std::string>           hprops       = mesh.halfedgeProperties();
     bool                               withTexCoord = false;
-    std::vector<std::string>::iterator hpropEnd     = hprops.end();
-    std::vector<std::string>::iterator hpropStart   = hprops.begin();
+    auto hpropEnd     = hprops.end();
+    auto hpropStart   = hprops.begin();
     while (hpropStart != hpropEnd)
     {
         if (0 == (*hpropStart).compare("h:texcoord"))
@@ -609,7 +608,7 @@ bool SurfaceMeshIO::readOFF(SurfaceMesh& mesh, const std::string& filename)
 
     // read header: [ST][C][N][4][n]OFF BINARY
     char* c = fgets(line, 200, in);
-    assert(c != NULL);
+    assert(c != nullptr);
     c = line;
     if (c[0] == 'S' && c[1] == 'T')
     {
@@ -657,7 +656,7 @@ bool SurfaceMeshIO::readOFF(SurfaceMesh& mesh, const std::string& filename)
         fclose(in);
         in = fopen(filename.c_str(), "rb");
         c  = fgets(line, 200, in);
-        assert(c != NULL);
+        assert(c != nullptr);
     }
 
     // read as ASCII or binary
@@ -763,10 +762,10 @@ template <typename T>
 using HalfedgeProperty = SurfaceMesh::HalfedgeProperty<T>;
 template <typename T>
 using FaceProperty = SurfaceMesh::FaceProperty<T>;
-typedef SurfaceMesh::VertexConnectivity       VertexConnectivity;
-typedef SurfaceMesh::HalfedgeConnectivity     HalfedgeConnectivity;
-typedef SurfaceMesh::HalfedgeFaceConnectivity HalfedgeFaceConnectivity;
-typedef SurfaceMesh::FaceConnectivity         FaceConnectivity;
+using VertexConnectivity = SurfaceMesh::VertexConnectivity;
+using HalfedgeConnectivity = SurfaceMesh::HalfedgeConnectivity;
+using HalfedgeFaceConnectivity = SurfaceMesh::HalfedgeFaceConnectivity;
+using FaceConnectivity = SurfaceMesh::FaceConnectivity;
 
 //== IMPLEMENTATION ===========================================================
 
@@ -916,7 +915,7 @@ bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
 
     // ASCII or binary STL?
     c = fgets(line, 6, in);
-    PMP_ASSERT(c != NULL);
+    PMP_ASSERT(c != nullptr);
     const bool binary =
         ((strncmp(line, "SOLID", 5) != 0) && (strncmp(line, "solid", 5) != 0));
 
@@ -992,7 +991,7 @@ bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
                 {
                     // read line
                     c = fgets(line, 100, in);
-                    PMP_ASSERT(c != NULL);
+                    PMP_ASSERT(c != nullptr);
 
                     // skip white-space
                     for (c = line; isspace(*c) && *c != '\0'; ++c)

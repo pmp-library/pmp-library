@@ -39,8 +39,8 @@ namespace pmp {
 
 //=============================================================================
 
-typedef Eigen::SparseMatrix<double> SparseMatrix;
-typedef Eigen::Triplet<double>      Triplet;
+using SparseMatrix = Eigen::SparseMatrix<double>;
+using Triplet = Eigen::Triplet<double>;
 
 //=============================================================================
 
@@ -184,14 +184,12 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool uniform)
             // free interior vertex -> matrix
             else
             {
-                triplets.push_back(
-                    Eigen::Triplet<double>(i, idx[vv], -timestep * eweight[e]));
+                triplets.emplace_back(i, idx[vv], -timestep * eweight[e]);
             }
         }
 
         // center vertex -> matrix
-        triplets.push_back(
-            Eigen::Triplet<double>(i, i, 1.0 / vweight[v] + timestep * ww));
+        triplets.emplace_back(i, i, 1.0 / vweight[v] + timestep * ww);
     }
 
     // build sparse matrix from triplets
