@@ -165,6 +165,14 @@ Try to avoid conversion issues by using consistent types, e.g., use
 function of a `std::vector`. Use the C++11 `auto` keyword to let the compiler
 determine the proper types.
 
+## Structs vs. Classes
+
+Use plain structs for data objectes providing nothing but a collection of other
+data types, e.g., a collection of parameters passed to a functions. Such a
+struct should not contain any further functionality than what is required for
+construction, destruction, or initialization. In contrast to class member
+variables, struct members do not have a `m_` prefix.
+
 ## Scoping
 
 Localize variable scope and avoid declaring all variables at the beginning of a
