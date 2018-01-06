@@ -4,7 +4,21 @@ If you would like to contribute to the pmp-library please make sure your source
 code adheres to the following coding conventions. Please use
 the [clang-format](https://clang.llvm.org/docs/ClangFormat.html) tool and the
 corresponding `.clang-format` configuration file from the repository to properly
-format your code.
+format your code. We also provide a convenience CMake target to run clang-format
+on all source files:
+
+    $ make clang-format
+
+This requires that the `clang-format` executable is found during CMake
+configuration. The exact path to the executable can be specified using
+
+    $ cmake -DCLANG_FORMAT_EXE=<path/to/executable> ..
+
+Look for a line like this
+
+    -- clang-format found: /usr/bin/clang-format
+
+in the CMake configuration output.
 
 ## Naming
 
