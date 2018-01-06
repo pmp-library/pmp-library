@@ -54,8 +54,7 @@ SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
 
 //-----------------------------------------------------------------------------
 
-SurfaceRemeshing::~SurfaceRemeshing()
-= default;
+SurfaceRemeshing::~SurfaceRemeshing() = default;
 
 //-----------------------------------------------------------------------------
 

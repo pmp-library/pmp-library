@@ -57,8 +57,7 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
 
 //-----------------------------------------------------------------------------
 
-MeshViewer::~MeshViewer()
-= default;
+MeshViewer::~MeshViewer() = default;
 
 //-----------------------------------------------------------------------------
 

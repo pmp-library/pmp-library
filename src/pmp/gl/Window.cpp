@@ -253,8 +253,9 @@ void Window::render_frame()
     {
         ImGui_NewFrame();
         ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
-        ImGui::Begin("Mesh Info", nullptr, ImGuiWindowFlags_NoTitleBar |
-                                            ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::Begin(
+            "Mesh Info", nullptr,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
         m_instance->processImGUI();
         ImGui::End();
     }

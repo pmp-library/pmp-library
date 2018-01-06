@@ -122,7 +122,7 @@ void SurfaceMeshGL::useCheckerboardTexture()
 
         // generate checkerboard-like image
         const unsigned int res = 512;
-        auto*           tex = new GLubyte[res * res * 3];
+        auto*              tex = new GLubyte[res * res * 3];
         GLubyte*           tp  = tex;
         for (unsigned int x = 0; x < res; ++x)
         {

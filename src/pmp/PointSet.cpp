@@ -50,8 +50,7 @@ PointSet::PointSet() : GeometryObject()
 
 //-----------------------------------------------------------------------------
 
-PointSet::~PointSet()
-= default;
+PointSet::~PointSet() = default;
 
 //-----------------------------------------------------------------------------
 
@@ -161,7 +160,7 @@ void PointSet::propertyStats() const
 
     std::cout << "point properties:\n";
     props = vertexProperties();
-    for (const auto & prop : props)
+    for (const auto& prop : props)
         std::cout << "\t" << prop << std::endl;
 }
 

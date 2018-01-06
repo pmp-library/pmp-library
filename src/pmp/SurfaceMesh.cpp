@@ -55,8 +55,7 @@ SurfaceMesh::SurfaceMesh() : EdgeSet()
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::~SurfaceMesh()
-= default;
+SurfaceMesh::~SurfaceMesh() = default;
 
 //-----------------------------------------------------------------------------
 
@@ -182,7 +181,7 @@ void SurfaceMesh::propertyStats() const
 
     std::cout << "face properties:\n";
     props = faceProperties();
-    for (const auto & prop : props)
+    for (const auto& prop : props)
         std::cout << "\t" << prop << std::endl;
 }
 
@@ -1057,8 +1056,7 @@ void SurfaceMesh::deleteFace(Face f)
     // delete isolated vertices
     if (!deletedEdges.empty())
     {
-        auto delit(deletedEdges.begin()),
-            delend(deletedEdges.end());
+        auto delit(deletedEdges.begin()), delend(deletedEdges.end());
 
         Halfedge h0, h1, next0, next1, prev0, prev1;
         Vertex   v0, v1;

@@ -41,9 +41,9 @@ TrackballViewer::TrackballViewer(const char* title, int width, int height,
     : Window(title, width, height, showgui)
 {
     // init mouse buttons
-    for (bool & i : m_buttonDown)
-        i = false;
-    m_wheelPos          = 0;
+    for (bool& i : m_buttonDown)
+        i      = false;
+    m_wheelPos = 0;
 
     // define basic draw modes
     addDrawMode("Wireframe");
@@ -57,8 +57,7 @@ TrackballViewer::TrackballViewer(const char* title, int width, int height,
 
 //-----------------------------------------------------------------------------
 
-TrackballViewer::~TrackballViewer()
-= default;
+TrackballViewer::~TrackballViewer() = default;
 
 //-----------------------------------------------------------------------------
 

@@ -52,8 +52,7 @@ EdgeSet::EdgeSet() : PointSet()
 
 //-----------------------------------------------------------------------------
 
-EdgeSet::~EdgeSet()
-= default;
+EdgeSet::~EdgeSet() = default;
 
 //-----------------------------------------------------------------------------
 
@@ -188,12 +187,12 @@ void EdgeSet::propertyStats() const
 
     std::cout << "halfedge properties:\n";
     props = halfedgeProperties();
-    for (const auto & prop : props)
+    for (const auto& prop : props)
         std::cout << "\t" << prop << std::endl;
 
     std::cout << "edge properties:\n";
     props = edgeProperties();
-    for (const auto & prop : props)
+    for (const auto& prop : props)
         std::cout << "\t" << prop << std::endl;
 }
 

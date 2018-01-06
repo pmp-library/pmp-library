@@ -324,10 +324,10 @@ bool SurfaceMeshIO::writeOBJ(const SurfaceMesh& mesh,
 
     // optional texture coordinates
     // do we have them?
-    std::vector<std::string>           hprops       = mesh.halfedgeProperties();
-    bool                               withTexCoord = false;
-    auto hpropEnd     = hprops.end();
-    auto hpropStart   = hprops.begin();
+    std::vector<std::string> hprops       = mesh.halfedgeProperties();
+    bool                     withTexCoord = false;
+    auto                     hpropEnd     = hprops.end();
+    auto                     hpropStart   = hprops.begin();
     while (hpropStart != hpropEnd)
     {
         if (0 == (*hpropStart).compare("h:texcoord"))
@@ -761,11 +761,11 @@ using VertexProperty = SurfaceMesh::VertexProperty<T>;
 template <typename T>
 using HalfedgeProperty = SurfaceMesh::HalfedgeProperty<T>;
 template <typename T>
-using FaceProperty = SurfaceMesh::FaceProperty<T>;
-using VertexConnectivity = SurfaceMesh::VertexConnectivity;
-using HalfedgeConnectivity = SurfaceMesh::HalfedgeConnectivity;
+using FaceProperty             = SurfaceMesh::FaceProperty<T>;
+using VertexConnectivity       = SurfaceMesh::VertexConnectivity;
+using HalfedgeConnectivity     = SurfaceMesh::HalfedgeConnectivity;
 using HalfedgeFaceConnectivity = SurfaceMesh::HalfedgeFaceConnectivity;
-using FaceConnectivity = SurfaceMesh::FaceConnectivity;
+using FaceConnectivity         = SurfaceMesh::FaceConnectivity;
 
 //== IMPLEMENTATION ===========================================================
 

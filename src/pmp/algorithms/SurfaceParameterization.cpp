@@ -414,8 +414,7 @@ void SurfaceParameterization::lscm()
                 }
             }
 
-            triplets.emplace_back(
-                row, idx[vi] + (i < nV ? 0 : N), 0.5 * si);
+            triplets.emplace_back(row, idx[vi] + (i < nV ? 0 : N), 0.5 * si);
 
             ++row;
         }
