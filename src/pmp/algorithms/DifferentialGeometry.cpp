@@ -50,12 +50,10 @@ Scalar triangleArea(const SurfaceMesh& mesh, SurfaceMesh::Face f)
 {
     assert(mesh.valence(f) == 3);
 
-    SurfaceMesh::VertexAroundFaceCirculator vfit = mesh.vertices(f);
-    const Point&                            p0   = mesh.position(*vfit);
-    ++vfit;
-    const Point& p1 = mesh.position(*vfit);
-    ++vfit;
-    const Point& p2 = mesh.position(*vfit);
+    auto fv = mesh.vertices(f);
+    const auto& p0 = mesh.position(*fv);
+    const auto& p1 = mesh.position(*(++fv));
+    const auto& p2 = mesh.position(*(++fv));
 
     return triangleArea(p0, p1, p2);
 }

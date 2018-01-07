@@ -151,7 +151,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool useUniformLaplace
     Eigen::MatrixXd B(n, 3);
 
     // nonzero elements of A as triplets: (row, column, value)
-    std::vector<Eigen::Triplet<double>> triplets;
+    std::vector<Triplet> triplets;
 
     // setup matrix A and rhs B
     double              ww;
