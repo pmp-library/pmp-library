@@ -27,39 +27,13 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // =============================================================================
 
-#include "gtest/gtest.h"
+#include "SurfaceMeshTest.h"
 
-#include <pmp/SurfaceMesh.h>
 #include <pmp/io/SurfaceMeshIO.h>
 #include <pmp/algorithms/SurfaceNormals.h>
 #include <vector>
 
 using namespace pmp;
-
-class SurfaceMeshTest : public ::testing::Test
-{
-public:
-    SurfaceMesh mesh;
-    SurfaceMesh::Vertex v0,v1,v2,v3;
-    SurfaceMesh::Face f0;
-
-    void addTriangle()
-    {
-        v0 = mesh.addVertex(Point(0,0,0));
-        v1 = mesh.addVertex(Point(1,0,0));
-        v2 = mesh.addVertex(Point(0,1,0));
-        f0 = mesh.addTriangle(v0,v1,v2);
-    }
-
-    void addQuad()
-    {
-        v0 = mesh.addVertex(Point(0,0,0));
-        v1 = mesh.addVertex(Point(1,0,0));
-        v2 = mesh.addVertex(Point(1,1,0));
-        v3 = mesh.addVertex(Point(0,1,0));
-        f0 = mesh.addQuad(v0,v1,v2,v3);
-    }
-};
 
 TEST_F(SurfaceMeshTest, emptyMesh)
 {
@@ -256,90 +230,6 @@ TEST_F(SurfaceMeshTest, faceProperties)
     mesh.removeFaceProperty(fidx);
     EXPECT_EQ(mesh.faceProperties().size(), size_t(2));
 }
-
-
-TEST_F(SurfaceMeshTest, polyIO)
-{
-    addTriangle();
-    mesh.write("test.poly");
-    mesh.clear();
-    EXPECT_TRUE(mesh.isEmpty());
-    mesh.read("test.poly");
-    EXPECT_EQ(mesh.nVertices(), size_t(3));
-    EXPECT_EQ(mesh.nFaces(), size_t(1));
-
-    // check malformed file names
-    EXPECT_FALSE(mesh.write("testpolyly"));
-}
-
-TEST_F(SurfaceMeshTest, objIO)
-{
-    addTriangle();
-    SurfaceNormals::computeVertexNormals(mesh);
-    mesh.addHalfedgeProperty<TextureCoordinate>("h:texcoord",TextureCoordinate(0,0));
-    mesh.write("test.obj");
-    mesh.clear();
-    EXPECT_TRUE(mesh.isEmpty());
-    mesh.read("test.obj");
-    EXPECT_EQ(mesh.nVertices(), size_t(3));
-    EXPECT_EQ(mesh.nFaces(), size_t(1));
-}
-
-TEST_F(SurfaceMeshTest, offIO)
-{
-    addTriangle();
-    SurfaceNormals::computeVertexNormals(mesh);
-    mesh.addVertexProperty<TextureCoordinate>("v:texcoord",TextureCoordinate(0,0));
-    mesh.addVertexProperty<Color>("v:color",Color(0,0,0));
-    IOOptions options(false, // binary
-                      true, // normals
-                      true, // colors
-                      true); // texcoords
-    mesh.write("test.off",options);
-    mesh.clear();
-    EXPECT_TRUE(mesh.isEmpty());
-    mesh.read("test.off");
-    EXPECT_EQ(mesh.nVertices(), size_t(3));
-    EXPECT_EQ(mesh.nFaces(), size_t(1));
-}
-
-TEST_F(SurfaceMeshTest, offIOBinary)
-{
-    addTriangle();
-    IOOptions options(true);
-    mesh.write("binary.off", options);
-    mesh.clear();
-    EXPECT_TRUE(mesh.isEmpty());
-    mesh.read("binary.off");
-    EXPECT_EQ(mesh.nVertices(), size_t(3));
-    EXPECT_EQ(mesh.nFaces(), size_t(1));
-}
-
-TEST_F(SurfaceMeshTest, stlIO)
-{
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    EXPECT_EQ(mesh.nVertices(), size_t(12));
-    EXPECT_EQ(mesh.nFaces(), size_t(20));
-    EXPECT_EQ(mesh.nEdges(), size_t(30));
-    mesh.clear();
-    mesh.read("pmp-data/stl/icosahedron_binary.stl");
-    EXPECT_EQ(mesh.nVertices(), size_t(12));
-    EXPECT_EQ(mesh.nFaces(), size_t(20));
-    EXPECT_EQ(mesh.nEdges(), size_t(30));
-
-    // try to write without normals being present
-    EXPECT_FALSE(mesh.write("test.stl"));
-
-    // the same with normals computed
-    SurfaceNormals::computeFaceNormals(mesh);
-    EXPECT_TRUE(mesh.write("test.stl"));
-
-    // try to write non-triangle mesh
-    mesh.clear();
-    addQuad();
-    EXPECT_FALSE(mesh.write("test.stl"));
-}
-
 
 TEST_F(SurfaceMeshTest, vertexIterators)
 {
