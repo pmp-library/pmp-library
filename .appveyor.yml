@@ -16,7 +16,6 @@ build:
   project: build\pmp-library.sln
   parallel: true
   verbosity: normal
-test_script:
-  - "%APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\tests\gtest_runner.exe" --gtest_output=xml:tests.xml
-on_finish:
-  - ps: (new-object net.webclient).UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\tests.xml))
+# test_script:
+#   - cd build
+#   - ctest -C %CONFIGURATION%
