@@ -43,7 +43,10 @@ namespace pmp {
 
 //=============================================================================
 
-//! Class for reading and writing edge sets from and to files
+//! Class for reading and writing edge sets from and to files.
+//!
+//! This class currently supports only the custom KNT format. This is an ASCII
+//! format basically storing vertex positions and edge indices.
 class EdgeSetIO
 {
 public:

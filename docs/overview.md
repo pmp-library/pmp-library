@@ -42,7 +42,8 @@ functions. The only required argument is a file name. The corresponding file
 format is automatically determined by the file extension. Additional
 pmp::IOOptions can be used to control _what_ data is written, e.g., including
 vertex normals or not, and _how_ it is written, i.e., as plain text ASCII or
-binary files.
+binary files. See the individual IO classes for more information on supported
+file formats and capabilities.
 
 ## The `gl` Module
 

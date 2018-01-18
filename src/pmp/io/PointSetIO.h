@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,10 @@ namespace pmp {
 
 //=============================================================================
 
-//! Class for reading and writing point sets from and to files
+//! Class for reading and writing point sets from and to files.
+//!
+//! This class currently supports only the XYZ file format. Only ASCII mode is
+//! supported. Only supports point coordinates and normals.
 class PointSetIO
 {
 public:
