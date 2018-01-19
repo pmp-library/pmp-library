@@ -16,6 +16,6 @@ build:
   project: build\pmp-library.sln
   parallel: true
   verbosity: normal
-test_script:
-  - cd build
-  - ctest -C %CONFIGURATION%
+# test_script:
+#   - cd build
+#   - ctest -C %CONFIGURATION%
