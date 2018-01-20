@@ -51,33 +51,33 @@ void tfwrite(FILE* out, const T& t)
     PMP_ASSERT(nItems > 0);
 }
 
-// function to skip comment and whitespace lines
-void skipLines(FILE* in)
-{
-    char line[200];
-    fpos_t pos;
+// // function to skip comment and whitespace lines
+// void skipLines(FILE* in)
+// {
+//     char line[200];
+//     fpos_t pos;
 
-    while (in && !feof(in))
-    {
-        fgetpos(in , &pos);
-        fgets(line, 200, in);
+//     while (in && !feof(in))
+//     {
+//         fgetpos(in , &pos);
+//         fgets(line, 200, in);
 
-        std::string s(line);
-        if (line[0] == '#')
-        {
-            continue;
-        }
-        else if (std::all_of(s.begin(),s.end(),isspace))
-        {
-            continue;
-        }
-        else
-        {
-            fsetpos(in,&pos);
-            break;
-        }
-    }
-}
+//         std::string s(line);
+//         if (line[0] == '#')
+//         {
+//             continue;
+//         }
+//         else if (std::all_of(s.begin(),s.end(),isspace))
+//         {
+//             continue;
+//         }
+//         else
+//         {
+//             fsetpos(in,&pos);
+//             break;
+//         }
+//     }
+// }
 
 //=============================================================================
 
@@ -436,8 +436,8 @@ bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
     items = fscanf(in, "%d %d %d\n", (int*)&nV, (int*)&nF, (int*)&nE);
     PMP_ASSERT(items);
 
-    // skip comments and empty lines
-    skipLines(in);
+    // // skip comments and empty lines
+    // skipLines(in);
 
     mesh.clear();
     mesh.reserve(nV, std::max(3 * nV, nE), nF);
@@ -488,8 +488,8 @@ bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
         }
     }
 
-    // skip comments and empty lines
-    skipLines(in);
+    // // skip comments and empty lines
+    // skipLines(in);
 
     // read faces: #N v[1] v[2] ... v[n-1]
     std::vector<SurfaceMesh::Vertex> vertices;
@@ -640,8 +640,8 @@ bool SurfaceMeshIO::readOFF(SurfaceMesh& mesh, const std::string& filename)
     if (!in)
         return false;
 
-    // skip comments and empty lines
-    skipLines(in);
+    // // skip comments and empty lines
+    // skipLines(in);
 
     // read header: [ST][C][N][4][n]OFF BINARY
     char* c = fgets(line, 200, in);
