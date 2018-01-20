@@ -1,15 +1,15 @@
 version: "{build}"
 os:
   - Visual Studio 2017
-  - Visual Studio 2015
+#  - Visual Studio 2015
 platform:
   - Win32
-  - x64
+#  - x64
 install:
   - git submodule update --init --recursive
 configuration:
   - Debug
-  - Release
+#  - Release
 before_build:
   - cmake -H. -Bbuild -A%PLATFORM%
 build:
@@ -18,4 +18,4 @@ build:
   verbosity: normal
 test_script:
   - cd build
-  - ctest -C %CONFIGURATION%
+  - ctest -VV -C %CONFIGURATION%
