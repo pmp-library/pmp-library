@@ -16,9 +16,9 @@ if(NOT (UNIX AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")))
 endif()
 
 if (WIN32 OR EMSCRIPTEN)
-  add_library(pmp STATIC ${SOURCES} ${HEADERS})
+  add_library(pmp STATIC ${SOURCES} ${HEADERS} $<TARGET_OBJECTS:rply>)
 elseif(UNIX)
-  add_library(pmp SHARED ${SOURCES} ${HEADERS})
+  add_library(pmp SHARED ${SOURCES} ${HEADERS} $<TARGET_OBJECTS:rply>)
 endif()
 
 set_target_properties(pmp PROPERTIES VERSION ${PMP_VERSION})

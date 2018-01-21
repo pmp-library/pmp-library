@@ -6,5 +6,3 @@ file(GLOB SOURCES ./io/*.cpp)
 install(FILES ${HEADERS} DESTINATION include/pmp/io)
 
 target_sources(pmp PRIVATE "${SOURCES}" "${HEADERS}")
-
-target_link_libraries(pmp LINK_PRIVATE rply)
