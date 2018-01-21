@@ -439,7 +439,7 @@ bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
     PMP_ASSERT(items);
 
     // skip comments and empty lines
-    skipLines(in);
+    //skipLines(in);
 
     mesh.clear();
     mesh.reserve(nV, std::max(3 * nV, nE), nF);
@@ -491,7 +491,7 @@ bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
     }
 
     // skip comments and empty lines
-    skipLines(in);
+    //skipLines(in);
 
     // read faces: #N v[1] v[2] ... v[n-1]
     std::vector<SurfaceMesh::Vertex> vertices;
@@ -643,7 +643,7 @@ bool SurfaceMeshIO::readOFF(SurfaceMesh& mesh, const std::string& filename)
         return false;
 
     // skip comments and empty lines
-    skipLines(in);
+    //skipLines(in);
 
     // read header: [ST][C][N][4][n]OFF BINARY
     char* c = fgets(line, 200, in);
