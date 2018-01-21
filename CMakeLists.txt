@@ -54,6 +54,9 @@ else()
     # setup IMGUI
     include_directories(${IMGUI_SOURCE_DIR})
     add_subdirectory(${IMGUI_SOURCE_DIR})
+
+    include_directories(${RPLY_SOURCE_DIR})
+    add_subdirectory(${RPLY_SOURCE_DIR})
 endif()
 
 # setup Eigen
