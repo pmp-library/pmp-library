@@ -120,3 +120,26 @@ TEST_F(SurfaceMeshIOTest, stlIO)
     addQuad();
     EXPECT_FALSE(mesh.write("test.stl"));
 }
+
+TEST_F(SurfaceMeshIOTest, plyIO)
+{
+    addTriangle();
+    mesh.write("test.ply");
+    mesh.clear();
+    EXPECT_TRUE(mesh.isEmpty());
+    mesh.read("test.ply");
+    EXPECT_EQ(mesh.nVertices(), size_t(3));
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
+}
+
+TEST_F(SurfaceMeshIOTest, plyBinaryIO)
+{
+    addTriangle();
+    IOOptions options(true);
+    mesh.write("binary.ply",options);
+    mesh.clear();
+    EXPECT_TRUE(mesh.isEmpty());
+    mesh.read("binary.ply");
+    EXPECT_EQ(mesh.nVertices(), size_t(3));
+    EXPECT_EQ(mesh.nFaces(), size_t(1));
+}

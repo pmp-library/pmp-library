@@ -18,6 +18,7 @@ set(GLFW_SOURCE_DIR "external/glfw")
 set(GLEW_SOURCE_DIR "external/glew")
 set(IMGUI_SOURCE_DIR "external/imgui")
 set(EIGEN_SOURCE_DIR "external/eigen")
+set(RPLY_SOURCE_DIR "external/rply")
 
 # Building only the GLFW lib
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
@@ -43,6 +44,9 @@ if (NOT EMSCRIPTEN)
 
     include_directories(${IMGUI_SOURCE_DIR})
     add_subdirectory(${IMGUI_SOURCE_DIR})
+
+    include_directories(${RPLY_SOURCE_DIR})
+    add_subdirectory(${RPLY_SOURCE_DIR})
 else()
     # GLEW and GLFW are built-in
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_GLFW=3")

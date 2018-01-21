@@ -49,11 +49,11 @@ namespace pmp {
 //! Class for reading and writing surface meshes from and to files
 //!
 //! This class currently supports the following standard mesh formats: OFF, OBJ,
-//! and STL. Note that not all entity properties such as vertex normals or
+//! STL, and PLY. Note that not all entity properties such as vertex normals or
 //! colors are equally supported for all formats and IO modes (reading
 //! vs. writing, ascii vs. binary). See below for details on each format.
 //!
-//! _OFF files_ can be read and written as either ACSII or binray files. The
+//! _OFF files_ can be read and written as either ACSII or binary files. The
 //! ASCII format supports the color, normal, and texcoord vertex attributes. The
 //! binary format currently only supports normals and texcoords for reading and
 //! no attributes for writing. Homogeneous coordinates and vertex dimensions
@@ -65,6 +65,9 @@ namespace pmp {
 //! _STL files_ can be read and written as either ASCII or binary files. The STL
 //! format only supports pure triangle meshes. Face normals are the only
 //! supported property.
+//!
+//! _PLY files_ can be read and written as either ACSII or binary
+//! files. Currently no additional properties are supported.
 //!
 //! In addition, we include a custom binary file format (.poly), to efficiently
 //! dump a mesh to disk. This currently only includes the connectivity and
@@ -87,12 +90,14 @@ private:
     bool readOBJ(SurfaceMesh& mesh, const std::string& filename);
     bool readPoly(SurfaceMesh& mesh, const std::string& filename);
     bool readSTL(SurfaceMesh& mesh, const std::string& filename);
+    bool readPLY(SurfaceMesh& mesh, const std::string& filename);
 
     bool writeOFF(const SurfaceMesh& mesh, const std::string& filename);
     bool writeOFFBinary(const SurfaceMesh& mesh, const std::string& filename);
     bool writeOBJ(const SurfaceMesh& mesh, const std::string& filename);
-    bool writePoly(const SurfaceMesh& mesh, const std::string& filename);
     bool writeSTL(const SurfaceMesh& mesh, const std::string& filename);
+    bool writePoly(const SurfaceMesh& mesh, const std::string& filename);
+    bool writePLY(const SurfaceMesh& mesh, const std::string& filename);
 
 private:
     IOOptions m_options;

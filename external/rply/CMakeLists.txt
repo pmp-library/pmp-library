@@ -1,0 +1,4 @@
+file(GLOB SOURCES ./*.c)
+file(GLOB HEADERS ./*.h)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+add_library(rply STATIC ${SOURCES} ${HEADERS})

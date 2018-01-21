@@ -30,6 +30,8 @@
 
 #include <pmp/io/SurfaceMeshIO.h>
 
+#include <rply.h>
+
 #include <clocale>
 #include <cfloat>
 #include <fstream>
@@ -118,6 +120,10 @@ bool SurfaceMeshIO::read(SurfaceMesh& mesh, const std::string& filename)
     {
         return readPoly(mesh, filename);
     }
+    else if (ext == "ply")
+    {
+        return readPLY(mesh, filename);
+    }
 
     // we didn't find a reader module
     return false;
@@ -150,6 +156,10 @@ bool SurfaceMeshIO::write(const SurfaceMesh& mesh, const std::string& filename)
     else if (ext == "poly")
     {
         return writePoly(mesh, filename);
+    }
+    else if (ext == "ply")
+    {
+        return writePLY(mesh, filename);
     }
 
     // we didn't find a writer module
@@ -899,6 +909,126 @@ bool SurfaceMeshIO::writePoly(const SurfaceMesh& mesh,
 
     fclose(out);
 
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+// helper to assemble vertex data
+static int vertexCallback(p_ply_argument argument) {
+    long idx;
+    void* pdata;
+    ply_get_argument_user_data(argument, &pdata, &idx);
+
+    auto* mesh = (pmp::SurfaceMesh*)pdata;
+    auto point = mesh->getObjectProperty<pmp::Point>("g:point");
+    point[0][idx] = ply_get_argument_value(argument);
+
+    if (idx == 2)
+        mesh->addVertex(point[0]);
+
+    return 1;
+}
+
+//-----------------------------------------------------------------------------
+
+// helper to assemble face data
+static int faceCallback(p_ply_argument argument) {
+    long length, value_index;
+    void* pdata;
+    long idata;
+    ply_get_argument_user_data(argument, &pdata, &idata);
+    ply_get_argument_property(argument, nullptr, &length, &value_index);
+
+    auto* mesh = (pmp::SurfaceMesh*)pdata;
+    auto vertices = mesh->getObjectProperty<std::vector<pmp::SurfaceMesh::Vertex>>("g:vertices");
+
+    if (value_index == 0)
+        vertices[0].clear();
+
+    pmp::IndexType idx = (pmp::IndexType)ply_get_argument_value(argument);
+    vertices[0].push_back(pmp::SurfaceMesh::Vertex(idx));
+
+    if (value_index == length-1)
+        mesh->addFace(vertices[0]);
+
+    return 1;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SurfaceMeshIO::readPLY(SurfaceMesh& mesh, const std::string& filename)
+{
+    // clear old data
+    mesh.clear();
+
+    // add object properties to hold temporary data
+    auto point    = mesh.addObjectProperty<Point>("g:point");
+    auto vertices = mesh.addObjectProperty<std::vector<SurfaceMesh::Vertex>>("g:vertices");
+
+    // open file, read header
+    p_ply ply = ply_open(filename.c_str(), NULL, 0, NULL);
+
+    if (!ply)
+        return false;
+
+    if (!ply_read_header(ply))
+        return false;
+
+    // setup callbacks for basic properties
+    ply_set_read_cb(ply, "vertex", "x", vertexCallback, &mesh, 0);
+    ply_set_read_cb(ply, "vertex", "y", vertexCallback, &mesh, 1);
+    ply_set_read_cb(ply, "vertex", "z", vertexCallback, &mesh, 2);
+
+    ply_set_read_cb(ply, "face", "vertex_indices", faceCallback, &mesh, 0);
+
+    // read the data
+    if (!ply_read(ply))
+        return false;
+
+    ply_close(ply);
+
+    // clean-up properties
+    mesh.removeObjectProperty(point);
+    mesh.removeObjectProperty(vertices);
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SurfaceMeshIO::writePLY(const SurfaceMesh& mesh, const std::string& filename)
+{
+    e_ply_storage_mode mode = m_options.doBinary() ? PLY_LITTLE_ENDIAN : PLY_ASCII;
+    p_ply ply = ply_create(filename.c_str(), mode, NULL, 0, NULL);
+
+    ply_add_comment(ply, "File written with pmp-library");
+    ply_add_element(ply, "vertex", mesh.nVertices());
+    ply_add_scalar_property(ply, "x", PLY_FLOAT);
+    ply_add_scalar_property(ply, "y", PLY_FLOAT);
+    ply_add_scalar_property(ply, "z", PLY_FLOAT);
+    ply_add_element(ply, "face", mesh.nFaces());
+    ply_add_property(ply, "vertex_indices", PLY_LIST, PLY_UCHAR, PLY_INT);
+    ply_write_header(ply);
+
+    // write vertices
+    auto points = mesh.getVertexProperty<Point>("v:point");
+    for (auto v : mesh.vertices())
+    {
+        ply_write(ply, points[v][0]);
+        ply_write(ply, points[v][1]);
+        ply_write(ply, points[v][2]);
+    }
+
+    // write faces
+    for (auto f : mesh.faces())
+    {
+        ply_write(ply, mesh.valence(f));
+        for (auto fv : mesh.vertices(f))
+            ply_write(ply,fv.idx());
+    }
+
+    ply_close(ply);
     return true;
 }
 
