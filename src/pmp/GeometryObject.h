@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017 The pmp-library developers
+// Copyright (C) 2017-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -168,8 +168,8 @@ public:
     //! clear object: remove & free all properties
     void clear()
     {
-        m_oprops.resize(0);
-        m_oprops.freeMemory();
+        m_oprops.clear();
+        m_oprops.resize(1);
     }
 
     void freeMemory() { m_oprops.freeMemory(); }
