@@ -30,6 +30,8 @@
 #include <pmp/algorithms/SurfaceFairing.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 
+#include <utility>
+
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
@@ -209,7 +211,7 @@ struct Triple
     Triple() = default;
 
     Triple(SurfaceMesh::Vertex v, double weight, unsigned int degree)
-        : m_v(v), m_weight(weight), m_degree(degree)
+        : m_v(std::move(v)), m_weight(weight), m_degree(degree)
     {
     }
 
