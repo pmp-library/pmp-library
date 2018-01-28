@@ -967,7 +967,7 @@ bool SurfaceMeshIO::readPLY(SurfaceMesh& mesh, const std::string& filename)
     auto vertices = mesh.addObjectProperty<std::vector<SurfaceMesh::Vertex>>("g:vertices");
 
     // open file, read header
-    p_ply ply = ply_open(filename.c_str(), NULL, 0, NULL);
+    p_ply ply = ply_open(filename.c_str(), nullptr, 0, nullptr);
 
     if (!ply)
         return false;
@@ -1000,7 +1000,7 @@ bool SurfaceMeshIO::readPLY(SurfaceMesh& mesh, const std::string& filename)
 bool SurfaceMeshIO::writePLY(const SurfaceMesh& mesh, const std::string& filename)
 {
     e_ply_storage_mode mode = m_options.doBinary() ? PLY_LITTLE_ENDIAN : PLY_ASCII;
-    p_ply ply = ply_create(filename.c_str(), mode, NULL, 0, NULL);
+    p_ply ply = ply_create(filename.c_str(), mode, nullptr, 0, nullptr);
 
     ply_add_comment(ply, "File written with pmp-library");
     ply_add_element(ply, "vertex", mesh.nVertices());
