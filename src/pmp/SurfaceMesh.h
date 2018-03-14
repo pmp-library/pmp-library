@@ -679,6 +679,89 @@ public:
     }
 
     //!@}
+    //! \name Navigators
+    //!@{
+
+    // forward declarations
+    class VertexNavigator;
+    class HalfedgeNavigator;
+    class EdgeNavigator;
+    class FaceNavigator;
+
+    class VertexNavigator
+    {
+        public:
+            VertexNavigator(const SurfaceMesh& _m, Vertex _v)
+                : mesh(_m), v(_v) {}
+
+            Vertex operator*() { return v; }
+            const Point& position() { return mesh.position(v); }
+            inline HalfedgeNavigator halfedge();
+
+        private:
+            const SurfaceMesh& mesh;
+            Vertex v;
+    };
+
+
+    class HalfedgeNavigator
+    {
+        public:
+            HalfedgeNavigator(const SurfaceMesh& _m, Halfedge _h)
+                : mesh(_m), h(_h) {}
+
+            Halfedge operator*() { return h; }
+
+            VertexNavigator    toVertex();
+            VertexNavigator    fromVertex();
+            HalfedgeNavigator  next();
+            HalfedgeNavigator  prev();
+            HalfedgeNavigator  opposite();
+            EdgeNavigator      edge();
+            FaceNavigator      face();
+
+        private:
+            const SurfaceMesh& mesh;
+            Halfedge h;
+    };
+
+
+    class EdgeNavigator
+    {
+        public:
+            EdgeNavigator(const SurfaceMesh& _m, Edge _e)
+                : mesh(_m), e(_e) {}
+
+            Edge operator*() { return e; }
+            VertexNavigator   vertex(int i);
+            HalfedgeNavigator halfedge(int i);
+
+        private:
+            const SurfaceMesh& mesh;
+            Edge e;
+    };
+
+
+    class FaceNavigator
+    {
+        public:
+            FaceNavigator(const SurfaceMesh& _m, Face _f)
+                : mesh(_m), f(_f) {}
+
+            Face operator*() { return f; }
+            HalfedgeNavigator halfedge();
+
+        private:
+            const SurfaceMesh& mesh;
+            Face f;
+    };
+
+    VertexNavigator    nav(Vertex v)   const { return VertexNavigator(*this, v); }
+    HalfedgeNavigator  nav(Halfedge h) const { return HalfedgeNavigator(*this, h); }
+    EdgeNavigator      nav(Edge e)     const { return EdgeNavigator(*this, e); }
+    FaceNavigator      nav(Face f)     const { return FaceNavigator(*this, f); }
+
+    //!@}
     //! \name Higher-level Topological Operations
     //!@{
 
@@ -877,6 +960,23 @@ inline std::ostream& operator<<(std::ostream& os, SurfaceMesh::Face f)
 }
 
 //!@}
+
+//=============================================================================
+
+inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::VertexNavigator::halfedge() { return HalfedgeNavigator(mesh, mesh.halfedge(v)); }
+
+inline SurfaceMesh::VertexNavigator    SurfaceMesh::HalfedgeNavigator::toVertex()   { return VertexNavigator(mesh, mesh.toVertex(h)); }
+inline SurfaceMesh::VertexNavigator    SurfaceMesh::HalfedgeNavigator::fromVertex() { return VertexNavigator(mesh, mesh.fromVertex(h)); }
+inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::HalfedgeNavigator::next() { return HalfedgeNavigator(mesh, mesh.nextHalfedge(h)); }
+inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::HalfedgeNavigator::prev() { return HalfedgeNavigator(mesh, mesh.prevHalfedge(h)); }
+inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::HalfedgeNavigator::opposite() { return HalfedgeNavigator(mesh, mesh.oppositeHalfedge(h)); }
+inline SurfaceMesh::EdgeNavigator      SurfaceMesh::HalfedgeNavigator::edge() { return EdgeNavigator(mesh, mesh.edge(h)); }
+inline SurfaceMesh::FaceNavigator      SurfaceMesh::HalfedgeNavigator::face() { return FaceNavigator(mesh, mesh.face(h)); }
+
+inline SurfaceMesh::VertexNavigator    SurfaceMesh::EdgeNavigator::vertex(int i) { return VertexNavigator(mesh, mesh.vertex(e, i)); }
+inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::EdgeNavigator::halfedge(int i) { return HalfedgeNavigator(mesh, mesh.halfedge(e, i)); }
+
+inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::FaceNavigator::halfedge() { return HalfedgeNavigator(mesh, mesh.halfedge(f)); }
 
 //=============================================================================
 //!@}

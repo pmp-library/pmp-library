@@ -28,6 +28,9 @@
 //=============================================================================
 
 #include <pmp/algorithms/SurfaceSubdivision.h>
+#include <pmp/Timer.h>
+
+#define NAV 1
 
 //=============================================================================
 
@@ -225,6 +228,8 @@ void SurfaceSubdivision::catmullClark()
 
 void SurfaceSubdivision::loop()
 {
+    Timer t; t.start();
+
     if (!m_mesh.isTriangleMesh())
         return;
 
@@ -250,6 +255,7 @@ void SurfaceSubdivision::loop()
         // boundary vertex?
         else if (m_mesh.isSurfaceBoundary(v))
         {
+#ifndef NAV
             auto h1 = m_mesh.halfedge(v);
             auto h0 = m_mesh.prevHalfedge(h1);
 
@@ -258,7 +264,13 @@ void SurfaceSubdivision::loop()
             p += m_points[m_mesh.toVertex(h1)];
             p += m_points[m_mesh.fromVertex(h0)];
             p *= 0.125;
-
+#else
+            Point p = m_mesh.position(v);
+            p *= 6.0;
+            p += m_mesh.nav(v).halfedge().toVertex().position();
+            p += m_mesh.nav(v).halfedge().prev().fromVertex().position();
+            p *= 0.125;
+#endif
             vpoint[v] = p;
         }
 
@@ -315,14 +327,21 @@ void SurfaceSubdivision::loop()
         // boundary or feature edge?
         if (m_mesh.isSurfaceBoundary(e) || (m_efeature && m_efeature[e]))
         {
+#ifndef NAV
             epoint[e] = (m_points[m_mesh.vertex(e, 0)] +
                          m_points[m_mesh.vertex(e, 1)]) *
                         Scalar(0.5);
+#else
+            epoint[e] = (m_mesh.nav(e).vertex(0).position() +
+                         m_mesh.nav(e).vertex(1).position()) *
+                         Scalar(0.5);
+#endif
         }
 
         // interior edge
         else
         {
+#ifndef NAV
             auto  h0 = m_mesh.halfedge(e, 0);
             auto  h1 = m_mesh.halfedge(e, 1);
             Point p  = m_points[m_mesh.toVertex(h0)];
@@ -332,6 +351,16 @@ void SurfaceSubdivision::loop()
             p += m_points[m_mesh.toVertex(m_mesh.nextHalfedge(h1))];
             p *= 0.125;
             epoint[e] = p;
+#else
+            Point p;
+            p  = m_mesh.nav(e).vertex(0).position();
+            p += m_mesh.nav(e).vertex(1).position();
+            p *= 3.0;
+            p += m_mesh.nav(e).halfedge(0).next().toVertex().position();
+            p += m_mesh.nav(e).halfedge(1).next().toVertex().position();
+            p *= 0.125;
+            epoint[e] = p;
+#endif
         }
     }
 
@@ -379,6 +408,9 @@ void SurfaceSubdivision::loop()
     // clean-up properties
     m_mesh.removeVertexProperty(vpoint);
     m_mesh.removeEdgeProperty(epoint);
+
+    t.stop();
+    std::cout << "subdiv took " << t.elapsed() << std::endl;
 }
 
 //-----------------------------------------------------------------------------
