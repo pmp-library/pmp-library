@@ -95,7 +95,7 @@ void TrackballViewer::setDrawMode(const std::string& _s)
 
 void TrackballViewer::keyboard(int key, int /*code*/, int action, int /*mods*/)
 {
-    if (action != GLFW_PRESS) // only react on key press events
+    if (action != GLFW_PRESS && action != GLFW_REPEAT)
         return;
 
     switch (key)
@@ -121,6 +121,27 @@ void TrackballViewer::keyboard(int key, int /*code*/, int action, int /*mods*/)
             std::string mode = m_drawModeNames[m_drawMode];
             std::cout << "setting draw mode to " << mode << std::endl;
             setDrawMode(mode);
+            break;
+        }
+
+        case GLFW_KEY_LEFT:
+        {
+            rotate(vec3(0,1,0), -5.0);
+            break;
+        }
+        case GLFW_KEY_RIGHT:
+        {
+            rotate(vec3(0,1,0), 5.0);
+            break;
+        }
+        case GLFW_KEY_UP:
+        {
+            rotate(vec3(1,0,0), -5.0);
+            break;
+        }
+        case GLFW_KEY_DOWN:
+        {
+            rotate(vec3(1,0,0), 5.0);
             break;
         }
     }
