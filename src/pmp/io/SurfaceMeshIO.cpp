@@ -116,13 +116,13 @@ bool SurfaceMeshIO::read(SurfaceMesh& mesh, const std::string& filename)
     {
         return readSTL(mesh, filename);
     }
-    else if (ext == "poly")
-    {
-        return readPoly(mesh, filename);
-    }
     else if (ext == "ply")
     {
         return readPLY(mesh, filename);
+    }
+    else if (ext == "pmp")
+    {
+        return readPMP(mesh, filename);
     }
 
     // we didn't find a reader module
@@ -153,13 +153,13 @@ bool SurfaceMeshIO::write(const SurfaceMesh& mesh, const std::string& filename)
     {
         return writeSTL(mesh, filename);
     }
-    else if (ext == "poly")
-    {
-        return writePoly(mesh, filename);
-    }
     else if (ext == "ply")
     {
         return writePLY(mesh, filename);
+    }
+    else if (ext == "pmp")
+    {
+        return writePMP(mesh, filename);
     }
 
     // we didn't find a writer module
@@ -177,7 +177,7 @@ bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
                      allTexCoords;   //individual texture coordinates
     std::vector<int> halfedgeTexIdx; //texture coordinates sorted for halfedges
     SurfaceMesh::HalfedgeProperty<TextureCoordinate> texCoords =
-        mesh.halfedgeProperty<TextureCoordinate>("h:texcoord");
+        mesh.halfedgeProperty<TextureCoordinate>("h:tex");
     bool withTexCoord = false;
 
     // clear mesh
@@ -323,6 +323,13 @@ bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
         memset(&s, 0, 200);
     }
 
+    // if there are no textures, delete texture property!
+    if (!withTexCoord)
+    {
+        mesh.removeHalfedgeProperty(texCoords);
+    }
+
+
     fclose(in);
     return true;
 }
@@ -370,7 +377,7 @@ bool SurfaceMeshIO::writeOBJ(const SurfaceMesh& mesh,
     auto                     hpropStart   = hprops.begin();
     while (hpropStart != hpropEnd)
     {
-        if (0 == (*hpropStart).compare("h:texcoord"))
+        if (0 == (*hpropStart).compare("h:tex"))
         {
             withTexCoord = true;
         }
@@ -381,7 +388,7 @@ bool SurfaceMeshIO::writeOBJ(const SurfaceMesh& mesh,
     if (withTexCoord)
     {
         SurfaceMesh::HalfedgeProperty<TextureCoordinate> texCoord =
-            mesh.getHalfedgeProperty<TextureCoordinate>("h:texcoord");
+            mesh.getHalfedgeProperty<TextureCoordinate>("h:tex");
         for (SurfaceMesh::HalfedgeIterator hit = mesh.halfedgesBegin();
              hit != mesh.halfedgesEnd(); ++hit)
         {
@@ -820,7 +827,7 @@ using FaceConnectivity         = SurfaceMesh::FaceConnectivity;
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceMeshIO::readPoly(SurfaceMesh& mesh, const std::string& filename)
+bool SurfaceMeshIO::readPMP(SurfaceMesh& mesh, const std::string& filename)
 {
     // open file (in binary mode)
     FILE* in = fopen(filename.c_str(), "rb");
@@ -837,6 +844,10 @@ bool SurfaceMeshIO::readPoly(SurfaceMesh& mesh, const std::string& filename)
     tfread(in, nf);
     nh = 2 * ne;
 
+    // texture coordinates?
+    bool has_htex(false);
+    tfread(in, has_htex);
+
     // resize containers
     mesh.m_vprops.resize(nv);
     mesh.m_hprops.resize(nh);
@@ -844,26 +855,30 @@ bool SurfaceMeshIO::readPoly(SurfaceMesh& mesh, const std::string& filename)
     mesh.m_fprops.resize(nf);
 
     // get properties
-    auto vconn = mesh.vertexProperty<VertexConnectivity>("v:connectivity");
-    auto hconn = mesh.halfedgeProperty<HalfedgeConnectivity>("h:connectivity");
-    auto hfconn =
-        mesh.halfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
-    auto fconn = mesh.faceProperty<FaceConnectivity>("f:connectivity");
-    auto point = mesh.vertexProperty<Point>("v:point");
+    auto vconn  = mesh.vertexProperty<VertexConnectivity>("v:connectivity");
+    auto hconn  = mesh.halfedgeProperty<HalfedgeConnectivity>("h:connectivity");
+    auto hfconn = mesh.halfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
+    auto fconn  = mesh.faceProperty<FaceConnectivity>("f:connectivity");
+    auto point  = mesh.vertexProperty<Point>("v:point");
 
     // read properties from file
-    size_t nvc = fread((char*)vconn.data(), sizeof(VertexConnectivity), nv, in);
-    size_t nhc =
-        fread((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, in);
-    size_t nhfc =
-        fread((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, in);
-    size_t nfc = fread((char*)fconn.data(), sizeof(FaceConnectivity), nf, in);
-    size_t np  = fread((char*)point.data(), sizeof(Point), nv, in);
-    PMP_ASSERT(nvc == nv);
-    PMP_ASSERT(nhc == nh);
+    size_t nvc  = fread((char*)vconn.data(), sizeof(VertexConnectivity), nv, in);
+    size_t nhc  = fread((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, in);
+    size_t nhfc = fread((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, in);
+    size_t nfc  = fread((char*)fconn.data(), sizeof(FaceConnectivity), nf, in);
+    size_t np   = fread((char*)point.data(), sizeof(Point), nv, in);
+    PMP_ASSERT(nvc  == nv);
+    PMP_ASSERT(nhc  == nh);
     PMP_ASSERT(nhfc == nh);
-    PMP_ASSERT(nfc == nf);
-    PMP_ASSERT(np == nv);
+    PMP_ASSERT(nfc  == nf);
+    PMP_ASSERT(np   == nv);
+
+    // read texture coordiantes
+    if (has_htex)
+    {
+        auto htex = mesh.halfedgeProperty<TextureCoordinate>("h:tex");
+        fread((char*)htex.data(), sizeof(TextureCoordinate), nh, in);
+    }
 
     fclose(in);
     return true;
@@ -871,13 +886,21 @@ bool SurfaceMeshIO::readPoly(SurfaceMesh& mesh, const std::string& filename)
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceMeshIO::writePoly(const SurfaceMesh& mesh,
-                              const std::string& filename)
+bool SurfaceMeshIO::writePMP(const SurfaceMesh& mesh,
+                             const std::string& filename)
 {
     // open file (in binary mode)
     FILE* out = fopen(filename.c_str(), "wb");
     if (!out)
         return false;
+
+    // get properties
+    auto vconn  = mesh.getVertexProperty<VertexConnectivity>("v:connectivity");
+    auto hconn  = mesh.getHalfedgeProperty<HalfedgeConnectivity>("h:connectivity");
+    auto hfconn = mesh.getHalfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
+    auto fconn  = mesh.getFaceProperty<FaceConnectivity>("f:connectivity");
+    auto point  = mesh.getVertexProperty<Point>("v:point");
+    auto htex   = mesh.getHalfedgeProperty<TextureCoordinate>("h:tex");
 
     // how many elements?
     unsigned int nv, ne, nh, nf;
@@ -886,29 +909,23 @@ bool SurfaceMeshIO::writePoly(const SurfaceMesh& mesh,
     nh = mesh.nHalfedges();
     nf = mesh.nFaces();
 
+    // write header
     tfwrite(out, nv);
     tfwrite(out, ne);
     tfwrite(out, nf);
-    nh = 2 * ne;
-
-    // get properties
-    auto vconn = mesh.getVertexProperty<VertexConnectivity>("v:connectivity");
-    auto hconn =
-        mesh.getHalfedgeProperty<HalfedgeConnectivity>("h:connectivity");
-    auto hfconn =
-        mesh.getHalfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
-    auto fconn = mesh.getFaceProperty<FaceConnectivity>("f:connectivity");
-    auto point = mesh.getVertexProperty<Point>("v:point");
+    tfwrite(out, (bool)htex);
 
     // write properties to file
-    fwrite((char*)vconn.data(), sizeof(VertexConnectivity), nv, out);
-    fwrite((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, out);
+    fwrite((char*)vconn.data(),  sizeof(VertexConnectivity), nv, out);
+    fwrite((char*)hconn.data(),  sizeof(HalfedgeConnectivity), nh, out);
     fwrite((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, out);
-    fwrite((char*)fconn.data(), sizeof(FaceConnectivity), nf, out);
-    fwrite((char*)point.data(), sizeof(Point), nv, out);
+    fwrite((char*)fconn.data(),  sizeof(FaceConnectivity), nf, out);
+    fwrite((char*)point.data(),  sizeof(Point), nv, out);
+
+    // texture coordinates
+    if (htex) fwrite((char*)htex.data(),  sizeof(TextureCoordinate), nh, out);
 
     fclose(out);
-
     return true;
 }
 

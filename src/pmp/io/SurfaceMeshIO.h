@@ -88,16 +88,16 @@ public:
 private:
     bool readOFF(SurfaceMesh& mesh, const std::string& filename);
     bool readOBJ(SurfaceMesh& mesh, const std::string& filename);
-    bool readPoly(SurfaceMesh& mesh, const std::string& filename);
     bool readSTL(SurfaceMesh& mesh, const std::string& filename);
     bool readPLY(SurfaceMesh& mesh, const std::string& filename);
+    bool readPMP(SurfaceMesh& mesh, const std::string& filename);
 
     bool writeOFF(const SurfaceMesh& mesh, const std::string& filename);
     bool writeOFFBinary(const SurfaceMesh& mesh, const std::string& filename);
     bool writeOBJ(const SurfaceMesh& mesh, const std::string& filename);
     bool writeSTL(const SurfaceMesh& mesh, const std::string& filename);
-    bool writePoly(const SurfaceMesh& mesh, const std::string& filename);
     bool writePLY(const SurfaceMesh& mesh, const std::string& filename);
+    bool writePMP(const SurfaceMesh& mesh, const std::string& filename);
 
 private:
     IOOptions m_options;
