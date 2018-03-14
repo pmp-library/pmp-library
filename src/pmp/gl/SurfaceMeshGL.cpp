@@ -57,6 +57,13 @@ SurfaceMeshGL::SurfaceMeshGL()
     m_nFeatures  = 0;
 
     // material parameters
+    m_frontColor  = vec3(0.6, 0.6, 0.6);
+    m_backColor   = vec3(0.5, 0.0, 0.0);
+    m_ambient     = 0.1;
+    m_diffuse     = 0.8;
+    m_specular    = 0.6;
+    m_shininess   = 100.0;
+    m_srgb        = false;
     m_creaseAngle = 70.0;
 
     // initialize texture
@@ -194,6 +201,7 @@ void SurfaceMeshGL::updateOpenGLBuffers()
     // get vertex properties
     auto vpos = getVertexProperty<Point>("v:point");
     auto vtex = getVertexProperty<TexCoord>("v:tex");
+    auto htex = getHalfedgeProperty<TexCoord>("h:tex");
 
     // produce arrays of points, normals, and texcoords
     // (duplicate vertices to allow for flat shading)
@@ -205,8 +213,9 @@ void SurfaceMeshGL::updateOpenGLBuffers()
     texArray.reserve(3 * nFaces());
 
     // data per face (for all corners)
-    std::vector<Vertex> corners;
-    std::vector<vec3>   cornerNormals;
+    std::vector<Halfedge>  cornerHalfedges;
+    std::vector<Vertex>    cornerVertices;
+    std::vector<vec3>      cornerNormals;
 
     // convert from degrees to radians
     const Scalar creaseAngle = m_creaseAngle / 180.0 * M_PI;
@@ -218,38 +227,46 @@ void SurfaceMeshGL::updateOpenGLBuffers()
     for (auto f : faces())
     {
         // collect corner positions and normals
-        corners.clear();
+        cornerHalfedges.clear();
+        cornerVertices.clear();
         cornerNormals.clear();
         for (auto h : halfedges(f))
         {
-            corners.push_back(toVertex(h));
+            cornerHalfedges.push_back(h);
+            cornerVertices.push_back(toVertex(h));
             cornerNormals.push_back(
                 SurfaceNormals::computeCornerNormal(*this, h, creaseAngle));
         }
-        assert(corners.size() >= 3);
+        assert(cornerVertices.size() >= 3);
 
         // tessellate face into triangles
-        int i0, i1, i2, nc = corners.size();
+        int i0, i1, i2, nc = cornerVertices.size();
         for (i0 = 0, i1 = 1, i2 = 2; i2 < nc; ++i1, ++i2)
         {
-            positionArray.push_back(vpos[corners[i0]]);
-            positionArray.push_back(vpos[corners[i1]]);
-            positionArray.push_back(vpos[corners[i2]]);
+            positionArray.push_back(vpos[cornerVertices[i0]]);
+            positionArray.push_back(vpos[cornerVertices[i1]]);
+            positionArray.push_back(vpos[cornerVertices[i2]]);
 
             normalArray.push_back(cornerNormals[i0]);
             normalArray.push_back(cornerNormals[i1]);
             normalArray.push_back(cornerNormals[i2]);
 
-            if (vtex)
+            if (htex)
             {
-                texArray.push_back(vtex[corners[i0]]);
-                texArray.push_back(vtex[corners[i1]]);
-                texArray.push_back(vtex[corners[i2]]);
+                texArray.push_back(htex[cornerHalfedges[i0]]);
+                texArray.push_back(htex[cornerHalfedges[i1]]);
+                texArray.push_back(htex[cornerHalfedges[i2]]);
+            }
+            else if (vtex)
+            {
+                texArray.push_back(vtex[cornerVertices[i0]]);
+                texArray.push_back(vtex[cornerVertices[i1]]);
+                texArray.push_back(vtex[cornerVertices[i2]]);
             }
 
-            vertex_indices[corners[i0]] = vidx++;
-            vertex_indices[corners[i1]] = vidx++;
-            vertex_indices[corners[i2]] = vidx++;
+            vertex_indices[cornerVertices[i0]] = vidx++;
+            vertex_indices[cornerVertices[i1]] = vidx++;
+            vertex_indices[cornerVertices[i2]] = vidx++;
         }
     }
 
@@ -269,7 +286,7 @@ void SurfaceMeshGL::updateOpenGLBuffers()
     glEnableVertexAttribArray(1);
 
     // texture coordinates
-    if (vtex)
+    if (!texArray.empty())
     {
         glBindBuffer(GL_ARRAY_BUFFER, m_texCoordBuffer);
         glBufferData(GL_ARRAY_BUFFER, texArray.size() * 2 * sizeof(float),
@@ -372,10 +389,15 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
     m_phongShader.set_uniform("normal_matrix", n_matrix);
     m_phongShader.set_uniform("light1", vec3(1.0, 1.0, 1.0));
     m_phongShader.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
-    m_phongShader.set_uniform("front_color", vec3(0.6, 0.6, 0.6));
-    m_phongShader.set_uniform("back_color", vec3(0.3, 0.0, 0.0));
+    m_phongShader.set_uniform("front_color", m_frontColor);
+    m_phongShader.set_uniform("back_color",  m_backColor);
+    m_phongShader.set_uniform("ambient",     m_ambient);
+    m_phongShader.set_uniform("diffuse",     m_diffuse);
+    m_phongShader.set_uniform("specular",    m_specular);
+    m_phongShader.set_uniform("shininess",   m_shininess);
     m_phongShader.set_uniform("use_lighting", true);
     m_phongShader.set_uniform("use_texture", false);
+    m_phongShader.set_uniform("use_srgb",    m_srgb);
     m_phongShader.set_uniform("show_texture_layout", false);
 
     glBindVertexArray(m_vertexArrayObject);

@@ -55,9 +55,43 @@ public:
     //! default destructor
     ~SurfaceMeshGL();
 
+    //! get front color
+    const vec3& frontColor() const { return m_frontColor; }
+    //! set front color
+    void setFrontColor(const vec3& color) { m_frontColor = color; }
+
+    //! get back color
+    const vec3& backColor() const { return m_backColor; }
+    //! set back color
+    void setBackColor(const vec3& color) { m_backColor = color; }
+
+    //! get ambient reflection coefficient
+    float ambient() const { return m_ambient; }
+    //! set ambient reflection coefficient
+    void setAmbient(float a) { m_ambient = a; }
+
+    //! get diffuse reflection coefficient
+    float diffuse() const { return m_diffuse; }
+    //! set diffuse reflection coefficient
+    void setDiffuse(float d) { m_diffuse = d; }
+
+    //! get specular reflection coefficient
+    float specular() const { return m_specular; }
+    //! set specular reflection coefficient
+    void setSpecular(float s) { m_specular = s; }
+
+    //! get specular shininess coefficient
+    float shininess() const { return m_shininess; }
+    //! set specular shininess coefficient
+    void setShininess(float s) { m_shininess = s; }
+
+    //! are we using SRGB rendering (undo gamma correction in fragment shader)
+    bool getSRGB() const { return m_srgb; }
+    //! set whether to use SRGB rendering (undo gamma correction in fragment shader)
+    void setSRGB(bool b) { m_srgb = b; }
+
     //! get crease angle (in degrees) for visualization of sharp edges
     Scalar creaseAngle() const { return m_creaseAngle; }
-
     //! set crease angle (in degrees) for visualization of sharp edges
     void setCreaseAngle(Scalar ca);
 
@@ -76,6 +110,7 @@ public:
 
     //! setup checkerboard texture
     void useCheckerboardTexture();
+
 
 private:
     // material parameters
@@ -97,6 +132,11 @@ private:
 
     //! shaders
     Shader m_phongShader;
+
+    //! material properties
+    vec3  m_frontColor, m_backColor;
+    float m_ambient, m_diffuse, m_specular, m_shininess;
+    bool  m_srgb;
 
     //! 1D texture for scalar field rendering
     GLuint m_texture;
