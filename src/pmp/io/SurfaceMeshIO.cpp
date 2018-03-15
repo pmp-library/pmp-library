@@ -877,7 +877,8 @@ bool SurfaceMeshIO::readPMP(SurfaceMesh& mesh, const std::string& filename)
     if (has_htex)
     {
         auto htex = mesh.halfedgeProperty<TextureCoordinate>("h:tex");
-        fread((char*)htex.data(), sizeof(TextureCoordinate), nh, in);
+        size_t nhtc = fread((char*)htex.data(), sizeof(TextureCoordinate), nh, in);
+        PMP_ASSERT(nhtc  == nh);
     }
 
     fclose(in);
