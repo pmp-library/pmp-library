@@ -77,18 +77,27 @@ bool Shader::source(const char* vshader, const char* fshader)
     // vertex shader
     m_vid = compile(vshader, GL_VERTEX_SHADER);
     if (!m_vid)
+    {
+        std::cerr << "Cannot compile vertex shader!\n";
         return false;
+    }
     glAttachShader(m_pid, m_vid);
 
     // fragment shader
     m_fid = compile(fshader, GL_FRAGMENT_SHADER);
     if (!m_fid)
+    {
+        std::cerr << "Cannot compile fragment shader!\n";
         return false;
+    }
     glAttachShader(m_pid, m_fid);
 
     // link program
     if (!link())
+    {
+        std::cerr << "Cannot link program!\n";
         return false;
+    }
 
     return true;
 }
@@ -105,17 +114,28 @@ bool Shader::load(const char* vfile, const char* ffile)
 
     // vertex shader
     m_vid = load_and_compile(vfile, GL_VERTEX_SHADER);
-    if (m_vid)
-        glAttachShader(m_pid, m_vid);
+    if (!m_vid)
+    {
+        std::cerr << "Cannot compile vertex shader!\n";
+        return false;
+    }
+    glAttachShader(m_pid, m_vid);
 
     // fragment shader
     m_fid = load_and_compile(ffile, GL_FRAGMENT_SHADER);
-    if (m_fid)
-        glAttachShader(m_pid, m_fid);
+    if (!m_fid)
+    {
+        std::cerr << "Cannot compile fragment shader!\n";
+        return false;
+    }
+    glAttachShader(m_pid, m_fid);
 
     // link program
     if (!link())
+    {
+        std::cerr << "Cannot link program!\n";
         return false;
+    }
 
     return true;
 }
@@ -190,10 +210,9 @@ GLint Shader::compile(const char* source, GLenum type)
 
         auto* info = new GLchar[length + 1];
         glGetShaderInfoLog(id, length, nullptr, info);
-
         std::cerr << "Shader: Cannot compile shader\n" << info << std::endl;
-
         delete[] info;
+
         glDeleteShader(id);
 
         return 0;

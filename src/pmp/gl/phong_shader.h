@@ -26,22 +26,27 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
-#ifndef __EMSCRIPTEN__ // standard version (OpenGL 3.2 and higher)
 
 // clang-format off
+
 static const char* phong_vshader =
+#ifndef __EMSCRIPTEN__
     "#version 150\n"
+#else
+    "#version 300 es\n"
+#endif
     "\n"
-    "in vec4 v_position;\n"
-    "in vec3 v_normal;\n"
-    "in vec2 v_tex;\n"
+    "layout (location=0) in vec4 v_position;\n"
+    "layout (location=1) in vec3 v_normal;\n"
+    "layout (location=2) in vec2 v_tex;\n"
     "out vec3 v2f_normal;\n"
     "out vec2 v2f_tex;\n"
     "out vec3 v2f_view;\n"
     "uniform mat4 modelview_projection_matrix;\n"
     "uniform mat4 modelview_matrix;\n"
     "uniform mat3 normal_matrix;\n"
-    "uniform bool show_texture_layout = false;\n"
+    "uniform float point_size;\n"
+    "uniform bool show_texture_layout;\n"
     "\n"
     "void main()\n"
     "{\n"
@@ -49,28 +54,34 @@ static const char* phong_vshader =
     "   v2f_tex     = v_tex;\n"
     "   vec4 pos    = show_texture_layout ? vec4(v_tex, 0.0, 1.0) : v_position;\n"
     "   v2f_view    = -(modelview_matrix * pos).xyz;\n"
+    "   gl_PointSize = point_size;\n"
     "   gl_Position = modelview_projection_matrix * pos;\n"
     "} \n";
 
 
 static const char* phong_fshader =
+#ifndef __EMSCRIPTEN__
     "#version 150\n"
+#else
+    "#version 300 es\n"
+    "precision mediump float;\n"
+#endif
     "\n"
     "in vec3  v2f_normal;\n"
     "in vec2  v2f_tex;\n"
     "in vec3  v2f_view;\n"
     "\n"
-    "uniform bool   use_lighting = true;\n"
-    "uniform bool   use_texture  = false;\n"
-    "uniform bool   use_srgb     = false;\n"
-    "uniform vec3   front_color  = vec3(0.6, 0.6, 0.6);\n"
-    "uniform vec3   back_color   = vec3(0.5, 0.0, 0.0);\n"
-    "uniform float  ambient      = 0.1;\n"
-    "uniform float  diffuse      = 0.8;\n"
-    "uniform float  specular     = 0.6;\n"
-    "uniform float  shininess    = 100.0;\n"
-    "uniform vec3   light1       = vec3( 1.0, 1.0, 1.0);\n"
-    "uniform vec3   light2       = vec3(-1.0, 1.0, 1.0);\n"
+    "uniform bool   use_lighting;\n"
+    "uniform bool   use_texture;\n"
+    "uniform bool   use_srgb;\n"
+    "uniform vec3   front_color;\n"
+    "uniform vec3   back_color;\n"
+    "uniform float  ambient;\n"
+    "uniform float  diffuse;\n"
+    "uniform float  specular;\n"
+    "uniform float  shininess;\n"
+    "uniform vec3   light1;\n"
+    "uniform vec3   light2;\n"
     "\n"
     "uniform sampler2D mytexture;\n"
     "\n"
@@ -133,104 +144,6 @@ static const char* phong_fshader =
     "}";
 
 
-#else // emscripten WebGL-friendly version
-
-
-static const char* phong_vshader =
-    "attribute vec4  v_position;\n"
-    "attribute vec3  v_normal;\n"
-    "attribute vec2  v_tex;\n"
-    "varying vec3  v2f_normal;\n"
-    "varying vec3  v2f_view;\n"
-    "varying vec2  v2f_tex;\n"
-    "uniform mat4 modelview_projection_matrix;\n"
-    "uniform mat4 modelview_matrix;\n"
-    "uniform mat3 normal_matrix;\n"
-    "uniform bool show_texture_layout;\n"
-    "\n"
-    "void main()\n"
-    "{\n"
-    "   gl_PointSize = 5.0;\n"
-    "   v2f_normal  = normal_matrix * v_normal;\n"
-    "   vec4 pos    = show_texture_layout ? vec4(v_tex, 0.0, 1.0) : v_position;\n"
-    "   v2f_view    = -(modelview_matrix*pos).xyz;\n"
-    "   v2f_tex     = v_tex;\n"
-    "   gl_Position = modelview_projection_matrix * pos;\n"
-    "}\n";
-
-static const char* phong_fshader =
-    "precision highp float;\n"
-    "varying vec3   v2f_normal;\n"
-    "varying vec3   v2f_view;\n"
-    "varying vec2   v2f_tex;\n"
-    "uniform bool   use_lighting;\n"
-    "uniform bool   use_texture;\n"
-    "uniform bool   use_srgb;\n"
-    "uniform vec3   front_color;\n"
-    "uniform vec3   back_color;\n"
-    "uniform vec3   light1;\n"
-    "uniform vec3   light2;\n"
-    "uniform sampler2D mytexture;\n"
-    "uniform float  ambient;\n"
-    "uniform float  diffuse;\n"
-    "uniform float  specular;\n"
-    "uniform float  shininess;\n"
-    "\n"
-    "void main()\n"
-    "{\n"
-    "    vec3 color = gl_FrontFacing ? front_color : back_color;\n"
-    "    vec3 rgb;\n"
-    "\n"
-    "    if (use_lighting)\n"
-    "    {\n"
-    "        vec3 L1 = normalize(light1);\n"
-    "    	 vec3 L2 = normalize(light2);\n"
-    "        vec3 N  = normalize(v2f_normal);\n"
-    "    	 vec3 V  = normalize(v2f_view);\n"
-    "\n"
-    "        if (!gl_FrontFacing) N = -N;\n"
-    "\n"
-    "        vec3  R;\n"
-    "        float NL, RV;\n"
-    "\n"
-    "        rgb = ambient * 0.1 * color;\n"
-    "\n"
-    "        NL = dot(N, L1);\n"
-    "        if (NL > 0.0)\n"
-    "        {\n"
-    "            rgb += diffuse * NL * color;\n"
-    "            R  = normalize(-reflect(L1, N));\n"
-    "            RV = dot(R, V);\n"
-    "            if (RV > 0.0) \n"
-    "            {\n"
-    "                rgb += vec3( specular * pow(RV, shininess) );\n"
-    "            }\n"
-    "        }\n"
-    "\n"
-    "        NL = dot(N, L2);\n"
-    "        if (NL > 0.0)\n"
-    "        {\n"
-    "            rgb += diffuse * NL * color;\n"
-    "            R  = normalize(-reflect(L2, N));\n"
-    "            RV = dot(R, V);\n"
-    "            if (RV > 0.0) \n"
-    "            {\n"
-    "                rgb += vec3( specular * pow(RV, shininess) );\n"
-    "            }\n"
-    "        }\n"
-    "    }\n"
-    "\n"
-    "    // do not use lighting\n"
-    "    else\n"
-    "    {\n"
-    "        rgb = color;\n"
-    "    }\n"
-    "   \n"
-    "   if (use_texture) rgb *= texture2D(mytexture, v2f_tex).xyz;\n"
-    "   if (use_srgb)    rgb  = pow(clamp(rgb, 0.0, 1.0), vec3(0.45));\n"
-    "   \n"
-    "   gl_FragColor = vec4(rgb, 1.0);\n"
-    "}";
-
+//=============================================================================
 // clang-format on
-#endif
+//=============================================================================

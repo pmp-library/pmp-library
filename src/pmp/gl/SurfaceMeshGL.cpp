@@ -409,13 +409,11 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
     if (!m_phongShader.isValid())
     {
         if (!m_phongShader.source(phong_vshader, phong_fshader))
-        {
             exit(1);
-        }
-        m_phongShader.use();
-        m_phongShader.bind_attrib("v_position", 0);
-        m_phongShader.bind_attrib("v_normal", 1);
-        m_phongShader.bind_attrib("v_tex1D", 2);
+        //m_phongShader.use();
+        //m_phongShader.bind_attrib("v_position", 0);
+        //m_phongShader.bind_attrib("v_normal", 1);
+        //m_phongShader.bind_attrib("v_tex1D", 2);
     }
 
     // we need some texture, otherwise WebGL complains
@@ -438,6 +436,7 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
     m_phongShader.set_uniform("modelview_projection_matrix", mvp_matrix);
     m_phongShader.set_uniform("modelview_matrix", mv_matrix);
     m_phongShader.set_uniform("normal_matrix", n_matrix);
+    m_phongShader.set_uniform("point_size", 5.0f);
     m_phongShader.set_uniform("light1", vec3(1.0, 1.0, 1.0));
     m_phongShader.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
     m_phongShader.set_uniform("front_color", m_frontColor);
@@ -455,9 +454,6 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
 
     if (drawMode == "Points")
     {
-#ifndef __EMSCRIPTEN__
-        glPointSize(5.0);
-#endif
         glDrawArrays(GL_POINTS, 0, m_nVertices);
     }
 
