@@ -31,7 +31,7 @@
 
 static const char* phong_vshader =
 #ifndef __EMSCRIPTEN__
-    "#version 150\n"
+    "#version 330\n"
 #else
     "#version 300 es\n"
 #endif
