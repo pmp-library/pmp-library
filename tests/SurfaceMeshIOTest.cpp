@@ -42,10 +42,10 @@ class SurfaceMeshIOTest : public SurfaceMeshTest
 TEST_F(SurfaceMeshIOTest, polyIO)
 {
     addTriangle();
-    mesh.write("test.poly");
+    mesh.write("test.pmp");
     mesh.clear();
     EXPECT_TRUE(mesh.isEmpty());
-    mesh.read("test.poly");
+    mesh.read("test.pmp");
     EXPECT_EQ(mesh.nVertices(), size_t(3));
     EXPECT_EQ(mesh.nFaces(), size_t(1));
 
