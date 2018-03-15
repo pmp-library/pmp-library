@@ -33,38 +33,134 @@
 #include <iostream>
 #include <sstream>
 
+#include <clocale>
+#include <cfloat>
+#include <cstring>
+
 //=============================================================================
 
 namespace pmp {
 
 //=============================================================================
 
+bool PointSetIO::read(PointSet& ps, const std::string& filename)
+{
+    std::setlocale(LC_NUMERIC, "C");
+
+    // clear mesh before reading from file
+    ps.clear();
+
+    // extract file extension
+    std::string::size_type dot(filename.rfind("."));
+    if (dot == std::string::npos)
+        return false;
+    std::string ext = filename.substr(dot + 1, filename.length() - dot - 1);
+    std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
+
+    // extension determines reader
+    if (ext == "xyz")
+    {
+        return readXYZ(ps, filename);
+    }
+    else if (ext == "agi")
+    {
+        return readAGI(ps, filename);
+    }
+
+    // we didn't find a reader module
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+
+bool PointSetIO::write(const PointSet& ps, const std::string& filename)
+{
+    // extract file extension
+    std::string::size_type dot(filename.rfind("."));
+    if (dot == std::string::npos)
+        return false;
+    std::string ext = filename.substr(dot + 1, filename.length() - dot - 1);
+    std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
+
+    // extension determines reader
+    if (ext == "xyz")
+    {
+        return writeXYZ(ps, filename);
+    }
+
+    // we didn't find a writer module
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+
 bool PointSetIO::readXYZ(PointSet& ps, const std::string& filename)
 {
-    // check proper file name
-    if (filename.size() < 4 || filename.compare(filename.size() - 4, 4, ".xyz"))
+    // open file (in ASCII mode)
+    FILE* in = fopen(filename.c_str(), "r");
+    if (!in)
         return false;
-
-    // clear old data
-    ps.clear();
 
     // add normal property
     auto vnormal = ps.addVertexProperty<Normal>("v:normal");
 
+    char   line[200];
+    float  x, y, z;
+    float  nx, ny, nz;
+    int    n;
+    PointSet::Vertex v;
+
     // read data
-    std::ifstream ifs(filename);
-    std::string   line;
-    while (std::getline(ifs, line))
+    while (in && !feof(in) && fgets(line, 200, in))
     {
-        float             x, y, z;
-        float             nx, ny, nz;
-        std::stringstream sstr(line.c_str());
-        sstr >> x >> y >> z;
-        sstr >> nx >> ny >> nz;
-        auto v     = ps.addVertex(Point(x, y, z));
-        vnormal[v] = Normal(nx, ny, nz);
+        n = sscanf(line, "%f %f %f %f %f %f", &x, &y, &z, &nx, &ny, &nz);
+        if (n >= 3)
+        {
+            v = ps.addVertex(Point(x, y, z));
+            if (n >= 6)
+            {
+                vnormal[v] = Normal(nx, ny, nz);
+            }
+        }
     }
 
+    fclose(in);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool PointSetIO::readAGI(PointSet& ps, const std::string& filename)
+{
+    // open file (in ASCII mode)
+    FILE* in = fopen(filename.c_str(), "r");
+    if (!in)
+        return false;
+
+    // add normal property
+    auto normal = ps.addVertexProperty<Normal>("v:normal");
+    auto color  = ps.addVertexProperty<Color>("v:color");
+
+    char   line[200];
+    float  x, y, z;
+    float  nx, ny, nz;
+    float  r, g, b;
+    int    n;
+    PointSet::Vertex v;
+
+    // read data
+    while (in && !feof(in) && fgets(line, 200, in))
+    {
+        n = sscanf(line, "%f %f %f %f %f %f %f %f %f", &x, &y, &z, &r, &g, &b, &nx, &ny, &nz);
+        if (n == 9)
+        {
+            v = ps.addVertex(Point(x, y, z));
+            normal[v] = Normal(nx, ny, nz);
+            color[v]  = Color(r/255.0, g/255.0, b/255.0);
+        }
+    }
+
+    fclose(in);
     return true;
 }
 
@@ -72,11 +168,8 @@ bool PointSetIO::readXYZ(PointSet& ps, const std::string& filename)
 
 bool PointSetIO::writeXYZ(const PointSet& ps, const std::string& filename)
 {
-    // check proper file name
-    if (filename.size() < 4 || filename.compare(filename.size() - 4, 4, ".xyz"))
-        return false;
-
     std::ofstream ofs(filename);
+    if (!ofs) return false;
 
     auto vnormal = ps.getVertexProperty<Normal>("v:normal");
     for (auto v : ps.vertices())
@@ -91,7 +184,6 @@ bool PointSetIO::writeXYZ(const PointSet& ps, const std::string& filename)
     }
 
     ofs.close();
-
     return true;
 }
 

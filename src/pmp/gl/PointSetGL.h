@@ -67,12 +67,17 @@ private:
     GLuint m_vertexArrayObject;
     GLuint m_vertexBuffer;
     GLuint m_normalBuffer;
+    GLuint m_colorBuffer;
 
     //! buffer sizes
     GLsizei m_nVertices;
 
     //! shaders
     Shader m_phongShader;
+
+    //! material properties
+    vec3  m_frontColor, m_backColor;
+    float m_ambient, m_diffuse, m_specular, m_shininess;
 };
 
 //=============================================================================

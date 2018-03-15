@@ -206,6 +206,7 @@ bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
                 mesh.addVertex(Point(x, y, z));
             }
         }
+
         // normal
         else if (strncmp(s, "vn ", 3) == 0)
         {
@@ -447,7 +448,7 @@ bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
     if (hasNormals)
         normals = mesh.vertexProperty<Normal>("v:normal");
     if (hasTexcoords)
-        texcoords = mesh.vertexProperty<TextureCoordinate>("v:texcoord");
+        texcoords = mesh.vertexProperty<TextureCoordinate>("v:tex");
     if (hasColors)
         colors = mesh.vertexProperty<Color>("v:color");
 
@@ -559,7 +560,7 @@ bool readOFFBinary(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
     if (hasNormals)
         normals = mesh.vertexProperty<Normal>("v:normal");
     if (hasTexcoords)
-        texcoords = mesh.vertexProperty<TextureCoordinate>("v:texcoord");
+        texcoords = mesh.vertexProperty<TextureCoordinate>("v:tex");
 
     // #Vertice, #Faces, #Edges
     tfread(in, nV);
@@ -742,7 +743,7 @@ bool SurfaceMeshIO::writeOFF(const SurfaceMesh& mesh,
     bool hasColors    = false;
 
     auto normals   = mesh.getVertexProperty<Normal>("v:normal");
-    auto texcoords = mesh.getVertexProperty<TextureCoordinate>("v:texcoord");
+    auto texcoords = mesh.getVertexProperty<TextureCoordinate>("v:tex");
     auto colors    = mesh.getVertexProperty<Color>("v:color");
 
     if (normals && m_options.doNormals())

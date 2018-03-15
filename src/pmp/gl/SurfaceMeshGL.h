@@ -116,8 +116,6 @@ public:
                      GLint wrap=GL_CLAMP_TO_EDGE);
 
 private:
-    // material parameters
-    float m_creaseAngle;
 
     //! OpenGL buffers
     GLuint m_vertexArrayObject;
@@ -140,6 +138,7 @@ private:
     vec3  m_frontColor, m_backColor;
     float m_ambient, m_diffuse, m_specular, m_shininess;
     bool  m_srgb;
+    float m_creaseAngle;
 
     //! 1D texture for scalar field rendering
     GLuint m_texture;

@@ -410,10 +410,6 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
     {
         if (!m_phongShader.source(phong_vshader, phong_fshader))
             exit(1);
-        //m_phongShader.use();
-        //m_phongShader.bind_attrib("v_position", 0);
-        //m_phongShader.bind_attrib("v_normal", 1);
-        //m_phongShader.bind_attrib("v_tex1D", 2);
     }
 
     // we need some texture, otherwise WebGL complains
@@ -454,6 +450,7 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
 
     if (drawMode == "Points")
     {
+        glEnable(GL_PROGRAM_POINT_SIZE);
         glDrawArrays(GL_POINTS, 0, m_nVertices);
     }
 

@@ -43,9 +43,18 @@ PointSetGL::PointSetGL()
     m_vertexArrayObject = 0;
     m_vertexBuffer      = 0;
     m_normalBuffer      = 0;
+    m_colorBuffer       = 0;
 
     // initialize buffer sizes
     m_nVertices = 0;
+
+    // material parameters
+    m_frontColor  = vec3(0.6, 0.6, 0.6);
+    m_backColor   = vec3(0.5, 0.0, 0.0);
+    m_ambient     = 0.1;
+    m_diffuse     = 0.8;
+    m_specular    = 0.6;
+    m_shininess   = 100.0;
 }
 
 //-----------------------------------------------------------------------------
@@ -55,6 +64,7 @@ PointSetGL::~PointSetGL()
     // delete OpenGL buffers
     glDeleteBuffers(1, &m_vertexBuffer);
     glDeleteBuffers(1, &m_normalBuffer);
+    glDeleteBuffers(1, &m_colorBuffer);
     glDeleteVertexArrays(1, &m_vertexArrayObject);
 }
 
@@ -69,6 +79,7 @@ void PointSetGL::updateOpenGLBuffers()
         glBindVertexArray(m_vertexArrayObject);
         glGenBuffers(1, &m_vertexBuffer);
         glGenBuffers(1, &m_normalBuffer);
+        glGenBuffers(1, &m_colorBuffer);
     }
 
     // activate VAO
@@ -91,6 +102,21 @@ void PointSetGL::updateOpenGLBuffers()
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     glEnableVertexAttribArray(1);
 
+    // colors
+    auto colors = getVertexProperty<Color>("v:color");
+    if (colors)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, m_colorBuffer);
+        glBufferData(GL_ARRAY_BUFFER, nVertices() * 3 * sizeof(float),
+                colors.data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glEnableVertexAttribArray(2);
+    }
+    else
+    {
+        glDisableVertexAttribArray(2);
+    }
+
     // unbind vertex array
     glBindVertexArray(0);
 }
@@ -109,10 +135,8 @@ void PointSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
     // load shader?
     if (!m_phongShader.isValid())
     {
-        m_phongShader.source(phong_vshader, phong_fshader);
-        m_phongShader.use();
-        m_phongShader.bind_attrib("v_position", 0);
-        m_phongShader.bind_attrib("v_normal", 1);
+        if (!m_phongShader.source(points_vshader, points_fshader))
+            exit(1);
     }
 
     // empty point set?
@@ -129,20 +153,25 @@ void PointSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
     m_phongShader.set_uniform("modelview_projection_matrix", mvp_matrix);
     m_phongShader.set_uniform("modelview_matrix", mv_matrix);
     m_phongShader.set_uniform("normal_matrix", n_matrix);
+    m_phongShader.set_uniform("point_size", 5.0f);
     m_phongShader.set_uniform("light1", vec3(1.0, 1.0, 1.0));
     m_phongShader.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
-    m_phongShader.set_uniform("front_color", vec3(0.6, 0.6, 0.6));
-    m_phongShader.set_uniform("back_color", vec3(0.3, 0.0, 0.0));
-    m_phongShader.set_uniform("use_lighting", true);
+    m_phongShader.set_uniform("ambient",     m_ambient);
+    m_phongShader.set_uniform("diffuse",     m_diffuse);
+    m_phongShader.set_uniform("specular",    m_specular);
+    m_phongShader.set_uniform("shininess",   m_shininess);
+
+    // per-vertex color or per-object color?
+    if (!getVertexProperty<Color>("v:color"))
+    {
+        glVertexAttrib3fv(2, m_frontColor.data());
+    }
 
     glBindVertexArray(m_vertexArrayObject);
 
     if (drawMode == "Points")
     {
-// draw points
-#ifndef __EMSCRIPTEN__
-        glPointSize(5.0);
-#endif
+        glEnable(GL_PROGRAM_POINT_SIZE);
         glDrawArrays(GL_POINTS, 0, m_nVertices);
     }
 

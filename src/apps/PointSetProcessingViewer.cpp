@@ -39,7 +39,7 @@ using namespace pmp;
 
 void PointSetProcessingViewer::keyboard(int key, int code, int action, int mods)
 {
-    if (action != GLFW_PRESS) // only react on key press events
+    if (action!=GLFW_PRESS && action!=GLFW_REPEAT)
         return;
 
     switch (key)

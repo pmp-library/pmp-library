@@ -55,16 +55,10 @@ public:
 
     //! Read point set from file \c filename
     //! \note any previous data in \c ps will be removed
-    bool read(PointSet& ps, const std::string& filename)
-    {
-        return readXYZ(ps, filename);
-    }
+    bool read(PointSet& ps, const std::string& filename);
 
     //! Write point set \c ps to file \c filename
-    bool write(const PointSet& ps, const std::string& filename)
-    {
-        return writeXYZ(ps, filename);
-    }
+    bool write(const PointSet& ps, const std::string& filename);
 
 protected:
     //! \brief read point set from \c filename
@@ -72,6 +66,9 @@ protected:
 
     //! \brief write point set from \c filename
     bool writeXYZ(const PointSet& ps, const std::string& filename);
+
+    //! \brief read Agisoft point set from \c filename
+    bool readAGI(PointSet& ps, const std::string& filename);
 
 private:
     IOOptions m_options;
