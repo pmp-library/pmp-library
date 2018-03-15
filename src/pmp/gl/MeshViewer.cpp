@@ -86,6 +86,29 @@ bool MeshViewer::loadMesh(const char* filename)
 
 //-----------------------------------------------------------------------------
 
+bool MeshViewer::loadTexture(const char* filename,
+                             GLint format,
+                             GLint minFilter,
+                             GLint magFilter,
+                             GLint wrap)
+{
+    // load texture from file
+    if (!m_mesh.loadTexture(filename, format, minFilter, magFilter, wrap))
+        return false;
+
+    setDrawMode("Texture");
+
+    // set material
+    m_mesh.setAmbient(1.0);
+    m_mesh.setDiffuse(0.9);
+    m_mesh.setSpecular(0.0);
+    m_mesh.setShininess(1.0);
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
 void MeshViewer::updateMesh()
 {
     // re-compute face and vertex normals

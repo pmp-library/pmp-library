@@ -32,6 +32,7 @@
 #include <pmp/algorithms/SurfaceNormals.h>
 
 #include "cold_warm_texture.h"
+#include <stb_image.h>
 #include <cfloat>
 
 //=============================================================================
@@ -87,11 +88,59 @@ SurfaceMeshGL::~SurfaceMeshGL()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceMeshGL::useTexture(GLuint texID)
+//void SurfaceMeshGL::useTexture(GLuint texID)
+//{
+    //glDeleteTextures(1, &m_texture);
+    //m_texture     = texID;
+    //m_textureMode = OtherTexture;
+//}
+
+//-----------------------------------------------------------------------------
+
+bool SurfaceMeshGL::loadTexture(const char* filename,
+                                GLint format,
+                                GLint minFilter,
+                                GLint magFilter,
+                                GLint wrap)
 {
+    // load with stb_image
+    int width, height, nComponents;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char *img = stbi_load(filename, &width, &height, &nComponents, 3); // enforce RGB
+    if (!img) return false;
+
+    // delete old texture
     glDeleteTextures(1, &m_texture);
-    m_texture     = texID;
+
+    // setup new texture
+    glGenTextures(1, &m_texture);
+    glBindTexture(GL_TEXTURE_2D, m_texture);
+
+    // upload texture data
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_PACK_ALIGNMENT,   1);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+
+    // set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+
+    // compute mipmaps
+    if (minFilter == GL_LINEAR_MIPMAP_LINEAR)
+    {
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
+    // use SRGB rendering?
+    m_srgb = (format == GL_SRGB8);
+
+    // free memory
+    stbi_image_free(img);
+
     m_textureMode = OtherTexture;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -114,6 +163,7 @@ void SurfaceMeshGL::useColdWarmTexture()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+        m_srgb = false;
         m_textureMode = ColdWarmTexture;
     }
 }
@@ -164,6 +214,7 @@ void SurfaceMeshGL::useCheckerboardTexture()
         // clean up
         delete[] tex;
 
+        m_srgb = false;
         m_textureMode = CheckerboardTexture;
     }
 }
@@ -397,7 +448,7 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
     m_phongShader.set_uniform("shininess",   m_shininess);
     m_phongShader.set_uniform("use_lighting", true);
     m_phongShader.set_uniform("use_texture", false);
-    m_phongShader.set_uniform("use_srgb",    m_srgb);
+    m_phongShader.set_uniform("use_srgb",    false);
     m_phongShader.set_uniform("show_texture_layout", false);
 
     glBindVertexArray(m_vertexArrayObject);
@@ -435,8 +486,9 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
     else if (drawMode == "Texture")
     {
         m_phongShader.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
-        m_phongShader.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
+        m_phongShader.set_uniform("back_color",  vec3(0.3, 0.3, 0.3));
         m_phongShader.set_uniform("use_texture", true);
+        m_phongShader.set_uniform("use_srgb",    m_srgb);
         glBindTexture(GL_TEXTURE_2D, m_texture);
         glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
     }

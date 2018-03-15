@@ -56,6 +56,13 @@ public:
     //! load a mesh from file \c filename
     virtual bool loadMesh(const char* filename);
 
+    //! load a texture from file \c filename
+    bool loadTexture(const char* filename,
+                     GLint format=GL_RGB,
+                     GLint minFilter=GL_LINEAR_MIPMAP_LINEAR,
+                     GLint magFilter=GL_LINEAR,
+                     GLint wrap=GL_CLAMP_TO_EDGE);
+
     //! update mesh normals and all buffers for OpenGL rendering.  call this
     //! function whenever you change either the vertex positions or the
     //! triangulation of the mesh

@@ -85,11 +85,6 @@ public:
     //! set specular shininess coefficient
     void setShininess(float s) { m_shininess = s; }
 
-    //! are we using SRGB rendering (undo gamma correction in fragment shader)
-    bool getSRGB() const { return m_srgb; }
-    //! set whether to use SRGB rendering (undo gamma correction in fragment shader)
-    void setSRGB(bool b) { m_srgb = b; }
-
     //! get crease angle (in degrees) for visualization of sharp edges
     Scalar creaseAngle() const { return m_creaseAngle; }
     //! set crease angle (in degrees) for visualization of sharp edges
@@ -102,15 +97,23 @@ public:
     //! update all opengl buffers for efficient core profile rendering
     void updateOpenGLBuffers();
 
-    //! set a texture to be used for "Solid Texture" draw mode
-    void useTexture(GLuint _tex);
-
     //! use color map to visualize scalar fields
     void useColdWarmTexture();
 
     //! setup checkerboard texture
     void useCheckerboardTexture();
 
+    //! load texture from file
+    /// \param filename the location and name of the texture
+    /// \param format internal format (GL_RGB, GL_RGBA, GL_SRGB8, etc.)
+    /// \param minfilter interpolation filter for minification
+    /// \param magfilter interpolation filter for magnification
+    /// \param wrap texture coordinates wrap preference
+    bool loadTexture(const char* filename,
+                     GLint format=GL_RGB,
+                     GLint minFilter=GL_LINEAR_MIPMAP_LINEAR,
+                     GLint magFilter=GL_LINEAR,
+                     GLint wrap=GL_CLAMP_TO_EDGE);
 
 private:
     // material parameters
