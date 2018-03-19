@@ -110,6 +110,12 @@ protected: //-------------------------------------------- trackball interaction
     //! turn a mouse event into a zoom, i.e., translation in z-direction. calls translate().
     void zoom(int x, int y);
 
+    //! get 3D position under the mouse cursor
+    bool pick(int x, int y, vec3& result);
+
+    //! fly toward the position under the mouse cursor and set rotation center to it
+    void flyTo(int x, int y);
+
     //! translate the scene and update modelview matrix
     void translate(const vec3& trans);
 

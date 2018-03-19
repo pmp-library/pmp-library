@@ -189,11 +189,22 @@ void TrackballViewer::display()
 
 void TrackballViewer::mouse(int button, int action, int mods)
 {
+    // record current modifier keys
+    m_modifiers = mods;
+
     // mouse press
     if (action == GLFW_PRESS)
     {
         m_lastPointOk        = mapToSphere(m_lastPoint2D, m_lastPoint3D);
         m_buttonDown[button] = true;
+
+        // set rotation center
+        if (m_modifiers == GLFW_MOD_CONTROL)
+        {
+            double x, y;
+            cursorPos(x, y);
+            flyTo(x, y);
+        }
     }
 
     // mouse release
@@ -202,8 +213,6 @@ void TrackballViewer::mouse(int button, int action, int mods)
         m_lastPointOk        = false;
         m_buttonDown[button] = false;
     }
-
-    m_modifiers = mods;
 }
 
 //-----------------------------------------------------------------------------
@@ -223,8 +232,7 @@ void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 void TrackballViewer::motion(double xpos, double ypos)
 {
     // zoom
-    if ((m_buttonDown[GLFW_MOUSE_BUTTON_LEFT] &&
-         m_buttonDown[GLFW_MOUSE_BUTTON_MIDDLE]) ||
+    if ((m_buttonDown[GLFW_MOUSE_BUTTON_MIDDLE]) ||
         (m_buttonDown[GLFW_MOUSE_BUTTON_LEFT] &&
          (m_modifiers == GLFW_MOD_SHIFT)))
     {
@@ -232,7 +240,7 @@ void TrackballViewer::motion(double xpos, double ypos)
     }
 
     // translation
-    else if (m_buttonDown[GLFW_MOUSE_BUTTON_MIDDLE] ||
+    else if (m_buttonDown[GLFW_MOUSE_BUTTON_RIGHT] ||
              (m_buttonDown[GLFW_MOUSE_BUTTON_LEFT] &&
               (m_modifiers == GLFW_MOD_ALT)))
     {
@@ -286,6 +294,62 @@ void TrackballViewer::viewAll()
     vec4 c = vec4(m_center, 1.0);
     vec4 t = m_modelviewMatrix * c;
     translate(vec3(-t[0], -t[1], -t[2] - 2.5 * m_radius));
+}
+
+//-----------------------------------------------------------------------------
+
+bool TrackballViewer::pick(int x, int y, vec3& result)
+{
+#ifndef __EMSCRIPTEN__ // WebGL cannot read depth buffer
+
+    // get viewport data
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    // take into accout highDPI scaling
+    x *= m_scaling;
+    y *= m_scaling;
+
+    // in OpenGL y=0 is at the 'bottom'
+    y = viewport[3] - y;
+
+    // read depth buffer value at (x, y_new)
+    float zf;
+    glReadPixels(x, y, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &zf);
+
+    if (zf != 1.0f)
+    {
+        float xf = ((float)x - (float) viewport[0]) / ((float) viewport[2]) * 2.0f - 1.0f;
+        float yf = ((float)y - (float) viewport[1]) / ((float) viewport[3]) * 2.0f - 1.0f;
+        zf = zf * 2.0f - 1.0f;
+
+        mat4 mvp  = m_projectionMatrix * m_modelviewMatrix;
+        mat4 inv  = inverse(mvp);
+        vec4 p    = inv * vec4(xf, yf, zf, 1.0f);
+        p /= p[3];
+
+        result = vec3(p[0], p[1], p[2]);
+
+        return true;
+    }
+
+#endif
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+
+void TrackballViewer::flyTo(int x, int y)
+{
+    vec3 p;
+    if (pick(x,y,p))
+    {
+        m_center = p;
+        vec4 c = vec4(m_center, 1.0);
+        vec4 t = m_modelviewMatrix * c;
+        translate(vec3(-t[0], -t[1], -0.5*t[2]));
+    }
 }
 
 //-----------------------------------------------------------------------------
