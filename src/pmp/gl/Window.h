@@ -101,6 +101,9 @@ protected: //----------------------------------- callbacks as member functions
     //! this function is called just before rendering
     virtual void doProcessing() {}
 
+    //! get position of mouse cursor
+    void cursorPos(double& x, double& y) const;
+
 protected:
     //! setup ImGUI user interface
     void initImGUI();

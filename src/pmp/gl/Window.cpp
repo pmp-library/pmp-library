@@ -350,6 +350,13 @@ void Window::glfwResize(GLFWwindow* /*window*/, int width, int height)
     m_instance->resize(width, height);
 }
 
+//-----------------------------------------------------------------------------
+
+void Window::cursorPos(double& x, double& y) const
+{
+    glfwGetCursorPos(m_window, &x, &y);
+}
+
 //=============================================================================
 } // namespace pmp
 //=============================================================================
