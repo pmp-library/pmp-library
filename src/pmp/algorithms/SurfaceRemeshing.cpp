@@ -383,7 +383,7 @@ void SurfaceRemeshing::splitLongEdges()
                 isFeature         = m_efeature[e];
                 isSurfaceBoundary = m_mesh.isSurfaceBoundary(e);
 
-                vnew = m_mesh.addVertex((p0 + p1) * 0.5);
+                vnew = m_mesh.addVertex((p0 + p1) * 0.5f);
                 m_mesh.split(e, vnew);
 
                 // need normal or sizing for adaptive refinement
@@ -839,7 +839,7 @@ void SurfaceRemeshing::removeCaps()
 
                 // project v onto feature edge
                 if (m_efeature[e])
-                    m_points[v] = (a + c) * 0.5;
+                    m_points[v] = (a + c) * 0.5f;
 
                 // flip
                 m_mesh.flip(e);

@@ -80,8 +80,8 @@ void SurfaceSubdivision::catmullClark()
         // boundary or feature edge?
         if (m_mesh.isSurfaceBoundary(e) || (m_efeature && m_efeature[e]))
         {
-            epoint[e] = 0.5 * (m_points[m_mesh.vertex(e, 0)] +
-                               m_points[m_mesh.vertex(e, 1)]);
+            epoint[e] = 0.5f * (m_points[m_mesh.vertex(e, 0)] +
+                                m_points[m_mesh.vertex(e, 1)]);
         }
 
         // interior edge
@@ -92,7 +92,7 @@ void SurfaceSubdivision::catmullClark()
             p += m_points[m_mesh.vertex(e, 1)];
             p += fpoint[m_mesh.face(e, 0)];
             p += fpoint[m_mesh.face(e, 1)];
-            p *= 0.25;
+            p *= 0.25f;
             epoint[e] = p;
         }
     }
@@ -164,7 +164,7 @@ void SurfaceSubdivision::catmullClark()
 
             p /= (k * k);
 
-            p += ((k - 2.0) / k) * m_points[v];
+            p += ((k - 2.0f) / k) * m_points[v];
 
             vpoint[v] = p;
         }
