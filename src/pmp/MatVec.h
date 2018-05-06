@@ -580,36 +580,36 @@ Mat4<Scalar> inverseFrustumMatrix(Scalar l, Scalar r, Scalar b, Scalar t,
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> perspectiveMatrix(Scalar fovy, Scalar aspect, Scalar near,
-                               Scalar far)
+Mat4<Scalar> perspectiveMatrix(Scalar fovy, Scalar aspect, Scalar zNear,
+                               Scalar zFar)
 {
-    Scalar t = Scalar(near) * tan(fovy * M_PI / 360.0);
+    Scalar t = Scalar(zNear) * tan(fovy * M_PI / 360.0);
     Scalar b = -t;
     Scalar l = b * aspect;
     Scalar r = t * aspect;
 
-    return frustumMatrix(l, r, b, t, Scalar(near), Scalar(far));
+    return frustumMatrix(l, r, b, t, Scalar(zNear), Scalar(zFar));
 }
 
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> inversePerspectiveMatrix(Scalar fovy, Scalar aspect, Scalar near,
-                                      Scalar far)
+Mat4<Scalar> inversePerspectiveMatrix(Scalar fovy, Scalar aspect, Scalar zNear,
+                                      Scalar zFar)
 {
-    Scalar t = near * tan(fovy * M_PI / 360.0);
+    Scalar t = zNear * tan(fovy * M_PI / 360.0);
     Scalar b = -t;
     Scalar l = b * aspect;
     Scalar r = t * aspect;
 
-    return inverseFrustumMatrix(l, r, b, t, near, far);
+    return inverseFrustumMatrix(l, r, b, t, zNear, zFar);
 }
 
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
 Mat4<Scalar> orthoMatrix(Scalar left, Scalar right, Scalar bottom, Scalar top,
-                         Scalar zNear, Scalar zFar)
+                         Scalar zNear=-1, Scalar zFar=1)
 {
     Mat4<Scalar> m(0.0);
 
