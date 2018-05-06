@@ -355,6 +355,8 @@ void Window::glfwResize(GLFWwindow* /*window*/, int width, int height)
 void Window::cursorPos(double& x, double& y) const
 {
     glfwGetCursorPos(m_window, &x, &y);
+    x *= m_instance->m_scaling;
+    y *= m_instance->m_scaling;
 }
 
 //=============================================================================
