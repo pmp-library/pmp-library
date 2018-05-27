@@ -27,21 +27,9 @@
 // POSSIBILITY OF SUCH DAMAGE.
 // =============================================================================
 
-#include "gtest/gtest.h"
-
-#include <pmp/PointSet.h>
-#include <pmp/io/PointSetIO.h>
-#include <vector>
+#include "PointSetTest.h"
 
 using namespace pmp;
-
-class PointSetTest : public ::testing::Test
-{
-public:
-    PointSet ps;
-    Point p0{0,0,0};
-    Point p1{1,1,1};
-};
 
 // test with new in order to catch all created functions
 TEST_F(PointSetTest, instantiate)
@@ -133,29 +121,6 @@ TEST_F(PointSetTest, vertexProperties)
     ps.addVertexProperty<int>("v:idx");
     ps.addVertexProperty<int>("v:idx");
     EXPECT_EQ(ps.vertexProperties().size(), osize+1);
-}
-
-TEST_F(PointSetTest, write)
-{
-    ps.addVertex(p0);
-    ps.addVertex(p1);
-    ps.write("test.xyz");
-    ps.clear();
-    EXPECT_EQ(ps.nVertices(), size_t(0));
-
-    // check malformed file names
-    EXPECT_FALSE(ps.write("testxxyyzz"));
-}
-
-TEST_F(PointSetTest, read)
-{
-    ps.read("test.xyz"); // bad test dependency
-    EXPECT_EQ(ps.nVertices(), size_t(2));
-}
-
-TEST_F(PointSetTest, readFailure)
-{
-    ASSERT_FALSE(ps.read("test.off"));
 }
 
 TEST_F(PointSetTest, propertyStats)
