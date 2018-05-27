@@ -45,8 +45,12 @@ namespace pmp {
 
 //! Class for reading and writing point sets from and to files.
 //!
-//! This class currently supports only the XYZ file format. Only ASCII mode is
-//! supported. Only supports point coordinates and normals.
+//! This class supports XYZ file format for reading and writing. Only ASCII mode
+//! is supported. Only supports point coordinates and normals.
+//!
+//! The class also supports reading colored point clouds from Agisoft.
+//! Format: point coordinates, RGB colors, and normals per line. ASCII only,
+//! file extension ".agi"
 class PointSetIO
 {
 public:

@@ -47,10 +47,20 @@ TEST_F(PointSetIOTest, write)
     EXPECT_FALSE(ps.write("testxxyyzz"));
 }
 
-TEST_F(PointSetIOTest, read)
+TEST_F(PointSetIOTest, readXYZ)
 {
     ps.read("test.xyz"); // bad test dependency
     EXPECT_EQ(ps.nVertices(), size_t(2));
+}
+
+TEST_F(PointSetIOTest, readAGI)
+{
+    ps.read("pmp-data/agi/test.agi");
+    EXPECT_EQ(ps.nVertices(), size_t(4));
+    auto vcolors = ps.getVertexProperty<Color>("v:color");
+    EXPECT_TRUE(vcolors);
+    auto vnormals = ps.getVertexProperty<Normal>("v:normal");
+    EXPECT_TRUE(vnormals);
 }
 
 TEST_F(PointSetIOTest, readFailure)
