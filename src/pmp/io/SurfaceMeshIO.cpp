@@ -36,6 +36,7 @@
 #include <cfloat>
 #include <fstream>
 #include <cstring>
+#include <cctype>
 
 // helper function
 template <typename T>
@@ -51,6 +52,17 @@ void tfwrite(FILE* out, const T& t)
 {
     size_t nItems = fwrite((char*)&t, 1, sizeof(t), out);
     PMP_ASSERT(nItems > 0);
+}
+
+// check if string contains only spaces
+bool hasOnlySpaces(const std::string& str)
+{
+    for (const char& c : str)
+    {
+        if (!std::isspace(c))
+            return false;
+    }
+    return true;
 }
 
 // function to skip comment and whitespace lines
@@ -71,7 +83,7 @@ void skipLines(FILE* in)
         {
             continue;
         }
-        else if (std::all_of(s.begin(),s.end(),isspace))
+        else if (hasOnlySpaces(s))
         {
             continue;
         }
