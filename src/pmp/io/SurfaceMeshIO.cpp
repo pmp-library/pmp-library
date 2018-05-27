@@ -71,7 +71,7 @@ void skipLines(FILE* in)
         {
             continue;
         }
-        else if (std::all_of(s.begin(),s.end(),std::isspace))
+        else if (std::all_of(s.begin(),s.end(),isspace))
         {
             continue;
         }
