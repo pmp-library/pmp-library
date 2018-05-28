@@ -100,7 +100,7 @@ We use [Doxygen](http://www.doxygen.org/index.html) to generate our API
 documentation. All public types and interfaces should be properly
 documented. This usually includes a short abstract not longer than a sentence as
 well as a more detailed discussion of what the function does. We use `//!` for
-doxygen comments. The following is an example what a fully documentation comment
+doxygen comments. The following is an example what a full documentation comment
 could look like:
 
 \verbatim
