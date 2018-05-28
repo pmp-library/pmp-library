@@ -90,9 +90,7 @@ div.contents {
     position: absolute;
     float: none;
     display: inline;
-    margin-top: 0px;
     right: 35px;
-    width: 170px;
     z-index: 102;
     background-color: white;
 }
