@@ -243,16 +243,16 @@ void PointSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
 
     // setup shader
     m_phongShader.use();
-    m_phongShader.set_uniform("modelview_projection_matrix", mvp_matrix);
-    m_phongShader.set_uniform("modelview_matrix", mv_matrix);
-    m_phongShader.set_uniform("normal_matrix", n_matrix);
-    m_phongShader.set_uniform("point_size", 5.0f);
-    m_phongShader.set_uniform("light1", vec3(1.0, 1.0, 1.0));
-    m_phongShader.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
-    m_phongShader.set_uniform("ambient",     m_ambient);
-    m_phongShader.set_uniform("diffuse",     m_diffuse);
-    m_phongShader.set_uniform("specular",    m_specular);
-    m_phongShader.set_uniform("shininess",   m_shininess);
+    m_phongShader.setUniform("modelview_projection_matrix", mvp_matrix);
+    m_phongShader.setUniform("modelview_matrix", mv_matrix);
+    m_phongShader.setUniform("normal_matrix", n_matrix);
+    m_phongShader.setUniform("point_size", 5.0f);
+    m_phongShader.setUniform("light1", vec3(1.0, 1.0, 1.0));
+    m_phongShader.setUniform("light2", vec3(-1.0, 1.0, 1.0));
+    m_phongShader.setUniform("ambient",     m_ambient);
+    m_phongShader.setUniform("diffuse",     m_diffuse);
+    m_phongShader.setUniform("specular",    m_specular);
+    m_phongShader.setUniform("shininess",   m_shininess);
 
     // per-vertex color or per-object color?
     if (!getVertexProperty<Color>("v:color"))

@@ -429,22 +429,22 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
 
     // setup shader
     m_phongShader.use();
-    m_phongShader.set_uniform("modelview_projection_matrix", mvp_matrix);
-    m_phongShader.set_uniform("modelview_matrix", mv_matrix);
-    m_phongShader.set_uniform("normal_matrix", n_matrix);
-    m_phongShader.set_uniform("point_size", 5.0f);
-    m_phongShader.set_uniform("light1", vec3(1.0, 1.0, 1.0));
-    m_phongShader.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
-    m_phongShader.set_uniform("front_color", m_frontColor);
-    m_phongShader.set_uniform("back_color",  m_backColor);
-    m_phongShader.set_uniform("ambient",     m_ambient);
-    m_phongShader.set_uniform("diffuse",     m_diffuse);
-    m_phongShader.set_uniform("specular",    m_specular);
-    m_phongShader.set_uniform("shininess",   m_shininess);
-    m_phongShader.set_uniform("use_lighting", true);
-    m_phongShader.set_uniform("use_texture", false);
-    m_phongShader.set_uniform("use_srgb",    false);
-    m_phongShader.set_uniform("show_texture_layout", false);
+    m_phongShader.setUniform("modelview_projection_matrix", mvp_matrix);
+    m_phongShader.setUniform("modelview_matrix", mv_matrix);
+    m_phongShader.setUniform("normal_matrix", n_matrix);
+    m_phongShader.setUniform("point_size", 5.0f);
+    m_phongShader.setUniform("light1", vec3(1.0, 1.0, 1.0));
+    m_phongShader.setUniform("light2", vec3(-1.0, 1.0, 1.0));
+    m_phongShader.setUniform("front_color", m_frontColor);
+    m_phongShader.setUniform("back_color",  m_backColor);
+    m_phongShader.setUniform("ambient",     m_ambient);
+    m_phongShader.setUniform("diffuse",     m_diffuse);
+    m_phongShader.setUniform("specular",    m_specular);
+    m_phongShader.setUniform("shininess",   m_shininess);
+    m_phongShader.setUniform("use_lighting", true);
+    m_phongShader.setUniform("use_texture", false);
+    m_phongShader.setUniform("use_srgb",    false);
+    m_phongShader.setUniform("show_texture_layout", false);
 
     glBindVertexArray(m_vertexArrayObject);
 
@@ -463,9 +463,9 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         // overlay edges
         glDepthRange(0.0, 1.0);
         glDepthFunc(GL_LEQUAL);
-        m_phongShader.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
-        m_phongShader.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
-        m_phongShader.set_uniform("use_lighting", false);
+        m_phongShader.setUniform("front_color", vec3(0.1, 0.1, 0.1));
+        m_phongShader.setUniform("back_color", vec3(0.1, 0.1, 0.1));
+        m_phongShader.setUniform("use_lighting", false);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_edgeBuffer);
         glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, nullptr);
         glDepthFunc(GL_LESS);
@@ -478,30 +478,30 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
 
     else if (drawMode == "Texture")
     {
-        m_phongShader.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
-        m_phongShader.set_uniform("back_color",  vec3(0.3, 0.3, 0.3));
-        m_phongShader.set_uniform("use_texture", true);
-        m_phongShader.set_uniform("use_srgb",    m_srgb);
+        m_phongShader.setUniform("front_color", vec3(0.9, 0.9, 0.9));
+        m_phongShader.setUniform("back_color",  vec3(0.3, 0.3, 0.3));
+        m_phongShader.setUniform("use_texture", true);
+        m_phongShader.setUniform("use_srgb",    m_srgb);
         glBindTexture(GL_TEXTURE_2D, m_texture);
         glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
     }
 
     else if (drawMode == "Texture Layout")
     {
-        m_phongShader.set_uniform("show_texture_layout", true);
-        m_phongShader.set_uniform("use_lighting", false);
+        m_phongShader.setUniform("show_texture_layout", true);
+        m_phongShader.setUniform("use_lighting", false);
 
         // draw faces
-        m_phongShader.set_uniform("front_color", vec3(0.8, 0.8, 0.8));
-        m_phongShader.set_uniform("back_color", vec3(0.9, 0.0, 0.0));
+        m_phongShader.setUniform("front_color", vec3(0.8, 0.8, 0.8));
+        m_phongShader.setUniform("back_color", vec3(0.9, 0.0, 0.0));
         glDepthRange(0.01, 1.0);
         glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
 
         // overlay edges
         glDepthRange(0.0, 1.0);
         glDepthFunc(GL_LEQUAL);
-        m_phongShader.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
-        m_phongShader.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
+        m_phongShader.setUniform("front_color", vec3(0.1, 0.1, 0.1));
+        m_phongShader.setUniform("back_color", vec3(0.1, 0.1, 0.1));
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_edgeBuffer);
         glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, nullptr);
         glDepthFunc(GL_LESS);
@@ -510,9 +510,9 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
     // draw feature edges
     if (m_nFeatures)
     {
-        m_phongShader.set_uniform("front_color", vec3(0, 1, 0));
-        m_phongShader.set_uniform("back_color", vec3(0, 1, 0));
-        m_phongShader.set_uniform("use_lighting", false);
+        m_phongShader.setUniform("front_color", vec3(0, 1, 0));
+        m_phongShader.setUniform("back_color", vec3(0, 1, 0));
+        m_phongShader.setUniform("use_lighting", false);
         glDepthRange(0.0, 1.0);
         glDepthFunc(GL_LEQUAL);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_featureBuffer);

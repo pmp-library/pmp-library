@@ -118,7 +118,7 @@ void EdgeSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
     {
         m_phongShader.source(phong_vshader, phong_fshader);
         m_phongShader.use();
-        m_phongShader.bind_attrib("v_position", 0);
+        m_phongShader.bindAttribute("v_position", 0);
     }
 
     // empty edge set?
@@ -132,14 +132,14 @@ void EdgeSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
 
     // setup shader
     m_phongShader.use();
-    m_phongShader.set_uniform("modelview_projection_matrix", mvp_matrix);
-    m_phongShader.set_uniform("modelview_matrix", mv_matrix);
-    m_phongShader.set_uniform("normal_matrix", n_matrix);
-    m_phongShader.set_uniform("light1", vec3(1.0, 1.0, 1.0));
-    m_phongShader.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
-    m_phongShader.set_uniform("front_color", vec3(0.6, 0.6, 0.6));
-    m_phongShader.set_uniform("back_color", vec3(0.3, 0.0, 0.0));
-    m_phongShader.set_uniform("use_lighting", true);
+    m_phongShader.setUniform("modelview_projection_matrix", mvp_matrix);
+    m_phongShader.setUniform("modelview_matrix", mv_matrix);
+    m_phongShader.setUniform("normal_matrix", n_matrix);
+    m_phongShader.setUniform("light1", vec3(1.0, 1.0, 1.0));
+    m_phongShader.setUniform("light2", vec3(-1.0, 1.0, 1.0));
+    m_phongShader.setUniform("front_color", vec3(0.6, 0.6, 0.6));
+    m_phongShader.setUniform("back_color", vec3(0.3, 0.0, 0.0));
+    m_phongShader.setUniform("use_lighting", true);
 
     glBindVertexArray(m_vertexArrayObject);
 
@@ -152,9 +152,9 @@ void EdgeSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
         glDrawArrays(GL_POINTS, 0, m_nVertices);
 
         // draw edges
-        m_phongShader.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
-        m_phongShader.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
-        m_phongShader.set_uniform("use_lighting", false);
+        m_phongShader.setUniform("front_color", vec3(0.1, 0.1, 0.1));
+        m_phongShader.setUniform("back_color", vec3(0.1, 0.1, 0.1));
+        m_phongShader.setUniform("use_lighting", false);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_edgeBuffer);
         glDrawElements(GL_LINES, m_nEdges, GL_UNSIGNED_INT, nullptr);
     }

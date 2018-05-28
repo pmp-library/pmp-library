@@ -73,37 +73,37 @@ public:
     void disable();
 
     //! bind attribute to location
-    void bind_attrib(const char* name, GLuint index);
+    void bindAttribute(const char* name, GLuint index);
 
     //! upload float uniform
     //! \param name string of the uniform name
     //! \param value the value for the uniform
-    void set_uniform(const char* name, float value);
+    void setUniform(const char* name, float value);
 
     //! upload int uniform
     //! \param name string of the uniform name
     //! \param value the value for the uniform
-    void set_uniform(const char* name, int value);
+    void setUniform(const char* name, int value);
 
     //! upload vec3 uniform
     //! \param name string of the uniform name
     //! \param vec the value for the uniform
-    void set_uniform(const char* name, const vec3& vec);
+    void setUniform(const char* name, const vec3& vec);
 
     //! upload vec4 uniform
     //! \param name string of the uniform name
     //! \param vec the value for the uniform
-    void set_uniform(const char* name, const vec4& vec);
+    void setUniform(const char* name, const vec4& vec);
 
     //! upload mat3 uniform
     //! \param name string of the uniform name
     //! \param mat the value for the uniform
 
-    void set_uniform(const char* name, const mat3& mat);
+    void setUniform(const char* name, const mat3& mat);
     //! upload mat4 uniform
     //! \param name string of the uniform name
     //! \param mat the value for the uniform
-    void set_uniform(const char* name, const mat4& mat);
+    void setUniform(const char* name, const mat4& mat);
 
 private:
     //! deletes all shader and frees GPU shader capacities
@@ -120,7 +120,7 @@ private:
     //! loads a vertex/fragmend shader from a file and compiles it
     //! \param filename the location and name of the shader
     //! \param type the type of the shader (vertex, geometry, fragment)
-    GLint load_and_compile(const char* filename, GLenum type);
+    GLint loadAndCompile(const char* filename, GLenum type);
 
     //! relink: use this after setting/changing attrib location
     bool link();

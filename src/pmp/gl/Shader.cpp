@@ -113,7 +113,7 @@ bool Shader::load(const char* vfile, const char* ffile)
     m_pid = glCreateProgram();
 
     // vertex shader
-    m_vid = load_and_compile(vfile, GL_VERTEX_SHADER);
+    m_vid = loadAndCompile(vfile, GL_VERTEX_SHADER);
     if (!m_vid)
     {
         std::cerr << "Cannot compile vertex shader!\n";
@@ -122,7 +122,7 @@ bool Shader::load(const char* vfile, const char* ffile)
     glAttachShader(m_pid, m_vid);
 
     // fragment shader
-    m_fid = load_and_compile(ffile, GL_FRAGMENT_SHADER);
+    m_fid = loadAndCompile(ffile, GL_FRAGMENT_SHADER);
     if (!m_fid)
     {
         std::cerr << "Cannot compile fragment shader!\n";
@@ -223,7 +223,7 @@ GLint Shader::compile(const char* source, GLenum type)
 
 //-----------------------------------------------------------------------------
 
-GLint Shader::load_and_compile(const char* filename, GLenum type)
+GLint Shader::loadAndCompile(const char* filename, GLenum type)
 {
     std::string source;
     if (!load(filename, source))
@@ -252,7 +252,7 @@ void Shader::disable()
 
 //-----------------------------------------------------------------------------
 
-void Shader::bind_attrib(const char* name, GLuint index)
+void Shader::bindAttribute(const char* name, GLuint index)
 {
     if (!m_pid)
         return;
@@ -262,7 +262,7 @@ void Shader::bind_attrib(const char* name, GLuint index)
 
 //-----------------------------------------------------------------------------
 
-void Shader::set_uniform(const char* name, float value)
+void Shader::setUniform(const char* name, float value)
 {
     if (!m_pid)
         return;
@@ -277,7 +277,7 @@ void Shader::set_uniform(const char* name, float value)
 
 //-----------------------------------------------------------------------------
 
-void Shader::set_uniform(const char* name, int value)
+void Shader::setUniform(const char* name, int value)
 {
     if (!m_pid)
         return;
@@ -292,7 +292,7 @@ void Shader::set_uniform(const char* name, int value)
 
 //-----------------------------------------------------------------------------
 
-void Shader::set_uniform(const char* name, const vec3& vec)
+void Shader::setUniform(const char* name, const vec3& vec)
 {
     if (!m_pid)
         return;
@@ -307,7 +307,7 @@ void Shader::set_uniform(const char* name, const vec3& vec)
 
 //-----------------------------------------------------------------------------
 
-void Shader::set_uniform(const char* name, const vec4& vec)
+void Shader::setUniform(const char* name, const vec4& vec)
 {
     if (!m_pid)
         return;
@@ -322,7 +322,7 @@ void Shader::set_uniform(const char* name, const vec4& vec)
 
 //-----------------------------------------------------------------------------
 
-void Shader::set_uniform(const char* name, const mat3& mat)
+void Shader::setUniform(const char* name, const mat3& mat)
 {
     if (!m_pid)
         return;
@@ -337,7 +337,7 @@ void Shader::set_uniform(const char* name, const mat3& mat)
 
 //-----------------------------------------------------------------------------
 
-void Shader::set_uniform(const char* name, const mat4& mat)
+void Shader::setUniform(const char* name, const mat4& mat)
 {
     if (!m_pid)
         return;
