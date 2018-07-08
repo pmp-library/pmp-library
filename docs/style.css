@@ -15,7 +15,7 @@ body, table, div, p, dl
 
 #projectlogo img
 {
-	border: 0px none;
+    border: 0px none;
     margin: 10px;
     height: 55px;
 }
@@ -37,14 +37,16 @@ body, table, div, p, dl
 
 div.header
 {
-	background-color: #ffffff;
-	margin:  0px;
+    background-image:none;
+    background-color: #ffffff;
+    margin:  0px;
     margin-left: 12px;
-	border-bottom: none;
+    border-bottom: none;
 }
 
 #nav-tree
 {
+    background-image:none;
     background-color: #ffffff;
     -webkit-overflow-scrolling : touch; /* iOS 5+ */
 }
