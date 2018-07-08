@@ -37,8 +37,6 @@ body, table, div, p, dl
 
 div.header
 {
-    background-image:none;
-    background-repeat:repeat-x;
 	background-color: #ffffff;
 	margin:  0px;
     margin-left: 12px;
@@ -47,8 +45,6 @@ div.header
 
 #nav-tree
 {
-    background-image:none;
-    background-repeat:repeat-x;
     background-color: #ffffff;
     -webkit-overflow-scrolling : touch; /* iOS 5+ */
 }
@@ -61,13 +57,12 @@ div.contents {
 }
 
 .ui-resizable-e {
-    background:url("splitbar.png") repeat scroll right center transparent;
     background: #09a8ff;
-  cursor:e-resize;
-  height:100%;
-  right:0;
-  top:0;
-  width:2px;
+    cursor:e-resize;
+    height:100%;
+    right:0;
+    top:0;
+    width:2px;
 }
 
 #titlearea
