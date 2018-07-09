@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -104,11 +104,11 @@ public:
     void useCheckerboardTexture();
 
     //! load texture from file
-    /// \param filename the location and name of the texture
-    /// \param format internal format (GL_RGB, GL_RGBA, GL_SRGB8, etc.)
-    /// \param minfilter interpolation filter for minification
-    /// \param magfilter interpolation filter for magnification
-    /// \param wrap texture coordinates wrap preference
+    //! \param filename the location and name of the texture
+    //! \param format internal format (GL_RGB, GL_RGBA, GL_SRGB8, etc.)
+    //! \param minFilter interpolation filter for minification
+    //! \param magFilter interpolation filter for magnification
+    //! \param wrap texture coordinates wrap preference
     bool loadTexture(const char* filename,
                      GLint format=GL_RGB,
                      GLint minFilter=GL_LINEAR_MIPMAP_LINEAR,
