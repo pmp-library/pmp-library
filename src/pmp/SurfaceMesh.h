@@ -502,6 +502,7 @@ public:
     using PointSet::isValid;
     using EdgeSet::isValid;
 
+    //! returns whether the face \p f is valid.
     bool isValid(Face f) const
     {
         return (0 <= f.idx()) && (f.idx() < (int)facesSize());
