@@ -91,3 +91,10 @@ div.contents {
     z-index: 102;
     background-color: white;
 }
+
+.gh-corner img {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 40px;
+}
