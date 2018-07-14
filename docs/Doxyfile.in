@@ -916,6 +916,7 @@ HTML_EXTRA_STYLESHEET  = ${CMAKE_CURRENT_SOURCE_DIR}/style.css
 # the files will be copied as-is; there are no commands or markers available.
 
 HTML_EXTRA_FILES       = ${CMAKE_CURRENT_SOURCE_DIR}/images/favicon.ico \
+                         ${CMAKE_CURRENT_SOURCE_DIR}/images/gh-corner.png \
                          ${CMAKE_CURRENT_SOURCE_DIR}/mpview.html \
                          ${CMAKE_CURRENT_SOURCE_DIR}/mpview.html.mem \
                          ${CMAKE_CURRENT_SOURCE_DIR}/mpview.js \
