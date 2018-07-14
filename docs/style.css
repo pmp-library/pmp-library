@@ -98,3 +98,15 @@ div.contents {
     right: 0;
     height: 40px;
 }
+
+#nav-tree .selected {
+  background-image: none;
+  background-repeat: no-repeat;
+  background: #09a8ff;
+  color: #fff;
+  text-shadow: none;
+}
+
+#nav-tree .selected .arrow {
+    color: #ffffff;
+}
