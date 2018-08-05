@@ -273,7 +273,7 @@ VertexCurvature vertexCurvature(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
     if (area > std::numeric_limits<Scalar>::min())
     {
         c.mean  = Scalar(0.5) * norm(laplace(mesh, v));
-        c.gauss = (2.0 * M_PI - angleSum(mesh, v)) / voronoiArea(mesh, v);
+        c.gauss = (2.0 * M_PI - angleSum(mesh, v)) / area;
 
         const Scalar s = sqrt(std::max(Scalar(0.0), c.mean * c.mean - c.gauss));
         c.min          = c.mean - s;
