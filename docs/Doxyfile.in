@@ -920,7 +920,8 @@ HTML_EXTRA_FILES       = ${CMAKE_CURRENT_SOURCE_DIR}/images/favicon.ico \
                          ${CMAKE_CURRENT_SOURCE_DIR}/mpview.html \
                          ${CMAKE_CURRENT_SOURCE_DIR}/mpview.html.mem \
                          ${CMAKE_CURRENT_SOURCE_DIR}/mpview.js \
-                         ${CMAKE_CURRENT_SOURCE_DIR}/mpview.data
+                         ${CMAKE_CURRENT_SOURCE_DIR}/mpview.data \
+                         ${CMAKE_CURRENT_SOURCE_DIR}/images/splitbar.png
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output.
 # Doxygen will adjust the colors in the style sheet and background images

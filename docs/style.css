@@ -60,12 +60,15 @@ div.contents {
 }
 
 .ui-resizable-e {
-    background: #09a8ff;
-    cursor:e-resize;
-    height:100%;
-    right:0;
-    top:0;
-    width:2px;
+  background-image:url("splitbar.png");
+  background-size:2px;
+  background-repeat: repeat-y;
+  background-attachment: scroll;
+  cursor:ew-resize;
+  height:100%;
+  right:0;
+  top:0;
+  width:2px;
 }
 
 #titlearea
@@ -123,4 +126,16 @@ div.contents {
 
 #nav-tree .arrow {
     margin-left: 3px;
+}
+
+.arrow {
+    color: #09a8ff;
+}
+
+div.fragment {
+    padding: 0.5rem;
+}
+
+div.line {
+    line-height: 1.1rem;
 }
