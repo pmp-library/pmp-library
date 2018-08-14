@@ -172,6 +172,7 @@ public:
         m_oprops.resize(1);
     }
 
+    //! free all memory from object properties
     void freeMemory() { m_oprops.freeMemory(); }
 
     //! reserve memory (mainly used in file readers)
