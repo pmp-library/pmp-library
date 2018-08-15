@@ -8,9 +8,9 @@ for developers and library users. Therefore, if you would like to contribute
 code to the pmp-library please make sure your code adheres to the conventions
 outlined below.
 
-# Naming
+## Naming
 
-## Types
+### Types
 
 The names of user-defined types such as classes, structs and enums use
 `CamelCase` notation. The names of persons such as Cholesky or Delaunay are
@@ -22,7 +22,7 @@ properly capitalized as well.
     class SparseCholeskySolver { ... };
 ~~~~
 
-## Functions
+### Functions
 
 Function names are written using `camelCase` notation starting with a lowercase
 letter.
@@ -34,7 +34,7 @@ letter.
     };
 ~~~~
 
-## Variables
+### Variables
 
 Variables are named in `camelCase` notation. Class member variables are prefixed
 with `m_`.
@@ -50,14 +50,14 @@ with `m_`.
     };
 ~~~~
 
-## File Names
+### File Names
 
 File names follow the naming rules for user-defined types. Implementation files
 end with `.cpp` and header files end with `.h`.
 
-# Formatting
+## Formatting
 
-## Blocks
+### Blocks
 
 The expressions following an `if, else, while, do ... while` or `for` statement
 should always be enclosed in braces. The braces enclosing a block should be
@@ -74,23 +74,23 @@ placed in the same column, on separate lines.
     }
 ~~~~
 
-## Line Length
+### Line Length
 
 Lines should not exceed more than 80 characters. There should only be one
 statement per line.
 
-## Indentation
+### Indentation
 
 Use spaces instead of tabs. Indent the code by four spaces for each
 level of indentation. Avoid trailing whitespaces at the end of a
 line as well as on empty lines.
 
-# Miscellaneous
+## Miscellaneous
 
 This section describes some basic programming conventions developers should
 adhere to.
 
-## Comments
+### Comments
 
 Use C++-style comments, i.e., `// my comment.`
 
@@ -124,14 +124,14 @@ in the implementation file. Instead, provide specific details on the
 implementation at hand, i.e., how was the functionality implemented, and why was
 it implemented in this manner?
 
-## Include Guards
+### Include Guards
 
 Use the <tt>\#pragma once</tt> compiler directive at the beginning of each
 header file in order to protect against multiple inclusion. Although this is not
 officially part of the language this feature is supported by all major
 compilers and is much more convenient than conventional header guards.
 
-## Namespace
+### Namespace
 
 Use the `pmp` namespace in order to avoid conflicts. In source files, do not add
 an additional level of indentation due to the namespace:
@@ -147,25 +147,25 @@ an additional level of indentation due to the namespace:
         }
 ~~~~
 
-## Boolean Prefixes
+### Boolean Prefixes
 
 Use meaningful prefixes for `bool` variables or functions returning booleans,
 e.g., `hasColors()` or `isDone`.
 
-## Naming Consistency
+### Naming Consistency
 
 Consistently name dynamic properties, e.g., "v:scalar" for vertex scalars or
 "f:normal" for face normals. Similarly, consistently name iterators and
 circulators by their entity type (Vertex, Halfedge, ...)
 
-## Type Consistency
+### Type Consistency
 
 Try to avoid conversion issues by using consistent types, e.g., use
 `std::size_t` when storing values from STL functions such as the `size()` member
 function of a `std::vector`. Use the C++11 `auto` keyword to let the compiler
 determine the proper types.
 
-## Structs vs. Classes
+### Structs vs. Classes
 
 Use plain structs for data objectes providing nothing but a collection of other
 data types, e.g., a collection of parameters passed to a functions. Such a
@@ -173,12 +173,12 @@ struct should not contain any further functionality than what is required for
 construction, destruction, or initialization. In contrast to class member
 variables, struct members do not have a `m_` prefix.
 
-## Scoping
+### Scoping
 
 Localize variable scope and avoid declaring all variables at the beginning of a
 function or code block.
 
-# Using clang-format
+## Using clang-format
 
 Please use the [clang-format](https://clang.llvm.org/docs/ClangFormat.html) tool
 and the corresponding `.clang-format` configuration file from the repository to
@@ -212,7 +212,7 @@ clang-format on` directives around this block:
     // clang-format on
 ~~~~
 
-# See Also
+## See Also
 
 The above coding standard is necessarily incomplete. Therefore, we list some
 additional references and pointers to useful resources regarding C++ coding
