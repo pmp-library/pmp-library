@@ -689,78 +689,155 @@ public:
     class EdgeNavigator;
     class FaceNavigator;
 
+    //! navigator object for vertices
     class VertexNavigator
     {
-        public:
-            VertexNavigator(const SurfaceMesh& _m, Vertex _v)
-                : mesh(_m), v(_v) {}
+    public:
+        //! construct from mesh and vertex
+        VertexNavigator(const SurfaceMesh& mesh, Vertex v)
+            : m_mesh(mesh), m_v(v)
+        {
+        }
 
-            Vertex operator*() { return v; }
-            const Point& position() { return mesh.position(v); }
-            inline HalfedgeNavigator halfedge();
+        //! de-reference Vertex handle
+        Vertex operator*() { return m_v; }
 
-        private:
-            const SurfaceMesh& mesh;
-            Vertex v;
+        //! get the position of the vertex
+        const Point& position() { return m_mesh.position(m_v); }
+
+        //! get HalfedgeNavigator object
+        inline HalfedgeNavigator halfedge()
+        {
+            return HalfedgeNavigator(m_mesh, m_mesh.halfedge(m_v));
+        }
+
+    private:
+        const SurfaceMesh& m_mesh;
+        Vertex             m_v;
     };
 
-
+    //! navigator object for halfedges
     class HalfedgeNavigator
     {
-        public:
-            HalfedgeNavigator(const SurfaceMesh& _m, Halfedge _h)
-                : mesh(_m), h(_h) {}
+    public:
+        //! construct from SurfaceMesh \p mesh and Halfedge \p h
+        HalfedgeNavigator(const SurfaceMesh& mesh, Halfedge h)
+            : m_mesh(mesh), m_h(h)
+        {
+        }
 
-            Halfedge operator*() { return h; }
+        //! de-reference Halfedge handle
+        Halfedge operator*() { return m_h; }
 
-            VertexNavigator    toVertex();
-            VertexNavigator    fromVertex();
-            HalfedgeNavigator  next();
-            HalfedgeNavigator  prev();
-            HalfedgeNavigator  opposite();
-            EdgeNavigator      edge();
-            FaceNavigator      face();
+        //! get VertexNavigator object for the halfedge's *to* Vertex
+        inline VertexNavigator toVertex()
+        {
+            return VertexNavigator(m_mesh, m_mesh.toVertex(m_h));
+        }
 
-        private:
-            const SurfaceMesh& mesh;
-            Halfedge h;
+        //! get VertexNavigator object for the halfedge's *from* Vertex
+        inline VertexNavigator fromVertex()
+        {
+            return VertexNavigator(m_mesh, m_mesh.fromVertex(m_h));
+        }
+
+        //! get HalfedgeNavigator object for the *next* halfedge
+        inline HalfedgeNavigator next()
+        {
+            return HalfedgeNavigator(m_mesh, m_mesh.nextHalfedge(m_h));
+        }
+
+        //! get HalfedgeNavigator object for the *previous* halfedge
+        inline HalfedgeNavigator prev()
+        {
+            return HalfedgeNavigator(m_mesh, m_mesh.prevHalfedge(m_h));
+        }
+
+        //! get HalfedgeNavigator object for *opposite* halfedge
+        inline HalfedgeNavigator opposite()
+        {
+            return HalfedgeNavigator(m_mesh, m_mesh.oppositeHalfedge(m_h));
+        }
+
+        //! get EdgeNavigator object for the corresponding Edge
+        inline EdgeNavigator edge()
+        {
+            return EdgeNavigator(m_mesh, m_mesh.edge(m_h));
+        }
+
+        //! get FaceNavigator object for the incident Face
+        inline FaceNavigator face()
+        {
+            return FaceNavigator(m_mesh, m_mesh.face(m_h));
+        }
+
+    private:
+        const SurfaceMesh& m_mesh;
+        Halfedge           m_h;
     };
 
-
+    //! navigator object for edges
     class EdgeNavigator
     {
-        public:
-            EdgeNavigator(const SurfaceMesh& _m, Edge _e)
-                : mesh(_m), e(_e) {}
+    public:
+        //! construct from SurfaceMesh \p mesh and Edge \p e
+        EdgeNavigator(const SurfaceMesh& mesh, Edge e) : m_mesh(mesh), m_e(e) {}
 
-            Edge operator*() { return e; }
-            VertexNavigator   vertex(int i);
-            HalfedgeNavigator halfedge(int i);
+        //! de-reference Edge handle
+        Edge operator*() { return m_e; }
 
-        private:
-            const SurfaceMesh& mesh;
-            Edge e;
+        //! get VertexNavigator object, \p i is 0 or 1
+        inline VertexNavigator vertex(int i)
+        {
+            return VertexNavigator(m_mesh, m_mesh.vertex(m_e, i));
+        }
+
+        //! get HalfedgeNavigator object, \p i is 0 or 1
+        inline HalfedgeNavigator halfedge(int i)
+        {
+            return HalfedgeNavigator(m_mesh, m_mesh.halfedge(m_e, i));
+        }
+
+    private:
+        const SurfaceMesh& m_mesh;
+        Edge               m_e;
     };
 
-
+    //! navigator object for faces
     class FaceNavigator
     {
-        public:
-            FaceNavigator(const SurfaceMesh& _m, Face _f)
-                : mesh(_m), f(_f) {}
+    public:
+        //! construct from SurfaceMesh \p mesh and Face \p f
+        FaceNavigator(const SurfaceMesh& mesh, Face f) : m_mesh(mesh), m_f(f) {}
 
-            Face operator*() { return f; }
-            HalfedgeNavigator halfedge();
+        //! de-reference Face handle
+        Face operator*() { return m_f; }
 
-        private:
-            const SurfaceMesh& mesh;
-            Face f;
+        //! get HalfedgeNavigator object
+        inline HalfedgeNavigator halfedge()
+        {
+            return HalfedgeNavigator(m_mesh, m_mesh.halfedge(m_f));
+        }
+
+    private:
+        const SurfaceMesh& m_mesh;
+        Face               m_f;
     };
 
-    VertexNavigator    nav(Vertex v)   const { return VertexNavigator(*this, v); }
-    HalfedgeNavigator  nav(Halfedge h) const { return HalfedgeNavigator(*this, h); }
-    EdgeNavigator      nav(Edge e)     const { return EdgeNavigator(*this, e); }
-    FaceNavigator      nav(Face f)     const { return FaceNavigator(*this, f); }
+    //! create VertexNavigator object from Vertex \p v
+    VertexNavigator nav(Vertex v) const { return VertexNavigator(*this, v); }
+
+    //! create HalfedgeNavigator object from Halfedge \p h
+    HalfedgeNavigator nav(Halfedge h) const
+    {
+        return HalfedgeNavigator(*this, h);
+    }
+
+    //! create EdgeNavigator object from Edge \p e
+    EdgeNavigator nav(Edge e) const { return EdgeNavigator(*this, e); }
+
+    //! create FaceNavigator object from Face \p f
+    FaceNavigator nav(Face f) const { return FaceNavigator(*this, f); }
 
     //!@}
     //! \name Higher-level Topological Operations
@@ -961,23 +1038,6 @@ inline std::ostream& operator<<(std::ostream& os, SurfaceMesh::Face f)
 }
 
 //!@}
-
-//=============================================================================
-
-inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::VertexNavigator::halfedge() { return HalfedgeNavigator(mesh, mesh.halfedge(v)); }
-
-inline SurfaceMesh::VertexNavigator    SurfaceMesh::HalfedgeNavigator::toVertex()   { return VertexNavigator(mesh, mesh.toVertex(h)); }
-inline SurfaceMesh::VertexNavigator    SurfaceMesh::HalfedgeNavigator::fromVertex() { return VertexNavigator(mesh, mesh.fromVertex(h)); }
-inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::HalfedgeNavigator::next() { return HalfedgeNavigator(mesh, mesh.nextHalfedge(h)); }
-inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::HalfedgeNavigator::prev() { return HalfedgeNavigator(mesh, mesh.prevHalfedge(h)); }
-inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::HalfedgeNavigator::opposite() { return HalfedgeNavigator(mesh, mesh.oppositeHalfedge(h)); }
-inline SurfaceMesh::EdgeNavigator      SurfaceMesh::HalfedgeNavigator::edge() { return EdgeNavigator(mesh, mesh.edge(h)); }
-inline SurfaceMesh::FaceNavigator      SurfaceMesh::HalfedgeNavigator::face() { return FaceNavigator(mesh, mesh.face(h)); }
-
-inline SurfaceMesh::VertexNavigator    SurfaceMesh::EdgeNavigator::vertex(int i) { return VertexNavigator(mesh, mesh.vertex(e, i)); }
-inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::EdgeNavigator::halfedge(int i) { return HalfedgeNavigator(mesh, mesh.halfedge(e, i)); }
-
-inline SurfaceMesh::HalfedgeNavigator  SurfaceMesh::FaceNavigator::halfedge() { return HalfedgeNavigator(mesh, mesh.halfedge(f)); }
 
 //=============================================================================
 //!@}
