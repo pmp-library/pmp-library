@@ -1,6 +1,14 @@
 body, table, div, p, dl
 {
-    font: 400 14px/22px Lato,Open Sans,sans-serif;
+    font: 400 14px/22px LatoLatinWeb;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: normal;
+}
+
+.textblock h2 {
+    margin-top: 1.5rem;
 }
 
 #nav-sync
@@ -80,9 +88,9 @@ div.contents {
 }
 
 .title {
-	font: 400 14px/28px Lato, Open Sans, sans-serif;
-	font-size: 225%;
-	font-weight: bold;
+	font: 400 14px/28px LatoLatinWeb;
+	font-size: 175%;
+	font-weight: normal;
 	margin: 10px 2px 0px 2px;
 }
 
@@ -128,6 +136,10 @@ div.contents {
     margin-left: 3px;
 }
 
+#nav-tree .label {
+    font: 12px LatoLatinWeb;
+}
+
 .arrow {
     color: #09a8ff;
 }
@@ -136,6 +148,80 @@ div.fragment {
     padding: 0.5rem;
 }
 
+pre.fragment {
+    font-family: inconsolataregular;
+    font-size: 110%;
+}
+
 div.line {
+    font-family: inconsolataregular;
+    font-size: 110%;
     line-height: 1.1rem;
+}
+
+code {
+    font-family: inconsolataregular;
+    font-size: 110%;
+}
+
+.overload {
+    font-family: LatoLatinWeb;
+}
+
+table.directory {
+    font: 400 14px LatoLatinWeb;
+}
+
+.entry, .memitem, .memItemLeft, .memItemRight
+{
+    font-family: inconsolataregular;
+    font-size: 110%;
+}
+
+a.el {
+    font-family: inconsolataregular;
+    font-weight: normal;
+    font-size: 110%;
+}
+
+table.doxtable th {
+    font-weight: normal;
+}
+
+.caption {
+    font-weight: normal;
+    font-style: italic;
+}
+
+.memtitle, table.memname {
+    font-family: inconsolataregular;
+    font-weight: normal;
+    font-size: 110%;
+}
+
+div.groupHeader {
+    font-size: 125%
+    font-style: normal;
+    font-weight: normal;
+    color: #02517C;
+    margin-left: 0;
+}
+
+table.doxtable {
+    border: 1.5px solid black;
+    border-left: none;
+    border-right: none;
+}
+
+table.doxtable th {
+    border-bottom: 1px solid black;
+    border-left: none;
+    border-right: none;
+    color: black;
+    background-color: white;
+    text-align: left;
+}
+
+table.doxtable td {
+    border: none;
 }
