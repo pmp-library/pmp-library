@@ -104,6 +104,7 @@ public:
     }
 
     /// construct 4x4 matrix from 4 column vectors
+    // clang-format off
     Matrix(Matrix<Scalar, 4, 1> c0,
            Matrix<Scalar, 4, 1> c1,
            Matrix<Scalar, 4, 1> c2,
@@ -115,8 +116,10 @@ public:
         (*this)(2,0) = c0[2]; (*this)(2,1) = c1[2]; (*this)(2,2) = c2[2]; (*this)(2,3) = c3[2];
         (*this)(3,0) = c0[3]; (*this)(3,1) = c1[3]; (*this)(3,2) = c2[3]; (*this)(3,3) = c3[3];
     }
+    // clang-format on
 
     /// construct from 16 (row-wise) entries
+    // clang-format off
     Matrix(Scalar m00, Scalar m01, Scalar m02, Scalar m03,
            Scalar m10, Scalar m11, Scalar m12, Scalar m13,
            Scalar m20, Scalar m21, Scalar m22, Scalar m23,
@@ -128,6 +131,7 @@ public:
         (*this)(2,0) = m20; (*this)(2,1) = m21; (*this)(2,2) = m22; (*this)(2,3) = m23;
         (*this)(3,0) = m30; (*this)(3,1) = m31; (*this)(3,2) = m32; (*this)(3,3) = m33;
     }
+    // clang-format on
 
     /// copy constructor from other scalar type
     /// is also invoked for type-casting
@@ -840,10 +844,12 @@ Mat4<Scalar> inverse(const Mat4<Scalar>& m)
     Vector<Scalar, 4> Vec2(m(2, 1), m(2, 0), m(2, 0), m(2, 0));
     Vector<Scalar, 4> Vec3(m(3, 1), m(3, 0), m(3, 0), m(3, 0));
 
+    // clang-format off
     Vector<Scalar, 4> Inv0 = cmult(SignA, (cmult(Vec1, Fac0) - cmult(Vec2, Fac1) + cmult(Vec3, Fac2)));
     Vector<Scalar, 4> Inv1 = cmult(SignB, (cmult(Vec0, Fac0) - cmult(Vec2, Fac3) + cmult(Vec3, Fac4)));
     Vector<Scalar, 4> Inv2 = cmult(SignA, (cmult(Vec0, Fac1) - cmult(Vec1, Fac3) + cmult(Vec3, Fac5)));
     Vector<Scalar, 4> Inv3 = cmult(SignB, (cmult(Vec0, Fac2) - cmult(Vec1, Fac4) + cmult(Vec2, Fac5)));
+    // clang-format on
 
     Mat4<Scalar> Inverse(Inv0, Inv1, Inv2, Inv3);
 
