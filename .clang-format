@@ -4,8 +4,8 @@ ColumnLimit: 80
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
-AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
 AlignTrailingComments: true
 SpacesBeforeTrailingComments: 1
 SortIncludes: false
