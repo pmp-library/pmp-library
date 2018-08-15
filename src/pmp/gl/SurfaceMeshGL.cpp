@@ -45,30 +45,30 @@ SurfaceMeshGL::SurfaceMeshGL()
 {
     // initialize GL buffers to zero
     m_vertexArrayObject = 0;
-    m_vertexBuffer      = 0;
-    m_normalBuffer      = 0;
-    m_texCoordBuffer    = 0;
-    m_edgeBuffer        = 0;
-    m_featureBuffer     = 0;
+    m_vertexBuffer = 0;
+    m_normalBuffer = 0;
+    m_texCoordBuffer = 0;
+    m_edgeBuffer = 0;
+    m_featureBuffer = 0;
 
     // initialize buffer sizes
-    m_nVertices  = 0;
-    m_nEdges     = 0;
+    m_nVertices = 0;
+    m_nEdges = 0;
     m_nTriangles = 0;
-    m_nFeatures  = 0;
+    m_nFeatures = 0;
 
     // material parameters
-    m_frontColor  = vec3(0.6, 0.6, 0.6);
-    m_backColor   = vec3(0.5, 0.0, 0.0);
-    m_ambient     = 0.1;
-    m_diffuse     = 0.8;
-    m_specular    = 0.6;
-    m_shininess   = 100.0;
-    m_srgb        = false;
+    m_frontColor = vec3(0.6, 0.6, 0.6);
+    m_backColor = vec3(0.5, 0.0, 0.0);
+    m_ambient = 0.1;
+    m_diffuse = 0.8;
+    m_specular = 0.6;
+    m_shininess = 100.0;
+    m_srgb = false;
     m_creaseAngle = 70.0;
 
     // initialize texture
-    m_texture     = 0;
+    m_texture = 0;
     m_textureMode = OtherTexture;
 }
 
@@ -90,24 +90,23 @@ SurfaceMeshGL::~SurfaceMeshGL()
 
 //void SurfaceMeshGL::useTexture(GLuint texID)
 //{
-    //glDeleteTextures(1, &m_texture);
-    //m_texture     = texID;
-    //m_textureMode = OtherTexture;
+//glDeleteTextures(1, &m_texture);
+//m_texture     = texID;
+//m_textureMode = OtherTexture;
 //}
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceMeshGL::loadTexture(const char* filename,
-                                GLint format,
-                                GLint minFilter,
-                                GLint magFilter,
-                                GLint wrap)
+bool SurfaceMeshGL::loadTexture(const char* filename, GLint format,
+                                GLint minFilter, GLint magFilter, GLint wrap)
 {
     // load with stb_image
     int width, height, nComponents;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *img = stbi_load(filename, &width, &height, &nComponents, 3); // enforce RGB
-    if (!img) return false;
+    unsigned char* img =
+        stbi_load(filename, &width, &height, &nComponents, 3); // enforce RGB
+    if (!img)
+        return false;
 
     // delete old texture
     glDeleteTextures(1, &m_texture);
@@ -118,8 +117,9 @@ bool SurfaceMeshGL::loadTexture(const char* filename,
 
     // upload texture data
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glPixelStorei(GL_PACK_ALIGNMENT,   1);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB,
+                 GL_UNSIGNED_BYTE, img);
 
     // set texture parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
@@ -179,8 +179,8 @@ void SurfaceMeshGL::useCheckerboardTexture()
 
         // generate checkerboard-like image
         const unsigned int res = 512;
-        auto*              tex = new GLubyte[res * res * 3];
-        GLubyte*           tp  = tex;
+        auto* tex = new GLubyte[res * res * 3];
+        GLubyte* tp = tex;
         for (unsigned int x = 0; x < res; ++x)
         {
             for (unsigned int y = 0; y < res; ++y)
@@ -264,14 +264,14 @@ void SurfaceMeshGL::updateOpenGLBuffers()
     texArray.reserve(3 * nFaces());
 
     // data per face (for all corners)
-    std::vector<Halfedge>  cornerHalfedges;
-    std::vector<Vertex>    cornerVertices;
-    std::vector<vec3>      cornerNormals;
+    std::vector<Halfedge> cornerHalfedges;
+    std::vector<Vertex> cornerVertices;
+    std::vector<vec3> cornerNormals;
 
     // convert from degrees to radians
     const Scalar creaseAngle = m_creaseAngle / 180.0 * M_PI;
 
-    auto   vertex_indices = addVertexProperty<size_t>("v:index");
+    auto vertex_indices = addVertexProperty<size_t>("v:index");
     size_t vidx(0);
 
     // loop over all faces
@@ -395,8 +395,8 @@ void SurfaceMeshGL::updateOpenGLBuffers()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
-                         const mat4&       modelviewMatrix,
+void SurfaceMeshGL::draw(const mat4& projectionMatrix,
+                         const mat4& modelviewMatrix,
                          const std::string drawMode)
 {
     // did we generate buffers already?
@@ -423,9 +423,9 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
         return;
 
     // setup matrices
-    mat4 mv_matrix  = modelviewMatrix;
+    mat4 mv_matrix = modelviewMatrix;
     mat4 mvp_matrix = projectionMatrix * modelviewMatrix;
-    mat3 n_matrix   = inverse(transpose(linearPart(mv_matrix)));
+    mat3 n_matrix = inverse(transpose(linearPart(mv_matrix)));
 
     // setup shader
     m_phongShader.use();
@@ -436,14 +436,14 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
     m_phongShader.setUniform("light1", vec3(1.0, 1.0, 1.0));
     m_phongShader.setUniform("light2", vec3(-1.0, 1.0, 1.0));
     m_phongShader.setUniform("front_color", m_frontColor);
-    m_phongShader.setUniform("back_color",  m_backColor);
-    m_phongShader.setUniform("ambient",     m_ambient);
-    m_phongShader.setUniform("diffuse",     m_diffuse);
-    m_phongShader.setUniform("specular",    m_specular);
-    m_phongShader.setUniform("shininess",   m_shininess);
+    m_phongShader.setUniform("back_color", m_backColor);
+    m_phongShader.setUniform("ambient", m_ambient);
+    m_phongShader.setUniform("diffuse", m_diffuse);
+    m_phongShader.setUniform("specular", m_specular);
+    m_phongShader.setUniform("shininess", m_shininess);
     m_phongShader.setUniform("use_lighting", true);
     m_phongShader.setUniform("use_texture", false);
-    m_phongShader.setUniform("use_srgb",    false);
+    m_phongShader.setUniform("use_srgb", false);
     m_phongShader.setUniform("show_texture_layout", false);
 
     glBindVertexArray(m_vertexArrayObject);
@@ -479,9 +479,9 @@ void SurfaceMeshGL::draw(const mat4&       projectionMatrix,
     else if (drawMode == "Texture")
     {
         m_phongShader.setUniform("front_color", vec3(0.9, 0.9, 0.9));
-        m_phongShader.setUniform("back_color",  vec3(0.3, 0.3, 0.3));
+        m_phongShader.setUniform("back_color", vec3(0.3, 0.3, 0.3));
         m_phongShader.setUniform("use_texture", true);
-        m_phongShader.setUniform("use_srgb",    m_srgb);
+        m_phongShader.setUniform("use_srgb", m_srgb);
         glBindTexture(GL_TEXTURE_2D, m_texture);
         glDrawArrays(GL_TRIANGLES, 0, m_nVertices);
     }

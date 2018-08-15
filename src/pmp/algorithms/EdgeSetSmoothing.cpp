@@ -44,7 +44,7 @@ EdgeSetSmoothing::EdgeSetSmoothing(EdgeSet& edgeSet) : m_edgeSet(edgeSet)
 void EdgeSetSmoothing::smooth(unsigned int nIterations)
 {
     // get/add properties
-    auto points   = m_edgeSet.getVertexProperty<Point>("v:point");
+    auto points = m_edgeSet.getVertexProperty<Point>("v:point");
     auto newPoint = m_edgeSet.addVertexProperty<Point>("v:newPoint");
 
     for (unsigned int i = 0; i < nIterations; ++i)
@@ -55,7 +55,7 @@ void EdgeSetSmoothing::smooth(unsigned int nIterations)
             if (!m_edgeSet.isIsolated(v))
             {
                 Scalar s(0.0);
-                Point  p(0.0);
+                Point p(0.0);
 
                 for (auto vv : m_edgeSet.vertices(v))
                 {

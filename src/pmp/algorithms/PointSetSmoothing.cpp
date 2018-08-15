@@ -45,7 +45,7 @@ PointSetSmoothing::PointSetSmoothing(PointSet& pointSet) : m_pointSet(pointSet)
         std::cerr << "PointSetSmoothing: Normals required!" << std::endl;
 
     // Parameter settings for MLS
-    m_radius  = 0.04 * m_pointSet.bounds().size();
+    m_radius = 0.04 * m_pointSet.bounds().size();
     m_epsilon = 1e-4;
     m_maxIter = 3;
 }
@@ -64,7 +64,7 @@ void PointSetSmoothing::smooth()
     if (!vnormals)
         std::cerr << "PointSetSmoothing: Normals required!" << std::endl;
 
-    auto ppoints  = projected.getVertexProperty<Point>("v:point");
+    auto ppoints = projected.getVertexProperty<Point>("v:point");
     auto pnormals = projected.vertexProperty<Normal>("v:normal");
 
     for (auto v : m_pointSet.vertices())
@@ -74,7 +74,7 @@ void PointSetSmoothing::smooth()
 
         project(x, n, tree);
 
-        ppoints[v]  = x;
+        ppoints[v] = x;
         pnormals[v] = n;
     }
 
@@ -98,9 +98,9 @@ void PointSetSmoothing::project(Point& x, Normal& n,
     // Weighted average
     x = weightedAveragePosition(x, ball);
 
-    Scalar f    = std::numeric_limits<Scalar>::max();
+    Scalar f = std::numeric_limits<Scalar>::max();
     size_t step = 0;
-    Point  a;
+    Point a;
     while (true)
     {
         ++step;
@@ -127,7 +127,7 @@ void PointSetSmoothing::project(Point& x, Normal& n,
 
 //-----------------------------------------------------------------------------
 
-Point PointSetSmoothing::weightedAveragePosition(const Point&      x,
+Point PointSetSmoothing::weightedAveragePosition(const Point& x,
                                                  std::vector<int>& ball) const
 {
     assert(ball.size() > 0);
@@ -137,12 +137,12 @@ Point PointSetSmoothing::weightedAveragePosition(const Point&      x,
 
     // Compute the weighted average of the positions from points with indices in
     // \c ball to point \c x. Uses theta() as weight function.
-    Point  num(0.0);
+    Point num(0.0);
     Scalar denom(0.0);
     for (auto b : ball)
     {
         PointSet::Vertex v(b);
-        Scalar           dist = norm(x - points[v]);
+        Scalar dist = norm(x - points[v]);
         num += theta(dist) * points[v];
         denom += theta(dist);
     }
@@ -152,13 +152,13 @@ Point PointSetSmoothing::weightedAveragePosition(const Point&      x,
 
 //-----------------------------------------------------------------------------
 
-Point PointSetSmoothing::weightedAverageNormal(const Point&      x,
+Point PointSetSmoothing::weightedAverageNormal(const Point& x,
                                                std::vector<int>& ball) const
 {
     assert(ball.size() > 0);
 
     // Positions and normals of point set
-    auto points  = m_pointSet.getVertexProperty<Point>("v:point");
+    auto points = m_pointSet.getVertexProperty<Point>("v:point");
     auto normals = m_pointSet.getVertexProperty<Normal>("v:normal");
 
     // Compute weighted average of the normals from points with indices
@@ -167,7 +167,7 @@ Point PointSetSmoothing::weightedAverageNormal(const Point&      x,
     for (auto b : ball)
     {
         PointSet::Vertex v(b);
-        Scalar           dist = norm(x - points[v]);
+        Scalar dist = norm(x - points[v]);
         n += theta(dist) * normals[v];
     }
     return normalize(n);

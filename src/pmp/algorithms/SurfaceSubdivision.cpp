@@ -40,7 +40,7 @@ namespace pmp {
 
 SurfaceSubdivision::SurfaceSubdivision(SurfaceMesh& mesh) : m_mesh(mesh)
 {
-    m_points   = m_mesh.vertexProperty<Point>("v:point");
+    m_points = m_mesh.vertexProperty<Point>("v:point");
     m_vfeature = m_mesh.getVertexProperty<bool>("v:feature");
     m_efeature = m_mesh.getEdgeProperty<bool>("e:feature");
 }
@@ -63,7 +63,7 @@ void SurfaceSubdivision::catmullClark()
     // compute face vertices
     for (auto f : m_mesh.faces())
     {
-        Point  p(0, 0, 0);
+        Point p(0, 0, 0);
         Scalar c(0);
         for (auto v : m_mesh.vertices(f))
         {
@@ -154,7 +154,7 @@ void SurfaceSubdivision::catmullClark()
             // weights from SIGGRAPH paper "Subdivision Surfaces in Character Animation"
 
             const Scalar k = m_mesh.valence(v);
-            Point        p(0, 0, 0);
+            Point p(0, 0, 0);
 
             for (auto vv : m_mesh.vertices(v))
                 p += m_points[vv];
@@ -182,12 +182,12 @@ void SurfaceSubdivision::catmullClark()
         // feature edge?
         if (m_efeature && m_efeature[e])
         {
-            auto h  = m_mesh.insertVertex(e, epoint[e]);
-            auto v  = m_mesh.toVertex(h);
+            auto h = m_mesh.insertVertex(e, epoint[e]);
+            auto v = m_mesh.toVertex(h);
             auto e0 = m_mesh.edge(h);
             auto e1 = m_mesh.edge(m_mesh.nextHalfedge(h));
 
-            m_vfeature[v]  = true;
+            m_vfeature[v] = true;
             m_efeature[e0] = true;
             m_efeature[e1] = true;
         }
@@ -228,7 +228,8 @@ void SurfaceSubdivision::catmullClark()
 
 void SurfaceSubdivision::loop()
 {
-    Timer t; t.start();
+    Timer t;
+    t.start();
 
     if (!m_mesh.isTriangleMesh())
         return;
@@ -304,7 +305,7 @@ void SurfaceSubdivision::loop()
         // interior vertex
         else
         {
-            Point  p(0, 0, 0);
+            Point p(0, 0, 0);
             Scalar k(0);
 
             for (auto vv : m_mesh.vertices(v))
@@ -334,7 +335,7 @@ void SurfaceSubdivision::loop()
 #else
             epoint[e] = (m_mesh.nav(e).vertex(0).position() +
                          m_mesh.nav(e).vertex(1).position()) *
-                         Scalar(0.5);
+                        Scalar(0.5);
 #endif
         }
 
@@ -342,9 +343,9 @@ void SurfaceSubdivision::loop()
         else
         {
 #ifndef NAV
-            auto  h0 = m_mesh.halfedge(e, 0);
-            auto  h1 = m_mesh.halfedge(e, 1);
-            Point p  = m_points[m_mesh.toVertex(h0)];
+            auto h0 = m_mesh.halfedge(e, 0);
+            auto h1 = m_mesh.halfedge(e, 1);
+            Point p = m_points[m_mesh.toVertex(h0)];
             p += m_points[m_mesh.toVertex(h1)];
             p *= 3.0;
             p += m_points[m_mesh.toVertex(m_mesh.nextHalfedge(h0))];
@@ -353,7 +354,7 @@ void SurfaceSubdivision::loop()
             epoint[e] = p;
 #else
             Point p;
-            p  = m_mesh.nav(e).vertex(0).position();
+            p = m_mesh.nav(e).vertex(0).position();
             p += m_mesh.nav(e).vertex(1).position();
             p *= 3.0;
             p += m_mesh.nav(e).halfedge(0).next().toVertex().position();
@@ -376,12 +377,12 @@ void SurfaceSubdivision::loop()
         // feature edge?
         if (m_efeature && m_efeature[e])
         {
-            auto h  = m_mesh.insertVertex(e, epoint[e]);
-            auto v  = m_mesh.toVertex(h);
+            auto h = m_mesh.insertVertex(e, epoint[e]);
+            auto v = m_mesh.toVertex(h);
             auto e0 = m_mesh.edge(h);
             auto e1 = m_mesh.edge(m_mesh.nextHalfedge(h));
 
-            m_vfeature[v]  = true;
+            m_vfeature[v] = true;
             m_efeature[e0] = true;
             m_efeature[e1] = true;
         }
@@ -435,14 +436,14 @@ void SurfaceSubdivision::sqrt3()
     {
         if (!m_mesh.isSurfaceBoundary(v))
         {
-            Scalar n     = m_mesh.valence(v);
+            Scalar n = m_mesh.valence(v);
             Scalar alpha = (4.0 - 2.0 * cos(2.0 * M_PI / n)) / 9.0;
-            Point  p(0, 0, 0);
+            Point p(0, 0, 0);
 
             for (auto vv : m_mesh.vertices(v))
                 p += m_points[vv];
 
-            p          = (1.0f - alpha) * m_points[v] + alpha / n * p;
+            p = (1.0f - alpha) * m_points[v] + alpha / n * p;
             new_pos[v] = p;
         }
     }
@@ -450,7 +451,7 @@ void SurfaceSubdivision::sqrt3()
     // split faces
     for (auto f : m_mesh.faces())
     {
-        Point  p(0, 0, 0);
+        Point p(0, 0, 0);
         Scalar c(0);
 
         for (auto fv : m_mesh.vertices(f))

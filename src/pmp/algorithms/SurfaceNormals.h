@@ -57,7 +57,7 @@ class SurfaceNormals
 {
 public:
     // delete default and copy constructor
-    SurfaceNormals()                      = delete;
+    SurfaceNormals() = delete;
     SurfaceNormals(const SurfaceNormals&) = delete;
 
     //! \brief Compute vertex normals for the whole \c mesh.
@@ -71,20 +71,20 @@ public:
     static void computeFaceNormals(SurfaceMesh& mesh);
 
     //! \brief Compute the normal vector of vertex \c v.
-    static Normal computeVertexNormal(const SurfaceMesh&  mesh,
+    static Normal computeVertexNormal(const SurfaceMesh& mesh,
                                       SurfaceMesh::Vertex v);
 
     //! \brief Compute the normal vector of face \c f.
     static Normal computeFaceNormal(const SurfaceMesh& mesh,
-                                    SurfaceMesh::Face  f);
+                                    SurfaceMesh::Face f);
 
     //! \brief Compute the normal vector of the polygon corner specified by the
     //! target vertex of halfedge \c h.
     //! \details Averages incident corner normals if they are within creaseAngle
     //! of the face normal. \c creaseAngle is in radians, not degrees.
-    static Normal computeCornerNormal(const SurfaceMesh&    mesh,
+    static Normal computeCornerNormal(const SurfaceMesh& mesh,
                                       SurfaceMesh::Halfedge h,
-                                      Scalar                creaseAngle);
+                                      Scalar creaseAngle);
 };
 
 //=============================================================================

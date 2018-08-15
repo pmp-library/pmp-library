@@ -40,13 +40,14 @@ namespace pmp {
 //=============================================================================
 
 using SparseMatrix = Eigen::SparseMatrix<double>;
-using Triplet      = Eigen::Triplet<double>;
+using Triplet = Eigen::Triplet<double>;
 
 //=============================================================================
 
-void SurfaceSmoothing::explicitSmoothing(unsigned int iters, bool useUniformLaplace)
+void SurfaceSmoothing::explicitSmoothing(unsigned int iters,
+                                         bool useUniformLaplace)
 {
-    auto points  = m_mesh.vertexProperty<Point>("v:point");
+    auto points = m_mesh.vertexProperty<Point>("v:point");
     auto eweight = m_mesh.addEdgeProperty<Scalar>("e:cotan");
     auto laplace = m_mesh.addVertexProperty<Point>("v:laplace");
 
@@ -64,7 +65,7 @@ void SurfaceSmoothing::explicitSmoothing(unsigned int iters, bool useUniformLapl
 
     // smoothing iterations
     SurfaceMesh::Vertex vv;
-    SurfaceMesh::Edge   e;
+    SurfaceMesh::Edge e;
     for (unsigned int i = 0; i < iters; ++i)
     {
         // step 1: compute Laplace for each vertex
@@ -79,7 +80,7 @@ void SurfaceSmoothing::explicitSmoothing(unsigned int iters, bool useUniformLapl
                 for (auto h : m_mesh.halfedges(v))
                 {
                     vv = m_mesh.toVertex(h);
-                    e  = m_mesh.edge(h);
+                    e = m_mesh.edge(h);
                     l += eweight[e] * (points[vv] - points[v]);
                     w += eweight[e];
                 }
@@ -104,16 +105,17 @@ void SurfaceSmoothing::explicitSmoothing(unsigned int iters, bool useUniformLapl
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool useUniformLaplace)
+void SurfaceSmoothing::implicitSmoothing(Scalar timestep,
+                                         bool useUniformLaplace)
 {
     if (!m_mesh.nVertices())
         return;
 
     // properties
-    auto points  = m_mesh.vertexProperty<Point>("v:point");
+    auto points = m_mesh.vertexProperty<Point>("v:point");
     auto vweight = m_mesh.addVertexProperty<Scalar>("v:area");
     auto eweight = m_mesh.addEdgeProperty<Scalar>("e:cotan");
-    auto idx     = m_mesh.addVertexProperty<int>("v:idx", -1);
+    auto idx = m_mesh.addVertexProperty<int>("v:idx", -1);
 
     // compute weights: cotan or uniform
     if (useUniformLaplace)
@@ -133,7 +135,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool useUniformLaplace
 
     // collect free (non-boundary) vertices in array free_vertices[]
     // assign indices such that idx[ free_vertices[i] ] == i
-    unsigned                         i = 0;
+    unsigned i = 0;
     std::vector<SurfaceMesh::Vertex> free_vertices;
     free_vertices.reserve(m_mesh.nVertices());
     for (auto v : m_mesh.vertices())
@@ -147,16 +149,16 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool useUniformLaplace
     const unsigned int n = free_vertices.size();
 
     // A*X = B
-    SparseMatrix    A(n, n);
+    SparseMatrix A(n, n);
     Eigen::MatrixXd B(n, 3);
 
     // nonzero elements of A as triplets: (row, column, value)
     std::vector<Triplet> triplets;
 
     // setup matrix A and rhs B
-    double              ww;
+    double ww;
     SurfaceMesh::Vertex v, vv;
-    SurfaceMesh::Edge   e;
+    SurfaceMesh::Edge e;
     for (unsigned int i = 0; i < n; ++i)
     {
         v = free_vertices[i];
@@ -171,7 +173,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool useUniformLaplace
         for (auto h : m_mesh.halfedges(v))
         {
             vv = m_mesh.toVertex(h);
-            e  = m_mesh.edge(h);
+            e = m_mesh.edge(h);
             ww += eweight[e];
 
             // fixed boundary vertex -> right hand side
@@ -197,7 +199,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool useUniformLaplace
 
     // solve A*X = B
     Eigen::SimplicialLDLT<SparseMatrix> solver(A);
-    Eigen::MatrixXd                     X = solver.solve(B);
+    Eigen::MatrixXd X = solver.solve(B);
     if (solver.info() != Eigen::Success)
     {
         std::cerr << "SurfaceSmoothing: Could not solve linear system\n";
@@ -207,7 +209,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep, bool useUniformLaplace
         // copy solution
         for (unsigned int i = 0; i < n; ++i)
         {
-            v            = free_vertices[i];
+            v = free_vertices[i];
             points[v][0] = X(i, 0);
             points[v][1] = X(i, 1);
             points[v][2] = X(i, 2);

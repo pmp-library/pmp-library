@@ -50,11 +50,11 @@ bool SurfaceParameterization::setupBoundaryConstraints()
 {
     // get properties
     auto points = m_mesh.vertexProperty<Point>("v:point");
-    auto tex    = m_mesh.vertexProperty<TextureCoordinate>("v:tex");
+    auto tex = m_mesh.vertexProperty<TextureCoordinate>("v:tex");
 
-    SurfaceMesh::VertexIterator      vit, vend = m_mesh.verticesEnd();
-    SurfaceMesh::Vertex              vh;
-    SurfaceMesh::Halfedge            hh;
+    SurfaceMesh::VertexIterator vit, vend = m_mesh.verticesEnd();
+    SurfaceMesh::Vertex vh;
+    SurfaceMesh::Halfedge hh;
     std::vector<SurfaceMesh::Vertex> loop;
 
     // Initialize all texture coordinates to the origin.
@@ -83,8 +83,8 @@ bool SurfaceParameterization::setupBoundaryConstraints()
     } while (hh != m_mesh.halfedge(vh));
 
     // map boundary loop to unit circle in texture domain
-    unsigned int      i, n = loop.size();
-    Scalar            angle, l, length;
+    unsigned int i, n = loop.size();
+    Scalar angle, l, length;
     TextureCoordinate t;
 
     // compute length of boundary loop
@@ -124,19 +124,20 @@ void SurfaceParameterization::harmonic(bool useUniformWeights)
     }
 
     // get properties
-    auto tex     = m_mesh.vertexProperty<TextureCoordinate>("v:tex");
+    auto tex = m_mesh.vertexProperty<TextureCoordinate>("v:tex");
     auto eweight = m_mesh.addEdgeProperty<Scalar>("e:param");
-    auto idx     = m_mesh.addVertexProperty<int>("v:idx", -1);
+    auto idx = m_mesh.addVertexProperty<int>("v:idx", -1);
 
     // compute Laplace weight per edge: cotan or uniform
     for (auto e : m_mesh.edges())
     {
-        eweight[e] = useUniformWeights ? 1.0 : std::max(0.0, cotanWeight(m_mesh, e));
+        eweight[e] =
+            useUniformWeights ? 1.0 : std::max(0.0, cotanWeight(m_mesh, e));
     }
 
     // collect free (non-boundary) vertices in array free_vertices[]
     // assign indices such that idx[ free_vertices[i] ] == i
-    unsigned                         i = 0;
+    unsigned i = 0;
     std::vector<SurfaceMesh::Vertex> free_vertices;
     free_vertices.reserve(m_mesh.nVertices());
     for (auto v : m_mesh.vertices())
@@ -149,13 +150,13 @@ void SurfaceParameterization::harmonic(bool useUniformWeights)
     }
 
     // setup matrix A and rhs B
-    const unsigned int                  n = free_vertices.size();
-    Eigen::SparseMatrix<double>         A(n, n);
-    Eigen::MatrixXd                     B(n, 2);
+    const unsigned int n = free_vertices.size();
+    Eigen::SparseMatrix<double> A(n, n);
+    Eigen::MatrixXd B(n, 2);
     std::vector<Eigen::Triplet<double>> triplets;
-    double                              w, ww;
-    SurfaceMesh::Vertex                 v, vv;
-    SurfaceMesh::Edge                   e;
+    double w, ww;
+    SurfaceMesh::Vertex v, vv;
+    SurfaceMesh::Edge e;
     for (i = 0; i < n; ++i)
     {
         v = free_vertices[i];
@@ -169,8 +170,8 @@ void SurfaceParameterization::harmonic(bool useUniformWeights)
         for (auto h : m_mesh.halfedges(v))
         {
             vv = m_mesh.toVertex(h);
-            e  = m_mesh.edge(h);
-            w  = eweight[e];
+            e = m_mesh.edge(h);
+            w = eweight[e];
             ww += w;
 
             if (m_mesh.isSurfaceBoundary(vv))
@@ -191,7 +192,7 @@ void SurfaceParameterization::harmonic(bool useUniformWeights)
 
     // solve A*X = B
     Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver(A);
-    Eigen::MatrixXd                                    X = solver.solve(B);
+    Eigen::MatrixXd X = solver.solve(B);
     if (solver.info() != Eigen::Success)
     {
         std::cerr << "SurfaceParameterization: Could not solve linear system\n";
@@ -201,7 +202,7 @@ void SurfaceParameterization::harmonic(bool useUniformWeights)
         // copy solution
         for (i = 0; i < n; ++i)
         {
-            v         = free_vertices[i];
+            v = free_vertices[i];
             tex[v][0] = X(i, 0);
             tex[v][1] = X(i, 1);
         }
@@ -220,8 +221,8 @@ bool SurfaceParameterization::setupLSCMBoundary()
     // the translation and rotation of the resulting parameterization
 
     // vertex properties
-    auto pos    = m_mesh.vertexProperty<Point>("v:point");
-    auto tex    = m_mesh.vertexProperty<TexCoord>("v:tex");
+    auto pos = m_mesh.vertexProperty<Point>("v:point");
+    auto tex = m_mesh.vertexProperty<TexCoord>("v:tex");
     auto locked = m_mesh.addVertexProperty<bool>("v:locked", false);
 
     // find boundary vertices and store handles in vector
@@ -237,7 +238,7 @@ bool SurfaceParameterization::setupLSCMBoundary()
     }
 
     // find boundary vertices with largest distance
-    Scalar              diam(0.0), d;
+    Scalar diam(0.0), d;
     SurfaceMesh::Vertex v1, v2;
     for (auto vv1 : boundary)
     {
@@ -247,8 +248,8 @@ bool SurfaceParameterization::setupLSCMBoundary()
             if (d > diam)
             {
                 diam = d;
-                v1   = vv1;
-                v2   = vv2;
+                v1 = vv1;
+                v2 = vv2;
             }
         }
     }
@@ -256,11 +257,11 @@ bool SurfaceParameterization::setupLSCMBoundary()
     // pin these two boundary vertices
     for (auto v : m_mesh.vertices())
     {
-        tex[v]    = TexCoord(0.5, 0.5);
+        tex[v] = TexCoord(0.5, 0.5);
         locked[v] = false;
     }
-    tex[v1]    = TexCoord(0.0, 0.0);
-    tex[v2]    = TexCoord(1.0, 1.0);
+    tex[v1] = TexCoord(0.0, 0.0);
+    tex[v2] = TexCoord(1.0, 1.0);
     locked[v1] = true;
     locked[v2] = true;
 
@@ -276,9 +277,9 @@ void SurfaceParameterization::lscm()
         return;
 
     // properties
-    auto pos    = m_mesh.vertexProperty<Point>("v:point");
-    auto tex    = m_mesh.vertexProperty<TexCoord>("v:tex");
-    auto idx    = m_mesh.addVertexProperty<int>("v:idx", -1);
+    auto pos = m_mesh.vertexProperty<Point>("v:point");
+    auto tex = m_mesh.vertexProperty<TexCoord>("v:tex");
+    auto idx = m_mesh.addVertexProperty<int>("v:idx", -1);
     auto weight = m_mesh.addHalfedgeProperty<dvec2>("h:lscm");
     auto locked = m_mesh.getVertexProperty<bool>("v:locked");
     assert(locked);
@@ -288,7 +289,7 @@ void SurfaceParameterization::lscm()
     {
         // collect face halfedge
         auto fh_it = m_mesh.halfedges(f);
-        auto ha    = *fh_it;
+        auto ha = *fh_it;
         ++fh_it;
         auto hb = *fh_it;
         ++fh_it;
@@ -330,7 +331,7 @@ void SurfaceParameterization::lscm()
 
     // collect free (non-boundary) vertices in array free_vertices[]
     // assign indices such that idx[ free_vertices[i] ] == i
-    unsigned                         i = 0;
+    unsigned i = 0;
     std::vector<SurfaceMesh::Vertex> free_vertices;
     free_vertices.reserve(m_mesh.nVertices());
     for (auto v : m_mesh.vertices())
@@ -343,16 +344,16 @@ void SurfaceParameterization::lscm()
     }
 
     // build matrix and rhs
-    const unsigned int    nV2 = 2 * m_mesh.nVertices();
-    const unsigned int    nV  = m_mesh.nVertices();
-    const unsigned int    N   = free_vertices.size();
-    SurfaceMesh::Vertex   vi, vj;
+    const unsigned int nV2 = 2 * m_mesh.nVertices();
+    const unsigned int nV = m_mesh.nVertices();
+    const unsigned int N = free_vertices.size();
+    SurfaceMesh::Vertex vi, vj;
     SurfaceMesh::Halfedge hh;
-    double                si, sj0, sj1, sign;
-    int                   row(0), c0, c1;
+    double si, sj0, sj1, sign;
+    int row(0), c0, c1;
 
-    Eigen::SparseMatrix<double>         A(2 * N, 2 * N);
-    Eigen::VectorXd                     b = Eigen::VectorXd::Zero(2 * N);
+    Eigen::SparseMatrix<double> A(2 * N, 2 * N);
+    Eigen::VectorXd b = Eigen::VectorXd::Zero(2 * N);
     std::vector<Eigen::Triplet<double>> triplets;
 
     for (unsigned int i = 0; i < nV2; ++i)
@@ -362,14 +363,14 @@ void SurfaceParameterization::lscm()
         if (i < nV)
         {
             sign = 1.0;
-            c0   = 0;
-            c1   = 1;
+            c0 = 0;
+            c1 = 1;
         }
         else
         {
             sign = -1.0;
-            c0   = 1;
-            c1   = 0;
+            c0 = 1;
+            c1 = 0;
         }
 
         if (!locked[vi])
@@ -378,7 +379,7 @@ void SurfaceParameterization::lscm()
 
             for (auto h : m_mesh.halfedges(vi))
             {
-                vj  = m_mesh.toVertex(h);
+                vj = m_mesh.toVertex(h);
                 sj0 = sj1 = 0;
 
                 if (!m_mesh.isSurfaceBoundary(h))
@@ -425,7 +426,7 @@ void SurfaceParameterization::lscm()
 
     // solve A*X = B
     Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver(A);
-    Eigen::VectorXd                                    x = solver.solve(b);
+    Eigen::VectorXd x = solver.solve(b);
     if (solver.info() != Eigen::Success)
     {
         std::cerr << "SurfaceParameterization: Could not solve linear system\n";

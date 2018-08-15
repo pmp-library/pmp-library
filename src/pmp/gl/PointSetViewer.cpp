@@ -94,7 +94,8 @@ void PointSetViewer::draw(const std::string& drawMode)
 //
 void PointSetViewer::keyboard(int key, int scancode, int action, int mods)
 {
-    if (action != GLFW_PRESS && action!=GLFW_REPEAT) // only react on key press events
+    if (action != GLFW_PRESS &&
+        action != GLFW_REPEAT) // only react on key press events
         return;
 
     switch (key)

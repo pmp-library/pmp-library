@@ -64,22 +64,22 @@ public:
     void fair(unsigned int k = 2);
 
 private:
-    void setupMatrixRow(const SurfaceMesh::Vertex           v,
+    void setupMatrixRow(const SurfaceMesh::Vertex v,
                         SurfaceMesh::VertexProperty<double> vweight,
-                        SurfaceMesh::EdgeProperty<double>   eweight,
-                        unsigned int                        laplaceDegree,
+                        SurfaceMesh::EdgeProperty<double> eweight,
+                        unsigned int laplaceDegree,
                         std::map<SurfaceMesh::Vertex, double>& row);
 
 private:
     SurfaceMesh& m_mesh; //!< the mesh
 
     // property handles
-    SurfaceMesh::VertexProperty<Point>  m_points;
-    SurfaceMesh::VertexProperty<bool>   m_vselected;
-    SurfaceMesh::VertexProperty<bool>   m_vlocked;
+    SurfaceMesh::VertexProperty<Point> m_points;
+    SurfaceMesh::VertexProperty<bool> m_vselected;
+    SurfaceMesh::VertexProperty<bool> m_vlocked;
     SurfaceMesh::VertexProperty<double> m_vweight;
-    SurfaceMesh::EdgeProperty<double>   m_eweight;
-    SurfaceMesh::VertexProperty<int>    m_idx;
+    SurfaceMesh::EdgeProperty<double> m_eweight;
+    SurfaceMesh::VertexProperty<int> m_idx;
 };
 
 //=============================================================================

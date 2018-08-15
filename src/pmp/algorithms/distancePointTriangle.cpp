@@ -40,9 +40,9 @@ namespace pmp {
 Scalar distPointLineSegment(const Point& P, const Point& V0, const Point& V1,
                             Point& NearestPoint)
 {
-    Point  d1(P - V0);
-    Point  d2(V1 - V0);
-    Point  minV(V0);
+    Point d1(P - V0);
+    Point d2(V1 - V0);
+    Point minV(V0);
     Scalar t = dot(d2, d2);
 
     if (t > FLT_MIN)
@@ -63,15 +63,15 @@ Scalar distPointLineSegment(const Point& P, const Point& V0, const Point& V1,
 Scalar distPointTriangle(const Point& P, const Point& V0, const Point& V1,
                          const Point& V2, Point& NearestPoint)
 {
-    Point  v0v1 = V1 - V0;
-    Point  v0v2 = V2 - V0;
-    Point  n    = cross(v0v1, v0v2); // not normalized !
-    Scalar d    = sqrnorm(n);
+    Point v0v1 = V1 - V0;
+    Point v0v2 = V2 - V0;
+    Point n = cross(v0v1, v0v2); // not normalized !
+    Scalar d = sqrnorm(n);
 
     // Check if the triangle is degenerated -> measure dist to line segments
     if (fabs(d) < FLT_MIN)
     {
-        Point  q, qq;
+        Point q, qq;
         Scalar d, dd(FLT_MAX);
 
         dd = distPointLineSegment(P, V0, V1, qq);
@@ -95,11 +95,11 @@ Scalar distPointTriangle(const Point& P, const Point& V0, const Point& V1,
     }
 
     Scalar invD = 1.0 / d;
-    Point  v1v2 = V2;
+    Point v1v2 = V2;
     v1v2 -= V1;
     Point v0p = P;
     v0p -= V0;
-    Point  t = cross(v0p, n);
+    Point t = cross(v0p, n);
     Scalar a = dot(t, v0v2) * -invD;
     Scalar b = dot(t, v0v1) * invD;
     Scalar s01, s02, s12;

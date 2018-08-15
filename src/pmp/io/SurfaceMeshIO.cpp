@@ -73,7 +73,7 @@ void skipLines(FILE* in)
 
     while (in && !feof(in))
     {
-        fgetpos(in , &pos);
+        fgetpos(in, &pos);
         auto c = fgets(line, 200, in);
         if (c == nullptr)
             break;
@@ -89,7 +89,7 @@ void skipLines(FILE* in)
         }
         else
         {
-            fsetpos(in,&pos);
+            fsetpos(in, &pos);
             break;
         }
     }
@@ -182,11 +182,11 @@ bool SurfaceMeshIO::write(const SurfaceMesh& mesh, const std::string& filename)
 
 bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
 {
-    char                             s[200];
-    float                            x, y, z;
+    char s[200];
+    float x, y, z;
     std::vector<SurfaceMesh::Vertex> vertices;
     std::vector<TextureCoordinate>
-                     allTexCoords;   //individual texture coordinates
+        allTexCoords;                //individual texture coordinates
     std::vector<int> halfedgeTexIdx; //texture coordinates sorted for halfedges
     SurfaceMesh::HalfedgeProperty<TextureCoordinate> texCoords =
         mesh.halfedgeProperty<TextureCoordinate>("h:tex");
@@ -241,8 +241,8 @@ bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
         // face
         else if (strncmp(s, "f ", 2) == 0)
         {
-            int   component(0), nV(0);
-            bool  endOfVertex(false);
+            int component(0), nV(0);
+            bool endOfVertex(false);
             char *p0, *p1(s + 1);
 
             vertices.clear();
@@ -322,7 +322,7 @@ bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
                 SurfaceMesh::HalfedgeAroundFaceCirculator h_fit =
                     mesh.halfedges(f);
                 SurfaceMesh::HalfedgeAroundFaceCirculator h_end = h_fit;
-                unsigned                                  v_idx = 0;
+                unsigned v_idx = 0;
                 do
                 {
                     texCoords[*h_fit] =
@@ -341,7 +341,6 @@ bool SurfaceMeshIO::readOBJ(SurfaceMesh& mesh, const std::string& filename)
     {
         mesh.removeHalfedgeProperty(texCoords);
     }
-
 
     fclose(in);
     return true;
@@ -384,10 +383,10 @@ bool SurfaceMeshIO::writeOBJ(const SurfaceMesh& mesh,
 
     // optional texture coordinates
     // do we have them?
-    std::vector<std::string> hprops       = mesh.halfedgeProperties();
-    bool                     withTexCoord = false;
-    auto                     hpropEnd     = hprops.end();
-    auto                     hpropStart   = hprops.begin();
+    std::vector<std::string> hprops = mesh.halfedgeProperties();
+    bool withTexCoord = false;
+    auto hpropEnd = hprops.end();
+    auto hpropStart = hprops.begin();
     while (hpropStart != hpropEnd)
     {
         if (0 == (*hpropStart).compare("h:tex"))
@@ -415,8 +414,8 @@ bool SurfaceMeshIO::writeOBJ(const SurfaceMesh& mesh,
          fit != mesh.facesEnd(); ++fit)
     {
         fprintf(out, "f");
-        SurfaceMesh::VertexAroundFaceCirculator fvit   = mesh.vertices(*fit),
-                                                fvend  = fvit;
+        SurfaceMesh::VertexAroundFaceCirculator fvit = mesh.vertices(*fit),
+                                                fvend = fvit;
         SurfaceMesh::HalfedgeAroundFaceCirculator fhit = mesh.halfedges(*fit);
         do
         {
@@ -445,18 +444,18 @@ bool SurfaceMeshIO::writeOBJ(const SurfaceMesh& mesh,
 bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
                   const bool hasTexcoords, const bool hasColors)
 {
-    char                line[200], *lp;
-    int                 nc;
-    unsigned int        i, j, items, idx;
-    unsigned int        nV, nF, nE;
-    vec3                p, n, c;
-    vec3                t;
+    char line[200], *lp;
+    int nc;
+    unsigned int i, j, items, idx;
+    unsigned int nV, nF, nE;
+    vec3 p, n, c;
+    vec3 t;
     SurfaceMesh::Vertex v;
 
     // properties
-    SurfaceMesh::VertexProperty<Normal>            normals;
+    SurfaceMesh::VertexProperty<Normal> normals;
     SurfaceMesh::VertexProperty<TextureCoordinate> texcoords;
-    SurfaceMesh::VertexProperty<Color>             colors;
+    SurfaceMesh::VertexProperty<Color> colors;
     if (hasNormals)
         normals = mesh.vertexProperty<Normal>("v:normal");
     if (hasTexcoords)
@@ -556,10 +555,10 @@ bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
 bool readOFFBinary(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
                    const bool hasTexcoords, const bool hasColors)
 {
-    unsigned int        i, j, idx(0);
-    unsigned int        nV(0), nF(0), nE(0);
-    vec3                p, n, c;
-    vec2                t;
+    unsigned int i, j, idx(0);
+    unsigned int nV(0), nF(0), nE(0);
+    vec3 p, n, c;
+    vec2 t;
     SurfaceMesh::Vertex v;
 
     // binary cannot (yet) read colors
@@ -567,7 +566,7 @@ bool readOFFBinary(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
         return false;
 
     // properties
-    SurfaceMesh::VertexProperty<Normal>            normals;
+    SurfaceMesh::VertexProperty<Normal> normals;
     SurfaceMesh::VertexProperty<TextureCoordinate> texcoords;
     if (hasNormals)
         normals = mesh.vertexProperty<Normal>("v:normal");
@@ -661,11 +660,11 @@ bool SurfaceMeshIO::readOFF(SurfaceMesh& mesh, const std::string& filename)
 {
     char line[200];
     bool hasTexcoords = false;
-    bool hasNormals   = false;
-    bool hasColors    = false;
-    bool hasHcoords   = false;
-    bool hasDim       = false;
-    bool isBinary     = false;
+    bool hasNormals = false;
+    bool hasColors = false;
+    bool hasHcoords = false;
+    bool hasDim = false;
+    bool isBinary = false;
 
     // open file (in ASCII mode)
     FILE* in = fopen(filename.c_str(), "r");
@@ -724,7 +723,7 @@ bool SurfaceMeshIO::readOFF(SurfaceMesh& mesh, const std::string& filename)
     {
         fclose(in);
         in = fopen(filename.c_str(), "rb");
-        c  = fgets(line, 200, in);
+        c = fgets(line, 200, in);
         assert(c != nullptr);
     }
 
@@ -750,13 +749,13 @@ bool SurfaceMeshIO::writeOFF(const SurfaceMesh& mesh,
     if (!out)
         return false;
 
-    bool hasNormals   = false;
+    bool hasNormals = false;
     bool hasTexcoords = false;
-    bool hasColors    = false;
+    bool hasColors = false;
 
-    auto normals   = mesh.getVertexProperty<Normal>("v:normal");
+    auto normals = mesh.getVertexProperty<Normal>("v:normal");
     auto texcoords = mesh.getVertexProperty<TextureCoordinate>("v:tex");
-    auto colors    = mesh.getVertexProperty<Color>("v:color");
+    auto colors = mesh.getVertexProperty<Color>("v:color");
 
     if (normals && m_options.doNormals())
         hasNormals = true;
@@ -810,7 +809,7 @@ bool SurfaceMeshIO::writeOFF(const SurfaceMesh& mesh,
     {
         int nV = mesh.valence(*fit);
         fprintf(out, "%d", nV);
-        SurfaceMesh::VertexAroundFaceCirculator fvit  = mesh.vertices(*fit),
+        SurfaceMesh::VertexAroundFaceCirculator fvit = mesh.vertices(*fit),
                                                 fvend = fvit;
         do
         {
@@ -830,11 +829,11 @@ using VertexProperty = SurfaceMesh::VertexProperty<T>;
 template <typename T>
 using HalfedgeProperty = SurfaceMesh::HalfedgeProperty<T>;
 template <typename T>
-using FaceProperty             = SurfaceMesh::FaceProperty<T>;
-using VertexConnectivity       = SurfaceMesh::VertexConnectivity;
-using HalfedgeConnectivity     = SurfaceMesh::HalfedgeConnectivity;
+using FaceProperty = SurfaceMesh::FaceProperty<T>;
+using VertexConnectivity = SurfaceMesh::VertexConnectivity;
+using HalfedgeConnectivity = SurfaceMesh::HalfedgeConnectivity;
 using HalfedgeFaceConnectivity = SurfaceMesh::HalfedgeFaceConnectivity;
-using FaceConnectivity         = SurfaceMesh::FaceConnectivity;
+using FaceConnectivity = SurfaceMesh::FaceConnectivity;
 
 //== IMPLEMENTATION ===========================================================
 
@@ -868,30 +867,34 @@ bool SurfaceMeshIO::readPMP(SurfaceMesh& mesh, const std::string& filename)
     mesh.m_fprops.resize(nf);
 
     // get properties
-    auto vconn  = mesh.vertexProperty<VertexConnectivity>("v:connectivity");
-    auto hconn  = mesh.halfedgeProperty<HalfedgeConnectivity>("h:connectivity");
-    auto hfconn = mesh.halfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
-    auto fconn  = mesh.faceProperty<FaceConnectivity>("f:connectivity");
-    auto point  = mesh.vertexProperty<Point>("v:point");
+    auto vconn = mesh.vertexProperty<VertexConnectivity>("v:connectivity");
+    auto hconn = mesh.halfedgeProperty<HalfedgeConnectivity>("h:connectivity");
+    auto hfconn =
+        mesh.halfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
+    auto fconn = mesh.faceProperty<FaceConnectivity>("f:connectivity");
+    auto point = mesh.vertexProperty<Point>("v:point");
 
     // read properties from file
-    size_t nvc  = fread((char*)vconn.data(), sizeof(VertexConnectivity), nv, in);
-    size_t nhc  = fread((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, in);
-    size_t nhfc = fread((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, in);
-    size_t nfc  = fread((char*)fconn.data(), sizeof(FaceConnectivity), nf, in);
-    size_t np   = fread((char*)point.data(), sizeof(Point), nv, in);
-    PMP_ASSERT(nvc  == nv);
-    PMP_ASSERT(nhc  == nh);
+    size_t nvc = fread((char*)vconn.data(), sizeof(VertexConnectivity), nv, in);
+    size_t nhc =
+        fread((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, in);
+    size_t nhfc =
+        fread((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, in);
+    size_t nfc = fread((char*)fconn.data(), sizeof(FaceConnectivity), nf, in);
+    size_t np = fread((char*)point.data(), sizeof(Point), nv, in);
+    PMP_ASSERT(nvc == nv);
+    PMP_ASSERT(nhc == nh);
     PMP_ASSERT(nhfc == nh);
-    PMP_ASSERT(nfc  == nf);
-    PMP_ASSERT(np   == nv);
+    PMP_ASSERT(nfc == nf);
+    PMP_ASSERT(np == nv);
 
     // read texture coordiantes
     if (has_htex)
     {
         auto htex = mesh.halfedgeProperty<TextureCoordinate>("h:tex");
-        size_t nhtc = fread((char*)htex.data(), sizeof(TextureCoordinate), nh, in);
-        PMP_ASSERT(nhtc  == nh);
+        size_t nhtc =
+            fread((char*)htex.data(), sizeof(TextureCoordinate), nh, in);
+        PMP_ASSERT(nhtc == nh);
     }
 
     fclose(in);
@@ -909,12 +912,14 @@ bool SurfaceMeshIO::writePMP(const SurfaceMesh& mesh,
         return false;
 
     // get properties
-    auto vconn  = mesh.getVertexProperty<VertexConnectivity>("v:connectivity");
-    auto hconn  = mesh.getHalfedgeProperty<HalfedgeConnectivity>("h:connectivity");
-    auto hfconn = mesh.getHalfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
-    auto fconn  = mesh.getFaceProperty<FaceConnectivity>("f:connectivity");
-    auto point  = mesh.getVertexProperty<Point>("v:point");
-    auto htex   = mesh.getHalfedgeProperty<TextureCoordinate>("h:tex");
+    auto vconn = mesh.getVertexProperty<VertexConnectivity>("v:connectivity");
+    auto hconn =
+        mesh.getHalfedgeProperty<HalfedgeConnectivity>("h:connectivity");
+    auto hfconn =
+        mesh.getHalfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
+    auto fconn = mesh.getFaceProperty<FaceConnectivity>("f:connectivity");
+    auto point = mesh.getVertexProperty<Point>("v:point");
+    auto htex = mesh.getHalfedgeProperty<TextureCoordinate>("h:tex");
 
     // how many elements?
     unsigned int nv, ne, nh, nf;
@@ -930,14 +935,15 @@ bool SurfaceMeshIO::writePMP(const SurfaceMesh& mesh,
     tfwrite(out, (bool)htex);
 
     // write properties to file
-    fwrite((char*)vconn.data(),  sizeof(VertexConnectivity), nv, out);
-    fwrite((char*)hconn.data(),  sizeof(HalfedgeConnectivity), nh, out);
+    fwrite((char*)vconn.data(), sizeof(VertexConnectivity), nv, out);
+    fwrite((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, out);
     fwrite((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, out);
-    fwrite((char*)fconn.data(),  sizeof(FaceConnectivity), nf, out);
-    fwrite((char*)point.data(),  sizeof(Point), nv, out);
+    fwrite((char*)fconn.data(), sizeof(FaceConnectivity), nf, out);
+    fwrite((char*)point.data(), sizeof(Point), nv, out);
 
     // texture coordinates
-    if (htex) fwrite((char*)htex.data(),  sizeof(TextureCoordinate), nh, out);
+    if (htex)
+        fwrite((char*)htex.data(), sizeof(TextureCoordinate), nh, out);
 
     fclose(out);
     return true;
@@ -946,7 +952,8 @@ bool SurfaceMeshIO::writePMP(const SurfaceMesh& mesh,
 //-----------------------------------------------------------------------------
 
 // helper to assemble vertex data
-static int vertexCallback(p_ply_argument argument) {
+static int vertexCallback(p_ply_argument argument)
+{
     long idx;
     void* pdata;
     ply_get_argument_user_data(argument, &pdata, &idx);
@@ -964,7 +971,8 @@ static int vertexCallback(p_ply_argument argument) {
 //-----------------------------------------------------------------------------
 
 // helper to assemble face data
-static int faceCallback(p_ply_argument argument) {
+static int faceCallback(p_ply_argument argument)
+{
     long length, value_index;
     void* pdata;
     long idata;
@@ -972,7 +980,9 @@ static int faceCallback(p_ply_argument argument) {
     ply_get_argument_property(argument, nullptr, &length, &value_index);
 
     auto* mesh = (pmp::SurfaceMesh*)pdata;
-    auto vertices = mesh->getObjectProperty<std::vector<pmp::SurfaceMesh::Vertex>>("g:vertices");
+    auto vertices =
+        mesh->getObjectProperty<std::vector<pmp::SurfaceMesh::Vertex>>(
+            "g:vertices");
 
     if (value_index == 0)
         vertices[0].clear();
@@ -980,7 +990,7 @@ static int faceCallback(p_ply_argument argument) {
     pmp::IndexType idx = (pmp::IndexType)ply_get_argument_value(argument);
     vertices[0].push_back(pmp::SurfaceMesh::Vertex(idx));
 
-    if (value_index == length-1)
+    if (value_index == length - 1)
         mesh->addFace(vertices[0]);
 
     return 1;
@@ -994,8 +1004,9 @@ bool SurfaceMeshIO::readPLY(SurfaceMesh& mesh, const std::string& filename)
     mesh.clear();
 
     // add object properties to hold temporary data
-    auto point    = mesh.addObjectProperty<Point>("g:point");
-    auto vertices = mesh.addObjectProperty<std::vector<SurfaceMesh::Vertex>>("g:vertices");
+    auto point = mesh.addObjectProperty<Point>("g:point");
+    auto vertices =
+        mesh.addObjectProperty<std::vector<SurfaceMesh::Vertex>>("g:vertices");
 
     // open file, read header
     p_ply ply = ply_open(filename.c_str(), nullptr, 0, nullptr);
@@ -1028,9 +1039,11 @@ bool SurfaceMeshIO::readPLY(SurfaceMesh& mesh, const std::string& filename)
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceMeshIO::writePLY(const SurfaceMesh& mesh, const std::string& filename)
+bool SurfaceMeshIO::writePLY(const SurfaceMesh& mesh,
+                             const std::string& filename)
 {
-    e_ply_storage_mode mode = m_options.doBinary() ? PLY_LITTLE_ENDIAN : PLY_ASCII;
+    e_ply_storage_mode mode =
+        m_options.doBinary() ? PLY_LITTLE_ENDIAN : PLY_ASCII;
     p_ply ply = ply_create(filename.c_str(), mode, nullptr, 0, nullptr);
 
     ply_add_comment(ply, "File written with pmp-library");
@@ -1056,7 +1069,7 @@ bool SurfaceMeshIO::writePLY(const SurfaceMesh& mesh, const std::string& filenam
     {
         ply_write(ply, mesh.valence(f));
         for (auto fv : mesh.vertices(f))
-            ply_write(ply,fv.idx());
+            ply_write(ply, fv.idx());
     }
 
     ply_close(ply);
@@ -1094,15 +1107,15 @@ private:
 
 bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
 {
-    char                             line[100], *c;
-    unsigned int                     i, nT(0);
-    vec3                             p;
-    SurfaceMesh::Vertex              v;
+    char line[100], *c;
+    unsigned int i, nT(0);
+    vec3 p;
+    SurfaceMesh::Vertex v;
     std::vector<SurfaceMesh::Vertex> vertices(3);
-    size_t                           nItems(0);
+    size_t nItems(0);
 
     CmpVec comp(FLT_MIN);
-    std::map<vec3, SurfaceMesh::Vertex, CmpVec>           vMap(comp);
+    std::map<vec3, SurfaceMesh::Vertex, CmpVec> vMap(comp);
     std::map<vec3, SurfaceMesh::Vertex, CmpVec>::iterator vMapIt;
 
     // clear mesh
@@ -1150,9 +1163,9 @@ bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
                 if ((vMapIt = vMap.find(p)) == vMap.end())
                 {
                     // No : add vertex and remember idx/vector mapping
-                    v           = mesh.addVertex((Point)p);
+                    v = mesh.addVertex((Point)p);
                     vertices[i] = v;
-                    vMap[p]     = v;
+                    vMap[p] = v;
                 }
                 else
                 {
@@ -1205,9 +1218,9 @@ bool SurfaceMeshIO::readSTL(SurfaceMesh& mesh, const std::string& filename)
                     if ((vMapIt = vMap.find(p)) == vMap.end())
                     {
                         // No : add vertex and remember idx/vector mapping
-                        v           = mesh.addVertex((Point)p);
+                        v = mesh.addVertex((Point)p);
                         vertices[i] = v;
-                        vMap[p]     = v;
+                        vMap[p] = v;
                     }
                     else
                     {
@@ -1248,11 +1261,11 @@ bool SurfaceMeshIO::writeSTL(const SurfaceMesh& mesh,
     }
 
     std::ofstream ofs(filename.c_str());
-    auto          points = mesh.getVertexProperty<Point>("v:point");
+    auto points = mesh.getVertexProperty<Point>("v:point");
 
     ofs << "solid stl" << std::endl;
     Normal n;
-    Point  p;
+    Point p;
 
     for (auto f : mesh.faces())
     {

@@ -100,11 +100,11 @@ bool EdgeSetIO::readKNT(EdgeSet& es, const std::string& filename)
     // clear edge set
     es.clear();
 
-    char         line[100], dummy[9];
+    char line[100], dummy[9];
     unsigned int nV, nE;
     unsigned int i, items;
-    int          idx_i, idx_j;
-    Point        p;
+    int idx_i, idx_j;
+    Point p;
 
     // skip every line before "vertices..."
     do

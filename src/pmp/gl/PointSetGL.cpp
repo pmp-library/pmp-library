@@ -57,7 +57,6 @@ static const char* points_vshader =
     "   gl_Position  = modelview_projection_matrix * v_position;\n"
     "} \n";
 
-
 static const char* points_fshader =
 #ifndef __EMSCRIPTEN__
     "#version 330\n"
@@ -123,7 +122,6 @@ static const char* points_fshader =
     "    f_color = vec4(rgb, 1.0);\n"
     "}";
 
-
 //=============================================================================
 
 namespace pmp {
@@ -134,20 +132,20 @@ PointSetGL::PointSetGL()
 {
     // initialize GL buffers to zero
     m_vertexArrayObject = 0;
-    m_vertexBuffer      = 0;
-    m_normalBuffer      = 0;
-    m_colorBuffer       = 0;
+    m_vertexBuffer = 0;
+    m_normalBuffer = 0;
+    m_colorBuffer = 0;
 
     // initialize buffer sizes
     m_nVertices = 0;
 
     // material parameters
-    m_frontColor  = vec3(0.6, 0.6, 0.6);
-    m_backColor   = vec3(0.5, 0.0, 0.0);
-    m_ambient     = 0.1;
-    m_diffuse     = 0.8;
-    m_specular    = 0.6;
-    m_shininess   = 100.0;
+    m_frontColor = vec3(0.6, 0.6, 0.6);
+    m_backColor = vec3(0.5, 0.0, 0.0);
+    m_ambient = 0.1;
+    m_diffuse = 0.8;
+    m_specular = 0.6;
+    m_shininess = 100.0;
 }
 
 //-----------------------------------------------------------------------------
@@ -201,7 +199,7 @@ void PointSetGL::updateOpenGLBuffers()
     {
         glBindBuffer(GL_ARRAY_BUFFER, m_colorBuffer);
         glBufferData(GL_ARRAY_BUFFER, nVertices() * 3 * sizeof(float),
-                colors.data(), GL_STATIC_DRAW);
+                     colors.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
         glEnableVertexAttribArray(2);
     }
@@ -237,9 +235,9 @@ void PointSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
         return;
 
     // setup matrices
-    mat4 mv_matrix  = modelviewMatrix;
+    mat4 mv_matrix = modelviewMatrix;
     mat4 mvp_matrix = projectionMatrix * modelviewMatrix;
-    mat3 n_matrix   = inverse(transpose(linearPart(mv_matrix)));
+    mat3 n_matrix = inverse(transpose(linearPart(mv_matrix)));
 
     // setup shader
     m_phongShader.use();
@@ -249,10 +247,10 @@ void PointSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
     m_phongShader.setUniform("point_size", 5.0f);
     m_phongShader.setUniform("light1", vec3(1.0, 1.0, 1.0));
     m_phongShader.setUniform("light2", vec3(-1.0, 1.0, 1.0));
-    m_phongShader.setUniform("ambient",     m_ambient);
-    m_phongShader.setUniform("diffuse",     m_diffuse);
-    m_phongShader.setUniform("specular",    m_specular);
-    m_phongShader.setUniform("shininess",   m_shininess);
+    m_phongShader.setUniform("ambient", m_ambient);
+    m_phongShader.setUniform("diffuse", m_diffuse);
+    m_phongShader.setUniform("specular", m_specular);
+    m_phongShader.setUniform("shininess", m_shininess);
 
     // per-vertex color or per-object color?
     if (!getVertexProperty<Color>("v:color"))

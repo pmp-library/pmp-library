@@ -109,14 +109,12 @@ public:
     //! \param minFilter interpolation filter for minification
     //! \param magFilter interpolation filter for magnification
     //! \param wrap texture coordinates wrap preference
-    bool loadTexture(const char* filename,
-                     GLint format=GL_RGB,
-                     GLint minFilter=GL_LINEAR_MIPMAP_LINEAR,
-                     GLint magFilter=GL_LINEAR,
-                     GLint wrap=GL_CLAMP_TO_EDGE);
+    bool loadTexture(const char* filename, GLint format = GL_RGB,
+                     GLint minFilter = GL_LINEAR_MIPMAP_LINEAR,
+                     GLint magFilter = GL_LINEAR,
+                     GLint wrap = GL_CLAMP_TO_EDGE);
 
 private:
-
     //! OpenGL buffers
     GLuint m_vertexArrayObject;
     GLuint m_vertexBuffer;
@@ -135,9 +133,9 @@ private:
     Shader m_phongShader;
 
     //! material properties
-    vec3  m_frontColor, m_backColor;
+    vec3 m_frontColor, m_backColor;
     float m_ambient, m_diffuse, m_specular, m_shininess;
-    bool  m_srgb;
+    bool m_srgb;
     float m_creaseAngle;
 
     //! 1D texture for scalar field rendering

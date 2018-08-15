@@ -19,8 +19,8 @@ void usage_and_exit()
 
 int main(int argc, char** argv)
 {
-    bool        binary = false;
-    const char* input  = nullptr;
+    bool binary = false;
+    const char* input = nullptr;
     const char* output = nullptr;
 
     // parse command line parameters

@@ -94,25 +94,25 @@ private:
     SurfaceMesh& m_mesh;
     SurfaceMesh* m_refmesh;
 
-    bool            m_useProjection;
+    bool m_useProjection;
     TriangleKdTree* m_kDTree;
 
-    bool   m_uniform;
+    bool m_uniform;
     Scalar m_targetEdgeLength;
     Scalar m_minEdgeLength;
     Scalar m_maxEdgeLength;
     Scalar m_approxError;
 
-    SurfaceMesh::VertexProperty<Point>  m_points;
-    SurfaceMesh::VertexProperty<Point>  m_vnormal;
-    SurfaceMesh::VertexProperty<bool>   m_vfeature;
-    SurfaceMesh::EdgeProperty<bool>     m_efeature;
-    SurfaceMesh::VertexProperty<bool>   m_vlocked;
-    SurfaceMesh::EdgeProperty<bool>     m_elocked;
+    SurfaceMesh::VertexProperty<Point> m_points;
+    SurfaceMesh::VertexProperty<Point> m_vnormal;
+    SurfaceMesh::VertexProperty<bool> m_vfeature;
+    SurfaceMesh::EdgeProperty<bool> m_efeature;
+    SurfaceMesh::VertexProperty<bool> m_vlocked;
+    SurfaceMesh::EdgeProperty<bool> m_elocked;
     SurfaceMesh::VertexProperty<Scalar> m_vsizing;
 
-    SurfaceMesh::VertexProperty<Point>  m_refpoints;
-    SurfaceMesh::VertexProperty<Point>  m_refnormals;
+    SurfaceMesh::VertexProperty<Point> m_refpoints;
+    SurfaceMesh::VertexProperty<Point> m_refnormals;
     SurfaceMesh::VertexProperty<Scalar> m_refsizing;
 };
 

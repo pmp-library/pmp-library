@@ -52,10 +52,10 @@ public:
     //! nearest neighbor information
     struct NearestNeighbor
     {
-        Scalar            dist;
+        Scalar dist;
         SurfaceMesh::Face face;
-        Point             nearest;
-        int               tests;
+        Point nearest;
+        int tests;
     };
 
     //! Return handle of the nearest neighbor
@@ -72,10 +72,10 @@ private:
             x[0] = x0;
             x[1] = x1;
             x[2] = x2;
-            f    = ff;
+            f = ff;
         }
 
-        Point             x[3];
+        Point x[3];
         SurfaceMesh::Face f;
     };
 
@@ -85,7 +85,7 @@ private:
     // Node of the tree: contains parent, children and splitting plane
     struct Node
     {
-        Node() : faces(nullptr), leftChild(nullptr), rightChild(nullptr) {};
+        Node() : faces(nullptr), leftChild(nullptr), rightChild(nullptr){};
 
         ~Node()
         {
@@ -95,17 +95,19 @@ private:
         }
 
         unsigned char axis;
-        Scalar        split;
-        Triangles*    faces;
-        Node*         leftChild;
-        Node*         rightChild;
+        Scalar split;
+        Triangles* faces;
+        Node* leftChild;
+        Node* rightChild;
     };
 
     // Recursive part of build()
-    unsigned int buildRecurse(Node* node, unsigned int maxHandles, unsigned int depth);
+    unsigned int buildRecurse(Node* node, unsigned int maxHandles,
+                              unsigned int depth);
 
     // Recursive part of nearest()
-    void nearestRecurse(Node* node, const Point& point, NearestNeighbor& data) const;
+    void nearestRecurse(Node* node, const Point& point,
+                        NearestNeighbor& data) const;
 
 private:
     Node* m_root;

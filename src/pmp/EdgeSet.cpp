@@ -44,8 +44,8 @@ EdgeSet::EdgeSet() : PointSet()
 {
     // allocate standard properties
     // same list is used in operator=() and assign()
-    m_vconn    = addVertexProperty<VertexConnectivity>("v:connectivity");
-    m_hconn    = addHalfedgeProperty<HalfedgeConnectivity>("h:connectivity");
+    m_vconn = addVertexProperty<VertexConnectivity>("v:connectivity");
+    m_hconn = addHalfedgeProperty<HalfedgeConnectivity>("h:connectivity");
     m_edeleted = addEdgeProperty<bool>("e:deleted", false);
     m_deletedEdges = 0;
 }
@@ -67,8 +67,8 @@ EdgeSet& EdgeSet::operator=(const EdgeSet& rhs)
         m_eprops = rhs.m_eprops;
 
         // property handles contain pointers, have to be reassigned
-        m_vconn    = vertexProperty<VertexConnectivity>("v:connectivity");
-        m_hconn    = halfedgeProperty<HalfedgeConnectivity>("h:connectivity");
+        m_vconn = vertexProperty<VertexConnectivity>("v:connectivity");
+        m_hconn = halfedgeProperty<HalfedgeConnectivity>("h:connectivity");
         m_edeleted = edgeProperty<bool>("e:deleted");
 
         // how many elements are deleted?
@@ -96,8 +96,8 @@ EdgeSet& EdgeSet::assign(const EdgeSet& rhs)
         m_edeleted = addEdgeProperty<bool>("e:deleted", false);
 
         // copy properties from other mesh
-        m_vconn.array()    = rhs.m_vconn.array();
-        m_hconn.array()    = rhs.m_hconn.array();
+        m_vconn.array() = rhs.m_vconn.array();
+        m_hconn.array() = rhs.m_hconn.array();
         m_edeleted.array() = rhs.m_edeleted.array();
 
         // resize (needed by property containers)
@@ -116,7 +116,7 @@ EdgeSet& EdgeSet::assign(const EdgeSet& rhs)
 bool EdgeSet::read(const std::string& filename, const IOOptions& options)
 {
     EdgeSetIO reader(options);
-    bool      success = reader.read(*this, filename);
+    bool success = reader.read(*this, filename);
 
     // try parent class if no reader is found
     if (!success)
@@ -132,7 +132,7 @@ bool EdgeSet::read(const std::string& filename, const IOOptions& options)
 bool EdgeSet::write(const std::string& filename, const IOOptions& options) const
 {
     EdgeSetIO writer(options);
-    bool      success = writer.write(*this, filename);
+    bool success = writer.write(*this, filename);
 
     // try parent class if no writer is found
     if (!success)
@@ -202,7 +202,7 @@ EdgeSet::Halfedge EdgeSet::findHalfedge(Vertex start, Vertex end) const
 {
     assert(isValid(start) && isValid(end));
 
-    Halfedge       h  = halfedge(start);
+    Halfedge h = halfedge(start);
     const Halfedge hh = h;
 
     if (h.isValid())
@@ -269,7 +269,7 @@ EdgeSet::Halfedge EdgeSet::insertVertex(Halfedge h0, Vertex v)
     Halfedge h2 = nextHalfedge(h0);
     Halfedge o0 = oppositeHalfedge(h0);
     Halfedge o2 = prevHalfedge(o0);
-    Vertex   v2 = toVertex(h0);
+    Vertex v2 = toVertex(h0);
 
     Halfedge h1 = newEdge(v, v2);
     Halfedge o1 = oppositeHalfedge(h1);
@@ -309,7 +309,7 @@ EdgeSet::Halfedge EdgeSet::insertEdge(Vertex v0, Vertex v1)
     // edge already exists
     assert(!findEdge(v0, v1).isValid());
 
-    const Vertex   v[2] = {v0, v1};
+    const Vertex v[2] = {v0, v1};
     const Halfedge h[2] = {newEdge(v0, v1), oppositeHalfedge(h[0])};
 
     Halfedge he0 = halfedge(v[0]);
@@ -329,7 +329,7 @@ EdgeSet::Halfedge EdgeSet::insertEdge(Vertex v0, Vertex v1)
 
     if (he0.isValid())
     {
-        Halfedge p0  = prevHalfedge(he0);
+        Halfedge p0 = prevHalfedge(he0);
         Halfedge op0 = oppositeHalfedge(p0);
 
         setNextHalfedge(h[1], op0);
@@ -373,15 +373,15 @@ void EdgeSet::deleteEdge(Edge e)
         return;
 
     Halfedge h0, h1, next0, next1, prev0, prev1;
-    Vertex   v0, v1;
+    Vertex v0, v1;
 
-    h0    = halfedge(e, 0);
-    v0    = toVertex(h0);
+    h0 = halfedge(e, 0);
+    v0 = toVertex(h0);
     next0 = nextHalfedge(h0);
     prev0 = prevHalfedge(h0);
 
-    h1    = halfedge(e, 1);
-    v1    = toVertex(h1);
+    h1 = halfedge(e, 1);
+    v1 = toVertex(h1);
     next1 = nextHalfedge(h1);
     prev1 = prevHalfedge(h1);
 
@@ -428,7 +428,7 @@ void EdgeSet::beginGarbage()
 
     int i0, i1, nE(edgesSize()), nH(halfedgesSize());
 
-    Vertex   v;
+    Vertex v;
     Halfedge h;
 
     // setup handle mapping

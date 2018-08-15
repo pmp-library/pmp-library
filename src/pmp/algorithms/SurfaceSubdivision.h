@@ -60,10 +60,10 @@ public:
     void sqrt3();
 
 private:
-    SurfaceMesh&                       m_mesh;
+    SurfaceMesh& m_mesh;
     SurfaceMesh::VertexProperty<Point> m_points;
-    SurfaceMesh::VertexProperty<bool>  m_vfeature;
-    SurfaceMesh::EdgeProperty<bool>    m_efeature;
+    SurfaceMesh::VertexProperty<bool> m_vfeature;
+    SurfaceMesh::EdgeProperty<bool> m_efeature;
 };
 
 //=============================================================================

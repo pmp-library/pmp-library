@@ -127,12 +127,12 @@ protected: //-------------------------------------------- trackball interaction
 
 protected: //----------------------------------------------------- private data
     //! draw modes
-    unsigned int             m_drawMode;
-    unsigned int             m_nDrawModes;
+    unsigned int m_drawMode;
+    unsigned int m_nDrawModes;
     std::vector<std::string> m_drawModeNames;
 
     //! scene position and dimension
-    vec3  m_center;
+    vec3 m_center;
     float m_radius;
 
     //! projection parameters
@@ -143,13 +143,13 @@ protected: //----------------------------------------------------- private data
     mat4 m_modelviewMatrix;
 
     //! trackball helpers
-    vec2  m_mousePos2D;
+    vec2 m_mousePos2D;
     ivec2 m_lastPoint2D;
-    vec3  m_lastPoint3D;
-    bool  m_lastPointOk;
-    bool  m_buttonDown[7];
-    int   m_modifiers;
-    int   m_wheelPos;
+    vec3 m_lastPoint3D;
+    bool m_lastPointOk;
+    bool m_buttonDown[7];
+    int m_modifiers;
+    int m_wheelPos;
 };
 
 //=============================================================================

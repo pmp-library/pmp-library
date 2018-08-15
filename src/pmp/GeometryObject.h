@@ -144,7 +144,7 @@ public:
         if (this != &rhs)
         {
             // deep copy of property containers
-            m_oprops  = rhs.m_oprops;
+            m_oprops = rhs.m_oprops;
             m_garbage = rhs.m_garbage;
         }
         return *this;
@@ -195,7 +195,7 @@ public:
     //! be unique. in this case it returns an invalid property
     template <class T>
     ObjectProperty<T> addObjectProperty(const std::string& name,
-                                        const T            t = T())
+                                        const T t = T())
     {
         return ObjectProperty<T>(m_oprops.add<T>(name, t));
     }
@@ -287,8 +287,8 @@ protected:
     //!@}
     //! \name Protected Members
     //!@{
-    PropertyContainer m_oprops;  //!< store object properties
-    bool              m_garbage; //!< indicate garbage present
+    PropertyContainer m_oprops; //!< store object properties
+    bool m_garbage;             //!< indicate garbage present
 
     //! during garbage collection, e.g. current vertex count must be
     //! saved. this map temporarily saves those values and can be used from

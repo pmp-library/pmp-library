@@ -62,7 +62,7 @@ public:
     /// construct with all entries being a given scalar (matrix and vector)
     explicit Matrix(Scalar s)
     {
-        for (int i   = 0; i < size(); ++i)
+        for (int i = 0; i < size(); ++i)
             data_[i] = s;
     }
 
@@ -138,7 +138,7 @@ public:
     template <typename OtherScalarType>
     explicit Matrix(const Matrix<OtherScalarType, M, N>& m)
     {
-        for (int i   = 0; i < size(); ++i)
+        for (int i = 0; i < size(); ++i)
             data_[i] = static_cast<Scalar>(m[i]);
     }
 
@@ -274,29 +274,29 @@ using Mat2 = Matrix<Scalar, 2, 2>;
 
 //== TYPEDEFS =================================================================
 
-typedef Vector<float, 2>        vec2;
-typedef Vector<double, 2>       dvec2;
-typedef Vector<bool, 2>         bvec2;
-typedef Vector<int, 2>          ivec2;
+typedef Vector<float, 2> vec2;
+typedef Vector<double, 2> dvec2;
+typedef Vector<bool, 2> bvec2;
+typedef Vector<int, 2> ivec2;
 typedef Vector<unsigned int, 2> uvec2;
 
-typedef Vector<float, 3>        vec3;
-typedef Vector<double, 3>       dvec3;
-typedef Vector<bool, 3>         bvec3;
-typedef Vector<int, 3>          ivec3;
+typedef Vector<float, 3> vec3;
+typedef Vector<double, 3> dvec3;
+typedef Vector<bool, 3> bvec3;
+typedef Vector<int, 3> ivec3;
 typedef Vector<unsigned int, 3> uvec3;
 
-typedef Vector<float, 4>        vec4;
-typedef Vector<double, 4>       dvec4;
-typedef Vector<bool, 4>         bvec4;
-typedef Vector<int, 4>          ivec4;
+typedef Vector<float, 4> vec4;
+typedef Vector<double, 4> dvec4;
+typedef Vector<bool, 4> bvec4;
+typedef Vector<int, 4> ivec4;
 typedef Vector<unsigned int, 4> uvec4;
 
-typedef Mat2<float>  mat2;
+typedef Mat2<float> mat2;
 typedef Mat2<double> dmat2;
-typedef Mat3<float>  mat3;
+typedef Mat3<float> mat3;
 typedef Mat3<double> dmat3;
-typedef Mat4<float>  mat4;
+typedef Mat4<float> mat4;
 typedef Mat4<double> dmat4;
 
 //== GENERAL MATRIX FUNCTIONS =================================================
@@ -305,10 +305,10 @@ typedef Mat4<double> dmat4;
 template <typename Scalar, int M, int N>
 inline std::ostream& operator<<(std::ostream& os, const Matrix<Scalar, M, N>& m)
 {
-    for (int i=0; i<M; ++i)
+    for (int i = 0; i < M; ++i)
     {
-        for (int j=0; j<N; ++j)
-            os << m(i,j) << " ";
+        for (int j = 0; j < N; ++j)
+            os << m(i, j) << " ";
         os << std::endl;
     }
     return os;
@@ -347,7 +347,7 @@ Matrix<Scalar, M, N> cmult(const Matrix<Scalar, M, N>& m1,
 
     for (i = 0; i < M; ++i)
         for (j = 0; j < N; ++j)
-            m(i,j) =  m1(i,j) * m2(i,j);
+            m(i, j) = m1(i, j) * m2(i, j);
 
     return m;
 }
@@ -369,7 +369,7 @@ Matrix<Scalar, N, M> transpose(const Matrix<Scalar, M, N>& m)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar, int M, int N>
-Matrix<Scalar, M, N>                  Matrix<Scalar, M, N>::identity()
+Matrix<Scalar, M, N> Matrix<Scalar, M, N>::identity()
 {
     static_assert(M == N, "only for square matrices");
 
@@ -412,7 +412,7 @@ template <typename Scalar, int M, int N>
 inline Matrix<Scalar, M, N> operator-(const Matrix<Scalar, M, N>& m)
 {
     Matrix<Scalar, M, N> result;
-    for (int i    = 0; i < result.size(); ++i)
+    for (int i = 0; i < result.size(); ++i)
         result[i] = -m[i];
     return result;
 }
@@ -421,7 +421,7 @@ inline Matrix<Scalar, M, N> operator-(const Matrix<Scalar, M, N>& m)
 
 //! scalar * matrix
 template <typename Scalar, typename Scalar2, int M, int N>
-inline Matrix<Scalar, M, N> operator*(const Scalar2               s,
+inline Matrix<Scalar, M, N> operator*(const Scalar2 s,
                                       const Matrix<Scalar, M, N>& m)
 {
     return Matrix<Scalar, M, N>(m) *= s;
@@ -475,7 +475,7 @@ template <typename Scalar, int M, int N>
 inline Matrix<Scalar, M, N> normalize(const Matrix<Scalar, M, N>& m)
 {
     Scalar n = norm(m);
-    n        = (n > std::numeric_limits<Scalar>::min()) ? 1.0 / n : 0.0;
+    n = (n > std::numeric_limits<Scalar>::min()) ? 1.0 / n : 0.0;
     return m * n;
 }
 
@@ -487,7 +487,7 @@ inline Matrix<Scalar, M, N> min(const Matrix<Scalar, M, N>& m1,
                                 const Matrix<Scalar, M, N>& m2)
 {
     Matrix<Scalar, M, N> result;
-    for (int i    = 0; i < result.size(); ++i)
+    for (int i = 0; i < result.size(); ++i)
         result[i] = std::min(m1[i], m2[i]);
     return result;
 }
@@ -500,7 +500,7 @@ inline Matrix<Scalar, M, N> max(const Matrix<Scalar, M, N>& m1,
                                 const Matrix<Scalar, M, N>& m2)
 {
     Matrix<Scalar, M, N> result;
-    for (int i    = 0; i < result.size(); ++i)
+    for (int i = 0; i < result.size(); ++i)
         result[i] = std::max(m1[i], m2[i]);
     return result;
 }
@@ -613,7 +613,7 @@ Mat4<Scalar> inversePerspectiveMatrix(Scalar fovy, Scalar aspect, Scalar zNear,
 
 template <typename Scalar>
 Mat4<Scalar> orthoMatrix(Scalar left, Scalar right, Scalar bottom, Scalar top,
-                         Scalar zNear=-1, Scalar zFar=1)
+                         Scalar zNear = -1, Scalar zFar = 1)
 {
     Mat4<Scalar> m(0.0);
 
@@ -728,10 +728,10 @@ template <typename Scalar>
 Mat4<Scalar> rotationMatrix(const Vector<Scalar, 3>& axis, Scalar angle)
 {
     Mat4<Scalar> m(Scalar(0));
-    Scalar       a       = angle * (M_PI / 180.0f);
-    Scalar       c       = cosf(a);
-    Scalar       s       = sinf(a);
-    Scalar       one_m_c = Scalar(1) - c;
+    Scalar a = angle * (M_PI / 180.0f);
+    Scalar c = cosf(a);
+    Scalar s = sinf(a);
+    Scalar one_m_c = Scalar(1) - c;
     Vector<Scalar, 3> ax = normalize(axis);
 
     m(0, 0) = ax[0] * ax[0] * one_m_c + c;
@@ -766,7 +766,7 @@ Mat3<Scalar> linearPart(const Mat4<Scalar>& m)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Vector<Scalar, 3> projectiveTransform(const Mat4<Scalar>&      m,
+Vector<Scalar, 3> projectiveTransform(const Mat4<Scalar>& m,
                                       const Vector<Scalar, 3>& v)
 {
     const Scalar x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2] + m(0, 3);
@@ -779,7 +779,7 @@ Vector<Scalar, 3> projectiveTransform(const Mat4<Scalar>&      m,
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Vector<Scalar, 3> affineTransform(const Mat4<Scalar>&      m,
+Vector<Scalar, 3> affineTransform(const Mat4<Scalar>& m,
                                   const Vector<Scalar, 3>& v)
 {
     const Scalar x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2] + m(0, 3);
@@ -791,7 +791,7 @@ Vector<Scalar, 3> affineTransform(const Mat4<Scalar>&      m,
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Vector<Scalar, 3> linearTransform(const Mat4<Scalar>&      m,
+Vector<Scalar, 3> linearTransform(const Mat4<Scalar>& m,
                                   const Vector<Scalar, 3>& v)
 {
     const Scalar x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2];
@@ -892,15 +892,15 @@ Mat3<Scalar> inverse(const Mat3<Scalar>& m)
 template <typename Scalar>
 bool symmetricEigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
                                  Scalar& eval2, Scalar& eval3,
-                                 Vector<Scalar, 3>&     evec1,
-                                 Vector<Scalar, 3>&     evec2,
-                                 Vector<Scalar, 3>&     evec3)
+                                 Vector<Scalar, 3>& evec1,
+                                 Vector<Scalar, 3>& evec2,
+                                 Vector<Scalar, 3>& evec3)
 {
     unsigned int i, j;
-    Scalar       theta, t, c, s;
+    Scalar theta, t, c, s;
     Mat3<Scalar> V = Mat3<Scalar>::identity();
     Mat3<Scalar> R;
-    Mat3<Scalar> A   = m;
+    Mat3<Scalar> A = m;
     const Scalar eps = 1e-10; //0.000001;
 
     int iterations = 100;
@@ -936,7 +936,7 @@ bool symmetricEigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
 
         // compute Jacobi-Rotation
         theta = 0.5 * (A(j, j) - A(i, i)) / A(i, j);
-        t     = 1.0 / (fabs(theta) + sqrt(1.0 + theta * theta));
+        t = 1.0 / (fabs(theta) + sqrt(1.0 + theta * theta));
         if (theta < 0.0)
             t = -t;
 
@@ -956,7 +956,7 @@ bool symmetricEigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
     {
 
         // sort and return
-        int    sorted[3];
+        int sorted[3];
         Scalar d[3] = {A(0, 0), A(1, 1), A(2, 2)};
 
         if (d[0] > d[1])

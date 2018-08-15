@@ -50,7 +50,7 @@ unsigned int PointKdTree::build(unsigned int maxHandles, unsigned int maxDepth)
 
     // init
     delete m_root;
-    m_root   = new Node(m_elements.begin(), m_elements.end());
+    m_root = new Node(m_elements.begin(), m_elements.end());
     m_nNodes = 0;
 
     // call recursive helper
@@ -78,9 +78,9 @@ void PointKdTree::buildRecurse(Node* node, unsigned int maxHandles,
     }
 
     // split longest side of bounding box
-    Point  bb     = bbox.max() - bbox.min();
+    Point bb = bbox.max() - bbox.min();
     Scalar length = bb[0];
-    int    axis   = 0;
+    int axis = 0;
     if (bb[1] > length)
         length = bb[axis = 1];
     if (bb[2] > length)
@@ -89,7 +89,7 @@ void PointKdTree::buildRecurse(Node* node, unsigned int maxHandles,
 
     // store cut dimension and value
     node->m_cutDimension = axis;
-    node->m_cutValue     = cv;
+    node->m_cutValue = cv;
 
     // partition for left and right child
     auto it =
@@ -97,7 +97,7 @@ void PointKdTree::buildRecurse(Node* node, unsigned int maxHandles,
 
     // create children
     m_nNodes += 2;
-    node->m_leftChild  = new Node(node->m_begin, it);
+    node->m_leftChild = new Node(node->m_begin, it);
     node->m_rightChild = new Node(it, node->m_end);
 
     // recurse to childen
@@ -111,8 +111,8 @@ int PointKdTree::nearest(const Point& p, Point& result, int& idx) const
 {
     // init data
     NearestNeighborData data;
-    data.m_ref       = p;
-    data.m_dist      = FLT_MAX;
+    data.m_ref = p;
+    data.m_dist = FLT_MAX;
     data.m_leafTests = 0;
 
     // recursive search
@@ -122,7 +122,7 @@ int PointKdTree::nearest(const Point& p, Point& result, int& idx) const
     data.m_dist = sqrt(data.m_dist);
 
     // set output params
-    idx    = data.m_nearest;
+    idx = data.m_nearest;
     result = m_pointSet.position(PointSet::Vertex(idx));
 
     return data.m_leafTests;
@@ -134,7 +134,7 @@ void PointKdTree::nearestRecurse(Node* node, NearestNeighborData& data) const
 {
     if (node->m_leftChild)
     {
-        int    cd  = node->m_cutDimension;
+        int cd = node->m_cutDimension;
         Scalar off = data.m_ref[cd] - node->m_cutValue;
 
         if (off > 0.0)
@@ -166,7 +166,7 @@ void PointKdTree::nearestRecurse(Node* node, NearestNeighborData& data) const
             dist = sqrnorm(it->m_point - data.m_ref);
             if (dist < data.m_dist)
             {
-                data.m_dist    = dist;
+                data.m_dist = dist;
                 data.m_nearest = it->m_idx;
             }
         }
@@ -179,10 +179,10 @@ int PointKdTree::kNearest(const Point& p, unsigned int k,
                           std::vector<int>& knn) const
 {
     KNearestNeighborData data;
-    data.m_ref  = p;
+    data.m_ref = p;
     data.m_dist = FLT_MAX;
     data.m_kNearest.insert(std::make_pair<int, float>(-1, FLT_MAX));
-    data.m_k         = k;
+    data.m_k = k;
     data.m_leafTests = 0;
 
     kNearestRecurse(m_root, data);
@@ -201,7 +201,7 @@ void PointKdTree::kNearestRecurse(Node* node, KNearestNeighborData& data) const
     // non-terminal node
     if (node->m_leftChild)
     {
-        int    cd  = node->m_cutDimension;
+        int cd = node->m_cutDimension;
         Scalar off = data.m_ref[cd] - node->m_cutValue;
 
         if (off > 0.0)
@@ -259,8 +259,8 @@ int PointKdTree::ball(const Point& p, Scalar radius,
     Scalar squaredRadius = radius * radius;
 
     BallData data;
-    data.m_ref       = p;
-    data.m_dist      = FLT_MAX;
+    data.m_ref = p;
+    data.m_dist = FLT_MAX;
     data.m_leafTests = 0;
 
     ballRecurse(m_root, data, squaredRadius, ball);
@@ -276,7 +276,7 @@ void PointKdTree::ballRecurse(Node* node, BallData& data, Scalar squaredRadius,
     // non-terminal node
     if (node->m_leftChild)
     {
-        int    cd  = node->m_cutDimension;
+        int cd = node->m_cutDimension;
         Scalar off = data.m_ref[cd] - node->m_cutValue;
 
         if (off > 0.0)

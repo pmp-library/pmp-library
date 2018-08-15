@@ -57,11 +57,10 @@ public:
     virtual bool loadMesh(const char* filename);
 
     //! load a texture from file \c filename
-    bool loadTexture(const char* filename,
-                     GLint format=GL_RGB,
-                     GLint minFilter=GL_LINEAR_MIPMAP_LINEAR,
-                     GLint magFilter=GL_LINEAR,
-                     GLint wrap=GL_CLAMP_TO_EDGE);
+    bool loadTexture(const char* filename, GLint format = GL_RGB,
+                     GLint minFilter = GL_LINEAR_MIPMAP_LINEAR,
+                     GLint magFilter = GL_LINEAR,
+                     GLint wrap = GL_CLAMP_TO_EDGE);
 
     //! update mesh normals and all buffers for OpenGL rendering.  call this
     //! function whenever you change either the vertex positions or the
@@ -78,9 +77,9 @@ public:
     virtual void keyboard(int key, int code, int action, int mod) override;
 
 protected:
-    SurfaceMeshGL m_mesh;     //!< the mesh
-    std::string   m_filename; //!< the current file
-    float         m_creaseAngle;
+    SurfaceMeshGL m_mesh;   //!< the mesh
+    std::string m_filename; //!< the current file
+    float m_creaseAngle;
 };
 
 //=============================================================================

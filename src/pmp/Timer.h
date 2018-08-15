@@ -82,12 +82,12 @@ public:
 
 private:
     typedef std::chrono::time_point<std::chrono::high_resolution_clock>
-                                          time_point;
+        time_point;
     typedef std::chrono::duration<double> duration;
 
     time_point m_startTime, m_endTime;
-    double     m_elapsed;
-    bool       m_isRunning;
+    double m_elapsed;
+    bool m_isRunning;
 };
 
 //=============================================================================

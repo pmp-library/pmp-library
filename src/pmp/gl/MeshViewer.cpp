@@ -86,11 +86,8 @@ bool MeshViewer::loadMesh(const char* filename)
 
 //-----------------------------------------------------------------------------
 
-bool MeshViewer::loadTexture(const char* filename,
-                             GLint format,
-                             GLint minFilter,
-                             GLint magFilter,
-                             GLint wrap)
+bool MeshViewer::loadTexture(const char* filename, GLint format,
+                             GLint minFilter, GLint magFilter, GLint wrap)
 {
     // load texture from file
     if (!m_mesh.loadTexture(filename, format, minFilter, magFilter, wrap))

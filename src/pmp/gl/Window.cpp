@@ -79,7 +79,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
 
     // now that we have a GL context, initialize GLEW
     glewExperimental = GL_TRUE;
-    GLenum err       = glewInit();
+    GLenum err = glewInit();
     if (err != GLEW_OK)
     {
         std::cerr << "Error initializing GLEW: " << glewGetErrorString(err)
@@ -101,8 +101,8 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwGetWindowSize(m_window, &windowWidth, &windowHeight);
     glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
     m_scaling = framebufferWidth / windowWidth;
-    m_width   = framebufferWidth;
-    m_height  = framebufferHeight;
+    m_width = framebufferWidth;
+    m_height = framebufferHeight;
     if (m_scaling != 1)
         std::cout << "highDPI scaling: " << m_scaling << std::endl;
 
@@ -129,55 +129,55 @@ void Window::initImGUI()
     ImFontConfig config;
     config.OversampleH = 2;
     config.OversampleV = 2;
-    ImGuiIO& io        = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO();
     io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
                                              LatoLatin_compressed_size, 14);
 
     // window style
-    ImGuiStyle& style    = ImGui::GetStyle();
+    ImGuiStyle& style = ImGui::GetStyle();
     style.WindowRounding = 4.0f;
-    style.FrameRounding  = 4.0f;
-    style.GrabMinSize    = 10.0f;
-    style.GrabRounding   = 4.0f;
+    style.FrameRounding = 4.0f;
+    style.GrabMinSize = 10.0f;
+    style.GrabRounding = 4.0f;
 
     // color scheme adapted from
     // https://github.com/ocornut/imgui/pull/511#issuecomment-175719267
-    style.Colors[ImGuiCol_Text]           = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_TextDisabled]   = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
-    style.Colors[ImGuiCol_WindowBg]       = ImVec4(0.90f, 0.90f, 0.90f, 0.70f);
-    style.Colors[ImGuiCol_ChildWindowBg]  = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-    style.Colors[ImGuiCol_PopupBg]        = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
-    style.Colors[ImGuiCol_Border]         = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
-    style.Colors[ImGuiCol_BorderShadow]   = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
-    style.Colors[ImGuiCol_FrameBg]        = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+    style.Colors[ImGuiCol_Text] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+    style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.90f, 0.90f, 0.90f, 0.70f);
+    style.Colors[ImGuiCol_ChildWindowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    style.Colors[ImGuiCol_PopupBg] = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
+    style.Colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
+    style.Colors[ImGuiCol_BorderShadow] = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
+    style.Colors[ImGuiCol_FrameBg] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
     style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_FrameBgActive]  = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
-    style.Colors[ImGuiCol_TitleBg]        = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
+    style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
+    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
     style.Colors[ImGuiCol_TitleBgCollapsed] =
         ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
     style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_MenuBarBg]     = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
-    style.Colors[ImGuiCol_ScrollbarBg]   = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
+    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+    style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
     style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
     style.Colors[ImGuiCol_ScrollbarGrabHovered] =
         ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
     style.Colors[ImGuiCol_ScrollbarGrabActive] =
         ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
-    style.Colors[ImGuiCol_ComboBg]    = ImVec4(0.86f, 0.86f, 0.86f, 0.99f);
-    style.Colors[ImGuiCol_CheckMark]  = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_ComboBg] = ImVec4(0.86f, 0.86f, 0.86f, 0.99f);
+    style.Colors[ImGuiCol_CheckMark] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
     style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
     style.Colors[ImGuiCol_SliderGrabActive] =
         ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Button]        = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
+    style.Colors[ImGuiCol_Button] = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
     style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_ButtonActive]  = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Header]        = ImVec4(0.16f, 0.62f, 0.87f, 0.31f);
+    style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_Header] = ImVec4(0.16f, 0.62f, 0.87f, 0.31f);
     style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_HeaderActive]  = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Column]        = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+    style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_Column] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
     style.Colors[ImGuiCol_ColumnHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
-    style.Colors[ImGuiCol_ColumnActive]  = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_ResizeGrip]    = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
+    style.Colors[ImGuiCol_ColumnActive] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_ResizeGrip] = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
     style.Colors[ImGuiCol_ResizeGripHovered] =
         ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
     style.Colors[ImGuiCol_ResizeGripActive] =
@@ -231,7 +231,7 @@ void Window::render_frame()
 {
 #if __EMSCRIPTEN__
     // determine correct canvas/framebuffer size
-    int    w, h, f;
+    int w, h, f;
     double dw, dh;
     emscripten_get_canvas_size(&w, &h, &f);
     emscripten_get_element_css_size(nullptr, &dw, &dh);
@@ -345,7 +345,7 @@ void Window::glfwScroll(GLFWwindow* window, double xoffset, double yoffset)
 
 void Window::glfwResize(GLFWwindow* /*window*/, int width, int height)
 {
-    m_instance->m_width  = width;
+    m_instance->m_width = width;
     m_instance->m_height = height;
     m_instance->resize(width, height);
 }

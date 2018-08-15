@@ -41,12 +41,12 @@ EdgeSetGL::EdgeSetGL()
 {
     // initialize GL buffers to zero
     m_vertexArrayObject = 0;
-    m_vertexBuffer      = 0;
-    m_edgeBuffer        = 0;
+    m_vertexBuffer = 0;
+    m_edgeBuffer = 0;
 
     // initialize buffer sizes
     m_nVertices = 0;
-    m_nEdges    = 0;
+    m_nEdges = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -126,9 +126,9 @@ void EdgeSetGL::draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
         return;
 
     // setup matrices
-    mat4 mv_matrix  = modelviewMatrix;
+    mat4 mv_matrix = modelviewMatrix;
     mat4 mvp_matrix = projectionMatrix * modelviewMatrix;
-    mat3 n_matrix   = inverse(transpose(linearPart(mv_matrix)));
+    mat3 n_matrix = inverse(transpose(linearPart(mv_matrix)));
 
     // setup shader
     m_phongShader.use();

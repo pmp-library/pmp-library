@@ -74,8 +74,8 @@ double cotanWeight(const SurfaceMesh& mesh, SurfaceMesh::Edge e)
     {
         const dvec3 p2 =
             (dvec3)mesh.position(mesh.toVertex(mesh.nextHalfedge(h0)));
-        const dvec3  d0   = p0 - p2;
-        const dvec3  d1   = p1 - p2;
+        const dvec3 d0 = p0 - p2;
+        const dvec3 d1 = p1 - p2;
         const double area = norm(cross(d0, d1));
         if (area > std::numeric_limits<double>::min())
         {
@@ -88,8 +88,8 @@ double cotanWeight(const SurfaceMesh& mesh, SurfaceMesh::Edge e)
     {
         const dvec3 p2 =
             (dvec3)mesh.position(mesh.toVertex(mesh.nextHalfedge(h1)));
-        const dvec3  d0   = p0 - p2;
-        const dvec3  d1   = p1 - p2;
+        const dvec3 d0 = p0 - p2;
+        const dvec3 d1 = p1 - p2;
         const double area = norm(cross(d0, d1));
         if (area > std::numeric_limits<double>::min())
         {
@@ -113,9 +113,9 @@ double voronoiArea(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
     if (!mesh.isIsolated(v))
     {
         SurfaceMesh::Halfedge h0, h1, h2;
-        dvec3                 P, Q, R, PQ, QR, PR;
-        double                dotP, dotQ, dotR, triArea;
-        double                cotQ, cotR;
+        dvec3 P, Q, R, PQ, QR, PR;
+        double dotP, dotQ, dotR, triArea;
+        double cotQ, cotR;
 
         for (auto h : mesh.halfedges(v))
         {
@@ -186,9 +186,9 @@ double voronoiAreaBarycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
 
     if (!mesh.isIsolated(v))
     {
-        const Point           P = mesh.position(v);
+        const Point P = mesh.position(v);
         SurfaceMesh::Halfedge h0, h1;
-        Point                 Q, R, PQ, PR;
+        Point Q, R, PQ, PR;
 
         for (auto h : mesh.halfedges(v))
         {
@@ -272,12 +272,12 @@ VertexCurvature vertexCurvature(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
     const Scalar area = voronoiArea(mesh, v);
     if (area > std::numeric_limits<Scalar>::min())
     {
-        c.mean  = Scalar(0.5) * norm(laplace(mesh, v));
+        c.mean = Scalar(0.5) * norm(laplace(mesh, v));
         c.gauss = (2.0 * M_PI - angleSum(mesh, v)) / area;
 
         const Scalar s = sqrt(std::max(Scalar(0.0), c.mean * c.mean - c.gauss));
-        c.min          = c.mean - s;
-        c.max          = c.mean + s;
+        c.min = c.mean - s;
+        c.max = c.mean + s;
 
         assert(!std::isnan(c.mean));
         assert(!std::isnan(c.gauss));

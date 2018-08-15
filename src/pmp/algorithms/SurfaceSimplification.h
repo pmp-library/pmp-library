@@ -92,12 +92,12 @@ private: //------------------------------------------------------ private types
 
         SurfaceMesh::Halfedge v0v1; // Halfedge to be collapsed
         SurfaceMesh::Halfedge v1v0; // Reverse halfedge
-        SurfaceMesh::Vertex   v0;   // Vertex to be removed
-        SurfaceMesh::Vertex   v1;   // Remaining vertex
-        SurfaceMesh::Face     fl;   // Left face
-        SurfaceMesh::Face     fr;   // Right face
-        SurfaceMesh::Vertex   vl;   // Left vertex
-        SurfaceMesh::Vertex   vr;   // Right vertex
+        SurfaceMesh::Vertex v0;     // Vertex to be removed
+        SurfaceMesh::Vertex v1;     // Remaining vertex
+        SurfaceMesh::Face fl;       // Left face
+        SurfaceMesh::Face fr;       // Right face
+        SurfaceMesh::Vertex vl;     // Left vertex
+        SurfaceMesh::Vertex vr;     // Right vertex
         SurfaceMesh::Halfedge v1vl, vlv0, v0vr, vrv1;
     };
 
@@ -106,7 +106,7 @@ private: //------------------------------------------------------ private types
     {
     public:
         HeapInterface(SurfaceMesh::VertexProperty<float> prio,
-                      SurfaceMesh::VertexProperty<int>   pos)
+                      SurfaceMesh::VertexProperty<int> pos)
             : m_prio(prio), m_pos(pos)
         {
         }
@@ -124,7 +124,7 @@ private: //------------------------------------------------------ private types
 
     private:
         SurfaceMesh::VertexProperty<float> m_prio;
-        SurfaceMesh::VertexProperty<int>   m_pos;
+        SurfaceMesh::VertexProperty<int> m_pos;
     };
 
     typedef HeapT<SurfaceMesh::Vertex, HeapInterface> PriorityQueue;
@@ -155,27 +155,27 @@ private: //------------------------------------------------------- private data
 
     bool m_initialized;
 
-    SurfaceMesh::VertexProperty<float>                 m_vpriority;
+    SurfaceMesh::VertexProperty<float> m_vpriority;
     SurfaceMesh::VertexProperty<SurfaceMesh::Halfedge> m_vtarget;
-    SurfaceMesh::VertexProperty<int>                   m_heapPos;
-    SurfaceMesh::VertexProperty<Quadric>               m_vquadric;
-    SurfaceMesh::FaceProperty<NormalCone>              m_normalCone;
-    SurfaceMesh::FaceProperty<Points>                  m_facePoints;
+    SurfaceMesh::VertexProperty<int> m_heapPos;
+    SurfaceMesh::VertexProperty<Quadric> m_vquadric;
+    SurfaceMesh::FaceProperty<NormalCone> m_normalCone;
+    SurfaceMesh::FaceProperty<Points> m_facePoints;
 
     SurfaceMesh::VertexProperty<Point> m_vpoint;
-    SurfaceMesh::FaceProperty<Point>   m_fnormal;
-    SurfaceMesh::VertexProperty<bool>  m_vselected;
-    SurfaceMesh::VertexProperty<bool>  m_vfeature;
-    SurfaceMesh::EdgeProperty<bool>    m_efeature;
+    SurfaceMesh::FaceProperty<Point> m_fnormal;
+    SurfaceMesh::VertexProperty<bool> m_vselected;
+    SurfaceMesh::VertexProperty<bool> m_vfeature;
+    SurfaceMesh::EdgeProperty<bool> m_efeature;
 
     PriorityQueue* m_queue;
 
-    bool         m_hasSelection;
-    bool         m_hasFeatures;
-    Scalar       m_normalDeviation;
-    Scalar       m_hausdorffError;
-    Scalar       m_aspectRatio;
-    Scalar       m_edgeLength;
+    bool m_hasSelection;
+    bool m_hasFeatures;
+    Scalar m_normalDeviation;
+    Scalar m_hausdorffError;
+    Scalar m_aspectRatio;
+    Scalar m_edgeLength;
     unsigned int m_maxValence;
 };
 

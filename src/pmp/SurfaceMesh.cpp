@@ -47,7 +47,7 @@ SurfaceMesh::SurfaceMesh() : EdgeSet()
     // allocate standard properties
     // same list is used in operator=() and assign()
     m_hfconn = addHalfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
-    m_fconn  = addFaceProperty<FaceConnectivity>("f:connectivity");
+    m_fconn = addFaceProperty<FaceConnectivity>("f:connectivity");
     m_fdeleted = addFaceProperty<bool>("f:deleted", false);
 
     m_deletedFaces = 0;
@@ -71,7 +71,7 @@ SurfaceMesh& SurfaceMesh::operator=(const SurfaceMesh& rhs)
         // property handles contain pointers, have to be reassigned
         m_hfconn =
             halfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
-        m_fconn    = faceProperty<FaceConnectivity>("f:connectivity");
+        m_fconn = faceProperty<FaceConnectivity>("f:connectivity");
         m_fdeleted = faceProperty<bool>("f:deleted");
 
         // how many elements are deleted?
@@ -95,12 +95,12 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
         // allocate standard properties
         m_hfconn =
             addHalfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
-        m_fconn    = addFaceProperty<FaceConnectivity>("f:connectivity");
+        m_fconn = addFaceProperty<FaceConnectivity>("f:connectivity");
         m_fdeleted = addFaceProperty<bool>("f:deleted", false);
 
         // copy properties from other mesh
-        m_hfconn.array()   = rhs.m_hfconn.array();
-        m_fconn.array()    = rhs.m_fconn.array();
+        m_hfconn.array() = rhs.m_hfconn.array();
+        m_fconn.array() = rhs.m_fconn.array();
         m_fdeleted.array() = rhs.m_fdeleted.array();
 
         // resize (needed by property containers)
@@ -118,7 +118,7 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
 bool SurfaceMesh::read(const std::string& filename, const IOOptions& options)
 {
     SurfaceMeshIO reader(options);
-    bool          success = reader.read(*this, filename);
+    bool success = reader.read(*this, filename);
 
     // try parent class if no reader is found
     if (!success)
@@ -132,10 +132,10 @@ bool SurfaceMesh::read(const std::string& filename, const IOOptions& options)
 //-----------------------------------------------------------------------------
 
 bool SurfaceMesh::write(const std::string& filename,
-                        const IOOptions&   options) const
+                        const IOOptions& options) const
 {
     SurfaceMeshIO writer(options);
-    bool          success = writer.write(*this, filename);
+    bool success = writer.write(*this, filename);
 
     // try parent class if no writer is found
     if (!success)
@@ -189,7 +189,7 @@ void SurfaceMesh::propertyStats() const
 
 void SurfaceMesh::adjustOutgoingHalfedge(Vertex v)
 {
-    Halfedge       h  = halfedge(v);
+    Halfedge h = halfedge(v);
     const Halfedge hh = h;
 
     if (h.isValid())
@@ -237,16 +237,16 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
     const size_t n(vertices.size());
     assert(n > 2);
 
-    Vertex   v;
-    size_t   i, ii, id;
+    Vertex v;
+    size_t i, ii, id;
     Halfedge innerNext, innerPrev, outerNext, outerPrev, boundaryNext,
         boundaryPrev, patchStart, patchEnd;
 
     // use global arrays to avoid new/delete of local arrays!!!
-    std::vector<Halfedge>& halfedges   = m_addFaceHalfedges;
-    std::vector<bool>&     isNew       = m_addFaceIsNew;
-    std::vector<bool>&     needsAdjust = m_addFaceNeedsAdjust;
-    NextCache&             nextCache   = m_addFaceNextCache;
+    std::vector<Halfedge>& halfedges = m_addFaceHalfedges;
+    std::vector<bool>& isNew = m_addFaceIsNew;
+    std::vector<bool>& needsAdjust = m_addFaceNeedsAdjust;
+    NextCache& nextCache = m_addFaceNextCache;
     halfedges.clear();
     halfedges.resize(n);
     isNew.clear();
@@ -266,7 +266,7 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
         }
 
         halfedges[i] = findHalfedge(vertices[i], vertices[ii]);
-        isNew[i]     = !halfedges[i].isValid();
+        isNew[i] = !halfedges[i].isValid();
 
         if (!isNew[i] && !isSurfaceBoundary(halfedges[i]))
         {
@@ -289,8 +289,8 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
 
                 // search a free gap
                 // free gap will be between boundaryPrev and boundaryNext
-                outerPrev    = oppositeHalfedge(innerNext);
-                outerNext    = oppositeHalfedge(innerPrev);
+                outerPrev = oppositeHalfedge(innerNext);
+                outerNext = oppositeHalfedge(innerPrev);
                 boundaryPrev = outerPrev;
                 do
                 {
@@ -311,7 +311,7 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
 
                 // other halfedges' handles
                 patchStart = nextHalfedge(innerPrev);
-                patchEnd   = prevHalfedge(innerNext);
+                patchEnd = prevHalfedge(innerNext);
 
                 // relink
                 nextCache.emplace_back(boundaryPrev, patchStart);
@@ -337,7 +337,7 @@ SurfaceMesh::Face SurfaceMesh::addFace(const std::vector<Vertex>& vertices)
     // setup halfedges
     for (i = 0, ii = 1; i < n; ++i, ++ii, ii %= n)
     {
-        v         = vertices[ii];
+        v = vertices[ii];
         innerPrev = halfedges[i];
         innerNext = halfedges[ii];
 
@@ -469,9 +469,9 @@ void SurfaceMesh::triangulate(Face f)
     // the triangles). The halfedge handles of the new triangles will point to
     // the old halfedges.
 
-    Halfedge baseH  = halfedge(f);
-    Vertex   startV = fromVertex(baseH);
-    Halfedge nextH  = nextHalfedge(baseH);
+    Halfedge baseH = halfedge(f);
+    Vertex startV = fromVertex(baseH);
+    Halfedge nextH = nextHalfedge(baseH);
 
     while (toVertex(nextHalfedge(nextH)) != startV)
     {
@@ -511,7 +511,7 @@ void SurfaceMesh::split(Face f, Vertex v)
     // old halfedges.
 
     Halfedge hend = halfedge(f);
-    Halfedge h    = nextHalfedge(hend);
+    Halfedge h = nextHalfedge(hend);
 
     Halfedge hold = newEdge(toVertex(hend), v);
 
@@ -666,7 +666,7 @@ SurfaceMesh::Halfedge SurfaceMesh::insertVertex(Halfedge h0, Vertex v)
     //   <------ <-------
     //     o0       o1
 
-    Vertex   v2 = toVertex(h0);
+    Vertex v2 = toVertex(h0);
     Halfedge o0 = oppositeHalfedge(h0);
 
     Halfedge o1 = EdgeSet::insertVertex(h0, v);
@@ -805,9 +805,9 @@ void SurfaceMesh::flip(Edge e)
 bool SurfaceMesh::isCollapseOk(Halfedge v0v1)
 {
     Halfedge v1v0(oppositeHalfedge(v0v1));
-    Vertex   v0(toVertex(v1v0));
-    Vertex   v1(toVertex(v0v1));
-    Vertex   vv, vl, vr;
+    Vertex v0(toVertex(v1v0));
+    Vertex v1(toVertex(v0v1));
+    Vertex vv, vl, vr;
     Halfedge h1, h2;
 
     // the edges v1-vl and vl-v0 must not be both boundary edges
@@ -882,7 +882,7 @@ void SurfaceMesh::removeEdge(Halfedge h)
     Halfedge hn = nextHalfedge(h);
     Halfedge hp = prevHalfedge(h);
 
-    Halfedge o  = oppositeHalfedge(h);
+    Halfedge o = oppositeHalfedge(h);
     Halfedge on = nextHalfedge(o);
     Halfedge op = prevHalfedge(o);
 
@@ -1059,7 +1059,7 @@ void SurfaceMesh::deleteFace(Face f)
         auto delit(deletedEdges.begin()), delend(deletedEdges.end());
 
         Halfedge h0, h1, next0, next1, prev0, prev1;
-        Vertex   v0, v1;
+        Vertex v0, v1;
 
         for (; delit != delend; ++delit)
         {
@@ -1086,7 +1086,7 @@ void SurfaceMesh::beginGarbage()
 
     int i, i0, i1, nF(facesSize());
 
-    Face     f;
+    Face f;
     Halfedge h;
 
     // setup handle mapping
@@ -1094,7 +1094,7 @@ void SurfaceMesh::beginGarbage()
     const HalfedgeProperty<Halfedge> hmap =
         getHalfedgeProperty<Halfedge>("h:garbage-collection");
 
-    for (i            = 0; i < nF; ++i)
+    for (i = 0; i < nF; ++i)
         fmap[Face(i)] = Face(i);
 
     // remove deleted faces

@@ -44,11 +44,11 @@ SurfaceSimplification::SurfaceSimplification(SurfaceMesh& mesh)
     : m_mesh(mesh), m_initialized(false), m_queue(nullptr)
 
 {
-    m_aspectRatio     = 0;
-    m_edgeLength      = 0;
-    m_maxValence      = 0;
+    m_aspectRatio = 0;
+    m_edgeLength = 0;
+    m_maxValence = 0;
     m_normalDeviation = 0;
-    m_hausdorffError  = 0;
+    m_hausdorffError = 0;
 
     // add properties
     m_vquadric = m_mesh.addVertexProperty<Quadric>("v:quadric");
@@ -75,18 +75,18 @@ SurfaceSimplification::~SurfaceSimplification()
 
 void SurfaceSimplification::initialize(Scalar aspectRatio, Scalar edgeLength,
                                        unsigned int maxValence,
-                                       Scalar       normalDeviation,
-                                       Scalar       hausdorffError)
+                                       Scalar normalDeviation,
+                                       Scalar hausdorffError)
 {
     if (!m_mesh.isTriangleMesh())
         return;
 
     // store parameters
-    m_aspectRatio     = aspectRatio;
-    m_maxValence      = maxValence;
-    m_edgeLength      = edgeLength;
+    m_aspectRatio = aspectRatio;
+    m_maxValence = maxValence;
+    m_edgeLength = edgeLength;
     m_normalDeviation = normalDeviation / 180.0 * M_PI;
-    m_hausdorffError  = hausdorffError;
+    m_hausdorffError = hausdorffError;
 
     // properties
     if (m_normalDeviation > 0.0)
@@ -100,7 +100,7 @@ void SurfaceSimplification::initialize(Scalar aspectRatio, Scalar edgeLength,
 
     // vertex selection
     m_hasSelection = false;
-    m_vselected    = m_mesh.getVertexProperty<bool>("v:selected");
+    m_vselected = m_mesh.getVertexProperty<bool>("v:selected");
     if (m_vselected)
     {
         for (auto v : m_mesh.vertices())
@@ -115,8 +115,8 @@ void SurfaceSimplification::initialize(Scalar aspectRatio, Scalar edgeLength,
 
     // feature vertices/edges
     m_hasFeatures = false;
-    m_vfeature    = m_mesh.getVertexProperty<bool>("v:feature");
-    m_efeature    = m_mesh.getEdgeProperty<bool>("e:feature");
+    m_vfeature = m_mesh.getVertexProperty<bool>("v:feature");
+    m_efeature = m_mesh.getEdgeProperty<bool>("e:feature");
     if (m_vfeature && m_efeature)
     {
         for (auto v : m_mesh.vertices())
@@ -180,15 +180,15 @@ void SurfaceSimplification::simplify(unsigned int nVertices)
 
     unsigned int nv(m_mesh.nVertices());
 
-    std::vector<SurfaceMesh::Vertex>           oneRing;
+    std::vector<SurfaceMesh::Vertex> oneRing;
     std::vector<SurfaceMesh::Vertex>::iterator orIt, orEnd;
-    SurfaceMesh::Halfedge                      h;
-    SurfaceMesh::Vertex                        v;
+    SurfaceMesh::Halfedge h;
+    SurfaceMesh::Vertex v;
 
     // add properties for priority queue
     m_vpriority = m_mesh.addVertexProperty<float>("v:prio");
-    m_heapPos   = m_mesh.addVertexProperty<int>("v:heap");
-    m_vtarget   = m_mesh.addVertexProperty<SurfaceMesh::Halfedge>("v:target");
+    m_heapPos = m_mesh.addVertexProperty<int>("v:heap");
+    m_vtarget = m_mesh.addVertexProperty<SurfaceMesh::Halfedge>("v:target");
 
     // build priority queue
     HeapInterface hi(m_vpriority, m_heapPos);
@@ -245,7 +245,7 @@ void SurfaceSimplification::simplify(unsigned int nVertices)
 
 void SurfaceSimplification::enqueueVertex(SurfaceMesh::Vertex v)
 {
-    float                 prio, minPrio(FLT_MAX);
+    float prio, minPrio(FLT_MAX);
     SurfaceMesh::Halfedge minH;
 
     // find best out-going halfedge
@@ -258,7 +258,7 @@ void SurfaceSimplification::enqueueVertex(SurfaceMesh::Vertex v)
             if (prio != -1.0 && prio < minPrio)
             {
                 minPrio = prio;
-                minH    = h;
+                minH = h;
             }
         }
     }
@@ -267,7 +267,7 @@ void SurfaceSimplification::enqueueVertex(SurfaceMesh::Vertex v)
     if (minH.isValid())
     {
         m_vpriority[v] = minPrio;
-        m_vtarget[v]   = minH;
+        m_vtarget[v] = minH;
 
         if (m_queue->isStored(v))
             m_queue->update(v);
@@ -282,7 +282,7 @@ void SurfaceSimplification::enqueueVertex(SurfaceMesh::Vertex v)
             m_queue->remove(v);
 
         m_vpriority[v] = -1;
-        m_vtarget[v]   = minH;
+        m_vtarget[v] = minH;
     }
 }
 
@@ -327,7 +327,7 @@ bool SurfaceSimplification::isCollapseLegal(const CollapseData& cd)
     {
         unsigned int val0 = m_mesh.valence(cd.v0);
         unsigned int val1 = m_mesh.valence(cd.v1);
-        unsigned int val  = val0 + val1 - 1;
+        unsigned int val = val0 + val1 - 1;
         if (cd.fl.isValid())
             --val;
         if (cd.fr.isValid())
@@ -420,10 +420,10 @@ bool SurfaceSimplification::isCollapseLegal(const CollapseData& cd)
             {
                 // worst aspect ratio after collapse
                 m_vpoint[cd.v0] = p1;
-                ar1             = std::max(ar1, aspectRatio(f));
+                ar1 = std::max(ar1, aspectRatio(f));
                 // worst aspect ratio before collapse
                 m_vpoint[cd.v0] = p0;
-                ar0             = std::max(ar0, aspectRatio(f));
+                ar0 = std::max(ar0, aspectRatio(f));
             }
         }
 
@@ -436,7 +436,7 @@ bool SurfaceSimplification::isCollapseLegal(const CollapseData& cd)
     if (m_hausdorffError)
     {
         Points points;
-        bool   ok;
+        bool ok;
 
         // collect points to be tested
         for (auto f : m_mesh.faces(cd.v0))
@@ -520,9 +520,9 @@ void SurfaceSimplification::postprocessCollapse(const CollapseData& cd)
     // update Hausdorff error
     if (m_hausdorffError)
     {
-        Points                                  points;
-        Scalar                                  d, dd;
-        SurfaceMesh::Face                       f, ff;
+        Points points;
+        Scalar d, dd;
+        SurfaceMesh::Face f, ff;
         SurfaceMesh::FaceAroundVertexCirculator vfIt, vfEnd;
 
         // collect points to be distributed
@@ -606,7 +606,7 @@ Scalar SurfaceSimplification::aspectRatio(SurfaceMesh::Face f) const
 //-----------------------------------------------------------------------------
 
 Scalar SurfaceSimplification::distance(SurfaceMesh::Face f,
-                                       const Point&      p) const
+                                       const Point& p) const
 {
     SurfaceMesh::VertexAroundFaceCirculator fvit = m_mesh.vertices(f);
 
@@ -621,23 +621,23 @@ Scalar SurfaceSimplification::distance(SurfaceMesh::Face f,
 
 //-----------------------------------------------------------------------------
 
-SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh&         sm,
+SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh& sm,
                                                   SurfaceMesh::Halfedge h)
     : mesh(sm)
 {
     v0v1 = h;
     v1v0 = mesh.oppositeHalfedge(v0v1);
-    v0   = mesh.toVertex(v1v0);
-    v1   = mesh.toVertex(v0v1);
-    fl   = mesh.face(v0v1);
-    fr   = mesh.face(v1v0);
+    v0 = mesh.toVertex(v1v0);
+    v1 = mesh.toVertex(v0v1);
+    fl = mesh.face(v0v1);
+    fr = mesh.face(v1v0);
 
     // get vl
     if (fl.isValid())
     {
         v1vl = mesh.nextHalfedge(v0v1);
         vlv0 = mesh.nextHalfedge(v1vl);
-        vl   = mesh.toVertex(v1vl);
+        vl = mesh.toVertex(v1vl);
     }
 
     // get vr
@@ -645,7 +645,7 @@ SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh&         sm,
     {
         v0vr = mesh.nextHalfedge(v1v0);
         vrv1 = mesh.prevHalfedge(v0vr);
-        vr   = mesh.fromVertex(vrv1);
+        vr = mesh.fromVertex(vrv1);
     }
 }
 

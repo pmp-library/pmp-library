@@ -84,10 +84,10 @@ private:
     Point weightedAverageNormal(const Point& x, std::vector<int>& ball) const;
 
 private:
-    PointSet&    m_pointSet; //!< the point set
-    Scalar       m_radius;   //!< radius for ball queries
-    Scalar       m_epsilon;  //!< projection error threshold
-    unsigned int m_maxIter;  //!< maximal number of iterations threshold
+    PointSet& m_pointSet;   //!< the point set
+    Scalar m_radius;        //!< radius for ball queries
+    Scalar m_epsilon;       //!< projection error threshold
+    unsigned int m_maxIter; //!< maximal number of iterations threshold
 };
 
 //=============================================================================

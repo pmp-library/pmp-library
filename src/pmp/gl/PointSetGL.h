@@ -76,7 +76,7 @@ private:
     Shader m_phongShader;
 
     //! material properties
-    vec3  m_frontColor, m_backColor;
+    vec3 m_frontColor, m_backColor;
     float m_ambient, m_diffuse, m_specular, m_shininess;
 };
 

@@ -73,8 +73,8 @@ void Viewer::processImGUI()
         ImGui::Spacing();
 
         static float timestep = 0.001;
-        float        lb       = uniformLaplace ? 1.0 : 0.001;
-        float        ub       = uniformLaplace ? 100.0 : 0.1;
+        float lb = uniformLaplace ? 1.0 : 0.001;
+        float ub = uniformLaplace ? 100.0 : 0.1;
         ImGui::PushItemWidth(100);
         ImGui::SliderFloat("TimeStep", &timestep, lb, ub);
         ImGui::PopItemWidth();

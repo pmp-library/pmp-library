@@ -66,7 +66,7 @@ public:
     virtual void keyboard(int key, int code, int action, int mod) override;
 
 protected:
-    EdgeSetGL   m_edgeSet;  //!< the edge set
+    EdgeSetGL m_edgeSet;    //!< the edge set
     std::string m_filename; //!< the current file
 };
 

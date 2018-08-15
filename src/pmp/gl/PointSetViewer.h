@@ -65,7 +65,7 @@ public:
     void keyboard(int key, int scancode, int action, int mod);
 
 protected:
-    PointSetGL  m_pointSet; //!< the point set
+    PointSetGL m_pointSet;  //!< the point set
     std::string m_filename; //!< the current file
 };
 

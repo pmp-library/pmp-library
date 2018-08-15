@@ -97,8 +97,8 @@ size_t MemoryUsage::currentSize()
 
 #elif defined(__linux__)
 
-    long  rss = 0;
-    FILE* fp  = nullptr;
+    long rss = 0;
+    FILE* fp = nullptr;
 
     if ((fp = fopen("/proc/self/statm", "r")) == nullptr)
     {
@@ -119,7 +119,7 @@ size_t MemoryUsage::currentSize()
 #elif defined(__APPLE__)
 
     struct mach_task_basic_info info;
-    mach_msg_type_number_t      infoCount = MACH_TASK_BASIC_INFO_COUNT;
+    mach_msg_type_number_t infoCount = MACH_TASK_BASIC_INFO_COUNT;
     auto ret = task_info(mach_task_self(), MACH_TASK_BASIC_INFO,
                          (task_info_t)&info, &infoCount);
     if (ret != KERN_SUCCESS)

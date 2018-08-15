@@ -44,10 +44,10 @@ EdgeSetSubdivision::EdgeSetSubdivision(EdgeSet& edgeSet) : m_edgeSet(edgeSet)
 void EdgeSetSubdivision::subdivide()
 {
     // get/add properties
-    auto points   = m_edgeSet.getVertexProperty<Point>("v:point");
+    auto points = m_edgeSet.getVertexProperty<Point>("v:point");
     auto newPoint = m_edgeSet.addEdgeProperty<Point>("v:newPoint");
 
-    EdgeSet::Vertex   v0, v1, v2, v3;
+    EdgeSet::Vertex v0, v1, v2, v3;
     EdgeSet::Halfedge h;
 
     for (auto e : m_edgeSet.edges())

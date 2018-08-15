@@ -93,11 +93,11 @@ private: //------------------------------------------------------- private types
     {
         Element(const Point& p, int idx) : m_point(p), m_idx(idx) {}
         Point m_point;
-        int   m_idx;
+        int m_idx;
     };
 
-    typedef std::vector<Element>     Elements;
-    typedef Elements::iterator       ElementIter;
+    typedef std::vector<Element> Elements;
+    typedef Elements::iterator ElementIter;
     typedef Elements::const_iterator ConstElementIter;
 
     //! Functor for partitioning with regard to a splitting plane
@@ -114,15 +114,15 @@ private: //------------------------------------------------------- private types
         }
 
         unsigned char m_cutDimension;
-        Scalar        m_cutValue;
+        Scalar m_cutValue;
     };
 
     //! Store nearest neighbor information
     struct NearestNeighborData
     {
-        Point        m_ref;       //!< The query point
-        Scalar       m_dist;      //!< The distance to the query point
-        int          m_nearest;   //!< The index of the nearest point
+        Point m_ref;              //!< The query point
+        Scalar m_dist;            //!< The distance to the query point
+        int m_nearest;            //!< The index of the nearest point
         unsigned int m_leafTests; //!< The number of leaf tests performed
     };
 
@@ -144,18 +144,18 @@ private: //------------------------------------------------------- private types
     //! Store kNN information
     struct KNearestNeighborData
     {
-        Point         m_ref;       //!< The query point
-        Scalar        m_dist;      //!< The distance to the query point
-        PriorityQueue m_kNearest;  //!< The priority queue
-        size_t        m_k;         //!< The number of neighbors
-        unsigned int  m_leafTests; //!< The number of leaf tests performed
+        Point m_ref;              //!< The query point
+        Scalar m_dist;            //!< The distance to the query point
+        PriorityQueue m_kNearest; //!< The priority queue
+        size_t m_k;               //!< The number of neighbors
+        unsigned int m_leafTests; //!< The number of leaf tests performed
     };
 
     //! Store ball information
     struct BallData
     {
-        Point        m_ref;       //!< The query point
-        Scalar       m_dist;      //!< The distance to the query point
+        Point m_ref;              //!< The query point
+        Scalar m_dist;            //!< The distance to the query point
         unsigned int m_leafTests; //!< The number of leaf tests performed
     };
 
@@ -176,12 +176,12 @@ private: //------------------------------------------------------- private types
             delete m_rightChild;
         }
 
-        Node*         m_leftChild;
-        Node*         m_rightChild;
-        ElementIter   m_begin;
-        ElementIter   m_end;
+        Node* m_leftChild;
+        Node* m_rightChild;
+        ElementIter m_begin;
+        ElementIter m_end;
         unsigned char m_cutDimension;
-        Scalar        m_cutValue;
+        Scalar m_cutValue;
     };
 
 private: //----------------------------------------------------- private methods
@@ -200,9 +200,9 @@ private: //----------------------------------------------------- private methods
 
 private: //-------------------------------------------------------- private data
     const PointSet& m_pointSet; //!< The underlying points
-    Elements        m_elements; //!< A vector of elements
-    Node*           m_root;     //!< The root of the tree
-    unsigned int    m_nNodes;   //!< The number of nodes
+    Elements m_elements;        //!< A vector of elements
+    Node* m_root;               //!< The root of the tree
+    unsigned int m_nNodes;      //!< The number of nodes
 };
 
 //=============================================================================

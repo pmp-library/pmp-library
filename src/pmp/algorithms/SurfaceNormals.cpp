@@ -35,10 +35,10 @@ namespace pmp {
 
 //=============================================================================
 
-Normal SurfaceNormals::computeVertexNormal(const SurfaceMesh&  mesh,
+Normal SurfaceNormals::computeVertexNormal(const SurfaceMesh& mesh,
                                            SurfaceMesh::Vertex v)
 {
-    Point                 nn(0, 0, 0);
+    Point nn(0, 0, 0);
     SurfaceMesh::Halfedge h = mesh.halfedge(v);
 
     if (h.isValid())
@@ -46,9 +46,9 @@ Normal SurfaceNormals::computeVertexNormal(const SurfaceMesh&  mesh,
         auto vpoint = mesh.getVertexProperty<Point>("v:point");
 
         const SurfaceMesh::Halfedge hend = h;
-        const Point                 p0   = vpoint[v];
+        const Point p0 = vpoint[v];
 
-        Point  n, p1, p2;
+        Point n, p1, p2;
         Scalar cosine, angle, denom;
 
         do
@@ -70,7 +70,7 @@ Normal SurfaceNormals::computeVertexNormal(const SurfaceMesh&  mesh,
                         cosine = -1.0;
                     else if (cosine > 1.0)
                         cosine = 1.0;
-                    angle      = acos(cosine);
+                    angle = acos(cosine);
 
                     n = cross(p1, p2);
 
@@ -96,17 +96,17 @@ Normal SurfaceNormals::computeVertexNormal(const SurfaceMesh&  mesh,
 //-----------------------------------------------------------------------------
 
 Normal SurfaceNormals::computeFaceNormal(const SurfaceMesh& mesh,
-                                         SurfaceMesh::Face  f)
+                                         SurfaceMesh::Face f)
 {
-    SurfaceMesh::Halfedge h    = mesh.halfedge(f);
+    SurfaceMesh::Halfedge h = mesh.halfedge(f);
     SurfaceMesh::Halfedge hend = h;
 
     auto vpoint = mesh.getVertexProperty<Point>("v:point");
 
     Point p0 = vpoint[mesh.toVertex(h)];
-    h        = mesh.nextHalfedge(h);
+    h = mesh.nextHalfedge(h);
     Point p1 = vpoint[mesh.toVertex(h)];
-    h        = mesh.nextHalfedge(h);
+    h = mesh.nextHalfedge(h);
     Point p2 = vpoint[mesh.toVertex(h)];
 
     if (mesh.nextHalfedge(h) == hend) // face is a triangle
@@ -121,7 +121,7 @@ Normal SurfaceNormals::computeFaceNormal(const SurfaceMesh& mesh,
         do
         {
             n += cross(p2 - p1, p0 - p1);
-            h  = mesh.nextHalfedge(h);
+            h = mesh.nextHalfedge(h);
             p0 = p1;
             p1 = p2;
             p2 = vpoint[mesh.toVertex(h)];
@@ -133,26 +133,26 @@ Normal SurfaceNormals::computeFaceNormal(const SurfaceMesh& mesh,
 
 //-----------------------------------------------------------------------------
 
-Normal SurfaceNormals::computeCornerNormal(const SurfaceMesh&    mesh,
+Normal SurfaceNormals::computeCornerNormal(const SurfaceMesh& mesh,
                                            SurfaceMesh::Halfedge h,
-                                           Scalar                creaseAngle)
+                                           Scalar creaseAngle)
 {
     // avoid numerical problems
     if (creaseAngle < 0.001)
         creaseAngle = 0.001;
 
     const Scalar cosCreaseAngle = cos(creaseAngle);
-    Point        nn(0, 0, 0);
+    Point nn(0, 0, 0);
 
     if (!mesh.isSurfaceBoundary(h))
     {
         auto vpoint = mesh.getVertexProperty<Point>("v:point");
 
         const SurfaceMesh::Halfedge hend = h;
-        const SurfaceMesh::Vertex   v0   = mesh.toVertex(h);
-        const Point                 p0   = vpoint[v0];
+        const SurfaceMesh::Vertex v0 = mesh.toVertex(h);
+        const Point p0 = vpoint[v0];
 
-        Point  n, p1, p2;
+        Point n, p1, p2;
         Scalar cosine, angle, denom;
 
         // compute normal of h's face
@@ -192,7 +192,7 @@ Normal SurfaceNormals::computeCornerNormal(const SurfaceMesh&    mesh,
                                 cosine = -1.0;
                             else if (cosine > 1.0)
                                 cosine = 1.0;
-                            angle      = acos(cosine);
+                            angle = acos(cosine);
 
                             n *= angle;
                             nn += n;

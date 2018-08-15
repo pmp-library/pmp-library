@@ -51,12 +51,12 @@ public:
     SurfaceSmoothing(SurfaceMesh& mesh) : m_mesh(mesh){};
 
     //! Perform \c iters iterations of explicit Laplacian smoothing.
-    void explicitSmoothing(unsigned int iters             = 10,
-                           bool         useUniformLaplace = false);
+    void explicitSmoothing(unsigned int iters = 10,
+                           bool useUniformLaplace = false);
 
     //! Perform implicit Laplacian smoothing with \c timestep.
-    void implicitSmoothing(Scalar timestep          = 0.001,
-                           bool   useUniformLaplace = false);
+    void implicitSmoothing(Scalar timestep = 0.001,
+                           bool useUniformLaplace = false);
 
 private:
     //! the mesh

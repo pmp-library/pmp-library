@@ -41,11 +41,11 @@ PointSet::PointSet() : GeometryObject()
 {
     // allocate standard properties
     // same list is used in operator=() and assign()
-    m_vpoint   = addVertexProperty<Point>("v:point");
+    m_vpoint = addVertexProperty<Point>("v:point");
     m_vdeleted = addVertexProperty<bool>("v:deleted", false);
 
     m_deletedVertices = 0;
-    m_garbage         = false;
+    m_garbage = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -64,12 +64,12 @@ PointSet& PointSet::operator=(const PointSet& rhs)
         m_vprops = rhs.m_vprops;
 
         // property handles contain pointers, have to be reassigned
-        m_vpoint   = vertexProperty<Point>("v:point");
+        m_vpoint = vertexProperty<Point>("v:point");
         m_vdeleted = vertexProperty<bool>("v:deleted");
 
         // how many elements are deleted?
         m_deletedVertices = rhs.m_deletedVertices;
-        m_garbage         = rhs.m_garbage;
+        m_garbage = rhs.m_garbage;
     }
 
     return *this;
@@ -87,11 +87,11 @@ PointSet& PointSet::assign(const PointSet& rhs)
         m_vprops.clear();
 
         // allocate standard properties
-        m_vpoint   = addVertexProperty<Point>("v:point");
+        m_vpoint = addVertexProperty<Point>("v:point");
         m_vdeleted = addVertexProperty<bool>("v:deleted", false);
 
         // copy properties from other point set
-        m_vpoint.array()   = rhs.m_vpoint.array();
+        m_vpoint.array() = rhs.m_vpoint.array();
         m_vdeleted.array() = rhs.m_vdeleted.array();
 
         // resize (needed by property containers)
@@ -99,7 +99,7 @@ PointSet& PointSet::assign(const PointSet& rhs)
 
         // how many elements are deleted?
         m_deletedVertices = rhs.m_deletedVertices;
-        m_garbage         = rhs.m_garbage;
+        m_garbage = rhs.m_garbage;
     }
 
     return *this;
@@ -116,7 +116,7 @@ bool PointSet::read(const std::string& filename, const IOOptions& options)
 //-----------------------------------------------------------------------------
 
 bool PointSet::write(const std::string& filename,
-                     const IOOptions&   options) const
+                     const IOOptions& options) const
 {
     PointSetIO writer(options);
     return writer.write(*this, filename);
@@ -131,7 +131,7 @@ void PointSet::clear()
     freeMemory();
 
     m_deletedVertices = 0;
-    m_garbage         = false;
+    m_garbage = false;
 
     GeometryObject::clear();
 }
@@ -197,7 +197,7 @@ void PointSet::beginGarbage()
     // setup handle mapping
     VertexProperty<Vertex> vmap =
         addVertexProperty<Vertex>("v:garbage-collection");
-    for (int i          = 0; i < nV; ++i)
+    for (int i = 0; i < nV; ++i)
         vmap[Vertex(i)] = Vertex(i);
 
     // remove deleted vertices

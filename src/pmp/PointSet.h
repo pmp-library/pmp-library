@@ -140,7 +140,7 @@ public:
         }
 
     private:
-        Vertex          m_hnd;
+        Vertex m_hnd;
         const PointSet* m_ps;
     };
 
@@ -190,12 +190,12 @@ public:
     //! read point set from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
     virtual bool read(const std::string& filename,
-                      const IOOptions&   options = IOOptions());
+                      const IOOptions& options = IOOptions());
 
     //! write point set to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
     virtual bool write(const std::string& filename,
-                       const IOOptions&   options = IOOptions()) const;
+                       const IOOptions& options = IOOptions()) const;
 
     //!@}
     //! \name Add new elements by hand
@@ -247,7 +247,7 @@ public:
     //! invalid property
     template <class T>
     VertexProperty<T> addVertexProperty(const std::string& name,
-                                        const T            t = T())
+                                        const T t = T())
     {
         return VertexProperty<T>(m_vprops.add<T>(name, t));
     }
@@ -354,10 +354,10 @@ protected:
     //! \name Protected Members
     //!@{
 
-    PropertyContainer     m_vprops;   //!< property container for vertices
-    VertexProperty<Point> m_vpoint;   //!< point coordinates
-    VertexProperty<bool>  m_vdeleted; //!< for marking deleted vertices
-    size_t                m_deletedVertices; //!< number of deleted vertices
+    PropertyContainer m_vprops;      //!< property container for vertices
+    VertexProperty<Point> m_vpoint;  //!< point coordinates
+    VertexProperty<bool> m_vdeleted; //!< for marking deleted vertices
+    size_t m_deletedVertices;        //!< number of deleted vertices
 
     //!@}
 

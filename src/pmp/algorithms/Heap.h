@@ -151,7 +151,7 @@ public:
     //! check heap condition
     bool check()
     {
-        bool         ok(true);
+        bool ok(true);
         unsigned int i, j;
         for (i = 0; i < size(); ++i)
         {
@@ -178,7 +178,7 @@ private:
     //! Upheap. Establish heap property.
     void upheap(unsigned int idx)
     {
-        HeapEntry    h = entry(idx);
+        HeapEntry h = entry(idx);
         unsigned int parentIdx;
 
         while ((idx > 0) && m_interface.less(h, entry(parentIdx = parent(idx))))
@@ -193,7 +193,7 @@ private:
     //! Downheap. Establish heap property.
     void downheap(unsigned int idx)
     {
-        HeapEntry    h = entry(idx);
+        HeapEntry h = entry(idx);
         unsigned int childIdx;
         unsigned int s = size();
 

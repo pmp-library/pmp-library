@@ -81,13 +81,13 @@ public:
         {
             // new angle
             Scalar centerAngle = acos(dp);
-            Scalar minAngle    = std::min(-m_angle, centerAngle - nc.m_angle);
-            Scalar maxAngle    = std::max(m_angle, centerAngle + nc.m_angle);
-            m_angle            = 0.5 * (maxAngle - minAngle);
+            Scalar minAngle = std::min(-m_angle, centerAngle - nc.m_angle);
+            Scalar maxAngle = std::max(m_angle, centerAngle + nc.m_angle);
+            m_angle = 0.5 * (maxAngle - minAngle);
 
             // axis by SLERP
             Scalar axisAngle = 0.5 * (minAngle + maxAngle);
-            m_centerNormal   = ((m_centerNormal * sin(centerAngle - axisAngle) +
+            m_centerNormal = ((m_centerNormal * sin(centerAngle - axisAngle) +
                                nc.m_centerNormal * sin(axisAngle)) /
                               sin(centerAngle));
         }

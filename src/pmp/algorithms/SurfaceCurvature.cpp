@@ -58,7 +58,7 @@ void SurfaceCurvature::analyze(unsigned int postSmoothingSteps)
     Scalar kmin, kmax, mean, gauss;
     Scalar area, sumAngles;
     Scalar weight, sumWeights;
-    Point  p0, p1, p2, laplace;
+    Point p0, p1, p2, laplace;
 
     // cotan weight per edge
     auto cotan = m_mesh.addEdgeProperty<double>("curv:cotan");
@@ -75,10 +75,10 @@ void SurfaceCurvature::analyze(unsigned int postSmoothingSteps)
 
         if (!m_mesh.isIsolated(v) && !m_mesh.isSurfaceBoundary(v))
         {
-            laplace    = Point(0.0);
+            laplace = Point(0.0);
             sumWeights = 0.0;
-            sumAngles  = 0.0;
-            p0         = m_mesh.position(v);
+            sumAngles = 0.0;
+            p0 = m_mesh.position(v);
 
             // Voronoi area
             area = voronoiArea(m_mesh, v);
@@ -103,12 +103,12 @@ void SurfaceCurvature::analyze(unsigned int postSmoothingSteps)
             laplace -= sumWeights * m_mesh.position(v);
             laplace /= Scalar(2.0) * area;
 
-            mean  = Scalar(0.5) * norm(laplace);
+            mean = Scalar(0.5) * norm(laplace);
             gauss = (2.0 * M_PI - sumAngles) / area;
 
             const Scalar s = sqrt(std::max(Scalar(0.0), mean * mean - gauss));
-            kmin           = mean - s;
-            kmax           = mean + s;
+            kmin = mean - s;
+            kmax = mean + s;
         }
 
         m_minCurvature[v] = kmin;
@@ -155,19 +155,19 @@ void SurfaceCurvature::analyze(unsigned int postSmoothingSteps)
 //-----------------------------------------------------------------------------
 
 void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
-                                     bool         twoRingNeighborhood)
+                                     bool twoRingNeighborhood)
 {
-    auto area   = m_mesh.addVertexProperty<double>("curv:area", 0.0);
+    auto area = m_mesh.addVertexProperty<double>("curv:area", 0.0);
     auto normal = m_mesh.addFaceProperty<dvec3>("curv:normal");
-    auto evec   = m_mesh.addEdgeProperty<dvec3>("curv:evec", dvec3(0, 0, 0));
-    auto angle  = m_mesh.addEdgeProperty<double>("curv:angle", 0.0);
+    auto evec = m_mesh.addEdgeProperty<dvec3>("curv:evec", dvec3(0, 0, 0));
+    auto angle = m_mesh.addEdgeProperty<double>("curv:angle", 0.0);
 
-    dvec3  p0, p1, n0, n1, ev;
+    dvec3 p0, p1, n0, n1, ev;
     double l, A, beta, a1, a2, a3;
-    dmat3  tensor;
+    dmat3 tensor;
 
     double eval1, eval2, eval3, kmin, kmax;
-    dvec3  evec1, evec2, evec3;
+    dvec3 evec1, evec2, evec3;
 
     std::vector<SurfaceMesh::Vertex> neighborhood;
     neighborhood.reserve(15);
@@ -201,7 +201,7 @@ void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
             ev /= l;
             l *= 0.5; // only consider half of the edge (matchig Voronoi area)
             angle[e] = atan2(dot(cross(n0, n1), ev), dot(n0, n1));
-            evec[e]  = sqrt(l) * ev;
+            evec[e] = sqrt(l) * ev;
         }
     }
 
@@ -222,7 +222,7 @@ void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
                     neighborhood.push_back(vv);
             }
 
-            A      = 0.0;
+            A = 0.0;
             tensor = dmat3(0.0);
 
             // compute tensor over vertex neighborhood stored in vertices
@@ -232,8 +232,8 @@ void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
                 for (auto hv : m_mesh.halfedges(nit))
                 {
                     auto ee = m_mesh.edge(hv);
-                    ev      = evec[ee];
-                    beta    = angle[ee];
+                    ev = evec[ee];
+                    beta = angle[ee];
                     for (int i = 0; i < 3; ++i)
                         for (int j = 0; j < 3; ++j)
                             tensor(i, j) += beta * ev[i] * ev[j];
@@ -315,7 +315,7 @@ void SurfaceCurvature::smoothCurvatures(unsigned int iterations)
 
     // properties
     auto vfeature = m_mesh.getVertexProperty<bool>("v:feature");
-    auto cotan    = m_mesh.addEdgeProperty<double>("curv:cotan");
+    auto cotan = m_mesh.addEdgeProperty<double>("curv:cotan");
 
     // cotan weight per edge
     for (auto e : m_mesh.edges())
@@ -417,9 +417,9 @@ void SurfaceCurvature::curvatureToTextureCoordinates() const
     std::cout << "curvature: [" << values[0] << ", " << values[n - 1] << "]\n";
 
     // clamp upper/lower 5%
-    unsigned int i    = n / 20;
-    Scalar       kmin = values[i];
-    Scalar       kmax = values[n - 1 - i];
+    unsigned int i = n / 20;
+    Scalar kmin = values[i];
+    Scalar kmax = values[n - 1 - i];
 
     // generate 1D texture coordiantes
     auto tex = m_mesh.vertexProperty<TextureCoordinate>("v:tex");

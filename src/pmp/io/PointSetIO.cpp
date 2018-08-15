@@ -104,10 +104,10 @@ bool PointSetIO::readXYZ(PointSet& ps, const std::string& filename)
     // add normal property
     auto vnormal = ps.addVertexProperty<Normal>("v:normal");
 
-    char   line[200];
-    float  x, y, z;
-    float  nx, ny, nz;
-    int    n;
+    char line[200];
+    float x, y, z;
+    float nx, ny, nz;
+    int n;
     PointSet::Vertex v;
 
     // read data
@@ -139,24 +139,25 @@ bool PointSetIO::readAGI(PointSet& ps, const std::string& filename)
 
     // add normal property
     auto normal = ps.addVertexProperty<Normal>("v:normal");
-    auto color  = ps.addVertexProperty<Color>("v:color");
+    auto color = ps.addVertexProperty<Color>("v:color");
 
-    char   line[200];
-    float  x, y, z;
-    float  nx, ny, nz;
-    float  r, g, b;
-    int    n;
+    char line[200];
+    float x, y, z;
+    float nx, ny, nz;
+    float r, g, b;
+    int n;
     PointSet::Vertex v;
 
     // read data
     while (in && !feof(in) && fgets(line, 200, in))
     {
-        n = sscanf(line, "%f %f %f %f %f %f %f %f %f", &x, &y, &z, &r, &g, &b, &nx, &ny, &nz);
+        n = sscanf(line, "%f %f %f %f %f %f %f %f %f", &x, &y, &z, &r, &g, &b,
+                   &nx, &ny, &nz);
         if (n == 9)
         {
             v = ps.addVertex(Point(x, y, z));
             normal[v] = Normal(nx, ny, nz);
-            color[v]  = Color(r/255.0, g/255.0, b/255.0);
+            color[v] = Color(r / 255.0, g / 255.0, b / 255.0);
         }
     }
 
@@ -169,7 +170,8 @@ bool PointSetIO::readAGI(PointSet& ps, const std::string& filename)
 bool PointSetIO::writeXYZ(const PointSet& ps, const std::string& filename)
 {
     std::ofstream ofs(filename);
-    if (!ofs) return false;
+    if (!ofs)
+        return false;
 
     auto vnormal = ps.getVertexProperty<Normal>("v:normal");
     for (auto v : ps.vertices())

@@ -42,19 +42,19 @@ namespace pmp {
 //=============================================================================
 
 using SparseMatrix = Eigen::SparseMatrix<double>;
-using Triplet      = Eigen::Triplet<double>;
+using Triplet = Eigen::Triplet<double>;
 
 //=============================================================================
 
 SurfaceFairing::SurfaceFairing(SurfaceMesh& mesh) : m_mesh(mesh)
 {
     // get & add properties
-    m_points    = m_mesh.vertexProperty<Point>("v:point");
+    m_points = m_mesh.vertexProperty<Point>("v:point");
     m_vselected = m_mesh.getVertexProperty<bool>("v:selected");
-    m_vlocked   = m_mesh.addVertexProperty<bool>("fairing:locked");
-    m_vweight   = m_mesh.addVertexProperty<double>("fairing:vweight");
-    m_eweight   = m_mesh.addEdgeProperty<double>("fairing:eweight");
-    m_idx       = m_mesh.addVertexProperty<int>("fairing:idx", -1);
+    m_vlocked = m_mesh.addVertexProperty<bool>("fairing:locked");
+    m_vweight = m_mesh.addVertexProperty<double>("fairing:vweight");
+    m_eweight = m_mesh.addEdgeProperty<double>("fairing:eweight");
+    m_idx = m_mesh.addVertexProperty<int>("fairing:idx", -1);
 }
 
 //-----------------------------------------------------------------------------
@@ -152,8 +152,8 @@ void SurfaceFairing::fair(unsigned int k)
 
     // construct matrix & rhs
     const unsigned int n = vertices.size();
-    SparseMatrix       A(n, n);
-    Eigen::MatrixXd    B(n, 3);
+    SparseMatrix A(n, n);
+    Eigen::MatrixXd B(n, 3);
 
     std::map<SurfaceMesh::Vertex, double> row;
     std::vector<Triplet> triplets;
@@ -188,7 +188,7 @@ void SurfaceFairing::fair(unsigned int k)
 
     // solve A*X = B
     Eigen::SimplicialLDLT<SparseMatrix> solver(A);
-    Eigen::MatrixXd                     X = solver.solve(B);
+    Eigen::MatrixXd X = solver.solve(B);
 
     if (solver.info() != Eigen::Success)
     {
@@ -198,7 +198,7 @@ void SurfaceFairing::fair(unsigned int k)
     {
         for (unsigned int i = 0; i < n; ++i)
         {
-            auto v      = vertices[i];
+            auto v = vertices[i];
             m_points[v] = Point(X(m_idx[v], 0), X(m_idx[v], 1), X(m_idx[v], 2));
         }
     }
@@ -216,15 +216,15 @@ struct Triple
     }
 
     SurfaceMesh::Vertex m_v;
-    double              m_weight;
-    unsigned int        m_degree;
+    double m_weight;
+    unsigned int m_degree;
 };
 
 //-----------------------------------------------------------------------------
 
-void SurfaceFairing::setupMatrixRow(const SurfaceMesh::Vertex           v,
+void SurfaceFairing::setupMatrixRow(const SurfaceMesh::Vertex v,
                                     SurfaceMesh::VertexProperty<double> vweight,
-                                    SurfaceMesh::EdgeProperty<double>   eweight,
+                                    SurfaceMesh::EdgeProperty<double> eweight,
                                     unsigned int laplaceDegree,
                                     std::map<SurfaceMesh::Vertex, double>& row)
 {
@@ -259,9 +259,9 @@ void SurfaceFairing::setupMatrixRow(const SurfaceMesh::Vertex           v,
 
             for (auto h : m_mesh.halfedges(v))
             {
-                auto e  = m_mesh.edge(h);
+                auto e = m_mesh.edge(h);
                 auto vv = m_mesh.toVertex(h);
-                auto w  = eweight[e];
+                auto w = eweight[e];
 
                 if (d < laplaceDegree)
                     w *= vweight[v];

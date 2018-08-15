@@ -64,8 +64,8 @@ public:
 
     //! compute curvature information for each vertex, optionally followed
     //! by some smoothing iterations of the curvature values
-    void analyzeTensor(unsigned int postSmoothingSteps  = 0,
-                       bool         twoRingNeighborhood = false);
+    void analyzeTensor(unsigned int postSmoothingSteps = 0,
+                       bool twoRingNeighborhood = false);
 
     //! return mean curvature
     Scalar meanCurvature(SurfaceMesh::Vertex v) const
@@ -114,7 +114,7 @@ private:
     void curvatureToTextureCoordinates() const;
 
 private:
-    SurfaceMesh&                        m_mesh;
+    SurfaceMesh& m_mesh;
     SurfaceMesh::VertexProperty<Scalar> m_minCurvature;
     SurfaceMesh::VertexProperty<Scalar> m_maxCurvature;
 };

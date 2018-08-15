@@ -166,7 +166,7 @@ public:
         }
 
     private:
-        Face               m_hnd;
+        Face m_hnd;
         const SurfaceMesh* m_mesh;
     };
 
@@ -201,7 +201,7 @@ public:
     public:
         //! construct with mesh and vertex (vertex should not be isolated!)
         FaceAroundVertexCirculator(const SurfaceMesh* m = NULL,
-                                   Vertex             v = Vertex())
+                                   Vertex v = Vertex())
             : m_mesh(m), m_active(true)
         {
             if (m_mesh)
@@ -274,7 +274,7 @@ public:
 
     private:
         const SurfaceMesh* m_mesh;
-        Halfedge           m_halfedge;
+        Halfedge m_halfedge;
         // helper for C++11 range-based for-loops
         bool m_active;
     };
@@ -312,7 +312,7 @@ public:
         {
             assert(m_mesh && m_halfedge.isValid());
             m_halfedge = m_mesh->nextHalfedge(m_halfedge);
-            m_active   = true;
+            m_active = true;
             return *this;
         }
 
@@ -346,7 +346,7 @@ public:
 
     private:
         const SurfaceMesh* m_mesh;
-        Halfedge           m_halfedge;
+        Halfedge m_halfedge;
         // helper for C++11 range-based for-loops
         bool m_active;
     };
@@ -359,7 +359,7 @@ public:
     public:
         //! default constructur
         HalfedgeAroundFaceCirculator(const SurfaceMesh* m = NULL,
-                                     Face               f = Face())
+                                     Face f = Face())
             : m_mesh(m), m_active(true)
         {
             if (m_mesh)
@@ -385,7 +385,7 @@ public:
         {
             assert(m_mesh && m_halfedge.isValid());
             m_halfedge = m_mesh->nextHalfedge(m_halfedge);
-            m_active   = true;
+            m_active = true;
             return *this;
         }
 
@@ -415,7 +415,7 @@ public:
 
     private:
         const SurfaceMesh* m_mesh;
-        Halfedge           m_halfedge;
+        Halfedge m_halfedge;
         // helper for C++11 range-based for-loops
         bool m_active;
     };
@@ -447,12 +447,12 @@ public:
     //! read mesh from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
     bool read(const std::string& filename,
-              const IOOptions&   options = IOOptions()) override;
+              const IOOptions& options = IOOptions()) override;
 
     //! write mesh to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
     bool write(const std::string& filename,
-               const IOOptions&   options = IOOptions()) const override;
+               const IOOptions& options = IOOptions()) const override;
 
     //!@}
     //! \name Add new elements by hand
@@ -535,7 +535,7 @@ public:
     {
         // The vertex is non-manifold if more than one gap exists, i.e.
         // more than one outgoing boundary halfedge.
-        int                            n(0);
+        int n(0);
         HalfedgeAroundVertexCirculator hit = halfedges(v), hend = hit;
         if (hit)
             do
@@ -573,7 +573,7 @@ public:
     //! returns whether \c f is a boundary face, i.e., it one of its edges is a boundary edge.
     bool isSurfaceBoundary(Face f) const
     {
-        Halfedge h  = halfedge(f);
+        Halfedge h = halfedge(f);
         Halfedge hh = h;
         do
         {
@@ -713,7 +713,7 @@ public:
 
     private:
         const SurfaceMesh& m_mesh;
-        Vertex             m_v;
+        Vertex m_v;
     };
 
     //! navigator object for halfedges
@@ -773,7 +773,7 @@ public:
 
     private:
         const SurfaceMesh& m_mesh;
-        Halfedge           m_h;
+        Halfedge m_h;
     };
 
     //! navigator object for edges
@@ -800,7 +800,7 @@ public:
 
     private:
         const SurfaceMesh& m_mesh;
-        Edge               m_e;
+        Edge m_e;
     };
 
     //! navigator object for faces
@@ -821,7 +821,7 @@ public:
 
     private:
         const SurfaceMesh& m_mesh;
-        Face               m_f;
+        Face m_f;
     };
 
     //! create VertexNavigator object from Vertex \p v
@@ -1010,7 +1010,7 @@ private:
     PropertyContainer m_fprops;
 
     HalfedgeProperty<HalfedgeFaceConnectivity> m_hfconn;
-    FaceProperty<FaceConnectivity>             m_fconn;
+    FaceProperty<FaceConnectivity> m_fconn;
 
     FaceProperty<bool> m_fdeleted;
 
@@ -1019,11 +1019,11 @@ private:
     // helper data for addFace()
     typedef std::pair<Halfedge, Halfedge> NextCacheEntry;
     typedef std::vector<NextCacheEntry> NextCache;
-    std::vector<Vertex>                 m_addFaceVertices;
-    std::vector<Halfedge>               m_addFaceHalfedges;
-    std::vector<bool>                   m_addFaceIsNew;
-    std::vector<bool>                   m_addFaceNeedsAdjust;
-    NextCache                           m_addFaceNextCache;
+    std::vector<Vertex> m_addFaceVertices;
+    std::vector<Halfedge> m_addFaceHalfedges;
+    std::vector<bool> m_addFaceIsNew;
+    std::vector<bool> m_addFaceNeedsAdjust;
+    NextCache m_addFaceNextCache;
 
     //!@}
 };

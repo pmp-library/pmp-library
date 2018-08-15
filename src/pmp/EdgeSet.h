@@ -81,7 +81,7 @@ public:
     //! This type stores the halfedge connectivity
     struct HalfedgeConnectivity
     {
-        Vertex   m_vertex;       //!< vertex the halfedge points to
+        Vertex m_vertex;         //!< vertex the halfedge points to
         Halfedge m_nextHalfedge; //!< next halfedge
         Halfedge m_prevHalfedge; //!< previous halfedge
     };
@@ -191,7 +191,7 @@ public:
         }
 
     private:
-        Halfedge       m_hnd;
+        Halfedge m_hnd;
         const EdgeSet* m_edges;
     };
 
@@ -248,7 +248,7 @@ public:
         }
 
     private:
-        Edge           m_hnd;
+        Edge m_hnd;
         const EdgeSet* m_edges;
     };
 
@@ -298,7 +298,7 @@ public:
     public:
         //! default constructor
         VertexAroundVertexCirculator(const EdgeSet* es = nullptr,
-                                     Vertex         v  = Vertex())
+                                     Vertex v = Vertex())
             : m_edges(es), m_active(true)
         {
             if (m_edges)
@@ -324,7 +324,7 @@ public:
         {
             assert(m_edges);
             m_halfedge = m_edges->ccwRotatedHalfedge(m_halfedge);
-            m_active   = true;
+            m_active = true;
             return *this;
         }
 
@@ -364,8 +364,8 @@ public:
 
     private:
         const EdgeSet* m_edges;
-        Halfedge       m_halfedge;
-        bool           m_active; // helper for C++11 range-based for-loops
+        Halfedge m_halfedge;
+        bool m_active; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through all outgoing halfedges of a vertex.
@@ -376,7 +376,7 @@ public:
     public:
         //! default constructor
         HalfedgeAroundVertexCirculator(const EdgeSet* es = nullptr,
-                                       Vertex         v  = Vertex())
+                                       Vertex v = Vertex())
             : m_edges(es), m_active(true)
         {
             if (m_edges)
@@ -402,7 +402,7 @@ public:
         {
             assert(m_edges);
             m_halfedge = m_edges->ccwRotatedHalfedge(m_halfedge);
-            m_active   = true;
+            m_active = true;
             return *this;
         }
 
@@ -435,8 +435,8 @@ public:
 
     private:
         const EdgeSet* m_edges;
-        Halfedge       m_halfedge;
-        bool           m_active; // helper for C++11 range-based for-loops
+        Halfedge m_halfedge;
+        bool m_active; // helper for C++11 range-based for-loops
     };
 
     //!@}
@@ -465,12 +465,12 @@ public:
     //! read edge set from file \c filename. file extension determines file type.
     //! \sa write(const std::string& filename)
     bool read(const std::string& filename,
-              const IOOptions&   options = IOOptions()) override;
+              const IOOptions& options = IOOptions()) override;
 
     //! write edge set to file \c filename. file extensions determines file type.
     //! \sa read(const std::string& filename)
     bool write(const std::string& filename,
-               const IOOptions&   options = IOOptions()) const override;
+               const IOOptions& options = IOOptions()) const override;
 
     //!@}
     //! \name Memory Management
@@ -573,14 +573,14 @@ public:
     //! sets the next halfedge of \c h within the face to \c nh
     inline void setNextHalfedge(Halfedge h, Halfedge nh)
     {
-        m_hconn[h].m_nextHalfedge  = nh;
+        m_hconn[h].m_nextHalfedge = nh;
         m_hconn[nh].m_prevHalfedge = h;
     }
 
     //! sets the previous halfedge of \c h and the next halfedge of \c ph to \c nh
     inline void setPrevHalfedge(Halfedge h, Halfedge ph)
     {
-        m_hconn[h].m_prevHalfedge  = ph;
+        m_hconn[h].m_prevHalfedge = ph;
         m_hconn[ph].m_nextHalfedge = h;
     }
 
@@ -663,7 +663,7 @@ public:
     //! invalid property.
     template <class T>
     HalfedgeProperty<T> addHalfedgeProperty(const std::string& name,
-                                            const T            t = T())
+                                            const T t = T())
     {
         return HalfedgeProperty<T>(m_hprops.add<T>(name, t));
     }
@@ -701,7 +701,7 @@ public:
     //! t)
     template <class T>
     HalfedgeProperty<T> halfedgeProperty(const std::string& name,
-                                         const T            t = T())
+                                         const T t = T())
     {
         return HalfedgeProperty<T>(m_hprops.getOrAdd<T>(name, t));
     }
@@ -930,7 +930,7 @@ protected:
     PropertyContainer m_eprops; //!< edge property container
 
     // connectivity information for vertices and halfedges
-    VertexProperty<VertexConnectivity>     m_vconn; //!< vertex connectivity
+    VertexProperty<VertexConnectivity> m_vconn;     //!< vertex connectivity
     HalfedgeProperty<HalfedgeConnectivity> m_hconn; //!< halfedge connectivity
 
     EdgeProperty<bool> m_edeleted; //!< mark deleted edges

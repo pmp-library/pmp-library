@@ -62,7 +62,7 @@ private:
     SurfaceMesh& m_mesh;
 
     SurfaceMesh::VertexProperty<bool> m_vfeature;
-    SurfaceMesh::EdgeProperty<bool>   m_efeature;
+    SurfaceMesh::EdgeProperty<bool> m_efeature;
 };
 
 //=============================================================================
