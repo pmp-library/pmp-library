@@ -10,6 +10,10 @@ install:
 configuration:
   - Debug
   - Release
+branches:
+  only:
+    - master
+    - develop
 before_build:
   - cmake -H. -Bbuild -A%PLATFORM%
 build:
