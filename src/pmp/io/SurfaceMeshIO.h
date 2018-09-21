@@ -1,7 +1,6 @@
 //=============================================================================
 // Copyright (C) 2011-2018 The pmp-library developers
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-// All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
