@@ -1,4 +1,12 @@
 language: cpp
+
+# configure branches to build
+branches:
+  only:
+  - master
+  - develop
+
+# build configuration matrix
 matrix:
   include:
   - os: linux
@@ -27,22 +35,27 @@ matrix:
     compiler: clang
 sudo: false
 dist: trusty
+
 before_install:
   - if [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y xorg-dev ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then pip install --user cpp-coveralls ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y texlive-base ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y doxygen ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then export DOXYGEN_URL="http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.13.linux.bin.tar.gz" && mkdir doxygen && travis_retry wget --quiet -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && export PATH=`pwd`/doxygen/bin:${PATH} && doxygen --version ; fi
+
 before_script:
   - mkdir build
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=${CONFIG} ..
+
 script:
   - make
   - make test
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then make docs ; fi
+
 after_success:
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then coveralls --gcov-options '\-lp' --root .. -E ".*external.*" -E ".*CMakeFiles.*" -E ".*tests/.*.cpp.*" ; fi
+
 deploy:
   provider: pages
   skip_cleanup: true
