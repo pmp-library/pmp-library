@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2018 The pmp-library developers
-// All rights reserved.
+// Copyright (C) 2017, 2018 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -29,52 +28,61 @@
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/SurfaceNormals.h>
-#include <vector>
+#include <pmp/algorithms/SurfaceFeatures.h>
 
 using namespace pmp;
 
-class SurfaceNormalsTest : public ::testing::Test
+class SurfaceFeaturesTest : public ::testing::Test
 {
 public:
+    SurfaceFeaturesTest()
+    {
+        EXPECT_TRUE(mesh.read("pmp-data/off/icosahedron_subdiv.off"));
+    }
     SurfaceMesh mesh;
 };
 
-TEST_F(SurfaceNormalsTest, computeVertexNormals)
+// feature angle
+TEST_F(SurfaceFeaturesTest, detectFeatureAngle)
 {
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    SurfaceNormals::computeVertexNormals(mesh);
-    auto vnormals = mesh.getVertexProperty<Normal>("v:normal");
-    auto vn0 = vnormals[SurfaceMesh::Vertex(0)];
-    EXPECT_GT(norm(vn0), 0);
+    SurfaceFeatures sf(mesh);
+    sf.detectAngle(25);
+
+    auto efeature = mesh.getEdgeProperty<bool>("e:feature");
+    bool found = false;
+    for (auto e : mesh.edges())
+        if (efeature[e])
+        {
+            found = true;
+            break;
+        }
+    EXPECT_TRUE(found);
+    sf.clear();
+    found = false;
+    for (auto e : mesh.edges())
+        if (efeature[e])
+        {
+            found = true;
+            break;
+        }
+    EXPECT_FALSE(found);
 }
 
-TEST_F(SurfaceNormalsTest, computeFaceNormals)
+// boundary edges
+TEST_F(SurfaceFeaturesTest, detectBoundary)
 {
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    SurfaceNormals::computeFaceNormals(mesh);
-    auto fnormals = mesh.getFaceProperty<Normal>("f:normal");
-    auto fn0 = fnormals[SurfaceMesh::Face(0)];
-    EXPECT_GT(norm(fn0), 0);
-}
+    mesh.clear();
+    mesh.read("pmp-data/off/vertex_onering.off");
+    SurfaceFeatures sf(mesh);
+    sf.detectBoundary();
 
-TEST_F(SurfaceNormalsTest, computeCornerNormal)
-{
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    auto h = SurfaceMesh::Halfedge(0);
-    auto n = SurfaceNormals::computeCornerNormal(mesh,h,(Scalar)M_PI/3.0);
-    EXPECT_GT(norm(n), 0);
-}
-
-TEST_F(SurfaceNormalsTest, polygonalFaceNormal)
-{
-    std::vector<SurfaceMesh::Vertex> vertices(5);
-    vertices[0] = mesh.addVertex(Point(0,0,0));
-    vertices[1] = mesh.addVertex(Point(1,0,0));
-    vertices[2] = mesh.addVertex(Point(1,1,0));
-    vertices[3] = mesh.addVertex(Point(0.5,1,0));
-    vertices[4] = mesh.addVertex(Point(0,1,0));
-    auto f0 = mesh.addFace(vertices);
-    auto n0 = SurfaceNormals::computeFaceNormal(mesh,f0);
-    EXPECT_GT(norm(n0), 0);
+    auto efeature = mesh.getEdgeProperty<bool>("e:feature");
+    bool found = false;
+    for (auto e : mesh.edges())
+        if (efeature[e])
+        {
+            found = true;
+            break;
+        }
+    EXPECT_TRUE(found);
 }

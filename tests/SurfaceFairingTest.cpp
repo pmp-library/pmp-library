@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2018 The pmp-library developers
-// All rights reserved.
+// Copyright (C) 2017, 2018 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -29,52 +28,55 @@
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/SurfaceNormals.h>
-#include <vector>
+#include <pmp/algorithms/SurfaceFairing.h>
 
 using namespace pmp;
 
-class SurfaceNormalsTest : public ::testing::Test
+class SurfaceFairingTest : public ::testing::Test
 {
 public:
+    SurfaceFairingTest()
+    {
+        EXPECT_TRUE(mesh.read("pmp-data/off/icosahedron_subdiv.off"));
+    }
     SurfaceMesh mesh;
 };
 
-TEST_F(SurfaceNormalsTest, computeVertexNormals)
+TEST_F(SurfaceFairingTest, fairing)
 {
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    SurfaceNormals::computeVertexNormals(mesh);
-    auto vnormals = mesh.getVertexProperty<Normal>("v:normal");
-    auto vn0 = vnormals[SurfaceMesh::Vertex(0)];
-    EXPECT_GT(norm(vn0), 0);
+    mesh.read("pmp-data/off/hemisphere.off");
+    auto bbz = mesh.bounds().max()[2];
+    SurfaceFairing sf(mesh);
+    sf.fair();
+    auto bbs = mesh.bounds().max()[2];
+    EXPECT_LT(bbs,bbz);
 }
 
-TEST_F(SurfaceNormalsTest, computeFaceNormals)
+TEST_F(SurfaceFairingTest, fairingSelected)
 {
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    SurfaceNormals::computeFaceNormals(mesh);
-    auto fnormals = mesh.getFaceProperty<Normal>("f:normal");
-    auto fn0 = fnormals[SurfaceMesh::Face(0)];
-    EXPECT_GT(norm(fn0), 0);
-}
-
-TEST_F(SurfaceNormalsTest, computeCornerNormal)
-{
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    auto h = SurfaceMesh::Halfedge(0);
-    auto n = SurfaceNormals::computeCornerNormal(mesh,h,(Scalar)M_PI/3.0);
-    EXPECT_GT(norm(n), 0);
-}
-
-TEST_F(SurfaceNormalsTest, polygonalFaceNormal)
-{
-    std::vector<SurfaceMesh::Vertex> vertices(5);
-    vertices[0] = mesh.addVertex(Point(0,0,0));
-    vertices[1] = mesh.addVertex(Point(1,0,0));
-    vertices[2] = mesh.addVertex(Point(1,1,0));
-    vertices[3] = mesh.addVertex(Point(0.5,1,0));
-    vertices[4] = mesh.addVertex(Point(0,1,0));
-    auto f0 = mesh.addFace(vertices);
-    auto n0 = SurfaceNormals::computeFaceNormal(mesh,f0);
-    EXPECT_GT(norm(n0), 0);
+    mesh.read("pmp-data/off/sphere_low.off");
+    auto bb = mesh.bounds();
+    Scalar yrange = bb.max()[1] - bb.min()[1];
+    auto vselected = mesh.vertexProperty<bool>("v:selected",false);
+    for (auto v : mesh.vertices())
+    {
+        auto p = mesh.position(v);
+        if (p[1] >= (bb.max()[1] - 0.2*yrange))
+        {
+            vselected[v] = false;
+        }
+        else if (p[1] < (bb.max()[1] - 0.2*yrange) &&
+                 p[1] > (bb.max()[1] - 0.8*yrange))
+        {
+            vselected[v] = true;
+        }
+        else
+        {
+            vselected[v] = false;
+        }
+    }
+    SurfaceFairing sf(mesh);
+    sf.fair();
+    auto bb2 = mesh.bounds();
+    EXPECT_LT(bb2.size(),bb.size());
 }

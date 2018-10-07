@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017 The pmp-library developers
-// All rights reserved.
+// Copyright (C) 2017, 2018 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -29,39 +28,45 @@
 
 #include "gtest/gtest.h"
 
-#include <pmp/EdgeSet.h>
-#include <pmp/algorithms/EdgeSetSmoothing.h>
-#include <pmp/algorithms/EdgeSetSubdivision.h>
-
-#include <vector>
+#include <pmp/algorithms/SurfaceSimplification.h>
+#include <pmp/algorithms/SurfaceFeatures.h>
 
 using namespace pmp;
 
-class EdgeSetAlgorithmsTest : public ::testing::Test
+class SurfaceSimplificationTest : public ::testing::Test
 {
 public:
-    EdgeSetAlgorithmsTest()
+    SurfaceSimplificationTest()
     {
-        es.read("pmp-data/knt/3rings.knt");
+        EXPECT_TRUE(mesh.read("pmp-data/off/icosahedron_subdiv.off"));
     }
-    EdgeSet es;
+    SurfaceMesh mesh;
 };
 
-TEST_F(EdgeSetAlgorithmsTest, smoothing)
+// plain simplification test
+TEST_F(SurfaceSimplificationTest, simplification)
 {
-    Scalar origBounds = es.bounds().size();
-    EdgeSetSmoothing ess(es);
-    ess.smooth(1);
-    Scalar newBounds = es.bounds().size();
-    EXPECT_LT(newBounds,origBounds);
+    mesh.clear();
+    mesh.read("pmp-data/off/bunny_adaptive.off");
+    SurfaceSimplification ss(mesh);
+    ss.initialize(5, // aspect ratio
+                  0.01, // edge length
+                  10, // max valence
+                  10, // normal deviation
+                  0.001); // Hausdorff
+    ss.simplify(mesh.nVertices() * 0.1);
+    EXPECT_EQ(mesh.nVertices(),size_t(3800));
+    EXPECT_EQ(mesh.nFaces(),size_t(7596));
 }
 
-TEST_F(EdgeSetAlgorithmsTest, subdivision)
+// simplify with feature edge preservation enabled
+TEST_F(SurfaceSimplificationTest, simplificationWithFeatures)
 {
-    EdgeSetSubdivision esub(es);
-    esub.subdivide();
-    EXPECT_EQ(es.nVertices(),size_t(72));
+    SurfaceFeatures sf(mesh);
+    sf.detectAngle(25);
+
+    SurfaceSimplification ss(mesh);
+    ss.initialize(5); // aspect ratio
+    ss.simplify(mesh.nVertices() * 0.1);
+    EXPECT_EQ(mesh.nVertices(),size_t(64));
 }
-
-
-//=============================================================================

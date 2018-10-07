@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017 The pmp-library developers
+// Copyright (C) 2017, 2018 The pmp-library developers
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -32,25 +32,56 @@
 #include <pmp/PointSet.h>
 #include <pmp/algorithms/PointSetSmoothing.h>
 
-#include <vector>
+#include <random>
 
 using namespace pmp;
 
-class PointSetAlgorithmsTest : public ::testing::Test
+// Randomly generate nPoints on the unit sphere.
+// Stores the resulting points and normals in ps.
+void generateRandomSphere(size_t nPoints, PointSet& ps)
 {
-public:
-    PointSetAlgorithmsTest()
-    {
-        ps.read("pmp-data/xyz/armadillo_low.xyz");
-    }
-    PointSet ps;
-};
+    ps.clear();
 
-TEST_F(PointSetAlgorithmsTest, smoothing)
+    // normal distribution random number generator
+    std::default_random_engine generator;
+    std::normal_distribution<double> distribution(0.0, 1.0);
+
+    auto normals = ps.vertexProperty<Normal>("v:normal");
+
+    // generate points and add to point set
+    for (size_t i(0); i < nPoints; i++)
+    {
+        double x = distribution(generator);
+        double y = distribution(generator);
+        double z = distribution(generator);
+
+        // reject if all zero
+        if (x == 0 && y == 0 && z == 0)
+        {
+            i--;
+            continue;
+        }
+
+        // normalize
+        double mult = 1.0 / sqrt(x * x + y * y + z * z);
+        Point p(x, y, z);
+        p *= mult;
+
+        // add point and normal
+        auto v = ps.addVertex(p);
+        normals[v] = p;
+    }
+}
+
+TEST(PointSetSmoothingTest, smoothRandomSphere)
 {
+    PointSet ps;
+    generateRandomSphere(1000, ps);
     Scalar origBounds = ps.bounds().size();
+
     PointSetSmoothing pss(ps);
     pss.smooth();
+
     Scalar newBounds = ps.bounds().size();
-    EXPECT_LT(newBounds,origBounds);
+    EXPECT_LT(newBounds, origBounds);
 }

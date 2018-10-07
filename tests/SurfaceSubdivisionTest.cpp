@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2018 The pmp-library developers
-// All rights reserved.
+// Copyright (C) 2017, 2018 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -29,52 +28,73 @@
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/SurfaceNormals.h>
-#include <vector>
+#include <pmp/algorithms/SurfaceSubdivision.h>
+#include <pmp/algorithms/SurfaceFeatures.h>
 
 using namespace pmp;
 
-class SurfaceNormalsTest : public ::testing::Test
+class SurfaceSubdivisionTest : public ::testing::Test
 {
 public:
+    SurfaceSubdivisionTest()
+    {
+        EXPECT_TRUE(mesh.read("pmp-data/off/icosahedron_subdiv.off"));
+    }
     SurfaceMesh mesh;
 };
 
-TEST_F(SurfaceNormalsTest, computeVertexNormals)
+// plain loop subdivision
+TEST_F(SurfaceSubdivisionTest, loopSubdivision)
 {
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    SurfaceNormals::computeVertexNormals(mesh);
-    auto vnormals = mesh.getVertexProperty<Normal>("v:normal");
-    auto vn0 = vnormals[SurfaceMesh::Vertex(0)];
-    EXPECT_GT(norm(vn0), 0);
+    SurfaceSubdivision(mesh).loop();
+    EXPECT_EQ(mesh.nVertices(),size_t(2562));
 }
 
-TEST_F(SurfaceNormalsTest, computeFaceNormals)
+// loop subdivision with features
+TEST_F(SurfaceSubdivisionTest, loopWithFeatures)
 {
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    SurfaceNormals::computeFaceNormals(mesh);
-    auto fnormals = mesh.getFaceProperty<Normal>("f:normal");
-    auto fn0 = fnormals[SurfaceMesh::Face(0)];
-    EXPECT_GT(norm(fn0), 0);
+    SurfaceFeatures sf(mesh);
+    sf.detectAngle(25);
+
+    SurfaceSubdivision(mesh).loop();
+    EXPECT_EQ(mesh.nVertices(),size_t(2562));
 }
 
-TEST_F(SurfaceNormalsTest, computeCornerNormal)
+// loop subdivision with features
+TEST_F(SurfaceSubdivisionTest, loopWithBoundary)
 {
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    auto h = SurfaceMesh::Halfedge(0);
-    auto n = SurfaceNormals::computeCornerNormal(mesh,h,(Scalar)M_PI/3.0);
-    EXPECT_GT(norm(n), 0);
+    mesh.clear();
+    mesh.read("pmp-data/off/hemisphere.off");
+
+    SurfaceSubdivision(mesh).loop();
+    EXPECT_EQ(mesh.nVertices(),size_t(7321));
 }
 
-TEST_F(SurfaceNormalsTest, polygonalFaceNormal)
+// Catmull-Clark subdivision on suzanne quad mesh
+TEST_F(SurfaceSubdivisionTest, catmullClarkSubdivision)
 {
-    std::vector<SurfaceMesh::Vertex> vertices(5);
-    vertices[0] = mesh.addVertex(Point(0,0,0));
-    vertices[1] = mesh.addVertex(Point(1,0,0));
-    vertices[2] = mesh.addVertex(Point(1,1,0));
-    vertices[3] = mesh.addVertex(Point(0.5,1,0));
-    vertices[4] = mesh.addVertex(Point(0,1,0));
-    auto f0 = mesh.addFace(vertices);
-    auto n0 = SurfaceNormals::computeFaceNormal(mesh,f0);
-    EXPECT_GT(norm(n0), 0);
+    mesh.clear();
+    mesh.read("pmp-data/obj/suzanne.obj");
+    SurfaceSubdivision(mesh).catmullClark();
+    EXPECT_EQ(mesh.nVertices(),size_t(2012));
+}
+
+// Catmull-Clark subdivision on fandisk quad mesh
+TEST_F(SurfaceSubdivisionTest, catmullClarkWithFeatures)
+{
+    mesh.clear();
+    mesh.read("pmp-data/off/fandisk_quads.off");
+
+    SurfaceFeatures sf(mesh);
+    sf.detectAngle(25);
+
+    SurfaceSubdivision(mesh).catmullClark();
+    EXPECT_EQ(mesh.nVertices(),size_t(3058));
+}
+
+// plain sqrt3 subdivision
+TEST_F(SurfaceSubdivisionTest, sqrt3Subdivision)
+{
+    SurfaceSubdivision(mesh).sqrt3();
+    EXPECT_EQ(mesh.nVertices(),size_t(1922));
 }
