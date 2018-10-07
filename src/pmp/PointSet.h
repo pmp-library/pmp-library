@@ -44,7 +44,7 @@ namespace pmp {
 //=============================================================================
 
 //! \brief A data structure for point sets.
-//! \details Represents a point set with normals.
+//! \details Additional properties such as normals or colors can be attached.
 class PointSet : public GeometryObject
 {
 public:
