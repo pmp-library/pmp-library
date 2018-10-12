@@ -54,6 +54,36 @@ public:
     //! default destructor
     ~PointSetGL();
 
+    //! get front color
+    const vec3& frontColor() const { return m_frontColor; }
+    //! set front color
+    void setFrontColor(const vec3& color) { m_frontColor = color; }
+
+    //! get back color
+    const vec3& backColor() const { return m_backColor; }
+    //! set back color
+    void setBackColor(const vec3& color) { m_backColor = color; }
+
+    //! get ambient reflection coefficient
+    float ambient() const { return m_ambient; }
+    //! set ambient reflection coefficient
+    void setAmbient(float a) { m_ambient = a; }
+
+    //! get diffuse reflection coefficient
+    float diffuse() const { return m_diffuse; }
+    //! set diffuse reflection coefficient
+    void setDiffuse(float d) { m_diffuse = d; }
+
+    //! get specular reflection coefficient
+    float specular() const { return m_specular; }
+    //! set specular reflection coefficient
+    void setSpecular(float s) { m_specular = s; }
+
+    //! get specular shininess coefficient
+    float shininess() const { return m_shininess; }
+    //! set specular shininess coefficient
+    void setShininess(float s) { m_shininess = s; }
+
     //! draw the points
     void draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
               const std::string drawMode);
@@ -62,6 +92,7 @@ public:
     void updateOpenGLBuffers();
 
 private:
+
     //! OpenGL buffers
     GLuint m_vertexArrayObject;
     GLuint m_vertexBuffer;
