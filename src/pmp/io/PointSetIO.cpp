@@ -101,7 +101,7 @@ bool PointSetIO::readXYZ(PointSet& ps, const std::string& filename)
         return false;
 
     // add normal property
-    auto vnormal = ps.addVertexProperty<Normal>("v:normal");
+    auto vnormal = ps.vertexProperty<Normal>("v:normal");
 
     char line[200];
     float x, y, z;
@@ -137,8 +137,8 @@ bool PointSetIO::readAGI(PointSet& ps, const std::string& filename)
         return false;
 
     // add normal property
-    auto normal = ps.addVertexProperty<Normal>("v:normal");
-    auto color = ps.addVertexProperty<Color>("v:color");
+    auto normal = ps.vertexProperty<Normal>("v:normal");
+    auto color = ps.vertexProperty<Color>("v:color");
 
     char line[200];
     float x, y, z;
