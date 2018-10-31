@@ -79,6 +79,7 @@ static const char* phong_fshader =
     "uniform float  diffuse;\n"
     "uniform float  specular;\n"
     "uniform float  shininess;\n"
+    "uniform float  alpha;\n"
     "uniform vec3   light1;\n"
     "uniform vec3   light2;\n"
     "\n"
@@ -139,7 +140,7 @@ static const char* phong_fshader =
     "   if (use_texture) rgb *= texture(mytexture, v2f_tex).xyz;\n"
     "   if (use_srgb)    rgb  = pow(clamp(rgb, 0.0, 1.0), vec3(0.45));\n"
     "   \n"
-    "    f_color = vec4(rgb, 1.0);\n"
+    "    f_color = vec4(rgb, alpha);\n"
     "}";
 
 

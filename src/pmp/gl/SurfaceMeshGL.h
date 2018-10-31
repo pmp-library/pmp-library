@@ -84,6 +84,11 @@ public:
     //! set specular shininess coefficient
     void setShininess(float s) { m_shininess = s; }
 
+    //! get alpha value for transparent rendering
+    float alpha() const { return m_alpha; }
+    //! set alpha value for transparent rendering
+    void setAlpha(float a) { m_alpha = a; }
+
     //! get crease angle (in degrees) for visualization of sharp edges
     Scalar creaseAngle() const { return m_creaseAngle; }
     //! set crease angle (in degrees) for visualization of sharp edges
@@ -133,7 +138,7 @@ private:
 
     //! material properties
     vec3 m_frontColor, m_backColor;
-    float m_ambient, m_diffuse, m_specular, m_shininess;
+    float m_ambient, m_diffuse, m_specular, m_shininess, m_alpha;
     bool m_srgb;
     float m_creaseAngle;
 

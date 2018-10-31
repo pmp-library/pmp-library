@@ -63,6 +63,7 @@ SurfaceMeshGL::SurfaceMeshGL()
     m_diffuse = 0.8;
     m_specular = 0.6;
     m_shininess = 100.0;
+    m_alpha = 1.0;
     m_srgb = false;
     m_creaseAngle = 70.0;
 
@@ -440,10 +441,17 @@ void SurfaceMeshGL::draw(const mat4& projectionMatrix,
     m_phongShader.setUniform("diffuse", m_diffuse);
     m_phongShader.setUniform("specular", m_specular);
     m_phongShader.setUniform("shininess", m_shininess);
+    m_phongShader.setUniform("alpha", m_alpha);
     m_phongShader.setUniform("use_lighting", true);
     m_phongShader.setUniform("use_texture", false);
     m_phongShader.setUniform("use_srgb", false);
     m_phongShader.setUniform("show_texture_layout", false);
+
+    if (m_alpha != 1.0)
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
     glBindVertexArray(m_vertexArrayObject);
 
@@ -520,6 +528,7 @@ void SurfaceMeshGL::draw(const mat4& projectionMatrix,
         glDepthFunc(GL_LESS);
     }
 
+    glDisable(GL_BLEND);
     glBindVertexArray(0);
     glCheckError();
 }
