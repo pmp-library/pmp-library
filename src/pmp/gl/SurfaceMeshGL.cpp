@@ -447,12 +447,6 @@ void SurfaceMeshGL::draw(const mat4& projectionMatrix,
     m_phongShader.setUniform("use_srgb", false);
     m_phongShader.setUniform("show_texture_layout", false);
 
-    if (m_alpha != 1.0)
-    {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-
     glBindVertexArray(m_vertexArrayObject);
 
     if (drawMode == "Points")
@@ -528,7 +522,6 @@ void SurfaceMeshGL::draw(const mat4& projectionMatrix,
         glDepthFunc(GL_LESS);
     }
 
-    glDisable(GL_BLEND);
     glBindVertexArray(0);
     glCheckError();
 }
