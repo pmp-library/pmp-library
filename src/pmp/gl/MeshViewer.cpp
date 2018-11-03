@@ -76,6 +76,7 @@ bool MeshViewer::loadMesh(const char* filename)
                   << " vertices, " << m_mesh.nFaces() << " faces\n";
 
         m_filename = filename;
+        m_creaseAngle = m_mesh.creaseAngle();
         return true;
     }
 
@@ -130,6 +131,7 @@ void MeshViewer::processImGUI()
         if (m_creaseAngle != m_mesh.creaseAngle())
         {
             m_mesh.setCreaseAngle(m_creaseAngle);
+            std::cerr << "change crease angle\n";
         }
     }
 }
