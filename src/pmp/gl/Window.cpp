@@ -330,7 +330,7 @@ void Window::glfwMouse(GLFWwindow* window, int button, int action, int mods)
 void Window::glfwScroll(GLFWwindow* window, double xoffset, double yoffset)
 {
 #ifdef __EMSCRIPTEN__
-    yoffset *= -1.0;
+    yoffset *= -0.02;
 #endif
 
     ImGui_ScrollCallback(window, xoffset, yoffset);
