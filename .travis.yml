@@ -41,7 +41,7 @@ before_install:
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then pip install --user cpp-coveralls ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y texlive-base ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y doxygen ; fi
-  - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then export DOXYGEN_URL="http://doxygen.nl/files/doxygen-1.8.15.linux.bin.tar.gz" && mkdir doxygen && travis_retry wget --quiet -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && export PATH=`pwd`/doxygen/bin:${PATH} && doxygen --version ; fi
+  - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then export DOXYGEN_URL="http://doxygen.nl/files/doxygen-1.8.15.linux.bin.tar.gz" && mkdir doxygen && travis_retry wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && export PATH=`pwd`/doxygen/bin:${PATH} && doxygen --version ; fi
 
 before_script:
   - mkdir build
