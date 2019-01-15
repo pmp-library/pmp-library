@@ -38,7 +38,7 @@ use by referencing
       title  = {The Polygon Mesh Processing Library},
       author = {Daniel Sieger and Mario Botsch},
       note   = {http://www.pmp-library.org},
-      year   = {2018},
+      year   = {2019},
     }
 
 For references to specific algorithms implemented in the library check out
