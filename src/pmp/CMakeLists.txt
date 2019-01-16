@@ -11,7 +11,7 @@ if(NOT (UNIX AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")))
     if(MSVC)
       add_definitions(/arch:SSE)
     endif(MSVC)
-    set(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_INIT} -fopenmp)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS_INIT} -fopenmp")
   endif()
 endif()
 
