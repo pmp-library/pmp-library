@@ -37,7 +37,7 @@ sudo: false
 dist: xenial
 
 before_install:
-  - if [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y xorg-dev libglfw3-dev ; fi
+  - if [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y xorg-dev libglfw3-dev libgomp1 ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then pip install --user cpp-coveralls ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y texlive-base ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y doxygen ; fi
