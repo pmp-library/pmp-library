@@ -1,5 +1,4 @@
 language: cpp
-dist: xenial
 
 # configure branches to build
 branches:
@@ -35,7 +34,7 @@ matrix:
     env: CONFIG=Release
     compiler: clang
 sudo: false
-dist: trusty
+dist: xenial
 
 before_install:
   - if [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y xorg-dev ; fi
