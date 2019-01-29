@@ -43,18 +43,17 @@
 //=============================================================================
 
 //! Check for OpenGL errors.
-inline void glCheckError(bool _force = false)
+inline void glCheckError(bool force = false)
 {
     GLenum error = glGetError();
 
     if (error == GL_NO_ERROR)
     {
-        if (_force)
+        if (force)
         {
             std::cout << " No GL error!" << std::endl;
         }
     }
-
     else
     {
         do
