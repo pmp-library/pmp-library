@@ -451,7 +451,9 @@ void SurfaceMeshGL::draw(const mat4& projectionMatrix,
 
     if (drawMode == "Points")
     {
+#ifndef __EMSCRIPTEN__
         glEnable(GL_PROGRAM_POINT_SIZE);
+#endif
         glDrawArrays(GL_POINTS, 0, m_nVertices);
     }
 
