@@ -43,6 +43,9 @@ public:
     }
 
 protected:
+    //! this function handles mouse button presses
+    void mouse(int button, int action, int mods) override;
+
     //! this function handles keyboard events
     void keyboard(int key, int code, int action, int mod) override;
 

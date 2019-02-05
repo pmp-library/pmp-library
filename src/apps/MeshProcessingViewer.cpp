@@ -35,6 +35,7 @@
 #include <pmp/algorithms/SurfaceFairing.h>
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
+#include <pmp/algorithms/SurfaceGeodesic.h>
 
 #include <imgui.h>
 
@@ -49,12 +50,32 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 
     switch (key)
     {
+        case GLFW_KEY_G:
+        {
+            if (!m_mesh.isEmpty())
+            {
+                // setup seed
+                std::vector<SurfaceMesh::Vertex>  seed;
+                seed.push_back(SurfaceMesh::Vertex(0));
+
+                // compute geodesic distance
+                SurfaceGeodesic geodist(m_mesh, seed);
+                geodist.distanceToTextureCoordinates();
+
+                m_mesh.useCheckerboardTexture();
+                updateMesh();
+                setDrawMode("Texture");
+            }
+            break;
+        }
+
         case GLFW_KEY_F:
         {
             SurfaceFeatures sf(m_mesh);
             sf.detectAngle(70);
             break;
         }
+
         case GLFW_KEY_O: // change face orientation
         {
             SurfaceMeshGL newMesh;
@@ -236,6 +257,37 @@ void MeshProcessingViewer::processImGUI()
             SurfaceRemeshing(m_mesh).uniformRemeshing(l);
             updateMesh();
         }
+    }
+}
+
+//----------------------------------------------------------------------------
+
+void MeshProcessingViewer::mouse(int button, int action, int mods)
+{
+    if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_MIDDLE)
+    {
+        double x, y;
+        cursorPos(x, y);
+        SurfaceMesh::Vertex v = pickVertex(x, y);
+        if (m_mesh.isValid(v))
+        {
+            // setup seed
+            std::vector<SurfaceMesh::Vertex>  seed;
+            seed.push_back(v);
+
+            // compute geodesic distance
+            SurfaceGeodesic geodist(m_mesh, seed);
+
+            // setup texture coordinates for visualization
+            geodist.distanceToTextureCoordinates();
+            m_mesh.useCheckerboardTexture();
+            updateMesh();
+            setDrawMode("Texture");
+        }
+    }
+    else
+    {
+        MeshViewer::mouse(button, action, mods);
     }
 }
 
