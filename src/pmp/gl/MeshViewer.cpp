@@ -131,7 +131,6 @@ void MeshViewer::processImGUI()
         if (m_creaseAngle != m_mesh.creaseAngle())
         {
             m_mesh.setCreaseAngle(m_creaseAngle);
-            std::cerr << "change crease angle\n";
         }
     }
 }
