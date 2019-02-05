@@ -74,6 +74,9 @@ public:
 
     //! this function handles keyboard events
     virtual void keyboard(int key, int code, int action, int mod) override;
+    
+    //! get vertex closest to 3D position under the mouse cursor
+    SurfaceMesh::Vertex pickVertex(int x, int y);
 
 protected:
     SurfaceMeshGL m_mesh;   //!< the mesh

@@ -145,7 +145,7 @@ void MeshViewer::draw(const std::string& drawMode)
 }
 
 //-----------------------------------------------------------------------------
-//
+
 void MeshViewer::keyboard(int key, int scancode, int action, int mods)
 {
     if (action != GLFW_PRESS && action != GLFW_REPEAT)
@@ -183,6 +183,30 @@ void MeshViewer::keyboard(int key, int scancode, int action, int mods)
             break;
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+
+SurfaceMesh::Vertex MeshViewer::pickVertex(int x, int y)
+{
+    SurfaceMesh::Vertex vmin;
+
+    Point   picked_position;
+    Scalar  d, dmin(FLT_MAX);
+
+    if (TrackballViewer::pick(x, y, picked_position))
+    {
+        for (auto v: m_mesh.vertices())
+        {
+            d = distance(m_mesh.position(v), picked_position);
+            if (d < dmin)
+            {
+                dmin = d;
+                vmin = v;
+            }
+        }
+    }
+    return vmin;
 }
 
 //=============================================================================
