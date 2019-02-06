@@ -268,6 +268,20 @@ void Window::render_frame()
         ImGui::Render();
     }
 
+#if __EMSCRIPTEN__
+    // to avoid problems with premultiplied alpha in WebGL,
+    // clear alpha values to 1.0
+    // see here: https://webgl2fundamentals.org/webgl/lessons/webgl-and-alpha.html
+    // (no way to disable premultiplied-alpha in emscripten-glfw)
+    GLfloat rgba[4];
+    glGetFloatv(GL_COLOR_CLEAR_VALUE, rgba);
+    glClearColor(1, 1, 1, 1);
+    glColorMask(false, false, false, true);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glColorMask(true, true, true, true);
+    glClearColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+#endif
+
     // swap buffers
     glfwSwapBuffers(m_instance->m_window);
 
