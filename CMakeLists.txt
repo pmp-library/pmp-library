@@ -96,7 +96,7 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCXX)
 
     # gather data, generate report
     COMMAND ${LCOV} --directory . --capture --output-file coverage.info
-    COMMAND ${LCOV} --remove coverage.info 'Eigen/*' 'tests/*' '/usr/*' 'googletest/*' --output-file coverage.info.cleaned
+    COMMAND ${LCOV} --remove coverage.info '*/external/*' '*/tests/*' '/usr/*' --output-file coverage.info.cleaned
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info.cleaned
     COMMAND ${CMAKE_COMMAND} -E remove coverage.info coverage.info.cleaned
 
