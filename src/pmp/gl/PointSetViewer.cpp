@@ -60,7 +60,7 @@ bool PointSetViewer::loadPointSet(const char* filename)
     {
         // update scene center and bounds
         BoundingBox bb = m_pointSet.bounds();
-        setScene(bb.center(), 0.5 * bb.size());
+        setScene((vec3)bb.center(), 0.5 * bb.size());
 
         updatePointSet();
 

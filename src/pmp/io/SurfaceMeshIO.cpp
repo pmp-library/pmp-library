@@ -447,8 +447,7 @@ bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
     int nc;
     unsigned int i, j, items, idx;
     unsigned int nV, nF, nE;
-    vec3 p, n, c;
-    vec3 t;
+    float x, y, z, r, g, b;
     SurfaceMesh::Vertex v;
 
     // properties
@@ -480,17 +479,17 @@ bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
         lp = line;
 
         // position
-        items = sscanf(lp, "%f %f %f%n", &p[0], &p[1], &p[2], &nc);
+        items = sscanf(lp, "%f %f %f%n", &x, &y, &z, &nc);
         assert(items == 3);
-        v = mesh.addVertex((Point)p);
+        v = mesh.addVertex( Point(x,y,z) );
         lp += nc;
 
         // normal
         if (hasNormals)
         {
-            if (sscanf(lp, "%f %f %f%n", &n[0], &n[1], &n[2], &nc) == 3)
+            if (sscanf(lp, "%f %f %f%n", &x, &y, &z, &nc) == 3)
             {
-                normals[v] = n;
+                normals[v] = Normal(x,y,z);
             }
             lp += nc;
         }
@@ -498,11 +497,15 @@ bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
         // color
         if (hasColors)
         {
-            if (sscanf(lp, "%f %f %f%n", &c[0], &c[1], &c[2], &nc) == 3)
+            if (sscanf(lp, "%f %f %f%n", &r, &g, &b, &nc) == 3)
             {
-                if (c[0] > 1.0f || c[1] > 1.0f || c[2] > 1.0f)
-                    c *= (1.0 / 255.0);
-                colors[v] = c;
+                if (r > 1.0f || g > 1.0f || b > 1.0f)
+                {
+                    r /= 255.0f;
+                    g /= 255.0f;
+                    b /= 255.0f;
+                }
+                colors[v] = Color(r,g,b);
             }
             lp += nc;
         }
@@ -510,10 +513,10 @@ bool readOFFAscii(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
         // tex coord
         if (hasTexcoords)
         {
-            items = sscanf(lp, "%f %f%n", &t[0], &t[1], &nc);
+            items = sscanf(lp, "%f %f%n", &x, &y, &nc);
             assert(items == 2);
-            texcoords[v][0] = t[0];
-            texcoords[v][1] = t[1];
+            texcoords[v][0] = x;
+            texcoords[v][1] = y;
             lp += nc;
         }
     }
@@ -590,7 +593,7 @@ bool readOFFBinary(SurfaceMesh& mesh, FILE* in, const bool hasNormals,
         if (hasNormals)
         {
             tfread(in, n);
-            normals[v] = n;
+            normals[v] = (Normal)n;
         }
 
         // tex coord

@@ -103,7 +103,7 @@ bool EdgeSetIO::readKNT(EdgeSet& es, const std::string& filename)
     unsigned int nV, nE;
     unsigned int i, items;
     int idx_i, idx_j;
-    Point p;
+    float x,y,z;
 
     // skip every line before "vertices..."
     do
@@ -123,8 +123,8 @@ bool EdgeSetIO::readKNT(EdgeSet& es, const std::string& filename)
     {
         if (fgets(line, 100, in) != nullptr)
         {
-            items = sscanf(line, "%f %f %f", &p[0], &p[1], &p[2]);
-            es.addVertex(p);
+            items = sscanf(line, "%f %f %f", &x, &y, &z);
+            es.addVertex( Point(x,y,z) );
         }
     }
 

@@ -45,6 +45,8 @@ SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& _mesh,
     maxdist_(_maxdist),
     use_virtual_edges_(_use_virtual_edges)
 {
+    use_virtual_edges_ = false;
+
     distance_  = mesh_.addVertexProperty<Scalar>("geodesic:distance");
     processed_ = mesh_.addVertexProperty<bool>("geodesic:processed");
 

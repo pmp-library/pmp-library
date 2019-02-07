@@ -67,7 +67,7 @@ bool MeshViewer::loadMesh(const char* filename)
     {
         // update scene center and bounds
         BoundingBox bb = m_mesh.bounds();
-        setScene(bb.center(), 0.5 * bb.size());
+        setScene((vec3)bb.center(), 0.5 * bb.size());
 
         // compute face & vertex normals, update face indices
         updateMesh();
@@ -190,11 +190,12 @@ SurfaceMesh::Vertex MeshViewer::pickVertex(int x, int y)
 {
     SurfaceMesh::Vertex vmin;
 
-    Point   picked_position;
+    vec3    p;
     Scalar  d, dmin(FLT_MAX);
 
-    if (TrackballViewer::pick(x, y, picked_position))
+    if (TrackballViewer::pick(x, y, p))
     {
+        Point picked_position(p);
         for (auto v: m_mesh.vertices())
         {
             d = distance(m_mesh.position(v), picked_position);

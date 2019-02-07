@@ -60,7 +60,7 @@ bool EdgeSetViewer::loadEdgeSet(const char* filename)
     {
         // update scene center and bounds
         BoundingBox bb = m_edgeSet.bounds();
-        setScene(bb.center(), 0.5 * bb.size());
+        setScene((vec3)bb.center(), 0.5 * bb.size());
 
         updateEdgeSet();
 

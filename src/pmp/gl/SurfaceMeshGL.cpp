@@ -285,7 +285,7 @@ void SurfaceMeshGL::updateOpenGLBuffers()
         {
             cornerHalfedges.push_back(h);
             cornerVertices.push_back(toVertex(h));
-            cornerNormals.push_back(
+            cornerNormals.push_back((vec3)
                 SurfaceNormals::computeCornerNormal(*this, h, creaseAngle));
         }
         assert(cornerVertices.size() >= 3);
@@ -294,25 +294,25 @@ void SurfaceMeshGL::updateOpenGLBuffers()
         int i0, i1, i2, nc = cornerVertices.size();
         for (i0 = 0, i1 = 1, i2 = 2; i2 < nc; ++i1, ++i2)
         {
-            positionArray.push_back(vpos[cornerVertices[i0]]);
-            positionArray.push_back(vpos[cornerVertices[i1]]);
-            positionArray.push_back(vpos[cornerVertices[i2]]);
+            positionArray.push_back((vec3)vpos[cornerVertices[i0]]);
+            positionArray.push_back((vec3)vpos[cornerVertices[i1]]);
+            positionArray.push_back((vec3)vpos[cornerVertices[i2]]);
 
-            normalArray.push_back(cornerNormals[i0]);
-            normalArray.push_back(cornerNormals[i1]);
-            normalArray.push_back(cornerNormals[i2]);
+            normalArray.push_back((vec3)cornerNormals[i0]);
+            normalArray.push_back((vec3)cornerNormals[i1]);
+            normalArray.push_back((vec3)cornerNormals[i2]);
 
             if (htex)
             {
-                texArray.push_back(htex[cornerHalfedges[i0]]);
-                texArray.push_back(htex[cornerHalfedges[i1]]);
-                texArray.push_back(htex[cornerHalfedges[i2]]);
+                texArray.push_back((vec2)htex[cornerHalfedges[i0]]);
+                texArray.push_back((vec2)htex[cornerHalfedges[i1]]);
+                texArray.push_back((vec2)htex[cornerHalfedges[i2]]);
             }
             else if (vtex)
             {
-                texArray.push_back(vtex[cornerVertices[i0]]);
-                texArray.push_back(vtex[cornerVertices[i1]]);
-                texArray.push_back(vtex[cornerVertices[i2]]);
+                texArray.push_back((vec2)vtex[cornerVertices[i0]]);
+                texArray.push_back((vec2)vtex[cornerVertices[i1]]);
+                texArray.push_back((vec2)vtex[cornerVertices[i2]]);
             }
 
             vertex_indices[cornerVertices[i0]] = vidx++;
