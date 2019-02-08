@@ -45,7 +45,8 @@ SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& _mesh,
     maxdist_(_maxdist),
     use_virtual_edges_(_use_virtual_edges)
 {
-    use_virtual_edges_ = false;
+    // MARIO DEBUG
+    //use_virtual_edges_ = false;
 
     distance_  = mesh_.addVertexProperty<Scalar>("geodesic:distance");
     processed_ = mesh_.addVertexProperty<bool>("geodesic:processed");
@@ -371,38 +372,58 @@ void SurfaceGeodesic::heap_vertex(Vertex _v)
 Scalar SurfaceGeodesic::distance(Vertex _v0, Vertex _v1, Vertex _v2,
                                  Scalar _r0, Scalar _r1)
 {
-    // get 3D points
-    const Point& p0 = mesh_.position(_v0);
-    const Point& p1 = mesh_.position(_v1);
-    const Point& p2 = mesh_.position(_v2);
+    Point  A, B, C;
+    double TA, TB;
+    double a, b;
 
+    // choose points such that TB>TA and hence u>0
+    if (distance_[_v0] < distance_[_v1])
+    {
+        A  = mesh_.position(_v0);
+        B  = mesh_.position(_v1);
+        C  = mesh_.position(_v2);
+        TA = distance_[_v0];
+        TB = distance_[_v1];
+        a  = _r1 == FLT_MAX ? pmp::distance(B,C) : _r1;
+        b  = _r0 == FLT_MAX ? pmp::distance(A,C) : _r0;
+    }
+    else
+    {
+        A  = mesh_.position(_v1);
+        B  = mesh_.position(_v0);
+        C  = mesh_.position(_v2);
+        TA = distance_[_v1];
+        TB = distance_[_v0];
+        a  = _r0 == FLT_MAX ? pmp::distance(B,C) : _r0;
+        b  = _r1 == FLT_MAX ? pmp::distance(A,C) : _r1;
+    }
 
-    // get radii
-    const Scalar r0r0 = (_r0 == FLT_MAX ? sqrnorm(p2-p0) : _r0*_r0);
-    const Scalar r1r1 = (_r1 == FLT_MAX ? sqrnorm(p2-p1) : _r1*_r1);
+    double u = TB - TA;
+    double c = dot(normalize(A-C), normalize(B-C)); // cosine
+    double s = 1.0-c*c; // squared sine
+    
+    // Dykstra solution as fall-back: propagate along edges
+    double dykstra = std::min(TA+b, TB+a);
 
+    // obtuse?
+    if (c < 0.0) return dykstra;
 
-    // get distance values
-    const Scalar d0d0 = distance_[_v0] * distance_[_v0];
-    const Scalar d1d1 = distance_[_v1] * distance_[_v1];
+    // solve quadratic equation
+    double aa = a*a + b*b - 2.0*a*b*c;
+    double bb = 2.0*b*u*(a*c-b);
+    double cc = b*b*(u*u-a*a*s); 
+    double dd = bb*bb - 4.0*aa*cc;
+    if (dd < 0.0) return dykstra;
+    double t1 = (-bb + sqrt(dd)) / (2.0*aa);
+    double t2 = (-bb - sqrt(dd)) / (2.0*aa);
+    double  t = std::max(t1,t2);
 
-
-    // 2D coords of v1 & v2
-    const Scalar  x1 = pmp::distance(p0, p1);
-    const Scalar  x2 = 0.5f * (x1*x1 + r0r0 - r1r1) / x1;
-    const Scalar  y2 = sqrt(r0r0 - x2*x2);
-    const Point   v2(x2, y2, 0.0f);
-
-
-    // compute circle origin(s)
-    const Scalar  x = 0.5f * (x1*x1 + d0d0 - d1d1) / x1;
-    const Scalar  y = sqrt(d0d0 - x*x);
-    const Point   o0(x,  y, 0.0f);
-    const Point   o1(x, -y, 0.0f);
-
-
-    // larger distance gives dist of v3
-    return std::max( pmp::distance(v2, o0), pmp::distance(v2, o1) );
+    // which solution to use?
+    double  q = b*(t-u)/t;
+    if ( (u < t) && (a*c < q) && (q < a/c) )
+        return TA + t;
+    else
+        return dykstra;
 }
 
 

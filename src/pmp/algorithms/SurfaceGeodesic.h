@@ -113,7 +113,6 @@ private:
     Scalar distance(Vertex _v0, Vertex _v1, Vertex _v2,
                     Scalar _r0=FLT_MAX, Scalar _r1=FLT_MAX);
 
-
 private: 
 
     SurfaceMesh&                             mesh_;
