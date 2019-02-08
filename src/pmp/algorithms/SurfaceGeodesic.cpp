@@ -45,9 +45,6 @@ SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& _mesh,
     maxdist_(_maxdist),
     use_virtual_edges_(_use_virtual_edges)
 {
-    // MARIO DEBUG
-    //use_virtual_edges_ = false;
-
     distance_  = mesh_.addVertexProperty<Scalar>("geodesic:distance");
     processed_ = mesh_.addVertexProperty<bool>("geodesic:processed");
 
@@ -369,6 +366,15 @@ void SurfaceGeodesic::heap_vertex(Vertex _v)
 //-----------------------------------------------------------------------------
 
 
+bool valid_triangle(double a, double b, double c) 
+{ 
+    return (a + b > c && a + c > b && b + c > a); 
+}
+
+
+//-----------------------------------------------------------------------------
+
+
 Scalar SurfaceGeodesic::distance(Vertex _v0, Vertex _v1, Vertex _v2,
                                  Scalar _r0, Scalar _r1)
 {
@@ -398,32 +404,53 @@ Scalar SurfaceGeodesic::distance(Vertex _v0, Vertex _v1, Vertex _v2,
         b  = _r1 == FLT_MAX ? pmp::distance(A,C) : _r1;
     }
 
-    double u = TB - TA;
-    double c = dot(normalize(A-C), normalize(B-C)); // cosine
-    double s = 1.0-c*c; // squared sine
-    
-    // Dykstra solution as fall-back: propagate along edges
-    double dykstra = std::min(TA+b, TB+a);
 
-    // obtuse?
+    // Dykstra: propagate along edges
+    const double dykstra = std::min(TA+b, TB+a);
+
+
+    // obtuse angle -> fall back to Dykstra
+    const double c = dot(normalize(A-C), normalize(B-C)); // cosine
     if (c < 0.0) return dykstra;
 
-    // solve quadratic equation
-    double aa = a*a + b*b - 2.0*a*b*c;
-    double bb = 2.0*b*u*(a*c-b);
-    double cc = b*b*(u*u-a*a*s); 
-    double dd = bb*bb - 4.0*aa*cc;
-    if (dd < 0.0) return dykstra;
-    double t1 = (-bb + sqrt(dd)) / (2.0*aa);
-    double t2 = (-bb - sqrt(dd)) / (2.0*aa);
-    double  t = std::max(t1,t2);
 
-    // which solution to use?
-    double  q = b*(t-u)/t;
-    if ( (u < t) && (a*c < q) && (q < a/c) )
-        return TA + t;
-    else
-        return dykstra;
+    // Novotny: intersect two circles
+    // use Novotny when distances are not too large
+    const double l  = pmp::distance(A, B);
+    if (std::max(TA,TB)/l < 10)
+    {
+        if (valid_triangle(l, a, b) && valid_triangle(l, TA, TB))
+        {
+            const double x2 = 0.5f * (l*l + b*b - a*a) / l;
+            const double y2 = sqrt(b*b - x2*x2);
+            const double x  = 0.5f * (l*l + TA*TA - TB*TB) / l;
+            const double y  = -sqrt(TA*TA - x*x);
+            return pmp::distance(dvec2(x2,y2), dvec2(x,y));
+        }
+    }
+
+
+    // Kimmel: solve quadratic equation
+    const double u  = TB - TA;
+    const double aa = a*a + b*b - 2.0*a*b*c;
+    const double bb = 2.0*b*u*(a*c-b);
+    const double cc = b*b*(u*u-a*a*(1.0-c*c)); 
+    const double dd = bb*bb - 4.0*aa*cc;
+    if (dd > 0.0) 
+    {
+        const double t1 = (-bb + sqrt(dd)) / (2.0*aa);
+        const double t2 = (-bb - sqrt(dd)) / (2.0*aa);
+        const double  t = std::max(t1,t2);
+        const double  q = b*(t-u)/t;
+        if ( (u < t) && (a*c < q) && (q < a/c) )
+        {
+            return TA + t;
+        }
+    }
+
+
+    // use Dykstra as fall-back
+    return dykstra;
 }
 
 

@@ -46,7 +46,9 @@ namespace pmp {
 
 //! \brief Compute geodesic distance from a set of seed vertices
 
-//! See \cite kimmel_1998_geodesic for details.
+//! The methods works by a Dykstra-like breadth first traversal from
+//! the seed vertices, implemented by a head structure.
+//! See \cite kimmel_1998_geodesic and \cite novotny_2002_geodesic for details.
 class SurfaceGeodesic
 {
 private:
