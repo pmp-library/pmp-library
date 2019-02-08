@@ -50,25 +50,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 
     switch (key)
     {
-        case GLFW_KEY_G:
-        {
-            if (!m_mesh.isEmpty())
-            {
-                // setup seed
-                std::vector<SurfaceMesh::Vertex>  seed;
-                seed.push_back(SurfaceMesh::Vertex(0));
-
-                // compute geodesic distance
-                SurfaceGeodesic geodist(m_mesh, seed);
-                geodist.distanceToTextureCoordinates();
-
-                m_mesh.useCheckerboardTexture();
-                updateMesh();
-                setDrawMode("Texture");
-            }
-            break;
-        }
-
         case GLFW_KEY_F:
         {
             SurfaceFeatures sf(m_mesh);
