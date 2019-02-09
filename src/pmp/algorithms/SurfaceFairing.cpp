@@ -99,7 +99,7 @@ void SurfaceFairing::fair(unsigned int k)
     for (auto v : m_mesh.vertices())
     {
         // lock boundary
-        if (m_mesh.isSurfaceBoundary(v))
+        if (m_mesh.isBoundary(v))
         {
             m_vlocked[v] = true;
 
@@ -247,7 +247,7 @@ void SurfaceFairing::setupMatrixRow(const SurfaceMesh::Vertex v,
             row[v] += t.m_weight;
         }
 
-        // else if (d == 1 && m_mesh.isSurfaceBoundary(v))
+        // else if (d == 1 && m_mesh.isBoundary(v))
         // {
         //     // ignore?
         // }

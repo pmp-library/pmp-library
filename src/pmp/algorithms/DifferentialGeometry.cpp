@@ -69,7 +69,7 @@ double cotanWeight(const SurfaceMesh& mesh, SurfaceMesh::Edge e)
     const dvec3 p0 = (dvec3)mesh.position(mesh.toVertex(h0));
     const dvec3 p1 = (dvec3)mesh.position(mesh.toVertex(h1));
 
-    if (!mesh.isSurfaceBoundary(h0))
+    if (!mesh.isBoundary(h0))
     {
         const dvec3 p2 =
             (dvec3)mesh.position(mesh.toVertex(mesh.nextHalfedge(h0)));
@@ -83,7 +83,7 @@ double cotanWeight(const SurfaceMesh& mesh, SurfaceMesh::Edge e)
         }
     }
 
-    if (!mesh.isSurfaceBoundary(h1))
+    if (!mesh.isBoundary(h1))
     {
         const dvec3 p2 =
             (dvec3)mesh.position(mesh.toVertex(mesh.nextHalfedge(h1)));
@@ -122,7 +122,7 @@ double voronoiArea(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
             h1 = mesh.nextHalfedge(h0);
             h2 = mesh.nextHalfedge(h1);
 
-            if (mesh.isSurfaceBoundary(h0))
+            if (mesh.isBoundary(h0))
                 continue;
 
             // three vertex positions
@@ -191,7 +191,7 @@ double voronoiAreaBarycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
 
         for (auto h : mesh.halfedges(v))
         {
-            if (mesh.isSurfaceBoundary(h))
+            if (mesh.isBoundary(h))
                 continue;
 
             h0 = h;
@@ -240,7 +240,7 @@ Scalar angleSum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
 {
     Scalar angles(0.0);
 
-    if (!mesh.isSurfaceBoundary(v))
+    if (!mesh.isBoundary(v))
     {
         const Point& p0 = mesh.position(v);
 

@@ -72,7 +72,7 @@ void SurfaceSmoothing::explicitSmoothing(unsigned int iters,
         {
             Point l(0, 0, 0);
 
-            if (!m_mesh.isSurfaceBoundary(v))
+            if (!m_mesh.isBoundary(v))
             {
                 Scalar w(0);
 
@@ -139,7 +139,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep,
     free_vertices.reserve(m_mesh.nVertices());
     for (auto v : m_mesh.vertices())
     {
-        if (!m_mesh.isSurfaceBoundary(v))
+        if (!m_mesh.isBoundary(v))
         {
             idx[v] = i++;
             free_vertices.push_back(v);
@@ -176,7 +176,7 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep,
             ww += eweight[e];
 
             // fixed boundary vertex -> right hand side
-            if (m_mesh.isSurfaceBoundary(vv))
+            if (m_mesh.isBoundary(vv))
             {
                 B(i, 0) -= -timestep * eweight[e] * points[vv][0];
                 B(i, 1) -= -timestep * eweight[e] * points[vv][1];

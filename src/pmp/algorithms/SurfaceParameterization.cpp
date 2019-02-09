@@ -62,7 +62,7 @@ bool SurfaceParameterization::setupBoundaryConstraints()
 
     // find 1st boundary vertex
     for (vit = m_mesh.verticesBegin(); vit != vend; ++vit)
-        if (m_mesh.isSurfaceBoundary(*vit))
+        if (m_mesh.isBoundary(*vit))
             break;
 
     // no boundary found ?
@@ -141,7 +141,7 @@ void SurfaceParameterization::harmonic(bool useUniformWeights)
     free_vertices.reserve(m_mesh.nVertices());
     for (auto v : m_mesh.vertices())
     {
-        if (!m_mesh.isSurfaceBoundary(v))
+        if (!m_mesh.isBoundary(v))
         {
             idx[v] = i++;
             free_vertices.push_back(v);
@@ -173,7 +173,7 @@ void SurfaceParameterization::harmonic(bool useUniformWeights)
             w = eweight[e];
             ww += w;
 
-            if (m_mesh.isSurfaceBoundary(vv))
+            if (m_mesh.isBoundary(vv))
             {
                 B(i, 0) -= -w * tex[vv][0];
                 B(i, 1) -= -w * tex[vv][1];
@@ -227,7 +227,7 @@ bool SurfaceParameterization::setupLSCMBoundary()
     // find boundary vertices and store handles in vector
     std::vector<SurfaceMesh::Vertex> boundary;
     for (auto v : m_mesh.vertices())
-        if (m_mesh.isSurfaceBoundary(v))
+        if (m_mesh.isBoundary(v))
             boundary.push_back(v);
 
     // no boundary?
@@ -381,7 +381,7 @@ void SurfaceParameterization::lscm()
                 vj = m_mesh.toVertex(h);
                 sj0 = sj1 = 0;
 
-                if (!m_mesh.isSurfaceBoundary(h))
+                if (!m_mesh.isBoundary(h))
                 {
                     const dvec2& wj = weight[h];
                     const dvec2& wi = weight[m_mesh.prevHalfedge(h)];
@@ -392,7 +392,7 @@ void SurfaceParameterization::lscm()
                 }
 
                 h = m_mesh.oppositeHalfedge(h);
-                if (!m_mesh.isSurfaceBoundary(h))
+                if (!m_mesh.isBoundary(h))
                 {
                     const dvec2& wi = weight[h];
                     const dvec2& wj = weight[m_mesh.prevHalfedge(h)];

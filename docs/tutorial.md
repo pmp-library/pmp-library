@@ -1,12 +1,8 @@
 # Tutorial {#tutorial}
 
 This section provides a hands-on tutorial on the basic usage of the
-pmp-library. Since working with polygon meshes is the focus of the library, this
-tutorial uses the pmp::SurfaceMesh class throughout the examples. However, the
-general concepts such as iterating through the entities of a data set naturally
-transfer to other representations as well. For a thorough introduction into
-goemetry and polygon mesh processing we refer to the book of Botsch et al.
-\cite botsch_2010_polygon.
+pmp-library. For a thorough introduction into polygon mesh processing we refer
+to the book of Botsch et al. \cite botsch_2010_polygon.
 
 ## Introduction
 
@@ -63,8 +59,8 @@ number of vertices, edges, and faces is printed to standard output.
 ## Iterators and Circulators
 
 In order to sequentially access mesh entities pmp::SurfaceMesh provides
-iterators for each entity type, namely pmp::PointSet::VertexIterator,
-pmp::EdgeSet::HalfedgeIterator, pmp::EdgeSet::EdgeIterator, and
+iterators for each entity type, namely pmp::SurfaceMesh::VertexIterator,
+pmp::SurfaceMesh::HalfedgeIterator, pmp::SurfaceMesh::EdgeIterator, and
 pmp::SurfaceMesh::FaceIterator. Similar to iterators, pmp::SurfaceMesh also
 provides circulators for the ordered enumeration of all incident vertices,
 halfedges, or faces around a given face or vertex. The example below

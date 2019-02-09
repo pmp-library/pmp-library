@@ -74,12 +74,6 @@ else()
 
         add_executable(mpview mpview.cpp MeshProcessingViewer.cpp MeshProcessingViewer.h)
         target_link_libraries(mpview pmp_gl)
-
-        add_executable(eview eview.cpp EdgeSetProcessingViewer.cpp EdgeSetProcessingViewer.h)
-        target_link_libraries(eview pmp_gl)
-
-        add_executable(pview pview.cpp PointSetProcessingViewer.cpp PointSetProcessingViewer.h)
-        target_link_libraries(pview pmp_gl)
     endif()
 
 endif()

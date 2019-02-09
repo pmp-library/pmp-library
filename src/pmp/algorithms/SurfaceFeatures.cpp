@@ -57,11 +57,11 @@ void SurfaceFeatures::clear()
 void SurfaceFeatures::detectBoundary()
 {
     for (auto v : m_mesh.vertices())
-        if (m_mesh.isSurfaceBoundary(v))
+        if (m_mesh.isBoundary(v))
             m_vfeature[v] = true;
 
     for (auto e : m_mesh.edges())
-        if (m_mesh.isSurfaceBoundary(e))
+        if (m_mesh.isBoundary(e))
             m_efeature[e] = true;
 }
 
@@ -73,7 +73,7 @@ void SurfaceFeatures::detectAngle(Scalar angle)
 
     for (auto e : m_mesh.edges())
     {
-        if (!m_mesh.isSurfaceBoundary(e))
+        if (!m_mesh.isBoundary(e))
         {
             const auto f0 = m_mesh.face(m_mesh.halfedge(e, 0));
             const auto f1 = m_mesh.face(m_mesh.halfedge(e, 1));

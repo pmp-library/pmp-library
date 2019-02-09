@@ -135,6 +135,14 @@ bool SurfaceMeshIO::read(SurfaceMesh& mesh, const std::string& filename)
     {
         return readPMP(mesh, filename);
     }
+    else if (ext == "xyz")
+    {
+        return readXYZ(mesh, filename);
+    }
+    else if (ext == "agi")
+    {
+        return readAGI(mesh, filename);
+    }
 
     // we didn't find a reader module
     return false;
@@ -171,6 +179,10 @@ bool SurfaceMeshIO::write(const SurfaceMesh& mesh, const std::string& filename)
     else if (ext == "pmp")
     {
         return writePMP(mesh, filename);
+    }
+    else if (ext == "xyz")
+    {
+        return writeXYZ(mesh, filename);
     }
 
     // we didn't find a writer module
@@ -834,7 +846,6 @@ template <typename T>
 using FaceProperty = SurfaceMesh::FaceProperty<T>;
 using VertexConnectivity = SurfaceMesh::VertexConnectivity;
 using HalfedgeConnectivity = SurfaceMesh::HalfedgeConnectivity;
-using HalfedgeFaceConnectivity = SurfaceMesh::HalfedgeFaceConnectivity;
 using FaceConnectivity = SurfaceMesh::FaceConnectivity;
 
 //== IMPLEMENTATION ===========================================================
@@ -871,8 +882,6 @@ bool SurfaceMeshIO::readPMP(SurfaceMesh& mesh, const std::string& filename)
     // get properties
     auto vconn = mesh.vertexProperty<VertexConnectivity>("v:connectivity");
     auto hconn = mesh.halfedgeProperty<HalfedgeConnectivity>("h:connectivity");
-    auto hfconn =
-        mesh.halfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
     auto fconn = mesh.faceProperty<FaceConnectivity>("f:connectivity");
     auto point = mesh.vertexProperty<Point>("v:point");
 
@@ -880,13 +889,10 @@ bool SurfaceMeshIO::readPMP(SurfaceMesh& mesh, const std::string& filename)
     size_t nvc = fread((char*)vconn.data(), sizeof(VertexConnectivity), nv, in);
     size_t nhc =
         fread((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, in);
-    size_t nhfc =
-        fread((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, in);
     size_t nfc = fread((char*)fconn.data(), sizeof(FaceConnectivity), nf, in);
     size_t np = fread((char*)point.data(), sizeof(Point), nv, in);
     PMP_ASSERT(nvc == nv);
     PMP_ASSERT(nhc == nh);
-    PMP_ASSERT(nhfc == nh);
     PMP_ASSERT(nfc == nf);
     PMP_ASSERT(np == nv);
 
@@ -897,6 +903,81 @@ bool SurfaceMeshIO::readPMP(SurfaceMesh& mesh, const std::string& filename)
         size_t nhtc =
             fread((char*)htex.data(), sizeof(TextureCoordinate), nh, in);
         PMP_ASSERT(nhtc == nh);
+    }
+
+    fclose(in);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SurfaceMeshIO::readXYZ(SurfaceMesh& mesh, const std::string& filename)
+{
+    // open file (in ASCII mode)
+    FILE* in = fopen(filename.c_str(), "r");
+    if (!in)
+        return false;
+
+    // add normal property
+    // \todo this adds property even if no normals present. change it.
+    auto vnormal = mesh.vertexProperty<Normal>("v:normal");
+
+    char line[200];
+    float x, y, z;
+    float nx, ny, nz;
+    int n;
+    SurfaceMesh::Vertex v;
+
+    // read data
+    while (in && !feof(in) && fgets(line, 200, in))
+    {
+        n = sscanf(line, "%f %f %f %f %f %f", &x, &y, &z, &nx, &ny, &nz);
+        if (n >= 3)
+        {
+            v = mesh.addVertex(Point(x, y, z));
+            if (n >= 6)
+            {
+                vnormal[v] = Normal(nx, ny, nz);
+            }
+        }
+    }
+
+    fclose(in);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+// \todo remove duplication with readXYZ
+bool SurfaceMeshIO::readAGI(SurfaceMesh& mesh, const std::string& filename)
+{
+    // open file (in ASCII mode)
+    FILE* in = fopen(filename.c_str(), "r");
+    if (!in)
+        return false;
+
+    // add normal property
+    auto normal = mesh.vertexProperty<Normal>("v:normal");
+    auto color = mesh.vertexProperty<Color>("v:color");
+
+    char line[200];
+    float x, y, z;
+    float nx, ny, nz;
+    float r, g, b;
+    int n;
+    SurfaceMesh::Vertex v;
+
+    // read data
+    while (in && !feof(in) && fgets(line, 200, in))
+    {
+        n = sscanf(line, "%f %f %f %f %f %f %f %f %f", &x, &y, &z, &r, &g, &b,
+                   &nx, &ny, &nz);
+        if (n == 9)
+        {
+            v = mesh.addVertex(Point(x, y, z));
+            normal[v] = Normal(nx, ny, nz);
+            color[v] = Color(r / 255.0, g / 255.0, b / 255.0);
+        }
     }
 
     fclose(in);
@@ -917,8 +998,6 @@ bool SurfaceMeshIO::writePMP(const SurfaceMesh& mesh,
     auto vconn = mesh.getVertexProperty<VertexConnectivity>("v:connectivity");
     auto hconn =
         mesh.getHalfedgeProperty<HalfedgeConnectivity>("h:connectivity");
-    auto hfconn =
-        mesh.getHalfedgeProperty<HalfedgeFaceConnectivity>("hf:connectivity");
     auto fconn = mesh.getFaceProperty<FaceConnectivity>("f:connectivity");
     auto point = mesh.getVertexProperty<Point>("v:point");
     auto htex = mesh.getHalfedgeProperty<TextureCoordinate>("h:tex");
@@ -939,7 +1018,6 @@ bool SurfaceMeshIO::writePMP(const SurfaceMesh& mesh,
     // write properties to file
     fwrite((char*)vconn.data(), sizeof(VertexConnectivity), nv, out);
     fwrite((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, out);
-    fwrite((char*)hfconn.data(), sizeof(HalfedgeFaceConnectivity), nh, out);
     fwrite((char*)fconn.data(), sizeof(FaceConnectivity), nf, out);
     fwrite((char*)point.data(), sizeof(Point), nv, out);
 
@@ -1285,6 +1363,30 @@ bool SurfaceMeshIO::writeSTL(const SurfaceMesh& mesh,
         ofs << "  endfacet" << std::endl;
     }
     ofs << "endsolid" << std::endl;
+    ofs.close();
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SurfaceMeshIO::writeXYZ(const SurfaceMesh& mesh, const std::string& filename)
+{
+    std::ofstream ofs(filename);
+    if (!ofs)
+        return false;
+
+    auto vnormal = mesh.getVertexProperty<Normal>("v:normal");
+    for (auto v : mesh.vertices())
+    {
+        ofs << mesh.position(v);
+        ofs << " ";
+        if (vnormal)
+        {
+            ofs << vnormal[v];
+        }
+        ofs << std::endl;
+    }
+
     ofs.close();
     return true;
 }

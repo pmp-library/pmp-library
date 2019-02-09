@@ -158,6 +158,23 @@ TEST_F(SurfaceMeshTest, assignment)
     EXPECT_EQ(m2.nFaces(), size_t(1));
 }
 
+TEST_F(SurfaceMeshTest, objectProperties)
+{
+    // explicit add
+    auto midx = mesh.addObjectProperty<int>("m:idx");
+    midx[0] = 0;
+    EXPECT_EQ(mesh.objectProperties().size(), size_t(1));
+    mesh.removeObjectProperty(midx);
+    EXPECT_EQ(mesh.objectProperties().size(), size_t(0));
+
+    // implicit add
+    midx = mesh.objectProperty<int>("m:idx2");
+    EXPECT_EQ(mesh.objectProperties().size(), size_t(1));
+    mesh.removeObjectProperty(midx);
+    EXPECT_EQ(mesh.objectProperties().size(), size_t(0));
+}
+
+
 TEST_F(SurfaceMeshTest, vertexProperties)
 {
     addTriangle();
@@ -185,15 +202,15 @@ TEST_F(SurfaceMeshTest, halfedgeProperties)
     auto hidx = mesh.addHalfedgeProperty<int>("h:idx");
     auto h = mesh.halfedge(v0);
     hidx[h] = 0;
-    EXPECT_EQ(mesh.halfedgeProperties().size(), size_t(3));
-    mesh.removeHalfedgeProperty(hidx);
     EXPECT_EQ(mesh.halfedgeProperties().size(), size_t(2));
+    mesh.removeHalfedgeProperty(hidx);
+    EXPECT_EQ(mesh.halfedgeProperties().size(), size_t(1));
 
     // implicit add
     hidx = mesh.halfedgeProperty<int>("h:idx2");
-    EXPECT_EQ(mesh.halfedgeProperties().size(), size_t(3));
-    mesh.removeHalfedgeProperty(hidx);
     EXPECT_EQ(mesh.halfedgeProperties().size(), size_t(2));
+    mesh.removeHalfedgeProperty(hidx);
+    EXPECT_EQ(mesh.halfedgeProperties().size(), size_t(1));
 }
 
 TEST_F(SurfaceMeshTest, edgeProperties)
@@ -374,15 +391,21 @@ TEST_F(SurfaceMeshTest, isManifold)
 {
     mesh.read("pmp-data/off/vertex_onering.off");
     for (auto v : mesh.vertices())
-        EXPECT_TRUE(mesh.isTwoManifold(v));
+        EXPECT_TRUE(mesh.isManifold(v));
 }
 
-TEST_F(SurfaceMeshTest, insertEdge)
+TEST_F(SurfaceMeshTest, edgeLength)
 {
     addQuad();
-    size_t ne = mesh.nEdges();
-    mesh.insertEdge(v0,v2);
-    EXPECT_EQ(mesh.nEdges(), ne+1);
+    Scalar sum(0);
+    for (auto e : mesh.edges())
+    {
+        sum += mesh.edgeLength(e);
+    }
+    sum /= (Scalar)mesh.nEdges();
+    //EXPECT_FLOAT_EQ(sum,0.52385628);
+
+    std::cerr << "sum: " << sum << std::endl;
 }
 
 TEST_F(SurfaceMeshTest, propertyStats)

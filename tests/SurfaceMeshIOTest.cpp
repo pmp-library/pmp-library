@@ -143,3 +143,13 @@ TEST_F(SurfaceMeshIOTest, plyBinaryIO)
     EXPECT_EQ(mesh.nVertices(), size_t(3));
     EXPECT_EQ(mesh.nFaces(), size_t(1));
 }
+
+TEST_F(SurfaceMeshIOTest, xyzIO)
+{
+    addTriangle();
+    mesh.write("test.xyz");
+    mesh.clear();
+    EXPECT_TRUE(mesh.isEmpty());
+    mesh.read("test.xyz");
+    EXPECT_EQ(mesh.nVertices(), size_t(3));
+}

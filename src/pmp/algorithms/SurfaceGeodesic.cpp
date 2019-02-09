@@ -93,7 +93,7 @@ void SurfaceGeodesic::find_virtual_edges()
 
         for (auto h: mesh_.halfedges(vv))
         {
-            if (!mesh_.isSurfaceBoundary(h))
+            if (!mesh_.isBoundary(h))
             {
                 vh0 = mesh_.toVertex(h);
                 hh  = mesh_.nextHalfedge(h);
@@ -131,7 +131,7 @@ void SurfaceGeodesic::find_virtual_edges()
 
 
                     // unfold ...
-                    while (((vh0==start_vh0) || (vh1==start_vh1)) && (!mesh_.isSurfaceBoundary(hhh)))
+                    while (((vh0==start_vh0) || (vh1==start_vh1)) && (!mesh_.isBoundary(hhh)))
                     {
                         // get next point
                         vhn = mesh_.toVertex(mesh_.nextHalfedge(hhh));
@@ -284,7 +284,7 @@ void SurfaceGeodesic::heap_vertex(Vertex _v)
 
     for (auto h: mesh_.halfedges(_v))
     {
-        if (!mesh_.isSurfaceBoundary(h))
+        if (!mesh_.isBoundary(h))
         {
             ve_it = virtual_edges_.find(h);
 

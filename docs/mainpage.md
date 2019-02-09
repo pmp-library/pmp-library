@@ -1,15 +1,15 @@
 # Introduction {#mainpage}
 
-The pmp-library is a modern C++ open-source library for digital geometry
-processing. It provides a set of geometric data structures frequently used in
-geometry processing tasks as well as implementations of canonical algorithms. It
-has been designed and implemented with a focus on ease of use and performance
-while maintaining high flexibility. In addition, it provides mesh viewers and
-visualization utilities based on OpenGL&reg; as well as the possibility to
-compile the library into JavaScript
-using [emscripten](https://github.com/kripken/emscripten). The latter allows to
-run mesh processing applications directly in a browser, see [here](mpview.html)
-for a demo.
+The pmp-library is a modern C++ open-source library for polygon surface mesh
+processing. It provides a simple, efficient, and easy to use data structure for
+representing polygon meshes as well as implementations of canonical algorithms
+such as simplification, remeshing, or subdivision. It is designed and
+implemented with a focus on ease of use and performance while maintaining high
+flexibility. In addition, it provides mesh viewers and visualization utilities
+based on OpenGL&reg; as well as the possibility to compile the library into
+JavaScript using [emscripten](https://github.com/kripken/emscripten). The latter
+allows to run mesh processing applications directly in a browser,
+see [here](mpview.html) for a demo.
 
 The [User Guide](userguide.html) describes how to
 quickly [get started](quickstart.html) using the pmp-library, provides

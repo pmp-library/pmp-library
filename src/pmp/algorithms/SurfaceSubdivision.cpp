@@ -77,7 +77,7 @@ void SurfaceSubdivision::catmullClark()
     for (auto e : m_mesh.edges())
     {
         // boundary or feature edge?
-        if (m_mesh.isSurfaceBoundary(e) || (m_efeature && m_efeature[e]))
+        if (m_mesh.isBoundary(e) || (m_efeature && m_efeature[e]))
         {
             epoint[e] = 0.5f * (m_points[m_mesh.vertex(e, 0)] +
                                 m_points[m_mesh.vertex(e, 1)]);
@@ -106,7 +106,7 @@ void SurfaceSubdivision::catmullClark()
         }
 
         // boundary vertex?
-        else if (m_mesh.isSurfaceBoundary(v))
+        else if (m_mesh.isBoundary(v))
         {
             auto h1 = m_mesh.halfedge(v);
             auto h0 = m_mesh.prevHalfedge(h1);
@@ -253,7 +253,7 @@ void SurfaceSubdivision::loop()
         }
 
         // boundary vertex?
-        else if (m_mesh.isSurfaceBoundary(v))
+        else if (m_mesh.isBoundary(v))
         {
 #ifndef NAV
             auto h1 = m_mesh.halfedge(v);
@@ -325,7 +325,7 @@ void SurfaceSubdivision::loop()
     for (auto e : m_mesh.edges())
     {
         // boundary or feature edge?
-        if (m_mesh.isSurfaceBoundary(e) || (m_efeature && m_efeature[e]))
+        if (m_mesh.isBoundary(e) || (m_efeature && m_efeature[e]))
         {
 #ifndef NAV
             epoint[e] = (m_points[m_mesh.vertex(e, 0)] +
@@ -433,7 +433,7 @@ void SurfaceSubdivision::sqrt3()
     auto new_pos = m_mesh.addVertexProperty<Point>("v:np");
     for (auto v : m_mesh.vertices())
     {
-        if (!m_mesh.isSurfaceBoundary(v))
+        if (!m_mesh.isBoundary(v))
         {
             Scalar n = m_mesh.valence(v);
             Scalar alpha = (4.0 - 2.0 * cos(2.0 * M_PI / n)) / 9.0;
@@ -467,7 +467,7 @@ void SurfaceSubdivision::sqrt3()
     // set new positions of old vertices
     for (auto vit = m_mesh.verticesBegin(); vit != vend; ++vit)
     {
-        if (!m_mesh.isSurfaceBoundary(*vit))
+        if (!m_mesh.isBoundary(*vit))
         {
             points[*vit] = new_pos[*vit];
         }

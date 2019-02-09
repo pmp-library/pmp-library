@@ -52,7 +52,7 @@ Normal SurfaceNormals::computeVertexNormal(const SurfaceMesh& mesh,
 
         do
         {
-            if (!mesh.isSurfaceBoundary(h))
+            if (!mesh.isBoundary(h))
             {
                 p1 = vpoint[mesh.toVertex(h)];
                 p1 -= p0;
@@ -143,7 +143,7 @@ Normal SurfaceNormals::computeCornerNormal(const SurfaceMesh& mesh,
     const Scalar cosCreaseAngle = cos(creaseAngle);
     Point nn(0, 0, 0);
 
-    if (!mesh.isSurfaceBoundary(h))
+    if (!mesh.isBoundary(h))
     {
         auto vpoint = mesh.getVertexProperty<Point>("v:point");
 
@@ -164,7 +164,7 @@ Normal SurfaceNormals::computeCornerNormal(const SurfaceMesh& mesh,
         // average over all incident faces
         do
         {
-            if (!mesh.isSurfaceBoundary(h))
+            if (!mesh.isBoundary(h))
             {
                 p1 = vpoint[mesh.toVertex(mesh.nextHalfedge(h))];
                 p1 -= p0;

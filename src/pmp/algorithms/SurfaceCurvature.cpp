@@ -72,7 +72,7 @@ void SurfaceCurvature::analyze(unsigned int postSmoothingSteps)
     {
         kmin = kmax = 0.0;
 
-        if (!m_mesh.isIsolated(v) && !m_mesh.isSurfaceBoundary(v))
+        if (!m_mesh.isIsolated(v) && !m_mesh.isBoundary(v))
         {
             laplace = Point(0.0);
             sumWeights = 0.0;
@@ -117,14 +117,14 @@ void SurfaceCurvature::analyze(unsigned int postSmoothingSteps)
     // boundary vertices: interpolate from interior neighbors
     for (auto v : m_mesh.vertices())
     {
-        if (m_mesh.isSurfaceBoundary(v))
+        if (m_mesh.isBoundary(v))
         {
             kmin = kmax = sumWeights = 0.0;
 
             for (auto vh : m_mesh.halfedges(v))
             {
                 v = m_mesh.toVertex(vh);
-                if (!m_mesh.isSurfaceBoundary(v))
+                if (!m_mesh.isBoundary(v))
                 {
                     weight = cotan[m_mesh.edge(vh)];
                     sumWeights += weight;
