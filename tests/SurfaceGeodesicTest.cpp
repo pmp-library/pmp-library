@@ -38,7 +38,6 @@ class SurfaceGeodesicTest : public ::testing::Test
 public:
     SurfaceGeodesicTest()
     {
-        EXPECT_TRUE(mesh.read("pmp-data/off/sphere.off"));
     }
 
     SurfaceMesh mesh;
@@ -46,6 +45,10 @@ public:
 
 TEST_F(SurfaceGeodesicTest, geodesic)
 {
+    // read mesh for unit sphere
+    mesh.clear();
+    EXPECT_TRUE(mesh.read("pmp-data/off/sphere.off"));
+
     // use first vertex as seed
     std::vector<SurfaceMesh::Vertex>  seed;
     seed.push_back(SurfaceMesh::Vertex(0));
@@ -58,6 +61,20 @@ TEST_F(SurfaceGeodesicTest, geodesic)
     for (auto v: mesh.vertices())
         d = std::max(d, geodist(v));
     EXPECT_FLOAT_EQ(d, 3.13061);
+}
+
+TEST_F(SurfaceGeodesicTest, geodesicToTexture)
+{
+    // read irregular mesh (to have virtual edges)
+    mesh.clear();
+    EXPECT_TRUE(mesh.read("pmp-data/off/bunny.off"));
+
+    // use first vertex as seed
+    std::vector<SurfaceMesh::Vertex>  seed;
+    seed.push_back(SurfaceMesh::Vertex(0));
+
+    // compute geodesic distance
+    SurfaceGeodesic geodist(mesh, seed);
     
     // map distances to texture coordinates
     geodist.distanceToTextureCoordinates();
