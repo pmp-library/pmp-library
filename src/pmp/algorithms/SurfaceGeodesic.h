@@ -48,7 +48,7 @@ namespace pmp {
 
 //! The methods works by a Dykstra-like breadth first traversal from
 //! the seed vertices, implemented by a head structure.
-//! See \cite kimmel_1998_geodesic and \cite novotny_2002_geodesic for details.
+//! See \cite kimmel_1998_geodesic and \cite novotni_2002_geodesic for details.
 class SurfaceGeodesic
 {
 private:
@@ -92,7 +92,7 @@ public:
     //! Construct with mesh and seed vertices.
     //! Grow around seed up to specified maximum distance.
     //! Set whether to use virtual edges (more computation, more accurate result)
-    SurfaceGeodesic(SurfaceMesh& _mesh, 
+    SurfaceGeodesic(SurfaceMesh& _mesh,
                     std::vector<Vertex> _seed,
                     Scalar _maxdist=FLT_MAX,
                     bool _use_virtual_edges=true);
@@ -115,7 +115,7 @@ private:
     Scalar distance(Vertex _v0, Vertex _v1, Vertex _v2,
                     Scalar _r0=FLT_MAX, Scalar _r1=FLT_MAX);
 
-private: 
+private:
 
     SurfaceMesh&                             mesh_;
     SurfaceMesh::VertexProperty<Scalar>      distance_;
