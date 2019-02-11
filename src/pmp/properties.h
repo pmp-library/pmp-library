@@ -165,8 +165,6 @@ public:
 
     friend class PropertyContainer;
     friend class SurfaceMesh;
-    friend class PointSet;
-    friend class EdgeSet;
 
 public:
     Property(PropertyArray<T>* p = NULL) : parray_(p) {}
