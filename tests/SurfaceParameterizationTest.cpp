@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017, 2018 The pmp-library developers
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -47,7 +47,7 @@ TEST_F(SurfaceParameterizationTest, parameterization)
     SurfaceParameterization param(mesh);
     param.harmonic(false);
     param.harmonic(true);
-    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
     EXPECT_TRUE(tex);
 }
 
@@ -55,6 +55,6 @@ TEST_F(SurfaceParameterizationTest, lscm)
 {
     SurfaceParameterization param(mesh);
     param.lscm();
-    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
     EXPECT_TRUE(tex);
 }

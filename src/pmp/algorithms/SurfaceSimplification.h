@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -60,12 +60,12 @@ public:
     ~SurfaceSimplification();
 
     //! initialize decimater
-    void initialize(Scalar aspectRatio = 0.0, Scalar edgeLength = 0.0,
-                    unsigned int maxValence = 0, Scalar normalDeviation = 0.0,
-                    Scalar hausdorffError = 0.0);
+    void initialize(Scalar aspect_ratio = 0.0, Scalar edge_length = 0.0,
+                    unsigned int max_valence = 0, Scalar normal_deviation = 0.0,
+                    Scalar hausdorff_error = 0.0);
 
     //! decimate down to n vertices
-    void simplify(unsigned int nVertices);
+    void simplify(unsigned int n_vertices);
 
 private: //------------------------------------------------------ private types
     //! Store data for an halfedge collapse
@@ -106,76 +106,76 @@ private: //------------------------------------------------------ private types
     public:
         HeapInterface(SurfaceMesh::VertexProperty<float> prio,
                       SurfaceMesh::VertexProperty<int> pos)
-            : m_prio(prio), m_pos(pos)
+            : prio_(prio), pos_(pos)
         {
         }
 
         bool less(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1)
         {
-            return m_prio[v0] < m_prio[v1];
+            return prio_[v0] < prio_[v1];
         }
         bool greater(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1)
         {
-            return m_prio[v0] > m_prio[v1];
+            return prio_[v0] > prio_[v1];
         }
-        int getHeapPosition(SurfaceMesh::Vertex v) { return m_pos[v]; }
-        void setHeapPosition(SurfaceMesh::Vertex v, int pos) { m_pos[v] = pos; }
+        int get_heap_position(SurfaceMesh::Vertex v) { return pos_[v]; }
+        void set_heap_position(SurfaceMesh::Vertex v, int pos) { pos_[v] = pos; }
 
     private:
-        SurfaceMesh::VertexProperty<float> m_prio;
-        SurfaceMesh::VertexProperty<int> m_pos;
+        SurfaceMesh::VertexProperty<float> prio_;
+        SurfaceMesh::VertexProperty<int> pos_;
     };
 
-    typedef HeapT<SurfaceMesh::Vertex, HeapInterface> PriorityQueue;
+    typedef Heap<SurfaceMesh::Vertex, HeapInterface> PriorityQueue;
 
     typedef std::vector<Point> Points;
 
 private: //-------------------------------------------------- private functions
     // put the vertex v in the priority queue
-    void enqueueVertex(SurfaceMesh::Vertex v);
+    void enqueue_vertex(SurfaceMesh::Vertex v);
 
     // is collapsing the halfedge h allowed?
-    bool isCollapseLegal(const CollapseData& cd);
+    bool is_collapse_legal(const CollapseData& cd);
 
     // what is the priority of collapsing the halfedge h
     float priority(const CollapseData& cd);
 
     // postprocess halfedge collapse
-    void postprocessCollapse(const CollapseData& cd);
+    void postprocess_collapse(const CollapseData& cd);
 
     // compute aspect ratio for face f
-    Scalar aspectRatio(SurfaceMesh::Face f) const;
+    Scalar aspect_ratio(SurfaceMesh::Face f) const;
 
     // compute distance from p to triagle f
     Scalar distance(SurfaceMesh::Face f, const Point& p) const;
 
 private: //------------------------------------------------------- private data
-    SurfaceMesh& m_mesh;
+    SurfaceMesh& mesh_;
 
-    bool m_initialized;
+    bool initialized_;
 
-    SurfaceMesh::VertexProperty<float> m_vpriority;
-    SurfaceMesh::VertexProperty<SurfaceMesh::Halfedge> m_vtarget;
-    SurfaceMesh::VertexProperty<int> m_heapPos;
-    SurfaceMesh::VertexProperty<Quadric> m_vquadric;
-    SurfaceMesh::FaceProperty<NormalCone> m_normalCone;
-    SurfaceMesh::FaceProperty<Points> m_facePoints;
+    SurfaceMesh::VertexProperty<float> vpriority_;
+    SurfaceMesh::VertexProperty<SurfaceMesh::Halfedge> vtarget_;
+    SurfaceMesh::VertexProperty<int> heap_pos_;
+    SurfaceMesh::VertexProperty<Quadric> vquadric_;
+    SurfaceMesh::FaceProperty<NormalCone> normal_cone_;
+    SurfaceMesh::FaceProperty<Points> face_points_;
 
-    SurfaceMesh::VertexProperty<Point> m_vpoint;
-    SurfaceMesh::FaceProperty<Point> m_fnormal;
-    SurfaceMesh::VertexProperty<bool> m_vselected;
-    SurfaceMesh::VertexProperty<bool> m_vfeature;
-    SurfaceMesh::EdgeProperty<bool> m_efeature;
+    SurfaceMesh::VertexProperty<Point> vpoint_;
+    SurfaceMesh::FaceProperty<Point> fnormal_;
+    SurfaceMesh::VertexProperty<bool> vselected_;
+    SurfaceMesh::VertexProperty<bool> vfeature_;
+    SurfaceMesh::EdgeProperty<bool> efeature_;
 
-    PriorityQueue* m_queue;
+    PriorityQueue* queue_;
 
-    bool m_hasSelection;
-    bool m_hasFeatures;
-    Scalar m_normalDeviation;
-    Scalar m_hausdorffError;
-    Scalar m_aspectRatio;
-    Scalar m_edgeLength;
-    unsigned int m_maxValence;
+    bool has_selection_;
+    bool has_features_;
+    Scalar normal_deviation_;
+    Scalar hausdorff_error_;
+    Scalar aspect_ratio_;
+    Scalar edge_length_;
+    unsigned int max_valence_;
 };
 
 //=============================================================================

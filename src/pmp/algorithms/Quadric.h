@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -47,18 +47,18 @@ public: // clang-format off
             double e, double f, double g,
             double h, double i,
             double j)
-        : m_a(a), m_b(b), m_c(c), m_d(d),
-          m_e(e), m_f(f), m_g(g),
-          m_h(h), m_i(i),
-          m_j(j)
+        : a_(a), b_(b), c_(c), d_(d),
+          e_(e), f_(f), g_(g),
+          h_(h), i_(i),
+          j_(j)
     {}
 
     //! constructor quadric from given plane equation: ax+by+cz+d=0
     Quadric(double a=0.0, double b=0.0, double c=0.0, double d=0.0)
-        :  m_a(a*a), m_b(a*b), m_c(a*c),  m_d(a*d),
-           m_e(b*b), m_f(b*c), m_g(b*d),
-           m_h(c*c), m_i(c*d),
-           m_j(d*d)
+        :  a_(a*a), b_(a*b), c_(a*c),  d_(a*d),
+           e_(b*b), f_(b*c), g_(b*d),
+           h_(c*c), i_(c*d),
+           j_(d*d)
     {}
 
     //! construct from point and normal specifying a plane
@@ -68,25 +68,25 @@ public: // clang-format off
     }
 
     //! set all matrix entries to zero
-    void clear() { m_a = m_b = m_c = m_d = m_e = m_f = m_g = m_h = m_i = m_j = 0.0; }
+    void clear() { a_ = b_ = c_ = d_ = e_ = f_ = g_ = h_ = i_ = j_ = 0.0; }
 
     //! add given quadric to this quadric
     Quadric& operator+=(const Quadric& q)
     {
-        m_a += q.m_a; m_b += q.m_b; m_c += q.m_c; m_d += q.m_d;
-        m_e += q.m_e; m_f += q.m_f; m_g += q.m_g;
-        m_h += q.m_h; m_i += q.m_i;
-        m_j += q.m_j;
+        a_ += q.a_; b_ += q.b_; c_ += q.c_; d_ += q.d_;
+        e_ += q.e_; f_ += q.f_; g_ += q.g_;
+        h_ += q.h_; i_ += q.i_;
+        j_ += q.j_;
         return *this;
     }
 
     //! multiply quadric by a scalar
     Quadric& operator*=(double s)
     {
-        m_a *= s; m_b *= s; m_c *= s;  m_d *= s;
-        m_e *= s; m_f *= s; m_g *= s;
-        m_h *= s; m_i *= s;
-        m_j *= s;
+        a_ *= s; b_ *= s; c_ *= s;  d_ *= s;
+        e_ *= s; f_ *= s; g_ *= s;
+        h_ *= s; i_ *= s;
+        j_ *= s;
         return *this;
     }
 
@@ -94,18 +94,18 @@ public: // clang-format off
     double operator()(const Point& p) const
     {
         const double x(p[0]), y(p[1]), z(p[2]);
-        return m_a*x*x + 2.0*m_b*x*y + 2.0*m_c*x*z + 2.0*m_d*x
-            +  m_e*y*y + 2.0*m_f*y*z + 2.0*m_g*y
-            +  m_h*z*z + 2.0*m_i*z
-            +  m_j;
+        return a_*x*x + 2.0*b_*x*y + 2.0*c_*x*z + 2.0*d_*x
+            +  e_*y*y + 2.0*f_*y*z + 2.0*g_*y
+            +  h_*z*z + 2.0*i_*z
+            +  j_;
     }
 
 private:
 
-    double m_a, m_b, m_c, m_d,
-        m_e, m_f, m_g,
-        m_h, m_i,
-        m_j;
+    double a_, b_, c_, d_,
+        e_, f_, g_,
+        h_, i_,
+        j_;
 }; // clang-format on
 
 //=============================================================================

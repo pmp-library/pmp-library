@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017, 2018 The pmp-library developers
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -54,19 +54,19 @@ TEST_F(SurfaceSimplificationTest, simplification)
                   10, // max valence
                   10, // normal deviation
                   0.001); // Hausdorff
-    ss.simplify(mesh.nVertices() * 0.1);
-    EXPECT_EQ(mesh.nVertices(),size_t(3800));
-    EXPECT_EQ(mesh.nFaces(),size_t(7596));
+    ss.simplify(mesh.n_vertices() * 0.1);
+    EXPECT_EQ(mesh.n_vertices(),size_t(3800));
+    EXPECT_EQ(mesh.n_faces(),size_t(7596));
 }
 
 // simplify with feature edge preservation enabled
-TEST_F(SurfaceSimplificationTest, simplificationWithFeatures)
+TEST_F(SurfaceSimplificationTest, simplification_with_features)
 {
     SurfaceFeatures sf(mesh);
-    sf.detectAngle(25);
+    sf.detect_angle(25);
 
     SurfaceSimplification ss(mesh);
     ss.initialize(5); // aspect ratio
-    ss.simplify(mesh.nVertices() * 0.1);
-    EXPECT_EQ(mesh.nVertices(),size_t(64));
+    ss.simplify(mesh.n_vertices() * 0.1);
+    EXPECT_EQ(mesh.n_vertices(),size_t(64));
 }

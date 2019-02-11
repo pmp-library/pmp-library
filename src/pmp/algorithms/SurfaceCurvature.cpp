@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -36,130 +36,130 @@ namespace pmp {
 
 //=============================================================================
 
-SurfaceCurvature::SurfaceCurvature(SurfaceMesh& mesh) : m_mesh(mesh)
+SurfaceCurvature::SurfaceCurvature(SurfaceMesh& mesh) : mesh_(mesh)
 {
-    m_minCurvature = m_mesh.addVertexProperty<Scalar>("curv:min");
-    m_maxCurvature = m_mesh.addVertexProperty<Scalar>("curv:max");
+    min_curvature_ = mesh_.add_vertex_property<Scalar>("curv:min");
+    max_curvature_ = mesh_.add_vertex_property<Scalar>("curv:max");
 }
 
 //-----------------------------------------------------------------------------
 
 SurfaceCurvature::~SurfaceCurvature()
 {
-    m_mesh.removeVertexProperty(m_minCurvature);
-    m_mesh.removeVertexProperty(m_maxCurvature);
+    mesh_.remove_vertex_property(min_curvature_);
+    mesh_.remove_vertex_property(max_curvature_);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceCurvature::analyze(unsigned int postSmoothingSteps)
+void SurfaceCurvature::analyze(unsigned int post_smoothing_steps)
 {
     Scalar kmin, kmax, mean, gauss;
-    Scalar area, sumAngles;
-    Scalar weight, sumWeights;
+    Scalar area, sum_angles;
+    Scalar weight, sum_weights;
     Point p0, p1, p2, laplace;
 
     // cotan weight per edge
-    auto cotan = m_mesh.addEdgeProperty<double>("curv:cotan");
-    for (auto e : m_mesh.edges())
-        cotan[e] = cotanWeight(m_mesh, e);
+    auto cotan = mesh_.add_edge_property<double>("curv:cotan");
+    for (auto e : mesh_.edges())
+        cotan[e] = cotan_weight(mesh_, e);
 
     // Voronoi area per vertex
     // Laplace per vertex
     // angle sum per vertex
     // -> mean, Gauss -> min, max curvature
-    for (auto v : m_mesh.vertices())
+    for (auto v : mesh_.vertices())
     {
         kmin = kmax = 0.0;
 
-        if (!m_mesh.isIsolated(v) && !m_mesh.isBoundary(v))
+        if (!mesh_.is_isolated(v) && !mesh_.is_boundary(v))
         {
             laplace = Point(0.0);
-            sumWeights = 0.0;
-            sumAngles = 0.0;
-            p0 = m_mesh.position(v);
+            sum_weights = 0.0;
+            sum_angles = 0.0;
+            p0 = mesh_.position(v);
 
             // Voronoi area
-            area = voronoiArea(m_mesh, v);
+            area = voronoi_area(mesh_, v);
 
             // Laplace & angle sum
-            for (auto vh : m_mesh.halfedges(v))
+            for (auto vh : mesh_.halfedges(v))
             {
-                p1 = m_mesh.position(m_mesh.toVertex(vh));
-                p2 = m_mesh.position(
-                    m_mesh.toVertex(m_mesh.ccwRotatedHalfedge(vh)));
+                p1 = mesh_.position(mesh_.to_vertex(vh));
+                p2 = mesh_.position(
+                    mesh_.to_vertex(mesh_.ccw_rotated_halfedge(vh)));
 
-                weight = cotan[m_mesh.edge(vh)];
-                sumWeights += weight;
+                weight = cotan[mesh_.edge(vh)];
+                sum_weights += weight;
                 laplace += weight * p1;
 
                 p1 -= p0;
                 p1.normalize();
                 p2 -= p0;
                 p2.normalize();
-                sumAngles += acos(clampCos(dot(p1, p2)));
+                sum_angles += acos(clamp_cos(dot(p1, p2)));
             }
-            laplace -= sumWeights * m_mesh.position(v);
+            laplace -= sum_weights * mesh_.position(v);
             laplace /= Scalar(2.0) * area;
 
             mean = Scalar(0.5) * norm(laplace);
-            gauss = (2.0 * M_PI - sumAngles) / area;
+            gauss = (2.0 * M_PI - sum_angles) / area;
 
             const Scalar s = sqrt(std::max(Scalar(0.0), mean * mean - gauss));
             kmin = mean - s;
             kmax = mean + s;
         }
 
-        m_minCurvature[v] = kmin;
-        m_maxCurvature[v] = kmax;
+        min_curvature_[v] = kmin;
+        max_curvature_[v] = kmax;
     }
 
     // boundary vertices: interpolate from interior neighbors
-    for (auto v : m_mesh.vertices())
+    for (auto v : mesh_.vertices())
     {
-        if (m_mesh.isBoundary(v))
+        if (mesh_.is_boundary(v))
         {
-            kmin = kmax = sumWeights = 0.0;
+            kmin = kmax = sum_weights = 0.0;
 
-            for (auto vh : m_mesh.halfedges(v))
+            for (auto vh : mesh_.halfedges(v))
             {
-                v = m_mesh.toVertex(vh);
-                if (!m_mesh.isBoundary(v))
+                v = mesh_.to_vertex(vh);
+                if (!mesh_.is_boundary(v))
                 {
-                    weight = cotan[m_mesh.edge(vh)];
-                    sumWeights += weight;
-                    kmin += weight * m_minCurvature[v];
-                    kmax += weight * m_maxCurvature[v];
+                    weight = cotan[mesh_.edge(vh)];
+                    sum_weights += weight;
+                    kmin += weight * min_curvature_[v];
+                    kmax += weight * max_curvature_[v];
                 }
             }
 
-            if (sumWeights)
+            if (sum_weights)
             {
-                kmin /= sumWeights;
-                kmax /= sumWeights;
+                kmin /= sum_weights;
+                kmax /= sum_weights;
             }
 
-            m_minCurvature[v] = kmin;
-            m_maxCurvature[v] = kmax;
+            min_curvature_[v] = kmin;
+            max_curvature_[v] = kmax;
         }
     }
 
     // clean-up properties
-    m_mesh.removeEdgeProperty(cotan);
+    mesh_.remove_edge_property(cotan);
 
     // smooth curvature values
-    smoothCurvatures(postSmoothingSteps);
+    smooth_curvatures(post_smoothing_steps);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
-                                     bool twoRingNeighborhood)
+void SurfaceCurvature::analyze_tensor(unsigned int post_smoothing_steps,
+                                     bool two_ring_neighborhood)
 {
-    auto area = m_mesh.addVertexProperty<double>("curv:area", 0.0);
-    auto normal = m_mesh.addFaceProperty<dvec3>("curv:normal");
-    auto evec = m_mesh.addEdgeProperty<dvec3>("curv:evec", dvec3(0, 0, 0));
-    auto angle = m_mesh.addEdgeProperty<double>("curv:angle", 0.0);
+    auto area = mesh_.add_vertex_property<double>("curv:area", 0.0);
+    auto normal = mesh_.add_face_property<dvec3>("curv:normal");
+    auto evec = mesh_.add_edge_property<dvec3>("curv:evec", dvec3(0, 0, 0));
+    auto angle = mesh_.add_edge_property<double>("curv:angle", 0.0);
 
     dvec3 p0, p1, n0, n1, ev;
     double l, A, beta, a1, a2, a3;
@@ -172,30 +172,30 @@ void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
     neighborhood.reserve(15);
 
     // precompute Voronoi area per vertex
-    for (auto v : m_mesh.vertices())
+    for (auto v : mesh_.vertices())
     {
-        area[v] = voronoiArea(m_mesh, v);
+        area[v] = voronoi_area(mesh_, v);
     }
 
     // precompute face normals
-    for (auto f : m_mesh.faces())
+    for (auto f : mesh_.faces())
     {
-        normal[f] = (dvec3)SurfaceNormals::computeFaceNormal(m_mesh, f);
+        normal[f] = (dvec3)SurfaceNormals::compute_face_normal(mesh_, f);
     }
 
-    // precompute dihedralAngle*edgeLength*edge per edge
-    for (auto e : m_mesh.edges())
+    // precompute dihedralAngle*edge_length*edge per edge
+    for (auto e : mesh_.edges())
     {
-        auto h0 = m_mesh.halfedge(e, 0);
-        auto h1 = m_mesh.halfedge(e, 1);
-        auto f0 = m_mesh.face(h0);
-        auto f1 = m_mesh.face(h1);
-        if (f0.isValid() && f1.isValid())
+        auto h0 = mesh_.halfedge(e, 0);
+        auto h1 = mesh_.halfedge(e, 1);
+        auto f0 = mesh_.face(h0);
+        auto f1 = mesh_.face(h1);
+        if (f0.is_valid() && f1.is_valid())
         {
             n0 = normal[f0];
             n1 = normal[f1];
-            ev = (dvec3)m_mesh.position(m_mesh.toVertex(h0));
-            ev -= (dvec3)m_mesh.position(m_mesh.toVertex(h1));
+            ev = (dvec3)mesh_.position(mesh_.to_vertex(h0));
+            ev -= (dvec3)mesh_.position(mesh_.to_vertex(h1));
             l = norm(ev);
             ev /= l;
             l *= 0.5; // only consider half of the edge (matchig Voronoi area)
@@ -205,19 +205,19 @@ void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
     }
 
     // compute curvature tensor for each vertex
-    for (auto v : m_mesh.vertices())
+    for (auto v : mesh_.vertices())
     {
         kmin = 0.0;
         kmax = 0.0;
 
-        if (!m_mesh.isIsolated(v))
+        if (!mesh_.is_isolated(v))
         {
             // one-ring or two-ring neighborhood?
             neighborhood.clear();
             neighborhood.push_back(v);
-            if (twoRingNeighborhood)
+            if (two_ring_neighborhood)
             {
-                for (auto vv : m_mesh.vertices(v))
+                for (auto vv : mesh_.vertices(v))
                     neighborhood.push_back(vv);
             }
 
@@ -228,9 +228,9 @@ void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
             for (auto nit : neighborhood)
             {
                 // accumulate tensor from dihedral angles around vertices
-                for (auto hv : m_mesh.halfedges(nit))
+                for (auto hv : mesh_.halfedges(nit))
                 {
-                    auto ee = m_mesh.edge(hv);
+                    auto ee = mesh_.edge(hv);
                     ev = evec[ee];
                     beta = angle[ee];
                     for (int i = 0; i < 3; ++i)
@@ -246,7 +246,7 @@ void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
             tensor /= A;
 
             // Eigen-decomposition
-            bool ok = symmetricEigendecomposition(tensor, eval1, eval2, eval3,
+            bool ok = symmetric_eigendecomposition(tensor, eval1, eval2, eval3,
                                                   evec1, evec2, evec3);
             if (ok)
             {
@@ -291,123 +291,123 @@ void SurfaceCurvature::analyzeTensor(unsigned int postSmoothingSteps,
 
         assert(kmin <= kmax);
 
-        m_minCurvature[v] = kmin;
-        m_maxCurvature[v] = kmax;
+        min_curvature_[v] = kmin;
+        max_curvature_[v] = kmax;
     }
 
     // clean-up properties
-    m_mesh.removeVertexProperty(area);
-    m_mesh.removeEdgeProperty(evec);
-    m_mesh.removeEdgeProperty(angle);
-    m_mesh.removeFaceProperty(normal);
+    mesh_.remove_vertex_property(area);
+    mesh_.remove_edge_property(evec);
+    mesh_.remove_edge_property(angle);
+    mesh_.remove_face_property(normal);
 
     // smooth curvature values
-    smoothCurvatures(postSmoothingSteps);
+    smooth_curvatures(post_smoothing_steps);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceCurvature::smoothCurvatures(unsigned int iterations)
+void SurfaceCurvature::smooth_curvatures(unsigned int iterations)
 {
     Scalar kmin, kmax;
-    Scalar weight, sumWeights;
+    Scalar weight, sum_weights;
 
     // properties
-    auto vfeature = m_mesh.getVertexProperty<bool>("v:feature");
-    auto cotan = m_mesh.addEdgeProperty<double>("curv:cotan");
+    auto vfeature = mesh_.get_vertex_property<bool>("v:feature");
+    auto cotan = mesh_.add_edge_property<double>("curv:cotan");
 
     // cotan weight per edge
-    for (auto e : m_mesh.edges())
+    for (auto e : mesh_.edges())
     {
-        cotan[e] = cotanWeight(m_mesh, e);
+        cotan[e] = cotan_weight(mesh_, e);
     }
 
     for (unsigned int i = 0; i < iterations; ++i)
     {
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
             // don't smooth feature vertices
             if (vfeature && vfeature[v])
                 continue;
 
-            kmin = kmax = sumWeights = 0.0;
+            kmin = kmax = sum_weights = 0.0;
 
-            for (auto vh : m_mesh.halfedges(v))
+            for (auto vh : mesh_.halfedges(v))
             {
-                auto tv = m_mesh.toVertex(vh);
+                auto tv = mesh_.to_vertex(vh);
 
                 // don't consider feature vertices (high curvature)
                 if (vfeature && vfeature[tv])
                     continue;
 
-                weight = std::max(0.0, cotanWeight(m_mesh, m_mesh.edge(vh)));
-                sumWeights += weight;
-                kmin += weight * m_minCurvature[tv];
-                kmax += weight * m_maxCurvature[tv];
+                weight = std::max(0.0, cotan_weight(mesh_, mesh_.edge(vh)));
+                sum_weights += weight;
+                kmin += weight * min_curvature_[tv];
+                kmax += weight * max_curvature_[tv];
             }
 
-            if (sumWeights)
+            if (sum_weights)
             {
-                m_minCurvature[v] = kmin / sumWeights;
-                m_maxCurvature[v] = kmax / sumWeights;
+                min_curvature_[v] = kmin / sum_weights;
+                max_curvature_[v] = kmax / sum_weights;
             }
         }
     }
 
     // remove property
-    m_mesh.removeEdgeProperty(cotan);
+    mesh_.remove_edge_property(cotan);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceCurvature::meanCurvatureToTextureCoordinates() const
+void SurfaceCurvature::mean_curvature_to_texture_coordinates() const
 {
-    auto curvatures = m_mesh.addVertexProperty<Scalar>("v:curv");
-    for (auto v : m_mesh.vertices())
+    auto curvatures = mesh_.add_vertex_property<Scalar>("v:curv");
+    for (auto v : mesh_.vertices())
     {
-        curvatures[v] = fabs(meanCurvature(v));
+        curvatures[v] = fabs(mean_curvature(v));
     }
-    curvatureToTextureCoordinates();
-    m_mesh.removeVertexProperty<Scalar>(curvatures);
+    curvature_to_texture_coordinates();
+    mesh_.remove_vertex_property<Scalar>(curvatures);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceCurvature::gaussCurvatureToTextureCoordinates() const
+void SurfaceCurvature::gauss_curvature_to_texture_coordinates() const
 {
-    auto curvatures = m_mesh.addVertexProperty<Scalar>("v:curv");
-    for (auto v : m_mesh.vertices())
+    auto curvatures = mesh_.add_vertex_property<Scalar>("v:curv");
+    for (auto v : mesh_.vertices())
     {
-        curvatures[v] = gaussCurvature(v);
+        curvatures[v] = gauss_curvature(v);
     }
-    curvatureToTextureCoordinates();
-    m_mesh.removeVertexProperty<Scalar>(curvatures);
+    curvature_to_texture_coordinates();
+    mesh_.remove_vertex_property<Scalar>(curvatures);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceCurvature::maxCurvatureToTextureCoordinates() const
+void SurfaceCurvature::max_curvature_to_texture_coordinates() const
 {
-    auto curvatures = m_mesh.addVertexProperty<Scalar>("v:curv");
-    for (auto v : m_mesh.vertices())
+    auto curvatures = mesh_.add_vertex_property<Scalar>("v:curv");
+    for (auto v : mesh_.vertices())
     {
-        curvatures[v] = maxAbsCurvature(v);
+        curvatures[v] = max_abs_curvature(v);
     }
-    curvatureToTextureCoordinates();
-    m_mesh.removeVertexProperty<Scalar>(curvatures);
+    curvature_to_texture_coordinates();
+    mesh_.remove_vertex_property<Scalar>(curvatures);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceCurvature::curvatureToTextureCoordinates() const
+void SurfaceCurvature::curvature_to_texture_coordinates() const
 {
-    auto curvatures = m_mesh.getVertexProperty<Scalar>("v:curv");
+    auto curvatures = mesh_.get_vertex_property<Scalar>("v:curv");
     assert(curvatures);
 
     // sort curvature values
     std::vector<Scalar> values;
-    values.reserve(m_mesh.nVertices());
-    for (auto v : m_mesh.vertices())
+    values.reserve(mesh_.n_vertices());
+    for (auto v : mesh_.vertices())
     {
         values.push_back(curvatures[v]);
     }
@@ -421,11 +421,11 @@ void SurfaceCurvature::curvatureToTextureCoordinates() const
     Scalar kmax = values[n - 1 - i];
 
     // generate 1D texture coordiantes
-    auto tex = m_mesh.vertexProperty<TextureCoordinate>("v:tex");
+    auto tex = mesh_.vertex_property<TextureCoordinate>("v:tex");
     if (kmin < 0.0) // signed
     {
         kmax = std::max(fabs(kmin), fabs(kmax));
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
             tex[v] =
                 TextureCoordinate((0.5f * curvatures[v] / kmax) + 0.5f, 0.0);
@@ -433,7 +433,7 @@ void SurfaceCurvature::curvatureToTextureCoordinates() const
     }
     else // unsigned
     {
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
             tex[v] =
                 TextureCoordinate((curvatures[v] - kmin) / (kmax - kmin), 0.0);

@@ -15,7 +15,7 @@ public:
     Viewer(const char* title, int width, int height);
 
 protected:
-    virtual void processImGUI();
+    virtual void process_imgui();
 };
 
 //=============================================================================
@@ -27,9 +27,9 @@ Viewer::Viewer(const char* title, int width, int height)
 
 //=============================================================================
 
-void Viewer::processImGUI()
+void Viewer::process_imgui()
 {
-    MeshViewer::processImGUI();
+    MeshViewer::process_imgui();
 
     ImGui::Spacing();
     ImGui::Spacing();
@@ -38,12 +38,12 @@ void Viewer::processImGUI()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            SurfaceCurvature analyzer(m_mesh);
-            analyzer.analyzeTensor(1, true);
-            analyzer.meanCurvatureToTextureCoordinates();
-            updateMesh();
-            m_mesh.useColdWarmTexture();
-            setDrawMode("Texture");
+            SurfaceCurvature analyzer(mesh_);
+            analyzer.analyze_tensor(1, true);
+            analyzer.mean_curvature_to_texture_coordinates();
+            update_mesh();
+            mesh_.use_cold_warm_texture();
+            set_draw_mode("Texture");
         }
     }
 
@@ -55,7 +55,7 @@ void Viewer::processImGUI()
         static int weight = 0;
         ImGui::RadioButton("Cotan Laplace", &weight, 0);
         ImGui::RadioButton("Uniform Laplace", &weight, 1);
-        bool uniformLaplace = (weight == 1);
+        bool uniform_laplace = (weight == 1);
 
         static int iterations = 10;
         ImGui::PushItemWidth(100);
@@ -64,17 +64,17 @@ void Viewer::processImGUI()
 
         if (ImGui::Button("Explicit Smoothing"))
         {
-            SurfaceSmoothing smoother(m_mesh);
-            smoother.explicitSmoothing(iterations, uniformLaplace);
-            updateMesh();
+            SurfaceSmoothing smoother(mesh_);
+            smoother.explicit_smoothing(iterations, uniform_laplace);
+            update_mesh();
         }
 
         ImGui::Spacing();
         ImGui::Spacing();
 
         static float timestep = 0.001;
-        float lb = uniformLaplace ? 1.0 : 0.001;
-        float ub = uniformLaplace ? 100.0 : 0.1;
+        float lb = uniform_laplace ? 1.0 : 0.001;
+        float ub = uniform_laplace ? 100.0 : 0.1;
         ImGui::PushItemWidth(100);
         ImGui::SliderFloat("TimeStep", &timestep, lb, ub);
         ImGui::PopItemWidth();
@@ -82,10 +82,10 @@ void Viewer::processImGUI()
         if (ImGui::Button("Implicit Smoothing"))
         {
             Scalar dt =
-                uniformLaplace ? timestep : timestep * m_radius * m_radius;
-            SurfaceSmoothing smoother(m_mesh);
-            smoother.implicitSmoothing(dt, uniformLaplace);
-            updateMesh();
+                uniform_laplace ? timestep : timestep * radius_ * radius_;
+            SurfaceSmoothing smoother(mesh_);
+            smoother.implicit_smoothing(dt, uniform_laplace);
+            update_mesh();
         }
     }
 }
@@ -97,11 +97,11 @@ int main(int argc, char** argv)
 #ifndef __EMSCRIPTEN__
     Viewer window("Decimation", 800, 600);
     if (argc == 2)
-        window.loadMesh(argv[1]);
+        window.load_mesh(argv[1]);
     return window.run();
 #else
     Viewer window("Decimation", 800, 600);
-    window.loadMesh(argc == 2 ? argv[1] : "input.off");
+    window.load_mesh(argc == 2 ? argv[1] : "input.off");
     return window.run();
 #endif
 }

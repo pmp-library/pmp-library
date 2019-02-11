@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -52,16 +52,16 @@ public:
     void clear();
 
     //! Mark all boundary edges as features
-    void detectBoundary();
+    void detect_boundary();
 
     //! Mark edges with large dihedral angle as feature
-    void detectAngle(Scalar angle);
+    void detect_angle(Scalar angle);
 
 private:
-    SurfaceMesh& m_mesh;
+    SurfaceMesh& mesh_;
 
-    SurfaceMesh::VertexProperty<bool> m_vfeature;
-    SurfaceMesh::EdgeProperty<bool> m_efeature;
+    SurfaceMesh::VertexProperty<bool> vfeature_;
+    SurfaceMesh::EdgeProperty<bool> efeature_;
 };
 
 //=============================================================================

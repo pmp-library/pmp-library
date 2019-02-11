@@ -17,36 +17,36 @@ The names of user-defined types such as classes, structs and enums use
 properly capitalized as well.
 
 ~~~~{.cpp}
-    class PolyLine { ... };
-    enum RGBColors { red, green, blue };
-    class SparseCholeskySolver { ... };
+    class SurfaceMesh { ... };
+    struct Flags { ... };
+    enum TextureMode { ColdWarmTexture, CheckerboardTexture, OtherTexture };
 ~~~~
 
 ### Functions
 
-Function names are written using `camelCase` notation starting with a lowercase
-letter.
+Function names are written using `snake_case`. All characters are
+lowercase. Separate words by underscores.
 
 ~~~~{.cpp}
-    class ExampleClassName
+    class MeshViewer
     {
-        double exampleFunctionName(void);
+        bool load_mesh(const char* filename);
     };
 ~~~~
 
 ### Variables
 
-Variables are named in `camelCase` notation. Class member variables are prefixed
-with `m_`.
+Variable names use `snake_case` notation. All characters are lowercase. Separate
+words with underscores. Class member variables have an underscore `_` suffix.
 
 ~~~~{.cpp}
-    int globalsConsideredHarmful;
+    int global_var;
 
     class ExampleClass
     {
     protected:
-        double m_memberVariable;
-        static double m_staticVariable;
+        double member_variable_;
+        static double static_member_;
     };
 ~~~~
 
@@ -64,13 +64,13 @@ should always be enclosed in braces. The braces enclosing a block should be
 placed in the same column, on separate lines.
 
 ~~~~{.cpp}
-    if (fooBar == baz)
+    if (foo == bar)
     {
-        std::cout << "hurz" << std::endl;
+        std::cout << "baz" << std::endl;
     }
     else
     {
-        std::cout << "asdf" << std::endl;
+        std::cout << "barbaz" << std::endl;
     }
 ~~~~
 
@@ -106,10 +106,10 @@ could look like:
 \verbatim
 //! \brief Does foo.
 //!
-//! \details Does foo and nothing else. If \p useBar argument is true uses the
+//! \details Does foo and nothing else. If \p use_bar argument is true uses the
 //! bar method instead of foo.
 //!
-//! \param[in] useBar toggle to switch method
+//! \param[in] use_bar toggle to switch method
 //! \param[out] results filled with results from foo
 //!
 //! \returns true on success.
@@ -150,13 +150,13 @@ an additional level of indentation due to the namespace:
 ### Boolean Prefixes
 
 Use meaningful prefixes for `bool` variables or functions returning booleans,
-e.g., `hasColors()` or `isDone`.
+e.g., `has_colors()` for a function or `is_done` for a variable.
 
 ### Naming Consistency
 
-Consistently name dynamic properties, e.g., "v:scalar" for vertex scalars or
-"f:normal" for face normals. Similarly, consistently name iterators and
-circulators by their entity type (Vertex, Halfedge, ...)
+Consistently name dynamic properties, e.g., `v:scalar` for vertex scalars or
+`f:normal` for face normals. Similarly, consistently name iterators and
+circulators by their entity type (`Vertex`, `Halfedge`, ...)
 
 ### Type Consistency
 
@@ -171,7 +171,7 @@ Use plain structs for data objectes providing nothing but a collection of other
 data types, e.g., a collection of parameters passed to a functions. Such a
 struct should not contain any further functionality than what is required for
 construction, destruction, or initialization. In contrast to class member
-variables, struct members do not have a `m_` prefix.
+variables, struct members do not have a underscore `_` suffix.
 
 ### Scoping
 

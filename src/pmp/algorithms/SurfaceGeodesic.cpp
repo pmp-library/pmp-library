@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -35,23 +35,20 @@ namespace pmp {
 
 //=============================================================================
 
-
-SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& _mesh,
-                                 std::vector<Vertex> _seed,
-                                 Scalar _maxdist,
-                                 bool _use_virtual_edges) :
-    mesh_(_mesh),
-    seed_(_seed),
-    maxdist_(_maxdist),
-    use_virtual_edges_(_use_virtual_edges)
+SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh, std::vector<Vertex> seed,
+                                 Scalar maxdist, bool use_virtual_edges)
+    : mesh_(mesh),
+      seed_(seed),
+      maxdist_(maxdist),
+      use_virtual_edges_(use_virtual_edges)
 {
-    distance_  = mesh_.addVertexProperty<Scalar>("geodesic:distance");
-    processed_ = mesh_.addVertexProperty<bool>("geodesic:processed");
+    distance_  = mesh_.add_vertex_property<Scalar>("geodesic:distance");
+    processed_ = mesh_.add_vertex_property<bool>("geodesic:processed");
 
     front_ = new PriorityQueue(VertexCmp(distance_));
-    find_virtual_edges(); 
+    find_virtual_edges();
     init_front();
-    propagate_front(); 
+    propagate_front();
     delete front_;
 }
 
@@ -61,8 +58,8 @@ SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& _mesh,
 
 SurfaceGeodesic::~SurfaceGeodesic()
 {
-    mesh_.removeVertexProperty(distance_);
-    mesh_.removeVertexProperty(processed_);
+    mesh_.remove_vertex_property(distance_);
+    mesh_.remove_vertex_property(processed_);
 }
 
 
@@ -93,11 +90,11 @@ void SurfaceGeodesic::find_virtual_edges()
 
         for (auto h: mesh_.halfedges(vv))
         {
-            if (!mesh_.isBoundary(h))
+            if (!mesh_.is_boundary(h))
             {
-                vh0 = mesh_.toVertex(h);
-                hh  = mesh_.nextHalfedge(h);
-                vh1 = mesh_.toVertex(hh);
+                vh0 = mesh_.to_vertex(h);
+                hh  = mesh_.next_halfedge(h);
+                vh1 = mesh_.to_vertex(hh);
 
                 p0 = mesh_.position(vh0);
                 p1 = mesh_.position(vh1);
@@ -118,7 +115,7 @@ void SurfaceGeodesic::find_virtual_edges()
                     Y = normalize( cross( cross(d0, d1), X) );
 
                     // 2D coords
-                    d0    = p0-pp;  
+                    d0    = p0-pp;
                     d1    = p1-pp;
                     v0[0] = dot(d0, X);
                     v0[1] = dot(d0, Y);
@@ -127,14 +124,14 @@ void SurfaceGeodesic::find_virtual_edges()
 
                     start_vh0 = vh0;
                     start_vh1 = vh1;
-                    hhh = mesh_.oppositeHalfedge(hh);
+                    hhh = mesh_.opposite_halfedge(hh);
 
 
                     // unfold ...
-                    while (((vh0==start_vh0) || (vh1==start_vh1)) && (!mesh_.isBoundary(hhh)))
+                    while (((vh0==start_vh0) || (vh1==start_vh1)) && (!mesh_.is_boundary(hhh)))
                     {
                         // get next point
-                        vhn = mesh_.toVertex(mesh_.nextHalfedge(hhh));
+                        vhn = mesh_.to_vertex(mesh_.next_halfedge(hhh));
                         pn  = mesh_.position(vhn);
                         d0  = (p1-p0);
                         d1  = (pn-p0);
@@ -157,22 +154,22 @@ void SurfaceGeodesic::find_virtual_edges()
                         // prepare next edge
                         if (vn[1] > 0.0)
                         {
-                            hh  = mesh_.oppositeHalfedge(hh);
-                            hh  = mesh_.nextHalfedge(hh);
+                            hh  = mesh_.opposite_halfedge(hh);
+                            hh  = mesh_.next_halfedge(hh);
                             vh1 = vhn;
                             p1  = pn;
                             v1  = vn;
                         }
                         else
                         {
-                            hh  = mesh_.oppositeHalfedge(hh);
-                            hh  = mesh_.nextHalfedge(hh);
-                            hh  = mesh_.nextHalfedge(hh);
+                            hh  = mesh_.opposite_halfedge(hh);
+                            hh  = mesh_.next_halfedge(hh);
+                            hh  = mesh_.next_halfedge(hh);
                             vh0 = vhn;
                             p0  = pn;
                             v0  = vn;
                         }
-                        hhh = mesh_.oppositeHalfedge(hh);
+                        hhh = mesh_.opposite_halfedge(hh);
                     }
                 }
             }
@@ -272,9 +269,9 @@ void SurfaceGeodesic::propagate_front()
 //-----------------------------------------------------------------------------
 
 
-void SurfaceGeodesic::heap_vertex(Vertex _v)
+void SurfaceGeodesic::heap_vertex(Vertex v)
 {
-    assert(!processed_[_v]);
+    assert(!processed_[v]);
 
     Vertex    v0, v1, vv, v0_min, v1_min;
     Scalar    dist, dist_min(FLT_MAX), d;
@@ -282,21 +279,21 @@ void SurfaceGeodesic::heap_vertex(Vertex _v)
     bool found(false);
 
 
-    for (auto h: mesh_.halfedges(_v))
+    for (auto h: mesh_.halfedges(v))
     {
-        if (!mesh_.isBoundary(h))
+        if (!mesh_.is_boundary(h))
         {
             ve_it = virtual_edges_.find(h);
 
             // no virtual edge
             if (ve_it == ve_end)
             {
-                v0 = mesh_.toVertex(h);
-                v1 = mesh_.toVertex(mesh_.nextHalfedge(h));
+                v0 = mesh_.to_vertex(h);
+                v1 = mesh_.to_vertex(mesh_.next_halfedge(h));
 
                 if (processed_[v0] && processed_[v1])
                 {
-                    dist = distance(v0, v1, _v);
+                    dist = distance(v0, v1, v);
                     if (dist < dist_min)
                     {
                         dist_min = dist;
@@ -309,14 +306,14 @@ void SurfaceGeodesic::heap_vertex(Vertex _v)
             // virtual edge
             else
             {
-                v0 = mesh_.toVertex(h);
-                v1 = mesh_.toVertex(mesh_.nextHalfedge(h));
+                v0 = mesh_.to_vertex(h);
+                v1 = mesh_.to_vertex(mesh_.next_halfedge(h));
                 vv = ve_it->second.vertex;
                 d  = ve_it->second.length;
 
                 if (processed_[v0] && processed_[vv])
                 {
-                    dist = distance(v0, vv, _v, FLT_MAX, d);
+                    dist = distance(v0, vv, v, FLT_MAX, d);
                     if (dist < dist_min)
                     {
                         dist_min = dist;
@@ -326,7 +323,7 @@ void SurfaceGeodesic::heap_vertex(Vertex _v)
 
                 if (processed_[v1] && processed_[vv])
                 {
-                    dist = distance(vv, v1, _v, d, FLT_MAX);
+                    dist = distance(vv, v1, v, d, FLT_MAX);
                     if (dist < dist_min)
                     {
                         dist_min = dist;
@@ -342,22 +339,22 @@ void SurfaceGeodesic::heap_vertex(Vertex _v)
     // update priority queue
     if (found)
     {
-        if (distance_[_v] != FLT_MAX)
+        if (distance_[v] != FLT_MAX)
         {
-            auto it = front_->find(_v);
+            auto it = front_->find(v);
             assert(it != front_->end());
             front_->erase(it);
         }
 
-        distance_[_v] = dist_min;
-        front_->insert(_v);
+        distance_[v] = dist_min;
+        front_->insert(v);
     }
     else
     {
-        if (distance_[_v] != FLT_MAX)
+        if (distance_[v] != FLT_MAX)
         {
-            front_->erase(_v);
-            distance_[_v] = FLT_MAX;
+            front_->erase(v);
+            distance_[v] = FLT_MAX;
         }
     }
 }
@@ -366,42 +363,42 @@ void SurfaceGeodesic::heap_vertex(Vertex _v)
 //-----------------------------------------------------------------------------
 
 
-bool valid_triangle(double a, double b, double c) 
-{ 
-    return (a + b > c && a + c > b && b + c > a); 
+bool valid_triangle(double a, double b, double c)
+{
+    return (a + b > c && a + c > b && b + c > a);
 }
 
 
 //-----------------------------------------------------------------------------
 
 
-Scalar SurfaceGeodesic::distance(Vertex _v0, Vertex _v1, Vertex _v2,
-                                 Scalar _r0, Scalar _r1)
+Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2,
+                                 Scalar r0, Scalar r1)
 {
     Point  A, B, C;
     double TA, TB;
     double a, b;
 
     // choose points such that TB>TA and hence u>0
-    if (distance_[_v0] < distance_[_v1])
+    if (distance_[v0] < distance_[v1])
     {
-        A  = mesh_.position(_v0);
-        B  = mesh_.position(_v1);
-        C  = mesh_.position(_v2);
-        TA = distance_[_v0];
-        TB = distance_[_v1];
-        a  = _r1 == FLT_MAX ? pmp::distance(B,C) : _r1;
-        b  = _r0 == FLT_MAX ? pmp::distance(A,C) : _r0;
+        A  = mesh_.position(v0);
+        B  = mesh_.position(v1);
+        C  = mesh_.position(v2);
+        TA = distance_[v0];
+        TB = distance_[v1];
+        a  = r1 == FLT_MAX ? pmp::distance(B,C) : r1;
+        b  = r0 == FLT_MAX ? pmp::distance(A,C) : r0;
     }
     else
     {
-        A  = mesh_.position(_v1);
-        B  = mesh_.position(_v0);
-        C  = mesh_.position(_v2);
-        TA = distance_[_v1];
-        TB = distance_[_v0];
-        a  = _r0 == FLT_MAX ? pmp::distance(B,C) : _r0;
-        b  = _r1 == FLT_MAX ? pmp::distance(A,C) : _r1;
+        A  = mesh_.position(v1);
+        B  = mesh_.position(v0);
+        C  = mesh_.position(v2);
+        TA = distance_[v1];
+        TB = distance_[v0];
+        a  = r0 == FLT_MAX ? pmp::distance(B,C) : r0;
+        b  = r1 == FLT_MAX ? pmp::distance(A,C) : r1;
     }
 
 
@@ -414,8 +411,8 @@ Scalar SurfaceGeodesic::distance(Vertex _v0, Vertex _v1, Vertex _v2,
     if (c < 0.0) return dykstra;
 
 
-    // Novotny: intersect two circles
-    // use Novotny when distances are not too large
+    // Novotni: intersect two circles
+    // use Novotni when distances are not too large
     const double l  = pmp::distance(A, B);
     if (std::max(TA,TB)/l < 10)
     {
@@ -434,9 +431,9 @@ Scalar SurfaceGeodesic::distance(Vertex _v0, Vertex _v1, Vertex _v2,
     const double u  = TB - TA;
     const double aa = a*a + b*b - 2.0*a*b*c;
     const double bb = 2.0*b*u*(a*c-b);
-    const double cc = b*b*(u*u-a*a*(1.0-c*c)); 
+    const double cc = b*b*(u*u-a*a*(1.0-c*c));
     const double dd = bb*bb - 4.0*aa*cc;
-    if (dd > 0.0) 
+    if (dd > 0.0)
     {
         const double t1 = (-bb + sqrt(dd)) / (2.0*aa);
         const double t2 = (-bb - sqrt(dd)) / (2.0*aa);
@@ -457,7 +454,7 @@ Scalar SurfaceGeodesic::distance(Vertex _v0, Vertex _v1, Vertex _v2,
 //-----------------------------------------------------------------------------
 
 
-void SurfaceGeodesic::distanceToTextureCoordinates()
+void SurfaceGeodesic::distance_to_texture_coordinates()
 {
     // find maximum distance
     Scalar maxdist(0);
@@ -469,7 +466,7 @@ void SurfaceGeodesic::distanceToTextureCoordinates()
         }
     }
 
-    auto tex = mesh_.vertexProperty<TextureCoordinate>("v:tex");
+    auto tex = mesh_.vertex_property<TextureCoordinate>("v:tex");
     for (auto v : mesh_.vertices())
     {
         if (distance_[v] <= maxdist_)

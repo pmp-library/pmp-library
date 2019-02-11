@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -48,7 +48,7 @@ public:
 
     //! Perform one step of Catmull-Clark subdivision.
     //! See \cite catmull_1978_recursively for details.
-    void catmullClark();
+    void catmull_clark();
 
     //! Perform one step of Loop subdivision.
     //! See \cite loop_1987_smooth for details.
@@ -59,10 +59,10 @@ public:
     void sqrt3();
 
 private:
-    SurfaceMesh& m_mesh;
-    SurfaceMesh::VertexProperty<Point> m_points;
-    SurfaceMesh::VertexProperty<bool> m_vfeature;
-    SurfaceMesh::EdgeProperty<bool> m_efeature;
+    SurfaceMesh& mesh_;
+    SurfaceMesh::VertexProperty<Point> points_;
+    SurfaceMesh::VertexProperty<bool> vfeature_;
+    SurfaceMesh::EdgeProperty<bool> efeature_;
 };
 
 //=============================================================================

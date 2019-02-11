@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -55,101 +55,101 @@ public:
     ~SurfaceMeshGL();
 
     //! get front color
-    const vec3& frontColor() const { return m_frontColor; }
+    const vec3& front_color() const { return front_color_; }
     //! set front color
-    void setFrontColor(const vec3& color) { m_frontColor = color; }
+    void set_front_color(const vec3& color) { front_color_ = color; }
 
     //! get back color
-    const vec3& backColor() const { return m_backColor; }
+    const vec3& back_color() const { return back_color_; }
     //! set back color
-    void setBackColor(const vec3& color) { m_backColor = color; }
+    void set_back_color(const vec3& color) { back_color_ = color; }
 
     //! get ambient reflection coefficient
-    float ambient() const { return m_ambient; }
+    float ambient() const { return ambient_; }
     //! set ambient reflection coefficient
-    void setAmbient(float a) { m_ambient = a; }
+    void set_ambient(float a) { ambient_ = a; }
 
     //! get diffuse reflection coefficient
-    float diffuse() const { return m_diffuse; }
+    float diffuse() const { return diffuse_; }
     //! set diffuse reflection coefficient
-    void setDiffuse(float d) { m_diffuse = d; }
+    void set_diffuse(float d) { diffuse_ = d; }
 
     //! get specular reflection coefficient
-    float specular() const { return m_specular; }
+    float specular() const { return specular_; }
     //! set specular reflection coefficient
-    void setSpecular(float s) { m_specular = s; }
+    void set_specular(float s) { specular_ = s; }
 
     //! get specular shininess coefficient
-    float shininess() const { return m_shininess; }
+    float shininess() const { return shininess_; }
     //! set specular shininess coefficient
-    void setShininess(float s) { m_shininess = s; }
+    void set_shininess(float s) { shininess_ = s; }
 
     //! get alpha value for transparent rendering
-    float alpha() const { return m_alpha; }
+    float alpha() const { return alpha_; }
     //! set alpha value for transparent rendering
-    void setAlpha(float a) { m_alpha = a; }
+    void set_alpha(float a) { alpha_ = a; }
 
     //! get crease angle (in degrees) for visualization of sharp edges
-    Scalar creaseAngle() const { return m_creaseAngle; }
+    Scalar crease_angle() const { return crease_angle_; }
     //! set crease angle (in degrees) for visualization of sharp edges
-    void setCreaseAngle(Scalar ca);
+    void set_crease_angle(Scalar ca);
 
     //! draw the mesh
-    void draw(const mat4& projectionMatrix, const mat4& modelviewMatrix,
-              const std::string drawMode);
+    void draw(const mat4& projection_matrix, const mat4& modelview_matrix,
+              const std::string draw_mode);
 
     //! update all opengl buffers for efficient core profile rendering
-    void updateOpenGLBuffers();
+    void update_opengl_buffers();
 
     //! use color map to visualize scalar fields
-    void useColdWarmTexture();
+    void use_cold_warm_texture();
 
     //! setup checkerboard texture
-    void useCheckerboardTexture();
+    void use_checkerboard_texture();
 
     //! load texture from file
     //! \param filename the location and name of the texture
     //! \param format internal format (GL_RGB, GL_RGBA, GL_SRGB8, etc.)
-    //! \param minFilter interpolation filter for minification
-    //! \param magFilter interpolation filter for magnification
+    //! \param min_filter interpolation filter for minification
+    //! \param mag_filter interpolation filter for magnification
     //! \param wrap texture coordinates wrap preference
-    bool loadTexture(const char* filename, GLint format = GL_RGB,
-                     GLint minFilter = GL_LINEAR_MIPMAP_LINEAR,
-                     GLint magFilter = GL_LINEAR,
-                     GLint wrap = GL_CLAMP_TO_EDGE);
+    bool load_texture(const char* filename, GLint format = GL_RGB,
+                      GLint min_filter = GL_LINEAR_MIPMAP_LINEAR,
+                      GLint mag_filter = GL_LINEAR,
+                      GLint wrap = GL_CLAMP_TO_EDGE);
 
 private:
     //! OpenGL buffers
-    GLuint m_vertexArrayObject;
-    GLuint m_vertexBuffer;
-    GLuint m_normalBuffer;
-    GLuint m_texCoordBuffer;
-    GLuint m_edgeBuffer;
-    GLuint m_featureBuffer;
+    GLuint vertex_array_object_;
+    GLuint vertex_buffer_;
+    GLuint normal_buffer_;
+    GLuint tex_coord_buffer_;
+    GLuint edge_buffer_;
+    GLuint feature_buffer_;
 
     //! buffer sizes
-    GLsizei m_nVertices;
-    GLsizei m_nEdges;
-    GLsizei m_nTriangles;
-    GLsizei m_nFeatures;
+    GLsizei n_vertices_;
+    GLsizei n_edges_;
+    GLsizei n_triangles_;
+    GLsizei n_features_;
 
     //! shaders
-    Shader m_phongShader;
+    Shader phong_shader_;
 
     //! material properties
-    vec3 m_frontColor, m_backColor;
-    float m_ambient, m_diffuse, m_specular, m_shininess, m_alpha;
-    bool m_srgb;
-    float m_creaseAngle;
+    vec3 front_color_, back_color_;
+    float ambient_, diffuse_, specular_, shininess_, alpha_;
+    bool srgb_;
+    float crease_angle_;
 
     //! 1D texture for scalar field rendering
-    GLuint m_texture;
-    enum
+    GLuint texture_;
+    enum TextureMode
     {
         ColdWarmTexture,
         CheckerboardTexture,
         OtherTexture
-    } m_textureMode;
+    } texture_mode_;
 };
 
 //=============================================================================

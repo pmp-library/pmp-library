@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -43,12 +43,12 @@ namespace pmp {
 
 //=============================================================================
 
-Window* Window::m_instance = nullptr;
+Window* Window::instance_ = nullptr;
 
 //-----------------------------------------------------------------------------
 
 Window::Window(const char* title, int width, int height, bool showgui)
-    : m_width(width), m_height(height), m_showImGUI(showgui)
+    : width_(width), height_(height), show_imgui_(showgui)
 {
     // initialize glfw window
     if (!glfwInit())
@@ -61,17 +61,17 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+    window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
-    if (!m_window)
+    if (!window_)
     {
         glfwTerminate();
         std::cerr << "Cannot create GLFW window.\n";
         exit(EXIT_FAILURE);
     }
 
-    glfwMakeContextCurrent(m_window);
-    m_instance = this;
+    glfwMakeContextCurrent(window_);
+    instance_ = this;
 
     // enable v-sync
     glfwSwapInterval(1);
@@ -96,33 +96,33 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glGetError();
 
     // detect highDPI scaling
-    int windowWidth, windowHeight, framebufferWidth, framebufferHeight;
-    glfwGetWindowSize(m_window, &windowWidth, &windowHeight);
-    glfwGetFramebufferSize(m_window, &framebufferWidth, &framebufferHeight);
-    m_scaling = framebufferWidth / windowWidth;
-    m_width = framebufferWidth;
-    m_height = framebufferHeight;
-    if (m_scaling != 1)
-        std::cout << "highDPI scaling: " << m_scaling << std::endl;
+    int window_width, window_height, framebuffer_width, framebuffer_height;
+    glfwGetWindowSize(window_, &window_width, &window_height);
+    glfwGetFramebufferSize(window_, &framebuffer_width, &framebuffer_height);
+    scaling_ = framebuffer_width / window_width;
+    width_ = framebuffer_width;
+    height_ = framebuffer_height;
+    if (scaling_ != 1)
+        std::cout << "highDPI scaling: " << scaling_ << std::endl;
 
     // register glfw callbacks
-    glfwSetErrorCallback(glfwError);
-    glfwSetCharCallback(m_window, glfwCharacter);
-    glfwSetKeyCallback(m_window, glfwKeyboard);
-    glfwSetCursorPosCallback(m_window, glfwMotion);
-    glfwSetMouseButtonCallback(m_window, glfwMouse);
-    glfwSetScrollCallback(m_window, glfwScroll);
-    glfwSetFramebufferSizeCallback(m_window, glfwResize);
+    glfwSetErrorCallback(glfw_error);
+    glfwSetCharCallback(window_, glfw_character);
+    glfwSetKeyCallback(window_, glfw_keyboard);
+    glfwSetCursorPosCallback(window_, glfw_motion);
+    glfwSetMouseButtonCallback(window_, glfw_mouse);
+    glfwSetScrollCallback(window_, glfw_scroll);
+    glfwSetFramebufferSizeCallback(window_, glfw_resize);
 
     // setup imgui
-    initImGUI();
+    init_imgui();
 }
 
 //-----------------------------------------------------------------------------
 
-void Window::initImGUI()
+void Window::init_imgui()
 {
-    ImGui_Init(m_window, false);
+    ImGui_Init(window_, false);
 
     // load Lato font from pre-compiled ttf file
     ImFontConfig config;
@@ -215,12 +215,12 @@ int Window::run()
 #if __EMSCRIPTEN__
     emscripten_set_main_loop(Window::render_frame, 0, 1);
 #else
-    while (!glfwWindowShouldClose(m_window))
+    while (!glfwWindowShouldClose(window_))
     {
         Window::render_frame();
     }
 #endif
-    glfwDestroyWindow(m_window);
+    glfwDestroyWindow(window_);
     return EXIT_SUCCESS;
 }
 
@@ -239,31 +239,31 @@ void Window::render_frame()
         w = int(dw);
         h = int(dh);
         emscripten_set_canvas_size(w, h);
-        glfwResize(m_instance->m_window, w, h);
+        glfw_resize(instance_->window_, w, h);
         ;
     }
 #endif
 
     // do some computations
-    m_instance->doProcessing();
+    instance_->do_processing();
 
     // preapre and process ImGUI elements
-    if (m_instance->showImGUI())
+    if (instance_->show_imgui())
     {
         ImGui_NewFrame();
         ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
         ImGui::Begin(
             "Mesh Info", nullptr,
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
-        m_instance->processImGUI();
+        instance_->process_imgui();
         ImGui::End();
     }
 
     // draw scene
-    m_instance->display();
+    instance_->display();
 
     // draw GUI
-    if (m_instance->showImGUI())
+    if (instance_->show_imgui())
     {
         ImGui::Render();
     }
@@ -283,7 +283,7 @@ void Window::render_frame()
 #endif
 
     // swap buffers
-    glfwSwapBuffers(m_instance->m_window);
+    glfwSwapBuffers(instance_->window_);
 
     // handle events
     glfwPollEvents();
@@ -291,57 +291,57 @@ void Window::render_frame()
 
 //-----------------------------------------------------------------------------
 
-void Window::glfwError(int error, const char* description)
+void Window::glfw_error(int error, const char* description)
 {
     std::cerr << "error (" << error << "):" << description << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
-void Window::glfwCharacter(GLFWwindow* window, unsigned int c)
+void Window::glfw_character(GLFWwindow* window, unsigned int c)
 {
     ImGui_CharCallback(window, c);
     if (!ImGui::GetIO().WantCaptureKeyboard)
     {
-        m_instance->character(c);
+        instance_->character(c);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void Window::glfwKeyboard(GLFWwindow* window, int key, int scancode, int action,
+void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode, int action,
                           int mods)
 {
     ImGui_KeyCallback(window, key, scancode, action, mods);
     if (!ImGui::GetIO().WantCaptureKeyboard)
     {
-        m_instance->keyboard(key, scancode, action, mods);
+        instance_->keyboard(key, scancode, action, mods);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void Window::glfwMotion(GLFWwindow* /*window*/, double xpos, double ypos)
+void Window::glfw_motion(GLFWwindow* /*window*/, double xpos, double ypos)
 {
     // correct for highDPI scaling
-    m_instance->motion(m_instance->m_scaling * xpos,
-                       m_instance->m_scaling * ypos);
+    instance_->motion(instance_->scaling_ * xpos,
+                       instance_->scaling_ * ypos);
 }
 
 //-----------------------------------------------------------------------------
 
-void Window::glfwMouse(GLFWwindow* window, int button, int action, int mods)
+void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
 {
     ImGui_MouseButtonCallback(window, button, action, mods);
     if (!ImGui::GetIO().WantCaptureMouse)
     {
-        m_instance->mouse(button, action, mods);
+        instance_->mouse(button, action, mods);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void Window::glfwScroll(GLFWwindow* window, double xoffset, double yoffset)
+void Window::glfw_scroll(GLFWwindow* window, double xoffset, double yoffset)
 {
 #ifdef __EMSCRIPTEN__
     yoffset *= -0.02;
@@ -350,26 +350,26 @@ void Window::glfwScroll(GLFWwindow* window, double xoffset, double yoffset)
     ImGui_ScrollCallback(window, xoffset, yoffset);
     if (!ImGui::GetIO().WantCaptureMouse)
     {
-        m_instance->scroll(xoffset, yoffset);
+        instance_->scroll(xoffset, yoffset);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void Window::glfwResize(GLFWwindow* /*window*/, int width, int height)
+void Window::glfw_resize(GLFWwindow* /*window*/, int width, int height)
 {
-    m_instance->m_width = width;
-    m_instance->m_height = height;
-    m_instance->resize(width, height);
+    instance_->width_ = width;
+    instance_->height_ = height;
+    instance_->resize(width, height);
 }
 
 //-----------------------------------------------------------------------------
 
-void Window::cursorPos(double& x, double& y) const
+void Window::cursor_pos(double& x, double& y) const
 {
-    glfwGetCursorPos(m_window, &x, &y);
-    x *= m_instance->m_scaling;
-    y *= m_instance->m_scaling;
+    glfwGetCursorPos(window_, &x, &y);
+    x *= instance_->scaling_;
+    y *= instance_->scaling_;
 }
 
 //=============================================================================

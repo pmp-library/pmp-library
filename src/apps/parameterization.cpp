@@ -14,25 +14,25 @@ public:
     Viewer(const char* title, int width, int height);
 
 protected:
-    virtual void processImGUI() override;
+    virtual void process_imgui() override;
     virtual void draw(const std::string& _draw_mode) override;
 
 private:
-    SurfaceParameterization m_param;
+    SurfaceParameterization param_;
 };
 
 //=============================================================================
 
 Viewer::Viewer(const char* title, int width, int height)
-    : MeshViewer(title, width, height), m_param(m_mesh)
+    : MeshViewer(title, width, height), param_(mesh_)
 {
 }
 
 //=============================================================================
 
-void Viewer::processImGUI()
+void Viewer::process_imgui()
 {
-    MeshViewer::processImGUI();
+    MeshViewer::process_imgui();
 
     ImGui::Spacing();
     ImGui::Spacing();
@@ -43,30 +43,30 @@ void Viewer::processImGUI()
         ImGui::Spacing();
         if (ImGui::Button("Discrete Harmonic Param"))
         {
-            m_param.harmonic();
-            m_mesh.useCheckerboardTexture();
-            setDrawMode("Texture");
-            updateMesh();
+            param_.harmonic();
+            mesh_.use_checkerboard_texture();
+            set_draw_mode("Texture");
+            update_mesh();
         }
 
         ImGui::Spacing();
         if (ImGui::Button("Least Squares Conformal Map"))
         {
-            m_param.lscm();
-            m_mesh.useCheckerboardTexture();
-            setDrawMode("Texture");
-            updateMesh();
+            param_.lscm();
+            mesh_.use_checkerboard_texture();
+            set_draw_mode("Texture");
+            update_mesh();
         }
     }
 }
 
 //=============================================================================
 
-void Viewer::draw(const std::string& drawMode)
+void Viewer::draw(const std::string& draw_mode)
 {
     // normal mesh draw
-    glViewport(0, 0, m_width, m_height);
-    m_mesh.draw(m_projectionMatrix, m_modelviewMatrix, drawMode);
+    glViewport(0, 0, width_, height_);
+    mesh_.draw(projection_matrix_, modelview_matrix_, draw_mode);
 
     // draw uv layout
     {
@@ -74,15 +74,15 @@ void Viewer::draw(const std::string& drawMode)
         glClear(GL_DEPTH_BUFFER_BIT);
 
         // setup viewport
-        GLint size = std::min(m_width, m_height) / 4;
-        glViewport(m_width - size - 1, m_height - size - 1, size, size);
+        GLint size = std::min(width_, height_) / 4;
+        glViewport(width_ - size - 1, height_ - size - 1, size, size);
 
         // setup matrices
-        mat4 P = orthoMatrix(0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
+        mat4 P = ortho_matrix(0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
         mat4 M = mat4::identity();
 
         // draw mesh once more
-        m_mesh.draw(P, M, "Texture Layout");
+        mesh_.draw(P, M, "Texture Layout");
     }
 }
 
@@ -93,11 +93,11 @@ int main(int argc, char** argv)
 #ifndef __EMSCRIPTEN__
     Viewer window("Parametrization", 800, 600);
     if (argc == 2)
-        window.loadMesh(argv[1]);
+        window.load_mesh(argv[1]);
     return window.run();
 #else
     Viewer window("Parametrization", 800, 600);
-    window.loadMesh(argc == 2 ? argv[1] : "input.off");
+    window.load_mesh(argc == 2 ? argv[1] : "input.off");
     return window.run();
 #endif
 }

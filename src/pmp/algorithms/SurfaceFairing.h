@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -54,31 +54,31 @@ public:
     ~SurfaceFairing();
 
     //! minimize surface area (class SurfaceFairing::fair(1))
-    void minimizeArea() { fair(1); }
+    void minimize_area() { fair(1); }
 
     //! minimize surface curvature (class SurfaceFairing::fair(2))
-    void minimizeCurvature() { fair(2); }
+    void minimize_curvature() { fair(2); }
 
     //! compute surface by solving k-harmonic equation
     void fair(unsigned int k = 2);
 
 private:
-    void setupMatrixRow(const SurfaceMesh::Vertex v,
-                        SurfaceMesh::VertexProperty<double> vweight,
-                        SurfaceMesh::EdgeProperty<double> eweight,
-                        unsigned int laplaceDegree,
-                        std::map<SurfaceMesh::Vertex, double>& row);
+    void setup_matrix_row(const SurfaceMesh::Vertex v,
+                          SurfaceMesh::VertexProperty<double> vweight,
+                          SurfaceMesh::EdgeProperty<double> eweight,
+                          unsigned int laplace_degree,
+                          std::map<SurfaceMesh::Vertex, double>& row);
 
 private:
-    SurfaceMesh& m_mesh; //!< the mesh
+    SurfaceMesh& mesh_; //!< the mesh
 
     // property handles
-    SurfaceMesh::VertexProperty<Point> m_points;
-    SurfaceMesh::VertexProperty<bool> m_vselected;
-    SurfaceMesh::VertexProperty<bool> m_vlocked;
-    SurfaceMesh::VertexProperty<double> m_vweight;
-    SurfaceMesh::EdgeProperty<double> m_eweight;
-    SurfaceMesh::VertexProperty<int> m_idx;
+    SurfaceMesh::VertexProperty<Point> points_;
+    SurfaceMesh::VertexProperty<bool> vselected_;
+    SurfaceMesh::VertexProperty<bool> vlocked_;
+    SurfaceMesh::VertexProperty<double> vweight_;
+    SurfaceMesh::EdgeProperty<double> eweight_;
+    SurfaceMesh::VertexProperty<int> idx_;
 };
 
 //=============================================================================

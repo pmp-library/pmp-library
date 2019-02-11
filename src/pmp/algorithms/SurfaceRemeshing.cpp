@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -43,12 +43,12 @@ namespace pmp {
 //=============================================================================
 
 SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
-    : m_mesh(mesh), m_refmesh(nullptr), m_kDTree(nullptr)
+    : mesh_(mesh), refmesh_(nullptr), kd_tree_(nullptr)
 {
-    m_points = m_mesh.vertexProperty<Point>("v:point");
+    points_ = mesh_.vertex_property<Point>("v:point");
 
-    SurfaceNormals::computeVertexNormals(m_mesh);
-    m_vnormal = m_mesh.vertexProperty<Point>("v:normal");
+    SurfaceNormals::compute_vertex_normals(mesh_);
+    vnormal_ = mesh_.vertex_property<Point>("v:normal");
 }
 
 //-----------------------------------------------------------------------------
@@ -57,76 +57,76 @@ SurfaceRemeshing::~SurfaceRemeshing() = default;
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::uniformRemeshing(Scalar edgeLength,
+void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
                                         unsigned int iterations,
-                                        bool useProjection)
+                                        bool use_projection)
 {
-    if (!m_mesh.isTriangleMesh())
+    if (!mesh_.is_triangle_mesh())
     {
         std::cerr << "Not a triangle mesh!" << std::endl;
         return;
     }
 
-    m_uniform = true;
-    m_useProjection = useProjection;
-    m_targetEdgeLength = edgeLength;
+    uniform_ = true;
+    use_projection_ = use_projection;
+    target_edge_length_ = edge_length;
 
     preprocessing();
 
     for (unsigned int i = 0; i < iterations; ++i)
     {
-        splitLongEdges();
+        split_long_edges();
 
-        SurfaceNormals::computeVertexNormals(m_mesh);
+        SurfaceNormals::compute_vertex_normals(mesh_);
 
-        collapseShortEdges();
+        collapse_short_edges();
 
-        flipEdges();
+        flip_edges();
 
-        tangentialSmoothing(5);
+        tangential_smoothing(5);
     }
 
-    removeCaps();
+    remove_caps();
 
     postprocessing();
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::adaptiveRemeshing(Scalar minEdgeLength,
-                                         Scalar maxEdgeLength,
-                                         Scalar approxError,
+void SurfaceRemeshing::adaptive_remeshing(Scalar min_edge_length,
+                                         Scalar max_edge_length,
+                                         Scalar approx_error,
                                          unsigned int iterations,
-                                         bool useProjection)
+                                         bool use_projection)
 {
-    if (!m_mesh.isTriangleMesh())
+    if (!mesh_.is_triangle_mesh())
     {
         std::cerr << "Not a triangle mesh!" << std::endl;
         return;
     }
 
-    m_uniform = false;
-    m_minEdgeLength = minEdgeLength;
-    m_maxEdgeLength = maxEdgeLength;
-    m_approxError = approxError;
-    m_useProjection = useProjection;
+    uniform_ = false;
+    min_edge_length_ = min_edge_length;
+    max_edge_length_ = max_edge_length;
+    approx_error_ = approx_error;
+    use_projection_ = use_projection;
 
     preprocessing();
 
     for (unsigned int i = 0; i < iterations; ++i)
     {
-        splitLongEdges();
+        split_long_edges();
 
-        SurfaceNormals::computeVertexNormals(m_mesh);
+        SurfaceNormals::compute_vertex_normals(mesh_);
 
-        collapseShortEdges();
+        collapse_short_edges();
 
-        flipEdges();
+        flip_edges();
 
-        tangentialSmoothing(5);
+        tangential_smoothing(5);
     }
 
-    removeCaps();
+    remove_caps();
 
     postprocessing();
 }
@@ -136,103 +136,103 @@ void SurfaceRemeshing::adaptiveRemeshing(Scalar minEdgeLength,
 void SurfaceRemeshing::preprocessing()
 {
     // properties
-    m_vfeature = m_mesh.vertexProperty<bool>("v:feature", false);
-    m_efeature = m_mesh.edgeProperty<bool>("e:feature", false);
-    m_vlocked = m_mesh.addVertexProperty<bool>("v:locked", false);
-    m_elocked = m_mesh.addEdgeProperty<bool>("e:locked", false);
-    m_vsizing = m_mesh.getVertexProperty<Scalar>("v:sizing");
+    vfeature_ = mesh_.vertex_property<bool>("v:feature", false);
+    efeature_ = mesh_.edge_property<bool>("e:feature", false);
+    vlocked_ = mesh_.add_vertex_property<bool>("v:locked", false);
+    elocked_ = mesh_.add_edge_property<bool>("e:locked", false);
+    vsizing_ = mesh_.get_vertex_property<Scalar>("v:sizing");
 
     // re-use an existing sizing field. used for remeshing a cage in the
     // adaptive refinement benchmark.
-    bool useSizingField(false);
+    bool use_sizing_field(false);
 
-    if (m_vsizing)
-        useSizingField = true;
+    if (vsizing_)
+        use_sizing_field = true;
     else
-        m_vsizing = m_mesh.addVertexProperty<Scalar>("v:sizing");
+        vsizing_ = mesh_.add_vertex_property<Scalar>("v:sizing");
 
     // lock unselected vertices if some vertices are selected
-    SurfaceMesh::VertexProperty<bool> vselected =
-        m_mesh.getVertexProperty<bool>("v:selected");
+    auto vselected = mesh_.get_vertex_property<bool>("v:selected");
+
     if (vselected)
     {
-        bool hasSelection = false;
-        for (auto v : m_mesh.vertices())
+        bool has_selection = false;
+        for (auto v : mesh_.vertices())
         {
             if (vselected[v])
             {
-                hasSelection = true;
+                has_selection = true;
                 break;
             }
         }
 
-        if (hasSelection)
+        if (has_selection)
         {
-            for (auto v : m_mesh.vertices())
+            for (auto v : mesh_.vertices())
             {
-                m_vlocked[v] = !vselected[v];
+                vlocked_[v] = !vselected[v];
             }
 
             // lock an edge if one of its vertices is locked
-            for (auto e : m_mesh.edges())
+            for (auto e : mesh_.edges())
             {
-                m_elocked[e] = (m_vlocked[m_mesh.vertex(e, 0)] ||
-                                m_vlocked[m_mesh.vertex(e, 1)]);
+                elocked_[e] = (vlocked_[mesh_.vertex(e, 0)] ||
+                               vlocked_[mesh_.vertex(e, 1)]);
             }
         }
     }
 
     // lock feature corners
-    for (auto v : m_mesh.vertices())
+    for (auto v : mesh_.vertices())
     {
-        if (m_vfeature[v])
+        if (vfeature_[v])
         {
             int c = 0;
-            for (auto h : m_mesh.halfedges(v))
-                if (m_efeature[m_mesh.edge(h)])
+            for (auto h : mesh_.halfedges(v))
+                if (efeature_[mesh_.edge(h)])
                     ++c;
 
             if (c != 2)
-                m_vlocked[v] = true;
+                vlocked_[v] = true;
         }
     }
 
     // compute sizing field
-    if (m_uniform)
+    if (uniform_)
     {
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
-            m_vsizing[v] = m_targetEdgeLength;
+            vsizing_[v] = target_edge_length_;
         }
     }
-    else if (!useSizingField)
+    else if (!use_sizing_field)
     {
         // compute curvature for all mesh vertices, using cotan or Cohen-Steiner
         // do 2 post-smoothing steps to get a smoother sizing field
-        SurfaceCurvature curv(m_mesh);
+        SurfaceCurvature curv(mesh_);
         //curv.analyze(1);
-        curv.analyzeTensor(1, true);
+        curv.analyze_tensor(1, true);
 
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
             // maximum absolute curvature
-            Scalar c = curv.maxAbsCurvature(v);
+            Scalar c = curv.max_abs_curvature(v);
 
             // curvature of feature vertices: average of non-feature neighbors
-            if (m_vfeature[v])
+            if (vfeature_[v])
             {
                 SurfaceMesh::Vertex vv;
                 Scalar w, ww = 0.0;
                 c = 0.0;
 
-                for (auto h : m_mesh.halfedges(v))
+                for (auto h : mesh_.halfedges(v))
                 {
-                    vv = m_mesh.toVertex(h);
-                    if (!m_vfeature[vv])
+                    vv = mesh_.to_vertex(h);
+                    if (!vfeature_[vv])
                     {
-                        w = std::max(0.0, cotanWeight(m_mesh, m_mesh.edge(h)));
+                        w = std::max(0.0, cotan_weight(mesh_, mesh_.edge(h)));
                         ww += w;
-                        c += w * curv.maxAbsCurvature(vv);
+                        c += w * curv.max_abs_curvature(vv);
                     }
                 }
 
@@ -241,7 +241,7 @@ void SurfaceRemeshing::preprocessing()
 
             // get edge length from curvature
             const Scalar r = 1.0 / c;
-            const Scalar e = m_approxError;
+            const Scalar e = approx_error_;
             Scalar h;
             if (e < r)
             {
@@ -256,34 +256,34 @@ void SurfaceRemeshing::preprocessing()
             }
 
             // clamp to min. and max. edge length
-            if (h < m_minEdgeLength)
-                h = m_minEdgeLength;
-            else if (h > m_maxEdgeLength)
-                h = m_maxEdgeLength;
+            if (h < min_edge_length_)
+                h = min_edge_length_;
+            else if (h > max_edge_length_)
+                h = max_edge_length_;
 
             // store target edge length
-            m_vsizing[v] = h;
+            vsizing_[v] = h;
         }
     }
 
-    if (m_useProjection)
+    if (use_projection_)
     {
         // build reference mesh
-        m_refmesh = new SurfaceMesh();
-        m_refmesh->assign(m_mesh);
-        SurfaceNormals::computeVertexNormals(*m_refmesh);
-        m_refpoints = m_refmesh->vertexProperty<Point>("v:point");
-        m_refnormals = m_refmesh->vertexProperty<Point>("v:normal");
+        refmesh_ = new SurfaceMesh();
+        refmesh_->assign(mesh_);
+        SurfaceNormals::compute_vertex_normals(*refmesh_);
+        refpoints_ = refmesh_->vertex_property<Point>("v:point");
+        refnormals_ = refmesh_->vertex_property<Point>("v:normal");
 
-        // copy sizing field from m_mesh
-        m_refsizing = m_refmesh->addVertexProperty<Scalar>("v:sizing");
-        for (auto v : m_refmesh->vertices())
+        // copy sizing field from mesh_
+        refsizing_ = refmesh_->add_vertex_property<Scalar>("v:sizing");
+        for (auto v : refmesh_->vertices())
         {
-            m_refsizing[v] = m_vsizing[v];
+            refsizing_[v] = vsizing_[v];
         }
 
         // build kd-tree
-        m_kDTree = new TriangleKdTree(*m_refmesh, 0);
+        kd_tree_ = new TriangleKdTree(*refmesh_, 0);
     }
 }
 
@@ -292,48 +292,48 @@ void SurfaceRemeshing::preprocessing()
 void SurfaceRemeshing::postprocessing()
 {
     // delete kd-tree and reference mesh
-    if (m_useProjection)
+    if (use_projection_)
     {
-        delete m_kDTree;
-        delete m_refmesh;
+        delete kd_tree_;
+        delete refmesh_;
     }
 
     // remove properties
-    m_mesh.removeVertexProperty(m_vlocked);
-    m_mesh.removeEdgeProperty(m_elocked);
-    m_mesh.removeVertexProperty(m_vsizing);
+    mesh_.remove_vertex_property(vlocked_);
+    mesh_.remove_edge_property(elocked_);
+    mesh_.remove_vertex_property(vsizing_);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::projectToReference(SurfaceMesh::Vertex v)
+void SurfaceRemeshing::project_to_reference(SurfaceMesh::Vertex v)
 {
-    if (!m_useProjection)
+    if (!use_projection_)
     {
         return;
     }
 
     // find closest triangle of reference mesh
-    TriangleKdTree::NearestNeighbor nn = m_kDTree->nearest(m_points[v]);
+    TriangleKdTree::NearestNeighbor nn = kd_tree_->nearest(points_[v]);
     const Point p = nn.nearest;
     const SurfaceMesh::Face f = nn.face;
 
     // get face data
-    SurfaceMesh::VertexAroundFaceCirculator fvIt = m_refmesh->vertices(f);
-    const Point p0 = m_refpoints[*fvIt];
-    const Point n0 = m_refnormals[*fvIt];
-    const Scalar s0 = m_refsizing[*fvIt];
+    SurfaceMesh::VertexAroundFaceCirculator fvIt = refmesh_->vertices(f);
+    const Point p0 = refpoints_[*fvIt];
+    const Point n0 = refnormals_[*fvIt];
+    const Scalar s0 = refsizing_[*fvIt];
     ++fvIt;
-    const Point p1 = m_refpoints[*fvIt];
-    const Point n1 = m_refnormals[*fvIt];
-    const Scalar s1 = m_refsizing[*fvIt];
+    const Point p1 = refpoints_[*fvIt];
+    const Point n1 = refnormals_[*fvIt];
+    const Scalar s1 = refsizing_[*fvIt];
     ++fvIt;
-    const Point p2 = m_refpoints[*fvIt];
-    const Point n2 = m_refnormals[*fvIt];
-    const Scalar s2 = m_refsizing[*fvIt];
+    const Point p2 = refpoints_[*fvIt];
+    const Point n2 = refnormals_[*fvIt];
+    const Scalar s2 = refsizing_[*fvIt];
 
     // get barycentric coordinates
-    Point b = barycentricCoordinates(p, p0, p1, p2);
+    Point b = barycentric_coordinates(p, p0, p1, p2);
 
     // interpolate normal
     Point n;
@@ -350,57 +350,57 @@ void SurfaceRemeshing::projectToReference(SurfaceMesh::Vertex v)
     s += (s2 * b[2]);
 
     // set result
-    m_points[v] = p;
-    m_vnormal[v] = n;
-    m_vsizing[v] = s;
+    points_[v] = p;
+    vnormal_[v] = n;
+    vsizing_[v] = s;
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::splitLongEdges()
+void SurfaceRemeshing::split_long_edges()
 {
     SurfaceMesh::Vertex vnew, v0, v1;
     SurfaceMesh::Edge enew, e0, e1;
     SurfaceMesh::Face f0, f1, f2, f3;
-    bool ok, isFeature, isBoundary;
+    bool ok, is_feature, is_boundary;
     int i;
 
     for (ok = false, i = 0; !ok && i < 10; ++i)
     {
         ok = true;
 
-        for (auto e : m_mesh.edges())
+        for (auto e : mesh_.edges())
         {
-            v0 = m_mesh.vertex(e, 0);
-            v1 = m_mesh.vertex(e, 1);
+            v0 = mesh_.vertex(e, 0);
+            v1 = mesh_.vertex(e, 1);
 
-            if (!m_elocked[e] && isTooLong(v0, v1))
+            if (!elocked_[e] && is_too_long(v0, v1))
             {
-                const Point& p0 = m_points[v0];
-                const Point& p1 = m_points[v1];
+                const Point& p0 = points_[v0];
+                const Point& p1 = points_[v1];
 
-                isFeature = m_efeature[e];
-                isBoundary = m_mesh.isBoundary(e);
+                is_feature = efeature_[e];
+                is_boundary = mesh_.is_boundary(e);
 
-                vnew = m_mesh.addVertex((p0 + p1) * 0.5f);
-                m_mesh.split(e, vnew);
+                vnew = mesh_.add_vertex((p0 + p1) * 0.5f);
+                mesh_.split(e, vnew);
 
                 // need normal or sizing for adaptive refinement
-                m_vnormal[vnew] =
-                    SurfaceNormals::computeVertexNormal(m_mesh, vnew);
-                m_vsizing[vnew] = 0.5f * (m_vsizing[v0] + m_vsizing[v1]);
+                vnormal_[vnew] =
+                    SurfaceNormals::compute_vertex_normal(mesh_, vnew);
+                vsizing_[vnew] = 0.5f * (vsizing_[v0] + vsizing_[v1]);
 
-                if (isFeature)
+                if (is_feature)
                 {
-                    enew = isBoundary
-                               ? SurfaceMesh::Edge(m_mesh.nEdges() - 2)
-                               : SurfaceMesh::Edge(m_mesh.nEdges() - 3);
-                    m_efeature[enew] = true;
-                    m_vfeature[vnew] = true;
+                    enew = is_boundary
+                               ? SurfaceMesh::Edge(mesh_.n_edges() - 2)
+                               : SurfaceMesh::Edge(mesh_.n_edges() - 3);
+                    efeature_[enew] = true;
+                    vfeature_[vnew] = true;
                 }
                 else
                 {
-                    projectToReference(vnew);
+                    project_to_reference(vnew);
                 }
 
                 ok = false;
@@ -411,7 +411,7 @@ void SurfaceRemeshing::splitLongEdges()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::collapseShortEdges()
+void SurfaceRemeshing::collapse_short_edges()
 {
     SurfaceMesh::VertexAroundVertexCirculator vvIt, vvEnd;
     SurfaceMesh::Vertex v0, v1;
@@ -424,30 +424,30 @@ void SurfaceRemeshing::collapseShortEdges()
     {
         ok = true;
 
-        for (auto e : m_mesh.edges())
+        for (auto e : mesh_.edges())
         {
-            if (!m_mesh.isDeleted(e) && !m_elocked[e])
+            if (!mesh_.is_deleted(e) && !elocked_[e])
             {
-                h10 = m_mesh.halfedge(e, 0);
-                h01 = m_mesh.halfedge(e, 1);
-                v0 = m_mesh.toVertex(h10);
-                v1 = m_mesh.toVertex(h01);
+                h10 = mesh_.halfedge(e, 0);
+                h01 = mesh_.halfedge(e, 1);
+                v0 = mesh_.to_vertex(h10);
+                v1 = mesh_.to_vertex(h01);
 
-                if (isTooShort(v0, v1))
+                if (is_too_short(v0, v1))
                 {
                     // get status
-                    b0 = m_mesh.isBoundary(v0);
-                    b1 = m_mesh.isBoundary(v1);
-                    l0 = m_vlocked[v0];
-                    l1 = m_vlocked[v1];
-                    f0 = m_vfeature[v0];
-                    f1 = m_vfeature[v1];
+                    b0 = mesh_.is_boundary(v0);
+                    b1 = mesh_.is_boundary(v1);
+                    l0 = vlocked_[v0];
+                    l1 = vlocked_[v1];
+                    f0 = vfeature_[v0];
+                    f1 = vfeature_[v1];
                     hcol01 = hcol10 = true;
 
                     // boundary rules
                     if (b0 && b1)
                     {
-                        if (!m_mesh.isBoundary(e))
+                        if (!mesh_.is_boundary(e))
                             continue;
                     }
                     else if (b0)
@@ -467,20 +467,20 @@ void SurfaceRemeshing::collapseShortEdges()
                     if (f0 && f1)
                     {
                         // edge must be feature
-                        if (!m_efeature[e])
+                        if (!efeature_[e])
                             continue;
 
                         // the other two edges removed by collapse must not be features
-                        h0 = m_mesh.prevHalfedge(h01);
-                        h1 = m_mesh.nextHalfedge(h10);
-                        if (m_efeature[m_mesh.edge(h0)] ||
-                            m_efeature[m_mesh.edge(h1)])
+                        h0 = mesh_.prev_halfedge(h01);
+                        h1 = mesh_.next_halfedge(h10);
+                        if (efeature_[mesh_.edge(h0)] ||
+                            efeature_[mesh_.edge(h1)])
                             hcol01 = false;
                         // the other two edges removed by collapse must not be features
-                        h0 = m_mesh.prevHalfedge(h10);
-                        h1 = m_mesh.nextHalfedge(h01);
-                        if (m_efeature[m_mesh.edge(h0)] ||
-                            m_efeature[m_mesh.edge(h1)])
+                        h0 = mesh_.prev_halfedge(h10);
+                        h1 = mesh_.next_halfedge(h01);
+                        if (efeature_[mesh_.edge(h0)] ||
+                            efeature_[mesh_.edge(h1)])
                             hcol10 = false;
                     }
                     else if (f0)
@@ -489,17 +489,17 @@ void SurfaceRemeshing::collapseShortEdges()
                         hcol10 = false;
 
                     // topological rules
-                    bool collapseOk = m_mesh.isCollapseOk(h01);
+                    bool collapse_ok = mesh_.is_collapse_ok(h01);
 
                     if (hcol01)
-                        hcol01 = collapseOk;
+                        hcol01 = collapse_ok;
                     if (hcol10)
-                        hcol10 = collapseOk;
+                        hcol10 = collapse_ok;
 
                     // both collapses possible: collapse into vertex w/ higher valence
                     if (hcol01 && hcol10)
                     {
-                        if (m_mesh.valence(v0) < m_mesh.valence(v1))
+                        if (mesh_.valence(v0) < mesh_.valence(v1))
                             hcol10 = false;
                         else
                             hcol01 = false;
@@ -509,9 +509,9 @@ void SurfaceRemeshing::collapseShortEdges()
                     if (hcol10)
                     {
                         // don't create too long edges
-                        for (auto vv : m_mesh.vertices(v1))
+                        for (auto vv : mesh_.vertices(v1))
                         {
-                            if (isTooLong(v0, vv))
+                            if (is_too_long(v0, vv))
                             {
                                 hcol10 = false;
                                 break;
@@ -520,7 +520,7 @@ void SurfaceRemeshing::collapseShortEdges()
 
                         if (hcol10)
                         {
-                            m_mesh.collapse(h10);
+                            mesh_.collapse(h10);
                             ok = false;
                         }
                     }
@@ -529,9 +529,9 @@ void SurfaceRemeshing::collapseShortEdges()
                     else if (hcol01)
                     {
                         // don't create too long edges
-                        for (auto vv : m_mesh.vertices(v0))
+                        for (auto vv : mesh_.vertices(v0))
                         {
-                            if (isTooLong(v1, vv))
+                            if (is_too_long(v1, vv))
                             {
                                 hcol01 = false;
                                 break;
@@ -540,7 +540,7 @@ void SurfaceRemeshing::collapseShortEdges()
 
                         if (hcol01)
                         {
-                            m_mesh.collapse(h01);
+                            mesh_.collapse(h01);
                             ok = false;
                         }
                     }
@@ -549,89 +549,89 @@ void SurfaceRemeshing::collapseShortEdges()
         }
     }
 
-    m_mesh.garbageCollection();
+    mesh_.garbage_collection();
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::flipEdges()
+void SurfaceRemeshing::flip_edges()
 {
     SurfaceMesh::Vertex v0, v1, v2, v3;
     SurfaceMesh::Halfedge h;
     int val0, val1, val2, val3;
-    int valOpt0, valOpt1, valOpt2, valOpt3;
-    int ve0, ve1, ve2, ve3, veBefore, veAfter;
+    int val_opt0, val_opt1, val_opt2, val_opt3;
+    int ve0, ve1, ve2, ve3, ve_before, ve_after;
     bool ok;
     int i;
 
     // precompute valences
     SurfaceMesh::VertexProperty<int> valence =
-        m_mesh.addVertexProperty<int>("valence");
-    for (auto v : m_mesh.vertices())
+        mesh_.add_vertex_property<int>("valence");
+    for (auto v : mesh_.vertices())
     {
-        valence[v] = m_mesh.valence(v);
+        valence[v] = mesh_.valence(v);
     }
 
     for (ok = false, i = 0; !ok && i < 10; ++i)
     {
         ok = true;
 
-        for (auto e : m_mesh.edges())
+        for (auto e : mesh_.edges())
         {
-            if (!m_elocked[e] && !m_efeature[e])
+            if (!elocked_[e] && !efeature_[e])
             {
-                h = m_mesh.halfedge(e, 0);
-                v0 = m_mesh.toVertex(h);
-                v2 = m_mesh.toVertex(m_mesh.nextHalfedge(h));
-                h = m_mesh.halfedge(e, 1);
-                v1 = m_mesh.toVertex(h);
-                v3 = m_mesh.toVertex(m_mesh.nextHalfedge(h));
+                h = mesh_.halfedge(e, 0);
+                v0 = mesh_.to_vertex(h);
+                v2 = mesh_.to_vertex(mesh_.next_halfedge(h));
+                h = mesh_.halfedge(e, 1);
+                v1 = mesh_.to_vertex(h);
+                v3 = mesh_.to_vertex(mesh_.next_halfedge(h));
 
-                if (!m_vlocked[v0] && !m_vlocked[v1] && !m_vlocked[v2] &&
-                    !m_vlocked[v3])
+                if (!vlocked_[v0] && !vlocked_[v1] && !vlocked_[v2] &&
+                    !vlocked_[v3])
                 {
                     val0 = valence[v0];
                     val1 = valence[v1];
                     val2 = valence[v2];
                     val3 = valence[v3];
 
-                    valOpt0 = (m_mesh.isBoundary(v0) ? 4 : 6);
-                    valOpt1 = (m_mesh.isBoundary(v1) ? 4 : 6);
-                    valOpt2 = (m_mesh.isBoundary(v2) ? 4 : 6);
-                    valOpt3 = (m_mesh.isBoundary(v3) ? 4 : 6);
+                    val_opt0 = (mesh_.is_boundary(v0) ? 4 : 6);
+                    val_opt1 = (mesh_.is_boundary(v1) ? 4 : 6);
+                    val_opt2 = (mesh_.is_boundary(v2) ? 4 : 6);
+                    val_opt3 = (mesh_.is_boundary(v3) ? 4 : 6);
 
-                    ve0 = (val0 - valOpt0);
-                    ve1 = (val1 - valOpt1);
-                    ve2 = (val2 - valOpt2);
-                    ve3 = (val3 - valOpt3);
+                    ve0 = (val0 - val_opt0);
+                    ve1 = (val1 - val_opt1);
+                    ve2 = (val2 - val_opt2);
+                    ve3 = (val3 - val_opt3);
 
                     ve0 *= ve0;
                     ve1 *= ve1;
                     ve2 *= ve2;
                     ve3 *= ve3;
 
-                    veBefore = ve0 + ve1 + ve2 + ve3;
+                    ve_before = ve0 + ve1 + ve2 + ve3;
 
                     --val0;
                     --val1;
                     ++val2;
                     ++val3;
 
-                    ve0 = (val0 - valOpt0);
-                    ve1 = (val1 - valOpt1);
-                    ve2 = (val2 - valOpt2);
-                    ve3 = (val3 - valOpt3);
+                    ve0 = (val0 - val_opt0);
+                    ve1 = (val1 - val_opt1);
+                    ve2 = (val2 - val_opt2);
+                    ve3 = (val3 - val_opt3);
 
                     ve0 *= ve0;
                     ve1 *= ve1;
                     ve2 *= ve2;
                     ve3 *= ve3;
 
-                    veAfter = ve0 + ve1 + ve2 + ve3;
+                    ve_after = ve0 + ve1 + ve2 + ve3;
 
-                    if (veBefore > veAfter && m_mesh.isFlipOk(e))
+                    if (ve_before > ve_after && mesh_.is_flip_ok(e))
                     {
-                        m_mesh.flip(e);
+                        mesh_.flip(e);
                         --valence[v0];
                         --valence[v1];
                         ++valence[v2];
@@ -643,12 +643,12 @@ void SurfaceRemeshing::flipEdges()
         }
     }
 
-    m_mesh.removeVertexProperty(valence);
+    mesh_.remove_vertex_property(valence);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
+void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
 {
     SurfaceMesh::Vertex v1, v2, v3, vv;
     SurfaceMesh::Edge e;
@@ -657,58 +657,58 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
 
     // add property
     SurfaceMesh::VertexProperty<Point> update =
-        m_mesh.addVertexProperty<Point>("v:update");
+        mesh_.add_vertex_property<Point>("v:update");
 
     // project at the beginning to get valid sizing values and normal vectors
     // for vertices introduced by splitting
-    if (m_useProjection)
+    if (use_projection_)
     {
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
-            if (!m_mesh.isBoundary(v) && !m_vlocked[v])
+            if (!mesh_.is_boundary(v) && !vlocked_[v])
             {
-                projectToReference(v);
+                project_to_reference(v);
             }
         }
     }
 
     for (unsigned int iters = 0; iters < iterations; ++iters)
     {
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
-            if (!m_mesh.isBoundary(v) && !m_vlocked[v])
+            if (!mesh_.is_boundary(v) && !vlocked_[v])
             {
-                if (m_vfeature[v])
+                if (vfeature_[v])
                 {
                     u = Point(0.0);
                     t = Point(0.0);
                     ww = 0;
                     int c = 0;
 
-                    for (auto h : m_mesh.halfedges(v))
+                    for (auto h : mesh_.halfedges(v))
                     {
-                        if (m_efeature[m_mesh.edge(h)])
+                        if (efeature_[mesh_.edge(h)])
                         {
-                            vv = m_mesh.toVertex(h);
+                            vv = mesh_.to_vertex(h);
 
-                            b = m_points[v];
-                            b += m_points[vv];
+                            b = points_[v];
+                            b += points_[vv];
                             b *= 0.5;
 
-                            w = distance(m_points[v], m_points[vv]) /
-                                (0.5 * (m_vsizing[v] + m_vsizing[vv]));
+                            w = distance(points_[v], points_[vv]) /
+                                (0.5 * (vsizing_[v] + vsizing_[vv]));
                             ww += w;
                             u += w * b;
 
                             if (c == 0)
                             {
-                                t += normalize(m_points[vv] - m_points[v]);
+                                t += normalize(points_[vv] - points_[v]);
                                 ++c;
                             }
                             else
                             {
                                 ++c;
-                                t -= normalize(m_points[vv] - m_points[v]);
+                                t -= normalize(points_[vv] - points_[v]);
                             }
                         }
                     }
@@ -716,7 +716,7 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
                     assert(c == 2);
 
                     u *= (1.0 / ww);
-                    u -= m_points[v];
+                    u -= points_[v];
                     t = normalize(t);
                     u = t * dot(u, t);
 
@@ -728,21 +728,21 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
                     t = Point(0.0);
                     ww = 0;
 
-                    for (auto h : m_mesh.halfedges(v))
+                    for (auto h : mesh_.halfedges(v))
                     {
                         v1 = v;
-                        v2 = m_mesh.toVertex(h);
-                        v3 = m_mesh.toVertex(m_mesh.nextHalfedge(h));
+                        v2 = mesh_.to_vertex(h);
+                        v3 = mesh_.to_vertex(mesh_.next_halfedge(h));
 
-                        b = m_points[v1];
-                        b += m_points[v2];
-                        b += m_points[v3];
+                        b = points_[v1];
+                        b += points_[v2];
+                        b += points_[v3];
                         b *= (1.0 / 3.0);
 
-                        area = norm(cross(m_points[v2] - m_points[v1],
-                                          m_points[v3] - m_points[v1]));
-                        w = area / pow((m_vsizing[v1] + m_vsizing[v2] +
-                                        m_vsizing[v3]) /
+                        area = norm(cross(points_[v2] - points_[v1],
+                                          points_[v3] - points_[v1]));
+                        w = area / pow((vsizing_[v1] + vsizing_[v2] +
+                                        vsizing_[v3]) /
                                            3.0,
                                        2.0);
 
@@ -751,8 +751,8 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
                     }
 
                     u /= ww;
-                    u -= m_points[v];
-                    n = m_vnormal[v];
+                    u -= points_[v];
+                    n = vnormal_[v];
                     u -= n * dot(u, n);
 
                     update[v] = u;
@@ -761,37 +761,37 @@ void SurfaceRemeshing::tangentialSmoothing(unsigned int iterations)
         }
 
         // update vertex positions
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
-            if (!m_mesh.isBoundary(v) && !m_vlocked[v])
+            if (!mesh_.is_boundary(v) && !vlocked_[v])
             {
-                m_points[v] += update[v];
+                points_[v] += update[v];
             }
         }
 
         // update normal vectors (if not done so through projection)
-        SurfaceNormals::computeVertexNormals(m_mesh);
+        SurfaceNormals::compute_vertex_normals(mesh_);
     }
 
     // project at the end
-    if (m_useProjection)
+    if (use_projection_)
     {
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
-            if (!m_mesh.isBoundary(v) && !m_vlocked[v])
+            if (!mesh_.is_boundary(v) && !vlocked_[v])
             {
-                projectToReference(v);
+                project_to_reference(v);
             }
         }
     }
 
     // remove property
-    m_mesh.removeVertexProperty(update);
+    mesh_.remove_vertex_property(update);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::removeCaps()
+void SurfaceRemeshing::remove_caps()
 {
     SurfaceMesh::Halfedge h;
     SurfaceMesh::Vertex v, vb, vd;
@@ -799,21 +799,21 @@ void SurfaceRemeshing::removeCaps()
     Scalar a0, a1, amin, aa(::cos(170.0 * M_PI / 180.0));
     Point a, b, c, d;
 
-    for (auto e : m_mesh.edges())
+    for (auto e : mesh_.edges())
     {
-        if (!m_elocked[e] && m_mesh.isFlipOk(e))
+        if (!elocked_[e] && mesh_.is_flip_ok(e))
         {
-            h = m_mesh.halfedge(e, 0);
-            a = m_points[m_mesh.toVertex(h)];
+            h = mesh_.halfedge(e, 0);
+            a = points_[mesh_.to_vertex(h)];
 
-            h = m_mesh.nextHalfedge(h);
-            b = m_points[vb = m_mesh.toVertex(h)];
+            h = mesh_.next_halfedge(h);
+            b = points_[vb = mesh_.to_vertex(h)];
 
-            h = m_mesh.halfedge(e, 1);
-            c = m_points[m_mesh.toVertex(h)];
+            h = mesh_.halfedge(e, 1);
+            c = points_[mesh_.to_vertex(h)];
 
-            h = m_mesh.nextHalfedge(h);
-            d = m_points[vd = m_mesh.toVertex(h)];
+            h = mesh_.next_halfedge(h);
+            d = points_[vd = mesh_.to_vertex(h)];
 
             a0 = dot(normalize(a - b), normalize(c - b));
             a1 = dot(normalize(a - d), normalize(c - d));
@@ -833,15 +833,15 @@ void SurfaceRemeshing::removeCaps()
             if (amin < aa)
             {
                 // feature edge and feature vertex -> seems to be intended
-                if (m_efeature[e] && m_vfeature[v])
+                if (efeature_[e] && vfeature_[v])
                     continue;
 
                 // project v onto feature edge
-                if (m_efeature[e])
-                    m_points[v] = (a + c) * 0.5f;
+                if (efeature_[e])
+                    points_[v] = (a + c) * 0.5f;
 
                 // flip
-                m_mesh.flip(e);
+                mesh_.flip(e);
             }
         }
     }

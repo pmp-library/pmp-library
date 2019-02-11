@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017 The pmp-library developers
-// All rights reserved.
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -42,58 +41,58 @@ public:
     SurfaceMesh::Vertex v0, v1, v2, v3;
     SurfaceMesh::Face   f0;
 
-    void addTriangle()
+    void add_triangle()
     {
-        v0 = mesh.addVertex(Point(0, 0, 0));
-        v1 = mesh.addVertex(Point(1, 0, 0));
-        v2 = mesh.addVertex(Point(0, 1, 0));
-        f0 = mesh.addTriangle(v0, v1, v2);
+        v0 = mesh.add_vertex(Point(0, 0, 0));
+        v1 = mesh.add_vertex(Point(1, 0, 0));
+        v2 = mesh.add_vertex(Point(0, 1, 0));
+        f0 = mesh.add_triangle(v0, v1, v2);
     }
 
-    void oneRing()
+    void one_ring()
     {
         ASSERT_TRUE(mesh.read("pmp-data/off/vertex_onering.off"));
-        EXPECT_EQ(mesh.nVertices(), size_t(7));
-        EXPECT_EQ(mesh.nFaces(), size_t(6));
+        EXPECT_EQ(mesh.n_vertices(), size_t(7));
+        EXPECT_EQ(mesh.n_faces(), size_t(6));
         v0            = SurfaceMesh::Vertex(3); // the central vertex
-        auto points   = mesh.getVertexProperty<Point>("v:point");
+        auto points   = mesh.get_vertex_property<Point>("v:point");
         points[v0][2] = 0.1; // lift central vertex
     }
 };
 
-TEST_F(DifferentialGeometryTest, triangleAreaPoints)
+TEST_F(DifferentialGeometryTest, triangle_areaPoints)
 {
-    addTriangle();
+    add_triangle();
     Scalar area =
-        triangleArea(mesh.position(v0), mesh.position(v1), mesh.position(v2));
+        triangle_area(mesh.position(v0), mesh.position(v1), mesh.position(v2));
     EXPECT_EQ(area, 0.5);
 }
 
-TEST_F(DifferentialGeometryTest, triangleAreaFace)
+TEST_F(DifferentialGeometryTest, triangle_areaFace)
 {
-    addTriangle();
-    Scalar area = triangleArea(mesh, f0);
+    add_triangle();
+    Scalar area = triangle_area(mesh, f0);
     EXPECT_EQ(area, 0.5);
 }
 
-TEST_F(DifferentialGeometryTest, voronoiAreaBarycentric)
+TEST_F(DifferentialGeometryTest, voronoi_area_barycentric)
 {
-    oneRing();
-    Scalar area = voronoiAreaBarycentric(mesh, v0);
+    one_ring();
+    Scalar area = voronoi_area_barycentric(mesh, v0);
     EXPECT_FLOAT_EQ(area, 0.049180791);
 }
 
 TEST_F(DifferentialGeometryTest, laplace)
 {
-    oneRing();
+    one_ring();
     auto lv = laplace(mesh, v0);
     EXPECT_GT(norm(lv), 0);
 }
 
-TEST_F(DifferentialGeometryTest, vertexCurvature)
+TEST_F(DifferentialGeometryTest, vertex_curvature)
 {
-    oneRing();
-    auto vcurv = vertexCurvature(mesh, v0);
+    one_ring();
+    auto vcurv = vertex_curvature(mesh, v0);
     EXPECT_FLOAT_EQ(vcurv.mean, 6.1538467);
     EXPECT_FLOAT_EQ(vcurv.gauss, 50.860939);
     EXPECT_FLOAT_EQ(vcurv.max, 6.1538467);

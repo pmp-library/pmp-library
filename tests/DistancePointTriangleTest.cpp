@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017 The pmp-library developers
-// All rights reserved.
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -42,22 +41,22 @@ public:
     SurfaceMesh::Vertex v0, v1, v2, v3;
     SurfaceMesh::Face   f0;
 
-    void addDegenerateTriangle()
+    void add_degenerate_triangle()
     {
-        v0 = mesh.addVertex(Point(0, 0, 0));
-        v1 = mesh.addVertex(Point(1, 0, 0));
-        v2 = mesh.addVertex(Point(0, 0, 0));
-        f0 = mesh.addTriangle(v0, v1, v2);
+        v0 = mesh.add_vertex(Point(0, 0, 0));
+        v1 = mesh.add_vertex(Point(1, 0, 0));
+        v2 = mesh.add_vertex(Point(0, 0, 0));
+        f0 = mesh.add_triangle(v0, v1, v2);
     }
 };
 
-TEST_F(DistancePointTriangleTest, distancePointDegenerateTriangle)
+TEST_F(DistancePointTriangleTest, distance_point_degenerate_triangle)
 {
-    addDegenerateTriangle();
+    add_degenerate_triangle();
     Point  p(0, 1, 0);
     Point  nearest;
-    Scalar dist = distPointTriangle(p, mesh.position(v0), mesh.position(v1),
-                                    mesh.position(v2), nearest);
+    Scalar dist = dist_point_triangle(p, mesh.position(v0), mesh.position(v1),
+                                      mesh.position(v2), nearest);
     EXPECT_FLOAT_EQ(dist, 1.0);
     EXPECT_EQ(nearest, Point(0, 0, 0));
 }

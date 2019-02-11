@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017, 2018 The pmp-library developers
-// All rights reserved.
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -50,12 +49,12 @@ TEST_F(SurfaceGeodesicTest, geodesic)
     EXPECT_TRUE(mesh.read("pmp-data/off/sphere.off"));
 
     // use first vertex as seed
-    std::vector<SurfaceMesh::Vertex>  seed;
+    std::vector<SurfaceMesh::Vertex> seed;
     seed.push_back(SurfaceMesh::Vertex(0));
 
     // compute geodesic distance
     SurfaceGeodesic geodist(mesh, seed);
-    
+
     // find maximum geodesic distance
     Scalar d(0);
     for (auto v: mesh.vertices())
@@ -63,22 +62,21 @@ TEST_F(SurfaceGeodesicTest, geodesic)
     EXPECT_FLOAT_EQ(d, 3.13061);
 }
 
-TEST_F(SurfaceGeodesicTest, geodesicToTexture)
+TEST_F(SurfaceGeodesicTest, geodesic_to_texture)
 {
     // read irregular mesh (to have virtual edges)
     mesh.clear();
     EXPECT_TRUE(mesh.read("pmp-data/off/bunny.off"));
 
     // use first vertex as seed
-    std::vector<SurfaceMesh::Vertex>  seed;
+    std::vector<SurfaceMesh::Vertex> seed;
     seed.push_back(SurfaceMesh::Vertex(0));
 
     // compute geodesic distance
     SurfaceGeodesic geodist(mesh, seed);
-    
+
     // map distances to texture coordinates
-    geodist.distanceToTextureCoordinates();
-    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    geodist.distance_to_texture_coordinates();
+    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
     EXPECT_TRUE(tex);
 }
-

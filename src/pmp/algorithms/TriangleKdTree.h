@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -42,11 +42,11 @@ class TriangleKdTree
 {
 public:
     //! construct with mesh
-    TriangleKdTree(const SurfaceMesh& mesh, unsigned int maxFaces = 10,
-                   unsigned int maxDepth = 30);
+    TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces = 10,
+                   unsigned int max_depth = 30);
 
     //! destructur
-    ~TriangleKdTree() { delete m_root; }
+    ~TriangleKdTree() { delete root_; }
 
     //! nearest neighbor information
     struct NearestNeighbor
@@ -84,36 +84,36 @@ private:
     // Node of the tree: contains parent, children and splitting plane
     struct Node
     {
-        Node() : faces(nullptr), leftChild(nullptr), rightChild(nullptr){};
+        Node() : faces(nullptr), left_child(nullptr), right_child(nullptr){};
 
         ~Node()
         {
             delete faces;
-            delete leftChild;
-            delete rightChild;
+            delete left_child;
+            delete right_child;
         }
 
         unsigned char axis;
         Scalar split;
         Triangles* faces;
-        Node* leftChild;
-        Node* rightChild;
+        Node* left_child;
+        Node* right_child;
     };
 
     // Recursive part of build()
-    unsigned int buildRecurse(Node* node, unsigned int maxHandles,
-                              unsigned int depth);
+    unsigned int build_recurse(Node* node, unsigned int max_handles,
+                               unsigned int depth);
 
     // Recursive part of nearest()
-    void nearestRecurse(Node* node, const Point& point,
-                        NearestNeighbor& data) const;
+    void nearest_recurse(Node* node, const Point& point,
+                         NearestNeighbor& data) const;
 
 private:
-    Node* m_root;
+    Node* root_;
 };
 
 //=============================================================================
 //! @}
-//=============================================================================w
+//=============================================================================
 } // namespace pmp
 //=============================================================================

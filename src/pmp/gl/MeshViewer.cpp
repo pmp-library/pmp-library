@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -44,14 +44,14 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
     : TrackballViewer(title, width, height, showgui)
 {
     // setup draw modes
-    clearDrawModes();
-    addDrawMode("Points");
-    addDrawMode("Hidden Line");
-    addDrawMode("Smooth Shading");
-    addDrawMode("Texture");
-    setDrawMode("Smooth Shading");
+    clear_draw_modes();
+    add_draw_mode("Points");
+    add_draw_mode("Hidden Line");
+    add_draw_mode("Smooth Shading");
+    add_draw_mode("Texture");
+    set_draw_mode("Smooth Shading");
 
-    m_creaseAngle = 90.0;
+    crease_angle_ = 90.0;
 }
 
 //-----------------------------------------------------------------------------
@@ -60,23 +60,23 @@ MeshViewer::~MeshViewer() = default;
 
 //-----------------------------------------------------------------------------
 
-bool MeshViewer::loadMesh(const char* filename)
+bool MeshViewer::load_mesh(const char* filename)
 {
     // load mesh
-    if (m_mesh.read(filename))
+    if (mesh_.read(filename))
     {
         // update scene center and bounds
-        BoundingBox bb = m_mesh.bounds();
-        setScene((vec3)bb.center(), 0.5 * bb.size());
+        BoundingBox bb = mesh_.bounds();
+        set_scene((vec3)bb.center(), 0.5 * bb.size());
 
         // compute face & vertex normals, update face indices
-        updateMesh();
+        update_mesh();
 
-        std::cout << "Load " << filename << ": " << m_mesh.nVertices()
-                  << " vertices, " << m_mesh.nFaces() << " faces\n";
+        std::cout << "Load " << filename << ": " << mesh_.n_vertices()
+                  << " vertices, " << mesh_.n_faces() << " faces\n";
 
-        m_filename = filename;
-        m_creaseAngle = m_mesh.creaseAngle();
+        filename_ = filename;
+        crease_angle_ = mesh_.crease_angle();
         return true;
     }
 
@@ -86,51 +86,51 @@ bool MeshViewer::loadMesh(const char* filename)
 
 //-----------------------------------------------------------------------------
 
-bool MeshViewer::loadTexture(const char* filename, GLint format,
-                             GLint minFilter, GLint magFilter, GLint wrap)
+bool MeshViewer::load_texture(const char* filename, GLint format,
+                              GLint min_filter, GLint mag_filter, GLint wrap)
 {
     // load texture from file
-    if (!m_mesh.loadTexture(filename, format, minFilter, magFilter, wrap))
+    if (!mesh_.load_texture(filename, format, min_filter, mag_filter, wrap))
         return false;
 
-    setDrawMode("Texture");
+    set_draw_mode("Texture");
 
     // set material
-    m_mesh.setAmbient(1.0);
-    m_mesh.setDiffuse(0.9);
-    m_mesh.setSpecular(0.0);
-    m_mesh.setShininess(1.0);
+    mesh_.set_ambient(1.0);
+    mesh_.set_diffuse(0.9);
+    mesh_.set_specular(0.0);
+    mesh_.set_shininess(1.0);
 
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshViewer::updateMesh()
+void MeshViewer::update_mesh()
 {
     // re-compute face and vertex normals
-    m_mesh.updateOpenGLBuffers();
+    mesh_.update_opengl_buffers();
 }
 
 //-----------------------------------------------------------------------------
 
-void MeshViewer::processImGUI()
+void MeshViewer::process_imgui()
 {
     if (ImGui::CollapsingHeader("Mesh Info", ImGuiTreeNodeFlags_DefaultOpen))
     {
         // output mesh statistics
-        ImGui::BulletText("%d vertices", (int)m_mesh.nVertices());
-        ImGui::BulletText("%d edges", (int)m_mesh.nEdges());
-        ImGui::BulletText("%d faces", (int)m_mesh.nFaces());
+        ImGui::BulletText("%d vertices", (int)mesh_.n_vertices());
+        ImGui::BulletText("%d edges", (int)mesh_.n_edges());
+        ImGui::BulletText("%d faces", (int)mesh_.n_faces());
 
         // control crease angle
         ImGui::PushItemWidth(100);
-        ImGui::SliderFloat("Crease Angle", &m_creaseAngle, 0.0f, 180.0f,
+        ImGui::SliderFloat("Crease Angle", &crease_angle_, 0.0f, 180.0f,
                            "%.0f");
         ImGui::PopItemWidth();
-        if (m_creaseAngle != m_mesh.creaseAngle())
+        if (crease_angle_ != mesh_.crease_angle())
         {
-            m_mesh.setCreaseAngle(m_creaseAngle);
+            mesh_.set_crease_angle(crease_angle_);
         }
     }
 }
@@ -140,7 +140,7 @@ void MeshViewer::processImGUI()
 void MeshViewer::draw(const std::string& drawMode)
 {
     // draw mesh
-    m_mesh.draw(m_projectionMatrix, m_modelviewMatrix, drawMode);
+    mesh_.draw(projection_matrix_, modelview_matrix_, drawMode);
 }
 
 //-----------------------------------------------------------------------------
@@ -154,25 +154,25 @@ void MeshViewer::keyboard(int key, int scancode, int action, int mods)
     {
         case GLFW_KEY_BACKSPACE: // reload model
         {
-            loadMesh(m_filename.c_str());
+            load_mesh(filename_.c_str());
             break;
         }
 
         case GLFW_KEY_C: // adjust crease angle
         {
             if (mods & GLFW_MOD_SHIFT)
-                m_mesh.setCreaseAngle(m_mesh.creaseAngle() + 10);
+                mesh_.set_crease_angle(mesh_.crease_angle() + 10);
             else
-                m_mesh.setCreaseAngle(m_mesh.creaseAngle() - 10);
-            m_creaseAngle = m_mesh.creaseAngle();
+                mesh_.set_crease_angle(mesh_.crease_angle() - 10);
+            crease_angle_ = mesh_.crease_angle();
 
-            std::cout << "crease angle: " << m_mesh.creaseAngle() << std::endl;
+            std::cout << "crease angle: " << mesh_.crease_angle() << std::endl;
             break;
         }
 
         case GLFW_KEY_O: // write mesh
         {
-            m_mesh.write("output.off");
+            mesh_.write("output.off");
             break;
         }
 
@@ -186,7 +186,7 @@ void MeshViewer::keyboard(int key, int scancode, int action, int mods)
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Vertex MeshViewer::pickVertex(int x, int y)
+SurfaceMesh::Vertex MeshViewer::pick_vertex(int x, int y)
 {
     SurfaceMesh::Vertex vmin;
 
@@ -196,9 +196,9 @@ SurfaceMesh::Vertex MeshViewer::pickVertex(int x, int y)
     if (TrackballViewer::pick(x, y, p))
     {
         Point picked_position(p);
-        for (auto v: m_mesh.vertices())
+        for (auto v: mesh_.vertices())
         {
-            d = distance(m_mesh.position(v), picked_position);
+            d = distance(mesh_.position(v), picked_position);
             if (d < dmin)
             {
                 dmin = d;

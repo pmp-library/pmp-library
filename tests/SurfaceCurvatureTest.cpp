@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017, 2018 The pmp-library developers
-// All rights reserved.
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -63,12 +62,12 @@ TEST_F(SurfaceCurvatureTest, curvature)
 
     for (auto v : mesh.vertices())
     {
-        kmin = std::min(kmin, curvature->minCurvature(v));
-        kmax = std::max(kmax, curvature->maxCurvature(v));
-        mmin = std::min(mmin, curvature->meanCurvature(v));
-        mmax = std::max(mmax, curvature->meanCurvature(v));
-        gmin = std::min(gmin, curvature->gaussCurvature(v));
-        gmax = std::max(gmax, curvature->gaussCurvature(v));
+        kmin = std::min(kmin, curvature->min_curvature(v));
+        kmax = std::max(kmax, curvature->max_curvature(v));
+        mmin = std::min(mmin, curvature->mean_curvature(v));
+        mmax = std::max(mmax, curvature->mean_curvature(v));
+        gmin = std::min(gmin, curvature->gauss_curvature(v));
+        gmax = std::max(gmax, curvature->gauss_curvature(v));
     }
 
     EXPECT_FLOAT_EQ(kmin,0.50240648);
@@ -79,23 +78,23 @@ TEST_F(SurfaceCurvatureTest, curvature)
     EXPECT_FLOAT_EQ(gmax,1.0006028);
 }
 
-TEST_F(SurfaceCurvatureTest, meanCurvatureToTextureCoordinates)
+TEST_F(SurfaceCurvatureTest, mean_curvature_to_texture_coordinates)
 {
-    curvature->meanCurvatureToTextureCoordinates();
-    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    curvature->mean_curvature_to_texture_coordinates();
+    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
     EXPECT_TRUE(tex);
 }
 
-TEST_F(SurfaceCurvatureTest, maxCurvatureToTextureCoordinates)
+TEST_F(SurfaceCurvatureTest, max_curvature_to_texture_coordinates)
 {
-    curvature->maxCurvatureToTextureCoordinates();
-    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    curvature->max_curvature_to_texture_coordinates();
+    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
     EXPECT_TRUE(tex);
 }
 
-TEST_F(SurfaceCurvatureTest, gaussCurvatureToTextureCoordinates)
+TEST_F(SurfaceCurvatureTest, gauss_curvature_to_texture_coordinates)
 {
-    curvature->gaussCurvatureToTextureCoordinates();
-    auto tex = mesh.vertexProperty<TextureCoordinate>("v:tex");
+    curvature->gauss_curvature_to_texture_coordinates();
+    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
     EXPECT_TRUE(tex);
 }

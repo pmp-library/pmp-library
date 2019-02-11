@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017, 2018 The pmp-library developers
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -42,22 +42,22 @@ public:
     SurfaceMesh mesh;
 };
 
-TEST_F(SurfaceSmoothingTest, implicitSmoothing)
+TEST_F(SurfaceSmoothingTest, implicit_smoothing)
 {
     auto bbz = mesh.bounds().max()[2];
     SurfaceSmoothing ss(mesh);
-    ss.implicitSmoothing(0.01);
-    ss.implicitSmoothing(0.01,true);
+    ss.implicit_smoothing(0.01);
+    ss.implicit_smoothing(0.01,true);
     auto bbs = mesh.bounds().max()[2];
     EXPECT_LT(bbs,bbz);
 }
 
-TEST_F(SurfaceSmoothingTest, explicitSmoothing)
+TEST_F(SurfaceSmoothingTest, explicit_smoothing)
 {
     auto bbz = mesh.bounds().max()[2];
     SurfaceSmoothing ss(mesh);
-    ss.explicitSmoothing(10);
-    ss.explicitSmoothing(10,true);
+    ss.explicit_smoothing(10);
+    ss.explicit_smoothing(10,true);
     auto bbs = mesh.bounds().max()[2];
     EXPECT_LT(bbs,bbz);
 }

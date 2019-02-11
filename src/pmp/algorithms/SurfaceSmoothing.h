@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -47,19 +47,19 @@ class SurfaceSmoothing
 {
 public:
     //! give a mesh in the constructor
-    SurfaceSmoothing(SurfaceMesh& mesh) : m_mesh(mesh){};
+    SurfaceSmoothing(SurfaceMesh& mesh) : mesh_(mesh){};
 
     //! Perform \c iters iterations of explicit Laplacian smoothing.
-    void explicitSmoothing(unsigned int iters = 10,
-                           bool useUniformLaplace = false);
+    void explicit_smoothing(unsigned int iters = 10,
+                            bool use_uniform_laplace = false);
 
     //! Perform implicit Laplacian smoothing with \c timestep.
-    void implicitSmoothing(Scalar timestep = 0.001,
-                           bool useUniformLaplace = false);
+    void implicit_smoothing(Scalar timestep = 0.001,
+                            bool use_uniform_laplace = false);
 
 private:
     //! the mesh
-    SurfaceMesh& m_mesh;
+    SurfaceMesh& mesh_;
 };
 
 //=============================================================================

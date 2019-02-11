@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -38,7 +38,7 @@ namespace pmp {
 
 //=============================================================================
 
-Shader::Shader() : m_pid(0), m_vid(0), m_fid(0)
+Shader::Shader() : pid_(0), vid_(0), fid_(0)
 {
 }
 
@@ -53,14 +53,14 @@ Shader::~Shader()
 
 void Shader::cleanup()
 {
-    if (m_pid)
-        glDeleteProgram(m_pid);
-    if (m_vid)
-        glDeleteShader(m_vid);
-    if (m_fid)
-        glDeleteShader(m_fid);
+    if (pid_)
+        glDeleteProgram(pid_);
+    if (vid_)
+        glDeleteShader(vid_);
+    if (fid_)
+        glDeleteShader(fid_);
 
-    m_pid = m_vid = m_fid = 0;
+    pid_ = vid_ = fid_ = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -71,25 +71,25 @@ bool Shader::source(const char* vshader, const char* fshader)
     cleanup();
 
     // create program
-    m_pid = glCreateProgram();
+    pid_ = glCreateProgram();
 
     // vertex shader
-    m_vid = compile(vshader, GL_VERTEX_SHADER);
-    if (!m_vid)
+    vid_ = compile(vshader, GL_VERTEX_SHADER);
+    if (!vid_)
     {
         std::cerr << "Cannot compile vertex shader!\n";
         return false;
     }
-    glAttachShader(m_pid, m_vid);
+    glAttachShader(pid_, vid_);
 
     // fragment shader
-    m_fid = compile(fshader, GL_FRAGMENT_SHADER);
-    if (!m_fid)
+    fid_ = compile(fshader, GL_FRAGMENT_SHADER);
+    if (!fid_)
     {
         std::cerr << "Cannot compile fragment shader!\n";
         return false;
     }
-    glAttachShader(m_pid, m_fid);
+    glAttachShader(pid_, fid_);
 
     // link program
     if (!link())
@@ -109,25 +109,25 @@ bool Shader::load(const char* vfile, const char* ffile)
     cleanup();
 
     // create program
-    m_pid = glCreateProgram();
+    pid_ = glCreateProgram();
 
     // vertex shader
-    m_vid = loadAndCompile(vfile, GL_VERTEX_SHADER);
-    if (!m_vid)
+    vid_ = load_and_compile(vfile, GL_VERTEX_SHADER);
+    if (!vid_)
     {
         std::cerr << "Cannot compile vertex shader!\n";
         return false;
     }
-    glAttachShader(m_pid, m_vid);
+    glAttachShader(pid_, vid_);
 
     // fragment shader
-    m_fid = loadAndCompile(ffile, GL_FRAGMENT_SHADER);
-    if (!m_fid)
+    fid_ = load_and_compile(ffile, GL_FRAGMENT_SHADER);
+    if (!fid_)
     {
         std::cerr << "Cannot compile fragment shader!\n";
         return false;
     }
-    glAttachShader(m_pid, m_fid);
+    glAttachShader(pid_, fid_);
 
     // link program
     if (!link())
@@ -143,16 +143,16 @@ bool Shader::load(const char* vfile, const char* ffile)
 
 bool Shader::link()
 {
-    glLinkProgram(m_pid);
+    glLinkProgram(pid_);
     GLint status;
-    glGetProgramiv(m_pid, GL_LINK_STATUS, &status);
+    glGetProgramiv(pid_, GL_LINK_STATUS, &status);
     if (status == GL_FALSE)
     {
         GLint length;
-        glGetProgramiv(m_pid, GL_INFO_LOG_LENGTH, &length);
+        glGetProgramiv(pid_, GL_INFO_LOG_LENGTH, &length);
 
         auto* info = new GLchar[length + 1];
-        glGetProgramInfoLog(m_pid, length, nullptr, info);
+        glGetProgramInfoLog(pid_, length, nullptr, info);
         std::cerr << "Shader: Cannot link program:\n" << info << std::endl;
         delete[] info;
 
@@ -222,7 +222,7 @@ GLint Shader::compile(const char* source, GLenum type)
 
 //-----------------------------------------------------------------------------
 
-GLint Shader::loadAndCompile(const char* filename, GLenum type)
+GLint Shader::load_and_compile(const char* filename, GLenum type)
 {
     std::string source;
     if (!load(filename, source))
@@ -238,8 +238,8 @@ GLint Shader::loadAndCompile(const char* filename, GLenum type)
 
 void Shader::use()
 {
-    if (m_pid)
-        glUseProgram(m_pid);
+    if (pid_)
+        glUseProgram(pid_);
 }
 
 //-----------------------------------------------------------------------------
@@ -251,21 +251,21 @@ void Shader::disable()
 
 //-----------------------------------------------------------------------------
 
-void Shader::bindAttribute(const char* name, GLuint index)
+void Shader::bind_attribute(const char* name, GLuint index)
 {
-    if (!m_pid)
+    if (!pid_)
         return;
-    glBindAttribLocation(m_pid, index, name);
+    glBindAttribLocation(pid_, index, name);
     link(); // have to re-link now!
 }
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const char* name, float value)
+void Shader::set_uniform(const char* name, float value)
 {
-    if (!m_pid)
+    if (!pid_)
         return;
-    int location = glGetUniformLocation(m_pid, name);
+    int location = glGetUniformLocation(pid_, name);
     if (location == -1)
     {
         std::cerr << "Invalid uniform location for: " << name << std::endl;
@@ -276,11 +276,11 @@ void Shader::setUniform(const char* name, float value)
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const char* name, int value)
+void Shader::set_uniform(const char* name, int value)
 {
-    if (!m_pid)
+    if (!pid_)
         return;
-    int location = glGetUniformLocation(m_pid, name);
+    int location = glGetUniformLocation(pid_, name);
     if (location == -1)
     {
         std::cerr << "Invalid uniform location for: " << name << std::endl;
@@ -291,11 +291,11 @@ void Shader::setUniform(const char* name, int value)
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const char* name, const vec3& vec)
+void Shader::set_uniform(const char* name, const vec3& vec)
 {
-    if (!m_pid)
+    if (!pid_)
         return;
-    int location = glGetUniformLocation(m_pid, name);
+    int location = glGetUniformLocation(pid_, name);
     if (location == -1)
     {
         std::cerr << "Invalid uniform location for: " << name << std::endl;
@@ -306,11 +306,11 @@ void Shader::setUniform(const char* name, const vec3& vec)
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const char* name, const vec4& vec)
+void Shader::set_uniform(const char* name, const vec4& vec)
 {
-    if (!m_pid)
+    if (!pid_)
         return;
-    int location = glGetUniformLocation(m_pid, name);
+    int location = glGetUniformLocation(pid_, name);
     if (location == -1)
     {
         std::cerr << "Invalid uniform location for: " << name << std::endl;
@@ -321,11 +321,11 @@ void Shader::setUniform(const char* name, const vec4& vec)
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const char* name, const mat3& mat)
+void Shader::set_uniform(const char* name, const mat3& mat)
 {
-    if (!m_pid)
+    if (!pid_)
         return;
-    int location = glGetUniformLocation(m_pid, name);
+    int location = glGetUniformLocation(pid_, name);
     if (location == -1)
     {
         std::cerr << "Invalid uniform location for: " << name << std::endl;
@@ -336,11 +336,11 @@ void Shader::setUniform(const char* name, const mat3& mat)
 
 //-----------------------------------------------------------------------------
 
-void Shader::setUniform(const char* name, const mat4& mat)
+void Shader::set_uniform(const char* name, const mat4& mat)
 {
-    if (!m_pid)
+    if (!pid_)
         return;
-    int location = glGetUniformLocation(m_pid, name);
+    int location = glGetUniformLocation(pid_, name);
     if (location == -1)
     {
         std::cerr << "Invalid uniform location for: " << name << std::endl;

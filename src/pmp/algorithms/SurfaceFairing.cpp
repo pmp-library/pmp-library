@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -29,8 +29,6 @@
 #include <pmp/algorithms/SurfaceFairing.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 
-#include <utility>
-
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
@@ -45,15 +43,15 @@ using Triplet = Eigen::Triplet<double>;
 
 //=============================================================================
 
-SurfaceFairing::SurfaceFairing(SurfaceMesh& mesh) : m_mesh(mesh)
+SurfaceFairing::SurfaceFairing(SurfaceMesh& mesh) : mesh_(mesh)
 {
     // get & add properties
-    m_points = m_mesh.vertexProperty<Point>("v:point");
-    m_vselected = m_mesh.getVertexProperty<bool>("v:selected");
-    m_vlocked = m_mesh.addVertexProperty<bool>("fairing:locked");
-    m_vweight = m_mesh.addVertexProperty<double>("fairing:vweight");
-    m_eweight = m_mesh.addEdgeProperty<double>("fairing:eweight");
-    m_idx = m_mesh.addVertexProperty<int>("fairing:idx", -1);
+    points_ = mesh_.vertex_property<Point>("v:point");
+    vselected_ = mesh_.get_vertex_property<bool>("v:selected");
+    vlocked_ = mesh_.add_vertex_property<bool>("fairing:locked");
+    vweight_ = mesh_.add_vertex_property<double>("fairing:vweight");
+    eweight_ = mesh_.add_edge_property<double>("fairing:eweight");
+    idx_ = mesh_.add_vertex_property<int>("fairing:idx", -1);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,10 +59,10 @@ SurfaceFairing::SurfaceFairing(SurfaceMesh& mesh) : m_mesh(mesh)
 SurfaceFairing::~SurfaceFairing()
 {
     // remove properties
-    m_mesh.removeVertexProperty(m_vlocked);
-    m_mesh.removeVertexProperty(m_vweight);
-    m_mesh.removeEdgeProperty(m_eweight);
-    m_mesh.removeVertexProperty(m_idx);
+    mesh_.remove_vertex_property(vlocked_);
+    mesh_.remove_vertex_property(vweight_);
+    mesh_.remove_edge_property(eweight_);
+    mesh_.remove_vertex_property(idx_);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,50 +70,50 @@ SurfaceFairing::~SurfaceFairing()
 void SurfaceFairing::fair(unsigned int k)
 {
     // compute cotan weights
-    for (auto v : m_mesh.vertices())
+    for (auto v : mesh_.vertices())
     {
-        m_vweight[v] = 0.5 / voronoiArea(m_mesh, v);
+        vweight_[v] = 0.5 / voronoi_area(mesh_, v);
     }
-    for (auto e : m_mesh.edges())
+    for (auto e : mesh_.edges())
     {
-        m_eweight[e] = std::max(0.0, cotanWeight(m_mesh, e));
+        eweight_[e] = std::max(0.0, cotan_weight(mesh_, e));
     }
 
     // check whether some vertices are selected
-    bool noSelection = true;
-    if (m_vselected)
+    bool no_selection = true;
+    if (vselected_)
     {
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
-            if (m_vselected[v])
+            if (vselected_[v])
             {
-                noSelection = false;
+                no_selection = false;
                 break;
             }
         }
     }
 
     // lock k locked boundary rings
-    for (auto v : m_mesh.vertices())
+    for (auto v : mesh_.vertices())
     {
         // lock boundary
-        if (m_mesh.isBoundary(v))
+        if (mesh_.is_boundary(v))
         {
-            m_vlocked[v] = true;
+            vlocked_[v] = true;
 
             // lock one-ring of boundary
             if (k > 1)
             {
-                for (auto vv : m_mesh.vertices(v))
+                for (auto vv : mesh_.vertices(v))
                 {
-                    m_vlocked[vv] = true;
+                    vlocked_[vv] = true;
 
                     // lock two-ring of boundary
                     if (k > 2)
                     {
-                        for (auto vvv : m_mesh.vertices(vv))
+                        for (auto vvv : mesh_.vertices(vv))
                         {
-                            m_vlocked[vvv] = true;
+                            vlocked_[vvv] = true;
                         }
                     }
                 }
@@ -124,27 +122,27 @@ void SurfaceFairing::fair(unsigned int k)
     }
 
     // lock un-selected and isolated vertices
-    for (auto v : m_mesh.vertices())
+    for (auto v : mesh_.vertices())
     {
-        if (!noSelection && !m_vselected[v])
+        if (!no_selection && !vselected_[v])
         {
-            m_vlocked[v] = true;
+            vlocked_[v] = true;
         }
 
-        if (m_mesh.isIsolated(v))
+        if (mesh_.is_isolated(v))
         {
-            m_vlocked[v] = true;
+            vlocked_[v] = true;
         }
     }
 
     // collect free vertices
     std::vector<SurfaceMesh::Vertex> vertices;
-    vertices.reserve(m_mesh.nVertices());
-    for (auto v : m_mesh.vertices())
+    vertices.reserve(mesh_.n_vertices());
+    for (auto v : mesh_.vertices())
     {
-        if (!m_vlocked[v])
+        if (!vlocked_[v])
         {
-            m_idx[v] = vertices.size();
+            idx_[v] = vertices.size();
             vertices.push_back(v);
         }
     }
@@ -163,22 +161,22 @@ void SurfaceFairing::fair(unsigned int k)
         B(i, 1) = 0.0;
         B(i, 2) = 0.0;
 
-        setupMatrixRow(vertices[i], m_vweight, m_eweight, k, row);
+        setup_matrix_row(vertices[i], vweight_, eweight_, k, row);
 
         for (auto r : row)
         {
             auto v = r.first;
             auto w = r.second;
 
-            if (m_idx[v] != -1)
+            if (idx_[v] != -1)
             {
-                triplets.emplace_back(i, m_idx[v], w);
+                triplets.emplace_back(i, idx_[v], w);
             }
             else
             {
-                B(i, 0) -= w * m_points[v][0];
-                B(i, 1) -= w * m_points[v][1];
-                B(i, 2) -= w * m_points[v][2];
+                B(i, 0) -= w * points_[v][0];
+                B(i, 1) -= w * points_[v][1];
+                B(i, 2) -= w * points_[v][2];
             }
         }
     }
@@ -198,7 +196,7 @@ void SurfaceFairing::fair(unsigned int k)
         for (unsigned int i = 0; i < n; ++i)
         {
             auto v = vertices[i];
-            m_points[v] = Point(X(m_idx[v], 0), X(m_idx[v], 1), X(m_idx[v], 2));
+            points_[v] = Point(X(idx_[v], 0), X(idx_[v], 1), X(idx_[v], 2));
         }
     }
 }
@@ -210,24 +208,24 @@ struct Triple
     Triple() = default;
 
     Triple(SurfaceMesh::Vertex v, double weight, unsigned int degree)
-        : m_v(std::move(v)), m_weight(weight), m_degree(degree)
+        : vertex_(v), weight_(weight), degree_(degree)
     {
     }
 
-    SurfaceMesh::Vertex m_v;
-    double m_weight;
-    unsigned int m_degree;
+    SurfaceMesh::Vertex vertex_;
+    double weight_;
+    unsigned int degree_;
 };
 
 //-----------------------------------------------------------------------------
 
-void SurfaceFairing::setupMatrixRow(const SurfaceMesh::Vertex v,
-                                    SurfaceMesh::VertexProperty<double> vweight,
-                                    SurfaceMesh::EdgeProperty<double> eweight,
-                                    unsigned int laplaceDegree,
-                                    std::map<SurfaceMesh::Vertex, double>& row)
+void SurfaceFairing::setup_matrix_row(const SurfaceMesh::Vertex v,
+                                      SurfaceMesh::VertexProperty<double> vweight,
+                                      SurfaceMesh::EdgeProperty<double> eweight,
+                                      unsigned int laplace_degree,
+                                      std::map<SurfaceMesh::Vertex, double>& row)
 {
-    Triple t(v, 1.0, laplaceDegree);
+    Triple t(v, 1.0, laplace_degree);
 
     // init
     static std::vector<Triple> todo;
@@ -239,15 +237,15 @@ void SurfaceFairing::setupMatrixRow(const SurfaceMesh::Vertex v,
     {
         t = todo.back();
         todo.pop_back();
-        auto v = t.m_v;
-        auto d = t.m_degree;
+        auto v = t.vertex_;
+        auto d = t.degree_;
 
         if (d == 0)
         {
-            row[v] += t.m_weight;
+            row[v] += t.weight_;
         }
 
-        // else if (d == 1 && m_mesh.isBoundary(v))
+        // else if (d == 1 && mesh_.is_boundary(v))
         // {
         //     // ignore?
         // }
@@ -256,16 +254,16 @@ void SurfaceFairing::setupMatrixRow(const SurfaceMesh::Vertex v,
         {
             auto ww = 0.0;
 
-            for (auto h : m_mesh.halfedges(v))
+            for (auto h : mesh_.halfedges(v))
             {
-                auto e = m_mesh.edge(h);
-                auto vv = m_mesh.toVertex(h);
+                auto e = mesh_.edge(h);
+                auto vv = mesh_.to_vertex(h);
                 auto w = eweight[e];
 
-                if (d < laplaceDegree)
+                if (d < laplace_degree)
                     w *= vweight[v];
 
-                w *= t.m_weight;
+                w *= t.weight_;
                 ww -= w;
 
                 todo.emplace_back(vv, w, d - 1);

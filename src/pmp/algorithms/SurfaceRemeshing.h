@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -57,62 +57,61 @@ public:
     ~SurfaceRemeshing();
 
     //! uniform remeshing with target edge length
-    void uniformRemeshing(Scalar edgeLength, unsigned int iterations = 10,
-                          bool useProjection = true);
+    void uniform_remeshing(Scalar edge_length, unsigned int iterations = 10,
+                          bool use_projection = true);
 
     //! adaptive remeshing with min/max edge length and approximation error
-    void adaptiveRemeshing(Scalar minEdgeLength, Scalar maxEdgeLength,
-                           Scalar approxError, unsigned int iterations = 10,
-                           bool useProjection = true);
+    void adaptive_remeshing(Scalar min_edge_length, Scalar max_edge_length,
+                           Scalar approx_error, unsigned int iterations = 10,
+                           bool use_projection = true);
 
 private:
     void preprocessing();
     void postprocessing();
 
-    void splitLongEdges();
-    void collapseShortEdges();
-    void flipEdges();
-    void tangentialSmoothing(unsigned int iterations);
-    void removeCaps();
+    void split_long_edges();
+    void collapse_short_edges();
+    void flip_edges();
+    void tangential_smoothing(unsigned int iterations);
+    void remove_caps();
 
-    void projectToReference(SurfaceMesh::Vertex v);
-    TriangleKdTree::NearestNeighbor closestFace(SurfaceMesh::Vertex v);
+    void project_to_reference(SurfaceMesh::Vertex v);
 
-    bool isTooLong(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1) const
+    bool is_too_long(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1) const
     {
-        return distance(m_points[v0], m_points[v1]) >
-               4.0 / 3.0 * std::min(m_vsizing[v0], m_vsizing[v1]);
+        return distance(points_[v0], points_[v1]) >
+               4.0 / 3.0 * std::min(vsizing_[v0], vsizing_[v1]);
     }
-    bool isTooShort(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1) const
+    bool is_too_short(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1) const
     {
-        return distance(m_points[v0], m_points[v1]) <
-               4.0 / 5.0 * std::min(m_vsizing[v0], m_vsizing[v1]);
+        return distance(points_[v0], points_[v1]) <
+               4.0 / 5.0 * std::min(vsizing_[v0], vsizing_[v1]);
     }
 
 private:
-    SurfaceMesh& m_mesh;
-    SurfaceMesh* m_refmesh;
+    SurfaceMesh& mesh_;
+    SurfaceMesh* refmesh_;
 
-    bool m_useProjection;
-    TriangleKdTree* m_kDTree;
+    bool use_projection_;
+    TriangleKdTree* kd_tree_;
 
-    bool m_uniform;
-    Scalar m_targetEdgeLength;
-    Scalar m_minEdgeLength;
-    Scalar m_maxEdgeLength;
-    Scalar m_approxError;
+    bool uniform_;
+    Scalar target_edge_length_;
+    Scalar min_edge_length_;
+    Scalar max_edge_length_;
+    Scalar approx_error_;
 
-    SurfaceMesh::VertexProperty<Point> m_points;
-    SurfaceMesh::VertexProperty<Point> m_vnormal;
-    SurfaceMesh::VertexProperty<bool> m_vfeature;
-    SurfaceMesh::EdgeProperty<bool> m_efeature;
-    SurfaceMesh::VertexProperty<bool> m_vlocked;
-    SurfaceMesh::EdgeProperty<bool> m_elocked;
-    SurfaceMesh::VertexProperty<Scalar> m_vsizing;
+    SurfaceMesh::VertexProperty<Point> points_;
+    SurfaceMesh::VertexProperty<Point> vnormal_;
+    SurfaceMesh::VertexProperty<bool> vfeature_;
+    SurfaceMesh::EdgeProperty<bool> efeature_;
+    SurfaceMesh::VertexProperty<bool> vlocked_;
+    SurfaceMesh::EdgeProperty<bool> elocked_;
+    SurfaceMesh::VertexProperty<Scalar> vsizing_;
 
-    SurfaceMesh::VertexProperty<Point> m_refpoints;
-    SurfaceMesh::VertexProperty<Point> m_refnormals;
-    SurfaceMesh::VertexProperty<Scalar> m_refsizing;
+    SurfaceMesh::VertexProperty<Point> refpoints_;
+    SurfaceMesh::VertexProperty<Point> refnormals_;
+    SurfaceMesh::VertexProperty<Scalar> refsizing_;
 };
 
 //=============================================================================

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -33,7 +33,7 @@
 //=============================================================================
 
 template <class HeapEntry>
-struct HeapInterfaceT
+struct HeapInterface
 {
     //! Comparison of two HeapEntry's: strict less
     bool less(const HeapEntry& e1, const HeapEntry& e2);
@@ -42,30 +42,30 @@ struct HeapInterfaceT
     bool greater(const HeapEntry& e1, const HeapEntry& e2);
 
     //! Get the heap position of HeapEntry E
-    int getHeapPosition(const HeapEntry& e);
+    int get_heap_position(const HeapEntry& e);
 
     //! Set the heap position of HeapEntry E
-    void setHeapPosition(HeapEntry& e, int i);
+    void set_heap_position(HeapEntry& e, int i);
 };
 
 //=============================================================================
 
 template <class HeapEntry, class HeapInterface>
-class HeapT : private std::vector<HeapEntry>
+class Heap : private std::vector<HeapEntry>
 {
 public:
-    typedef HeapT<HeapEntry, HeapInterface> This;
+    typedef Heap<HeapEntry, HeapInterface> This;
 
     //! Constructor
-    HeapT() : HeapVector() {}
+    Heap() : HeapVector() {}
 
-    //! Construct with a given \c HeapIterface.
-    HeapT(const HeapInterface& Interface) : HeapVector(), m_interface(Interface)
+    //! Construct with a given \c HeapInterface.
+    Heap(const HeapInterface& interface) : HeapVector(), interface_(interface)
     {
     }
 
     //! Destructor.
-    ~HeapT(){};
+    ~Heap(){};
 
     //! clear the heap
     void clear() { HeapVector::clear(); }
@@ -80,10 +80,10 @@ public:
     void reserve(unsigned int n) { HeapVector::reserve(n); }
 
     //! reset heap position to -1 (not in heap)
-    void resetHeapPosition(HeapEntry h) { m_interface.setHeapPosition(h, -1); }
+    void reset_heap_position(HeapEntry h) { interface_.set_heap_position(h, -1); }
 
     //! is an entry in the heap?
-    bool isStored(HeapEntry h) { return m_interface.getHeapPosition(h) != -1; }
+    bool is_stored(HeapEntry h) { return interface_.get_heap_position(h) != -1; }
 
     //! insert the entry h
     void insert(HeapEntry h)
@@ -100,10 +100,10 @@ public:
     }
 
     //! delete the first entry
-    void popFront()
+    void pop_front()
     {
         assert(!empty());
-        m_interface.setHeapPosition(entry(0), -1);
+        interface_.set_heap_position(entry(0), -1);
         if (size() > 1)
         {
             entry(0, entry(size() - 1));
@@ -117,8 +117,8 @@ public:
     //! remove an entry
     void remove(HeapEntry h)
     {
-        int pos = m_interface.getHeapPosition(h);
-        m_interface.setHeapPosition(h, -1);
+        int pos = interface_.get_heap_position(h);
+        interface_.set_heap_position(h, -1);
 
         assert(pos != -1);
         assert((unsigned int)pos < size());
@@ -140,7 +140,7 @@ public:
     //! reestablish the heap property.
     void update(HeapEntry h)
     {
-        int pos = m_interface.getHeapPosition(h);
+        int pos = interface_.get_heap_position(h);
         assert(pos != -1);
         assert((unsigned int)pos < size());
         downheap(pos);
@@ -155,13 +155,13 @@ public:
         for (i = 0; i < size(); ++i)
         {
             if (((j = left(i)) < size()) &&
-                m_interface.greater(entry(i), entry(j)))
+                interface_.greater(entry(i), entry(j)))
             {
                 std::cerr << "Heap condition violated\n";
                 ok = false;
             }
             if (((j = right(i)) < size()) &&
-                m_interface.greater(entry(i), entry(j)))
+                interface_.greater(entry(i), entry(j)))
             {
                 std::cerr << "Heap condition violated\n";
                 ok = false;
@@ -180,7 +180,7 @@ private:
         HeapEntry h = entry(idx);
         unsigned int parentIdx;
 
-        while ((idx > 0) && m_interface.less(h, entry(parentIdx = parent(idx))))
+        while ((idx > 0) && interface_.less(h, entry(parentIdx = parent(idx))))
         {
             entry(idx, entry(parentIdx));
             idx = parentIdx;
@@ -203,10 +203,10 @@ private:
                 break;
 
             if ((childIdx + 1 < s) &&
-                (m_interface.less(entry(childIdx + 1), entry(childIdx))))
+                (interface_.less(entry(childIdx + 1), entry(childIdx))))
                 ++childIdx;
 
-            if (m_interface.less(h, entry(childIdx)))
+            if (interface_.less(h, entry(childIdx)))
                 break;
 
             entry(idx, entry(childIdx));
@@ -228,7 +228,7 @@ private:
     {
         assert(idx < size());
         This::operator[](idx) = h;
-        m_interface.setHeapPosition(h, idx);
+        interface_.set_heap_position(h, idx);
     }
 
     //! Get parent's index
@@ -241,7 +241,7 @@ private:
     inline unsigned int right(unsigned int i) { return (i << 1) + 2; }
 
     //! Instance of HeapInterface
-    HeapInterface m_interface;
+    HeapInterface interface_;
 };
 
 //=============================================================================

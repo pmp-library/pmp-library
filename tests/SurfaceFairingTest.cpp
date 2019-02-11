@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017, 2018 The pmp-library developers
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -52,12 +52,12 @@ TEST_F(SurfaceFairingTest, fairing)
     EXPECT_LT(bbs,bbz);
 }
 
-TEST_F(SurfaceFairingTest, fairingSelected)
+TEST_F(SurfaceFairingTest, fairing_selected)
 {
     mesh.read("pmp-data/off/sphere_low.off");
     auto bb = mesh.bounds();
     Scalar yrange = bb.max()[1] - bb.min()[1];
-    auto vselected = mesh.vertexProperty<bool>("v:selected",false);
+    auto vselected = mesh.vertex_property<bool>("v:selected",false);
     for (auto v : mesh.vertices())
     {
         auto p = mesh.position(v);

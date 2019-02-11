@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017 The pmp-library developers
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -44,28 +44,28 @@ public:
     //! Default constructor with all options set to false.
     IOOptions(bool binary = false, bool normals = false, bool colors = false,
               bool texcoords = false)
-        : m_binary(binary),
-          m_normals(normals),
-          m_colors(colors),
-          m_texcoords(texcoords){};
+        : binary_(binary),
+          normals_(normals),
+          colors_(colors),
+          texcoords_(texcoords){};
 
     //! Read / write binary files
-    bool doBinary() { return m_binary; };
+    bool do_binary() { return binary_; };
 
     //! Read / write normals
-    bool doNormals() { return m_normals; };
+    bool do_normals() { return normals_; };
 
     //! Read / write colors
-    bool doColors() { return m_colors; };
+    bool do_colors() { return colors_; };
 
     //! Read / write texcoords
-    bool doTexcoords() { return m_texcoords; };
+    bool do_texcoords() { return texcoords_; };
 
 private:
-    bool m_binary;
-    bool m_normals;
-    bool m_colors;
-    bool m_texcoords;
+    bool binary_;
+    bool normals_;
+    bool colors_;
+    bool texcoords_;
 };
 
 //=============================================================================

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017, 2018 The pmp-library developers
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -44,65 +44,65 @@ public:
 };
 
 // adaptive remeshing
-TEST_F(SurfaceRemeshingTest, adaptiveRemeshingWithFeatures)
+TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_features)
 {
     mesh.clear();
     mesh.read("pmp-data/off/fandisk.off");
 
     SurfaceFeatures sf(mesh);
-    sf.detectAngle(25);
+    sf.detect_angle(25);
 
     auto bb = mesh.bounds().size();
-    SurfaceRemeshing(mesh).adaptiveRemeshing(
+    SurfaceRemeshing(mesh).adaptive_remeshing(
         0.001 * bb,  // min length
         1.0 * bb,    // max length
         0.001 * bb, // approx. error
         1, // iterations
         false); // no projection
-    EXPECT_EQ(mesh.nVertices(),size_t(3216));
+    EXPECT_EQ(mesh.n_vertices(),size_t(3216));
 }
 
-TEST_F(SurfaceRemeshingTest, adaptiveRemeshingWithBoundary)
+TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_boundary)
 {
     // mesh with boundary
     mesh.clear();
     mesh.read("pmp-data/off/hemisphere.off");
     auto bb = mesh.bounds().size();
-    SurfaceRemeshing(mesh).adaptiveRemeshing(
+    SurfaceRemeshing(mesh).adaptive_remeshing(
         0.001 * bb,  // min length
         1.0 * bb,    // max length
         0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.nVertices(),size_t(452));
+    EXPECT_EQ(mesh.n_vertices(),size_t(452));
 }
 
-TEST_F(SurfaceRemeshingTest, adaptiveRemeshingWithSelection)
+TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
 {
     // mesh with boundary
     mesh.clear();
     mesh.read("pmp-data/off/hemisphere.off");
 
     // select half of the hemisphere
-    auto selected = mesh.addVertexProperty<bool>("v:selected");
+    auto selected = mesh.add_vertex_property<bool>("v:selected");
     for (auto v : mesh.vertices())
         if (mesh.position(v)[0] > 0.0)
         {
             selected[v] = true;
         }
     auto bb = mesh.bounds().size();
-    SurfaceRemeshing(mesh).adaptiveRemeshing(
+    SurfaceRemeshing(mesh).adaptive_remeshing(
         0.001 * bb,  // min length
         1.0 * bb,    // max length
         0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.nVertices(),size_t(1182));
+    EXPECT_EQ(mesh.n_vertices(),size_t(1182));
 }
 
-TEST_F(SurfaceRemeshingTest, uniformRemeshing)
+TEST_F(SurfaceRemeshingTest, uniform_remeshing)
 {
     Scalar l(0);
     for (auto eit : mesh.edges())
         l += distance(mesh.position(mesh.vertex(eit, 0)),
                       mesh.position(mesh.vertex(eit, 1)));
-    l /= (Scalar)mesh.nEdges();
-    SurfaceRemeshing(mesh).uniformRemeshing(l);
-    EXPECT_EQ(mesh.nVertices(),size_t(642));
+    l /= (Scalar)mesh.n_edges();
+    SurfaceRemeshing(mesh).uniform_remeshing(l);
+    EXPECT_EQ(mesh.n_vertices(),size_t(642));
 }

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017 The pmp-library developers
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -52,16 +52,16 @@ class MemoryUsage
 public:
     //! \brief Get the maximum memory size the application has used so far.
     //! \return the max. resident set size (RSS) in bytes
-    static size_t maxSize();
+    static size_t max_size();
 
     //! \brief Get the currently used memory.
     //! \return the current resident set size (RSS) in bytes
-    static size_t currentSize();
+    static size_t current_size();
 };
 
 //-----------------------------------------------------------------------------
 
-size_t MemoryUsage::maxSize()
+size_t MemoryUsage::max_size()
 {
 #if defined(_WIN32)
 
@@ -86,7 +86,7 @@ size_t MemoryUsage::maxSize()
 
 //-----------------------------------------------------------------------------
 
-size_t MemoryUsage::currentSize()
+size_t MemoryUsage::current_size()
 {
 #if defined(_WIN32)
 

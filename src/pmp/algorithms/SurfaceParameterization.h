@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -51,21 +51,21 @@ public:
     SurfaceParameterization(SurfaceMesh& mesh);
 
     //! compute discrete harmonic parameterization
-    void harmonic(bool useUniformWeights = false);
+    void harmonic(bool use_uniform_weights = false);
 
     //! compute parameterization based on least squares conformal mapping
     void lscm();
 
 private:
     //! setup boundary constraints: map surface boundary to unit circle
-    bool setupBoundaryConstraints();
+    bool setup_boundary_constraints();
 
     //! setup boundary: pin the two farthest boundary vertices
-    bool setupLSCMBoundary();
+    bool setup_lscm_boundary();
 
 private:
     //! the mesh
-    SurfaceMesh& m_mesh;
+    SurfaceMesh& mesh_;
 };
 
 //=============================================================================

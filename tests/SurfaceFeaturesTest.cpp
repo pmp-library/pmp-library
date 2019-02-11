@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017, 2018 The pmp-library developers
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -43,12 +43,12 @@ public:
 };
 
 // feature angle
-TEST_F(SurfaceFeaturesTest, detectFeatureAngle)
+TEST_F(SurfaceFeaturesTest, detect_feature_angle)
 {
     SurfaceFeatures sf(mesh);
-    sf.detectAngle(25);
+    sf.detect_angle(25);
 
-    auto efeature = mesh.getEdgeProperty<bool>("e:feature");
+    auto efeature = mesh.get_edge_property<bool>("e:feature");
     bool found = false;
     for (auto e : mesh.edges())
         if (efeature[e])
@@ -69,14 +69,14 @@ TEST_F(SurfaceFeaturesTest, detectFeatureAngle)
 }
 
 // boundary edges
-TEST_F(SurfaceFeaturesTest, detectBoundary)
+TEST_F(SurfaceFeaturesTest, detect_boundary)
 {
     mesh.clear();
     mesh.read("pmp-data/off/vertex_onering.off");
     SurfaceFeatures sf(mesh);
-    sf.detectBoundary();
+    sf.detect_boundary();
 
-    auto efeature = mesh.getEdgeProperty<bool>("e:feature");
+    auto efeature = mesh.get_edge_property<bool>("e:feature");
     bool found = false;
     for (auto e : mesh.edges())
         if (efeature[e])

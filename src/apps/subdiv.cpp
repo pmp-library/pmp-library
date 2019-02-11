@@ -15,7 +15,7 @@ public:
     Viewer(const char* title, int width, int height, bool showgui = true);
 
 protected:
-    virtual void processImGUI();
+    virtual void process_imgui();
 };
 
 //=============================================================================
@@ -23,14 +23,14 @@ protected:
 Viewer::Viewer(const char* title, int width, int height, bool showgui)
     : MeshViewer(title, width, height, showgui)
 {
-    setDrawMode("Hidden Line");
+    set_draw_mode("Hidden Line");
 }
 
 //=============================================================================
 
-void Viewer::processImGUI()
+void Viewer::process_imgui()
 {
-    MeshViewer::processImGUI();
+    MeshViewer::process_imgui();
 
     ImGui::Spacing();
     ImGui::Spacing();
@@ -44,34 +44,34 @@ void Viewer::processImGUI()
         //ImGui::SameLine();
         //if (ImGui::Button("Detect Features"))
         //{
-        //SurfaceFeatures sf(m_mesh);
+        //SurfaceFeatures sf(mesh_);
         //sf.clear();
-        //sf.detectAngle(featureAngle);
-        //updateMesh();
+        //sf.detect_angle(featureAngle);
+        //update_mesh();
         //}
 
         if (ImGui::Button("Triangulate Mesh"))
         {
-            m_mesh.triangulate();
-            updateMesh();
+            mesh_.triangulate();
+            update_mesh();
         }
 
         if (ImGui::Button("Loop Subdivision"))
         {
-            SurfaceSubdivision(m_mesh).loop();
-            updateMesh();
+            SurfaceSubdivision(mesh_).loop();
+            update_mesh();
         }
 
         //if (ImGui::Button("Sqrt(3) Subdivision"))
         //{
-        //SurfaceSubdivision(m_mesh).sqrt3();
-        //updateMesh();
+        //SurfaceSubdivision(mesh_).sqrt3();
+        //update_mesh();
         //}
 
         if (ImGui::Button("Catmull-Clark Subdivision"))
         {
-            SurfaceSubdivision(m_mesh).catmullClark();
-            updateMesh();
+            SurfaceSubdivision(mesh_).catmull_clark();
+            update_mesh();
         }
     }
 }
@@ -83,11 +83,11 @@ int main(int argc, char** argv)
 #ifndef __EMSCRIPTEN__
     Viewer window("Subdivision", 800, 600);
     if (argc == 2)
-        window.loadMesh(argv[1]);
+        window.load_mesh(argv[1]);
     return window.run();
 #else
     Viewer window("Subdivision", 800, 600);
-    window.loadMesh(argc == 2 ? argv[1] : "input.obj");
+    window.load_mesh(argc == 2 ? argv[1] : "input.obj");
     return window.run();
 #endif
 }

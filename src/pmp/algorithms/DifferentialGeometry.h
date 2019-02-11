@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -39,13 +39,13 @@ namespace pmp {
 
 // clamp cotangent and cosince values as if angles are in [1, 179]
 
-inline double clampCot(const double v)
+inline double clamp_cot(const double v)
 {
     const double bound = 19.1; // 3 degrees
     return (v < -bound ? -bound : (v > bound ? bound : v));
 }
 
-inline double clampCos(const double v)
+inline double clamp_cos(const double v)
 {
     const double bound = 0.9986; // 3 degrees
     return (v < -bound ? -bound : (v > bound ? bound : v));
@@ -72,31 +72,31 @@ inline Scalar cos(const Point& v0, const Point& v1)
 // compute cotangent of angle between two (un-normalized) vectors
 inline Scalar cotan(const Point& v0, const Point& v1)
 {
-    return clampCot(dot(v0, v1) / norm(cross(v0, v1)));
+    return clamp_cot(dot(v0, v1) / norm(cross(v0, v1)));
 }
 
 /// compute area of a triangle given by three points
-Scalar triangleArea(const Point& p0, const Point& p1, const Point& p2);
+Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2);
 
 /// compute area of triangle f
-Scalar triangleArea(const SurfaceMesh& mesh, SurfaceMesh::Face f);
+Scalar triangle_area(const SurfaceMesh& mesh, SurfaceMesh::Face f);
 
 /// compute the cotangent weight for edge e
-double cotanWeight(const SurfaceMesh& mesh, SurfaceMesh::Edge e);
+double cotan_weight(const SurfaceMesh& mesh, SurfaceMesh::Edge e);
 
 /// compute (mixed) Voronoi area of vertex v
-double voronoiArea(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
+double voronoi_area(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
 
 /// compute barycentric Voronoi area of vertex v
-double voronoiAreaBarycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
+double voronoi_area_barycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
 
 /// compute Laplace vector for vertex v (normalized by Voronoi area)
 Point laplace(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
 
 /// compute the sum of angles around vertex v (used for Gaussian curvature)
-Scalar angleSum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
+Scalar angle_sum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
 
-/// discrete curvature information for a vertex. used for vertexCurvature()
+/// discrete curvature information for a vertex. used for vertex_curvature()
 struct VertexCurvature
 {
     VertexCurvature() : mean(0.0), gauss(0.0), max(0.0), min(0.0) {}
@@ -109,7 +109,7 @@ struct VertexCurvature
 
 //! compute min, max, mean, and Gaussian curvature for vertex v. this will not
 //! give realiable values for boundary vertices.
-VertexCurvature vertexCurvature(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
+VertexCurvature vertex_curvature(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
 
 //=============================================================================
 } // namespace pmp

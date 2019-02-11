@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -43,23 +43,23 @@ using Triplet = Eigen::Triplet<double>;
 
 //=============================================================================
 
-void SurfaceSmoothing::explicitSmoothing(unsigned int iters,
-                                         bool useUniformLaplace)
+void SurfaceSmoothing::explicit_smoothing(unsigned int iters,
+                                          bool use_uniform_laplace)
 {
-    auto points = m_mesh.vertexProperty<Point>("v:point");
-    auto eweight = m_mesh.addEdgeProperty<Scalar>("e:cotan");
-    auto laplace = m_mesh.addVertexProperty<Point>("v:laplace");
+    auto points = mesh_.vertex_property<Point>("v:point");
+    auto eweight = mesh_.add_edge_property<Scalar>("e:cotan");
+    auto laplace = mesh_.add_vertex_property<Point>("v:laplace");
 
     // compute Laplace weight per edge: cotan or uniform
-    if (useUniformLaplace)
+    if (use_uniform_laplace)
     {
-        for (auto e : m_mesh.edges())
+        for (auto e : mesh_.edges())
             eweight[e] = 1.0;
     }
     else
     {
-        for (auto e : m_mesh.edges())
-            eweight[e] = std::max(0.0, cotanWeight(m_mesh, e));
+        for (auto e : mesh_.edges())
+            eweight[e] = std::max(0.0, cotan_weight(mesh_, e));
     }
 
     // smoothing iterations
@@ -68,18 +68,18 @@ void SurfaceSmoothing::explicitSmoothing(unsigned int iters,
     for (unsigned int i = 0; i < iters; ++i)
     {
         // step 1: compute Laplace for each vertex
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
             Point l(0, 0, 0);
 
-            if (!m_mesh.isBoundary(v))
+            if (!mesh_.is_boundary(v))
             {
                 Scalar w(0);
 
-                for (auto h : m_mesh.halfedges(v))
+                for (auto h : mesh_.halfedges(v))
                 {
-                    vv = m_mesh.toVertex(h);
-                    e = m_mesh.edge(h);
+                    vv = mesh_.to_vertex(h);
+                    e = mesh_.edge(h);
                     l += eweight[e] * (points[vv] - points[v]);
                     w += eweight[e];
                 }
@@ -91,55 +91,55 @@ void SurfaceSmoothing::explicitSmoothing(unsigned int iters,
         }
 
         // step 2: move each vertex by its (damped) Laplacian
-        for (auto v : m_mesh.vertices())
+        for (auto v : mesh_.vertices())
         {
             points[v] += 0.5f * laplace[v];
         }
     }
 
     // clean-up custom properties
-    m_mesh.removeVertexProperty(laplace);
-    m_mesh.removeEdgeProperty(eweight);
+    mesh_.remove_vertex_property(laplace);
+    mesh_.remove_edge_property(eweight);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSmoothing::implicitSmoothing(Scalar timestep,
-                                         bool useUniformLaplace)
+void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
+                                          bool use_uniform_laplace)
 {
-    if (!m_mesh.nVertices())
+    if (!mesh_.n_vertices())
         return;
 
     // properties
-    auto points = m_mesh.vertexProperty<Point>("v:point");
-    auto vweight = m_mesh.addVertexProperty<Scalar>("v:area");
-    auto eweight = m_mesh.addEdgeProperty<Scalar>("e:cotan");
-    auto idx = m_mesh.addVertexProperty<int>("v:idx", -1);
+    auto points = mesh_.vertex_property<Point>("v:point");
+    auto vweight = mesh_.add_vertex_property<Scalar>("v:area");
+    auto eweight = mesh_.add_edge_property<Scalar>("e:cotan");
+    auto idx = mesh_.add_vertex_property<int>("v:idx", -1);
 
     // compute weights: cotan or uniform
-    if (useUniformLaplace)
+    if (use_uniform_laplace)
     {
-        for (auto v : m_mesh.vertices())
-            vweight[v] = 1.0 / m_mesh.valence(v);
-        for (auto e : m_mesh.edges())
+        for (auto v : mesh_.vertices())
+            vweight[v] = 1.0 / mesh_.valence(v);
+        for (auto e : mesh_.edges())
             eweight[e] = 1.0;
     }
     else
     {
-        for (auto v : m_mesh.vertices())
-            vweight[v] = 0.5 / voronoiArea(m_mesh, v);
-        for (auto e : m_mesh.edges())
-            eweight[e] = std::max(0.0, cotanWeight(m_mesh, e));
+        for (auto v : mesh_.vertices())
+            vweight[v] = 0.5 / voronoi_area(mesh_, v);
+        for (auto e : mesh_.edges())
+            eweight[e] = std::max(0.0, cotan_weight(mesh_, e));
     }
 
     // collect free (non-boundary) vertices in array free_vertices[]
     // assign indices such that idx[ free_vertices[i] ] == i
     unsigned i = 0;
     std::vector<SurfaceMesh::Vertex> free_vertices;
-    free_vertices.reserve(m_mesh.nVertices());
-    for (auto v : m_mesh.vertices())
+    free_vertices.reserve(mesh_.n_vertices());
+    for (auto v : mesh_.vertices())
     {
-        if (!m_mesh.isBoundary(v))
+        if (!mesh_.is_boundary(v))
         {
             idx[v] = i++;
             free_vertices.push_back(v);
@@ -169,14 +169,14 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep,
 
         // lhs row
         ww = 0.0;
-        for (auto h : m_mesh.halfedges(v))
+        for (auto h : mesh_.halfedges(v))
         {
-            vv = m_mesh.toVertex(h);
-            e = m_mesh.edge(h);
+            vv = mesh_.to_vertex(h);
+            e = mesh_.edge(h);
             ww += eweight[e];
 
             // fixed boundary vertex -> right hand side
-            if (m_mesh.isBoundary(vv))
+            if (mesh_.is_boundary(vv))
             {
                 B(i, 0) -= -timestep * eweight[e] * points[vv][0];
                 B(i, 1) -= -timestep * eweight[e] * points[vv][1];
@@ -216,9 +216,9 @@ void SurfaceSmoothing::implicitSmoothing(Scalar timestep,
     }
 
     // clean-up
-    m_mesh.removeVertexProperty(idx);
-    m_mesh.removeVertexProperty(vweight);
-    m_mesh.removeEdgeProperty(eweight);
+    mesh_.remove_vertex_property(idx);
+    mesh_.remove_vertex_property(vweight);
+    mesh_.remove_edge_property(eweight);
 }
 
 //=============================================================================

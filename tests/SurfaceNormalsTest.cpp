@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2018 The pmp-library developers
-// All rights reserved.
+// Copyright (C) 2018-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -40,41 +39,41 @@ public:
     SurfaceMesh mesh;
 };
 
-TEST_F(SurfaceNormalsTest, computeVertexNormals)
+TEST_F(SurfaceNormalsTest, compute_vertex_normals)
 {
     mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    SurfaceNormals::computeVertexNormals(mesh);
-    auto vnormals = mesh.getVertexProperty<Normal>("v:normal");
+    SurfaceNormals::compute_vertex_normals(mesh);
+    auto vnormals = mesh.get_vertex_property<Normal>("v:normal");
     auto vn0 = vnormals[SurfaceMesh::Vertex(0)];
     EXPECT_GT(norm(vn0), 0);
 }
 
-TEST_F(SurfaceNormalsTest, computeFaceNormals)
+TEST_F(SurfaceNormalsTest, compute_face_normals)
 {
     mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    SurfaceNormals::computeFaceNormals(mesh);
-    auto fnormals = mesh.getFaceProperty<Normal>("f:normal");
+    SurfaceNormals::compute_face_normals(mesh);
+    auto fnormals = mesh.get_face_property<Normal>("f:normal");
     auto fn0 = fnormals[SurfaceMesh::Face(0)];
     EXPECT_GT(norm(fn0), 0);
 }
 
-TEST_F(SurfaceNormalsTest, computeCornerNormal)
+TEST_F(SurfaceNormalsTest, compute_corner_normal)
 {
     mesh.read("pmp-data/stl/icosahedron_ascii.stl");
     auto h = SurfaceMesh::Halfedge(0);
-    auto n = SurfaceNormals::computeCornerNormal(mesh,h,(Scalar)M_PI/3.0);
+    auto n = SurfaceNormals::compute_corner_normal(mesh,h,(Scalar)M_PI/3.0);
     EXPECT_GT(norm(n), 0);
 }
 
-TEST_F(SurfaceNormalsTest, polygonalFaceNormal)
+TEST_F(SurfaceNormalsTest, polygonal_face_normal)
 {
     std::vector<SurfaceMesh::Vertex> vertices(5);
-    vertices[0] = mesh.addVertex(Point(0,0,0));
-    vertices[1] = mesh.addVertex(Point(1,0,0));
-    vertices[2] = mesh.addVertex(Point(1,1,0));
-    vertices[3] = mesh.addVertex(Point(0.5,1,0));
-    vertices[4] = mesh.addVertex(Point(0,1,0));
-    auto f0 = mesh.addFace(vertices);
-    auto n0 = SurfaceNormals::computeFaceNormal(mesh,f0);
+    vertices[0] = mesh.add_vertex(Point(0,0,0));
+    vertices[1] = mesh.add_vertex(Point(1,0,0));
+    vertices[2] = mesh.add_vertex(Point(1,1,0));
+    vertices[3] = mesh.add_vertex(Point(0.5,1,0));
+    vertices[4] = mesh.add_vertex(Point(0,1,0));
+    auto f0 = mesh.add_face(vertices);
+    auto n0 = SurfaceNormals::compute_face_normal(mesh,f0);
     EXPECT_GT(norm(n0), 0);
 }

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -46,15 +46,15 @@ public:
 
     //! Initialize cone with center (unit vector) and angle (radius in radians)
     NormalCone(const Normal& normal, Scalar angle = 0.0)
-        : m_centerNormal(normal), m_angle(angle)
+        : center_normal_(normal), angle_(angle)
     {
     }
 
     //! returns center normal
-    const Normal& centerNormal() const { return m_centerNormal; }
+    const Normal& center_normal() const { return center_normal_; }
 
     //! returns size of cone (radius in radians)
-    Scalar angle() const { return m_angle; }
+    Scalar angle() const { return angle_; }
 
     //! merge *this with n.
     NormalCone& merge(const Normal& n) { return merge(NormalCone(n)); }
@@ -62,41 +62,41 @@ public:
     //! merge *this with nc. *this will then enclose both cones.
     NormalCone& merge(const NormalCone& nc)
     {
-        const Scalar dp = dot(m_centerNormal, nc.m_centerNormal);
+        const Scalar dp = dot(center_normal_, nc.center_normal_);
 
         // axes point in same direction
         if (dp > 0.99999)
         {
-            m_angle = std::max(m_angle, nc.m_angle);
+            angle_ = std::max(angle_, nc.angle_);
         }
 
         // axes point in opposite directions
         else if (dp < -0.99999)
         {
-            m_angle = 2 * M_PI;
+            angle_ = 2 * M_PI;
         }
 
         else
         {
             // new angle
-            Scalar centerAngle = acos(dp);
-            Scalar minAngle = std::min(-m_angle, centerAngle - nc.m_angle);
-            Scalar maxAngle = std::max(m_angle, centerAngle + nc.m_angle);
-            m_angle = 0.5 * (maxAngle - minAngle);
+            Scalar center_angle = acos(dp);
+            Scalar min_angle = std::min(-angle_, center_angle - nc.angle_);
+            Scalar max_angle = std::max(angle_, center_angle + nc.angle_);
+            angle_ = 0.5 * (max_angle - min_angle);
 
             // axis by SLERP
-            Scalar axisAngle = 0.5 * (minAngle + maxAngle);
-            m_centerNormal = ((m_centerNormal * sin(centerAngle - axisAngle) +
-                               nc.m_centerNormal * sin(axisAngle)) /
-                              sin(centerAngle));
+            Scalar axis_angle = 0.5 * (min_angle + max_angle);
+            center_normal_ = ((center_normal_ * sin(center_angle - axis_angle) +
+                               nc.center_normal_ * sin(axis_angle)) /
+                              sin(center_angle));
         }
 
         return *this;
     }
 
 private:
-    Normal m_centerNormal;
-    Scalar m_angle;
+    Normal center_normal_;
+    Scalar angle_;
 };
 
 //=============================================================================

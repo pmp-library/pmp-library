@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -36,13 +36,13 @@ namespace pmp {
 
 //=============================================================================
 
-//! distance from point P to line segment (V0,V1)
-Scalar distPointLineSegment(const Point& P, const Point& V0, const Point& V1,
-                            Point& NearestPoint);
+//! distance from point p to line segment (v0,v1)
+Scalar dist_point_line_segment(const Point& p, const Point& v0, const Point& v1,
+                               Point& nearest_point);
 
-//! distance from point P to triangle (V0, V1, V2)
-Scalar distPointTriangle(const Point& P, const Point& V0, const Point& V1,
-                         const Point& V2, Point& NearestPoint);
+//! distance from point p to triangle (v0, v1, v2)
+Scalar dist_point_triangle(const Point& p, const Point& v0, const Point& v1,
+                           const Point& v2, Point& nearest_point);
 
 //=============================================================================
 } // namespace pmp

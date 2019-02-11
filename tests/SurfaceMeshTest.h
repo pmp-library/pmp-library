@@ -1,6 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
-// All rights reserved.
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -42,20 +41,20 @@ public:
     pmp::SurfaceMesh::Face f0;
     using Point = pmp::Point;
 
-    void addTriangle()
+    void add_triangle()
     {
-        v0 = mesh.addVertex(Point(0,0,0));
-        v1 = mesh.addVertex(Point(1,0,0));
-        v2 = mesh.addVertex(Point(0,1,0));
-        f0 = mesh.addTriangle(v0,v1,v2);
+        v0 = mesh.add_vertex(Point(0,0,0));
+        v1 = mesh.add_vertex(Point(1,0,0));
+        v2 = mesh.add_vertex(Point(0,1,0));
+        f0 = mesh.add_triangle(v0,v1,v2);
     }
 
-    void addQuad()
+    void add_quad()
     {
-        v0 = mesh.addVertex(Point(0,0,0));
-        v1 = mesh.addVertex(Point(1,0,0));
-        v2 = mesh.addVertex(Point(1,1,0));
-        v3 = mesh.addVertex(Point(0,1,0));
-        f0 = mesh.addQuad(v0,v1,v2,v3);
+        v0 = mesh.add_vertex(Point(0,0,0));
+        v1 = mesh.add_vertex(Point(1,0,0));
+        v2 = mesh.add_vertex(Point(1,1,0));
+        v3 = mesh.add_vertex(Point(0,1,0));
+        f0 = mesh.add_quad(v0,v1,v2,v3);
     }
 };

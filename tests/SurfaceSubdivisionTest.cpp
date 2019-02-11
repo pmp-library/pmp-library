@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2017, 2018 The pmp-library developers
+// Copyright (C) 2017-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -44,57 +44,57 @@ public:
 };
 
 // plain loop subdivision
-TEST_F(SurfaceSubdivisionTest, loopSubdivision)
+TEST_F(SurfaceSubdivisionTest, loop_subdivision)
 {
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.nVertices(),size_t(2562));
+    EXPECT_EQ(mesh.n_vertices(),size_t(2562));
 }
 
 // loop subdivision with features
-TEST_F(SurfaceSubdivisionTest, loopWithFeatures)
+TEST_F(SurfaceSubdivisionTest, loop_with_features)
 {
     SurfaceFeatures sf(mesh);
-    sf.detectAngle(25);
+    sf.detect_angle(25);
 
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.nVertices(),size_t(2562));
+    EXPECT_EQ(mesh.n_vertices(),size_t(2562));
 }
 
 // loop subdivision with features
-TEST_F(SurfaceSubdivisionTest, loopWithBoundary)
+TEST_F(SurfaceSubdivisionTest, loop_with_boundary)
 {
     mesh.clear();
     mesh.read("pmp-data/off/hemisphere.off");
 
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.nVertices(),size_t(7321));
+    EXPECT_EQ(mesh.n_vertices(),size_t(7321));
 }
 
 // Catmull-Clark subdivision on suzanne quad mesh
-TEST_F(SurfaceSubdivisionTest, catmullClarkSubdivision)
+TEST_F(SurfaceSubdivisionTest, catmull_clark_subdivision)
 {
     mesh.clear();
     mesh.read("pmp-data/obj/suzanne.obj");
-    SurfaceSubdivision(mesh).catmullClark();
-    EXPECT_EQ(mesh.nVertices(),size_t(2012));
+    SurfaceSubdivision(mesh).catmull_clark();
+    EXPECT_EQ(mesh.n_vertices(),size_t(2012));
 }
 
 // Catmull-Clark subdivision on fandisk quad mesh
-TEST_F(SurfaceSubdivisionTest, catmullClarkWithFeatures)
+TEST_F(SurfaceSubdivisionTest, catmull_clark_with_features)
 {
     mesh.clear();
     mesh.read("pmp-data/off/fandisk_quads.off");
 
     SurfaceFeatures sf(mesh);
-    sf.detectAngle(25);
+    sf.detect_angle(25);
 
-    SurfaceSubdivision(mesh).catmullClark();
-    EXPECT_EQ(mesh.nVertices(),size_t(3058));
+    SurfaceSubdivision(mesh).catmull_clark();
+    EXPECT_EQ(mesh.n_vertices(),size_t(3058));
 }
 
 // plain sqrt3 subdivision
 TEST_F(SurfaceSubdivisionTest, sqrt3Subdivision)
 {
     SurfaceSubdivision(mesh).sqrt3();
-    EXPECT_EQ(mesh.nVertices(),size_t(1922));
+    EXPECT_EQ(mesh.n_vertices(),size_t(1922));
 }

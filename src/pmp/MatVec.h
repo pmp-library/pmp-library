@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 // Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
 //
 // Redistribution and use in source and binary forms, with or without
@@ -507,7 +507,7 @@ inline Matrix<Scalar, M, N> max(const Matrix<Scalar, M, N>& m1,
 //== Mat4 functions ===========================================================
 
 template <typename Scalar>
-Mat4<Scalar> viewportMatrix(Scalar l, Scalar b, Scalar w, Scalar h)
+Mat4<Scalar> viewport_matrix(Scalar l, Scalar b, Scalar w, Scalar h)
 {
     Mat4<Scalar> m(Scalar(0));
 
@@ -525,7 +525,7 @@ Mat4<Scalar> viewportMatrix(Scalar l, Scalar b, Scalar w, Scalar h)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> inverseViewportMatrix(Scalar l, Scalar b, Scalar w, Scalar h)
+Mat4<Scalar> inverse_viewport_matrix(Scalar l, Scalar b, Scalar w, Scalar h)
 {
     Mat4<Scalar> m(Scalar(0));
 
@@ -543,8 +543,8 @@ Mat4<Scalar> inverseViewportMatrix(Scalar l, Scalar b, Scalar w, Scalar h)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> frustumMatrix(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n,
-                           Scalar f)
+Mat4<Scalar> frustum_matrix(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n,
+                            Scalar f)
 {
     Mat4<Scalar> m(Scalar(0));
 
@@ -562,8 +562,8 @@ Mat4<Scalar> frustumMatrix(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n,
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> inverseFrustumMatrix(Scalar l, Scalar r, Scalar b, Scalar t,
-                                  Scalar n, Scalar f)
+Mat4<Scalar> inverse_frustum_matrix(Scalar l, Scalar r, Scalar b, Scalar t,
+                                    Scalar n, Scalar f)
 {
     Mat4<Scalar> m(Scalar(0));
 
@@ -583,36 +583,36 @@ Mat4<Scalar> inverseFrustumMatrix(Scalar l, Scalar r, Scalar b, Scalar t,
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> perspectiveMatrix(Scalar fovy, Scalar aspect, Scalar zNear,
-                               Scalar zFar)
+Mat4<Scalar> perspective_matrix(Scalar fovy, Scalar aspect, Scalar zNear,
+                                Scalar zFar)
 {
     Scalar t = Scalar(zNear) * tan(fovy * M_PI / 360.0);
     Scalar b = -t;
     Scalar l = b * aspect;
     Scalar r = t * aspect;
 
-    return frustumMatrix(l, r, b, t, Scalar(zNear), Scalar(zFar));
+    return frustum_matrix(l, r, b, t, Scalar(zNear), Scalar(zFar));
 }
 
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> inversePerspectiveMatrix(Scalar fovy, Scalar aspect, Scalar zNear,
-                                      Scalar zFar)
+Mat4<Scalar> inverse_perspective_matrix(Scalar fovy, Scalar aspect, Scalar zNear,
+                                        Scalar zFar)
 {
     Scalar t = zNear * tan(fovy * M_PI / 360.0);
     Scalar b = -t;
     Scalar l = b * aspect;
     Scalar r = t * aspect;
 
-    return inverseFrustumMatrix(l, r, b, t, zNear, zFar);
+    return inverse_frustum_matrix(l, r, b, t, zNear, zFar);
 }
 
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> orthoMatrix(Scalar left, Scalar right, Scalar bottom, Scalar top,
-                         Scalar zNear = -1, Scalar zFar = 1)
+Mat4<Scalar> ortho_matrix(Scalar left, Scalar right, Scalar bottom, Scalar top,
+                          Scalar zNear = -1, Scalar zFar = 1)
 {
     Mat4<Scalar> m(0.0);
 
@@ -630,9 +630,9 @@ Mat4<Scalar> orthoMatrix(Scalar left, Scalar right, Scalar bottom, Scalar top,
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> lookAtMatrix(const Vector<Scalar, 3>& eye,
-                          const Vector<Scalar, 3>& center,
-                          const Vector<Scalar, 3>& up)
+Mat4<Scalar> look_at_matrix(const Vector<Scalar, 3>& eye,
+                            const Vector<Scalar, 3>& center,
+                            const Vector<Scalar, 3>& up)
 {
 
     Vector<Scalar, 3> z = normalize(eye - center);
@@ -653,7 +653,7 @@ Mat4<Scalar> lookAtMatrix(const Vector<Scalar, 3>& eye,
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> translationMatrix(const Vector<Scalar, 3>& t)
+Mat4<Scalar> translation_matrix(const Vector<Scalar, 3>& t)
 {
     Mat4<Scalar> m(Scalar(0));
     m(0, 0) = m(1, 1) = m(2, 2) = m(3, 3) = 1.0f;
@@ -667,7 +667,7 @@ Mat4<Scalar> translationMatrix(const Vector<Scalar, 3>& t)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> rotationMatrixX(Scalar angle)
+Mat4<Scalar> rotation_matrix_x(Scalar angle)
 {
     Scalar ca = cos(angle * (M_PI / 180.0));
     Scalar sa = sin(angle * (M_PI / 180.0));
@@ -686,7 +686,7 @@ Mat4<Scalar> rotationMatrixX(Scalar angle)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> rotationMatrixY(Scalar angle)
+Mat4<Scalar> rotation_matrix_y(Scalar angle)
 {
     Scalar ca = cos(angle * (M_PI / 180.0));
     Scalar sa = sin(angle * (M_PI / 180.0));
@@ -705,7 +705,7 @@ Mat4<Scalar> rotationMatrixY(Scalar angle)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> rotationMatrixZ(Scalar angle)
+Mat4<Scalar> rotation_matrix_z(Scalar angle)
 {
     Scalar ca = cos(angle * (M_PI / 180.0));
     Scalar sa = sin(angle * (M_PI / 180.0));
@@ -724,7 +724,7 @@ Mat4<Scalar> rotationMatrixZ(Scalar angle)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> rotationMatrix(const Vector<Scalar, 3>& axis, Scalar angle)
+Mat4<Scalar> rotation_matrix(const Vector<Scalar, 3>& axis, Scalar angle)
 {
     Mat4<Scalar> m(Scalar(0));
     Scalar a = angle * (M_PI / 180.0f);
@@ -753,7 +753,7 @@ Mat4<Scalar> rotationMatrix(const Vector<Scalar, 3>& axis, Scalar angle)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat3<Scalar> linearPart(const Mat4<Scalar>& m)
+Mat3<Scalar> linear_part(const Mat4<Scalar>& m)
 {
     Mat3<Scalar> result;
     for (int j = 0; j < 3; ++j)
@@ -765,7 +765,7 @@ Mat3<Scalar> linearPart(const Mat4<Scalar>& m)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Vector<Scalar, 3> projectiveTransform(const Mat4<Scalar>& m,
+Vector<Scalar, 3> projective_transform(const Mat4<Scalar>& m,
                                       const Vector<Scalar, 3>& v)
 {
     const Scalar x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2] + m(0, 3);
@@ -778,7 +778,7 @@ Vector<Scalar, 3> projectiveTransform(const Mat4<Scalar>& m,
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Vector<Scalar, 3> affineTransform(const Mat4<Scalar>& m,
+Vector<Scalar, 3> affine_transform(const Mat4<Scalar>& m,
                                   const Vector<Scalar, 3>& v)
 {
     const Scalar x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2] + m(0, 3);
@@ -790,7 +790,7 @@ Vector<Scalar, 3> affineTransform(const Mat4<Scalar>& m,
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Vector<Scalar, 3> linearTransform(const Mat4<Scalar>& m,
+Vector<Scalar, 3> linear_transform(const Mat4<Scalar>& m,
                                   const Vector<Scalar, 3>& v)
 {
     const Scalar x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2];
@@ -889,7 +889,7 @@ Mat3<Scalar> inverse(const Mat3<Scalar>& m)
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-bool symmetricEigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
+bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
                                  Scalar& eval2, Scalar& eval3,
                                  Vector<Scalar, 3>& evec1,
                                  Vector<Scalar, 3>& evec2,

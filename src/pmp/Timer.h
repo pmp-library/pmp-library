@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -42,41 +42,41 @@ class Timer
 {
 public:
     //! Constructor
-    Timer() : m_elapsed(0.0), m_isRunning(false) {}
+    Timer() : elapsed_(0.0), is_running_(false) {}
 
     //! Start time measurement
     void start()
     {
-        m_elapsed = 0.0;
+        elapsed_ = 0.0;
         cont();
     }
 
     //! Continue measurement, accumulates elapased times
     void cont()
     {
-        m_startTime = std::chrono::high_resolution_clock::now();
-        m_isRunning = true;
+        start_time_ = std::chrono::high_resolution_clock::now();
+        is_running_ = true;
     }
 
     //! Stop time measurement, return elapsed time in ms
     Timer& stop()
     {
-        m_endTime = std::chrono::high_resolution_clock::now();
+        end_time_ = std::chrono::high_resolution_clock::now();
         duration time_span =
-            std::chrono::duration_cast<duration>(m_endTime - m_startTime);
-        m_elapsed += time_span.count();
-        m_isRunning = false;
+            std::chrono::duration_cast<duration>(end_time_ - start_time_);
+        elapsed_ += time_span.count();
+        is_running_ = false;
         return *this;
     }
 
     //! Return elapsed time in ms (watch has to be stopped).
     double elapsed() const
     {
-        if (m_isRunning)
+        if (is_running_)
         {
             std::cerr << "Timer: stop watch before calling elapsed()\n";
         }
-        return 1000.0 * m_elapsed;
+        return 1000.0 * elapsed_;
     }
 
 private:
@@ -84,9 +84,9 @@ private:
         time_point;
     typedef std::chrono::duration<double> duration;
 
-    time_point m_startTime, m_endTime;
-    double m_elapsed;
-    bool m_isRunning;
+    time_point start_time_, end_time_;
+    double elapsed_;
+    bool is_running_;
 };
 
 //=============================================================================

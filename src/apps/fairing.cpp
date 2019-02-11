@@ -15,7 +15,7 @@ public:
     Viewer(const char* title, int width, int height);
 
 protected:
-    virtual void processImGUI();
+    virtual void process_imgui();
 };
 
 //=============================================================================
@@ -27,9 +27,9 @@ Viewer::Viewer(const char* title, int width, int height)
 
 //=============================================================================
 
-void Viewer::processImGUI()
+void Viewer::process_imgui()
 {
-    MeshViewer::processImGUI();
+    MeshViewer::process_imgui();
 
     ImGui::Spacing();
     ImGui::Spacing();
@@ -38,12 +38,12 @@ void Viewer::processImGUI()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            SurfaceCurvature analyzer(m_mesh);
-            analyzer.analyzeTensor(1, true);
-            analyzer.meanCurvatureToTextureCoordinates();
-            updateMesh();
-            m_mesh.useColdWarmTexture();
-            setDrawMode("Texture");
+            SurfaceCurvature analyzer(mesh_);
+            analyzer.analyze_tensor(1, true);
+            analyzer.mean_curvature_to_texture_coordinates();
+            update_mesh();
+            mesh_.use_cold_warm_texture();
+            set_draw_mode("Texture");
         }
     }
 
@@ -54,21 +54,21 @@ void Viewer::processImGUI()
     {
         if (ImGui::Button("Minimize Area"))
         {
-            SurfaceFairing fair(m_mesh);
-            fair.minimizeArea();
-            updateMesh();
+            SurfaceFairing fair(mesh_);
+            fair.minimize_area();
+            update_mesh();
         }
         if (ImGui::Button("Minimize Curvature"))
         {
-            SurfaceFairing fair(m_mesh);
-            fair.minimizeCurvature();
-            updateMesh();
+            SurfaceFairing fair(mesh_);
+            fair.minimize_curvature();
+            update_mesh();
         }
         if (ImGui::Button("Minimize Curvature Variation"))
         {
-            SurfaceFairing fair(m_mesh);
+            SurfaceFairing fair(mesh_);
             fair.fair(3);
-            updateMesh();
+            update_mesh();
         }
     }
 }
@@ -80,11 +80,11 @@ int main(int argc, char** argv)
 #ifndef __EMSCRIPTEN__
     Viewer window("Decimation", 800, 600);
     if (argc == 2)
-        window.loadMesh(argv[1]);
+        window.load_mesh(argv[1]);
     return window.run();
 #else
     Viewer window("Decimation", 800, 600);
-    window.loadMesh(argc == 2 ? argv[1] : "input.off");
+    window.load_mesh(argc == 2 ? argv[1] : "input.off");
     return window.run();
 #endif
 }

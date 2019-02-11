@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -45,11 +45,11 @@ namespace pmp {
 //! \details This class provides a set of static functions for computing surface
 //! normal information, either
 //!
-//! \li per vertex: computeVertexNormal()
-//! \li per face: computeFaceNormal()
-//! \li per corner: computeCornerNormal()
+//! \li per vertex: compute_vertex_normal()
+//! \li per face: compute_face_normal()
+//! \li per corner: compute_corner_normal()
 //!
-//! The convenience functions computeVertexNormals() and computeFaceNormals()
+//! The convenience functions compute_vertex_normals() and compute_face_normals()
 //! compute the normals for the whole mesh and add a corresponding vertex or
 //! face property.
 class SurfaceNormals
@@ -60,30 +60,30 @@ public:
     SurfaceNormals(const SurfaceNormals&) = delete;
 
     //! \brief Compute vertex normals for the whole \c mesh.
-    //! \details Calls computeVertexNormal() for each vertex and adds a new
+    //! \details Calls compute_vertex_normal() for each vertex and adds a new
     //! vertex property of type Normal named "v:normal".
-    static void computeVertexNormals(SurfaceMesh& mesh);
+    static void compute_vertex_normals(SurfaceMesh& mesh);
 
     //! \brief Compute face normals for the whole \c mesh.
-    //! \details Calls computeFaceNormal() for each face and adds a new face
+    //! \details Calls compute_face_normal() for each face and adds a new face
     //! property of type Normal named "f:normal".
-    static void computeFaceNormals(SurfaceMesh& mesh);
+    static void compute_face_normals(SurfaceMesh& mesh);
 
     //! \brief Compute the normal vector of vertex \c v.
-    static Normal computeVertexNormal(const SurfaceMesh& mesh,
-                                      SurfaceMesh::Vertex v);
+    static Normal compute_vertex_normal(const SurfaceMesh& mesh,
+                                        SurfaceMesh::Vertex v);
 
     //! \brief Compute the normal vector of face \c f.
-    static Normal computeFaceNormal(const SurfaceMesh& mesh,
-                                    SurfaceMesh::Face f);
+    static Normal compute_face_normal(const SurfaceMesh& mesh,
+                                      SurfaceMesh::Face f);
 
     //! \brief Compute the normal vector of the polygon corner specified by the
     //! target vertex of halfedge \c h.
-    //! \details Averages incident corner normals if they are within creaseAngle
-    //! of the face normal. \c creaseAngle is in radians, not degrees.
-    static Normal computeCornerNormal(const SurfaceMesh& mesh,
-                                      SurfaceMesh::Halfedge h,
-                                      Scalar creaseAngle);
+    //! \details Averages incident corner normals if they are within crease_angle
+    //! of the face normal. \c crease_angle is in radians, not degrees.
+    static Normal compute_corner_normal(const SurfaceMesh& mesh,
+                                        SurfaceMesh::Halfedge h,
+                                        Scalar crease_angle);
 };
 
 //=============================================================================

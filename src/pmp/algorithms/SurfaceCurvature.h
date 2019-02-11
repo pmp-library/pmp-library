@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -59,63 +59,63 @@ public:
 
     //! compute curvature information for each vertex, optionally followed
     //! by some smoothing iterations of the curvature values
-    void analyze(unsigned int postSmoothingSteps = 0);
+    void analyze(unsigned int post_smoothing_steps = 0);
 
     //! compute curvature information for each vertex, optionally followed
     //! by some smoothing iterations of the curvature values
-    void analyzeTensor(unsigned int postSmoothingSteps = 0,
-                       bool twoRingNeighborhood = false);
+    void analyze_tensor(unsigned int post_smoothing_steps = 0,
+                        bool two_ring_neighborhood = false);
 
     //! return mean curvature
-    Scalar meanCurvature(SurfaceMesh::Vertex v) const
+    Scalar mean_curvature(SurfaceMesh::Vertex v) const
     {
-        return 0.5 * (m_minCurvature[v] + m_maxCurvature[v]);
+        return 0.5 * (min_curvature_[v] + max_curvature_[v]);
     }
 
     //! return Gaussian curvature
-    Scalar gaussCurvature(SurfaceMesh::Vertex v) const
+    Scalar gauss_curvature(SurfaceMesh::Vertex v) const
     {
-        return m_minCurvature[v] * m_maxCurvature[v];
+        return min_curvature_[v] * max_curvature_[v];
     }
 
     //! return minimum (signed) curvature
-    Scalar minCurvature(SurfaceMesh::Vertex v) const
+    Scalar min_curvature(SurfaceMesh::Vertex v) const
     {
-        return m_minCurvature[v];
+        return min_curvature_[v];
     }
 
     //! return maximum (signed) curvature
-    Scalar maxCurvature(SurfaceMesh::Vertex v) const
+    Scalar max_curvature(SurfaceMesh::Vertex v) const
     {
-        return m_maxCurvature[v];
+        return max_curvature_[v];
     }
 
     //! return maximum absolute curvature
-    Scalar maxAbsCurvature(SurfaceMesh::Vertex v) const
+    Scalar max_abs_curvature(SurfaceMesh::Vertex v) const
     {
-        return std::max(fabs(m_minCurvature[v]), fabs(m_maxCurvature[v]));
+        return std::max(fabs(min_curvature_[v]), fabs(max_curvature_[v]));
     }
 
     //! convert (precomputed) mean curvature to 1D texture coordinates
-    void meanCurvatureToTextureCoordinates() const;
+    void mean_curvature_to_texture_coordinates() const;
 
     //! convert (precomputed) Gauss curvature to 1D texture coordinates
-    void gaussCurvatureToTextureCoordinates() const;
+    void gauss_curvature_to_texture_coordinates() const;
 
     //! convert (precomputed) max. abs. curvature to 1D texture coordinates
-    void maxCurvatureToTextureCoordinates() const;
+    void max_curvature_to_texture_coordinates() const;
 
 private:
     //! smooth curvature values
-    void smoothCurvatures(unsigned int iterations);
+    void smooth_curvatures(unsigned int iterations);
 
     //! convert curvature values ("v:curv") to 1D texture coordinates
-    void curvatureToTextureCoordinates() const;
+    void curvature_to_texture_coordinates() const;
 
 private:
-    SurfaceMesh& m_mesh;
-    SurfaceMesh::VertexProperty<Scalar> m_minCurvature;
-    SurfaceMesh::VertexProperty<Scalar> m_maxCurvature;
+    SurfaceMesh& mesh_;
+    SurfaceMesh::VertexProperty<Scalar> min_curvature_;
+    SurfaceMesh::VertexProperty<Scalar> max_curvature_;
 };
 
 //=============================================================================

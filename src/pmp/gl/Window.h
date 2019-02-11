@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -55,18 +55,18 @@ public: //------------------------------------------------------ public methods
     int run();
 
 private: //----------------------------- static wrapper functions for callbacks
-    static void glfwError(int error, const char* description);
-    static void glfwKeyboard(GLFWwindow* window, int key, int scancode,
+    static void glfw_error(int error, const char* description);
+    static void glfw_keyboard(GLFWwindow* window, int key, int scancode,
                              int action, int mods);
-    static void glfwCharacter(GLFWwindow* window, unsigned int c);
-    static void glfwMouse(GLFWwindow* window, int button, int action, int mods);
-    static void glfwMotion(GLFWwindow* window, double xpos, double ypos);
-    static void glfwScroll(GLFWwindow* window, double xoffset, double yoffset);
-    static void glfwResize(GLFWwindow* window, int width, int height);
+    static void glfw_character(GLFWwindow* window, unsigned int c);
+    static void glfw_mouse(GLFWwindow* window, int button, int action, int mods);
+    static void glfw_motion(GLFWwindow* window, double xpos, double ypos);
+    static void glfw_scroll(GLFWwindow* window, double xoffset, double yoffset);
+    static void glfw_resize(GLFWwindow* window, int width, int height);
 
     static void render_frame();
 
-    static Window* m_instance;
+    static Window* instance_;
 
 protected: //----------------------------------- callbacks as member functions
     //! this function is called when the scene has to be rendered. it
@@ -95,32 +95,32 @@ protected: //----------------------------------- callbacks as member functions
     virtual void resize(int /*width*/, int /*height*/) {}
 
     //! this function renders the ImGUI elements and handles their events
-    virtual void processImGUI() {}
+    virtual void process_imgui() {}
 
     //! this function is called just before rendering
-    virtual void doProcessing() {}
+    virtual void do_processing() {}
 
     //! get position of mouse cursor
-    void cursorPos(double& x, double& y) const;
+    void cursor_pos(double& x, double& y) const;
 
 protected:
     //! setup ImGUI user interface
-    void initImGUI();
+    void init_imgui();
 
-    bool showImGUI() const { return m_showImGUI; }
-    void showImGUI(bool b) { m_showImGUI = b; }
+    bool show_imgui() const { return show_imgui_; }
+    void show_imgui(bool b) { show_imgui_ = b; }
 
 protected:
     //! GLFW window pointer
-    GLFWwindow* m_window;
+    GLFWwindow* window_;
 
     //! current viewport dimension
-    int m_width, m_height;
+    int width_, height_;
 
     //! highDPI scaling
-    int m_scaling;
+    int scaling_;
 
-    bool m_showImGUI;
+    bool show_imgui_;
 };
 
 //=============================================================================

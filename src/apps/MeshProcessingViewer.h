@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -39,7 +39,7 @@ public:
     MeshProcessingViewer(const char* title, int width, int height)
         : MeshViewer(title, width, height)
     {
-        setDrawMode("Hidden Line");
+        set_draw_mode("Hidden Line");
     }
 
 protected:
@@ -50,7 +50,7 @@ protected:
     void keyboard(int key, int code, int action, int mod) override;
 
     //! draw the scene in different draw modes
-    virtual void processImGUI() override;
+    virtual void process_imgui() override;
 };
 
 //=============================================================================

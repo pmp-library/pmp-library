@@ -104,7 +104,7 @@ public:
     Scalar operator()(Vertex _v) const { return distance_[_v]; }
 
     //! use (normalized) distances as texture coordinates
-    void distanceToTextureCoordinates();
+    void distance_to_texture_coordinates();
 
 private:
 

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -35,57 +35,57 @@ namespace pmp {
 
 //=============================================================================
 
-SurfaceFeatures::SurfaceFeatures(SurfaceMesh& mesh) : m_mesh(mesh)
+SurfaceFeatures::SurfaceFeatures(SurfaceMesh& mesh) : mesh_(mesh)
 {
-    m_vfeature = m_mesh.vertexProperty("v:feature", false);
-    m_efeature = m_mesh.edgeProperty("e:feature", false);
+    vfeature_ = mesh_.vertex_property("v:feature", false);
+    efeature_ = mesh_.edge_property("e:feature", false);
 }
 
 //-----------------------------------------------------------------------------
 
 void SurfaceFeatures::clear()
 {
-    for (auto v : m_mesh.vertices())
-        m_vfeature[v] = false;
+    for (auto v : mesh_.vertices())
+        vfeature_[v] = false;
 
-    for (auto e : m_mesh.edges())
-        m_efeature[e] = false;
+    for (auto e : mesh_.edges())
+        efeature_[e] = false;
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceFeatures::detectBoundary()
+void SurfaceFeatures::detect_boundary()
 {
-    for (auto v : m_mesh.vertices())
-        if (m_mesh.isBoundary(v))
-            m_vfeature[v] = true;
+    for (auto v : mesh_.vertices())
+        if (mesh_.is_boundary(v))
+            vfeature_[v] = true;
 
-    for (auto e : m_mesh.edges())
-        if (m_mesh.isBoundary(e))
-            m_efeature[e] = true;
+    for (auto e : mesh_.edges())
+        if (mesh_.is_boundary(e))
+            efeature_[e] = true;
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceFeatures::detectAngle(Scalar angle)
+void SurfaceFeatures::detect_angle(Scalar angle)
 {
     const Scalar feature_cosine = cos(angle / 180.0 * M_PI);
 
-    for (auto e : m_mesh.edges())
+    for (auto e : mesh_.edges())
     {
-        if (!m_mesh.isBoundary(e))
+        if (!mesh_.is_boundary(e))
         {
-            const auto f0 = m_mesh.face(m_mesh.halfedge(e, 0));
-            const auto f1 = m_mesh.face(m_mesh.halfedge(e, 1));
+            const auto f0 = mesh_.face(mesh_.halfedge(e, 0));
+            const auto f1 = mesh_.face(mesh_.halfedge(e, 1));
 
-            const Normal n0 = SurfaceNormals::computeFaceNormal(m_mesh, f0);
-            const Normal n1 = SurfaceNormals::computeFaceNormal(m_mesh, f1);
+            const Normal n0 = SurfaceNormals::compute_face_normal(mesh_, f0);
+            const Normal n1 = SurfaceNormals::compute_face_normal(mesh_, f1);
 
             if (dot(n0, n1) < feature_cosine)
             {
-                m_efeature[e] = true;
-                m_vfeature[m_mesh.vertex(e, 0)] = true;
-                m_vfeature[m_mesh.vertex(e, 1)] = true;
+                efeature_[e] = true;
+                vfeature_[mesh_.vertex(e, 0)] = true;
+                vfeature_[mesh_.vertex(e, 1)] = true;
             }
         }
     }

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -52,35 +52,35 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
     {
         case GLFW_KEY_F:
         {
-            SurfaceFeatures sf(m_mesh);
-            sf.detectAngle(70);
+            SurfaceFeatures sf(mesh_);
+            sf.detect_angle(70);
             break;
         }
 
         case GLFW_KEY_O: // change face orientation
         {
-            SurfaceMeshGL newMesh;
-            for (auto v : m_mesh.vertices())
+            SurfaceMeshGL new_mesh;
+            for (auto v : mesh_.vertices())
             {
-                newMesh.addVertex(m_mesh.position(v));
+                new_mesh.add_vertex(mesh_.position(v));
             }
-            for (auto f : m_mesh.faces())
+            for (auto f : mesh_.faces())
             {
                 std::vector<SurfaceMesh::Vertex> vertices;
-                for (auto v : m_mesh.vertices(f))
+                for (auto v : mesh_.vertices(f))
                 {
                     vertices.push_back(v);
                 }
                 std::reverse(vertices.begin(), vertices.end());
-                newMesh.addFace(vertices);
+                new_mesh.add_face(vertices);
             }
-            m_mesh = newMesh;
-            updateMesh();
+            mesh_ = new_mesh;
+            update_mesh();
             break;
         }
         case GLFW_KEY_W:
         {
-            m_mesh.write("output.off");
+            mesh_.write("output.off");
             break;
         }
         default:
@@ -93,9 +93,9 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 
 //----------------------------------------------------------------------------
 
-void MeshProcessingViewer::processImGUI()
+void MeshProcessingViewer::process_imgui()
 {
-    MeshViewer::processImGUI();
+    MeshViewer::process_imgui();
 
     ImGui::Spacing();
     ImGui::Spacing();
@@ -104,30 +104,30 @@ void MeshProcessingViewer::processImGUI()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            SurfaceCurvature analyzer(m_mesh);
-            analyzer.analyzeTensor(1, true);
-            analyzer.meanCurvatureToTextureCoordinates();
-            m_mesh.useColdWarmTexture();
-            updateMesh();
-            setDrawMode("Texture");
+            SurfaceCurvature analyzer(mesh_);
+            analyzer.analyze_tensor(1, true);
+            analyzer.mean_curvature_to_texture_coordinates();
+            mesh_.use_cold_warm_texture();
+            update_mesh();
+            set_draw_mode("Texture");
         }
         if (ImGui::Button("Gauss Curvature"))
         {
-            SurfaceCurvature analyzer(m_mesh);
-            analyzer.analyzeTensor(1, true);
-            analyzer.gaussCurvatureToTextureCoordinates();
-            m_mesh.useColdWarmTexture();
-            updateMesh();
-            setDrawMode("Texture");
+            SurfaceCurvature analyzer(mesh_);
+            analyzer.analyze_tensor(1, true);
+            analyzer.gauss_curvature_to_texture_coordinates();
+            mesh_.use_cold_warm_texture();
+            update_mesh();
+            set_draw_mode("Texture");
         }
         if (ImGui::Button("Abs. Max. Curvature"))
         {
-            SurfaceCurvature analyzer(m_mesh);
-            analyzer.analyzeTensor(1, true);
-            analyzer.maxCurvatureToTextureCoordinates();
-            m_mesh.useColdWarmTexture();
-            updateMesh();
-            setDrawMode("Texture");
+            SurfaceCurvature analyzer(mesh_);
+            analyzer.analyze_tensor(1, true);
+            analyzer.max_curvature_to_texture_coordinates();
+            mesh_.use_cold_warm_texture();
+            update_mesh();
+            set_draw_mode("Texture");
         }
     }
 
@@ -143,9 +143,9 @@ void MeshProcessingViewer::processImGUI()
 
         if (ImGui::Button("Explicit Smoothing"))
         {
-            SurfaceSmoothing smoother(m_mesh);
-            smoother.explicitSmoothing(iterations);
-            updateMesh();
+            SurfaceSmoothing smoother(mesh_);
+            smoother.explicit_smoothing(iterations);
+            update_mesh();
         }
 
         ImGui::Spacing();
@@ -159,10 +159,10 @@ void MeshProcessingViewer::processImGUI()
 
         if (ImGui::Button("Implicit Smoothing"))
         {
-            Scalar dt = timestep * m_radius * m_radius;
-            SurfaceSmoothing smoother(m_mesh);
-            smoother.implicitSmoothing(dt);
-            updateMesh();
+            Scalar dt = timestep * radius_ * radius_;
+            SurfaceSmoothing smoother(mesh_);
+            smoother.implicit_smoothing(dt);
+            update_mesh();
         }
     }
 
@@ -171,27 +171,27 @@ void MeshProcessingViewer::processImGUI()
 
     if (ImGui::CollapsingHeader("Decimation"))
     {
-        static int targetPercentage = 10;
+        static int target_percentage = 10;
         ImGui::PushItemWidth(100);
-        ImGui::SliderInt("Percentage", &targetPercentage, 1, 99);
+        ImGui::SliderInt("Percentage", &target_percentage, 1, 99);
         ImGui::PopItemWidth();
 
-        static int normalDeviation = 180;
+        static int normal_deviation = 180;
         ImGui::PushItemWidth(100);
-        ImGui::SliderInt("Normal Deviation", &normalDeviation, 1, 180);
+        ImGui::SliderInt("Normal Deviation", &normal_deviation, 1, 180);
         ImGui::PopItemWidth();
 
-        static int aspectRatio = 10;
+        static int aspect_ratio = 10;
         ImGui::PushItemWidth(100);
-        ImGui::SliderInt("Aspect Ratio", &aspectRatio, 1, 10);
+        ImGui::SliderInt("Aspect Ratio", &aspect_ratio, 1, 10);
         ImGui::PopItemWidth();
 
         if (ImGui::Button("Decimate it!"))
         {
-            SurfaceSimplification ss(m_mesh);
-            ss.initialize(aspectRatio, 0.0, 0.0, normalDeviation, 0.0);
-            ss.simplify(m_mesh.nVertices() * 0.01 * targetPercentage);
-            updateMesh();
+            SurfaceSimplification ss(mesh_);
+            ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0);
+            ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
+            update_mesh();
         }
     }
 
@@ -202,14 +202,14 @@ void MeshProcessingViewer::processImGUI()
     {
         if (ImGui::Button("Loop Subdivision"))
         {
-            SurfaceSubdivision(m_mesh).loop();
-            updateMesh();
+            SurfaceSubdivision(mesh_).loop();
+            update_mesh();
         }
 
         if (ImGui::Button("Sqrt(3) Subdivision"))
         {
-            SurfaceSubdivision(m_mesh).sqrt3();
-            updateMesh();
+            SurfaceSubdivision(mesh_).sqrt3();
+            update_mesh();
         }
     }
 
@@ -220,23 +220,23 @@ void MeshProcessingViewer::processImGUI()
     {
         if (ImGui::Button("Adaptive Remeshing"))
         {
-            auto bb = m_mesh.bounds().size();
-            SurfaceRemeshing(m_mesh).adaptiveRemeshing(
+            auto bb = mesh_.bounds().size();
+            SurfaceRemeshing(mesh_).adaptive_remeshing(
                 0.001 * bb,  // min length
                 1.0 * bb,    // max length
                 0.001 * bb); // approx. error
-            updateMesh();
+            update_mesh();
         }
 
         if (ImGui::Button("Uniform Remeshing"))
         {
             Scalar l(0);
-            for (auto eit : m_mesh.edges())
-                l += distance(m_mesh.position(m_mesh.vertex(eit, 0)),
-                              m_mesh.position(m_mesh.vertex(eit, 1)));
-            l /= (Scalar)m_mesh.nEdges();
-            SurfaceRemeshing(m_mesh).uniformRemeshing(l);
-            updateMesh();
+            for (auto eit : mesh_.edges())
+                l += distance(mesh_.position(mesh_.vertex(eit, 0)),
+                              mesh_.position(mesh_.vertex(eit, 1)));
+            l /= (Scalar)mesh_.n_edges();
+            SurfaceRemeshing(mesh_).uniform_remeshing(l);
+            update_mesh();
         }
     }
 }
@@ -248,22 +248,22 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
     if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_MIDDLE)
     {
         double x, y;
-        cursorPos(x, y);
-        SurfaceMesh::Vertex v = pickVertex(x, y);
-        if (m_mesh.isValid(v))
+        cursor_pos(x, y);
+        SurfaceMesh::Vertex v = pick_vertex(x, y);
+        if (mesh_.is_valid(v))
         {
             // setup seed
             std::vector<SurfaceMesh::Vertex>  seed;
             seed.push_back(v);
 
             // compute geodesic distance
-            SurfaceGeodesic geodist(m_mesh, seed);
+            SurfaceGeodesic geodist(mesh_, seed);
 
             // setup texture coordinates for visualization
-            geodist.distanceToTextureCoordinates();
-            m_mesh.useCheckerboardTexture();
-            updateMesh();
-            setDrawMode("Texture");
+            geodist.distance_to_texture_coordinates();
+            mesh_.use_checkerboard_texture();
+            update_mesh();
+            set_draw_mode("Texture");
         }
     }
     else

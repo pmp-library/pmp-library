@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -38,20 +38,20 @@ namespace pmp {
 
 //=============================================================================
 
-TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int maxFaces,
-                               unsigned int maxDepth)
+TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces,
+                               unsigned int max_depth)
 {
     // init
-    m_root = new Node();
-    m_root->faces = new Triangles();
+    root_ = new Node();
+    root_->faces = new Triangles();
     SurfaceMesh::VertexProperty<Point> points =
-        mesh.getVertexProperty<Point>("v:point");
+        mesh.get_vertex_property<Point>("v:point");
 
     // collect triangles
     Triangle tri;
-    m_root->faces->reserve(mesh.nFaces());
-    for (SurfaceMesh::FaceIterator fit = mesh.facesBegin();
-         fit != mesh.facesEnd(); ++fit)
+    root_->faces->reserve(mesh.n_faces());
+    for (SurfaceMesh::FaceIterator fit = mesh.faces_begin();
+         fit != mesh.faces_end(); ++fit)
     {
         SurfaceMesh::VertexAroundFaceCirculator vfit = mesh.vertices(*fit);
         tri.x[0] = points[*vfit];
@@ -60,20 +60,20 @@ TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int maxFaces,
         ++vfit;
         tri.x[2] = points[*vfit];
         tri.f = *fit;
-        m_root->faces->push_back(tri);
+        root_->faces->push_back(tri);
     }
 
     // call recursive helper
-    buildRecurse(m_root, maxFaces, maxDepth);
+    build_recurse(root_, max_faces, max_depth);
 }
 
 //-----------------------------------------------------------------------------
 
-unsigned int TriangleKdTree::buildRecurse(Node* node, unsigned int maxFaces,
+unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
                                           unsigned int depth)
 {
     // should we stop at this level ?
-    if ((depth == 0) || (node->faces->size() <= maxFaces))
+    if ((depth == 0) || (node->faces->size() <= max_faces))
         return depth;
 
     std::vector<Triangle>::const_iterator fit, fend = node->faces->end();
@@ -175,12 +175,12 @@ unsigned int TriangleKdTree::buildRecurse(Node* node, unsigned int maxFaces,
         // store internal data
         node->axis = axis;
         node->split = split;
-        node->leftChild = left;
-        node->rightChild = right;
+        node->left_child = left;
+        node->right_child = right;
 
         // recurse to childen
-        int depthLeft = buildRecurse(node->leftChild, maxFaces, depth - 1);
-        int depthRight = buildRecurse(node->rightChild, maxFaces, depth - 1);
+        int depthLeft = build_recurse(node->left_child, max_faces, depth - 1);
+        int depthRight = build_recurse(node->right_child, max_faces, depth - 1);
 
         return std::min(depthLeft, depthRight);
     }
@@ -193,17 +193,17 @@ TriangleKdTree::NearestNeighbor TriangleKdTree::nearest(const Point& p) const
     NearestNeighbor data;
     data.dist = FLT_MAX;
     data.tests = 0;
-    nearestRecurse(m_root, p, data);
+    nearest_recurse(root_, p, data);
     return data;
 }
 
 //-----------------------------------------------------------------------------
 
-void TriangleKdTree::nearestRecurse(Node* node, const Point& point,
+void TriangleKdTree::nearest_recurse(Node* node, const Point& point,
                                     NearestNeighbor& data) const
 {
     // terminal node?
-    if (!node->leftChild)
+    if (!node->left_child)
     {
         Scalar d;
         Point n;
@@ -211,7 +211,7 @@ void TriangleKdTree::nearestRecurse(Node* node, const Point& point,
         auto fit = node->faces->begin(), fend = node->faces->end();
         for (; fit != fend; ++fit)
         {
-            d = distPointTriangle(point, fit->x[0], fit->x[1], fit->x[2], n);
+            d = dist_point_triangle(point, fit->x[0], fit->x[1], fit->x[2], n);
             ++data.tests;
             if (d < data.dist)
             {
@@ -229,15 +229,15 @@ void TriangleKdTree::nearestRecurse(Node* node, const Point& point,
 
         if (dist <= 0.0)
         {
-            nearestRecurse(node->leftChild, point, data);
+            nearest_recurse(node->left_child, point, data);
             if (fabs(dist) < data.dist)
-                nearestRecurse(node->rightChild, point, data);
+                nearest_recurse(node->right_child, point, data);
         }
         else
         {
-            nearestRecurse(node->rightChild, point, data);
+            nearest_recurse(node->right_child, point, data);
             if (fabs(dist) < data.dist)
-                nearestRecurse(node->leftChild, point, data);
+                nearest_recurse(node->left_child, point, data);
         }
     }
 }

@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2013-2017 The pmp-library developers
+// Copyright (C) 2013-2019 The pmp-library developers
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -43,23 +43,23 @@ class BoundingBox
 public:
     //! construct infinite/invalid bounding box
     BoundingBox()
-        : m_min(std::numeric_limits<Scalar>::max()),
-          m_max(-std::numeric_limits<Scalar>::max())
+        : min_(std::numeric_limits<Scalar>::max()),
+          max_(-std::numeric_limits<Scalar>::max())
     {
     }
 
     //! construct from min and max points
-    BoundingBox(const Point& min, const Point& max) : m_min(min), m_max(max) {}
+    BoundingBox(const Point& min, const Point& max) : min_(min), max_(max) {}
 
     //! add point to bbox
     BoundingBox& operator+=(const Point& p)
     {
         for (int i = 0; i < 3; ++i)
         {
-            if (p[i] < m_min[i])
-                m_min[i] = p[i];
-            else if (p[i] > m_max[i])
-                m_max[i] = p[i];
+            if (p[i] < min_[i])
+                min_[i] = p[i];
+            else if (p[i] > max_[i])
+                max_[i] = p[i];
         }
         return *this;
     }
@@ -69,35 +69,35 @@ public:
     {
         for (int i = 0; i < 3; ++i)
         {
-            if (bb.m_min[i] < m_min[i])
-                m_min[i] = bb.m_min[i];
-            if (bb.m_max[i] > m_max[i])
-                m_max[i] = bb.m_max[i];
+            if (bb.min_[i] < min_[i])
+                min_[i] = bb.min_[i];
+            if (bb.max_[i] > max_[i])
+                max_[i] = bb.max_[i];
         }
         return *this;
     }
 
     //! get min point
-    Point& min() { return m_min; }
+    Point& min() { return min_; }
 
     //! get max point
-    Point& max() { return m_max; }
+    Point& max() { return max_; }
 
     //! get center point
-    Point center() const { return 0.5f * (m_min + m_max); }
+    Point center() const { return 0.5f * (min_ + max_); }
 
     //! indicate if bbox is empty
-    bool isEmpty() const
+    bool is_empty() const
     {
-        return (m_max[0] < m_min[0] || m_max[1] < m_min[1] ||
-                m_max[2] < m_min[2]);
+        return (max_[0] < min_[0] || max_[1] < min_[1] ||
+                max_[2] < min_[2]);
     }
 
     //! get size of the bbox
-    Scalar size() const { return isEmpty() ? 0.0 : distance(m_max, m_min); }
+    Scalar size() const { return is_empty() ? 0.0 : distance(max_, min_); }
 
 private:
-    Point m_min, m_max;
+    Point min_, max_;
 };
 
 //=============================================================================
