@@ -60,7 +60,7 @@ public:
     Heap() : HeapVector() {}
 
     //! Construct with a given \c HeapInterface.
-    Heap(const HeapInterface& interface) : HeapVector(), interface_(interface)
+    Heap(const HeapInterface& Interface) : HeapVector(), interface_(Interface)
     {
     }
 
