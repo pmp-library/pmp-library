@@ -1,15 +1,20 @@
 # Introduction {#mainpage}
 
 The pmp-library is a modern C++ open-source library for polygon surface mesh
-processing. It provides a simple, efficient, and easy to use data structure for
-representing polygon meshes as well as implementations of canonical algorithms
-such as simplification, remeshing, or subdivision. It is designed and
-implemented with a focus on ease of use and performance while maintaining high
-flexibility. In addition, it provides mesh viewers and visualization utilities
-based on OpenGL&reg; as well as the possibility to compile the library into
-JavaScript using [emscripten](https://github.com/kripken/emscripten). The latter
-allows to run mesh processing applications directly in a browser,
-see [here](mpview.html) for a demo.
+processing. It provides
+
+- a simple, efficient, and easy to use data structure for storing and processing
+  polygon meshes
+- implementations of canonical algorithms such as simplification, remeshing, or
+  subdivision
+- mesh viewers and visualization utilities based on OpenGL&reg;
+
+It is designed and implemented with a focus on ease of use and performance while
+maintaining high flexibility. In addition, it provides the possibility to
+compile the library into JavaScript
+using [emscripten](https://github.com/kripken/emscripten), thereby allowing to
+run mesh processing applications directly in a browser, see [here](mpview.html)
+for a demo.
 
 The [User Guide](userguide.html) describes how to
 quickly [get started](quickstart.html) using the pmp-library, provides
@@ -17,8 +22,8 @@ an [overview](overview.html) of the library and its capabilities,
 a [tutorial](tutorial.html) as well as guidelines
 for [contributing](contributing.html) patches or new code.
 
-The [Reference Documentation](annotated.html) provides detailed information on
-the classes and functions provided by the pmp-library.
+The [API Reference](annotated.html) provides detailed information on the classes
+and functions provided by the pmp-library.
 
 Checkout the [GitHub Project](https://github.com/pmp-library/pmp-library/) to
 browse the source, get the latest development version, or to report any issues.
