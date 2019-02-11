@@ -139,3 +139,22 @@ might not be sufficient. In this case, you can change the index type to be
     $ cmake -DPMP_INDEX_TYPE=64
 
 during build configuration.
+
+## Building Bundled JavaScript Applications
+
+In order to build the JavaScript applications
+using [emscripten](https://github.com/kripken/emscripten), download the SDK
+from <https://github.com/kripken/emscripten> and follow the installation
+instructions.
+
+Next, source the environment setup script:
+
+    $ source <path_to_install_dir>/emsdk_env.sh
+
+Create a build directory, run cmake, build, enjoy:
+
+    $ mkdir jsbuild
+    $ cd jsbuild
+    $ emconfigure cmake ..
+    $ make
+    $ <your-browser> mview.html
