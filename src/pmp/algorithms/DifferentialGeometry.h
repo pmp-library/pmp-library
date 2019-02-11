@@ -75,28 +75,28 @@ inline Scalar cotan(const Point& v0, const Point& v1)
     return clamp_cot(dot(v0, v1) / norm(cross(v0, v1)));
 }
 
-/// compute area of a triangle given by three points
+//! compute area of a triangle given by three points
 Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2);
 
-/// compute area of triangle f
+//! compute area of triangle f
 Scalar triangle_area(const SurfaceMesh& mesh, SurfaceMesh::Face f);
 
-/// compute the cotangent weight for edge e
+//! compute the cotangent weight for edge e
 double cotan_weight(const SurfaceMesh& mesh, SurfaceMesh::Edge e);
 
-/// compute (mixed) Voronoi area of vertex v
+//! compute (mixed) Voronoi area of vertex v
 double voronoi_area(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
 
-/// compute barycentric Voronoi area of vertex v
+//! compute barycentric Voronoi area of vertex v
 double voronoi_area_barycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
 
-/// compute Laplace vector for vertex v (normalized by Voronoi area)
+//! compute Laplace vector for vertex v (normalized by Voronoi area)
 Point laplace(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
 
-/// compute the sum of angles around vertex v (used for Gaussian curvature)
+//! compute the sum of angles around vertex v (used for Gaussian curvature)
 Scalar angle_sum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
 
-/// discrete curvature information for a vertex. used for vertex_curvature()
+//! discrete curvature information for a vertex. used for vertex_curvature()
 struct VertexCurvature
 {
     VertexCurvature() : mean(0.0), gauss(0.0), max(0.0), min(0.0) {}

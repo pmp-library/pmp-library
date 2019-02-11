@@ -40,7 +40,7 @@ namespace pmp {
 
 //=============================================================================
 
-/// Base class for MxN matrix
+//! Base class for MxN matrix
 template <typename Scalar, int M, int N>
 class Matrix
 {
@@ -55,17 +55,17 @@ public:
     //! returns the dimension of the vector (or size of the matrix, rows*cols)
     static constexpr int size() { return M * N; }
 
-    /// empty default constructor
+    //! empty default constructor
     Matrix() {}
 
-    /// construct with all entries being a given scalar (matrix and vector)
+    //! construct with all entries being a given scalar (matrix and vector)
     explicit Matrix(Scalar s)
     {
         for (int i = 0; i < size(); ++i)
             data_[i] = s;
     }
 
-    /// constructor for 2D vectors
+    //! constructor for 2D vectors
     explicit Matrix(Scalar x, Scalar y)
     {
         static_assert(M == 2 && N == 1, "only for 2D vectors");
@@ -73,7 +73,7 @@ public:
         data_[1] = y;
     }
 
-    /// constructor for 3D vectors
+    //! constructor for 3D vectors
     explicit Matrix(Scalar x, Scalar y, Scalar z)
     {
         static_assert(M == 3 && N == 1, "only for 3D vectors");
@@ -82,7 +82,7 @@ public:
         data_[2] = z;
     }
 
-    /// constructor for 4D vectors
+    //! constructor for 4D vectors
     explicit Matrix(Scalar x, Scalar y, Scalar z, Scalar w)
     {
         static_assert(M == 4 && N == 1, "only for 4D vectors");
@@ -92,7 +92,7 @@ public:
         data_[3] = w;
     }
 
-    /// constructor for 4D vectors
+    //! constructor for 4D vectors
     explicit Matrix(Matrix<Scalar, 3, 1> xyz, Scalar w)
     {
         static_assert(M == 4 && N == 1, "only for 4D vectors");
@@ -102,7 +102,7 @@ public:
         data_[3] = w;
     }
 
-    /// construct 4x4 matrix from 4 column vectors
+    //! construct 4x4 matrix from 4 column vectors
     // clang-format off
     Matrix(Matrix<Scalar, 4, 1> c0,
            Matrix<Scalar, 4, 1> c1,
@@ -117,7 +117,7 @@ public:
     }
     // clang-format on
 
-    /// construct from 16 (row-wise) entries
+    //! construct from 16 (row-wise) entries
     // clang-format off
     Matrix(Scalar m00, Scalar m01, Scalar m02, Scalar m03,
            Scalar m10, Scalar m11, Scalar m12, Scalar m13,
@@ -132,8 +132,8 @@ public:
     }
     // clang-format on
 
-    /// copy constructor from other scalar type
-    /// is also invoked for type-casting
+    //! copy constructor from other scalar type
+    //! is also invoked for type-casting
     template <typename OtherScalarType>
     explicit Matrix(const Matrix<OtherScalarType, M, N>& m)
     {
@@ -141,47 +141,47 @@ public:
             data_[i] = static_cast<Scalar>(m[i]);
     }
 
-    /// return identity matrix (only for square matrices, N==M)
+    //! return identity matrix (only for square matrices, N==M)
     static Matrix<Scalar, M, N> identity();
 
-    /// access entry at row i and column j
+    //! access entry at row i and column j
     Scalar& operator()(unsigned int i, unsigned int j)
     {
         assert(i < M && j < N);
         return data_[M * j + i];
     }
 
-    /// const-access entry at row i and column j
+    //! const-access entry at row i and column j
     const Scalar& operator()(unsigned int i, unsigned int j) const
     {
         assert(i < M && j < N);
         return data_[M * j + i];
     }
 
-    /// access i'th entry (use for vectors)
+    //! access i'th entry (use for vectors)
     Scalar& operator[](unsigned int i)
     {
         assert(i < M * N);
         return data_[i];
     }
 
-    /// const-access i'th entry (use for vectors)
+    //! const-access i'th entry (use for vectors)
     Scalar operator[](unsigned int i) const
     {
         assert(i < M * N);
         return data_[i];
     }
 
-    /// const-access as scalar array
+    //! const-access as scalar array
     const Scalar* data() const { return data_; }
 
-    /// access as scalar array
+    //! access as scalar array
     Scalar* data() { return data_; }
 
-    /// normalize matrix/vector by dividing through Frobenius/Euclidean norm
+    //! normalize matrix/vector by dividing through Frobenius/Euclidean norm
     void normalize() { *this /= norm(*this); }
 
-    /// divide matrix by scalar
+    //! divide matrix by scalar
     Matrix<Scalar, M, N>& operator/=(const Scalar s)
     {
         for (int i = 0; i < size(); ++i)
@@ -189,7 +189,7 @@ public:
         return *this;
     }
 
-    /// multply matrix by scalar
+    //! multply matrix by scalar
     Matrix<Scalar, M, N>& operator*=(const Scalar s)
     {
         for (int i = 0; i < size(); ++i)
@@ -205,7 +205,7 @@ public:
         return *this;
     }
 
-    /// subtract other matrix from this matrix
+    //! subtract other matrix from this matrix
     Matrix<Scalar, M, N>& operator-=(const Matrix<Scalar, M, N>& m)
     {
         for (int i = 0; i < size(); ++i)
@@ -255,19 +255,19 @@ protected:
 
 //== TEMPLATE SPECIALIZATIONS =================================================
 
-/// template specialization for Vector as Nx1 matrix
+//! template specialization for Vector as Nx1 matrix
 template <typename Scalar, int M>
 using Vector = Matrix<Scalar, M, 1>;
 
-/// template specialization for 4x4 matrices
+//! template specialization for 4x4 matrices
 template <typename Scalar>
 using Mat4 = Matrix<Scalar, 4, 4>;
 
-/// template specialization for 3x3 matrices
+//! template specialization for 3x3 matrices
 template <typename Scalar>
 using Mat3 = Matrix<Scalar, 3, 3>;
 
-/// template specialization for 2x2 matrices
+//! template specialization for 2x2 matrices
 template <typename Scalar>
 using Mat2 = Matrix<Scalar, 2, 2>;
 
@@ -313,7 +313,7 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix<Scalar, M, N>& m)
     return os;
 }
 
-/// matrix-matrix multiplication
+//! matrix-matrix multiplication
 template <typename Scalar, int M, int N, int K>
 Matrix<Scalar, M, N> operator*(const Matrix<Scalar, M, K>& m1,
                                const Matrix<Scalar, K, N>& m2)
@@ -336,7 +336,7 @@ Matrix<Scalar, M, N> operator*(const Matrix<Scalar, M, K>& m1,
 
 //-----------------------------------------------------------------------------
 
-/// component-wise multiplication
+//! component-wise multiplication
 template <typename Scalar, int M, int N>
 Matrix<Scalar, M, N> cmult(const Matrix<Scalar, M, N>& m1,
                            const Matrix<Scalar, M, N>& m2)
