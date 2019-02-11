@@ -33,7 +33,7 @@
 //=============================================================================
 
 template <class HeapEntry>
-struct HeapInterface
+struct HeapInterfaceT
 {
     //! Comparison of two HeapEntry's: strict less
     bool less(const HeapEntry& e1, const HeapEntry& e2);
