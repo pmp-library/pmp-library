@@ -84,7 +84,6 @@ private: //------------------------------------------------------ private types
     */
     struct CollapseData
     {
-    public:
         CollapseData(SurfaceMesh& sm, SurfaceMesh::Halfedge h);
 
         SurfaceMesh& mesh;

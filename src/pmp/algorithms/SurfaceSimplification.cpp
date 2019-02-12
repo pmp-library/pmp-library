@@ -520,9 +520,6 @@ void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
     if (hausdorff_error_)
     {
         Points points;
-        Scalar d, dd;
-        SurfaceMesh::Face f, ff;
-        SurfaceMesh::FaceAroundVertexCirculator vfIt, vfEnd;
 
         // collect points to be distributed
 
@@ -552,6 +549,9 @@ void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
         points.push_back(vpoint_[cd.v0]);
 
         // test points against all faces
+        Scalar d, dd;
+        SurfaceMesh::Face ff;
+
         for (auto point : points)
         {
             dd = FLT_MAX;
