@@ -45,27 +45,45 @@ namespace pmp {
 //=============================================================================
 
 //! \brief Compute geodesic distance from a set of seed vertices
-
+//!
 //! The methods works by a Dykstra-like breadth first traversal from
 //! the seed vertices, implemented by a head structure.
 //! See \cite kimmel_1998_geodesic and \cite novotni_2002_geodesic for details.
 class SurfaceGeodesic
 {
-private:
-
+public:
     typedef SurfaceMesh::Vertex    Vertex;
     typedef SurfaceMesh::Halfedge  Halfedge;
 
+
+    //! Construct with mesh and seed vertices.
+    //! Grow around seed up to specified maximum distance.
+    //! Set whether to use virtual edges (more computation, more accurate result)
+    SurfaceGeodesic(SurfaceMesh& mesh,
+                    std::vector<Vertex> seed,
+                    Scalar maxdist=FLT_MAX,
+                    bool use_virtual_edges=true);
+
+    // destructor
+    ~SurfaceGeodesic();
+
+    //! access computed geodesic distance
+    Scalar operator()(Vertex v) const { return distance_[v]; }
+
+    //! use (normalized) distances as texture coordinates
+    void distance_to_texture_coordinates();
+
+private:
 
     // functor for comparing two vertices w.r.t. their geodesic distance
     class VertexCmp
     {
         public:
-            VertexCmp(const SurfaceMesh::VertexProperty<Scalar>& _dist) : dist_(_dist) {}
+            VertexCmp(const SurfaceMesh::VertexProperty<Scalar>& dist) : dist_(dist) {}
 
-            bool operator()(Vertex _v0, Vertex _v1) const
+            bool operator()(Vertex v0, Vertex v1) const
             {
-                return ((dist_[_v0] == dist_[_v1]) ? (_v0 < _v1) : (dist_[_v0] < dist_[_v1]));
+                return ((dist_[v0] == dist_[v1]) ? (v0 < v1) : (dist_[v0] < dist_[v1]));
             }
 
         private:
@@ -78,7 +96,7 @@ private:
     // virtual edges for walking through obtuse triangles
     struct VirtualEdge
     {
-        VirtualEdge(Vertex _v, Scalar _l) : vertex(_v), length(_l) {}
+        VirtualEdge(Vertex v, Scalar l) : vertex(v), length(l) {}
         Vertex  vertex;
         Scalar  length;
     };
@@ -87,35 +105,13 @@ private:
     typedef std::map<Halfedge, VirtualEdge>  VirtualEdges;
 
 
-public:
-
-    //! Construct with mesh and seed vertices.
-    //! Grow around seed up to specified maximum distance.
-    //! Set whether to use virtual edges (more computation, more accurate result)
-    SurfaceGeodesic(SurfaceMesh& _mesh,
-                    std::vector<Vertex> _seed,
-                    Scalar _maxdist=FLT_MAX,
-                    bool _use_virtual_edges=true);
-
-    // destructor
-    ~SurfaceGeodesic();
-
-    //! access computed geodesic distance
-    Scalar operator()(Vertex _v) const { return distance_[_v]; }
-
-    //! use (normalized) distances as texture coordinates
-    void distance_to_texture_coordinates();
-
-private:
-
     void  find_virtual_edges();
     void  init_front();
     void  propagate_front();
-    void  heap_vertex(Vertex _v);
-    Scalar distance(Vertex _v0, Vertex _v1, Vertex _v2,
-                    Scalar _r0=FLT_MAX, Scalar _r1=FLT_MAX);
+    void  heap_vertex(Vertex v);
+    Scalar distance(Vertex v0, Vertex v1, Vertex v2,
+                    Scalar r0=FLT_MAX, Scalar r1=FLT_MAX);
 
-private:
 
     SurfaceMesh&                             mesh_;
     SurfaceMesh::VertexProperty<Scalar>      distance_;
