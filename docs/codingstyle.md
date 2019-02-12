@@ -112,6 +112,19 @@ line as well as on empty lines.
 This section describes some basic programming conventions developers should
 adhere to.
 
+### Declaration order
+
+Group the sections of a class in the following order: public, protected,
+private.
+
+Use one section for each type of access specifier.
+
+Omit empty sections.
+
+Within a section use the following order: typedefs and enums, constants,
+constructors, destructor, operators, methods, static methods, data members,
+static data members.
+
 ### Comments
 
 Use C++-style comments, i.e., `// my comment.`
