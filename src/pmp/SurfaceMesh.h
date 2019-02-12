@@ -69,7 +69,7 @@ public:
         explicit Handle(IndexType idx = PMP_MAX_INDEX) : idx_(idx) {}
 
         //! Get the underlying index of this handle
-        int idx() const { return idx_; }
+        IndexType idx() const { return idx_; }
 
         //! reset handle to be invalid (index=PMP_MAX_INDEX.)
         void reset() { idx_ = PMP_MAX_INDEX; }
@@ -1068,26 +1068,26 @@ public:
     //! it within the array bounds.
     bool is_valid(Vertex v) const
     {
-        return (0 <= v.idx()) && (v.idx() < (int)vertices_size());
+        return v.idx() < vertices_size();
     }
 
     //! return whether halfedge \c h is valid, i.e. the index is stores it
     //! within the array bounds.
     bool is_valid(Halfedge h) const
     {
-        return (0 <= h.idx()) && (h.idx() < (int)halfedges_size());
+        return h.idx() < halfedges_size();
     }
 
     //! return whether edge \c e is valid, i.e. the index is stores it within the array bounds.
     bool is_valid(Edge e) const
     {
-        return (0 <= e.idx()) && (e.idx() < (int)edges_size());
+        return e.idx() < edges_size();
     }
 
     //! returns whether the face \p f is valid.
     bool is_valid(Face f) const
     {
-        return (0 <= f.idx()) && (f.idx() < (int)faces_size());
+        return f.idx() < faces_size();
     }
 
     //!@}
