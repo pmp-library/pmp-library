@@ -67,7 +67,7 @@ public:
     virtual void update_mesh();
 
     //! draw the scene in different draw modes
-    virtual void draw(const std::string& _draw_mode) override;
+    virtual void draw(const std::string& draw_mode) override;
 
     //! handle ImGUI interface
     virtual void process_imgui() override;

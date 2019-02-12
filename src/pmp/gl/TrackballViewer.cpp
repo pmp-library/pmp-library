@@ -68,21 +68,21 @@ void TrackballViewer::clear_draw_modes()
 
 //-----------------------------------------------------------------------------
 
-unsigned int TrackballViewer::add_draw_mode(const std::string& _s)
+unsigned int TrackballViewer::add_draw_mode(const std::string& s)
 {
     ++n_draw_modes_;
-    draw_mode_names_.push_back(_s);
+    draw_mode_names_.push_back(s);
 
     return n_draw_modes_ - 1;
 }
 
 //-----------------------------------------------------------------------------
 
-void TrackballViewer::set_draw_mode(const std::string& _s)
+void TrackballViewer::set_draw_mode(const std::string& s)
 {
     for (unsigned int i = 0; i < draw_mode_names_.size(); ++i)
     {
-        if (draw_mode_names_[i] == _s)
+        if (draw_mode_names_[i] == s)
         {
             draw_mode_ = i;
             break;
