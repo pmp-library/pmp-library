@@ -8,11 +8,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .textblock h2 {
-    margin-top: 1.5rem;
+  margin-top: 1.75rem;
 }
 
 .textblock h3 {
-    font-style: italic;
+  margin-top: 1.75rem;
+  font-style: italic;
 }
 
 #nav-sync
