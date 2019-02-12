@@ -45,18 +45,18 @@ int main(int argc, char** argv)
     if (argc > 1)
         mesh.read(argv[1]);
 
-    float meanValence = 0.0f;
+    float mean_valence = 0.0f;
 
     // loop over all vertices
     for (auto vit : mesh.vertices())
     {
         // sum up vertex valences
-        meanValence += mesh.valence(vit);
+        mean_valence += mesh.valence(vit);
     }
 
-    meanValence /= mesh.n_vertices();
+    mean_valence /= mesh.n_vertices();
 
-    std::cout << "mean valence: " << meanValence << std::endl;
+    std::cout << "mean valence: " << mean_valence << std::endl;
 
     //! [iterators]
 }

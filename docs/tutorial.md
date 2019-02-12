@@ -40,20 +40,20 @@ number of vertices, edges, and faces is printed to standard output.
     SurfaceMesh::Vertex v0,v1,v2,v3;
 
     // add 4 vertices
-    v0 = mesh.addVertex(Point(0,0,0));
-    v1 = mesh.addVertex(Point(1,0,0));
-    v2 = mesh.addVertex(Point(0,1,0));
-    v3 = mesh.addVertex(Point(0,0,1));
+    v0 = mesh.add_vertex(Point(0,0,0));
+    v1 = mesh.add_vertex(Point(1,0,0));
+    v2 = mesh.add_vertex(Point(0,1,0));
+    v3 = mesh.add_vertex(Point(0,0,1));
 
     // add 4 triangular faces
-    mesh.addTriangle(v0,v1,v3);
-    mesh.addTriangle(v1,v2,v3);
-    mesh.addTriangle(v2,v0,v3);
-    mesh.addTriangle(v0,v2,v1);
+    mesh.add_triangle(v0,v1,v3);
+    mesh.add_triangle(v1,v2,v3);
+    mesh.add_triangle(v2,v0,v3);
+    mesh.add_triangle(v0,v2,v1);
 
-    std::cout << "vertices: " << mesh.nVertices() << std::endl;
-    std::cout << "edges: "    << mesh.nEdges()    << std::endl;
-    std::cout << "faces: "    << mesh.nFaces()    << std::endl;
+    std::cout << "vertices: " << mesh.n_vertices() << std::endl;
+    std::cout << "edges: "    << mesh.n_edges()    << std::endl;
+    std::cout << "faces: "    << mesh.n_faces()    << std::endl;
 ~~~~
 
 ## Iterators and Circulators
@@ -73,18 +73,18 @@ of a mesh.
     if (argc > 1)
         mesh.read(argv[1]);
 
-    float meanValence = 0.0f;
+    float mean_valence = 0.0f;
 
     // loop over all vertices
     for (auto v : mesh.vertices())
     {
         // sum up vertex valences
-        meanValence += mesh.valence(v);
+        mean_valence += mesh.valence(v);
     }
 
-    meanValence /= mesh.nVertices();
+    mean_valence /= mesh.n_vertices();
 
-    std::cout << "mean valence: " << meanValence << std::endl;
+    std::cout << "mean valence: " << mean_valence << std::endl;
 ~~~~
 
 ## Dynamic Properties
@@ -102,7 +102,7 @@ shows how to access vertex coordinates through the (pre-defined) point property.
         mesh.read(argv[1]);
 
     // get (pre-defined) property storing vertex positions
-    auto points = mesh.getVertexProperty<Point>("v:point");
+    auto points = mesh.get_vertex_property<Point>("v:point");
 
     Point p(0,0,0);
 
@@ -112,7 +112,7 @@ shows how to access vertex coordinates through the (pre-defined) point property.
         p += points[v];
     }
 
-    p /= mesh.nVertices();
+    p /= mesh.n_vertices();
 
     std::cout << "barycenter: " << p << std::endl;
 ~~~~
@@ -120,15 +120,15 @@ shows how to access vertex coordinates through the (pre-defined) point property.
 The dynamic (de-)allocation of properties at run-time is managed by a set
 of four different functions:
 
-- `addEntityTypeProperty<PropertyType>("PropertyName")` allocates a new property
+- `add_EntityType_property<PropertyType>("PropertyName")` allocates a new property
   for the given _EntityType_ of the type _PropertyType_ labeled by the
   _PropertyName_ string.
-- `getEntityTypeProperty<PropertyType>("PropertyName")` returns a handle to an
+- `get_EntityType_property<PropertyType>("PropertyName")` returns a handle to an
   existing property.
-- `EntityTypeProperty<PropertyType>("PropertyName")` returns a handle to an
+- `_EntityType_property<PropertyType>("PropertyName")` returns a handle to an
   existing property if the specified property already exists. If not, a new
   property is allocated and its handle is returned.
-- `removeEntityTypeProperty(PropertyHandle)` removes and the property referenced
+- `remove_EntityType_property(PropertyHandle)` removes and the property referenced
   by `PropertyHandle`.
 
 Functions that allocate a new property take a default value for the property as
@@ -139,14 +139,14 @@ allocate, use and remove a custom edge property.
     SurfaceMesh mesh;
 
     // allocate property storing a point per edge
-    auto edgePoints = mesh.addEdgeProperty<Point>("propertyName");
+    auto edge_points = mesh.add_edge_property<Point>("propertyName");
 
     // access the edge property like an array
     SurfaceMesh::Edge e;
-    edgePoints[e] = Point(x,y,z);
+    edge_points[e] = Point(x,y,z);
 
     // remove property and free memory
-    mesh.removeEdgeProperty(edgePoints);
+    mesh.remove_edge_property(edge_points);
 ~~~~
 
 ## Connectivity Queries
@@ -156,12 +156,12 @@ halfedge or the target vertex of an halfedge are illustrated below.
 
 ~~~~{.cpp}
     SurfaceMesh::Halfedge h;
-    auto h0 = mesh.nextHalfedge(h);
-    auto h1 = mesh.prevHalfedge(h);
-    auto h2 = mesh.oppositeHalfedge(h);
+    auto h0 = mesh.next_halfedge(h);
+    auto h1 = mesh.prev_halfedge(h);
+    auto h2 = mesh.opposite_halfedge(h);
     auto f  = mesh.face(h);
-    auto v0 = mesh.fromVertex(h);
-    auto v1 = mesh.toVertex(h);
+    auto v0 = mesh.from_vertex(h);
+    auto v1 = mesh.to_vertex(h);
 ~~~~
 
 ![Connectivity queries](./images/connectivity-queries.png)
