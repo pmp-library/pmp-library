@@ -50,6 +50,28 @@ words with underscores. Class member variables have an underscore `_` suffix.
     };
 ~~~~
 
+_Exception:_ Public members of a `struct` holding just a group of variables
+may omit the underscore suffix:
+
+~~~~{.cpp}
+    struct NearestNeighbor
+    {
+        Scalar dist;
+        SurfaceMesh::Face face;
+        Point nearest;
+        int tests;
+    };
+~~~~
+
+_Exception:_ For the sake of similarity with common mathematical notation, we
+sometimes use uppercase letters, e.g., to denote matrices when solving a linear
+system:
+
+~~~~{.cpp}
+    Eigen::SparseMatrix<dobule> A(n, n);
+    Eigen::MatrixXd B(n, 3);
+~~~~
+
 ### File Names
 
 File names follow the naming rules for user-defined types. Implementation files
