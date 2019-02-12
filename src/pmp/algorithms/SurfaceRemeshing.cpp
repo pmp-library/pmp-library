@@ -140,16 +140,7 @@ void SurfaceRemeshing::preprocessing()
     efeature_ = mesh_.edge_property<bool>("e:feature", false);
     vlocked_ = mesh_.add_vertex_property<bool>("v:locked", false);
     elocked_ = mesh_.add_edge_property<bool>("e:locked", false);
-    vsizing_ = mesh_.get_vertex_property<Scalar>("v:sizing");
-
-    // re-use an existing sizing field. used for remeshing a cage in the
-    // adaptive refinement benchmark.
-    bool use_sizing_field(false);
-
-    if (vsizing_)
-        use_sizing_field = true;
-    else
-        vsizing_ = mesh_.add_vertex_property<Scalar>("v:sizing");
+    vsizing_ = mesh_.add_vertex_property<Scalar>("v:sizing");
 
     // lock unselected vertices if some vertices are selected
     auto vselected = mesh_.get_vertex_property<bool>("v:selected");
@@ -205,7 +196,7 @@ void SurfaceRemeshing::preprocessing()
             vsizing_[v] = target_edge_length_;
         }
     }
-    else if (!use_sizing_field)
+    else
     {
         // compute curvature for all mesh vertices, using cotan or Cohen-Steiner
         // do 2 post-smoothing steps to get a smoother sizing field
@@ -413,7 +404,6 @@ void SurfaceRemeshing::split_long_edges()
 
 void SurfaceRemeshing::collapse_short_edges()
 {
-    SurfaceMesh::VertexAroundVertexCirculator vvIt, vvEnd;
     SurfaceMesh::Vertex v0, v1;
     SurfaceMesh::Halfedge h0, h1, h01, h10;
     bool ok, b0, b1, l0, l1, f0, f1;
@@ -720,7 +710,7 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
                     t = normalize(t);
                     u = t * dot(u, t);
 
-                    update[v] = u; // who deleted this line???
+                    update[v] = u;
                 }
                 else
                 {
