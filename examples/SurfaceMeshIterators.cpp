@@ -54,7 +54,7 @@ int main(int argc, char** argv)
         meanValence += mesh.valence(vit);
     }
 
-    meanValence /= mesh.nVertices();
+    meanValence /= mesh.n_vertices();
 
     std::cout << "mean valence: " << meanValence << std::endl;
 

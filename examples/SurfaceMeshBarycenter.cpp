@@ -47,7 +47,7 @@ int main(int argc, char** argv)
         mesh.read(argv[1]);
 
     // get (pre-defined) property storing vertex positions
-    auto points = mesh.getVertexProperty<Point>("v:point");
+    auto points = mesh.get_vertex_property<Point>("v:point");
 
     Point p(0,0,0);
 
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
         p += points[vit];
     }
 
-    p /= mesh.nVertices();
+    p /= mesh.n_vertices();
 
     std::cout << "barycenter: " << p << std::endl;
 
