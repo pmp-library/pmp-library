@@ -32,20 +32,10 @@
 
 using namespace pmp;
 
-class SurfaceGeodesicTest : public ::testing::Test
-{
-public:
-    SurfaceGeodesicTest()
-    {
-    }
-
-    SurfaceMesh mesh;
-};
-
-TEST_F(SurfaceGeodesicTest, geodesic)
+TEST(SurfaceGeodesicTest, geodesic)
 {
     // read mesh for unit sphere
-    mesh.clear();
+    SurfaceMesh mesh;
     EXPECT_TRUE(mesh.read("pmp-data/off/sphere.off"));
 
     // use first vertex as seed
@@ -62,11 +52,11 @@ TEST_F(SurfaceGeodesicTest, geodesic)
     EXPECT_FLOAT_EQ(d, 3.13061);
 }
 
-TEST_F(SurfaceGeodesicTest, geodesic_to_texture)
+TEST(SurfaceGeodesicTest, geodesic_to_texture)
 {
     // read irregular mesh (to have virtual edges)
-    mesh.clear();
-    EXPECT_TRUE(mesh.read("pmp-data/off/bunny.off"));
+    SurfaceMesh mesh;
+    EXPECT_TRUE(mesh.read("pmp-data/off/bunny_adaptive.off"));
 
     // use first vertex as seed
     std::vector<SurfaceMesh::Vertex> seed;
