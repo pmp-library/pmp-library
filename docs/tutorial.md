@@ -204,7 +204,7 @@ pseudo-code below.
 ~~~~
 
 When entities are removed from the mesh due to topological changes, the member
-function pmp::GeometryObject::garbageCollection() has to be called in order to
+function pmp::SurfaceMesh::garbage_collection() has to be called in order to
 ensure the consistency of the data structure.
 
 ## File I/O
