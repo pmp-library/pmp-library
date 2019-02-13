@@ -28,6 +28,8 @@
 #pragma once
 //=============================================================================
 
+namespace pmp {
+
 // clang-format off
 const GLubyte cold_warm_texture[768] = {
 59,76,192,
@@ -289,3 +291,5 @@ const GLubyte cold_warm_texture[768] = {
 // 180,4,38,
 };
 // clang-format on
+
+}
