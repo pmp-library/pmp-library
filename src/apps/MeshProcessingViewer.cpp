@@ -176,9 +176,9 @@ void MeshProcessingViewer::process_imgui()
         ImGui::SliderInt("Percentage", &target_percentage, 1, 99);
         ImGui::PopItemWidth();
 
-        static int normal_deviation = 180;
+        static int normal_deviation = 135;
         ImGui::PushItemWidth(100);
-        ImGui::SliderInt("Normal Deviation", &normal_deviation, 1, 180);
+        ImGui::SliderInt("Normal Deviation", &normal_deviation, 1, 135);
         ImGui::PopItemWidth();
 
         static int aspect_ratio = 10;
