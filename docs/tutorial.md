@@ -149,6 +149,20 @@ allocate, use and remove a custom edge property.
     mesh.remove_edge_property(edge_points);
 ~~~~
 
+In addition to the per-entity properties described above it is also possible to
+attach global per-object properties to a mesh. This can be used, e.g., for
+storing minimum or maximum values of a scalar field or for storing a set of
+region markers present in the mesh:
+
+~~~~{.cpp}
+    auto markers = mesh.object_property<std::vector<int>>("o:regions");
+    markers[0].push_back(0);
+    markers[0].push_back(1);
+~~~~
+
+Note in the above that access to the object property simply uses a zero index
+since there is no concept of an object handle.
+
 ## Connectivity Queries
 
 Commonly used connectivity queries such as retrieving the next
