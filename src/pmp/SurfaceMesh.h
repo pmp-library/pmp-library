@@ -55,8 +55,8 @@ class SurfaceMeshIO;
 //! A halfedge data structure for polygonal meshes.
 class SurfaceMesh
 {
-
 public:
+
     //! \name Handle Types
     //!@{
 
@@ -2004,8 +2004,6 @@ private:
     inline bool has_garbage() const { return has_garbage_; }
 
     //!@}
-
-private:
     //! \name Private members
     //!@{
 
