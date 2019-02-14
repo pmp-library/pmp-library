@@ -232,15 +232,16 @@ void Window::render_frame()
     // determine correct canvas/framebuffer size
     int w, h, f;
     double dw, dh;
-    emscripten_get_canvas_size(&w, &h, &f);
-    emscripten_get_element_css_size(nullptr, &dw, &dh);
+    emscripten_get_canvas_element_size("#canvas", &w, &h);
+    emscripten_get_element_css_size("#canvas", &dw, &dh);
     if (w != int(dw) || h != int(dh))
     {
         w = int(dw);
         h = int(dh);
-        emscripten_set_canvas_size(w, h);
+        emscripten_set_canvas_element_size("#canvas", w, h);
         glfw_resize(instance_->window_, w, h);
         ;
+        std::cout << "resize: " << w << ", " << h << std::endl;
     }
 #endif
 
