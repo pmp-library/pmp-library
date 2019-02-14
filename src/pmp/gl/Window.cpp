@@ -241,7 +241,6 @@ void Window::render_frame()
         emscripten_set_canvas_element_size("#canvas", w, h);
         glfw_resize(instance_->window_, w, h);
         ;
-        std::cout << "resize: " << w << ", " << h << std::endl;
     }
 #endif
 
