@@ -84,6 +84,9 @@ void Viewer::draw(const std::string& draw_mode)
         // draw mesh once more
         mesh_.draw(P, M, "Texture Layout");
     }
+
+    // reset viewport
+    glViewport(0, 0, width_, height_);
 }
 
 //=============================================================================
