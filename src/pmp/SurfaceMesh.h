@@ -566,8 +566,8 @@ public:
         bool operator==(const VertexAroundVertexCirculator& rhs) const
         {
             assert(mesh_);
-            return (is_active_ && (mesh_ == rhs.mesh_) &&
-                    (halfedge_ == rhs.halfedge_));
+            assert(mesh_ == rhs.mesh_);
+            return (is_active_ && (halfedge_ == rhs.halfedge_));
         }
 
         //! are two circulators different?
@@ -644,8 +644,8 @@ public:
         bool operator==(const HalfedgeAroundVertexCirculator& rhs) const
         {
             assert(mesh_);
-            return (is_active_ && (mesh_ == rhs.mesh_) &&
-                    (halfedge_ == rhs.halfedge_));
+            assert(mesh_ == rhs.mesh_);
+            return (is_active_ && (halfedge_ == rhs.halfedge_));
         }
 
         //! are two circulators different?
@@ -720,8 +720,8 @@ public:
         bool operator==(const FaceAroundVertexCirculator& rhs) const
         {
             assert(mesh_);
-            return (is_active_ && (mesh_ == rhs.mesh_) &&
-                    (halfedge_ == rhs.halfedge_));
+            assert(mesh_ == rhs.mesh_);
+            return (is_active_ && (halfedge_ == rhs.halfedge_));
         }
 
         //! are two circulators different?
@@ -778,8 +778,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        // helper for C++11 range-based for-loops
-        bool is_active_;
+        bool is_active_; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through the vertices of a face.
@@ -800,8 +799,8 @@ public:
         bool operator==(const VertexAroundFaceCirculator& rhs) const
         {
             assert(mesh_);
-            return (is_active_ && (mesh_ == rhs.mesh_) &&
-                    (halfedge_ == rhs.halfedge_));
+            assert(mesh_ == rhs.mesh_);
+            return (is_active_ && (halfedge_ == rhs.halfedge_));
         }
 
         //! are two circulators different?
@@ -850,8 +849,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        // helper for C++11 range-based for-loops
-        bool is_active_;
+        bool is_active_; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through all halfedges of a face.
@@ -873,8 +871,8 @@ public:
         bool operator==(const HalfedgeAroundFaceCirculator& rhs) const
         {
             assert(mesh_);
-            return (is_active_ && (mesh_ == rhs.mesh_) &&
-                    (halfedge_ == rhs.halfedge_));
+            assert(mesh_ == rhs.mesh_);
+            return (is_active_ && (halfedge_ == rhs.halfedge_));
         }
 
         //! are two circulators different?
@@ -919,8 +917,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        // helper for C++11 range-based for-loops
-        bool is_active_;
+        bool is_active_; // helper for C++11 range-based for-loops
     };
 
     //!@}
