@@ -66,7 +66,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             }
             for (auto f : mesh_.faces())
             {
-                std::vector<SurfaceMesh::Vertex> vertices;
+                std::vector<Vertex> vertices;
                 for (auto v : mesh_.vertices(f))
                 {
                     vertices.push_back(v);
@@ -249,11 +249,11 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
     {
         double x, y;
         cursor_pos(x, y);
-        SurfaceMesh::Vertex v = pick_vertex(x, y);
+        Vertex v = pick_vertex(x, y);
         if (mesh_.is_valid(v))
         {
             // setup seed
-            std::vector<SurfaceMesh::Vertex>  seed;
+            std::vector<Vertex>  seed;
             seed.push_back(v);
 
             // compute geodesic distance

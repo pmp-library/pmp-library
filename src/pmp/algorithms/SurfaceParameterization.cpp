@@ -52,9 +52,9 @@ bool SurfaceParameterization::setup_boundary_constraints()
     auto tex = mesh_.vertex_property<TextureCoordinate>("v:tex");
 
     SurfaceMesh::VertexIterator vit, vend = mesh_.vertices_end();
-    SurfaceMesh::Vertex vh;
-    SurfaceMesh::Halfedge hh;
-    std::vector<SurfaceMesh::Vertex> loop;
+    Vertex vh;
+    Halfedge hh;
+    std::vector<Vertex> loop;
 
     // Initialize all texture coordinates to the origin.
     for (auto v : mesh_.vertices())
@@ -137,7 +137,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     // collect free (non-boundary) vertices in array free_vertices[]
     // assign indices such that idx[ free_vertices[i] ] == i
     unsigned i = 0;
-    std::vector<SurfaceMesh::Vertex> free_vertices;
+    std::vector<Vertex> free_vertices;
     free_vertices.reserve(mesh_.n_vertices());
     for (auto v : mesh_.vertices())
     {
@@ -154,8 +154,8 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     Eigen::MatrixXd B(n, 2);
     std::vector<Eigen::Triplet<double>> triplets;
     double w, ww;
-    SurfaceMesh::Vertex v, vv;
-    SurfaceMesh::Edge e;
+    Vertex v, vv;
+    Edge e;
     for (i = 0; i < n; ++i)
     {
         v = free_vertices[i];
@@ -225,7 +225,7 @@ bool SurfaceParameterization::setup_lscm_boundary()
     auto locked = mesh_.add_vertex_property<bool>("v:locked", false);
 
     // find boundary vertices and store handles in vector
-    std::vector<SurfaceMesh::Vertex> boundary;
+    std::vector<Vertex> boundary;
     for (auto v : mesh_.vertices())
         if (mesh_.is_boundary(v))
             boundary.push_back(v);
@@ -238,7 +238,7 @@ bool SurfaceParameterization::setup_lscm_boundary()
 
     // find boundary vertices with largest distance
     Scalar diam(0.0), d;
-    SurfaceMesh::Vertex v1, v2;
+    Vertex v1, v2;
     for (auto vv1 : boundary)
     {
         for (auto vv2 : boundary)
@@ -331,7 +331,7 @@ void SurfaceParameterization::lscm()
     // collect free (non-boundary) vertices in array free_vertices[]
     // assign indices such that idx[ free_vertices[i] ] == i
     unsigned i = 0;
-    std::vector<SurfaceMesh::Vertex> free_vertices;
+    std::vector<Vertex> free_vertices;
     free_vertices.reserve(mesh_.n_vertices());
     for (auto v : mesh_.vertices())
     {
@@ -346,8 +346,8 @@ void SurfaceParameterization::lscm()
     const unsigned int nv2 = 2 * mesh_.n_vertices();
     const unsigned int nv = mesh_.n_vertices();
     const unsigned int n = free_vertices.size();
-    SurfaceMesh::Vertex vi, vj;
-    SurfaceMesh::Halfedge hh;
+    Vertex vi, vj;
+    Halfedge hh;
     double si, sj0, sj1, sign;
     int row(0), c0, c1;
 
@@ -357,7 +357,7 @@ void SurfaceParameterization::lscm()
 
     for (unsigned int i = 0; i < nv2; ++i)
     {
-        vi = SurfaceMesh::Vertex(i % nv);
+        vi = Vertex(i % nv);
 
         if (i < nv)
         {

@@ -367,7 +367,7 @@ void SurfaceSubdivision::loop()
     }
 
     // split faces
-    SurfaceMesh::Halfedge h;
+    Halfedge h;
     for (auto f : mesh_.faces())
     {
         h = mesh_.halfedge(f);

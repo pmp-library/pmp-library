@@ -55,7 +55,7 @@ public:
     struct NearestNeighbor
     {
         Scalar dist;
-        SurfaceMesh::Face face;
+        Face face;
         Point nearest;
         int tests;
     };
@@ -69,7 +69,7 @@ private:
     {
         Triangle() {}
         Triangle(const Point& x0, const Point& x1, const Point& x2,
-                 SurfaceMesh::Face ff)
+                 Face ff)
         {
             x[0] = x0;
             x[1] = x1;
@@ -78,7 +78,7 @@ private:
         }
 
         Point x[3];
-        SurfaceMesh::Face f;
+        Face f;
     };
 
     // vector of Triangle

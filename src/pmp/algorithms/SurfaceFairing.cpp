@@ -136,7 +136,7 @@ void SurfaceFairing::fair(unsigned int k)
     }
 
     // collect free vertices
-    std::vector<SurfaceMesh::Vertex> vertices;
+    std::vector<Vertex> vertices;
     vertices.reserve(mesh_.n_vertices());
     for (auto v : mesh_.vertices())
     {
@@ -152,7 +152,7 @@ void SurfaceFairing::fair(unsigned int k)
     SparseMatrix A(n, n);
     Eigen::MatrixXd B(n, 3);
 
-    std::map<SurfaceMesh::Vertex, double> row;
+    std::map<Vertex, double> row;
     std::vector<Triplet> triplets;
 
     for (unsigned int i = 0; i < n; ++i)
@@ -207,23 +207,23 @@ struct Triple
 {
     Triple() = default;
 
-    Triple(SurfaceMesh::Vertex v, double weight, unsigned int degree)
+    Triple(Vertex v, double weight, unsigned int degree)
         : vertex_(v), weight_(weight), degree_(degree)
     {
     }
 
-    SurfaceMesh::Vertex vertex_;
+    Vertex vertex_;
     double weight_;
     unsigned int degree_;
 };
 
 //-----------------------------------------------------------------------------
 
-void SurfaceFairing::setup_matrix_row(const SurfaceMesh::Vertex v,
-                                      SurfaceMesh::VertexProperty<double> vweight,
-                                      SurfaceMesh::EdgeProperty<double> eweight,
+void SurfaceFairing::setup_matrix_row(const Vertex v,
+                                      VertexProperty<double> vweight,
+                                      EdgeProperty<double> eweight,
                                       unsigned int laplace_degree,
-                                      std::map<SurfaceMesh::Vertex, double>& row)
+                                      std::map<Vertex, double>& row)
 {
     Triple t(v, 1.0, laplace_degree);
 

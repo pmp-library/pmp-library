@@ -85,7 +85,7 @@ TEST_F(SurfaceMeshTest, insert_remove_single_quad)
 
 TEST_F(SurfaceMeshTest, insert_remove_single_polygonal_face)
 {
-    std::vector<SurfaceMesh::Vertex> vertices(4);
+    std::vector<Vertex> vertices(4);
     vertices[0] = mesh.add_vertex(Point(0, 0, 0));
     vertices[1] = mesh.add_vertex(Point(1, 0, 0));
     vertices[2] = mesh.add_vertex(Point(1, 1, 0));
@@ -107,7 +107,7 @@ TEST_F(SurfaceMeshTest, delete_center_vertex)
     ASSERT_TRUE(mesh.read("pmp-data/off/vertex_onering.off"));
     EXPECT_EQ(mesh.n_vertices(), size_t(7));
     EXPECT_EQ(mesh.n_faces(), size_t(6));
-    SurfaceMesh::Vertex v0(3); // the central vertex
+    Vertex v0(3); // the central vertex
     mesh.delete_vertex(v0);
     mesh.garbage_collection();
     EXPECT_EQ(mesh.n_vertices(), size_t(0));
@@ -120,8 +120,8 @@ TEST_F(SurfaceMeshTest, delete_center_edge)
     EXPECT_EQ(mesh.n_vertices(), size_t(10));
     EXPECT_EQ(mesh.n_faces(), size_t(10));
     // the two vertices of the center edge
-    SurfaceMesh::Vertex v0(4);
-    SurfaceMesh::Vertex v1(5);
+    Vertex v0(4);
+    Vertex v1(5);
 
     auto e = mesh.find_edge(v0, v1);
     mesh.delete_edge(e);
@@ -313,7 +313,7 @@ TEST_F(SurfaceMeshTest, is_quad_mesh)
 
 TEST_F(SurfaceMeshTest, poly_mesh)
 {
-    std::vector<SurfaceMesh::Vertex> vertices(5);
+    std::vector<Vertex> vertices(5);
     vertices[0] = mesh.add_vertex(Point(0,0,0));
     vertices[1] = mesh.add_vertex(Point(1,0,0));
     vertices[2] = mesh.add_vertex(Point(1,1,0));
@@ -377,8 +377,8 @@ TEST_F(SurfaceMeshTest, edge_flip)
     EXPECT_EQ(mesh.n_faces(), size_t(10));
 
     // the two vertices of the center edge
-    SurfaceMesh::Vertex v0(4);
-    SurfaceMesh::Vertex v1(5);
+    Vertex v0(4);
+    Vertex v1(5);
     auto e = mesh.find_edge(v0,v1);
     if (mesh.is_flip_ok(e))
         mesh.flip(e);

@@ -71,18 +71,18 @@ public:
 
     //! \brief Compute the normal vector of vertex \c v.
     static Normal compute_vertex_normal(const SurfaceMesh& mesh,
-                                        SurfaceMesh::Vertex v);
+                                        Vertex v);
 
     //! \brief Compute the normal vector of face \c f.
     static Normal compute_face_normal(const SurfaceMesh& mesh,
-                                      SurfaceMesh::Face f);
+                                      Face f);
 
     //! \brief Compute the normal vector of the polygon corner specified by the
     //! target vertex of halfedge \c h.
     //! \details Averages incident corner normals if they are within crease_angle
     //! of the face normal. \c crease_angle is in radians, not degrees.
     static Normal compute_corner_normal(const SurfaceMesh& mesh,
-                                        SurfaceMesh::Halfedge h,
+                                        Halfedge h,
                                         Scalar crease_angle);
 };
 

@@ -179,15 +179,15 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
 
     unsigned int nv(mesh_.n_vertices());
 
-    std::vector<SurfaceMesh::Vertex> one_ring;
-    std::vector<SurfaceMesh::Vertex>::iterator or_it, or_end;
-    SurfaceMesh::Halfedge h;
-    SurfaceMesh::Vertex v;
+    std::vector<Vertex> one_ring;
+    std::vector<Vertex>::iterator or_it, or_end;
+    Halfedge h;
+    Vertex v;
 
     // add properties for priority queue
     vpriority_ = mesh_.add_vertex_property<float>("v:prio");
     heap_pos_ = mesh_.add_vertex_property<int>("v:heap");
-    vtarget_ = mesh_.add_vertex_property<SurfaceMesh::Halfedge>("v:target");
+    vtarget_ = mesh_.add_vertex_property<Halfedge>("v:target");
 
     // build priority queue
     HeapInterface hi(vpriority_, heap_pos_);
@@ -242,10 +242,10 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
 
 //-----------------------------------------------------------------------------
 
-void SurfaceSimplification::enqueue_vertex(SurfaceMesh::Vertex v)
+void SurfaceSimplification::enqueue_vertex(Vertex v)
 {
     float prio, min_prio(FLT_MAX);
-    SurfaceMesh::Halfedge min_h;
+    Halfedge min_h;
 
     // find best out-going halfedge
     for (auto h : mesh_.halfedges(v))
@@ -377,7 +377,7 @@ bool SurfaceSimplification::is_collapse_legal(const CollapseData& cd)
     {
         vpoint_[cd.v0] = p1;
 
-        SurfaceMesh::Face fll, frr;
+        Face fll, frr;
         if (cd.vl.is_valid())
             fll = mesh_.face(
                 mesh_.opposite_halfedge(mesh_.prev_halfedge(cd.v0v1)));
@@ -503,14 +503,14 @@ void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
 
         if (cd.vl.is_valid())
         {
-            SurfaceMesh::Face f = mesh_.face(cd.v1vl);
+            Face f = mesh_.face(cd.v1vl);
             if (f.is_valid())
                 normal_cone_[f].merge(normal_cone_[cd.fl]);
         }
 
         if (cd.vr.is_valid())
         {
-            SurfaceMesh::Face f = mesh_.face(cd.vrv1);
+            Face f = mesh_.face(cd.vrv1);
             if (f.is_valid())
                 normal_cone_[f].merge(normal_cone_[cd.fr]);
         }
@@ -550,7 +550,7 @@ void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
 
         // test points against all faces
         Scalar d, dd;
-        SurfaceMesh::Face ff;
+        Face ff;
 
         for (auto point : points)
         {
@@ -573,7 +573,7 @@ void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
 
 //-----------------------------------------------------------------------------
 
-Scalar SurfaceSimplification::aspect_ratio(SurfaceMesh::Face f) const
+Scalar SurfaceSimplification::aspect_ratio(Face f) const
 {
     // min height is area/maxLength
     // aspect ratio = length / height
@@ -604,7 +604,7 @@ Scalar SurfaceSimplification::aspect_ratio(SurfaceMesh::Face f) const
 
 //-----------------------------------------------------------------------------
 
-Scalar SurfaceSimplification::distance(SurfaceMesh::Face f,
+Scalar SurfaceSimplification::distance(Face f,
                                        const Point& p) const
 {
     SurfaceMesh::VertexAroundFaceCirculator fvit = mesh_.vertices(f);
@@ -621,7 +621,7 @@ Scalar SurfaceSimplification::distance(SurfaceMesh::Face f,
 //-----------------------------------------------------------------------------
 
 SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh& sm,
-                                                  SurfaceMesh::Halfedge h)
+                                                  Halfedge h)
     : mesh(sm)
 {
     v0v1 = h;

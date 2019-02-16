@@ -212,7 +212,7 @@ void SurfaceRemeshing::preprocessing()
             // curvature of feature vertices: average of non-feature neighbors
             if (vfeature_[v])
             {
-                SurfaceMesh::Vertex vv;
+                Vertex vv;
                 Scalar w, ww = 0.0;
                 c = 0.0;
 
@@ -297,7 +297,7 @@ void SurfaceRemeshing::postprocessing()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceRemeshing::project_to_reference(SurfaceMesh::Vertex v)
+void SurfaceRemeshing::project_to_reference(Vertex v)
 {
     if (!use_projection_)
     {
@@ -307,7 +307,7 @@ void SurfaceRemeshing::project_to_reference(SurfaceMesh::Vertex v)
     // find closest triangle of reference mesh
     TriangleKdTree::NearestNeighbor nn = kd_tree_->nearest(points_[v]);
     const Point p = nn.nearest;
-    const SurfaceMesh::Face f = nn.face;
+    const Face f = nn.face;
 
     // get face data
     SurfaceMesh::VertexAroundFaceCirculator fvIt = refmesh_->vertices(f);
@@ -350,9 +350,9 @@ void SurfaceRemeshing::project_to_reference(SurfaceMesh::Vertex v)
 
 void SurfaceRemeshing::split_long_edges()
 {
-    SurfaceMesh::Vertex vnew, v0, v1;
-    SurfaceMesh::Edge enew, e0, e1;
-    SurfaceMesh::Face f0, f1, f2, f3;
+    Vertex vnew, v0, v1;
+    Edge enew, e0, e1;
+    Face f0, f1, f2, f3;
     bool ok, is_feature, is_boundary;
     int i;
 
@@ -384,8 +384,8 @@ void SurfaceRemeshing::split_long_edges()
                 if (is_feature)
                 {
                     enew = is_boundary
-                               ? SurfaceMesh::Edge(mesh_.n_edges() - 2)
-                               : SurfaceMesh::Edge(mesh_.n_edges() - 3);
+                               ? Edge(mesh_.n_edges() - 2)
+                               : Edge(mesh_.n_edges() - 3);
                     efeature_[enew] = true;
                     vfeature_[vnew] = true;
                 }
@@ -404,8 +404,8 @@ void SurfaceRemeshing::split_long_edges()
 
 void SurfaceRemeshing::collapse_short_edges()
 {
-    SurfaceMesh::Vertex v0, v1;
-    SurfaceMesh::Halfedge h0, h1, h01, h10;
+    Vertex v0, v1;
+    Halfedge h0, h1, h01, h10;
     bool ok, b0, b1, l0, l1, f0, f1;
     int i;
     bool hcol01, hcol10;
@@ -546,8 +546,8 @@ void SurfaceRemeshing::collapse_short_edges()
 
 void SurfaceRemeshing::flip_edges()
 {
-    SurfaceMesh::Vertex v0, v1, v2, v3;
-    SurfaceMesh::Halfedge h;
+    Vertex v0, v1, v2, v3;
+    Halfedge h;
     int val0, val1, val2, val3;
     int val_opt0, val_opt1, val_opt2, val_opt3;
     int ve0, ve1, ve2, ve3, ve_before, ve_after;
@@ -555,7 +555,7 @@ void SurfaceRemeshing::flip_edges()
     int i;
 
     // precompute valences
-    SurfaceMesh::VertexProperty<int> valence =
+    VertexProperty<int> valence =
         mesh_.add_vertex_property<int>("valence");
     for (auto v : mesh_.vertices())
     {
@@ -640,13 +640,13 @@ void SurfaceRemeshing::flip_edges()
 
 void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
 {
-    SurfaceMesh::Vertex v1, v2, v3, vv;
-    SurfaceMesh::Edge e;
+    Vertex v1, v2, v3, vv;
+    Edge e;
     Scalar w, ww, area;
     Point u, n, t, b;
 
     // add property
-    SurfaceMesh::VertexProperty<Point> update =
+    VertexProperty<Point> update =
         mesh_.add_vertex_property<Point>("v:update");
 
     // project at the beginning to get valid sizing values and normal vectors
@@ -783,9 +783,9 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
 
 void SurfaceRemeshing::remove_caps()
 {
-    SurfaceMesh::Halfedge h;
-    SurfaceMesh::Vertex v, vb, vd;
-    SurfaceMesh::Face fb, fd;
+    Halfedge h;
+    Vertex v, vb, vd;
+    Face fb, fd;
     Scalar a0, a1, amin, aa(::cos(170.0 * M_PI / 180.0));
     Point a, b, c, d;
 

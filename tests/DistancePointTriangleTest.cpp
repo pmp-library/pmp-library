@@ -38,8 +38,8 @@ class DistancePointTriangleTest : public ::testing::Test
 {
 public:
     SurfaceMesh         mesh;
-    SurfaceMesh::Vertex v0, v1, v2, v3;
-    SurfaceMesh::Face   f0;
+    Vertex v0, v1, v2, v3;
+    Face   f0;
 
     void add_degenerate_triangle()
     {

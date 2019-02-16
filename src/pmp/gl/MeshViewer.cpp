@@ -186,9 +186,9 @@ void MeshViewer::keyboard(int key, int scancode, int action, int mods)
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Vertex MeshViewer::pick_vertex(int x, int y)
+Vertex MeshViewer::pick_vertex(int x, int y)
 {
-    SurfaceMesh::Vertex vmin;
+    Vertex vmin;
 
     vec3    p;
     Scalar  d, dmin(FLT_MAX);

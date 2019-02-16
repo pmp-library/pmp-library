@@ -236,7 +236,7 @@ void SurfaceMesh::property_stats() const
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Halfedge SurfaceMesh::find_halfedge(Vertex start, Vertex end) const
+Halfedge SurfaceMesh::find_halfedge(Vertex start, Vertex end) const
 {
     assert(is_valid(start) && is_valid(end));
 
@@ -258,7 +258,7 @@ SurfaceMesh::Halfedge SurfaceMesh::find_halfedge(Vertex start, Vertex end) const
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Edge SurfaceMesh::find_edge(Vertex a, Vertex b) const
+Edge SurfaceMesh::find_edge(Vertex a, Vertex b) const
 {
     Halfedge h = find_halfedge(a, b);
     return h.is_valid() ? edge(h) : Edge();
@@ -288,7 +288,7 @@ void SurfaceMesh::adjust_outgoing_halfedge(Vertex v)
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Vertex SurfaceMesh::add_vertex(const Point& p)
+Vertex SurfaceMesh::add_vertex(const Point& p)
 {
     Vertex v = new_vertex();
     if (v.is_valid())
@@ -298,7 +298,7 @@ SurfaceMesh::Vertex SurfaceMesh::add_vertex(const Point& p)
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Face SurfaceMesh::add_triangle(Vertex v0, Vertex v1, Vertex v2)
+Face SurfaceMesh::add_triangle(Vertex v0, Vertex v1, Vertex v2)
 {
     add_face_vertices_.resize(3);
     add_face_vertices_[0] = v0;
@@ -309,7 +309,7 @@ SurfaceMesh::Face SurfaceMesh::add_triangle(Vertex v0, Vertex v1, Vertex v2)
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Face SurfaceMesh::add_quad(Vertex v0, Vertex v1, Vertex v2,
+Face SurfaceMesh::add_quad(Vertex v0, Vertex v1, Vertex v2,
                                        Vertex v3)
 {
     add_face_vertices_.resize(4);
@@ -322,7 +322,7 @@ SurfaceMesh::Face SurfaceMesh::add_quad(Vertex v0, Vertex v1, Vertex v2,
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
+Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
 {
     const size_t n(vertices.size());
     assert(n > 2);
@@ -657,7 +657,7 @@ void SurfaceMesh::split(Face f, Vertex v)
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Halfedge SurfaceMesh::split(Edge e, Vertex v)
+Halfedge SurfaceMesh::split(Edge e, Vertex v)
 {
     Halfedge h0 = halfedge(e, 0);
     Halfedge o0 = halfedge(e, 1);
@@ -755,7 +755,7 @@ SurfaceMesh::Halfedge SurfaceMesh::split(Edge e, Vertex v)
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Halfedge SurfaceMesh::insert_vertex(Halfedge h0, Vertex v)
+Halfedge SurfaceMesh::insert_vertex(Halfedge h0, Vertex v)
 {
     // before:
     //
@@ -808,7 +808,7 @@ SurfaceMesh::Halfedge SurfaceMesh::insert_vertex(Halfedge h0, Vertex v)
 
 //-----------------------------------------------------------------------------
 
-SurfaceMesh::Halfedge SurfaceMesh::insert_edge(Halfedge h0, Halfedge h1)
+Halfedge SurfaceMesh::insert_edge(Halfedge h0, Halfedge h1)
 {
     assert(face(h0) == face(h1));
     assert(face(h0).is_valid());

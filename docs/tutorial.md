@@ -37,7 +37,7 @@ number of vertices, edges, and faces is printed to standard output.
     SurfaceMesh mesh;
 
     // instantiate 4 vertex handles
-    SurfaceMesh::Vertex v0,v1,v2,v3;
+    Vertex v0,v1,v2,v3;
 
     // add 4 vertices
     v0 = mesh.add_vertex(Point(0,0,0));
@@ -142,7 +142,7 @@ allocate, use and remove a custom edge property.
     auto edge_points = mesh.add_edge_property<Point>("propertyName");
 
     // access the edge property like an array
-    SurfaceMesh::Edge e;
+    Edge e;
     edge_points[e] = Point(x,y,z);
 
     // remove property and free memory
@@ -169,7 +169,7 @@ Commonly used connectivity queries such as retrieving the next
 halfedge or the target vertex of an halfedge are illustrated below.
 
 ~~~~{.cpp}
-    SurfaceMesh::Halfedge h;
+    Halfedge h;
     auto h0 = mesh.next_halfedge(h);
     auto h1 = mesh.prev_halfedge(h);
     auto h2 = mesh.opposite_halfedge(h);
@@ -192,10 +192,10 @@ The corresponding member functions and their syntax is demonstrated in the
 pseudo-code below.
 
 ~~~~{.cpp}
-    SurfaceMesh::Vertex   v;
-    SurfaceMesh::Edge     e;
-    SurfaceMesh::Halfedge h;
-    SurfaceMesh::Face     f;
+    Vertex   v;
+    Edge     e;
+    Halfedge h;
+    Face     f;
 
     mesh.split(f, v);
     mesh.split(e, v);

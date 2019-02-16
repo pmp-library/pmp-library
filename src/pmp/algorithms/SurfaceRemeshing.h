@@ -75,14 +75,14 @@ private:
     void tangential_smoothing(unsigned int iterations);
     void remove_caps();
 
-    void project_to_reference(SurfaceMesh::Vertex v);
+    void project_to_reference(Vertex v);
 
-    bool is_too_long(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1) const
+    bool is_too_long(Vertex v0, Vertex v1) const
     {
         return distance(points_[v0], points_[v1]) >
                4.0 / 3.0 * std::min(vsizing_[v0], vsizing_[v1]);
     }
-    bool is_too_short(SurfaceMesh::Vertex v0, SurfaceMesh::Vertex v1) const
+    bool is_too_short(Vertex v0, Vertex v1) const
     {
         return distance(points_[v0], points_[v1]) <
                4.0 / 5.0 * std::min(vsizing_[v0], vsizing_[v1]);
@@ -101,17 +101,17 @@ private:
     Scalar max_edge_length_;
     Scalar approx_error_;
 
-    SurfaceMesh::VertexProperty<Point> points_;
-    SurfaceMesh::VertexProperty<Point> vnormal_;
-    SurfaceMesh::VertexProperty<bool> vfeature_;
-    SurfaceMesh::EdgeProperty<bool> efeature_;
-    SurfaceMesh::VertexProperty<bool> vlocked_;
-    SurfaceMesh::EdgeProperty<bool> elocked_;
-    SurfaceMesh::VertexProperty<Scalar> vsizing_;
+    VertexProperty<Point> points_;
+    VertexProperty<Point> vnormal_;
+    VertexProperty<bool> vfeature_;
+    EdgeProperty<bool> efeature_;
+    VertexProperty<bool> vlocked_;
+    EdgeProperty<bool> elocked_;
+    VertexProperty<Scalar> vsizing_;
 
-    SurfaceMesh::VertexProperty<Point> refpoints_;
-    SurfaceMesh::VertexProperty<Point> refnormals_;
-    SurfaceMesh::VertexProperty<Scalar> refsizing_;
+    VertexProperty<Point> refpoints_;
+    VertexProperty<Point> refnormals_;
+    VertexProperty<Scalar> refsizing_;
 };
 
 //=============================================================================

@@ -45,7 +45,7 @@ Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2)
 
 //-----------------------------------------------------------------------------
 
-Scalar triangle_area(const SurfaceMesh& mesh, SurfaceMesh::Face f)
+Scalar triangle_area(const SurfaceMesh& mesh, Face f)
 {
     assert(mesh.valence(f) == 3);
 
@@ -59,12 +59,12 @@ Scalar triangle_area(const SurfaceMesh& mesh, SurfaceMesh::Face f)
 
 //-----------------------------------------------------------------------------
 
-double cotan_weight(const SurfaceMesh& mesh, SurfaceMesh::Edge e)
+double cotan_weight(const SurfaceMesh& mesh, Edge e)
 {
     double weight = 0.0;
 
-    const SurfaceMesh::Halfedge h0 = mesh.halfedge(e, 0);
-    const SurfaceMesh::Halfedge h1 = mesh.halfedge(e, 1);
+    const Halfedge h0 = mesh.halfedge(e, 0);
+    const Halfedge h1 = mesh.halfedge(e, 1);
 
     const dvec3 p0 = (dvec3)mesh.position(mesh.to_vertex(h0));
     const dvec3 p1 = (dvec3)mesh.position(mesh.to_vertex(h1));
@@ -105,13 +105,13 @@ double cotan_weight(const SurfaceMesh& mesh, SurfaceMesh::Edge e)
 
 //-----------------------------------------------------------------------------
 
-double voronoi_area(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
+double voronoi_area(const SurfaceMesh& mesh, Vertex v)
 {
     double area(0.0);
 
     if (!mesh.is_isolated(v))
     {
-        SurfaceMesh::Halfedge h0, h1, h2;
+        Halfedge h0, h1, h2;
         dvec3 p, q, r, pq, qr, pr;
         double dotp, dotq, dotr, triArea;
         double cotq, cotr;
@@ -179,14 +179,14 @@ double voronoi_area(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
 
 //-----------------------------------------------------------------------------
 
-double voronoi_area_barycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
+double voronoi_area_barycentric(const SurfaceMesh& mesh, Vertex v)
 {
     double area(0.0);
 
     if (!mesh.is_isolated(v))
     {
         const Point p = mesh.position(v);
-        SurfaceMesh::Halfedge h0, h1;
+        Halfedge h0, h1;
         Point q, r, pq, pr;
 
         for (auto h : mesh.halfedges(v))
@@ -212,7 +212,7 @@ double voronoi_area_barycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
 
 //-----------------------------------------------------------------------------
 
-Point laplace(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
+Point laplace(const SurfaceMesh& mesh, Vertex v)
 {
     Point laplace(0.0, 0.0, 0.0);
 
@@ -236,7 +236,7 @@ Point laplace(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
 
 //-----------------------------------------------------------------------------
 
-Scalar angle_sum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
+Scalar angle_sum(const SurfaceMesh& mesh, Vertex v)
 {
     Scalar angles(0.0);
 
@@ -264,7 +264,7 @@ Scalar angle_sum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
 
 //-----------------------------------------------------------------------------
 
-VertexCurvature vertex_curvature(const SurfaceMesh& mesh, SurfaceMesh::Vertex v)
+VertexCurvature vertex_curvature(const SurfaceMesh& mesh, Vertex v)
 {
     VertexCurvature c;
 

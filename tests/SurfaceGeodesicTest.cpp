@@ -39,8 +39,8 @@ TEST(SurfaceGeodesicTest, geodesic)
     EXPECT_TRUE(mesh.read("pmp-data/off/sphere.off"));
 
     // use first vertex as seed
-    std::vector<SurfaceMesh::Vertex> seed;
-    seed.push_back(SurfaceMesh::Vertex(0));
+    std::vector<Vertex> seed;
+    seed.push_back(Vertex(0));
 
     // compute geodesic distance
     SurfaceGeodesic geodist(mesh, seed);
@@ -59,8 +59,8 @@ TEST(SurfaceGeodesicTest, geodesic_to_texture)
     EXPECT_TRUE(mesh.read("pmp-data/off/bunny_adaptive.off"));
 
     // use first vertex as seed
-    std::vector<SurfaceMesh::Vertex> seed;
-    seed.push_back(SurfaceMesh::Vertex(0));
+    std::vector<Vertex> seed;
+    seed.push_back(Vertex(0));
 
     // compute geodesic distance
     SurfaceGeodesic geodist(mesh, seed);

@@ -38,8 +38,8 @@ class DifferentialGeometryTest : public ::testing::Test
 {
 public:
     SurfaceMesh         mesh;
-    SurfaceMesh::Vertex v0, v1, v2, v3;
-    SurfaceMesh::Face   f0;
+    Vertex v0, v1, v2, v3;
+    Face   f0;
 
     void add_triangle()
     {
@@ -54,7 +54,7 @@ public:
         ASSERT_TRUE(mesh.read("pmp-data/off/vertex_onering.off"));
         EXPECT_EQ(mesh.n_vertices(), size_t(7));
         EXPECT_EQ(mesh.n_faces(), size_t(6));
-        v0            = SurfaceMesh::Vertex(3); // the central vertex
+        v0            = Vertex(3); // the central vertex
         auto points   = mesh.get_vertex_property<Point>("v:point");
         points[v0][2] = 0.1; // lift central vertex
     }

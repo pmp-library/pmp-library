@@ -168,7 +168,7 @@ void SurfaceCurvature::analyze_tensor(unsigned int post_smoothing_steps,
     double eval1, eval2, eval3, kmin, kmax;
     dvec3 evec1, evec2, evec3;
 
-    std::vector<SurfaceMesh::Vertex> neighborhood;
+    std::vector<Vertex> neighborhood;
     neighborhood.reserve(15);
 
     // precompute Voronoi area per vertex

@@ -63,8 +63,8 @@ void SurfaceSmoothing::explicit_smoothing(unsigned int iters,
     }
 
     // smoothing iterations
-    SurfaceMesh::Vertex vv;
-    SurfaceMesh::Edge e;
+    Vertex vv;
+    Edge e;
     for (unsigned int i = 0; i < iters; ++i)
     {
         // step 1: compute Laplace for each vertex
@@ -135,7 +135,7 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     // collect free (non-boundary) vertices in array free_vertices[]
     // assign indices such that idx[ free_vertices[i] ] == i
     unsigned i = 0;
-    std::vector<SurfaceMesh::Vertex> free_vertices;
+    std::vector<Vertex> free_vertices;
     free_vertices.reserve(mesh_.n_vertices());
     for (auto v : mesh_.vertices())
     {
@@ -156,8 +156,8 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
 
     // setup matrix A and rhs B
     double ww;
-    SurfaceMesh::Vertex v, vv;
-    SurfaceMesh::Edge e;
+    Vertex v, vv;
+    Edge e;
     for (unsigned int i = 0; i < n; ++i)
     {
         v = free_vertices[i];

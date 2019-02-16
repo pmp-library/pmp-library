@@ -35,16 +35,16 @@ namespace pmp {
 //=============================================================================
 
 Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh,
-                                           SurfaceMesh::Vertex v)
+                                           Vertex v)
 {
     Point nn(0, 0, 0);
-    SurfaceMesh::Halfedge h = mesh.halfedge(v);
+    Halfedge h = mesh.halfedge(v);
 
     if (h.is_valid())
     {
         auto vpoint = mesh.get_vertex_property<Point>("v:point");
 
-        const SurfaceMesh::Halfedge hend = h;
+        const Halfedge hend = h;
         const Point p0 = vpoint[v];
 
         Point n, p1, p2;
@@ -95,10 +95,10 @@ Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh,
 //-----------------------------------------------------------------------------
 
 Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh,
-                                         SurfaceMesh::Face f)
+                                         Face f)
 {
-    SurfaceMesh::Halfedge h = mesh.halfedge(f);
-    SurfaceMesh::Halfedge hend = h;
+    Halfedge h = mesh.halfedge(f);
+    Halfedge hend = h;
 
     auto vpoint = mesh.get_vertex_property<Point>("v:point");
 
@@ -133,7 +133,7 @@ Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh,
 //-----------------------------------------------------------------------------
 
 Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
-                                           SurfaceMesh::Halfedge h,
+                                           Halfedge h,
                                            Scalar crease_angle)
 {
     // avoid numerical problems
@@ -147,8 +147,8 @@ Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
     {
         auto vpoint = mesh.get_vertex_property<Point>("v:point");
 
-        const SurfaceMesh::Halfedge hend = h;
-        const SurfaceMesh::Vertex v0 = mesh.to_vertex(h);
+        const Halfedge hend = h;
+        const Vertex v0 = mesh.to_vertex(h);
         const Point p0 = vpoint[v0];
 
         Point n, p1, p2;

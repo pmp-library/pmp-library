@@ -60,8 +60,8 @@ public:
 private:
     SurfaceMesh& mesh_;
 
-    SurfaceMesh::VertexProperty<bool> vfeature_;
-    SurfaceMesh::EdgeProperty<bool> efeature_;
+    VertexProperty<bool> vfeature_;
+    EdgeProperty<bool> efeature_;
 };
 
 //=============================================================================

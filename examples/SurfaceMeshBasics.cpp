@@ -44,7 +44,7 @@ int main(void)
     SurfaceMesh mesh;
 
     // instantiate 4 vertex handles
-    SurfaceMesh::Vertex v0,v1,v2,v3;
+    Vertex v0,v1,v2,v3;
 
     // add 4 vertices
     v0 = mesh.add_vertex(Point(0,0,0));

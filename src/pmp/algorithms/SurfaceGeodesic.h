@@ -52,10 +52,6 @@ namespace pmp {
 class SurfaceGeodesic
 {
 public:
-    typedef SurfaceMesh::Vertex    Vertex;
-    typedef SurfaceMesh::Halfedge  Halfedge;
-
-
     //! Construct with mesh and seed vertices.
     //! Grow around seed up to specified maximum distance.
     //! Set whether to use virtual edges (more computation, more accurate result)
@@ -79,7 +75,7 @@ private:
     class VertexCmp
     {
         public:
-            VertexCmp(const SurfaceMesh::VertexProperty<Scalar>& dist) : dist_(dist) {}
+            VertexCmp(const VertexProperty<Scalar>& dist) : dist_(dist) {}
 
             bool operator()(Vertex v0, Vertex v1) const
             {
@@ -87,7 +83,7 @@ private:
             }
 
         private:
-            const SurfaceMesh::VertexProperty<Scalar>& dist_;
+            const VertexProperty<Scalar>& dist_;
     };
 
     // priority queue using geodesic distance as sorting criterion
@@ -114,8 +110,8 @@ private:
 
 
     SurfaceMesh&                             mesh_;
-    SurfaceMesh::VertexProperty<Scalar>      distance_;
-    SurfaceMesh::VertexProperty<bool>        processed_;
+    VertexProperty<Scalar>      distance_;
+    VertexProperty<bool>        processed_;
     PriorityQueue*                           front_;
     std::vector<Vertex>                      seed_;
     Scalar                                   maxdist_;

@@ -82,22 +82,22 @@ inline Scalar cotan(const Point& v0, const Point& v1)
 Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2);
 
 //! compute area of triangle f
-Scalar triangle_area(const SurfaceMesh& mesh, SurfaceMesh::Face f);
+Scalar triangle_area(const SurfaceMesh& mesh, Face f);
 
 //! compute the cotangent weight for edge e
-double cotan_weight(const SurfaceMesh& mesh, SurfaceMesh::Edge e);
+double cotan_weight(const SurfaceMesh& mesh, Edge e);
 
 //! compute (mixed) Voronoi area of vertex v
-double voronoi_area(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
+double voronoi_area(const SurfaceMesh& mesh, Vertex v);
 
 //! compute barycentric Voronoi area of vertex v
-double voronoi_area_barycentric(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
+double voronoi_area_barycentric(const SurfaceMesh& mesh, Vertex v);
 
 //! compute Laplace vector for vertex v (normalized by Voronoi area)
-Point laplace(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
+Point laplace(const SurfaceMesh& mesh, Vertex v);
 
 //! compute the sum of angles around vertex v (used for Gaussian curvature)
-Scalar angle_sum(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
+Scalar angle_sum(const SurfaceMesh& mesh, Vertex v);
 
 //! discrete curvature information for a vertex. used for vertex_curvature()
 struct VertexCurvature
@@ -112,7 +112,7 @@ struct VertexCurvature
 
 //! compute min, max, mean, and Gaussian curvature for vertex v. this will not
 //! give realiable values for boundary vertices.
-VertexCurvature vertex_curvature(const SurfaceMesh& mesh, SurfaceMesh::Vertex v);
+VertexCurvature vertex_curvature(const SurfaceMesh& mesh, Vertex v);
 
 //=============================================================================
 //! @}

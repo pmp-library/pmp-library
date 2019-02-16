@@ -44,7 +44,7 @@ TEST_F(SurfaceNormalsTest, compute_vertex_normals)
     mesh.read("pmp-data/stl/icosahedron_ascii.stl");
     SurfaceNormals::compute_vertex_normals(mesh);
     auto vnormals = mesh.get_vertex_property<Normal>("v:normal");
-    auto vn0 = vnormals[SurfaceMesh::Vertex(0)];
+    auto vn0 = vnormals[Vertex(0)];
     EXPECT_GT(norm(vn0), 0);
 }
 
@@ -53,21 +53,21 @@ TEST_F(SurfaceNormalsTest, compute_face_normals)
     mesh.read("pmp-data/stl/icosahedron_ascii.stl");
     SurfaceNormals::compute_face_normals(mesh);
     auto fnormals = mesh.get_face_property<Normal>("f:normal");
-    auto fn0 = fnormals[SurfaceMesh::Face(0)];
+    auto fn0 = fnormals[Face(0)];
     EXPECT_GT(norm(fn0), 0);
 }
 
 TEST_F(SurfaceNormalsTest, compute_corner_normal)
 {
     mesh.read("pmp-data/stl/icosahedron_ascii.stl");
-    auto h = SurfaceMesh::Halfedge(0);
+    auto h = Halfedge(0);
     auto n = SurfaceNormals::compute_corner_normal(mesh,h,(Scalar)M_PI/3.0);
     EXPECT_GT(norm(n), 0);
 }
 
 TEST_F(SurfaceNormalsTest, polygonal_face_normal)
 {
-    std::vector<SurfaceMesh::Vertex> vertices(5);
+    std::vector<Vertex> vertices(5);
     vertices[0] = mesh.add_vertex(Point(0,0,0));
     vertices[1] = mesh.add_vertex(Point(1,0,0));
     vertices[2] = mesh.add_vertex(Point(1,1,0));

@@ -37,8 +37,8 @@ class SurfaceMeshTest : public ::testing::Test
 {
 public:
     pmp::SurfaceMesh mesh;
-    pmp::SurfaceMesh::Vertex v0,v1,v2,v3;
-    pmp::SurfaceMesh::Face f0;
+    pmp::Vertex v0,v1,v2,v3;
+    pmp::Face f0;
     using Point = pmp::Point;
 
     void add_triangle()

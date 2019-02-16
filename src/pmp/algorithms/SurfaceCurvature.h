@@ -67,31 +67,31 @@ public:
                         bool two_ring_neighborhood = false);
 
     //! return mean curvature
-    Scalar mean_curvature(SurfaceMesh::Vertex v) const
+    Scalar mean_curvature(Vertex v) const
     {
         return 0.5 * (min_curvature_[v] + max_curvature_[v]);
     }
 
     //! return Gaussian curvature
-    Scalar gauss_curvature(SurfaceMesh::Vertex v) const
+    Scalar gauss_curvature(Vertex v) const
     {
         return min_curvature_[v] * max_curvature_[v];
     }
 
     //! return minimum (signed) curvature
-    Scalar min_curvature(SurfaceMesh::Vertex v) const
+    Scalar min_curvature(Vertex v) const
     {
         return min_curvature_[v];
     }
 
     //! return maximum (signed) curvature
-    Scalar max_curvature(SurfaceMesh::Vertex v) const
+    Scalar max_curvature(Vertex v) const
     {
         return max_curvature_[v];
     }
 
     //! return maximum absolute curvature
-    Scalar max_abs_curvature(SurfaceMesh::Vertex v) const
+    Scalar max_abs_curvature(Vertex v) const
     {
         return std::max(fabs(min_curvature_[v]), fabs(max_curvature_[v]));
     }
@@ -114,8 +114,8 @@ private:
 
 private:
     SurfaceMesh& mesh_;
-    SurfaceMesh::VertexProperty<Scalar> min_curvature_;
-    SurfaceMesh::VertexProperty<Scalar> max_curvature_;
+    VertexProperty<Scalar> min_curvature_;
+    VertexProperty<Scalar> max_curvature_;
 };
 
 //=============================================================================
