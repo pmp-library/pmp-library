@@ -32,24 +32,6 @@
 
 //=============================================================================
 
-template <class HeapEntry>
-struct HeapInterfaceT
-{
-    //! Comparison of two HeapEntry's: strict less
-    bool less(const HeapEntry& e1, const HeapEntry& e2);
-
-    //! Comparison of two HeapEntry's: strict greater
-    bool greater(const HeapEntry& e1, const HeapEntry& e2);
-
-    //! Get the heap position of HeapEntry E
-    int get_heap_position(const HeapEntry& e);
-
-    //! Set the heap position of HeapEntry E
-    void set_heap_position(HeapEntry& e, int i);
-};
-
-//=============================================================================
-
 template <class HeapEntry, class HeapInterface>
 class Heap : private std::vector<HeapEntry>
 {
@@ -60,7 +42,7 @@ public:
     Heap() : HeapVector() {}
 
     //! Construct with a given \c HeapInterface.
-    Heap(const HeapInterface& Interface) : HeapVector(), interface_(Interface)
+    Heap(const HeapInterface& i) : HeapVector(), interface_(i)
     {
     }
 
