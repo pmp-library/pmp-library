@@ -30,7 +30,7 @@ browse the source, get the latest development version, or to report any issues.
 
 ## License
 
-The pmp-library is provided under a flexible 3-clause BSD
+The pmp-library is provided under a simple and flexible MIT
 [license](https://github.com/pmp-library/pmp-library/blob/master/LICENSE.txt),
 thereby allowing for both open-source and commercial usage.
 
