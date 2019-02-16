@@ -28,7 +28,7 @@
 
 #include <pmp/algorithms/TriangleKdTree.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
-#include <pmp/algorithms/distancePointTriangle.h>
+#include <pmp/algorithms/DistancePointTriangle.h>
 #include <pmp/BoundingBox.h>
 #include <cfloat>
 

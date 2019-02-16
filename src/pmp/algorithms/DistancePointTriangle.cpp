@@ -26,7 +26,7 @@
 // POSSIBILITY OF SUCH DAMAGE.
 //=============================================================================
 
-#include <pmp/algorithms/distancePointTriangle.h>
+#include <pmp/algorithms/DistancePointTriangle.h>
 #include <cfloat>
 #include <cmath>
 

@@ -74,8 +74,12 @@ system:
 
 ### File Names
 
-File names follow the naming rules for user-defined types. Implementation files
-end with `.cpp` and header files end with `.h`.
+File names follow the naming rules for user-defined types, i.e., they use
+`CamelCase` naming. Implementation files end with `.cpp` and header files end
+with `.h`.
+
+_Exception_: Files for building an executable use an all lowercase name, e.g.,
+`mpview.cpp` to build the `mpview` executable.
 
 ## Formatting
 

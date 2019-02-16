@@ -27,7 +27,7 @@
 //=============================================================================
 
 #include <pmp/algorithms/SurfaceSimplification.h>
-#include <pmp/algorithms/distancePointTriangle.h>
+#include <pmp/algorithms/DistancePointTriangle.h>
 #include <pmp/algorithms/SurfaceNormals.h>
 
 #include <cfloat>

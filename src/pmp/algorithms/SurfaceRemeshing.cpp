@@ -27,10 +27,10 @@
 //=============================================================================
 
 #include <pmp/algorithms/SurfaceRemeshing.h>
-#include <pmp/algorithms/distancePointTriangle.h>
+#include <pmp/algorithms/DistancePointTriangle.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 #include <pmp/algorithms/SurfaceNormals.h>
-#include <pmp/algorithms/barycentricCoordinates.h>
+#include <pmp/algorithms/BarycentricCoordinates.h>
 
 #include <cfloat>
 #include <cmath>

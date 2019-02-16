@@ -29,7 +29,7 @@
 #include "gtest/gtest.h"
 
 #include <pmp/SurfaceMesh.h>
-#include <pmp/algorithms/distancePointTriangle.h>
+#include <pmp/algorithms/DistancePointTriangle.h>
 #include <vector>
 
 using namespace pmp;
