@@ -1,4 +1,11 @@
 //=============================================================================
+// Copyright (C) 2011-2019 The pmp-library developers
+//
+// This file is part of the Polygon Mesh Processing Library.
+// Distributed under the terms of the MIT license, see LICENSE.txt for details.
+//
+// SPDX-License-Identifier: MIT
+//=============================================================================
 
 #include <pmp/gl/MeshViewer.h>
 #include <pmp/algorithms/SurfaceSubdivision.h>
