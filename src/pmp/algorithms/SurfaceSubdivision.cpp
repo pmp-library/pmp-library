@@ -29,8 +29,6 @@
 #include <pmp/algorithms/SurfaceSubdivision.h>
 #include <pmp/Timer.h>
 
-#define NAV 1
-
 //=============================================================================
 
 namespace pmp {
@@ -255,7 +253,6 @@ void SurfaceSubdivision::loop()
         // boundary vertex?
         else if (mesh_.is_boundary(v))
         {
-#ifndef NAV
             auto h1 = mesh_.halfedge(v);
             auto h0 = mesh_.prev_halfedge(h1);
 
@@ -264,13 +261,6 @@ void SurfaceSubdivision::loop()
             p += points_[mesh_.to_vertex(h1)];
             p += points_[mesh_.from_vertex(h0)];
             p *= 0.125;
-#else
-            Point p = mesh_.position(v);
-            p *= 6.0;
-            p += mesh_.nav(v).halfedge().to_vertex().position();
-            p += mesh_.nav(v).halfedge().prev().from_vertex().position();
-            p *= 0.125;
-#endif
             vpoint[v] = p;
         }
 
@@ -327,21 +317,14 @@ void SurfaceSubdivision::loop()
         // boundary or feature edge?
         if (mesh_.is_boundary(e) || (efeature_ && efeature_[e]))
         {
-#ifndef NAV
             epoint[e] = (points_[mesh_.vertex(e, 0)] +
                          points_[mesh_.vertex(e, 1)]) *
                         Scalar(0.5);
-#else
-            epoint[e] = (mesh_.nav(e).vertex(0).position() +
-                         mesh_.nav(e).vertex(1).position()) *
-                        Scalar(0.5);
-#endif
         }
 
         // interior edge
         else
         {
-#ifndef NAV
             auto h0 = mesh_.halfedge(e, 0);
             auto h1 = mesh_.halfedge(e, 1);
             Point p = points_[mesh_.to_vertex(h0)];
@@ -351,16 +334,6 @@ void SurfaceSubdivision::loop()
             p += points_[mesh_.to_vertex(mesh_.next_halfedge(h1))];
             p *= 0.125;
             epoint[e] = p;
-#else
-            Point p;
-            p = mesh_.nav(e).vertex(0).position();
-            p += mesh_.nav(e).vertex(1).position();
-            p *= 3.0;
-            p += mesh_.nav(e).halfedge(0).next().to_vertex().position();
-            p += mesh_.nav(e).halfedge(1).next().to_vertex().position();
-            p *= 0.125;
-            epoint[e] = p;
-#endif
         }
     }
 
