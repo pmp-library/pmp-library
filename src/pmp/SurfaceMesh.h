@@ -257,7 +257,7 @@ public:
     {
     public:
         //! Default constructor
-        VertexIterator(Vertex v = Vertex(), const SurfaceMesh* m = NULL)
+        VertexIterator(Vertex v = Vertex(), const SurfaceMesh* m = nullptr)
             : handle_(v), mesh_(m)
         {
             if (mesh_ && mesh_->has_garbage())
@@ -428,7 +428,7 @@ public:
     {
     public:
         //! Default constructor
-        FaceIterator(Face f = Face(), const SurfaceMesh* m = NULL)
+        FaceIterator(Face f = Face(), const SurfaceMesh* m = nullptr)
             : handle_(f), mesh_(m)
         {
             if (mesh_ && mesh_->has_garbage())
@@ -703,7 +703,7 @@ public:
     {
     public:
         //! construct with mesh and vertex (vertex should not be isolated!)
-        FaceAroundVertexCirculator(const SurfaceMesh* m = NULL,
+        FaceAroundVertexCirculator(const SurfaceMesh* m = nullptr,
                                    Vertex v = Vertex())
             : mesh_(m), is_active_(true)
         {
@@ -789,7 +789,7 @@ public:
     {
     public:
         //! default constructor
-        VertexAroundFaceCirculator(const SurfaceMesh* m = NULL, Face f = Face())
+        VertexAroundFaceCirculator(const SurfaceMesh* m = nullptr, Face f = Face())
             : mesh_(m), is_active_(true)
         {
             if (mesh_)
@@ -861,7 +861,7 @@ public:
     {
     public:
         //! default constructur
-        HalfedgeAroundFaceCirculator(const SurfaceMesh* m = NULL,
+        HalfedgeAroundFaceCirculator(const SurfaceMesh* m = nullptr,
                                      Face f = Face())
             : mesh_(m), is_active_(true)
         {

@@ -151,7 +151,7 @@ template <>
 inline const bool* PropertyArray<bool>::data() const
 {
     assert(false);
-    return NULL;
+    return nullptr;
 }
 
 //== CLASS DEFINITION =========================================================
@@ -167,46 +167,46 @@ public:
     friend class SurfaceMesh;
 
 public:
-    Property(PropertyArray<T>* p = NULL) : parray_(p) {}
+    Property(PropertyArray<T>* p = nullptr) : parray_(p) {}
 
-    void reset() { parray_ = NULL; }
+    void reset() { parray_ = nullptr; }
 
-    operator bool() const { return parray_ != NULL; }
+    operator bool() const { return parray_ != nullptr; }
 
     reference operator[](size_t i)
     {
-        assert(parray_ != NULL);
+        assert(parray_ != nullptr);
         return (*parray_)[i];
     }
 
     const_reference operator[](size_t i) const
     {
-        assert(parray_ != NULL);
+        assert(parray_ != nullptr);
         return (*parray_)[i];
     }
 
     const T* data() const
     {
-        assert(parray_ != NULL);
+        assert(parray_ != nullptr);
         return parray_->data();
     }
 
     std::vector<T>& vector()
     {
-        assert(parray_ != NULL);
+        assert(parray_ != nullptr);
         return parray_->vector();
     }
 
 private:
     PropertyArray<T>& array()
     {
-        assert(parray_ != NULL);
+        assert(parray_ != nullptr);
         return *parray_;
     }
 
     const PropertyArray<T>& array() const
     {
-        assert(parray_ != NULL);
+        assert(parray_ != nullptr);
         return *parray_;
     }
 
