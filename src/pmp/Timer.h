@@ -54,16 +54,16 @@ public:
     //! Continue measurement, accumulates elapased times
     void cont()
     {
-        start_time_ = std::chrono::high_resolution_clock::now();
+        start_time_ = hclock::now();
         is_running_ = true;
     }
 
     //! Stop time measurement, return elapsed time in ms
     Timer& stop()
     {
-        end_time_ = std::chrono::high_resolution_clock::now();
-        duration time_span =
-            std::chrono::duration_cast<duration>(end_time_ - start_time_);
+        using std::chrono::duration_cast;
+        end_time_ = hclock::now();
+        duration time_span = duration_cast<duration>(end_time_ - start_time_);
         elapsed_ += time_span.count();
         is_running_ = false;
         return *this;
@@ -74,14 +74,14 @@ public:
     {
         if (is_running_)
         {
-            std::cerr << "Timer: stop watch before calling elapsed()\n";
+            std::cerr << "Timer: stop timer before calling elapsed()\n";
         }
         return 1000.0 * elapsed_;
     }
 
 private:
-    typedef std::chrono::time_point<std::chrono::high_resolution_clock>
-        time_point;
+    typedef std::chrono::high_resolution_clock hclock;
+    typedef std::chrono::time_point<hclock> time_point;
     typedef std::chrono::duration<double> duration;
 
     time_point start_time_, end_time_;
@@ -98,8 +98,6 @@ inline std::ostream& operator<<(std::ostream& os, const Timer& timer)
     return os;
 }
 
-//=============================================================================
-//! @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================
