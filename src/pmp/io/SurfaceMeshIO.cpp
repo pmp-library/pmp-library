@@ -836,17 +836,6 @@ bool SurfaceMeshIO::write_off(const SurfaceMesh& mesh,
     return true;
 }
 
-//=============================================================================
-
-template <typename T>
-using VertexProperty = VertexProperty<T>;
-template <typename T>
-using HalfedgeProperty = HalfedgeProperty<T>;
-template <typename T>
-using FaceProperty = FaceProperty<T>;
-
-//== IMPLEMENTATION ===========================================================
-
 //-----------------------------------------------------------------------------
 
 bool SurfaceMeshIO::read_pmp(SurfaceMesh& mesh, const std::string& filename)
