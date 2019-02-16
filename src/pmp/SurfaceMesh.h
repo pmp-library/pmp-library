@@ -65,7 +65,7 @@ public:
     class Handle
     {
     public:
-        //! constructors
+        //! default constructor with invalid index
         explicit Handle(IndexType idx = PMP_MAX_INDEX) : idx_(idx) {}
 
         //! Get the underlying index of this handle
@@ -101,35 +101,27 @@ public:
     };
 
     //! this type represents a vertex (internally it is basically an index)
-    struct Vertex : public Handle
+    class Vertex : public Handle
     {
-        //! default constructor (with invalid index)
-        explicit Vertex(IndexType idx = PMP_MAX_INDEX) : Handle(idx) {};
+        using Handle::Handle;
     };
 
-    //! \brief this type represents a halfedge (internally it is basically an
-    //! index) \sa Vertex, Edge, Face
-    struct Halfedge : public Handle
+    //! this type represents a halfedge (internally it is basically an index)
+    class Halfedge : public Handle
     {
-        //! default constructor (with invalid index)
-        explicit Halfedge(IndexType idx = PMP_MAX_INDEX) : Handle(idx) {}
+        using Handle::Handle;
     };
 
     //! this type represents an edge (internally it is basically an index)
-    //! \sa Vertex, Halfedge, Face
-    struct Edge : public Handle
+    class Edge : public Handle
     {
-        //! default constructor (with invalid index)
-        explicit Edge(IndexType idx = PMP_MAX_INDEX) : Handle(idx) {}
+        using Handle::Handle;
     };
 
-
     //! this type represents a face (internally it is basically an index)
-    //! \sa Vertex, Halfedge, Edge
-    struct Face : public Handle
+    class Face : public Handle
     {
-        //! default constructor (with invalid index)
-        explicit Face(IndexType idx = PMP_MAX_INDEX) : Handle(idx) {}
+        using Handle::Handle;
     };
 
     //!@}
