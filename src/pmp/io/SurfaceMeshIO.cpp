@@ -844,9 +844,6 @@ template <typename T>
 using HalfedgeProperty = SurfaceMesh::HalfedgeProperty<T>;
 template <typename T>
 using FaceProperty = SurfaceMesh::FaceProperty<T>;
-using VertexConnectivity = SurfaceMesh::VertexConnectivity;
-using HalfedgeConnectivity = SurfaceMesh::HalfedgeConnectivity;
-using FaceConnectivity = SurfaceMesh::FaceConnectivity;
 
 //== IMPLEMENTATION ===========================================================
 
@@ -880,16 +877,16 @@ bool SurfaceMeshIO::read_pmp(SurfaceMesh& mesh, const std::string& filename)
     mesh.fprops_.resize(nf);
 
     // get properties
-    auto vconn = mesh.vertex_property<VertexConnectivity>("v:connectivity");
-    auto hconn = mesh.halfedge_property<HalfedgeConnectivity>("h:connectivity");
-    auto fconn = mesh.face_property<FaceConnectivity>("f:connectivity");
+    auto vconn = mesh.vertex_property<SurfaceMesh::VertexConnectivity>("v:connectivity");
+    auto hconn = mesh.halfedge_property<SurfaceMesh::HalfedgeConnectivity>("h:connectivity");
+    auto fconn = mesh.face_property<SurfaceMesh::FaceConnectivity>("f:connectivity");
     auto point = mesh.vertex_property<Point>("v:point");
 
     // read properties from file
-    size_t nvc = fread((char*)vconn.data(), sizeof(VertexConnectivity), nv, in);
+    size_t nvc = fread((char*)vconn.data(), sizeof(SurfaceMesh::VertexConnectivity), nv, in);
     size_t nhc =
-        fread((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, in);
-    size_t nfc = fread((char*)fconn.data(), sizeof(FaceConnectivity), nf, in);
+        fread((char*)hconn.data(), sizeof(SurfaceMesh::HalfedgeConnectivity), nh, in);
+    size_t nfc = fread((char*)fconn.data(), sizeof(SurfaceMesh::FaceConnectivity), nf, in);
     size_t np = fread((char*)point.data(), sizeof(Point), nv, in);
     PMP_ASSERT(nvc == nv);
     PMP_ASSERT(nhc == nh);
@@ -995,10 +992,10 @@ bool SurfaceMeshIO::write_pmp(const SurfaceMesh& mesh,
         return false;
 
     // get properties
-    auto vconn = mesh.get_vertex_property<VertexConnectivity>("v:connectivity");
+    auto vconn = mesh.get_vertex_property<SurfaceMesh::VertexConnectivity>("v:connectivity");
     auto hconn =
-        mesh.get_halfedge_property<HalfedgeConnectivity>("h:connectivity");
-    auto fconn = mesh.get_face_property<FaceConnectivity>("f:connectivity");
+        mesh.get_halfedge_property<SurfaceMesh::HalfedgeConnectivity>("h:connectivity");
+    auto fconn = mesh.get_face_property<SurfaceMesh::FaceConnectivity>("f:connectivity");
     auto point = mesh.get_vertex_property<Point>("v:point");
     auto htex = mesh.get_halfedge_property<TextureCoordinate>("h:tex");
 
@@ -1016,9 +1013,9 @@ bool SurfaceMeshIO::write_pmp(const SurfaceMesh& mesh,
     tfwrite(out, (bool)htex);
 
     // write properties to file
-    fwrite((char*)vconn.data(), sizeof(VertexConnectivity), nv, out);
-    fwrite((char*)hconn.data(), sizeof(HalfedgeConnectivity), nh, out);
-    fwrite((char*)fconn.data(), sizeof(FaceConnectivity), nf, out);
+    fwrite((char*)vconn.data(), sizeof(SurfaceMesh::VertexConnectivity), nv, out);
+    fwrite((char*)hconn.data(), sizeof(SurfaceMesh::HalfedgeConnectivity), nh, out);
+    fwrite((char*)fconn.data(), sizeof(SurfaceMesh::FaceConnectivity), nf, out);
     fwrite((char*)point.data(), sizeof(Point), nv, out);
 
     // texture coordinates

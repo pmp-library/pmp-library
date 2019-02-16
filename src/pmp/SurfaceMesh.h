@@ -133,34 +133,6 @@ public:
     };
 
     //!@}
-    //! \name Connectivity Types
-    //!@{
-
-    //! This type stores the vertex connectivity
-    struct VertexConnectivity
-    {
-        //! an outgoing halfedge per vertex (it will be a boundary halfedge
-        //! for boundary vertices)
-        Halfedge halfedge_;
-    };
-
-    //! This type stores the halfedge connectivity
-    struct HalfedgeConnectivity
-    {
-        Face face_;              //!< face incident to halfedge
-        Vertex vertex_;          //!< vertex the halfedge points to
-        Halfedge next_halfedge_; //!< next halfedge
-        Halfedge prev_halfedge_; //!< previous halfedge
-    };
-
-    //! This type stores the face connectivity
-    //! \sa VertexConnectivity, HalfedgeConnectivity
-    struct FaceConnectivity
-    {
-        Halfedge halfedge_; //!< a halfedge that is part of the face
-    };
-
-    //!@}
     //! \name Property Types
     //!@{
 
@@ -1930,6 +1902,35 @@ public:
     //!@}
 
 private:
+
+    //! \name Connectivity Types
+    //!@{
+
+    //! This type stores the vertex connectivity
+    struct VertexConnectivity
+    {
+        //! an outgoing halfedge per vertex (it will be a boundary halfedge
+        //! for boundary vertices)
+        Halfedge halfedge_;
+    };
+
+    //! This type stores the halfedge connectivity
+    struct HalfedgeConnectivity
+    {
+        Face face_;              //!< face incident to halfedge
+        Vertex vertex_;          //!< vertex the halfedge points to
+        Halfedge next_halfedge_; //!< next halfedge
+        Halfedge prev_halfedge_; //!< previous halfedge
+    };
+
+    //! This type stores the face connectivity
+    //! \sa VertexConnectivity, HalfedgeConnectivity
+    struct FaceConnectivity
+    {
+        Halfedge halfedge_; //!< a halfedge that is part of the face
+    };
+
+    //!@}
     //! \name Allocate new elements
     //!@{
 
