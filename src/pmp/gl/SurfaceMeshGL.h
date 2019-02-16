@@ -9,7 +9,7 @@
 #pragma once
 //=============================================================================
 
-#include <pmp/gl/gl.h>
+#include <pmp/gl/GL.h>
 #include <pmp/gl/Shader.h>
 #include <pmp/MatVec.h>
 #include <pmp/SurfaceMesh.h>

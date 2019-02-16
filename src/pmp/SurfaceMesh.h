@@ -10,8 +10,8 @@
 #pragma once
 //=============================================================================
 
-#include <pmp/types.h>
-#include <pmp/properties.h>
+#include <pmp/Types.h>
+#include <pmp/Properties.h>
 #include <pmp/BoundingBox.h>
 #include <pmp/io/IOOptions.h>
 

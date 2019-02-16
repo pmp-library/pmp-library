@@ -8,10 +8,10 @@
 //=============================================================================
 
 #include <pmp/gl/SurfaceMeshGL.h>
-#include <pmp/gl/phong_shader.h>
+#include <pmp/gl/PhongShader.h>
+#include <pmp/gl/ColdWarmTexture.h>
 #include <pmp/algorithms/SurfaceNormals.h>
 
-#include "cold_warm_texture.h"
 #include <stb_image.h>
 #include <cfloat>
 
