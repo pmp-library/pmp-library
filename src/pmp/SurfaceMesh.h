@@ -28,7 +28,7 @@ class SurfaceMeshIO;
 
 //=============================================================================
 
-//! \addtogroup geometry geometry
+//! \addtogroup core core
 //!@{
 
 // Handle Types

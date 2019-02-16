@@ -2,18 +2,20 @@
 
 This section provides a high-level overview of the pmp-library. We describe its
 design as well as the capabilities provided by the library. The pmp-library is
-organized into different modules. At the core of the library is the @ref
-geometry module providing a data structure polygonal surface meshes. On top of
-the @ref geometry module the @ref algorithms module provides implementations of
+organized into different modules. At the core of the library is the @ref core
+module providing a data structure for polygonal surface meshes. On top of the
+@ref core module the @ref algorithms module provides implementations of
 canonical geometry processing algorithms such as remeshing, simplification,
 subdivision, and smoothing. The @ref io module provides classes for reading and
 writing meshes from / to common file formats. The optional @ref gl module
 provides OpenGL&reg;-based viewers and visualization tools.
 
-## The `geometry` Module
+## The `core` Module
 
-The core of the library is the geometry module providing a simple and efficient
-data structure for representing polygon surface meshes, pmp::SurfaceMesh
+The @ref core of the library provides a simple and efficient data structure for
+representing polygon surface meshes, pmp::SurfaceMesh. It also defines basic
+types such as 3D points and vectors as well as a basic utility classes for
+timing and memory profiling.
 
 ## The `algorithms` Module
 
@@ -40,5 +42,4 @@ information on supported file formats and capabilities.
 In order to easily create visualizations the library contains an optional @ref
 gl module including basic viewers, e.g., pmp::MeshViewer. The corresponding
 OpenGL&reg; code for rendering the data is contained in pmp::SurfaceMeshGL. For
-simplicity, the @ref gl classes inherits from the corresponding @ref geometry
-classes in order to access internal data structures.
+simplicity, the this class inherits from pmp::SuraceMesh.

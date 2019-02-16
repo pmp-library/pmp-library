@@ -40,6 +40,9 @@ namespace pmp {
 
 //=============================================================================
 
+//! \addtogroup core core
+//! @{
+
 //! Scalar type
 typedef float Scalar;
 
@@ -64,17 +67,19 @@ typedef std::uint_least32_t IndexType;
 #define PMP_MAX_INDEX UINT_LEAST32_MAX
 #endif
 
+//! @}
+
 //! \defgroup algorithms algorithms
 //! \brief Geometry processing algorithms.
 
-//! \defgroup geometry geometry
-//! \brief Data structures for representing geometric data sets.
+//! \defgroup core core
+//! \brief Core data structure and utilities.
 
 //! \defgroup gl gl
 //! \brief Visualization tools using OpenGL.
 
 //! \defgroup io io
-//! \brief Classes for reading and writing geometry data structures.
+//! \brief Readers and writers for common file formats.
 
 //=============================================================================
 } // namespace pmp
