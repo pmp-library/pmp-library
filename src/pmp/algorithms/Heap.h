@@ -32,6 +32,10 @@
 
 //=============================================================================
 
+//! \addtogroup algorithms algorithms
+//!@{
+
+//! A class implementing a heap.
 template <class HeapEntry, class HeapInterface>
 class Heap : private std::vector<HeapEntry>
 {
@@ -226,4 +230,6 @@ private:
     HeapInterface interface_;
 };
 
+//=============================================================================
+//!@}
 //=============================================================================
