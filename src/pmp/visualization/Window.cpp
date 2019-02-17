@@ -219,9 +219,9 @@ void Window::render_frame()
     {
         w = int(dw);
         h = int(dh);
-        emscripten_set_canvas_element_size("#canvas", w, h);
+        //emscripten_set_canvas_element_size("#canvas", w, h);
+        emscripten_set_canvas_size(w, h);
         glfw_resize(instance_->window_, w, h);
-        ;
     }
 #endif
 
