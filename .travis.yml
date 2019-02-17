@@ -41,6 +41,7 @@ before_install:
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then pip install --user cpp-coveralls ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y texlive-base ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y doxygen ; fi
+  - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then sudo apt-get install -y ruby-dev ; fi
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then sudo gem install jekyll -v 3.8.5 ; fi
 
 before_script:
