@@ -222,13 +222,13 @@ public:
     explicit ObjectProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for the object
-    typename Property<T>::reference operator[](size_t idx)
+    typename Property<T>::reference operator[](IndexType idx)
     {
         return Property<T>::operator[](idx);
     }
 
     //! access the data stored for the object
-    typename Property<T>::const_reference operator[](size_t idx) const
+    typename Property<T>::const_reference operator[](IndexType idx) const
     {
         return Property<T>::operator[](idx);
     }
