@@ -936,10 +936,39 @@ public:
     //! \name File IO
     //!@{
 
-    //! read mesh from file \c filename. file extension determines file type.
+    //! \brief Read mesh from file \p filename controlled by \p flags
+    //! \details File extension determines file type. Supported formats and
+    //! vertex attributes (a=ASCII, b=binary):
+    //!
+    //! Format | ASCII | Binary | Normals | Colors | Texcoords
+    //! -------|-------|--------|---------|--------|----------
+    //! OFF    | yes   | yes    | a / b   | a      | a / b
+    //! OBJ    | yes   | no     | a       | no     | no
+    //! STL    | yes   | yes    | no      | no     | no
+    //! PLY    | yes   | yes    | no      | no     | no
+    //! PMP    | no    | yes    | no      | no     | no
+    //! XYZ    | yes   | no     | a       | no     | no
+    //! AGI    | yes   | no     | a       | a      | no
+    //!
+    //! In addition, the OBJ and PMP formats support reading per-halfedge
+    //! texture coordinates.
     bool read(const std::string& filename, const IOFlags& flags = IOFlags());
 
-    //! write mesh to file \c filename. file extensions determines file type.
+    //! \brief Write mesh to file \p filename controlled by \p flags
+    //! \details File extension determines file type. Supported formats and
+    //! vertex attributes (a=ASCII, b=binary):
+    //!
+    //! Format | ASCII | Binary | Normals | Colors | Texcoords
+    //! -------|-------|--------|---------|--------|----------
+    //! OFF    | yes   | yes    | a       | a      | a
+    //! OBJ    | yes   | no     | a       | no     | no
+    //! STL    | yes   | yes    | no      | no     | no
+    //! PLY    | yes   | yes    | no      | no     | no
+    //! PMP    | no    | yes    | no      | no     | no
+    //! XYZ    | yes   | no     | a       | no     | no
+    //!
+    //! In addition, the OBJ and PMP formats support writing per-halfedge
+    //! texture coordinates.
     bool write(const std::string& filename, const IOFlags& flags = IOFlags()) const;
 
     //!@}
