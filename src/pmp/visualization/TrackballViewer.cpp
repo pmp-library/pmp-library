@@ -212,7 +212,7 @@ void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 void TrackballViewer::motion(double xpos, double ypos)
 {
     // zoom
-    if ((button_down_[GLFW_MOUSE_BUTTON_MIDDLE]) ||
+    if ((button_down_[GLFW_MOUSE_BUTTON_RIGHT]) ||
         (button_down_[GLFW_MOUSE_BUTTON_LEFT] &&
          (modifiers_ == GLFW_MOD_SHIFT)))
     {
@@ -220,7 +220,7 @@ void TrackballViewer::motion(double xpos, double ypos)
     }
 
     // translation
-    else if (button_down_[GLFW_MOUSE_BUTTON_RIGHT] ||
+    else if (button_down_[GLFW_MOUSE_BUTTON_MIDDLE] ||
              (button_down_[GLFW_MOUSE_BUTTON_LEFT] &&
               (modifiers_ == GLFW_MOD_ALT)))
     {
