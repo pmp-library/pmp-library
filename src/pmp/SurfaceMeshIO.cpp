@@ -34,47 +34,6 @@ void tfwrite(FILE* out, const T& t)
     PMP_ASSERT(n_items > 0);
 }
 
-// check if string contains only spaces
-bool has_only_spaces(const std::string& str)
-{
-    for (const char& c : str)
-    {
-        if (!std::isspace(c))
-            return false;
-    }
-    return true;
-}
-
-// function to skip comment and whitespace lines
-void skip_lines(FILE* in)
-{
-    char line[200];
-    fpos_t pos;
-
-    while (in && !feof(in))
-    {
-        fgetpos(in, &pos);
-        auto c = fgets(line, 200, in);
-        if (c == nullptr)
-            break;
-
-        std::string s(line);
-        if (line[0] == '#')
-        {
-            continue;
-        }
-        else if (has_only_spaces(s))
-        {
-            continue;
-        }
-        else
-        {
-            fsetpos(in, &pos);
-            break;
-        }
-    }
-}
-
 //=============================================================================
 
 namespace pmp {
@@ -457,9 +416,6 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     items = fscanf(in, "%d %d %d\n", (int*)&nv, (int*)&nf, (int*)&ne);
     PMP_ASSERT(items);
 
-    // skip comments and empty lines
-    //skip_lines(in);
-
     mesh.clear();
     mesh.reserve(nv, std::max(3 * nv, ne), nf);
 
@@ -512,9 +468,6 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
             lp += nc;
         }
     }
-
-    // skip comments and empty lines
-    //skip_lines(in);
 
     // read faces: #N v[1] v[2] ... v[n-1]
     std::vector<Vertex> vertices;
@@ -663,9 +616,6 @@ bool SurfaceMeshIO::read_off(SurfaceMesh& mesh)
     FILE* in = fopen(filename_.c_str(), "r");
     if (!in)
         return false;
-
-    // skip comments and empty lines
-    //skip_lines(in);
 
     // read header: [ST][C][N][4][n]OFF BINARY
     char* c = fgets(line, 200, in);
