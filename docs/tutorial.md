@@ -209,10 +209,16 @@ ensure the consistency of the data structure.
 
 ## File I/O
 
-pmp::SurfaceMesh currently supports reading OFF, OBJ, and STL files. Write
-support is currently limited to OFF files. All I/O operations are handled by the
-pmp::SurfaceMesh::read() and pmp::SurfaceMesh::write() member functions, with
-the target file name being their only argument. An example is given below.
+All I/O operations are handled by the pmp::SurfaceMesh::read() and
+pmp::SurfaceMesh::write() member functions. Those functions simply take a file
+name as well as optional pmp::IOFlags as an argument.
+
+We currently support reading and writing several standard (and not so standard)
+file formats: OFF, OBJ, STL, PLY, PMP, XYZ, AGI. See the reference documentation
+for the pmp::SurfaceMesh::read() and pmp::SurfaceMesh::write() functions for
+details on which format supports reading / writing which type of data.
+
+A simple example reading and writing a mesh is shown below.
 
 ~~~~{.cpp}
     // instantiate a SurfaceMesh object
