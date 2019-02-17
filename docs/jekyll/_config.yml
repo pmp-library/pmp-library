@@ -1,0 +1,4 @@
+title: pmp-library
+sass:
+  sass_dir: css
+  style:    compressed

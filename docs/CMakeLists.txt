@@ -8,7 +8,6 @@ if("${DOXYGEN_VERSION}" VERSION_LESS 1.8.3.1)
   message(STATUS "Doxygen version too old. Please get a copy http://www.doxygen.org")
 endif()
 
-
 # prepare doxygen configuration file
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
@@ -16,6 +15,8 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DI
 add_custom_target(docs ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
   # POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/fonts" "${CMAKE_CURRENT_BINARY_DIR}/html/fonts"
+  COMMAND jekyll build -s "${CMAKE_CURRENT_SOURCE_DIR}/jekyll/" -d "${CMAKE_CURRENT_BINARY_DIR}/jekyll/"
+  COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_BINARY_DIR}/jekyll/" "${CMAKE_CURRENT_BINARY_DIR}/html/"
   )
 
 # cleanup $build/html on "make clean"

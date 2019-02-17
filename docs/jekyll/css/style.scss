@@ -1,0 +1,42 @@
+---
+---
+/* modify Bootstrap variables here */
+
+$primary: #09a8ff;
+
+@import 'bootstrap/bootstrap';
+
+/* add additional CSS rules below */
+
+@import url('https://fonts.googleapis.com/css?family=Lato:400,400i');
+
+body {
+  font-family: Lato, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.7;
+}
+
+.jumbotron {
+  background: #fff;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: rgba(255,255,255,1.0);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: rgba(255,255,255,1.0);
+}
+
+.features {
+  padding-top: 1em;
+}
+
+.feature {
+  padding-top: 1em;
+  padding-bottom: 2rem;
+  letter-spacing: 0.1px;
+}
+
+h5 {
+  font-style: italic;
+}

@@ -1,0 +1,94 @@
+---
+layout: default
+title: Home
+---
+
+<div class="jumbotron jumbotron-fluid no-pad">
+  <div class="container" style="text-align:center">
+    <img src="/images/pmp-logo-main.png" style="width: 700px;max-width:100%;padding-bottom:30px"/>
+    <h2 style="padding-bottom:20px"><i>Pimp your meshes!</i></h2>
+    <div class="buttons">
+      <a class="btn btn-primary" href="https://github.com/pmp-library/pmp-library/archive/master.zip" role="button"><i class="fas fa-download"></i> Download</a>
+      <a class="btn btn-primary" href="https://github.com/pmp-library/pmp-library/" role="button"><i class="fab fa-github"></i> GitHub</a>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="features bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12" style="text-align:center; margin-bottom: 2em;">
+        <h2>Features</h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md feature">
+        <h5>Simple & Efficient Data Structure</h5>
+        <p>
+          The core of the library is a simple and efficient halfedge mesh data
+          structure for storing and processing polygon surface meshes. It has
+          been carefully designed and implemented with a focus on ease of use
+          and performance while maintaining high flexibility.
+        </p>
+      </div>
+
+      <div class="col-md feature">
+        <h5>Tried & Tested Algorithms</h5>
+        <p>
+          On top of the core data structure the library provides implementations
+          of canonical geometry processing algorithms such as mesh
+          simplification based on error quadrics, curvature adaptive remeshing,
+          subdivision, smoothing, or parametrization.
+        </p>
+      </div>
+
+      <div class="col-md feature">
+        <h5>Ready-to-Use Visualization Tools</h5>
+        <p>
+          To support rapid prototyping the library provides mesh viewers and
+          visualization utilities based on OpenGL&reg;. In addition, the library
+          can be compiled into JavaScript thereby allowing to run mesh
+          processing applications directly in a browser,
+          see <a href="mpview.html">here</a> for a demo.
+        </p>
+      </div>
+    </div>
+
+    <!-- <div class="row"> -->
+    <!--   <div class="col-md feature"> -->
+    <!--     <h5>Clean & Lean</h5> -->
+    <!--     <p> -->
+    <!--       The pmp-library strives to keep things clean and lean. Dependencies -->
+    <!--       are kept to a minimum and are bundled using git submodules. The -->
+    <!--       library follows software engineering best practices such as continuous -->
+    <!--       integration and unit testing. The code is clean with a common styling -->
+    <!--       applied throughout the code base. Software abstractions are made as -->
+    <!--       easy and simple as possible, but not too simple. -->
+    <!--     </p> -->
+    <!--   </div> -->
+
+    <!--   <div class="col-md feature"> -->
+    <!--     <h5>Liberal Licensing</h5> -->
+    <!--     <p> -->
+    <!--       The pmp-library is provided under a simple and flexible MIT license, -->
+    <!--       thereby allowing for both open-source and commercial usage. -->
+    <!--     </p> -->
+    <!--   </div> -->
+    <!-- </div> -->
+
+  </div>
+</div>
+
+<div style="background:white;padding-top:2em;padding-bottom:1em;text-align:center;">
+  <div class="container">
+    <h2>Latest News</h2>
+    {% for post in site.posts %}
+    <p>
+      {{ post.date | date_to_string }}:&nbsp;&nbsp;<a href="{{post.url}}">{{post.title}}</a>
+    </p>
+    {% endfor %}
+  </div>
+</div>
+
+</div>
