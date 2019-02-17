@@ -54,29 +54,6 @@ title: Home
         </p>
       </div>
     </div>
-
-    <!-- <div class="row"> -->
-    <!--   <div class="col-md feature"> -->
-    <!--     <h5>Clean & Lean</h5> -->
-    <!--     <p> -->
-    <!--       The pmp-library strives to keep things clean and lean. Dependencies -->
-    <!--       are kept to a minimum and are bundled using git submodules. The -->
-    <!--       library follows software engineering best practices such as continuous -->
-    <!--       integration and unit testing. The code is clean with a common styling -->
-    <!--       applied throughout the code base. Software abstractions are made as -->
-    <!--       easy and simple as possible, but not too simple. -->
-    <!--     </p> -->
-    <!--   </div> -->
-
-    <!--   <div class="col-md feature"> -->
-    <!--     <h5>Liberal Licensing</h5> -->
-    <!--     <p> -->
-    <!--       The pmp-library is provided under a simple and flexible MIT license, -->
-    <!--       thereby allowing for both open-source and commercial usage. -->
-    <!--     </p> -->
-    <!--   </div> -->
-    <!-- </div> -->
-
   </div>
 </div>
 
@@ -91,4 +68,97 @@ title: Home
   </div>
 </div>
 
+<div class="features bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12" style="text-align:center; margin-bottom: 2em;">
+        <h2>Getting Started</h2>
+      </div>
+    </div>
+    <div class="row"  style="margin-bottom: 2em;">
+      <div class="col-md-4">
+        <h5>Browse the Docs</h5>
+        <p>
+          The <a href="userguide.html">User Guide</a> describes how to
+          quickly <a href="quickstart.html">get started</a> using the pmp-library,
+          provides an <a href="overview.html">overview</a> of the library and its
+          capabilities, a <a href="tutorial.html">tutorial</a> as well as guidelines for
+          <a href="contributing.html">contributing</a> patches or new code.
+        </p>
+        <p>
+          The <a href="user group0.html">API Reference</a> provides detailed information on
+          the modules, classes, and functions provided by the pmp-library.
+        </p>
+        <p>
+          Checkout the <a href="https://github.com/pmp-library/pmp-library/">GitHub
+            Project</a> to browse the source, get the latest development version, or
+          to report any issues.
+        </p>
+      </div>
+      <div class="col-md-8">
+        <h5>For the Impatient</h5>
+        <p>
+          Fetch the repository:
+        </p>
+        <pre>$ git clone --recursive https://github.com/pmp-library/pmp-library.git</pre>
+        <p>
+          Configure and build:
+        </p>
+        <pre>$ cd pmp-library && mkdir build && cd build && cmake .. && make</pre>
+        <p>
+          Run the mesh processing app:
+        </p>
+        <pre>$ ./mpview ../external/pmp-data/off/bunny.off</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="features">
+  <div class="container">
+    <div class="row"  style="margin-bottom: 2em;">
+      <div class="col-md">
+        <h5>License</h5>
+        <p>
+          The pmp-library is provided under a simple and flexible MIT
+          <a href="https://github.com/pmp-library/pmp-library/blob/master/LICENSE.txt">license</a>,
+          thereby allowing for both open-source and commercial usage.
+        </p>
+        <h5>Feedback</h5>
+        <p>
+          If you found the library to be useful for your projects, please drop
+          us a line
+          at <a href="mailto:info@pmp-library.org">info@pmp-library.org</a> and
+          let us know what you are using it for.
+        </p>
+      </div>
+      <div class="col-md-5">
+        <h5>Acknowledgments</h5>
+        <p>
+          If you are using the pmp-library for research projects, please
+          acknowledge its use by referencing
+        </p>
+       <pre style="line-height: 1.25em;">@misc{pmp-library,
+title  = {The Polygon Mesh Processing Library},
+author = {Daniel Sieger and Mario Botsch},
+note   = {http://www.pmp-library.org},
+year   = {2019},
+}</pre>
+        <p>
+          For references to specific algorithms implemented in the library check
+          out the <a href="citelist.html">bibliography</a>.
+        </p>
+      </div>
+      <div class="col-md">
+        <h5>Heritage</h5>
+        <p>
+          The pmp-library evolved from the <code>Surface_mesh</code> data structure developed by
+          the <a href="http://graphics.uni-bielefeld.de">Bielefeld Graphics & Geometry Group</a>
+          which in turn was originally derived from <a href="http://www.openmesh.org">OpenMesh</a>.
+        </p>
+      </div>
+
+        </p>
+    </div>
+  </div>
 </div>

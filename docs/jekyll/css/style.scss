@@ -40,3 +40,19 @@ body {
 h5 {
   font-style: italic;
 }
+
+pre {
+  margin: 1.625em 0;
+  color: #020202;
+  background-color: #efefef;
+  overflow-x: auto;
+  border-radius: 4px;
+  border: 1px solid #cccccc;
+  padding: 0.2em;
+}
+
+pre code {
+    overflow-wrap: normal;
+    white-space: pre;
+    background-color: #efefef;
+}
