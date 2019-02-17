@@ -50,7 +50,7 @@ before_script:
   - cmake -DCMAKE_BUILD_TYPE=${CONFIG} ..
 
 script:
-  - make
+  - make -j 2
   - make test
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then make docs ; fi
 
