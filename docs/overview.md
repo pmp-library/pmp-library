@@ -25,10 +25,10 @@ class for one type of tasks and name it accordingly. Example: the
 pmp::SurfaceRemeshing class provides remeshing algorithms operating on surface
 meshes.
 
-## The `visuazliation` Module
+## The `visualization` Module
 
 In order to easily create visualizations the library contains an optional @ref
 visualization module including basic viewers, e.g., pmp::MeshViewer. The
 corresponding OpenGL&reg; code for rendering the data is contained in
 pmp::SurfaceMeshGL. For simplicity, the this class inherits from
-pmp::SuraceMesh.
+pmp::SurfaceMesh.
