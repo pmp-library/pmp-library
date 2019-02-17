@@ -38,9 +38,10 @@ public: //------------------------------------------------------ public methods
 private: //----------------------------- static wrapper functions for callbacks
     static void glfw_error(int error, const char* description);
     static void glfw_keyboard(GLFWwindow* window, int key, int scancode,
-                             int action, int mods);
+                              int action, int mods);
     static void glfw_character(GLFWwindow* window, unsigned int c);
-    static void glfw_mouse(GLFWwindow* window, int button, int action, int mods);
+    static void glfw_mouse(GLFWwindow* window, int button, int action,
+                           int mods);
     static void glfw_motion(GLFWwindow* window, double xpos, double ypos);
     static void glfw_scroll(GLFWwindow* window, double xoffset, double yoffset);
     static void glfw_resize(GLFWwindow* window, int width, int height);

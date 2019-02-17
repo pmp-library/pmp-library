@@ -39,12 +39,12 @@ public:
 
     //! uniform remeshing with target edge length
     void uniform_remeshing(Scalar edge_length, unsigned int iterations = 10,
-                          bool use_projection = true);
+                           bool use_projection = true);
 
     //! adaptive remeshing with min/max edge length and approximation error
     void adaptive_remeshing(Scalar min_edge_length, Scalar max_edge_length,
-                           Scalar approx_error, unsigned int iterations = 10,
-                           bool use_projection = true);
+                            Scalar approx_error, unsigned int iterations = 10,
+                            bool use_projection = true);
 
 private:
     void preprocessing();

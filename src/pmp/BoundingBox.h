@@ -73,8 +73,7 @@ public:
     //! indicate if bbox is empty
     bool is_empty() const
     {
-        return (max_[0] < min_[0] || max_[1] < min_[1] ||
-                max_[2] < min_[2]);
+        return (max_[0] < min_[0] || max_[1] < min_[1] || max_[2] < min_[2]);
     }
 
     //! get size of the bbox

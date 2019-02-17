@@ -84,20 +84,13 @@ private: //------------------------------------------------------ private types
     class HeapInterface
     {
     public:
-        HeapInterface(VertexProperty<float> prio,
-                      VertexProperty<int> pos)
+        HeapInterface(VertexProperty<float> prio, VertexProperty<int> pos)
             : prio_(prio), pos_(pos)
         {
         }
 
-        bool less(Vertex v0, Vertex v1)
-        {
-            return prio_[v0] < prio_[v1];
-        }
-        bool greater(Vertex v0, Vertex v1)
-        {
-            return prio_[v0] > prio_[v1];
-        }
+        bool less(Vertex v0, Vertex v1) { return prio_[v0] < prio_[v1]; }
+        bool greater(Vertex v0, Vertex v1) { return prio_[v0] > prio_[v1]; }
         int get_heap_position(Vertex v) { return pos_[v]; }
         void set_heap_position(Vertex v, int pos) { pos_[v] = pos; }
 

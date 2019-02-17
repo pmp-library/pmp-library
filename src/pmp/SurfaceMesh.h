@@ -50,22 +50,13 @@ public:
     bool is_valid() const { return idx_ != PMP_MAX_INDEX; }
 
     //! are two handles equal?
-    bool operator==(const Handle& rhs) const
-    {
-        return idx_ == rhs.idx_;
-    }
+    bool operator==(const Handle& rhs) const { return idx_ == rhs.idx_; }
 
     //! are two handles different?
-    bool operator!=(const Handle& rhs) const
-    {
-        return idx_ != rhs.idx_;
-    }
+    bool operator!=(const Handle& rhs) const { return idx_ != rhs.idx_; }
 
     //! compare operator useful for sorting handles
-    bool operator<(const Handle& rhs) const
-    {
-        return idx_ < rhs.idx_;
-    }
+    bool operator<(const Handle& rhs) const { return idx_ < rhs.idx_; }
 
 private:
     friend class SurfaceMesh;
@@ -240,7 +231,6 @@ public:
 class SurfaceMesh
 {
 public:
-
     //! \name Iterator Types
     //!@{
 
@@ -306,7 +296,8 @@ public:
     {
     public:
         //! Default constructor
-        HalfedgeIterator(Halfedge h = Halfedge(), const SurfaceMesh* mesh = nullptr)
+        HalfedgeIterator(Halfedge h = Halfedge(),
+                         const SurfaceMesh* mesh = nullptr)
             : handle_(h), mesh_(mesh)
         {
             if (mesh_ && mesh_->has_garbage())
@@ -485,10 +476,10 @@ public:
         }
         VertexIterator begin() const { return begin_; }
         VertexIterator end() const { return end_; }
+
     private:
         VertexIterator begin_, end_;
     };
-
 
     //! helper class for iterating through all halfedges using range-based
     //! for-loops. \sa halfedges()
@@ -501,6 +492,7 @@ public:
         }
         HalfedgeIterator begin() const { return begin_; }
         HalfedgeIterator end() const { return end_; }
+
     private:
         HalfedgeIterator begin_, end_;
     };
@@ -516,6 +508,7 @@ public:
         }
         EdgeIterator begin() const { return begin_; }
         EdgeIterator end() const { return end_; }
+
     private:
         EdgeIterator begin_, end_;
     };
@@ -531,6 +524,7 @@ public:
         }
         FaceIterator begin() const { return begin_; }
         FaceIterator end() const { return end_; }
+
     private:
         FaceIterator begin_, end_;
     };
@@ -539,7 +533,7 @@ public:
     //! \name Circulator Types
     //!@{
 
-        //! this class circulates through all one-ring neighbors of a vertex.
+    //! this class circulates through all one-ring neighbors of a vertex.
     //! it also acts as a container-concept for C++11 range-based for loops.
     //! \sa HalfedgeAroundVertexCirculator, vertices(Vertex)
     class VertexAroundVertexCirculator
@@ -702,8 +696,7 @@ public:
             if (mesh_)
             {
                 halfedge_ = mesh_->halfedge(v);
-                if (halfedge_.is_valid() &&
-                    mesh_->is_boundary(halfedge_))
+                if (halfedge_.is_valid() && mesh_->is_boundary(halfedge_))
                     operator++();
             }
         }
@@ -780,7 +773,8 @@ public:
     {
     public:
         //! default constructor
-        VertexAroundFaceCirculator(const SurfaceMesh* m = nullptr, Face f = Face())
+        VertexAroundFaceCirculator(const SurfaceMesh* m = nullptr,
+                                   Face f = Face())
             : mesh_(m), is_active_(true)
         {
             if (mesh_)
@@ -969,7 +963,8 @@ public:
     //!
     //! In addition, the OBJ and PMP formats support writing per-halfedge
     //! texture coordinates.
-    bool write(const std::string& filename, const IOFlags& flags = IOFlags()) const;
+    bool write(const std::string& filename,
+               const IOFlags& flags = IOFlags()) const;
 
     //!@}
     //! \name Add new elements by hand
@@ -1049,32 +1044,19 @@ public:
     //! \sa garbage_collection()
     bool is_deleted(Face f) const { return fdeleted_[f]; }
 
-
     //! return whether vertex \c v is valid, i.e. the index is stores
     //! it within the array bounds.
-    bool is_valid(Vertex v) const
-    {
-        return v.idx() < vertices_size();
-    }
+    bool is_valid(Vertex v) const { return v.idx() < vertices_size(); }
 
     //! return whether halfedge \c h is valid, i.e. the index is stores it
     //! within the array bounds.
-    bool is_valid(Halfedge h) const
-    {
-        return h.idx() < halfedges_size();
-    }
+    bool is_valid(Halfedge h) const { return h.idx() < halfedges_size(); }
 
     //! return whether edge \c e is valid, i.e. the index is stores it within the array bounds.
-    bool is_valid(Edge e) const
-    {
-        return e.idx() < edges_size();
-    }
+    bool is_valid(Edge e) const { return e.idx() < edges_size(); }
 
     //! returns whether the face \p f is valid.
-    bool is_valid(Face f) const
-    {
-        return f.idx() < faces_size();
-    }
+    bool is_valid(Face f) const { return f.idx() < faces_size(); }
 
     //!@}
     //! \name Low-level connectivity
@@ -1211,8 +1193,7 @@ public:
     //! halfedges is a boundary halfedge.
     bool is_boundary(Edge e) const
     {
-        return (is_boundary(halfedge(e, 0)) ||
-                is_boundary(halfedge(e, 1)));
+        return (is_boundary(halfedge(e, 0)) || is_boundary(halfedge(e, 1)));
     }
 
     //! returns a halfedge of face \c f
@@ -1244,7 +1225,7 @@ public:
     //! be unique. in this case it returns an invalid property
     template <class T>
     ObjectProperty<T> add_object_property(const std::string& name,
-                                        const T t = T())
+                                          const T t = T())
     {
         return ObjectProperty<T>(oprops_.add<T>(name, t));
     }
@@ -1293,7 +1274,7 @@ public:
     //! invalid property
     template <class T>
     VertexProperty<T> add_vertex_property(const std::string& name,
-                                        const T t = T())
+                                          const T t = T())
     {
         return VertexProperty<T>(vprops_.add<T>(name, t));
     }
@@ -1329,7 +1310,7 @@ public:
     //! invalid property.
     template <class T>
     HalfedgeProperty<T> add_halfedge_property(const std::string& name,
-                                            const T t = T())
+                                              const T t = T())
     {
         return HalfedgeProperty<T>(hprops_.add<T>(name, t));
     }
@@ -1367,7 +1348,7 @@ public:
     //! t)
     template <class T>
     HalfedgeProperty<T> halfedge_property(const std::string& name,
-                                         const T t = T())
+                                          const T t = T())
     {
         return HalfedgeProperty<T>(hprops_.get_or_add<T>(name, t));
     }
@@ -1756,7 +1737,6 @@ public:
     //!@}
 
 private:
-
     //! \name Connectivity Types
     //!@{
 
@@ -1793,8 +1773,9 @@ private:
     {
         if (vertices_size() == PMP_MAX_INDEX - 1)
         {
-            std::cerr << "new_vertex: cannot allocate vertex, max. index reached"
-                      << std::endl;
+            std::cerr
+                << "new_vertex: cannot allocate vertex, max. index reached"
+                << std::endl;
             return Vertex();
         }
         vprops_.push_back();
@@ -1840,7 +1821,6 @@ private:
         return Face(faces_size() - 1);
     }
 
-
     //!@}
     //! \name Helper functions
     //!@{
@@ -1875,14 +1855,14 @@ private:
     VertexProperty<Point> vpoint_;
 
     // connectivity information
-    VertexProperty<VertexConnectivity>     vconn_;
+    VertexProperty<VertexConnectivity> vconn_;
     HalfedgeProperty<HalfedgeConnectivity> hconn_;
-    FaceProperty<FaceConnectivity>         fconn_;
+    FaceProperty<FaceConnectivity> fconn_;
 
     // markers for deleted entities
     VertexProperty<bool> vdeleted_;
-    EdgeProperty<bool>   edeleted_;
-    FaceProperty<bool>   fdeleted_;
+    EdgeProperty<bool> edeleted_;
+    FaceProperty<bool> fdeleted_;
 
     // numbers of deleted entities
     IndexType deleted_vertices_;

@@ -135,7 +135,7 @@ void SurfaceCurvature::analyze(unsigned int post_smoothing_steps)
 //-----------------------------------------------------------------------------
 
 void SurfaceCurvature::analyze_tensor(unsigned int post_smoothing_steps,
-                                     bool two_ring_neighborhood)
+                                      bool two_ring_neighborhood)
 {
     auto area = mesh_.add_vertex_property<double>("curv:area", 0.0);
     auto normal = mesh_.add_face_property<dvec3>("curv:normal");
@@ -228,7 +228,7 @@ void SurfaceCurvature::analyze_tensor(unsigned int post_smoothing_steps,
 
             // Eigen-decomposition
             bool ok = symmetric_eigendecomposition(tensor, eval1, eval2, eval3,
-                                                  evec1, evec2, evec3);
+                                                   evec1, evec2, evec3);
             if (ok)
             {
                 // curvature values:
@@ -408,16 +408,14 @@ void SurfaceCurvature::curvature_to_texture_coordinates() const
         kmax = std::max(fabs(kmin), fabs(kmax));
         for (auto v : mesh_.vertices())
         {
-            tex[v] =
-                TexCoord((0.5f * curvatures[v] / kmax) + 0.5f, 0.0);
+            tex[v] = TexCoord((0.5f * curvatures[v] / kmax) + 0.5f, 0.0);
         }
     }
     else // unsigned
     {
         for (auto v : mesh_.vertices())
         {
-            tex[v] =
-                TexCoord((curvatures[v] - kmin) / (kmax - kmin), 0.0);
+            tex[v] = TexCoord((curvatures[v] - kmin) / (kmax - kmin), 0.0);
         }
     }
 }

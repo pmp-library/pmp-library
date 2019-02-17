@@ -266,8 +266,8 @@ void SurfaceMeshGL::update_opengl_buffers()
         {
             cornerHalfedges.push_back(h);
             cornerVertices.push_back(to_vertex(h));
-            cornerNormals.push_back((vec3)
-                SurfaceNormals::compute_corner_normal(*this, h, creaseAngle));
+            cornerNormals.push_back((vec3)SurfaceNormals::compute_corner_normal(
+                *this, h, creaseAngle));
         }
         assert(cornerVertices.size() >= 3);
 
@@ -510,5 +510,5 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
 }
 
 //=============================================================================
-} // namespace
+} // namespace pmp
 //=============================================================================

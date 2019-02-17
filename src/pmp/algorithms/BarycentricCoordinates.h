@@ -19,9 +19,9 @@ namespace pmp {
 
 template <typename Scalar>
 const Vector<Scalar, 3> barycentric_coordinates(const Vector<Scalar, 3>& p,
-                                               const Vector<Scalar, 3>& u,
-                                               const Vector<Scalar, 3>& v,
-                                               const Vector<Scalar, 3>& w)
+                                                const Vector<Scalar, 3>& u,
+                                                const Vector<Scalar, 3>& v,
+                                                const Vector<Scalar, 3>& w)
 {
     Vector<Scalar, 3> result(1.0 / 3.0); // default: barycenter
 

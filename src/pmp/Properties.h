@@ -267,7 +267,8 @@ public:
     {
         for (size_t i = 0; i < parrays_.size(); ++i)
             if (parrays_[i]->name() == name)
-                return Property<T>(dynamic_cast<PropertyArray<T>*>(parrays_[i]));
+                return Property<T>(
+                    dynamic_cast<PropertyArray<T>*>(parrays_[i]));
         return Property<T>();
     }
 

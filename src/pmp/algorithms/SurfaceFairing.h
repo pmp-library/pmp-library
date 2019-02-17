@@ -44,8 +44,7 @@ public:
     void fair(unsigned int k = 2);
 
 private:
-    void setup_matrix_row(const Vertex v,
-                          VertexProperty<double> vweight,
+    void setup_matrix_row(const Vertex v, VertexProperty<double> vweight,
                           EdgeProperty<double> eweight,
                           unsigned int laplace_degree,
                           std::map<Vertex, double>& row);

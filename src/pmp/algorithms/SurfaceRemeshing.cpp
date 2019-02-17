@@ -39,8 +39,8 @@ SurfaceRemeshing::~SurfaceRemeshing() = default;
 //-----------------------------------------------------------------------------
 
 void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
-                                        unsigned int iterations,
-                                        bool use_projection)
+                                         unsigned int iterations,
+                                         bool use_projection)
 {
     if (!mesh_.is_triangle_mesh())
     {
@@ -75,10 +75,10 @@ void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
 //-----------------------------------------------------------------------------
 
 void SurfaceRemeshing::adaptive_remeshing(Scalar min_edge_length,
-                                         Scalar max_edge_length,
-                                         Scalar approx_error,
-                                         unsigned int iterations,
-                                         bool use_projection)
+                                          Scalar max_edge_length,
+                                          Scalar approx_error,
+                                          unsigned int iterations,
+                                          bool use_projection)
 {
     if (!mesh_.is_triangle_mesh())
     {
@@ -364,9 +364,8 @@ void SurfaceRemeshing::split_long_edges()
 
                 if (is_feature)
                 {
-                    enew = is_boundary
-                               ? Edge(mesh_.n_edges() - 2)
-                               : Edge(mesh_.n_edges() - 3);
+                    enew = is_boundary ? Edge(mesh_.n_edges() - 2)
+                                       : Edge(mesh_.n_edges() - 3);
                     efeature_[enew] = true;
                     vfeature_[vnew] = true;
                 }
@@ -536,8 +535,7 @@ void SurfaceRemeshing::flip_edges()
     int i;
 
     // precompute valences
-    VertexProperty<int> valence =
-        mesh_.add_vertex_property<int>("valence");
+    VertexProperty<int> valence = mesh_.add_vertex_property<int>("valence");
     for (auto v : mesh_.vertices())
     {
         valence[v] = mesh_.valence(v);
@@ -627,8 +625,7 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
     Point u, n, t, b;
 
     // add property
-    VertexProperty<Point> update =
-        mesh_.add_vertex_property<Point>("v:update");
+    VertexProperty<Point> update = mesh_.add_vertex_property<Point>("v:update");
 
     // project at the beginning to get valid sizing values and normal vectors
     // for vertices introduced by splitting
@@ -712,10 +709,10 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
 
                         area = norm(cross(points_[v2] - points_[v1],
                                           points_[v3] - points_[v1]));
-                        w = area / pow((vsizing_[v1] + vsizing_[v2] +
-                                        vsizing_[v3]) /
-                                           3.0,
-                                       2.0);
+                        w = area /
+                            pow((vsizing_[v1] + vsizing_[v2] + vsizing_[v3]) /
+                                    3.0,
+                                2.0);
 
                         u += w * b;
                         ww += w;

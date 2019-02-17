@@ -563,8 +563,8 @@ Mat4<Scalar> perspective_matrix(Scalar fovy, Scalar aspect, Scalar zNear,
 //-----------------------------------------------------------------------------
 
 template <typename Scalar>
-Mat4<Scalar> inverse_perspective_matrix(Scalar fovy, Scalar aspect, Scalar zNear,
-                                        Scalar zFar)
+Mat4<Scalar> inverse_perspective_matrix(Scalar fovy, Scalar aspect,
+                                        Scalar zNear, Scalar zFar)
 {
     Scalar t = zNear * tan(fovy * M_PI / 360.0);
     Scalar b = -t;
@@ -732,7 +732,7 @@ Mat3<Scalar> linear_part(const Mat4<Scalar>& m)
 
 template <typename Scalar>
 Vector<Scalar, 3> projective_transform(const Mat4<Scalar>& m,
-                                      const Vector<Scalar, 3>& v)
+                                       const Vector<Scalar, 3>& v)
 {
     const Scalar x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2] + m(0, 3);
     const Scalar y = m(1, 0) * v[0] + m(1, 1) * v[1] + m(1, 2) * v[2] + m(1, 3);
@@ -745,7 +745,7 @@ Vector<Scalar, 3> projective_transform(const Mat4<Scalar>& m,
 
 template <typename Scalar>
 Vector<Scalar, 3> affine_transform(const Mat4<Scalar>& m,
-                                  const Vector<Scalar, 3>& v)
+                                   const Vector<Scalar, 3>& v)
 {
     const Scalar x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2] + m(0, 3);
     const Scalar y = m(1, 0) * v[0] + m(1, 1) * v[1] + m(1, 2) * v[2] + m(1, 3);
@@ -757,7 +757,7 @@ Vector<Scalar, 3> affine_transform(const Mat4<Scalar>& m,
 
 template <typename Scalar>
 Vector<Scalar, 3> linear_transform(const Mat4<Scalar>& m,
-                                  const Vector<Scalar, 3>& v)
+                                   const Vector<Scalar, 3>& v)
 {
     const Scalar x = m(0, 0) * v[0] + m(0, 1) * v[1] + m(0, 2) * v[2];
     const Scalar y = m(1, 0) * v[0] + m(1, 1) * v[1] + m(1, 2) * v[2];
@@ -856,10 +856,10 @@ Mat3<Scalar> inverse(const Mat3<Scalar>& m)
 
 template <typename Scalar>
 bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
-                                 Scalar& eval2, Scalar& eval3,
-                                 Vector<Scalar, 3>& evec1,
-                                 Vector<Scalar, 3>& evec2,
-                                 Vector<Scalar, 3>& evec3)
+                                  Scalar& eval2, Scalar& eval3,
+                                  Vector<Scalar, 3>& evec1,
+                                  Vector<Scalar, 3>& evec2,
+                                  Vector<Scalar, 3>& evec3)
 {
     unsigned int i, j;
     Scalar theta, t, c, s;
@@ -1026,7 +1026,7 @@ inline Scalar distance(const Vector<Scalar, N>& v0, const Vector<Scalar, N>& v1)
 template <typename Scalar>
 inline Vector<Scalar, 2> perp(const Vector<Scalar, 2>& v)
 {
-    return Vector<Scalar,2>(v[1], -v[0]);
+    return Vector<Scalar, 2>(v[1], -v[0]);
 }
 
 //! compute the cross product of two vectors (only valid for 3D vectors)
@@ -1042,5 +1042,5 @@ inline Vector<Scalar, 3> cross(const Vector<Scalar, 3>& v0,
 //=============================================================================
 //!@}
 //=============================================================================
-} // namespace
+} // namespace pmp
 //=============================================================================

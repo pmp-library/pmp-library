@@ -295,7 +295,8 @@ bool SurfaceSimplification::is_collapse_legal(const CollapseData& cd)
         return false;
 
     // there should be at least 2 incident faces at v0
-    if (mesh_.cw_rotated_halfedge(mesh_.cw_rotated_halfedge(cd.v0v1)) == cd.v0v1)
+    if (mesh_.cw_rotated_halfedge(mesh_.cw_rotated_halfedge(cd.v0v1)) ==
+        cd.v0v1)
         return false;
 
     // topological check
@@ -479,7 +480,8 @@ void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
     {
         for (auto f : mesh_.faces(cd.v1))
         {
-            normal_cone_[f].merge(SurfaceNormals::compute_face_normal(mesh_, f));
+            normal_cone_[f].merge(
+                SurfaceNormals::compute_face_normal(mesh_, f));
         }
 
         if (cd.vl.is_valid())
@@ -585,8 +587,7 @@ Scalar SurfaceSimplification::aspect_ratio(Face f) const
 
 //-----------------------------------------------------------------------------
 
-Scalar SurfaceSimplification::distance(Face f,
-                                       const Point& p) const
+Scalar SurfaceSimplification::distance(Face f, const Point& p) const
 {
     SurfaceMesh::VertexAroundFaceCirculator fvit = mesh_.vertices(f);
 
@@ -601,8 +602,7 @@ Scalar SurfaceSimplification::distance(Face f,
 
 //-----------------------------------------------------------------------------
 
-SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh& sm,
-                                                  Halfedge h)
+SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh& sm, Halfedge h)
     : mesh(sm)
 {
     v0v1 = h;

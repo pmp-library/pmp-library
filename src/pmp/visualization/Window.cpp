@@ -290,8 +290,8 @@ void Window::glfw_character(GLFWwindow* window, unsigned int c)
 
 //-----------------------------------------------------------------------------
 
-void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode, int action,
-                          int mods)
+void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode,
+                           int action, int mods)
 {
     ImGui_KeyCallback(window, key, scancode, action, mods);
     if (!ImGui::GetIO().WantCaptureKeyboard)
@@ -305,8 +305,7 @@ void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode, int action
 void Window::glfw_motion(GLFWwindow* /*window*/, double xpos, double ypos)
 {
     // correct for highDPI scaling
-    instance_->motion(instance_->scaling_ * xpos,
-                       instance_->scaling_ * ypos);
+    instance_->motion(instance_->scaling_ * xpos, instance_->scaling_ * ypos);
 }
 
 //-----------------------------------------------------------------------------

@@ -15,8 +15,7 @@ namespace pmp {
 
 //=============================================================================
 
-Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh,
-                                           Vertex v)
+Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
 {
     Point nn(0, 0, 0);
     Halfedge h = mesh.halfedge(v);
@@ -75,8 +74,7 @@ Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh,
 
 //-----------------------------------------------------------------------------
 
-Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh,
-                                         Face f)
+Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh, Face f)
 {
     Halfedge h = mesh.halfedge(f);
     Halfedge hend = h;
@@ -114,8 +112,7 @@ Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh,
 //-----------------------------------------------------------------------------
 
 Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
-                                           Halfedge h,
-                                           Scalar crease_angle)
+                                             Halfedge h, Scalar crease_angle)
 {
     // avoid numerical problems
     if (crease_angle < 0.001)

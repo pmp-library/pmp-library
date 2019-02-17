@@ -234,7 +234,7 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
         if (mesh_.is_valid(v))
         {
             // setup seed
-            std::vector<Vertex>  seed;
+            std::vector<Vertex> seed;
             seed.push_back(v);
 
             // compute geodesic distance

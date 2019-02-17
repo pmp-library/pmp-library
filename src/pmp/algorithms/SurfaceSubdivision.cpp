@@ -298,9 +298,9 @@ void SurfaceSubdivision::loop()
         // boundary or feature edge?
         if (mesh_.is_boundary(e) || (efeature_ && efeature_[e]))
         {
-            epoint[e] = (points_[mesh_.vertex(e, 0)] +
-                         points_[mesh_.vertex(e, 1)]) *
-                        Scalar(0.5);
+            epoint[e] =
+                (points_[mesh_.vertex(e, 0)] + points_[mesh_.vertex(e, 1)]) *
+                Scalar(0.5);
         }
 
         // interior edge

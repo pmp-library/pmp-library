@@ -31,9 +31,7 @@ public:
     Heap() : HeapVector() {}
 
     //! Construct with a given \c HeapInterface.
-    Heap(const HeapInterface& i) : HeapVector(), interface_(i)
-    {
-    }
+    Heap(const HeapInterface& i) : HeapVector(), interface_(i) {}
 
     //! Destructor.
     ~Heap(){};
@@ -51,10 +49,16 @@ public:
     void reserve(unsigned int n) { HeapVector::reserve(n); }
 
     //! reset heap position to -1 (not in heap)
-    void reset_heap_position(HeapEntry h) { interface_.set_heap_position(h, -1); }
+    void reset_heap_position(HeapEntry h)
+    {
+        interface_.set_heap_position(h, -1);
+    }
 
     //! is an entry in the heap?
-    bool is_stored(HeapEntry h) { return interface_.get_heap_position(h) != -1; }
+    bool is_stored(HeapEntry h)
+    {
+        return interface_.get_heap_position(h) != -1;
+    }
 
     //! insert the entry h
     void insert(HeapEntry h)

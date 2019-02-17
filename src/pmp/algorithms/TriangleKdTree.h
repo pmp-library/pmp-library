@@ -49,8 +49,7 @@ private:
     struct Triangle
     {
         Triangle() {}
-        Triangle(const Point& x0, const Point& x1, const Point& x2,
-                 Face ff)
+        Triangle(const Point& x0, const Point& x1, const Point& x2, Face ff)
         {
             x[0] = x0;
             x[1] = x1;

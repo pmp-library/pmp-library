@@ -171,13 +171,13 @@ Vertex MeshViewer::pick_vertex(int x, int y)
 {
     Vertex vmin;
 
-    vec3    p;
-    Scalar  d, dmin(FLT_MAX);
+    vec3 p;
+    Scalar d, dmin(FLT_MAX);
 
     if (TrackballViewer::pick(x, y, p))
     {
         Point picked_position(p);
-        for (auto v: mesh_.vertices())
+        for (auto v : mesh_.vertices())
         {
             d = distance(mesh_.position(v), picked_position);
             if (d < dmin)

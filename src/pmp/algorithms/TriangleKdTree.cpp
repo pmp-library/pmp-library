@@ -25,8 +25,7 @@ TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces,
     // init
     root_ = new Node();
     root_->faces = new Triangles();
-    VertexProperty<Point> points =
-        mesh.get_vertex_property<Point>("v:point");
+    VertexProperty<Point> points = mesh.get_vertex_property<Point>("v:point");
 
     // collect triangles
     Triangle tri;
@@ -51,7 +50,7 @@ TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces,
 //-----------------------------------------------------------------------------
 
 unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
-                                          unsigned int depth)
+                                           unsigned int depth)
 {
     // should we stop at this level ?
     if ((depth == 0) || (node->faces->size() <= max_faces))
@@ -181,7 +180,7 @@ TriangleKdTree::NearestNeighbor TriangleKdTree::nearest(const Point& p) const
 //-----------------------------------------------------------------------------
 
 void TriangleKdTree::nearest_recurse(Node* node, const Point& point,
-                                    NearestNeighbor& data) const
+                                     NearestNeighbor& data) const
 {
     // terminal node?
     if (!node->left_child)

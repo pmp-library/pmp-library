@@ -24,7 +24,9 @@ class SurfaceMeshIO
 {
 public:
     SurfaceMeshIO(const std::string& filename, const IOFlags& flags)
-        : filename_(filename), flags_(flags) {}
+        : filename_(filename), flags_(flags)
+    {
+    }
 
     bool read(SurfaceMesh& mesh);
 

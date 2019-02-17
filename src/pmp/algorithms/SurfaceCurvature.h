@@ -60,16 +60,10 @@ public:
     }
 
     //! return minimum (signed) curvature
-    Scalar min_curvature(Vertex v) const
-    {
-        return min_curvature_[v];
-    }
+    Scalar min_curvature(Vertex v) const { return min_curvature_[v]; }
 
     //! return maximum (signed) curvature
-    Scalar max_curvature(Vertex v) const
-    {
-        return max_curvature_[v];
-    }
+    Scalar max_curvature(Vertex v) const { return max_curvature_[v]; }
 
     //! return maximum absolute curvature
     Scalar max_abs_curvature(Vertex v) const

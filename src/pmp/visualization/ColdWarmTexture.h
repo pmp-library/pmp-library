@@ -273,4 +273,4 @@ const GLubyte cold_warm_texture[768] = {
 };
 // clang-format on
 
-}
+} // namespace pmp
