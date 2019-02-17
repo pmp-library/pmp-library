@@ -217,11 +217,13 @@ void Window::render_frame()
     emscripten_get_element_css_size("#canvas", &dw, &dh);
     if (w != int(dw) || h != int(dh))
     {
+        // set canvas size to match element css size
         w = int(dw);
         h = int(dh);
-        //emscripten_set_canvas_element_size("#canvas", w, h);
-        emscripten_set_canvas_size(w, h);
-        glfw_resize(instance_->window_, w, h);
+        // set canvas size
+        emscripten_set_canvas_element_size("#canvas", w, h);
+        // inform GLFW of this change, since ImGUI asks GLFW for window size
+        glfwSetWindowSize(instance_->window_, w, h);
     }
 #endif
 
