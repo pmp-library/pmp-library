@@ -13,7 +13,6 @@
 #include <pmp/Types.h>
 #include <pmp/Properties.h>
 #include <pmp/BoundingBox.h>
-#include <pmp/io/IOOptions.h>
 
 #include <map>
 #include <vector>
@@ -938,14 +937,10 @@ public:
     //!@{
 
     //! read mesh from file \c filename. file extension determines file type.
-    //! \sa write(const std::string& filename)
-    bool read(const std::string& filename,
-              const IOOptions& options = IOOptions());
+    bool read(const std::string& filename, const IOFlags& flags = IOFlags());
 
     //! write mesh to file \c filename. file extensions determines file type.
-    //! \sa read(const std::string& filename)
-    bool write(const std::string& filename,
-               const IOOptions& options = IOOptions()) const;
+    bool write(const std::string& filename, const IOFlags& flags = IOFlags()) const;
 
     //!@}
     //! \name Add new elements by hand

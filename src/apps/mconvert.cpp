@@ -68,8 +68,9 @@ int main(int argc, char** argv)
     }
 
     // write output mesh
-    IOOptions write_options(binary);
-    if (!mesh.write(output, write_options))
+    IOFlags flags;
+    flags.use_binary = binary;
+    if (!mesh.write(output, flags))
     {
         std::cerr << "cannot write mesh \"" << output << "\"\n";
         exit(1);

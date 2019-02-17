@@ -9,7 +9,6 @@
 
 #include "SurfaceMeshTest.h"
 
-#include <pmp/io/SurfaceMeshIO.h>
 #include <pmp/algorithms/SurfaceNormals.h>
 #include <vector>
 

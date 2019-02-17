@@ -9,7 +9,6 @@
 
 #include "SurfaceMeshTest.h"
 
-#include <pmp/io/SurfaceMeshIO.h>
 #include <pmp/algorithms/SurfaceNormals.h>
 #include <vector>
 
@@ -52,11 +51,14 @@ TEST_F(SurfaceMeshIOTest, off_io)
     SurfaceNormals::compute_vertex_normals(mesh);
     mesh.add_vertex_property<TextureCoordinate>("v:texcoord",TextureCoordinate(0,0));
     mesh.add_vertex_property<Color>("v:color",Color(0,0,0));
-    IOOptions options(false, // binary
-                      true, // normals
-                      true, // colors
-                      true); // texcoords
-    mesh.write("test.off",options);
+
+    IOFlags flags;
+    flags.use_binary = false;
+    flags.use_vertex_normals = true;
+    flags.use_vertex_colors = true;
+    flags.use_vertex_texcoords = true;
+
+    mesh.write("test.off",flags);
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
     mesh.read("test.off");
@@ -67,8 +69,11 @@ TEST_F(SurfaceMeshIOTest, off_io)
 TEST_F(SurfaceMeshIOTest, off_io_binary)
 {
     add_triangle();
-    IOOptions options(true);
-    mesh.write("binary.off", options);
+
+    IOFlags flags;
+    flags.use_binary = true;
+
+    mesh.write("binary.off", flags);
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
     mesh.read("binary.off");
@@ -115,8 +120,11 @@ TEST_F(SurfaceMeshIOTest, ply_io)
 TEST_F(SurfaceMeshIOTest, ply_io_binary)
 {
     add_triangle();
-    IOOptions options(true);
-    mesh.write("binary.ply",options);
+
+    IOFlags flags;
+    flags.use_binary = true;
+
+    mesh.write("binary.ply",flags);
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
     mesh.read("binary.ply");

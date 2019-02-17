@@ -67,6 +67,19 @@ typedef std::uint_least32_t IndexType;
 #define PMP_MAX_INDEX UINT_LEAST32_MAX
 #endif
 
+//! Common IO flags for reading and writing
+struct IOFlags
+{
+    IOFlags() {}
+    bool use_binary = false; //!< read / write binary format
+    bool use_vertex_normals = false; //!< read / write vertex normals
+    bool use_vertex_colors = false; //!< read / write vertex colors
+    bool use_vertex_texcoords = false; //!< read / write vertex texture coordinates
+    bool use_face_normals = false; //!< read / write face normals
+    bool use_face_colors = false; //!< read / write face colors
+    bool use_halfedge_texcoords = false; //!< read / write halfedge texture coordinates
+};
+
 //! @}
 
 //! \defgroup algorithms algorithms
@@ -77,9 +90,6 @@ typedef std::uint_least32_t IndexType;
 
 //! \defgroup gl gl
 //! \brief Visualization tools using OpenGL.
-
-//! \defgroup io io
-//! \brief Readers and writers for common file formats.
 
 //=============================================================================
 } // namespace pmp

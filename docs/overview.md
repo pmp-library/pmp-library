@@ -6,8 +6,7 @@ organized into different modules. At the core of the library is the @ref core
 module providing a data structure for polygonal surface meshes. On top of the
 @ref core module the @ref algorithms module provides implementations of
 canonical geometry processing algorithms such as remeshing, simplification,
-subdivision, and smoothing. The @ref io module provides classes for reading and
-writing meshes from / to common file formats. The optional @ref gl module
+subdivision, and smoothing. The optional @ref gl module
 provides OpenGL&reg;-based viewers and visualization tools.
 
 ## The `core` Module
@@ -25,17 +24,6 @@ structure and naming follows a simple and straightforward scheme: Provide one
 class for one type of tasks and name it accordingly. Example: the
 pmp::SurfaceRemeshing class provides remeshing algorithms operating on surface
 meshes.
-
-## The `io` Module
-
-This module provides readers and writers for common file formats. For
-convenience, the IO functionality is easily accessible using the `read()` and
-`write()` member functions. The only required argument is a file name. The
-corresponding file format is automatically determined by the file
-extension. Additional pmp::IOOptions can be used to control _what_ data is
-written, e.g., including vertex normals or not, and _how_ it is written, i.e.,
-as plain text ASCII or binary files. See the individual IO classes for more
-information on supported file formats and capabilities.
 
 ## The `gl` Module
 

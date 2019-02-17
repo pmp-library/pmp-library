@@ -9,7 +9,7 @@
 //=============================================================================
 
 #include <pmp/SurfaceMesh.h>
-#include <pmp/io/SurfaceMeshIO.h>
+#include <pmp/SurfaceMeshIO.h>
 
 #include <cmath>
 
@@ -130,19 +130,19 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceMesh::read(const std::string& filename, const IOOptions& options)
+bool SurfaceMesh::read(const std::string& filename, const IOFlags& flags)
 {
-    SurfaceMeshIO reader(options);
-    return reader.read(*this, filename);
+    SurfaceMeshIO reader(filename, flags);
+    return reader.read(*this);
 }
 
 //-----------------------------------------------------------------------------
 
 bool SurfaceMesh::write(const std::string& filename,
-                        const IOOptions& options) const
+                        const IOFlags& flags) const
 {
-    SurfaceMeshIO writer(options);
-    return writer.write(*this, filename);
+    SurfaceMeshIO writer(filename, flags);
+    return writer.write(*this);
 }
 
 //-----------------------------------------------------------------------------
