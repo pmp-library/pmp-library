@@ -12,8 +12,8 @@
 
 #include <string>
 
-#define PMP_MAJOR_VERSION 0
-#define PMP_MINOR_VERSION 1
+#define PMP_MAJOR_VERSION 1
+#define PMP_MINOR_VERSION 0
 #define PMP_PATCH_VERSION 0
 
 //=============================================================================

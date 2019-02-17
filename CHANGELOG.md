@@ -21,6 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Unit test suite
 - Continuous integration
 - Coding standard
+- Version API
 
 ### [Changed]
 
