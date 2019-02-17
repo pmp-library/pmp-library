@@ -71,24 +71,22 @@ typedef std::uint_least32_t IndexType;
 struct IOFlags
 {
     IOFlags() {}
-    bool use_binary = false;         //!< read / write binary format
-    bool use_vertex_normals = false; //!< read / write vertex normals
-    bool use_vertex_colors = false;  //!< read / write vertex colors
-    bool use_vertex_texcoords =
-        false;                     //!< read / write vertex texture coordinates
-    bool use_face_normals = false; //!< read / write face normals
-    bool use_face_colors = false;  //!< read / write face colors
-    bool use_halfedge_texcoords =
-        false; //!< read / write halfedge texture coordinates
+    bool use_binary = false;             //!< read / write binary format
+    bool use_vertex_normals = false;     //!< read / write vertex normals
+    bool use_vertex_colors = false;      //!< read / write vertex colors
+    bool use_vertex_texcoords = false;   //!< read / write vertex texcoords
+    bool use_face_normals = false;       //!< read / write face normals
+    bool use_face_colors = false;        //!< read / write face colors
+    bool use_halfedge_texcoords = false; //!< read / write halfedge texcoords
 };
 
 //! @}
 
-//! \defgroup algorithms algorithms
-//! \brief Geometry processing algorithms.
-
 //! \defgroup core core
 //! \brief Core data structure and utilities.
+
+//! \defgroup algorithms algorithms
+//! \brief Geometry processing algorithms.
 
 //! \defgroup visualization visualization
 //! \brief Visualization tools using OpenGL.
