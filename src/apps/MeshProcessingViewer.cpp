@@ -226,7 +226,9 @@ void MeshProcessingViewer::process_imgui()
 
 void MeshProcessingViewer::mouse(int button, int action, int mods)
 {
-    if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_MIDDLE)
+    if (action == GLFW_PRESS &&
+        button == GLFW_MOUSE_BUTTON_MIDDLE &&
+        modifiers_ == GLFW_MOD_SHIFT)
     {
         double x, y;
         cursor_pos(x, y);
