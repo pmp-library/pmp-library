@@ -56,7 +56,7 @@ typedef Vector<Scalar, 3> Normal;
 typedef Vector<Scalar, 3> Color;
 
 //! Texture coordinate type
-typedef Vector<Scalar, 2> TextureCoordinate, TexCoord;
+typedef Vector<Scalar, 2> TexCoord;
 
 // define index type to be used
 #ifdef PMP_INDEX_TYPE_64

@@ -402,14 +402,14 @@ void SurfaceCurvature::curvature_to_texture_coordinates() const
     Scalar kmax = values[n - 1 - i];
 
     // generate 1D texture coordiantes
-    auto tex = mesh_.vertex_property<TextureCoordinate>("v:tex");
+    auto tex = mesh_.vertex_property<TexCoord>("v:tex");
     if (kmin < 0.0) // signed
     {
         kmax = std::max(fabs(kmin), fabs(kmax));
         for (auto v : mesh_.vertices())
         {
             tex[v] =
-                TextureCoordinate((0.5f * curvatures[v] / kmax) + 0.5f, 0.0);
+                TexCoord((0.5f * curvatures[v] / kmax) + 0.5f, 0.0);
         }
     }
     else // unsigned
@@ -417,7 +417,7 @@ void SurfaceCurvature::curvature_to_texture_coordinates() const
         for (auto v : mesh_.vertices())
         {
             tex[v] =
-                TextureCoordinate((curvatures[v] - kmin) / (kmax - kmin), 0.0);
+                TexCoord((curvatures[v] - kmin) / (kmax - kmin), 0.0);
         }
     }
 }

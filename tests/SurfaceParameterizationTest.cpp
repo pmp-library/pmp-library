@@ -28,7 +28,7 @@ TEST_F(SurfaceParameterizationTest, parameterization)
     SurfaceParameterization param(mesh);
     param.harmonic(false);
     param.harmonic(true);
-    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);
 }
 
@@ -36,6 +36,6 @@ TEST_F(SurfaceParameterizationTest, lscm)
 {
     SurfaceParameterization param(mesh);
     param.lscm();
-    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);
 }

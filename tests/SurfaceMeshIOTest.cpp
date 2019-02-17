@@ -36,7 +36,7 @@ TEST_F(SurfaceMeshIOTest, obj_io)
 {
     add_triangle();
     SurfaceNormals::compute_vertex_normals(mesh);
-    mesh.add_halfedge_property<TextureCoordinate>("h:texcoord",TextureCoordinate(0,0));
+    mesh.add_halfedge_property<TexCoord>("h:texcoord",TexCoord(0,0));
     mesh.write("test.obj");
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
@@ -49,7 +49,7 @@ TEST_F(SurfaceMeshIOTest, off_io)
 {
     add_triangle();
     SurfaceNormals::compute_vertex_normals(mesh);
-    mesh.add_vertex_property<TextureCoordinate>("v:texcoord",TextureCoordinate(0,0));
+    mesh.add_vertex_property<TexCoord>("v:texcoord",TexCoord(0,0));
     mesh.add_vertex_property<Color>("v:color",Color(0,0,0));
 
     IOFlags flags;

@@ -62,20 +62,20 @@ TEST_F(SurfaceCurvatureTest, curvature)
 TEST_F(SurfaceCurvatureTest, mean_curvature_to_texture_coordinates)
 {
     curvature->mean_curvature_to_texture_coordinates();
-    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);
 }
 
 TEST_F(SurfaceCurvatureTest, max_curvature_to_texture_coordinates)
 {
     curvature->max_curvature_to_texture_coordinates();
-    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);
 }
 
 TEST_F(SurfaceCurvatureTest, gauss_curvature_to_texture_coordinates)
 {
     curvature->gauss_curvature_to_texture_coordinates();
-    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);
 }

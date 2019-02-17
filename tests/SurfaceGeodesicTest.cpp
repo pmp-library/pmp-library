@@ -48,6 +48,6 @@ TEST(SurfaceGeodesicTest, geodesic_to_texture)
 
     // map distances to texture coordinates
     geodist.distance_to_texture_coordinates();
-    auto tex = mesh.vertex_property<TextureCoordinate>("v:tex");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);
 }

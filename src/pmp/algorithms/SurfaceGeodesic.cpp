@@ -447,16 +447,16 @@ void SurfaceGeodesic::distance_to_texture_coordinates()
         }
     }
 
-    auto tex = mesh_.vertex_property<TextureCoordinate>("v:tex");
+    auto tex = mesh_.vertex_property<TexCoord>("v:tex");
     for (auto v : mesh_.vertices())
     {
         if (distance_[v] <= maxdist_)
         {
-            tex[v] = TextureCoordinate( distance_[v] / maxdist, 0.0 );
+            tex[v] = TexCoord( distance_[v] / maxdist, 0.0 );
         }
         else
         {
-            tex[v] = TextureCoordinate( 1.0, 0.0 );
+            tex[v] = TexCoord( 1.0, 0.0 );
         }
     }
 }

@@ -177,11 +177,11 @@ bool SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
     char s[200];
     float x, y, z;
     std::vector<Vertex> vertices;
-    std::vector<TextureCoordinate>
+    std::vector<TexCoord>
         all_tex_coords;                //individual texture coordinates
     std::vector<int> halfedge_tex_idx; //texture coordinates sorted for halfedges
-    HalfedgeProperty<TextureCoordinate> tex_coords =
-        mesh.halfedge_property<TextureCoordinate>("h:tex");
+    HalfedgeProperty<TexCoord> tex_coords =
+        mesh.halfedge_property<TexCoord>("h:tex");
     bool with_tex_coord = false;
 
     // clear mesh
@@ -390,12 +390,12 @@ bool SurfaceMeshIO::write_obj(const SurfaceMesh& mesh)
     //if so then add
     if (with_tex_coord)
     {
-        HalfedgeProperty<TextureCoordinate> texCoord =
-            mesh.get_halfedge_property<TextureCoordinate>("h:tex");
+        HalfedgeProperty<TexCoord> texCoord =
+            mesh.get_halfedge_property<TexCoord>("h:tex");
         for (SurfaceMesh::HalfedgeIterator hit = mesh.halfedges_begin();
              hit != mesh.halfedges_end(); ++hit)
         {
-            const TextureCoordinate& pt = texCoord[*hit];
+            const TexCoord& pt = texCoord[*hit];
             fprintf(out, "vt %.10f %.10f \n", pt[0], pt[1]);
         }
     }
@@ -444,12 +444,12 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
 
     // properties
     VertexProperty<Normal> normals;
-    VertexProperty<TextureCoordinate> texcoords;
+    VertexProperty<TexCoord> texcoords;
     VertexProperty<Color> colors;
     if (has_normals)
         normals = mesh.vertex_property<Normal>("v:normal");
     if (has_texcoords)
-        texcoords = mesh.vertex_property<TextureCoordinate>("v:tex");
+        texcoords = mesh.vertex_property<TexCoord>("v:tex");
     if (has_colors)
         colors = mesh.vertex_property<Color>("v:color");
 
@@ -561,11 +561,11 @@ bool read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
 
     // properties
     VertexProperty<Normal> normals;
-    VertexProperty<TextureCoordinate> texcoords;
+    VertexProperty<TexCoord> texcoords;
     if (has_normals)
         normals = mesh.vertex_property<Normal>("v:normal");
     if (has_texcoords)
-        texcoords = mesh.vertex_property<TextureCoordinate>("v:tex");
+        texcoords = mesh.vertex_property<TexCoord>("v:tex");
 
     // #Vertice, #Faces, #Edges
     tfread(in, nv);
@@ -746,7 +746,7 @@ bool SurfaceMeshIO::write_off(const SurfaceMesh& mesh)
     bool has_colors = false;
 
     auto normals = mesh.get_vertex_property<Normal>("v:normal");
-    auto texcoords = mesh.get_vertex_property<TextureCoordinate>("v:tex");
+    auto texcoords = mesh.get_vertex_property<TexCoord>("v:tex");
     auto colors = mesh.get_vertex_property<Color>("v:color");
 
     if (normals && flags_.use_vertex_normals)
@@ -788,7 +788,7 @@ bool SurfaceMeshIO::write_off(const SurfaceMesh& mesh)
 
         if (has_texcoords)
         {
-            const TextureCoordinate& t = texcoords[*vit];
+            const TexCoord& t = texcoords[*vit];
             fprintf(out, " %.10f %.10f", t[0], t[1]);
         }
 
@@ -863,9 +863,9 @@ bool SurfaceMeshIO::read_pmp(SurfaceMesh& mesh)
     // read texture coordiantes
     if (has_htex)
     {
-        auto htex = mesh.halfedge_property<TextureCoordinate>("h:tex");
+        auto htex = mesh.halfedge_property<TexCoord>("h:tex");
         size_t nhtc =
-            fread((char*)htex.data(), sizeof(TextureCoordinate), nh, in);
+            fread((char*)htex.data(), sizeof(TexCoord), nh, in);
         PMP_ASSERT(nhtc == nh);
     }
 
@@ -963,7 +963,7 @@ bool SurfaceMeshIO::write_pmp(const SurfaceMesh& mesh)
         mesh.get_halfedge_property<SurfaceMesh::HalfedgeConnectivity>("h:connectivity");
     auto fconn = mesh.get_face_property<SurfaceMesh::FaceConnectivity>("f:connectivity");
     auto point = mesh.get_vertex_property<Point>("v:point");
-    auto htex = mesh.get_halfedge_property<TextureCoordinate>("h:tex");
+    auto htex = mesh.get_halfedge_property<TexCoord>("h:tex");
 
     // how many elements?
     unsigned int nv, ne, nh, nf;
@@ -986,7 +986,7 @@ bool SurfaceMeshIO::write_pmp(const SurfaceMesh& mesh)
 
     // texture coordinates
     if (htex)
-        fwrite((char*)htex.data(), sizeof(TextureCoordinate), nh, out);
+        fwrite((char*)htex.data(), sizeof(TexCoord), nh, out);
 
     fclose(out);
     return true;

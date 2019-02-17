@@ -30,7 +30,7 @@ bool SurfaceParameterization::setup_boundary_constraints()
 {
     // get properties
     auto points = mesh_.vertex_property<Point>("v:point");
-    auto tex = mesh_.vertex_property<TextureCoordinate>("v:tex");
+    auto tex = mesh_.vertex_property<TexCoord>("v:tex");
 
     SurfaceMesh::VertexIterator vit, vend = mesh_.vertices_end();
     Vertex vh;
@@ -39,7 +39,7 @@ bool SurfaceParameterization::setup_boundary_constraints()
 
     // Initialize all texture coordinates to the origin.
     for (auto v : mesh_.vertices())
-        tex[v] = TextureCoordinate(0.5, 0.5);
+        tex[v] = TexCoord(0.5, 0.5);
 
     // find 1st boundary vertex
     for (vit = mesh_.vertices_begin(); vit != vend; ++vit)
@@ -65,7 +65,7 @@ bool SurfaceParameterization::setup_boundary_constraints()
     // map boundary loop to unit circle in texture domain
     unsigned int i, n = loop.size();
     Scalar angle, l, length;
-    TextureCoordinate t;
+    TexCoord t;
 
     // compute length of boundary loop
     for (i = 0, length = 0.0; i < n; ++i)
@@ -104,7 +104,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     }
 
     // get properties
-    auto tex = mesh_.vertex_property<TextureCoordinate>("v:tex");
+    auto tex = mesh_.vertex_property<TexCoord>("v:tex");
     auto eweight = mesh_.add_edge_property<Scalar>("e:param");
     auto idx = mesh_.add_vertex_property<int>("v:idx", -1);
 
