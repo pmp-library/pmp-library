@@ -9,7 +9,7 @@
 #pragma once
 //=============================================================================
 
-#include <pmp/gl/GL.h>
+#include <pmp/visualization/GL.h>
 #include <GLFW/glfw3.h>
 
 //=============================================================================
@@ -18,7 +18,7 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup gl gl
+//! \addtogroup visualization visualization
 //! @{
 
 //! A window provided by GLFW

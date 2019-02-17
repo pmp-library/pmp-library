@@ -9,7 +9,7 @@
 #pragma once
 //=============================================================================
 
-#include <pmp/gl/Window.h>
+#include <pmp/visualization/Window.h>
 #include <pmp/MatVec.h>
 
 #include <string>
@@ -21,7 +21,7 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup gl gl
+//! \addtogroup visualization visualization
 //! @{
 
 //! A simple GLFW viewer with trackball user interface

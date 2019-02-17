@@ -9,8 +9,8 @@
 #pragma once
 //=============================================================================
 
-#include <pmp/gl/SurfaceMeshGL.h>
-#include <pmp/gl/TrackballViewer.h>
+#include <pmp/visualization/SurfaceMeshGL.h>
+#include <pmp/visualization/TrackballViewer.h>
 
 //=============================================================================
 
@@ -18,7 +18,7 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup gl gl
+//! \addtogroup visualization visualization
 //! @{
 
 //=============================================================================

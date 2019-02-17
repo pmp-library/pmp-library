@@ -7,9 +7,9 @@
 // SPDX-License-Identifier: MIT
 //=============================================================================
 
-#include <pmp/gl/SurfaceMeshGL.h>
-#include <pmp/gl/PhongShader.h>
-#include <pmp/gl/ColdWarmTexture.h>
+#include <pmp/visualization/SurfaceMeshGL.h>
+#include <pmp/visualization/PhongShader.h>
+#include <pmp/visualization/ColdWarmTexture.h>
 #include <pmp/algorithms/SurfaceNormals.h>
 
 #include <stb_image.h>

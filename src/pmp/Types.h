@@ -88,7 +88,7 @@ struct IOFlags
 //! \defgroup core core
 //! \brief Core data structure and utilities.
 
-//! \defgroup gl gl
+//! \defgroup visualization visualization
 //! \brief Visualization tools using OpenGL.
 
 //=============================================================================

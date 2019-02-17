@@ -7,7 +7,7 @@
 // SPDX-License-Identifier: MIT
 //=============================================================================
 
-#include <pmp/gl/MeshViewer.h>
+#include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/SurfaceSimplification.h>
 #include <imgui.h>
 

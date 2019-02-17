@@ -9,8 +9,8 @@
 #pragma once
 //=============================================================================
 
-#include <pmp/gl/GL.h>
-#include <pmp/gl/Shader.h>
+#include <pmp/visualization/GL.h>
+#include <pmp/visualization/Shader.h>
 #include <pmp/MatVec.h>
 #include <pmp/SurfaceMesh.h>
 
@@ -20,7 +20,7 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup gl gl
+//! \addtogroup visualization visualization
 //! @{
 
 //=============================================================================

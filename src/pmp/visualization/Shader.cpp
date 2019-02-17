@@ -7,7 +7,7 @@
 // SPDX-License-Identifier: MIT
 //=============================================================================
 
-#include <pmp/gl/Shader.h>
+#include <pmp/visualization/Shader.h>
 #include <iostream>
 #include <fstream>
 #include <sstream>
