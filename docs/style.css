@@ -1,6 +1,6 @@
 body, table, div, p, dl
 {
-    font: 400 14px/22px LatoLatinWeb;
+    font: 400 16px/24px LatoLatinWeb;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -93,7 +93,7 @@ div.contents {
 }
 
 .title {
-	font: 400 14px/28px LatoLatinWeb;
+	font: 400 16px/28px LatoLatinWeb;
 	font-size: 175%;
 	font-weight: normal;
 	margin: 10px 2px 0px 2px;
@@ -142,7 +142,7 @@ div.contents {
 }
 
 #nav-tree .label {
-    font: 12px LatoLatinWeb;
+  font: 13px LatoLatinWeb;
 }
 
 .arrow {
@@ -174,7 +174,7 @@ code {
 }
 
 table.directory {
-    font: 400 14px LatoLatinWeb;
+    font: 400 16px LatoLatinWeb;
 }
 
 .entry, .memitem, .memItemLeft, .memItemRight
