@@ -104,6 +104,11 @@ void MeshViewer::process_imgui()
         ImGui::BulletText("%d edges", (int)mesh_.n_edges());
         ImGui::BulletText("%d faces", (int)mesh_.n_faces());
 
+        if (ImGui::Button("Reload Model"))
+        {
+            load_mesh(filename_.c_str());
+        }
+
         // control crease angle
         ImGui::PushItemWidth(100);
         ImGui::SliderFloat("Crease Angle", &crease_angle_, 0.0f, 180.0f,
