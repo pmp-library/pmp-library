@@ -8,11 +8,10 @@ $primary: #09a8ff;
 
 /* add additional CSS rules below */
 
-@import url('https://fonts.googleapis.com/css?family=Lato:400,400i');
+@import url('https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i');
 
 body {
   font-family: Lato, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  line-height: 1.7;
 }
 
 .jumbotron {
@@ -37,7 +36,13 @@ body {
   letter-spacing: 0.1px;
 }
 
+h1, h2, h3, h4, h5, h6
+{
+  font-weight: 700;
+}
+
 h5 {
+  font-weight: normal;
   font-style: italic;
 }
 
@@ -55,4 +60,37 @@ pre code {
     overflow-wrap: normal;
     white-space: pre;
     background-color: #efefef;
+}
+
+.page {
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: justify;
+}
+
+.content {
+
+  .container {
+    background: #fff;
+    padding-top: 2em;
+    padding-bottom: 2em;
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: .5em;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+}
+
+.post-date {
+  display: block;
+  margin-top: -.5rem;
+  margin-bottom: 1rem;
+  color: #595959;
 }
