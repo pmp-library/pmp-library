@@ -19,12 +19,8 @@ TEST(SurfaceGeodesicTest, geodesic)
     SurfaceMesh mesh;
     EXPECT_TRUE(mesh.read("pmp-data/off/sphere.off"));
 
-    // use first vertex as seed
-    std::vector<Vertex> seed;
-    seed.push_back(Vertex(0));
-
-    // compute geodesic distance
-    SurfaceGeodesic geodist(mesh, seed);
+    // compute geodesic distance from first vertex
+    SurfaceGeodesic geodist(mesh, std::vector<Vertex>{ Vertex(0) });
 
     // find maximum geodesic distance
     Scalar d(0);
@@ -45,15 +41,12 @@ TEST(SurfaceGeodesicTest, geodesic_symmetry)
     EXPECT_TRUE(mesh.read("pmp-data/off/bunny_adaptive.off"));
 
     SurfaceGeodesic geodist(mesh);
-    std::vector<Vertex> seed;
     Vertex v0, v1;
     Scalar d0, d1;
 
     // grow from first vector
     v0 = Vertex(0);
-    seed.clear();
-    seed.push_back(v0);
-    geodist.compute(seed);
+    geodist.compute( std::vector<Vertex>{v0} );
 
     // find maximum geodesic distance
     d0=0;
@@ -67,9 +60,7 @@ TEST(SurfaceGeodesicTest, geodesic_symmetry)
     }
 
     // grow back from max-dist vertex to vertex 0
-    seed.clear();
-    seed.push_back(v1);
-    geodist.compute(seed);
+    geodist.compute( std::vector<Vertex>{v1} );
     d1 = geodist(v0);
 
     // expect both distance to be the same
