@@ -16,21 +16,24 @@ namespace pmp {
 
 //=============================================================================
 
-SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh, std::vector<Vertex> seed,
-                                 Scalar maxdist, bool use_virtual_edges)
+SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh, 
+                                 bool use_virtual_edges)
     : mesh_(mesh),
-      seed_(seed),
-      maxdist_(maxdist),
       use_virtual_edges_(use_virtual_edges)
 {
-    distance_ = mesh_.add_vertex_property<Scalar>("geodesic:distance");
+    distance_  = mesh_.add_vertex_property<Scalar>("geodesic:distance");
     processed_ = mesh_.add_vertex_property<bool>("geodesic:processed");
-
-    front_ = new PriorityQueue(VertexCmp(distance_));
     find_virtual_edges();
-    init_front();
-    propagate_front();
-    delete front_;
+}
+
+//-----------------------------------------------------------------------------
+
+SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh, 
+                                 const std::vector<Vertex>& seed,
+                                 Scalar maxdist, bool use_virtual_edges)
+    : SurfaceGeodesic(mesh, use_virtual_edges)
+{
+    compute(seed, maxdist);
 }
 
 //-----------------------------------------------------------------------------
@@ -39,6 +42,19 @@ SurfaceGeodesic::~SurfaceGeodesic()
 {
     mesh_.remove_vertex_property(distance_);
     mesh_.remove_vertex_property(processed_);
+}
+
+//-----------------------------------------------------------------------------
+
+void SurfaceGeodesic::compute(const std::vector<Vertex>& seed,
+                              Scalar maxdist)
+{
+    seed_    = seed;
+    maxdist_ = maxdist;
+    front_   = new PriorityQueue(VertexCmp(distance_));
+    init_front();
+    propagate_front();
+    delete front_;
 }
 
 //-----------------------------------------------------------------------------
@@ -167,14 +183,14 @@ void SurfaceGeodesic::init_front()
     for (auto v : mesh_.vertices())
     {
         processed_[v] = false;
-        distance_[v] = FLT_MAX;
+        distance_[v]  = FLT_MAX;
     }
 
     // initialize seed vertices
     for (auto v : seed_)
     {
         processed_[v] = true;
-        distance_[v] = 0.0;
+        distance_[v]  = 0.0;
     }
 
     // initialize seed's one-ring
@@ -186,7 +202,7 @@ void SurfaceGeodesic::init_front()
                 pmp::distance(mesh_.position(v), mesh_.position(vv));
             if (dist < distance_[vv])
             {
-                distance_[vv] = dist;
+                distance_[vv]  = dist;
                 processed_[vv] = true;
             }
         }
@@ -369,21 +385,6 @@ Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
     const double c = dot(normalize(A - C), normalize(B - C)); // cosine
     if (c < 0.0)
         return dykstra;
-
-    // Novotni: intersect two circles
-    // use Novotni when distances are not too large
-    const double l = pmp::distance(A, B);
-    if (std::max(TA, TB) / l < 10)
-    {
-        if (valid_triangle(l, a, b) && valid_triangle(l, TA, TB))
-        {
-            const double x2 = 0.5f * (l * l + b * b - a * a) / l;
-            const double y2 = sqrt(b * b - x2 * x2);
-            const double x = 0.5f * (l * l + TA * TA - TB * TB) / l;
-            const double y = -sqrt(TA * TA - x * x);
-            return pmp::distance(dvec2(x2, y2), dvec2(x, y));
-        }
-    }
 
     // Kimmel: solve quadratic equation
     const double u = TB - TA;
