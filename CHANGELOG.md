@@ -8,9 +8,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed a bug SurfaceGeodesic that lead to dist(v0,v1) != dist(v1,v0). As a
+  consequence, the Novotni method has been removed from SurfaceGeodesic.
+
 ## [1.0.0] 2019-02-18
 
-### [Added]
+### Added
 
 - Algorithms module
 - Visualization tools
@@ -23,7 +28,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Coding standard
 - Version API
 
-### [Changed]
+### Changed
 
 - Switched to MIT license
 - Library scope handle and property types
