@@ -33,6 +33,10 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
     set_draw_mode("Smooth Shading");
 
     crease_angle_ = 90.0;
+
+    // add help items
+    add_help_item("W", "Write mesh to 'output.off'");
+    add_help_item("Backspace", "Reload mesh");
 }
 
 //-----------------------------------------------------------------------------
@@ -115,11 +119,6 @@ void MeshViewer::process_imgui()
         ImGui::BulletText("%d edges", (int)mesh_.n_edges());
         ImGui::BulletText("%d faces", (int)mesh_.n_faces());
 
-        if (ImGui::Button("Reload Model"))
-        {
-            load_mesh(filename_.c_str());
-        }
-
         // control crease angle
         ImGui::PushItemWidth(100);
         ImGui::SliderFloat("Crease Angle", &crease_angle_, 0.0f, 180.0f,
@@ -155,19 +154,7 @@ void MeshViewer::keyboard(int key, int scancode, int action, int mods)
             break;
         }
 
-        case GLFW_KEY_C: // adjust crease angle
-        {
-            if (mods & GLFW_MOD_SHIFT)
-                mesh_.set_crease_angle(mesh_.crease_angle() + 10);
-            else
-                mesh_.set_crease_angle(mesh_.crease_angle() - 10);
-            crease_angle_ = mesh_.crease_angle();
-
-            std::cout << "crease angle: " << mesh_.crease_angle() << std::endl;
-            break;
-        }
-
-        case GLFW_KEY_O: // write mesh
+        case GLFW_KEY_W: // write mesh
         {
             mesh_.write("output.off");
             break;

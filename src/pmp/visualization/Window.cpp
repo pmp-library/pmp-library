@@ -34,7 +34,8 @@ Window* Window::instance_ = nullptr;
 Window::Window(const char* title, int width, int height, bool showgui)
     : width_(width), height_(height), 
       scaling_(1), pixel_ratio_(1),
-      show_imgui_(showgui), imgui_scale_(1.0)
+      show_imgui_(showgui), imgui_scale_(1.0),
+      show_help_(false)
 {
     // initialize glfw window
     if (!glfwInit())
@@ -110,6 +111,12 @@ Window::Window(const char* title, int width, int height, bool showgui)
 
     // setup imgui
     init_imgui();
+
+    // add help items
+    add_help_item("Esc/Q", "Quit application");
+    add_help_item("H/?", "Open help dialog");
+    add_help_item("G", "Toggle GUI dialog");
+    add_help_item("PageUp/Down", "Scale GUI dialogs");
 }
 
 //-----------------------------------------------------------------------------
@@ -198,7 +205,7 @@ void Window::init_imgui()
     style.Colors[ImGuiCol_PlotHistogram]        = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
     style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
     style.Colors[ImGuiCol_TextSelectedBg]       = ImVec4(0.16f, 0.62f, 0.87f, 0.35f);
-    //style.Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+    style.Colors[ImGuiCol_ModalWindowDimBg]     = ImVec4(0.20f, 0.20f, 0.20f, 0.70f);
 }
 
 //-----------------------------------------------------------------------------
@@ -237,6 +244,51 @@ void Window::scale_imgui(float scale)
     style.TabRounding            =  4 * scale;
     style.DisplayWindowPadding   = ImVec2(19*scale, 19*scale);
     style.DisplaySafeAreaPadding = ImVec2(3*scale, 3*scale);
+}
+
+//-----------------------------------------------------------------------------
+
+void Window::add_help_item(std::string key, std::string description)
+{
+    help_items_.push_back( std::make_pair(key, description) );
+}
+
+//-----------------------------------------------------------------------------
+
+void Window::show_help()
+{
+    if (!show_help_) return;
+
+    ImGui::OpenPopup("Key Bindings");
+
+    if (ImGui::BeginPopupModal("Key Bindings", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::Columns(2, "help items");
+        ImGui::SetColumnWidth(0, 100*imgui_scale_);
+        ImGui::SetColumnWidth(1, 200*imgui_scale_);
+        ImGui::Separator();
+        ImGui::Text("Trigger"); ImGui::NextColumn();
+        ImGui::Text("Description"); ImGui::NextColumn();
+        ImGui::Separator();
+
+        for (const auto& item: help_items_)
+        {
+            ImGui::Text("%s", item.first.c_str()); ImGui::NextColumn();
+            ImGui::Text("%s", item.second.c_str()); ImGui::NextColumn();
+        }
+
+        ImGui::Columns(1);
+        ImGui::Separator();
+
+        if (ImGui::Button("OK", ImVec2(300*imgui_scale_,0)))
+        {
+            show_help_ = false;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SetItemDefaultFocus();
+
+        ImGui::EndPopup();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -291,6 +343,10 @@ void Window::render_frame()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
+        // show imgui help
+        instance_->show_help();
+
+        // prepare, process, and finish applications ImGUI dialog
         ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
         ImGui::Begin(
             "Mesh Info", nullptr,
@@ -357,6 +413,61 @@ void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode,
     if (!ImGui::GetIO().WantCaptureKeyboard)
     {
         instance_->keyboard(key, scancode, action, mods);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void Window::character(unsigned int c)
+{
+    switch (c)
+    {
+        case 63: // question mark
+            show_help_ = true;
+            break;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
+{
+    if (action != GLFW_PRESS && action != GLFW_REPEAT)
+        return;
+
+    switch (key)
+    {
+#ifndef __EMSCRIPTEN__
+        case GLFW_KEY_ESCAPE:
+        case GLFW_KEY_Q:
+        {
+            exit(0);
+            break;
+        }
+#endif
+        case GLFW_KEY_G:
+        {
+            show_imgui(!show_imgui());
+            break;
+        }
+
+        case GLFW_KEY_H:
+        {
+            show_help_ = true;
+            break;
+        }
+
+        case GLFW_KEY_PAGE_UP:
+        {
+            scale_imgui(1.25);
+            break;
+        }
+
+        case GLFW_KEY_PAGE_DOWN:
+        {
+            scale_imgui(0.8);
+            break;
+        }
     }
 }
 

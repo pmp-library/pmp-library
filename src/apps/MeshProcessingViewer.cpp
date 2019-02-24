@@ -24,6 +24,17 @@ using namespace pmp;
 
 //=============================================================================
 
+MeshProcessingViewer::MeshProcessingViewer(const char* title, int width, int height)
+    : MeshViewer(title, width, height)
+{
+    set_draw_mode("Hidden Line");
+
+    // add help items
+    add_help_item("O", "Flip mesh orientation");
+}
+
+//----------------------------------------------------------------------------
+
 void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 {
     if (action != GLFW_PRESS && action != GLFW_REPEAT)
@@ -52,11 +63,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             update_mesh();
             break;
         }
-        case GLFW_KEY_W:
-        {
-            mesh_.write("output.off");
-            break;
-        }
+
         default:
         {
             MeshViewer::keyboard(key, scancode, action, mods);

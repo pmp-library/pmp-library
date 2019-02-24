@@ -11,6 +11,8 @@
 
 #include <pmp/visualization/GL.h>
 #include <GLFW/glfw3.h>
+#include <vector>
+#include <utility>
 
 //=============================================================================
 
@@ -57,12 +59,10 @@ protected: //----------------------------------- callbacks as member functions
 
     //! this function handles keyboard events
     virtual void keyboard(int /*key*/, int /*code*/, int /*action*/,
-                          int /*mods*/)
-    {
-    }
+                          int /*mods*/);
 
     //! this function handles unicode character events
-    virtual void character(unsigned int) {}
+    virtual void character(unsigned int);
 
     //! this function handles mouse button events
     virtual void mouse(int /*button*/, int /*action*/, int /*mods*/) {}
@@ -98,6 +98,12 @@ protected:
     //!  show or hide ImGUI
     void show_imgui(bool b) { show_imgui_ = b; }
 
+    //! add key binding (or general action description)
+    void add_help_item(std::string key, std::string description);
+
+    //! show ImGUI help dialog
+    void show_help();
+
 protected:
     //! GLFW window pointer
     GLFWwindow* window_;
@@ -110,6 +116,8 @@ protected:
 
     bool show_imgui_;
     float imgui_scale_;
+    bool show_help_;
+    std::vector< std::pair<std::string, std::string> > help_items_;
 };
 
 //=============================================================================

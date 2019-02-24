@@ -33,6 +33,11 @@ TrackballViewer::TrackballViewer(const char* title, int width, int height,
 
     // init OpenGL state
     init();
+
+    // add imgui help items
+    add_help_item("Left/Right", "Rotate model horizontally");
+    add_help_item("Up/Down", "Rotate model vertically");
+    add_help_item("Space", "Cycle through draw modes");
 }
 
 //-----------------------------------------------------------------------------
@@ -73,27 +78,13 @@ void TrackballViewer::set_draw_mode(const std::string& s)
 
 //-----------------------------------------------------------------------------
 
-void TrackballViewer::keyboard(int key, int /*code*/, int action, int /*mods*/)
+void TrackballViewer::keyboard(int key, int code, int action, int mods)
 {
     if (action != GLFW_PRESS && action != GLFW_REPEAT)
         return;
 
     switch (key)
     {
-#ifndef __EMSCRIPTEN__
-        case GLFW_KEY_ESCAPE:
-        case GLFW_KEY_Q:
-        {
-            exit(0);
-            break;
-        }
-#endif
-        case GLFW_KEY_G:
-        {
-            show_imgui(!show_imgui());
-            break;
-        }
-
         case GLFW_KEY_SPACE:
         {
             if (++draw_mode_ >= n_draw_modes_)
@@ -124,14 +115,10 @@ void TrackballViewer::keyboard(int key, int /*code*/, int action, int /*mods*/)
             rotate(vec3(1, 0, 0), 5.0);
             break;
         }
-        case GLFW_KEY_PAGE_UP:
+
+        default:
         {
-            scale_imgui(1.25);
-            break;
-        }
-        case GLFW_KEY_PAGE_DOWN:
-        {
-            scale_imgui(0.8);
+            Window::keyboard(key, code, action, mods);
             break;
         }
     }

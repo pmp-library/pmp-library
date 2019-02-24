@@ -17,11 +17,7 @@ class MeshProcessingViewer : public pmp::MeshViewer
 {
 public:
     //! constructor
-    MeshProcessingViewer(const char* title, int width, int height)
-        : MeshViewer(title, width, height)
-    {
-        set_draw_mode("Hidden Line");
-    }
+    MeshProcessingViewer(const char* title, int width, int height);
 
 protected:
     //! this function handles mouse button presses
