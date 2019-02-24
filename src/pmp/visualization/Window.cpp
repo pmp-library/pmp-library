@@ -502,7 +502,12 @@ void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
 void Window::glfw_scroll(GLFWwindow* window, double xoffset, double yoffset)
 {
 #ifdef __EMSCRIPTEN__
-    yoffset *= -0.02;
+    yoffset = -yoffset;
+
+    // thresholding for cross-browser handling
+    const float t = 5;
+    if (yoffset > t) yoffset=t;
+    else if (yoffset < -t) yoffset = -t;
 #endif
 
     ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
