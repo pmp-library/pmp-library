@@ -392,7 +392,7 @@ bool SurfaceMeshIO::write_obj(const SurfaceMesh& mesh)
 bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                     const bool has_texcoords, const bool has_colors)
 {
-    char line[200], *lp;
+    char line[1000], *lp;
     int nc;
     unsigned int i, j, items, idx;
     unsigned int nv, nf, ne;
@@ -421,7 +421,7 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     for (i = 0; i < nv && !feof(in); ++i)
     {
         // read line
-        lp = fgets(line, 200, in);
+        lp = fgets(line, 1000, in);
         lp = line;
 
         // position
@@ -472,7 +472,7 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     for (i = 0; i < nf; ++i)
     {
         // read line
-        lp = fgets(line, 200, in);
+        lp = fgets(line, 1000, in);
         lp = line;
 
         // #vertices
@@ -489,7 +489,10 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
             vertices[j] = Vertex(idx);
             lp += nc;
         }
-        mesh.add_face(vertices);
+        if (vertices.size() == nv)
+            mesh.add_face(vertices);
+        else
+            std::cerr << "OFF: fail to read face " << i << std::endl;
     }
 
     return true;
