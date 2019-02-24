@@ -35,8 +35,8 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
     crease_angle_ = 90.0;
 
     // add help items
-    add_help_item("W", "Write mesh to 'output.off'");
-    add_help_item("Backspace", "Reload mesh");
+    add_help_item("Backspace", "Reload mesh", 3);
+    add_help_item("W", "Write mesh to 'output.off'", 4);
 }
 
 //-----------------------------------------------------------------------------

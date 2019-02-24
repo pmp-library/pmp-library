@@ -35,9 +35,9 @@ TrackballViewer::TrackballViewer(const char* title, int width, int height,
     init();
 
     // add imgui help items
-    add_help_item("Left/Right", "Rotate model horizontally");
-    add_help_item("Up/Down", "Rotate model vertically");
-    add_help_item("Space", "Cycle through draw modes");
+    add_help_item("Left/Right", "Rotate model horizontally", 0);
+    add_help_item("Up/Down", "Rotate model vertically", 1);
+    add_help_item("Space", "Cycle through draw modes", 2);
 }
 
 //-----------------------------------------------------------------------------

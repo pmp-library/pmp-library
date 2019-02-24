@@ -30,7 +30,7 @@ MeshProcessingViewer::MeshProcessingViewer(const char* title, int width, int hei
     set_draw_mode("Hidden Line");
 
     // add help items
-    add_help_item("O", "Flip mesh orientation");
+    add_help_item("O", "Flip mesh orientation", 5);
 }
 
 //----------------------------------------------------------------------------

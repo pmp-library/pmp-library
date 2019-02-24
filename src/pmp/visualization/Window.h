@@ -99,7 +99,7 @@ protected:
     void show_imgui(bool b) { show_imgui_ = b; }
 
     //! add key binding (or general action description)
-    void add_help_item(std::string key, std::string description);
+    void add_help_item(std::string key, std::string description, int position=-1);
 
     //! show ImGUI help dialog
     void show_help();

@@ -113,10 +113,9 @@ Window::Window(const char* title, int width, int height, bool showgui)
     init_imgui();
 
     // add help items
-    add_help_item("Esc/Q", "Quit application");
-    add_help_item("H/?", "Open help dialog");
     add_help_item("G", "Toggle GUI dialog");
     add_help_item("PageUp/Down", "Scale GUI dialogs");
+    add_help_item("Esc/Q", "Quit application");
 }
 
 //-----------------------------------------------------------------------------
@@ -248,9 +247,18 @@ void Window::scale_imgui(float scale)
 
 //-----------------------------------------------------------------------------
 
-void Window::add_help_item(std::string key, std::string description)
+void Window::add_help_item(std::string key, std::string description, int pos)
 {
-    help_items_.push_back( std::make_pair(key, description) );
+    if (pos==-1)
+    {
+        help_items_.push_back( std::make_pair(key, description) );
+    }
+    else
+    {
+        auto it = help_items_.begin();
+        it += pos;
+        help_items_.insert( it, std::make_pair(key, description) );
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -261,6 +269,7 @@ void Window::show_help()
 
     ImGui::OpenPopup("Key Bindings");
 
+    ImGui::SetNextWindowFocus();
     if (ImGui::BeginPopupModal("Key Bindings", NULL, ImGuiWindowFlags_AlwaysAutoResize))
     {
         ImGui::Columns(2, "help items");
@@ -285,7 +294,6 @@ void Window::show_help()
             show_help_ = false;
             ImGui::CloseCurrentPopup();
         }
-        ImGui::SetItemDefaultFocus();
 
         ImGui::EndPopup();
     }
@@ -343,16 +351,21 @@ void Window::render_frame()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // show imgui help
-        instance_->show_help();
-
         // prepare, process, and finish applications ImGUI dialog
         ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
         ImGui::Begin(
-            "Mesh Info", nullptr,
-            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
+                "Mesh Info", nullptr,
+                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
+        ImGui::Text("Press '?' for help");
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
         instance_->process_imgui();
         ImGui::End();
+        
+        // show imgui help
+        instance_->show_help();
+
         ImGui::Render();
     }
 
@@ -448,12 +461,6 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
         case GLFW_KEY_G:
         {
             show_imgui(!show_imgui());
-            break;
-        }
-
-        case GLFW_KEY_H:
-        {
-            show_help_ = true;
             break;
         }
 
