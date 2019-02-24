@@ -114,6 +114,12 @@ Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh, Face f)
 Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
                                              Halfedge h, Scalar crease_angle)
 {
+    // catch the two trivial cases
+    if (crease_angle < 0.01)
+        return compute_face_normal(mesh, mesh.face(h));
+    else if (crease_angle > 179)
+        return compute_vertex_normal(mesh, mesh.from_vertex(h));
+
     // avoid numerical problems
     if (crease_angle < 0.001)
         crease_angle = 0.001;
