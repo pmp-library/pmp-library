@@ -31,13 +31,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 
     switch (key)
     {
-        case GLFW_KEY_F:
-        {
-            SurfaceFeatures sf(mesh_);
-            sf.detect_angle(70);
-            break;
-        }
-
         case GLFW_KEY_O: // change face orientation
         {
             SurfaceMeshGL new_mesh;
