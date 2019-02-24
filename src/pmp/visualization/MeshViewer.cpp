@@ -36,7 +36,9 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
 
     // add help items
     add_help_item("Backspace", "Reload mesh", 3);
+#ifndef __EMSCRIPTEN__
     add_help_item("W", "Write mesh to 'output.off'", 4);
+#endif
 }
 
 //-----------------------------------------------------------------------------

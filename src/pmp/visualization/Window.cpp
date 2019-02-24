@@ -32,7 +32,7 @@ Window* Window::instance_ = nullptr;
 //-----------------------------------------------------------------------------
 
 Window::Window(const char* title, int width, int height, bool showgui)
-    : width_(width), height_(height), 
+    : width_(width), height_(height),
       scaling_(1), pixel_ratio_(1),
       show_imgui_(showgui), imgui_scale_(1.0),
       show_help_(false)
@@ -115,7 +115,9 @@ Window::Window(const char* title, int width, int height, bool showgui)
     // add help items
     add_help_item("G", "Toggle GUI dialog");
     add_help_item("PageUp/Down", "Scale GUI dialogs");
+#ifndef __EMSCRIPTEN__
     add_help_item("Esc/Q", "Quit application");
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +152,7 @@ void Window::init_imgui()
 
     // load Lato font from pre-compiled ttf file
     io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
-                                             LatoLatin_compressed_size, 
+                                             LatoLatin_compressed_size,
                                              14*imgui_scale_);
 
     // window style
@@ -219,7 +221,7 @@ void Window::scale_imgui(float scale)
     io.Fonts->Clear();
     io.Fonts->AddFontFromMemoryCompressedTTF(
             LatoLatin_compressed_data,
-            LatoLatin_compressed_size, 
+            LatoLatin_compressed_size,
             14*imgui_scale_);
 
     // trigger font texture regeneration
@@ -362,7 +364,7 @@ void Window::render_frame()
         ImGui::Spacing();
         instance_->process_imgui();
         ImGui::End();
-        
+
         // show imgui help
         instance_->show_help();
 
@@ -505,7 +507,7 @@ void Window::glfw_scroll(GLFWwindow* window, double xoffset, double yoffset)
     yoffset = -yoffset;
 
     // thresholding for cross-browser handling
-    const float t = 5;
+    const float t = 1;
     if (yoffset > t) yoffset=t;
     else if (yoffset < -t) yoffset = -t;
 #endif
