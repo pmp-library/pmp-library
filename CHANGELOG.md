@@ -8,6 +8,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- Support point set rendering for surface meshes without faces
+
+### Changed
+
+- Upgraded ImGui to version 1.68
+- Upgraded Eigen to version 3.3.7
+
 ### Fixed
 
 - Fixed a bug SurfaceGeodesic that lead to dist(v0,v1) != dist(v1,v0). As a
