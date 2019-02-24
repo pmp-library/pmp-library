@@ -14,12 +14,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
-- Upgraded ImGui to version 1.68
-- Upgraded Eigen to version 3.3.7
+- Improve normal computation for polygonal faces
+- Upgrade ImGui to version 1.68
+- Upgrade Eigen to version 3.3.7
 
 ### Fixed
 
-- Fixed a bug SurfaceGeodesic that lead to dist(v0,v1) != dist(v1,v0). As a
+- Fix a bug in OFF reader when loading faces with high valence
+- Fix a bug SurfaceGeodesic that lead to dist(v0,v1) != dist(v1,v0). As a
   consequence, the Novotni method has been removed from SurfaceGeodesic.
 
 ## [1.0.0] 2019-02-18
