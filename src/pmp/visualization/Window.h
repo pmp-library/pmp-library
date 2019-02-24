@@ -89,7 +89,13 @@ protected:
     //! setup ImGUI user interface
     void init_imgui();
 
+    //! scale ImGUI elements and font
+    void scale_imgui(float scale);
+
+    //! is ImGUI visible or hidden?
     bool show_imgui() const { return show_imgui_; }
+
+    //!  show or hide ImGUI
     void show_imgui(bool b) { show_imgui_ = b; }
 
 protected:
@@ -100,9 +106,10 @@ protected:
     int width_, height_;
 
     //! highDPI scaling
-    int scaling_;
+    float scaling_, pixel_ratio_;
 
     bool show_imgui_;
+    float imgui_scale_;
 };
 
 //=============================================================================

@@ -10,7 +10,10 @@
 #include "Window.h"
 #include <algorithm>
 
-#include <imgui_glfw.h>
+#define IMGUI_DISABLE_OBSOLETE_FUNCTIONS
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include <lato-font.h>
 
 #if __EMSCRIPTEN__
@@ -29,7 +32,9 @@ Window* Window::instance_ = nullptr;
 //-----------------------------------------------------------------------------
 
 Window::Window(const char* title, int width, int height, bool showgui)
-    : width_(width), height_(height), show_imgui_(showgui)
+    : width_(width), height_(height), 
+      scaling_(1), pixel_ratio_(1),
+      show_imgui_(showgui), imgui_scale_(1.0)
 {
     // initialize glfw window
     if (!glfwInit())
@@ -80,11 +85,19 @@ Window::Window(const char* title, int width, int height, bool showgui)
     int window_width, window_height, framebuffer_width, framebuffer_height;
     glfwGetWindowSize(window_, &window_width, &window_height);
     glfwGetFramebufferSize(window_, &framebuffer_width, &framebuffer_height);
-    scaling_ = framebuffer_width / window_width;
     width_ = framebuffer_width;
     height_ = framebuffer_height;
+#ifndef __EMSCRIPTEN__
+    scaling_ = framebuffer_width / window_width;
     if (scaling_ != 1)
         std::cout << "highDPI scaling: " << scaling_ << std::endl;
+#else
+    pixel_ratio_ = emscripten_get_device_pixel_ratio();
+    if (pixel_ratio_ != 1)
+        std::cout << "highDPI scaling: " << scaling_ << std::endl;
+    imgui_scale_ = pixel_ratio_;
+#endif
+
 
     // register glfw callbacks
     glfwSetErrorCallback(glfw_error);
@@ -101,92 +114,129 @@ Window::Window(const char* title, int width, int height, bool showgui)
 
 //-----------------------------------------------------------------------------
 
-void Window::init_imgui()
+Window::~Window()
 {
-    ImGui_Init(window_, false);
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
 
-    // load Lato font from pre-compiled ttf file
-    ImFontConfig config;
-    config.OversampleH = 2;
-    config.OversampleV = 2;
-    ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
-                                             LatoLatin_compressed_size, 14);
-
-    // window style
-    ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowRounding = 4.0f;
-    style.FrameRounding = 4.0f;
-    style.GrabMinSize = 10.0f;
-    style.GrabRounding = 4.0f;
-
-    // color scheme adapted from
-    // https://github.com/ocornut/imgui/pull/511#issuecomment-175719267
-    style.Colors[ImGuiCol_Text] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
-    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.90f, 0.90f, 0.90f, 0.70f);
-    style.Colors[ImGuiCol_ChildWindowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-    style.Colors[ImGuiCol_PopupBg] = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
-    style.Colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
-    style.Colors[ImGuiCol_BorderShadow] = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
-    style.Colors[ImGuiCol_FrameBg] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-    style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
-    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_TitleBgCollapsed] =
-        ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
-    style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
-    style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
-    style.Colors[ImGuiCol_ScrollbarGrabHovered] =
-        ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
-    style.Colors[ImGuiCol_ScrollbarGrabActive] =
-        ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
-    style.Colors[ImGuiCol_ComboBg] = ImVec4(0.86f, 0.86f, 0.86f, 0.99f);
-    style.Colors[ImGuiCol_CheckMark] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
-    style.Colors[ImGuiCol_SliderGrabActive] =
-        ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Button] = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Header] = ImVec4(0.16f, 0.62f, 0.87f, 0.31f);
-    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Column] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
-    style.Colors[ImGuiCol_ColumnHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
-    style.Colors[ImGuiCol_ColumnActive] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_ResizeGrip] = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
-    style.Colors[ImGuiCol_ResizeGripHovered] =
-        ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
-    style.Colors[ImGuiCol_ResizeGripActive] =
-        ImVec4(0.16f, 0.62f, 0.87f, 0.95f);
-    style.Colors[ImGuiCol_CloseButton] = ImVec4(0.59f, 0.59f, 0.59f, 0.50f);
-    style.Colors[ImGuiCol_CloseButtonHovered] =
-        ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
-    style.Colors[ImGuiCol_CloseButtonActive] =
-        ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
-    style.Colors[ImGuiCol_PlotLines] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
-    style.Colors[ImGuiCol_PlotLinesHovered] =
-        ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
-    style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_PlotHistogramHovered] =
-        ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.16f, 0.62f, 0.87f, 0.35f);
-    style.Colors[ImGuiCol_ModalWindowDarkening] =
-        ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+    glfwDestroyWindow(window_);
+    glfwTerminate();
 }
 
 //-----------------------------------------------------------------------------
 
-Window::~Window()
+void Window::init_imgui()
 {
-    // terminate imgui
-    ImGui_Shutdown();
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.IniFilename = nullptr;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window_, false);
+#ifdef __EMSCRIPTEN__
+    const char* glsl_version = "#version 300 es";
+#else
+    const char* glsl_version = "#version 330";
+#endif
+    ImGui_ImplOpenGL3_Init(glsl_version);
 
-    // terminate GLFW
-    glfwTerminate();
+    // load Lato font from pre-compiled ttf file
+    io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
+                                             LatoLatin_compressed_size, 
+                                             14*imgui_scale_);
+
+    // window style
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.WindowBorderSize = 0;
+    style.WindowRounding   = 4 * imgui_scale_;
+    style.FrameRounding    = 4 * imgui_scale_;
+    style.GrabMinSize      = 10 * imgui_scale_;
+    style.GrabRounding     = 4 * imgui_scale_;
+
+    // color scheme adapted from
+    // https://github.com/ocornut/imgui/pull/511#issuecomment-175719267
+    style.Colors[ImGuiCol_Text]                 = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+    style.Colors[ImGuiCol_TextDisabled]         = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+    style.Colors[ImGuiCol_WindowBg]             = ImVec4(0.90f, 0.90f, 0.90f, 0.70f);
+    style.Colors[ImGuiCol_ChildBg]              = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    style.Colors[ImGuiCol_PopupBg]              = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
+    style.Colors[ImGuiCol_Border]               = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
+    style.Colors[ImGuiCol_BorderShadow]         = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
+    style.Colors[ImGuiCol_FrameBg]              = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+    style.Colors[ImGuiCol_FrameBgHovered]       = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
+    style.Colors[ImGuiCol_FrameBgActive]        = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
+    style.Colors[ImGuiCol_TitleBg]              = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
+    style.Colors[ImGuiCol_TitleBgActive]        = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
+    style.Colors[ImGuiCol_TitleBgCollapsed]     = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
+    style.Colors[ImGuiCol_MenuBarBg]            = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+    style.Colors[ImGuiCol_ScrollbarBg]          = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
+    style.Colors[ImGuiCol_ScrollbarGrab]        = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
+    style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
+    style.Colors[ImGuiCol_ScrollbarGrabActive]  = ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
+    style.Colors[ImGuiCol_CheckMark]            = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_SliderGrab]           = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
+    style.Colors[ImGuiCol_SliderGrabActive]     = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_Button]               = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
+    style.Colors[ImGuiCol_ButtonHovered]        = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_ButtonActive]         = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_Header]               = ImVec4(0.16f, 0.62f, 0.87f, 0.31f);
+    style.Colors[ImGuiCol_HeaderHovered]        = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
+    style.Colors[ImGuiCol_HeaderActive]         = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    //style.Colors[ImGuiCol_Column]               = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+    //style.Colors[ImGuiCol_ColumnHovered]        = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
+    //style.Colors[ImGuiCol_ColumnActive]         = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_ResizeGrip]           = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
+    style.Colors[ImGuiCol_ResizeGripHovered]    = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
+    style.Colors[ImGuiCol_ResizeGripActive]     = ImVec4(0.16f, 0.62f, 0.87f, 0.95f);
+    //style.Colors[ImGuiCol_CloseButton]          = ImVec4(0.59f, 0.59f, 0.59f, 0.50f);
+    //style.Colors[ImGuiCol_CloseButtonHovered]   = ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
+    //style.Colors[ImGuiCol_CloseButtonActive]    = ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
+    style.Colors[ImGuiCol_PlotLines]            = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+    style.Colors[ImGuiCol_PlotLinesHovered]     = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+    style.Colors[ImGuiCol_PlotHistogram]        = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+    style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+    style.Colors[ImGuiCol_TextSelectedBg]       = ImVec4(0.16f, 0.62f, 0.87f, 0.35f);
+    //style.Colors[ImGuiCol_ModalWindowDarkening] = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
+}
+
+//-----------------------------------------------------------------------------
+
+void Window::scale_imgui(float scale)
+{
+    // scale imgui scale by new factor
+    imgui_scale_ *= scale;
+
+    // reload font
+    ImGuiIO& io = ImGui::GetIO();
+    io.Fonts->Clear();
+    io.Fonts->AddFontFromMemoryCompressedTTF(
+            LatoLatin_compressed_data,
+            LatoLatin_compressed_size, 
+            14*imgui_scale_);
+
+    // trigger font texture regeneration
+    ImGui_ImplOpenGL3_DestroyFontsTexture();
+    ImGui_ImplOpenGL3_CreateFontsTexture();
+
+    // adjust element styles (scaled version of default style or pmp style)
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.WindowPadding          = ImVec2(8*scale, 8*scale);
+    style.WindowRounding         = 4 * scale;
+    style.FramePadding           = ImVec2(4*scale, 2*scale);
+    style.FrameRounding          = 4 * scale;
+    style.ItemSpacing            = ImVec2(8*scale, 4*scale);
+    style.ItemInnerSpacing       = ImVec2(4*scale, 4*scale);
+    style.IndentSpacing          = 21 * scale;
+    style.ColumnsMinSpacing      =  6 * scale;
+    style.ScrollbarSize          = 16 * scale;
+    style.ScrollbarRounding      =  9 * scale;
+    style.GrabMinSize            = 10 * scale;
+    style.GrabRounding           =  4 * scale;
+    style.TabRounding            =  4 * scale;
+    style.DisplayWindowPadding   = ImVec2(19*scale, 19*scale);
+    style.DisplaySafeAreaPadding = ImVec2(3*scale, 3*scale);
 }
 
 //-----------------------------------------------------------------------------
@@ -209,17 +259,20 @@ int Window::run()
 
 void Window::render_frame()
 {
+    glfwMakeContextCurrent(instance_->window_);
+
 #if __EMSCRIPTEN__
     // determine correct canvas/framebuffer size
     int w, h, f;
     double dw, dh;
     emscripten_get_canvas_element_size("#canvas", &w, &h);
     emscripten_get_element_css_size("#canvas", &dw, &dh);
-    if (w != int(dw) || h != int(dh))
+    double s = instance_->pixel_ratio_;
+    if (w != int(dw*s) || h != int(dh*s))
     {
         // set canvas size to match element css size
-        w = int(dw);
-        h = int(dh);
+        w = int(dw*s);
+        h = int(dh*s);
         // set canvas size
         emscripten_set_canvas_element_size("#canvas", w, h);
         // inform GLFW of this change, since ImGUI asks GLFW for window size
@@ -233,13 +286,18 @@ void Window::render_frame()
     // preapre and process ImGUI elements
     if (instance_->show_imgui())
     {
-        ImGui_NewFrame();
+        // start imgui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
         ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
         ImGui::Begin(
             "Mesh Info", nullptr,
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
         instance_->process_imgui();
         ImGui::End();
+        ImGui::Render();
     }
 
     // draw scene
@@ -248,7 +306,7 @@ void Window::render_frame()
     // draw GUI
     if (instance_->show_imgui())
     {
-        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
 #if __EMSCRIPTEN__
@@ -283,7 +341,7 @@ void Window::glfw_error(int error, const char* description)
 
 void Window::glfw_character(GLFWwindow* window, unsigned int c)
 {
-    ImGui_CharCallback(window, c);
+    ImGui_ImplGlfw_CharCallback(window, c);
     if (!ImGui::GetIO().WantCaptureKeyboard)
     {
         instance_->character(c);
@@ -295,7 +353,7 @@ void Window::glfw_character(GLFWwindow* window, unsigned int c)
 void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode,
                            int action, int mods)
 {
-    ImGui_KeyCallback(window, key, scancode, action, mods);
+    ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
     if (!ImGui::GetIO().WantCaptureKeyboard)
     {
         instance_->keyboard(key, scancode, action, mods);
@@ -314,7 +372,7 @@ void Window::glfw_motion(GLFWwindow* /*window*/, double xpos, double ypos)
 
 void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
 {
-    ImGui_MouseButtonCallback(window, button, action, mods);
+    ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
     if (!ImGui::GetIO().WantCaptureMouse)
     {
         instance_->mouse(button, action, mods);
@@ -329,7 +387,7 @@ void Window::glfw_scroll(GLFWwindow* window, double xoffset, double yoffset)
     yoffset *= -0.02;
 #endif
 
-    ImGui_ScrollCallback(window, xoffset, yoffset);
+    ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
     if (!ImGui::GetIO().WantCaptureMouse)
     {
         instance_->scroll(xoffset, yoffset);

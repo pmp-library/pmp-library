@@ -124,6 +124,16 @@ void TrackballViewer::keyboard(int key, int /*code*/, int action, int /*mods*/)
             rotate(vec3(1, 0, 0), 5.0);
             break;
         }
+        case GLFW_KEY_PAGE_UP:
+        {
+            scale_imgui(1.25);
+            break;
+        }
+        case GLFW_KEY_PAGE_DOWN:
+        {
+            scale_imgui(0.8);
+            break;
+        }
     }
 }
 
