@@ -4,16 +4,9 @@ body, table, div, p, dl
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-weight: normal;
-}
-
-.textblock h2 {
-  margin-top: 1.75rem;
-}
-
-.textblock h3 {
-  margin-top: 1.75rem;
-  font-style: italic;
+  font-weight: bold;
+  margin-top: 1.25em;
+  margin-bottom: .5em;
 }
 
 #nav-sync
@@ -65,11 +58,28 @@ div.header
     margin: 0;
 }
 
+#container {
+  position: relative;
+  top: 0em;
+  max-width: 1170px;
+  margin: 0 auto;
+  background: white;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+#MSearchSelectWindow {
+  position: fixed;
+}
+
+#MSearchResultsWindow {
+  position: fixed;
+}
+
 div.contents {
-	margin-top: 10px;
-    margin-left: 24px;
-	margin-right: 8px;
-    width: 60em;
+  margin-top: 10px;
+  margin-left: 24px;
+  margin-right: 24px;
 }
 
 .ui-resizable-e {
@@ -95,7 +105,7 @@ div.contents {
 .title {
 	font: 400 16px/28px LatoLatinWeb;
 	font-size: 175%;
-	font-weight: normal;
+	font-weight: bold;
 	margin: 10px 2px 0px 2px;
 }
 
@@ -165,8 +175,8 @@ div.line {
 }
 
 code {
-    font-family: inconsolataregular;
-    font-size: 110%;
+  font-family: inconsolataregular;
+  font-size: 110%;
 }
 
 .overload {
