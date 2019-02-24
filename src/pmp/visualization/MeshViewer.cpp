@@ -53,6 +53,17 @@ bool MeshViewer::load_mesh(const char* filename)
         // compute face & vertex normals, update face indices
         update_mesh();
 
+        // set draw mode
+        if (mesh_.n_faces())
+        {
+            set_draw_mode("Solid Smooth");
+        }
+        else if (mesh_.n_vertices())
+        {
+            set_draw_mode("Points");
+        }
+
+        // print mesh statistic
         std::cout << "Load " << filename << ": " << mesh_.n_vertices()
                   << " vertices, " << mesh_.n_faces() << " faces\n";
 

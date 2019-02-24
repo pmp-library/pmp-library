@@ -113,6 +113,7 @@ private:
     GLsizei n_edges_;
     GLsizei n_triangles_;
     GLsizei n_features_;
+    bool    have_texcoords_;
 
     //! shaders
     Shader phong_shader_;
