@@ -143,9 +143,6 @@ bool SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
         mesh.halfedge_property<TexCoord>("h:tex");
     bool with_tex_coord = false;
 
-    // clear mesh
-    mesh.clear();
-
     // open file (in ASCII mode)
     FILE* in = fopen(filename_.c_str(), "r");
     if (!in)
@@ -414,7 +411,6 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     items = fscanf(in, "%d %d %d\n", (int*)&nv, (int*)&nf, (int*)&ne);
     PMP_ASSERT(items);
 
-    mesh.clear();
     mesh.reserve(nv, std::max(3 * nv, ne), nf);
 
     // read vertices: pos [normal] [color] [texcoord]
@@ -525,7 +521,6 @@ bool read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     tfread(in, nv);
     tfread(in, nf);
     tfread(in, ne);
-    mesh.clear();
     mesh.reserve(nv, std::max(3 * nv, ne), nf);
 
     // read vertices: pos [normal] [color] [texcoord]
@@ -773,9 +768,6 @@ bool SurfaceMeshIO::read_pmp(SurfaceMesh& mesh)
     if (!in)
         return false;
 
-    // clear mesh
-    mesh.clear();
-
     // how many elements?
     unsigned int nv(0), ne(0), nh(0), nf(0);
     tfread(in, nv);
@@ -1000,9 +992,6 @@ static int faceCallback(p_ply_argument argument)
 
 bool SurfaceMeshIO::read_ply(SurfaceMesh& mesh)
 {
-    // clear old data
-    mesh.clear();
-
     // add object properties to hold temporary data
     auto point = mesh.add_object_property<Point>("g:point");
     auto vertices = mesh.add_object_property<std::vector<Vertex>>("g:vertices");
@@ -1114,9 +1103,6 @@ bool SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
     CmpVec comp(FLT_MIN);
     std::map<vec3, Vertex, CmpVec> vMap(comp);
     std::map<vec3, Vertex, CmpVec>::iterator vMapIt;
-
-    // clear mesh
-    mesh.clear();
 
     // open file (in ASCII mode)
     FILE* in = fopen(filename_.c_str(), "r");
