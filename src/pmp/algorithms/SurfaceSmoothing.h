@@ -34,12 +34,16 @@ public:
     ~SurfaceSmoothing();
 
     //! Perform \c iters iterations of explicit Laplacian smoothing.
+    //! Decide whether to use uniform Laplacian or cotan Laplacian (default: cotan).
     void explicit_smoothing(unsigned int iters = 10,
                             bool use_uniform_laplace = false);
 
     //! Perform implicit Laplacian smoothing with \c timestep.
+    //! Decide whether to use uniform Laplacian or cotan Laplacian (default: cotan).
+    //! Decide whether to re-center and re-scale model after smoothing (default: true).
     void implicit_smoothing(Scalar timestep = 0.001,
-                            bool use_uniform_laplace = false);
+                            bool use_uniform_laplace = false,
+                            bool rescale = true);
 
     //! initialize edge and vertex weights
     void initialize(bool use_uniform_laplace=false)

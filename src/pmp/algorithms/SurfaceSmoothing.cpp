@@ -46,8 +46,6 @@ SurfaceSmoothing::~SurfaceSmoothing()
 
 void SurfaceSmoothing::compute_edge_weights(bool use_uniform_laplace)
 {
-    std::clog << "Smoothing: compute edge weights\n";
-
     auto eweight = mesh_.edge_property<Scalar>("e:cotan");
     
     if (use_uniform_laplace)
@@ -68,8 +66,6 @@ void SurfaceSmoothing::compute_edge_weights(bool use_uniform_laplace)
     
 void SurfaceSmoothing::compute_vertex_weights(bool use_uniform_laplace)
 {
-    std::clog << "Smoothing: compute vertex weights\n";
-
     auto vweight = mesh_.vertex_property<Scalar>("v:area");
 
     if (use_uniform_laplace)
@@ -147,7 +143,8 @@ void SurfaceSmoothing::explicit_smoothing(unsigned int iters,
 //-----------------------------------------------------------------------------
 
 void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
-                                          bool use_uniform_laplace)
+                                          bool use_uniform_laplace,
+                                          bool rescale)
 {
     if (!mesh_.n_vertices())
         return;
@@ -254,17 +251,20 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     }
 
 
-    // restore original surface area
-    Scalar area_after = surface_area(mesh_);
-    Scalar scale = sqrt(area_before/area_after);
-    for (auto v: mesh_.vertices())
-        mesh_.position(v) *= scale;
+    if (rescale)
+    {
+        // restore original surface area
+        Scalar area_after = surface_area(mesh_);
+        Scalar scale = sqrt(area_before/area_after);
+        for (auto v: mesh_.vertices())
+            mesh_.position(v) *= scale;
 
-    // restore original center
-    Point center_after = centroid(mesh_);
-    Point trans = center_before - center_after;
-    for (auto v: mesh_.vertices())
-        mesh_.position(v) += trans;
+        // restore original center
+        Point center_after = centroid(mesh_);
+        Point trans = center_before - center_after;
+        for (auto v: mesh_.vertices())
+            mesh_.position(v) += trans;
+    }
 
 
     // clean-up

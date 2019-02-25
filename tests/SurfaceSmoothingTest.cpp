@@ -10,6 +10,7 @@
 #include "gtest/gtest.h"
 
 #include <pmp/algorithms/SurfaceSmoothing.h>
+#include <pmp/algorithms/DifferentialGeometry.h>
 
 using namespace pmp;
 
@@ -25,20 +26,19 @@ public:
 
 TEST_F(SurfaceSmoothingTest, implicit_smoothing)
 {
-    auto bbz = mesh.bounds().max()[2];
+    auto area_before = surface_area(mesh);
     SurfaceSmoothing ss(mesh);
-    ss.implicit_smoothing(0.01);
-    ss.implicit_smoothing(0.01,true);
-    auto bbs = mesh.bounds().max()[2];
-    EXPECT_LT(bbs,bbz);
+    ss.implicit_smoothing(0.01, false, false);
+    auto area_after = surface_area(mesh);
+    EXPECT_LT(area_after, area_before);
 }
 
 TEST_F(SurfaceSmoothingTest, explicit_smoothing)
 {
-    auto bbz = mesh.bounds().max()[2];
+    auto area_before = surface_area(mesh);
     SurfaceSmoothing ss(mesh);
-    ss.explicit_smoothing(10);
-    ss.explicit_smoothing(10,true);
-    auto bbs = mesh.bounds().max()[2];
-    EXPECT_LT(bbs,bbz);
+    ss.explicit_smoothing(10, true);
+    ss.explicit_smoothing(10, false);
+    auto area_after = surface_area(mesh);
+    EXPECT_LT(area_after, area_before);
 }
