@@ -1304,6 +1304,13 @@ public:
         vprops_.remove(p);
     }
 
+    //! does the mesh have a vertex property with name \c name?
+    bool has_vertex_property(const std::string& name) const
+    {
+        return vprops_.exists(name);
+    }
+
+
     //! add a halfedge property of type \c T with name \c name and default
     //! value \c t.  fails if a property named \c name exists already,
     //! since the name has to be unique. in this case it returns an
@@ -1369,12 +1376,26 @@ public:
         hprops_.remove(p);
     }
 
+    //! does the mesh have a halfedge property with name \c name?
+    bool has_halfedge_property(const std::string& name) const
+    {
+        return hprops_.exists(name);
+    }
+
+
     //! remove the edge property \c p
     template <class T>
     void remove_edge_property(EdgeProperty<T>& p)
     {
         eprops_.remove(p);
     }
+
+    //! does the mesh have an edge property with name \c name?
+    bool has_edge_property(const std::string& name) const
+    {
+        return eprops_.exists(name);
+    }
+
 
     //! get the type_info \c T of halfedge property named \c name. returns an
     //! typeid(void) if the property does not exist or if the type does not
@@ -1450,6 +1471,13 @@ public:
     {
         fprops_.remove(p);
     }
+
+    //! does the mesh have a face property with name \c name?
+    bool has_face_property(const std::string& name) const
+    {
+        return fprops_.exists(name);
+    }
+
 
     //! get the type_info \c T of face property named \c name . returns an
     //! typeid(void) if the property does not exist or if the type does not

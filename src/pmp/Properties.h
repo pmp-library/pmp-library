@@ -261,6 +261,15 @@ public:
         return Property<T>(p);
     }
 
+    // do we have a property with a given name?
+    bool exists(const std::string& name) const
+    {
+        for (size_t i = 0; i < parrays_.size(); ++i)
+            if (parrays_[i]->name() == name)
+                return true;
+        return false;
+    }
+
     // get a property by its name. returns invalid property if it does not exist.
     template <class T>
     Property<T> get(const std::string& name) const
