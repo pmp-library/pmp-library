@@ -12,7 +12,6 @@
 #include <pmp/algorithms/SurfaceSubdivision.h>
 #include <pmp/algorithms/SurfaceFeatures.h>
 #include <pmp/algorithms/SurfaceSimplification.h>
-#include <pmp/algorithms/SurfaceSmoothing.h>
 #include <pmp/algorithms/SurfaceFairing.h>
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
@@ -20,12 +19,11 @@
 
 #include <imgui.h>
 
-using namespace pmp;
-
 //=============================================================================
 
 MeshProcessingViewer::MeshProcessingViewer(const char* title, int width, int height)
-    : MeshViewer(title, width, height)
+    : MeshViewer(title, width, height),
+      smoother_(mesh_)
 {
     set_draw_mode("Hidden Line");
 
@@ -124,8 +122,7 @@ void MeshProcessingViewer::process_imgui()
 
         if (ImGui::Button("Explicit Smoothing"))
         {
-            SurfaceSmoothing smoother(mesh_);
-            smoother.explicit_smoothing(iterations);
+            smoother_.explicit_smoothing(iterations);
             update_mesh();
         }
 
@@ -141,8 +138,7 @@ void MeshProcessingViewer::process_imgui()
         if (ImGui::Button("Implicit Smoothing"))
         {
             Scalar dt = timestep * radius_ * radius_;
-            SurfaceSmoothing smoother(mesh_);
-            smoother.implicit_smoothing(dt);
+            smoother_.implicit_smoothing(dt);
             update_mesh();
         }
     }

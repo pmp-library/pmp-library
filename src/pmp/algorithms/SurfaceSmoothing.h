@@ -28,7 +28,10 @@ class SurfaceSmoothing
 {
 public:
     //! give a mesh in the constructor
-    SurfaceSmoothing(SurfaceMesh& mesh) : mesh_(mesh){};
+    SurfaceSmoothing(SurfaceMesh& mesh);
+
+    //! destructor
+    ~SurfaceSmoothing();
 
     //! Perform \c iters iterations of explicit Laplacian smoothing.
     void explicit_smoothing(unsigned int iters = 10,
@@ -38,9 +41,29 @@ public:
     void implicit_smoothing(Scalar timestep = 0.001,
                             bool use_uniform_laplace = false);
 
+    //! initialize edge and vertex weights
+    void initialize(bool use_uniform_laplace=false)
+    {
+        compute_edge_weights(use_uniform_laplace);
+        compute_vertex_weights(use_uniform_laplace);
+    }
+
+private:
+
+    //! Initialize cotan/uniform Laplace weights.
+    void compute_edge_weights(bool use_uniform_laplace);
+
+    //! Initialize cotan/uniform Laplace weights.
+    void compute_vertex_weights(bool use_uniform_laplace);
+
 private:
     //! the mesh
     SurfaceMesh& mesh_;
+   
+    // remember for how many vertices/edges we computed weights
+    // recompute if numbers change (i.e. mesh has changed)
+    unsigned int how_many_edge_weights_;
+    unsigned int how_many_vertex_weights_;
 };
 
 //=============================================================================

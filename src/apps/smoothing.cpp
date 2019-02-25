@@ -23,12 +23,16 @@ public:
 
 protected:
     virtual void process_imgui();
+
+private:
+    SurfaceSmoothing smoother_;
 };
 
 //=============================================================================
 
 Viewer::Viewer(const char* title, int width, int height)
-    : MeshViewer(title, width, height)
+    : MeshViewer(title, width, height),
+      smoother_(mesh_)
 {
 }
 
@@ -71,8 +75,7 @@ void Viewer::process_imgui()
 
         if (ImGui::Button("Explicit Smoothing"))
         {
-            SurfaceSmoothing smoother(mesh_);
-            smoother.explicit_smoothing(iterations, uniform_laplace);
+            smoother_.explicit_smoothing(iterations, uniform_laplace);
             update_mesh();
         }
 
@@ -81,7 +84,7 @@ void Viewer::process_imgui()
 
         static float timestep = 0.001;
         float lb = uniform_laplace ? 1.0 : 0.001;
-        float ub = uniform_laplace ? 100.0 : 0.1;
+        float ub = uniform_laplace ? 100.0 : 1.0;
         ImGui::PushItemWidth(100);
         ImGui::SliderFloat("TimeStep", &timestep, lb, ub);
         ImGui::PopItemWidth();
@@ -90,8 +93,7 @@ void Viewer::process_imgui()
         {
             Scalar dt =
                 uniform_laplace ? timestep : timestep * radius_ * radius_;
-            SurfaceSmoothing smoother(mesh_);
-            smoother.implicit_smoothing(dt, uniform_laplace);
+            smoother_.implicit_smoothing(dt, uniform_laplace);
             update_mesh();
         }
     }
@@ -102,12 +104,12 @@ void Viewer::process_imgui()
 int main(int argc, char** argv)
 {
 #ifndef __EMSCRIPTEN__
-    Viewer window("Decimation", 800, 600);
+    Viewer window("Smoothing", 800, 600);
     if (argc == 2)
         window.load_mesh(argv[1]);
     return window.run();
 #else
-    Viewer window("Decimation", 800, 600);
+    Viewer window("Smoothing", 800, 600);
     window.load_mesh(argc == 2 ? argv[1] : "input.off");
     return window.run();
 #endif
