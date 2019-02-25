@@ -39,6 +39,13 @@ public:
         auto points   = mesh.get_vertex_property<Point>("v:point");
         points[v0][2] = 0.1; // lift central vertex
     }
+
+    void unit_sphere()
+    {
+        ASSERT_TRUE(mesh.read("pmp-data/off/sphere.off"));
+        EXPECT_EQ(mesh.n_vertices(), size_t(16070));
+        EXPECT_EQ(mesh.n_faces(), size_t(32136));
+    }
 };
 
 TEST_F(DifferentialGeometryTest, triangle_areaPoints)
@@ -79,3 +86,18 @@ TEST_F(DifferentialGeometryTest, vertex_curvature)
     EXPECT_FLOAT_EQ(vcurv.max, 6.1538467);
     EXPECT_FLOAT_EQ(vcurv.min, 6.1538467);
 }
+
+TEST_F(DifferentialGeometryTest, surface_area)
+{
+    unit_sphere();
+    auto area = surface_area(mesh);
+    EXPECT_FLOAT_EQ(area, 12.564044);
+}
+
+TEST_F(DifferentialGeometryTest, centroid)
+{
+    unit_sphere();
+    auto center = centroid(mesh);
+    EXPECT_LT(norm(center), 1e-5);
+}
+
