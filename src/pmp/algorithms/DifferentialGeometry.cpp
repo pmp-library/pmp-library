@@ -40,6 +40,50 @@ Scalar triangle_area(const SurfaceMesh& mesh, Face f)
 
 //-----------------------------------------------------------------------------
 
+Scalar surface_area(const SurfaceMesh& mesh)
+{
+    Scalar area(0);
+    for (auto f: mesh.faces())
+    {
+        area += triangle_area(mesh, f);
+    }
+    return area;
+}
+
+//-----------------------------------------------------------------------------
+
+Point centroid(const SurfaceMesh& mesh, Face f)
+{
+    Point  c(0,0,0);
+    Scalar n(0);
+    for (auto v: mesh.vertices(f))
+    {
+        c += mesh.position(v);
+        ++n;
+    }
+    c /= n;
+    return c;
+}
+
+//-----------------------------------------------------------------------------
+
+Point centroid(const SurfaceMesh& mesh)
+{
+    Point  center(0,0,0), c;
+    Scalar area(0), a;
+    for (auto f: mesh.faces())
+    {
+        a = triangle_area(mesh, f);
+        c = centroid(mesh, f);
+        area   += a;
+        center += a*c;
+    }
+    center /= area;
+    return center;
+}
+    
+//-----------------------------------------------------------------------------
+
 double cotan_weight(const SurfaceMesh& mesh, Edge e)
 {
     double weight = 0.0;

@@ -65,6 +65,16 @@ Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2);
 //! compute area of triangle f
 Scalar triangle_area(const SurfaceMesh& mesh, Face f);
 
+//! surface area of the mesh (assumes triangular faces)
+Scalar surface_area(const SurfaceMesh& mesh);
+
+//! barycenter/centroid of a face
+Point centroid(const SurfaceMesh& mesh, Face f);
+
+//! barycenter/centroid of mesh, computed as area-weighted mean of vertices.
+//! assumes triangular faces.
+Point centroid(const SurfaceMesh& mesh);
+
 //! compute the cotangent weight for edge e
 double cotan_weight(const SurfaceMesh& mesh, Edge e);
 
