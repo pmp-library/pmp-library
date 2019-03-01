@@ -44,7 +44,11 @@ namespace pmp {
 //! @{
 
 //! Scalar type
+#ifdef PMP_SCALAR_TYPE_64
+typedef double Scalar;
+#else
 typedef float Scalar;
+#endif
 
 //! Point type
 typedef Vector<Scalar, 3> Point;

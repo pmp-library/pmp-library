@@ -139,6 +139,11 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 endif()
 
+# choose size of the scalar type
+if(PMP_SCALAR_TYPE EQUAL 64)
+    add_definitions(-DPMP_SCALAR_TYPE_64)
+endif()
+
 # choose size of the index type
 if(PMP_INDEX_TYPE EQUAL 64)
   add_definitions(-DPMP_INDEX_TYPE_64)

@@ -108,8 +108,8 @@ void MeshViewer::update_mesh()
 {
     // update scene center and radius, but don't update camera view
     BoundingBox bb = mesh_.bounds();
-    center_ = bb.center();
-    radius_ = 0.5 * bb.size();
+    center_ = (vec3)bb.center();
+    radius_ = 0.5f * bb.size();
 
     // re-compute face and vertex normals
     mesh_.update_opengl_buffers();
