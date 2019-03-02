@@ -33,6 +33,9 @@ matrix:
   - os: osx
     env: CONFIG=Release
     compiler: clang
+  - os: linux
+    env: CONFIG=Alternatives
+    compiler: gcc
 sudo: false
 dist: xenial
 
@@ -47,7 +50,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=${CONFIG} ..
+  - if [ "$CONFIG" != "Alternatives" ]; then cmake -DCMAKE_BUILD_TYPE=${CONFIG} .. ; else cmake -DCMAKE_BUILD_TYPE=Debug -DPMP_INDEXT_TYPE=64 -DPMP_SCALAR_TYPE=64 .. ; fi
 
 script:
   - make -j 2
