@@ -25,6 +25,7 @@ class SurfaceSubdivision
 {
 
 public:
+    //! Construct with mesh to be subdivided.
     SurfaceSubdivision(SurfaceMesh& mesh);
 
     //! Perform one step of Catmull-Clark subdivision.

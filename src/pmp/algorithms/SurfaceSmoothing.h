@@ -27,25 +27,25 @@ namespace pmp {
 class SurfaceSmoothing
 {
 public:
-    //! give a mesh in the constructor
+    //! Construct with mesh to be smoothed.
     SurfaceSmoothing(SurfaceMesh& mesh);
 
-    //! destructor
+    // destructor
     ~SurfaceSmoothing();
 
-    //! Perform \c iters iterations of explicit Laplacian smoothing.
+    //! Perform \p iters iterations of explicit Laplacian smoothing.
     //! Decide whether to use uniform Laplacian or cotan Laplacian (default: cotan).
     void explicit_smoothing(unsigned int iters = 10,
                             bool use_uniform_laplace = false);
 
-    //! Perform implicit Laplacian smoothing with \c timestep.
+    //! Perform implicit Laplacian smoothing with \p timestep.
     //! Decide whether to use uniform Laplacian or cotan Laplacian (default: cotan).
     //! Decide whether to re-center and re-scale model after smoothing (default: true).
     void implicit_smoothing(Scalar timestep = 0.001,
                             bool use_uniform_laplace = false,
                             bool rescale = true);
 
-    //! initialize edge and vertex weights
+    //! Initialize edge and vertex weights.
     void initialize(bool use_uniform_laplace=false)
     {
         compute_edge_weights(use_uniform_laplace);
@@ -63,7 +63,7 @@ private:
 private:
     //! the mesh
     SurfaceMesh& mesh_;
-   
+
     // remember for how many vertices/edges we computed weights
     // recompute if numbers change (i.e. mesh has changed)
     unsigned int how_many_edge_weights_;

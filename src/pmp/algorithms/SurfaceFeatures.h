@@ -26,16 +26,16 @@ namespace pmp {
 class SurfaceFeatures
 {
 public:
-    //! constructor
+    //! Construct with mesh to be analyzed.
     SurfaceFeatures(SurfaceMesh& mesh);
 
-    //! clear features
+    //! Clear features.
     void clear();
 
-    //! Mark all boundary edges as features
+    //! Mark all boundary edges as features.
     void detect_boundary();
 
-    //! Mark edges with large dihedral angle as feature
+    //! Mark edges with dihedral angle larger than \p angle as feature.
     void detect_angle(Scalar angle);
 
 private:

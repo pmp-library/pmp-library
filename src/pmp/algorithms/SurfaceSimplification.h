@@ -34,18 +34,18 @@ namespace pmp {
 class SurfaceSimplification
 {
 public:
-    // constructor
+    //! Construct with mesh to be simplified.
     SurfaceSimplification(SurfaceMesh& mesh);
 
     // destructor
     ~SurfaceSimplification();
 
-    //! initialize decimater
+    //! Initialize with given parameters.
     void initialize(Scalar aspect_ratio = 0.0, Scalar edge_length = 0.0,
                     unsigned int max_valence = 0, Scalar normal_deviation = 0.0,
                     Scalar hausdorff_error = 0.0);
 
-    //! decimate down to n vertices
+    //! Simplify mesh to \p n vertices.
     void simplify(unsigned int n_vertices);
 
 private: //------------------------------------------------------ private types

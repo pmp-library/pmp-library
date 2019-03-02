@@ -28,13 +28,13 @@ namespace pmp {
 class SurfaceParameterization
 {
 public:
-    //! give a mesh in the constructor
+    //! Construct with mesh to be parameterized.
     SurfaceParameterization(SurfaceMesh& mesh);
 
-    //! compute discrete harmonic parameterization
+    //! Compute discrete harmonic parameterization.
     void harmonic(bool use_uniform_weights = false);
 
-    //! compute parameterization based on least squares conformal mapping
+    //! Compute parameterization based on least squares conformal mapping.
     void lscm();
 
 private:

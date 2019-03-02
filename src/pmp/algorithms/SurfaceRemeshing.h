@@ -31,7 +31,7 @@ namespace pmp {
 class SurfaceRemeshing
 {
 public:
-    // constructor
+    //! Construct with mesh to be remeshed.
     SurfaceRemeshing(SurfaceMesh& mesh);
 
     // destructor

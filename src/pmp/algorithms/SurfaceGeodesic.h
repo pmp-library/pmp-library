@@ -33,7 +33,7 @@ namespace pmp {
 class SurfaceGeodesic
 {
 public:
-    //! Empty constructor. Computes virtual edges only (if set to true).
+    //! Construct with mesh. Computes virtual edges only (if set to true).
     //! Call compute() to compute geodesic distances.
     SurfaceGeodesic(SurfaceMesh& mesh, bool use_virtual_edges = true);
 

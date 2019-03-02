@@ -23,15 +23,15 @@ namespace pmp {
 
 //=============================================================================
 
-//! \brief A class for implicit fairing a surface mesh.
+//! \brief A class for implicitly fairing a surface mesh.
 //! \details See also \cite desbrun_1999_implicit .
 class SurfaceFairing
 {
 public:
-    //! constructor
+    //! Construct with mesh to be processed.
     SurfaceFairing(SurfaceMesh& mesh);
 
-    //! destructor
+    // destructor
     ~SurfaceFairing();
 
     //! minimize surface area (class SurfaceFairing::fair(1))
