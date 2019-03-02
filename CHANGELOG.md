@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- Compile-time switch `PMP_SCALAR_TYPE` to choose between float/double as Scalar
 - Support point set rendering for surface meshes without faces
 
 ### Changed

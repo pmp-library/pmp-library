@@ -131,12 +131,25 @@ This way, you can simply link your own target against pmp-library
 
 ## Build Options
 
+
+### Index Type
+
 By default, the pmp-libray uses 32-bit unsigned integers as internal index type
 to reference entities. However, if you need to process very large data sets this
 might not be sufficient. In this case, you can change the index type to be
 64-bit by specifying
 
     $ cmake -DPMP_INDEX_TYPE=64
+
+during build configuration.
+
+### Scalar Type
+
+By default, the pmp-library uses `float` as `Scalar` type. In case you require
+higher floating point precision you can change the `Scalar` type to `double` by
+specifying
+
+    $ cmake -DPMP_SCALAR_TYPE=64
 
 during build configuration.
 
