@@ -91,7 +91,12 @@ TEST_F(DifferentialGeometryTest, surface_area)
 {
     unit_sphere();
     auto area = surface_area(mesh);
+
+#ifdef PMP_SCALAR_TYPE_64
+    EXPECT_FLOAT_EQ(area, 12.563956);
+#else
     EXPECT_FLOAT_EQ(area, 12.564044);
+#endif
 }
 
 TEST_F(DifferentialGeometryTest, centroid)
@@ -100,4 +105,3 @@ TEST_F(DifferentialGeometryTest, centroid)
     auto center = centroid(mesh);
     EXPECT_LT(norm(center), 1e-5);
 }
-
