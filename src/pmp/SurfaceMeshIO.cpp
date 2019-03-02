@@ -499,9 +499,9 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
 bool read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                      const bool has_texcoords, const bool has_colors)
 {
-    unsigned int i, j, idx(0);
-    unsigned int nv(0), nf(0), ne(0);
-    vec3 p, n, c;
+    IndexType i, j, idx(0);
+    IndexType nv(0), nf(0), ne(0);
+    Point p, n, c;
     vec2 t;
     Vertex v;
 
@@ -573,11 +573,14 @@ bool SurfaceMeshIO::write_off_binary(const SurfaceMesh& mesh)
 
     fprintf(out, "OFF BINARY\n");
     fclose(out);
+    IndexType nv = (IndexType)mesh.n_vertices();
+    IndexType nf = (IndexType)mesh.n_faces();
+    IndexType ne = 0;;
 
     out = fopen(filename_.c_str(), "ab");
-    tfwrite(out, (unsigned int)mesh.n_vertices());
-    tfwrite(out, (unsigned int)mesh.n_faces());
-    tfwrite(out, (unsigned int)0);
+    tfwrite(out, nv);
+    tfwrite(out, nf);
+    tfwrite(out, ne);
     auto points = mesh.get_vertex_property<Point>("v:point");
     for (auto v : mesh.vertices())
     {
@@ -587,10 +590,10 @@ bool SurfaceMeshIO::write_off_binary(const SurfaceMesh& mesh)
 
     for (auto f : mesh.faces())
     {
-        unsigned int nv = mesh.valence(f);
+        IndexType nv = mesh.valence(f);
         tfwrite(out, nv);
         for (auto fv : mesh.vertices(f))
-            tfwrite(out, (unsigned int)fv.idx());
+            tfwrite(out, (IndexType)fv.idx());
     }
     fclose(out);
     return true;
