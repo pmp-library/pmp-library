@@ -93,9 +93,11 @@ located in the current working directory.
 
 In order to build the full HTML manual and reference documentation call
 
-    $ make docs
+    $ make doxygen
 
-The resulting HTML documentation can be found in the `docs/` sub-directory.
+The resulting HTML documentation can be found in the `docs/html/`
+sub-directory. Note: this requires [Doxygen](http://www.doxygen.nl/) to be
+installed.
 
 ## Installation
 
