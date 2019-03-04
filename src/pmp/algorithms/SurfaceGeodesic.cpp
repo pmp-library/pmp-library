@@ -23,17 +23,9 @@ SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh,
 {
     distance_  = mesh_.add_vertex_property<Scalar>("geodesic:distance");
     processed_ = mesh_.add_vertex_property<bool>("geodesic:processed");
-    find_virtual_edges();
-}
 
-//-----------------------------------------------------------------------------
-
-SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh, 
-                                 const std::vector<Vertex>& seed,
-                                 Scalar maxdist, bool use_virtual_edges)
-    : SurfaceGeodesic(mesh, use_virtual_edges)
-{
-    compute(seed, maxdist);
+    if (use_virtual_edges_)
+        find_virtual_edges();
 }
 
 //-----------------------------------------------------------------------------
@@ -42,19 +34,6 @@ SurfaceGeodesic::~SurfaceGeodesic()
 {
     mesh_.remove_vertex_property(distance_);
     mesh_.remove_vertex_property(processed_);
-}
-
-//-----------------------------------------------------------------------------
-
-void SurfaceGeodesic::compute(const std::vector<Vertex>& seed,
-                              Scalar maxdist)
-{
-    seed_    = seed;
-    maxdist_ = maxdist;
-    front_   = new PriorityQueue(VertexCmp(distance_));
-    init_front();
-    propagate_front();
-    delete front_;
 }
 
 //-----------------------------------------------------------------------------
@@ -73,8 +52,6 @@ void SurfaceGeodesic::find_virtual_edges()
     const Scalar max_angle_cos = cos(max_angle);
 
     virtual_edges_.clear();
-    if (!use_virtual_edges_)
-        return;
 
     for (auto vv : mesh_.vertices())
     {
@@ -174,10 +151,54 @@ void SurfaceGeodesic::find_virtual_edges()
 
 //-----------------------------------------------------------------------------
 
-void SurfaceGeodesic::init_front()
+unsigned int SurfaceGeodesic::compute(const std::vector<Vertex>& seed,
+                                      Scalar maxdist,
+                                      unsigned int maxnum,
+                                      std::vector<Vertex>* neighbors)
 {
-    if (seed_.empty())
-        return;
+    unsigned int num(0);
+
+    // generate front
+    front_   = new PriorityQueue(VertexCmp(distance_));
+
+
+    // initialize front with given seed
+    num = init_front(seed, neighbors);
+
+    // sort one-ring neighbors of seed vertices
+    if (neighbors)
+    {
+        std::sort(neighbors->begin(), neighbors->end(), VertexCmp(distance_));
+    }
+
+    // correct if seed vertices have more than maxnum neighbors
+    if (num > maxnum)
+    {
+        num = maxnum;
+        if (neighbors) neighbors->resize(maxnum);
+    }
+
+
+    // propagate up to max distance or max number of neighbors
+    if (num < maxnum)
+        num += propagate_front(maxdist, maxnum-num, neighbors);
+
+
+    // clean up
+    delete front_;
+
+    return num;
+}
+
+//-----------------------------------------------------------------------------
+
+unsigned int SurfaceGeodesic::init_front(const std::vector<Vertex>& seed,
+                                         std::vector<Vertex>* neighbors)
+{
+    unsigned int num(0);
+
+    if (seed.empty())
+        return num;
 
     // reset all vertices
     for (auto v : mesh_.vertices())
@@ -186,15 +207,19 @@ void SurfaceGeodesic::init_front()
         distance_[v]  = FLT_MAX;
     }
 
+    // initialize neighbor array
+    if (neighbors)
+        neighbors->clear();
+
     // initialize seed vertices
-    for (auto v : seed_)
+    for (auto v : seed)
     {
         processed_[v] = true;
         distance_[v]  = 0.0;
     }
 
     // initialize seed's one-ring
-    for (auto v : seed_)
+    for (auto v : seed)
     {
         for (auto vv : mesh_.vertices(v))
         {
@@ -204,13 +229,15 @@ void SurfaceGeodesic::init_front()
             {
                 distance_[vv]  = dist;
                 processed_[vv] = true;
+                ++num;
+                if (neighbors) neighbors->push_back(vv);
             }
         }
     }
 
     // init marching front
     front_->clear();
-    for (auto v : seed_)
+    for (auto v : seed)
     {
         for (auto vv : mesh_.vertices(v))
         {
@@ -223,12 +250,17 @@ void SurfaceGeodesic::init_front()
             }
         }
     }
+
+    return num;
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceGeodesic::propagate_front()
+unsigned int SurfaceGeodesic::propagate_front(Scalar maxdist, unsigned int maxnum,
+                                              std::vector<Vertex>* neighbors)
 {
+    unsigned int num(0);
+
     while (!front_->empty())
     {
         // find minimum vertex, remove it from queue
@@ -236,10 +268,17 @@ void SurfaceGeodesic::propagate_front()
         front_->erase(front_->begin());
         assert(!processed_[v]);
         processed_[v] = true;
+        ++num;
+        if (neighbors) neighbors->push_back(v);
+
 
         // did we reach maximum distance?
-        if (distance_[v] > maxdist_)
-            return;
+        if (distance_[v] > maxdist)
+            break;
+
+        // did we reach maximum number of neighbors
+        if (num >= maxnum)
+            break;
 
         // update front
         for (auto vv : mesh_.vertices(v))
@@ -250,6 +289,8 @@ void SurfaceGeodesic::propagate_front()
             }
         }
     }
+
+    return num;
 }
 
 //-----------------------------------------------------------------------------
@@ -416,7 +457,7 @@ void SurfaceGeodesic::distance_to_texture_coordinates()
     Scalar maxdist(0);
     for (auto v : mesh_.vertices())
     {
-        if (distance_[v] <= maxdist_)
+        if (distance_[v] < FLT_MAX)
         {
             maxdist = std::max(maxdist, distance_[v]);
         }
@@ -425,7 +466,7 @@ void SurfaceGeodesic::distance_to_texture_coordinates()
     auto tex = mesh_.vertex_property<TexCoord>("v:tex");
     for (auto v : mesh_.vertices())
     {
-        if (distance_[v] <= maxdist_)
+        if (distance_[v] < FLT_MAX)
         {
             tex[v] = TexCoord(distance_[v] / maxdist, 0.0);
         }

@@ -13,6 +13,7 @@
 #include <vector>
 #include <set>
 #include <float.h>
+#include <limits.h>
 
 //=============================================================================
 
@@ -37,19 +38,17 @@ public:
     //! Call compute() to compute geodesic distances.
     SurfaceGeodesic(SurfaceMesh& mesh, bool use_virtual_edges = true);
 
-    //! Construct with mesh and seed vertices.
-    //! Grow around seed up to specified maximum distance.
-    //! Set whether to use virtual edges (more computation, more accurate result)
-    SurfaceGeodesic(SurfaceMesh& mesh, const std::vector<Vertex>& seed,
-                    Scalar maxdist = FLT_MAX, bool use_virtual_edges = true);
-
-    //! Compute geodesic distances from specified seed points
-    //! up to the specified maximum distance.
-    void compute(const std::vector<Vertex>& seed,
-                 Scalar maxdist = FLT_MAX);
-
     // destructor
     ~SurfaceGeodesic();
+
+    //! Compute geodesic distances from specified seed points
+    //! up to the specified maximum distance and
+    //! up to a maximum number of neighbors.
+    //! returns how many neighbors have been found
+    unsigned int compute(const std::vector<Vertex>& seed,
+                         Scalar maxdist = FLT_MAX,
+                         unsigned int maxnum = INT_MAX,
+                         std::vector<Vertex>* neighbors = nullptr);
 
     //! access computed geodesic distance
     Scalar operator()(Vertex v) const { return distance_[v]; }
@@ -57,7 +56,9 @@ public:
     //! use (normalized) distances as texture coordinates
     void distance_to_texture_coordinates();
 
-private:
+
+private: // private types
+
     // functor for comparing two vertices w.r.t. their geodesic distance
     class VertexCmp
     {
@@ -88,21 +89,30 @@ private:
     // set for storing virtual edges
     typedef std::map<Halfedge, VirtualEdge> VirtualEdges;
 
+
+private: // private methods
+
     void find_virtual_edges();
-    void init_front();
-    void propagate_front();
+    unsigned int init_front(const std::vector<Vertex>& seed,
+                            std::vector<Vertex>* neighbors);
+    unsigned int propagate_front(Scalar maxdist, unsigned int maxnum,
+                                 std::vector<Vertex>* neighbors);
     void heap_vertex(Vertex v);
     Scalar distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0 = FLT_MAX,
                     Scalar r1 = FLT_MAX);
 
+
+private: // private data
+
     SurfaceMesh& mesh_;
-    VertexProperty<Scalar> distance_;
-    VertexProperty<bool> processed_;
-    PriorityQueue* front_;
-    std::vector<Vertex> seed_;
-    Scalar maxdist_;
+
     bool use_virtual_edges_;
     VirtualEdges virtual_edges_;
+    
+    PriorityQueue* front_;
+
+    VertexProperty<Scalar> distance_;
+    VertexProperty<bool> processed_;
 };
 
 //=============================================================================

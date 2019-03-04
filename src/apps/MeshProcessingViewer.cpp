@@ -236,7 +236,8 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
             seed.push_back(v);
 
             // compute geodesic distance
-            SurfaceGeodesic geodist(mesh_, seed);
+            SurfaceGeodesic geodist(mesh_);
+            geodist.compute(seed);
 
             // setup texture coordinates for visualization
             geodist.distance_to_texture_coordinates();

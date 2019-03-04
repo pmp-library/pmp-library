@@ -20,7 +20,8 @@ TEST(SurfaceGeodesicTest, geodesic)
     EXPECT_TRUE(mesh.read("pmp-data/off/sphere.off"));
 
     // compute geodesic distance from first vertex
-    SurfaceGeodesic geodist(mesh, std::vector<Vertex>{ Vertex(0) });
+    SurfaceGeodesic geodist(mesh);
+    geodist.compute(std::vector<Vertex>{ Vertex(0) });
 
     // find maximum geodesic distance
     Scalar d(0);
@@ -67,3 +68,31 @@ TEST(SurfaceGeodesicTest, geodesic_symmetry)
     Scalar err = fabs(d0-d1) / (0.5*(d0+d1));
     EXPECT_LT(err, 0.001);
 }
+
+TEST(SurfaceGeodesicTest, geodesic_maxnum)
+{
+    // read mesh for unit sphere
+    SurfaceMesh mesh;
+    EXPECT_TRUE(mesh.read("pmp-data/off/sphere.off"));
+
+    // compute geodesic distance from first vertex
+    unsigned int maxnum = 42;
+    unsigned int num;
+    SurfaceGeodesic geodist(mesh);
+    std::vector<Vertex> neighbors;
+    num = geodist.compute(std::vector<Vertex>{ Vertex(0) }, FLT_MAX, maxnum, &neighbors);
+    EXPECT_TRUE(num == maxnum);
+    EXPECT_TRUE(neighbors.size() == maxnum);
+
+    // test for another seed
+    num = geodist.compute(std::vector<Vertex>{ Vertex(12345) }, FLT_MAX, maxnum, &neighbors);
+    EXPECT_TRUE(num == maxnum);
+    EXPECT_TRUE(neighbors.size() == maxnum);
+
+    // test that neighbor array is properly sorted
+    for (unsigned int i=0; i<neighbors.size()-1; ++i)
+    {
+        EXPECT_TRUE( geodist(neighbors[i]) <= geodist(neighbors[i+1]) );
+    }
+}
+
