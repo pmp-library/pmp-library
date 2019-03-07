@@ -356,9 +356,11 @@ Matrix<Scalar, N, M> transpose(const Matrix<Scalar, M, N>& m)
 //-----------------------------------------------------------------------------
 
 //! identity matrix (work only for square matrices)
-template <typename Scalar, int M>
-Matrix<Scalar, M, M> Matrix<Scalar, M, M>::identity()
+template <typename Scalar, int M, int N>
+Matrix<Scalar, M, N> Matrix<Scalar, M, N>::identity()
 {
+    static_assert(M == N, "only for square matrices");
+
     Matrix<Scalar, M, M> m;
 
     for (int j = 0; j < M; ++j)
