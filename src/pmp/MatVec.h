@@ -239,29 +239,50 @@ using Mat2 = Matrix<Scalar, 2, 2>;
 
 //== TYPEDEFS =================================================================
 
+//! template specialization for a vector of two float values
 typedef Vector<float, 2> vec2;
+//! template specialization for a vector of two double values
 typedef Vector<double, 2> dvec2;
+//! template specialization for a vector of two bool values
 typedef Vector<bool, 2> bvec2;
+//! template specialization for a vector of two int values
 typedef Vector<int, 2> ivec2;
+//! template specialization for a vector of two unsigned int values
 typedef Vector<unsigned int, 2> uvec2;
 
+//! template specialization for a vector of three float values
 typedef Vector<float, 3> vec3;
+//! template specialization for a vector of three double values
 typedef Vector<double, 3> dvec3;
+//! template specialization for a vector of three bool values
 typedef Vector<bool, 3> bvec3;
+//! template specialization for a vector of three int values
 typedef Vector<int, 3> ivec3;
+//! template specialization for a vector of three unsigned int values
 typedef Vector<unsigned int, 3> uvec3;
 
+//! template specialization for a vector of four float values
 typedef Vector<float, 4> vec4;
+//! template specialization for a vector of four double values
 typedef Vector<double, 4> dvec4;
+//! template specialization for a vector of four bool values
 typedef Vector<bool, 4> bvec4;
+//! template specialization for a vector of four int values
 typedef Vector<int, 4> ivec4;
+//! template specialization for a vector of four unsigned int values
 typedef Vector<unsigned int, 4> uvec4;
 
+//! template specialization for a 2x2 matrix of float values
 typedef Mat2<float> mat2;
+//! template specialization for a 2x2 matrix of double values
 typedef Mat2<double> dmat2;
+//! template specialization for a 3x3 matrix of float values
 typedef Mat3<float> mat3;
+//! template specialization for a 3x3 matrix of double values
 typedef Mat3<double> dmat3;
+//! template specialization for a 4x4 matrix of float values
 typedef Mat4<float> mat4;
+//! template specialization for a 4x4 matrix of double values
 typedef Mat4<double> dmat4;
 
 //== GENERAL MATRIX FUNCTIONS =================================================
@@ -319,6 +340,7 @@ Matrix<Scalar, M, N> cmult(const Matrix<Scalar, M, N>& m1,
 
 //-----------------------------------------------------------------------------
 
+//! transpose MxN matrix to NxM matrix
 template <typename Scalar, int M, int N>
 Matrix<Scalar, N, M> transpose(const Matrix<Scalar, M, N>& m)
 {
@@ -333,18 +355,17 @@ Matrix<Scalar, N, M> transpose(const Matrix<Scalar, M, N>& m)
 
 //-----------------------------------------------------------------------------
 
-template <typename Scalar, int M, int N>
-Matrix<Scalar, M, N> Matrix<Scalar, M, N>::identity()
+//! identity matrix (work only for square matrices)
+template <typename Scalar, int M>
+Matrix<Scalar, M, M> Matrix<Scalar, M, M>::identity()
 {
-    static_assert(M == N, "only for square matrices");
+    Matrix<Scalar, M, M> m;
 
-    Matrix<Scalar, N, N> m;
-
-    for (int j = 0; j < N; ++j)
-        for (int i = 0; i < N; ++i)
+    for (int j = 0; j < M; ++j)
+        for (int i = 0; i < M; ++i)
             m(i, j) = 0.0;
 
-    for (int i = 0; i < N; ++i)
+    for (int i = 0; i < M; ++i)
         m(i, i) = 1.0;
 
     return m;
@@ -352,7 +373,7 @@ Matrix<Scalar, M, N> Matrix<Scalar, M, N>::identity()
 
 //-----------------------------------------------------------------------------
 
-//! matrix + matrix
+//! matrix addition: m1 + m2
 template <typename Scalar, int M, int N>
 inline Matrix<Scalar, M, N> operator+(const Matrix<Scalar, M, N>& m1,
                                       const Matrix<Scalar, M, N>& m2)
@@ -362,7 +383,7 @@ inline Matrix<Scalar, M, N> operator+(const Matrix<Scalar, M, N>& m1,
 
 //-----------------------------------------------------------------------------
 
-//! matrix - matrix
+//! matrix subtraction: m1 - m2
 template <typename Scalar, int M, int N>
 inline Matrix<Scalar, M, N> operator-(const Matrix<Scalar, M, N>& m1,
                                       const Matrix<Scalar, M, N>& m2)
@@ -372,7 +393,7 @@ inline Matrix<Scalar, M, N> operator-(const Matrix<Scalar, M, N>& m1,
 
 //-----------------------------------------------------------------------------
 
-//! negate matrix
+//! matrix negation: -m
 template <typename Scalar, int M, int N>
 inline Matrix<Scalar, M, N> operator-(const Matrix<Scalar, M, N>& m)
 {
@@ -384,7 +405,7 @@ inline Matrix<Scalar, M, N> operator-(const Matrix<Scalar, M, N>& m)
 
 //-----------------------------------------------------------------------------
 
-//! scalar * matrix
+//! scalar multiplication of matrix: s*m
 template <typename Scalar, typename Scalar2, int M, int N>
 inline Matrix<Scalar, M, N> operator*(const Scalar2 s,
                                       const Matrix<Scalar, M, N>& m)
@@ -394,7 +415,7 @@ inline Matrix<Scalar, M, N> operator*(const Scalar2 s,
 
 //-----------------------------------------------------------------------------
 
-//! matrix * scalar
+//! scalar multiplication of matrix: m*s
 template <typename Scalar, typename Scalar2, int M, int N>
 inline Matrix<Scalar, M, N> operator*(const Matrix<Scalar, M, N>& m,
                                       const Scalar2 s)
@@ -404,7 +425,7 @@ inline Matrix<Scalar, M, N> operator*(const Matrix<Scalar, M, N>& m,
 
 //-----------------------------------------------------------------------------
 
-//! matrix / scalar
+//! divide matrix by scalar: m/s
 template <typename Scalar, typename Scalar2, int M, int N>
 inline Matrix<Scalar, M, N> operator/(const Matrix<Scalar, M, N>& m,
                                       const Scalar2 s)
@@ -435,7 +456,7 @@ inline Scalar sqrnorm(const Matrix<Scalar, M, N>& m)
 
 //-----------------------------------------------------------------------------
 
-//! return a normalized copy of a vector
+//! return a normalized copy of a matrix or a vector
 template <typename Scalar, int M, int N>
 inline Matrix<Scalar, M, N> normalize(const Matrix<Scalar, M, N>& m)
 {
@@ -472,6 +493,7 @@ inline Matrix<Scalar, M, N> max(const Matrix<Scalar, M, N>& m1,
 
 //== Mat4 functions ===========================================================
 
+//! OpenGL viewport matrix with parameters left, bottom, width, height
 template <typename Scalar>
 Mat4<Scalar> viewport_matrix(Scalar l, Scalar b, Scalar w, Scalar h)
 {
@@ -490,6 +512,8 @@ Mat4<Scalar> viewport_matrix(Scalar l, Scalar b, Scalar w, Scalar h)
 
 //-----------------------------------------------------------------------------
 
+//! inverse of OpenGL viewport matrix with parameters left, bottom, width, height
+//! \sa viewport_matrix
 template <typename Scalar>
 Mat4<Scalar> inverse_viewport_matrix(Scalar l, Scalar b, Scalar w, Scalar h)
 {
@@ -508,6 +532,7 @@ Mat4<Scalar> inverse_viewport_matrix(Scalar l, Scalar b, Scalar w, Scalar h)
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL frustum matrix with parameters left, right, bottom, top, near, far
 template <typename Scalar>
 Mat4<Scalar> frustum_matrix(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n,
                             Scalar f)
@@ -527,6 +552,8 @@ Mat4<Scalar> frustum_matrix(Scalar l, Scalar r, Scalar b, Scalar t, Scalar n,
 
 //-----------------------------------------------------------------------------
 
+//! inverse of OpenGL frustum matrix with parameters left, right, bottom, top, near, far
+//! \sa frustum_matrix
 template <typename Scalar>
 Mat4<Scalar> inverse_frustum_matrix(Scalar l, Scalar r, Scalar b, Scalar t,
                                     Scalar n, Scalar f)
@@ -548,6 +575,8 @@ Mat4<Scalar> inverse_frustum_matrix(Scalar l, Scalar r, Scalar b, Scalar t,
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL perspective matrix with parameters field of view in y-direction,
+//! aspect ratio, and distance of near and far planes
 template <typename Scalar>
 Mat4<Scalar> perspective_matrix(Scalar fovy, Scalar aspect, Scalar zNear,
                                 Scalar zFar)
@@ -562,6 +591,8 @@ Mat4<Scalar> perspective_matrix(Scalar fovy, Scalar aspect, Scalar zNear,
 
 //-----------------------------------------------------------------------------
 
+//! inverse of perspective matrix
+//! \sa perspective_matrix
 template <typename Scalar>
 Mat4<Scalar> inverse_perspective_matrix(Scalar fovy, Scalar aspect,
                                         Scalar zNear, Scalar zFar)
@@ -576,6 +607,8 @@ Mat4<Scalar> inverse_perspective_matrix(Scalar fovy, Scalar aspect,
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL orthogonal projection matrix with parameters left, right, bottom,
+//! top, near, far
 template <typename Scalar>
 Mat4<Scalar> ortho_matrix(Scalar left, Scalar right, Scalar bottom, Scalar top,
                           Scalar zNear = -1, Scalar zFar = 1)
@@ -595,6 +628,7 @@ Mat4<Scalar> ortho_matrix(Scalar left, Scalar right, Scalar bottom, Scalar top,
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL look-at camera matrix with parameters eye position, scene center, up-direction
 template <typename Scalar>
 Mat4<Scalar> look_at_matrix(const Vector<Scalar, 3>& eye,
                             const Vector<Scalar, 3>& center,
@@ -618,6 +652,7 @@ Mat4<Scalar> look_at_matrix(const Vector<Scalar, 3>& eye,
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL matrix for translation by vector t
 template <typename Scalar>
 Mat4<Scalar> translation_matrix(const Vector<Scalar, 3>& t)
 {
@@ -632,6 +667,7 @@ Mat4<Scalar> translation_matrix(const Vector<Scalar, 3>& t)
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL matrix for rotation around x-axis by given angle (in degrees)
 template <typename Scalar>
 Mat4<Scalar> rotation_matrix_x(Scalar angle)
 {
@@ -651,6 +687,7 @@ Mat4<Scalar> rotation_matrix_x(Scalar angle)
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL matrix for rotation around y-axis by given angle (in degrees)
 template <typename Scalar>
 Mat4<Scalar> rotation_matrix_y(Scalar angle)
 {
@@ -670,6 +707,7 @@ Mat4<Scalar> rotation_matrix_y(Scalar angle)
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL matrix for rotation around z-axis by given angle (in degrees)
 template <typename Scalar>
 Mat4<Scalar> rotation_matrix_z(Scalar angle)
 {
@@ -689,6 +727,7 @@ Mat4<Scalar> rotation_matrix_z(Scalar angle)
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL matrix for rotation around given axis by given angle (in degrees)
 template <typename Scalar>
 Mat4<Scalar> rotation_matrix(const Vector<Scalar, 3>& axis, Scalar angle)
 {
@@ -718,6 +757,35 @@ Mat4<Scalar> rotation_matrix(const Vector<Scalar, 3>& axis, Scalar angle)
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL matrix for rotation specified by unit quaternion
+template <typename Scalar>
+Mat4<Scalar> rotation_matrix(const Vector<Scalar, 4>& quat)
+{
+    Mat4<Scalar> m(0.0f);
+    Scalar s1(1);
+    Scalar s2(2);
+
+    m(0,0) = s1 - s2 * quat[1] * quat[1] - s2 * quat[2] * quat[2];
+    m(1,0) = s2 * quat[0] * quat[1] + s2 * quat[3] * quat[2];
+    m(2,0) = s2 * quat[0] * quat[2] - s2 * quat[3] * quat[1];
+
+    m(0,1) = s2 * quat[0] * quat[1] - s2 * quat[3] * quat[2];
+    m(1,1) = s1 - s2 * quat[0] * quat[0] - s2 * quat[2] * quat[2];
+    m(2,1) = s2 * quat[1] * quat[2] + s2 * quat[3] * quat[0];
+
+    m(0,2) = s2 * quat[0] * quat[2] + s2 * quat[3] * quat[1];
+    m(1,2) = s2 * quat[1] * quat[2] - s2 * quat[3] * quat[0];
+    m(2,2) = s1 - s2 * quat[0] * quat[0] - s2 * quat[1] * quat[1];
+
+    m(3,3) = 1.0f;
+
+    return m;
+}
+
+//-----------------------------------------------------------------------------
+
+//! return upper 3x3 matrix from given 4x4 matrix, corresponding to the
+//! linear part of an affine transformation
 template <typename Scalar>
 Mat3<Scalar> linear_part(const Mat4<Scalar>& m)
 {
@@ -730,6 +798,8 @@ Mat3<Scalar> linear_part(const Mat4<Scalar>& m)
 
 //-----------------------------------------------------------------------------
 
+//! projective transformation of 3D vector v by a 4x4 matrix m:
+//! add 1 as 4th component of v, multiply m*v, divide by 4th component
 template <typename Scalar>
 Vector<Scalar, 3> projective_transform(const Mat4<Scalar>& m,
                                        const Vector<Scalar, 3>& v)
@@ -743,6 +813,8 @@ Vector<Scalar, 3> projective_transform(const Mat4<Scalar>& m,
 
 //-----------------------------------------------------------------------------
 
+//! affine transformation of 3D vector v by a 4x4 matrix m:
+//! add 1 as 4th component of v, multiply m*v, do NOT divide by 4th component
 template <typename Scalar>
 Vector<Scalar, 3> affine_transform(const Mat4<Scalar>& m,
                                    const Vector<Scalar, 3>& v)
@@ -755,6 +827,8 @@ Vector<Scalar, 3> affine_transform(const Mat4<Scalar>& m,
 
 //-----------------------------------------------------------------------------
 
+//! linear transformation of 3D vector v by a 4x4 matrix m:
+//! transform vector by upper-left 3x3 submatrix of m
 template <typename Scalar>
 Vector<Scalar, 3> linear_transform(const Mat4<Scalar>& m,
                                    const Vector<Scalar, 3>& v)
@@ -767,6 +841,7 @@ Vector<Scalar, 3> linear_transform(const Mat4<Scalar>& m,
 
 //-----------------------------------------------------------------------------
 
+//! return the inverse of a 4x4 matrix
 template <typename Scalar>
 Mat4<Scalar> inverse(const Mat4<Scalar>& m)
 {
@@ -831,6 +906,7 @@ Mat4<Scalar> inverse(const Mat4<Scalar>& m)
 
 //== Mat3 functions ===========================================================
 
+//! return the inverse of a 3x3 matrix
 template <typename Scalar>
 Mat3<Scalar> inverse(const Mat3<Scalar>& m)
 {
@@ -854,6 +930,7 @@ Mat3<Scalar> inverse(const Mat3<Scalar>& m)
 
 //-----------------------------------------------------------------------------
 
+//! compute eigenvector/eigenvalue decomposition of a 3x3 matrix
 template <typename Scalar>
 bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
                                   Scalar& eval2, Scalar& eval3,
