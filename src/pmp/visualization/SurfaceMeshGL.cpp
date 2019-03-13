@@ -11,6 +11,7 @@
 #include <pmp/visualization/PhongShader.h>
 #include <pmp/visualization/ColdWarmTexture.h>
 #include <pmp/algorithms/SurfaceNormals.h>
+#include <pmp/Timer.h>
 
 #include <stb_image.h>
 #include <cfloat>
@@ -47,7 +48,7 @@ SurfaceMeshGL::SurfaceMeshGL()
     shininess_    = 100.0;
     alpha_        = 1.0;
     srgb_         = false;
-    crease_angle_ = 70.0;
+    crease_angle_ = 180.0;
 
     // initialize texture
     texture_ = 0;
@@ -216,6 +217,9 @@ void SurfaceMeshGL::set_crease_angle(Scalar ca)
 
 void SurfaceMeshGL::update_opengl_buffers()
 {
+    Timer timer;
+    timer.start();
+
     // are buffers already initialized?
     if (!vertex_array_object_)
     {
@@ -253,6 +257,22 @@ void SurfaceMeshGL::update_opengl_buffers()
         normalArray.reserve(3 * n_faces());
         if (htex || vtex) texArray.reserve(3 * n_faces());
 
+        // precompute normals for easy cases
+        FaceProperty<Normal>    fnormals;
+        VertexProperty<Normal>  vnormals;
+        if (crease_angle_ < 1)
+        {
+            fnormals = add_face_property<Normal>("gl:fnormal");
+            for (auto f: faces())
+                fnormals[f] = SurfaceNormals::compute_face_normal(*this, f);
+        }
+        else if (crease_angle_ > 170)
+        {
+            vnormals = add_vertex_property<Normal>("gl:vnormal");
+            for (auto v: vertices())
+                vnormals[v] = SurfaceNormals::compute_vertex_normal(*this, v);
+        }
+
         // data per face (for all corners)
         std::vector<Halfedge> cornerHalfedges;
         std::vector<Vertex> cornerVertices;
@@ -270,12 +290,29 @@ void SurfaceMeshGL::update_opengl_buffers()
             cornerHalfedges.clear();
             cornerVertices.clear();
             cornerNormals.clear();
+            Vertex v;
+            Normal n;
+
             for (auto h : halfedges(f))
             {
                 cornerHalfedges.push_back(h);
-                cornerVertices.push_back(to_vertex(h));
-                cornerNormals.push_back((vec3)SurfaceNormals::compute_corner_normal(
-                            *this, h, creaseAngle));
+
+                v = to_vertex(h);
+                cornerVertices.push_back(v);
+
+                if (crease_angle_ < 1)
+                {
+                    n = fnormals[f];
+                }
+                else if (crease_angle_ > 170)
+                {
+                    n = vnormals[v];
+                }
+                else
+                {
+                    n = SurfaceNormals::compute_corner_normal(*this, h, creaseAngle);
+                }
+                cornerNormals.push_back((vec3)n);
             }
             assert(cornerVertices.size() >= 3);
 
@@ -309,6 +346,11 @@ void SurfaceMeshGL::update_opengl_buffers()
                 vertex_indices[cornerVertices[i2]] = vidx++;
             }
         }
+    
+       
+        // clean up
+        if (vnormals) remove_vertex_property(vnormals);
+        if (fnormals) remove_face_property(fnormals);
     }
 
     // we have a point cloud
@@ -322,7 +364,7 @@ void SurfaceMeshGL::update_opengl_buffers()
                 positionArray.push_back( (vec3) position[v] );
         }
 
-        auto normals = vertex_property<Point>("v:normal");
+        auto normals = get_vertex_property<Point>("v:normal");
         if (normals)
         {
             normalArray.reserve(n_vertices());
@@ -418,6 +460,9 @@ void SurfaceMeshGL::update_opengl_buffers()
 
     // remove vertex index property again
     remove_vertex_property(vertex_indices);
+
+    timer.stop();
+    std::cout << "Update took " << timer << std::endl;
 }
 
 //-----------------------------------------------------------------------------
