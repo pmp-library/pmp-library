@@ -11,7 +11,6 @@
 #include <pmp/visualization/PhongShader.h>
 #include <pmp/visualization/ColdWarmTexture.h>
 #include <pmp/algorithms/SurfaceNormals.h>
-#include <pmp/Timer.h>
 
 #include <stb_image.h>
 #include <cfloat>
@@ -217,9 +216,6 @@ void SurfaceMeshGL::set_crease_angle(Scalar ca)
 
 void SurfaceMeshGL::update_opengl_buffers()
 {
-    Timer timer;
-    timer.start();
-
     // are buffers already initialized?
     if (!vertex_array_object_)
     {
@@ -460,9 +456,6 @@ void SurfaceMeshGL::update_opengl_buffers()
 
     // remove vertex index property again
     remove_vertex_property(vertex_indices);
-
-    timer.stop();
-    std::cout << "Update took " << timer << std::endl;
 }
 
 //-----------------------------------------------------------------------------
