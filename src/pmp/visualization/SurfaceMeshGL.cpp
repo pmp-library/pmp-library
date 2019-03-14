@@ -41,12 +41,11 @@ SurfaceMeshGL::SurfaceMeshGL()
     // material parameters
     front_color_  = vec3(0.6, 0.6, 0.6);
     back_color_   = vec3(0.5, 0.0, 0.0);
-    ambient_      = 0.1;
-    diffuse_      = 0.8;
+    ambient_      = 0.2;
+    diffuse_      = 0.7;
     specular_     = 0.6;
     shininess_    = 100.0;
     alpha_        = 1.0;
-    srgb_         = false;
     crease_angle_ = 180.0;
 
     // initialize texture
@@ -115,9 +114,6 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 
-    // use SRGB rendering?
-    srgb_ = (format == GL_SRGB8);
-
     // free memory
     stbi_image_free(img);
 
@@ -145,7 +141,6 @@ void SurfaceMeshGL::use_cold_warm_texture()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        srgb_ = false;
         texture_mode_ = ColdWarmTexture;
     }
 }
@@ -196,7 +191,6 @@ void SurfaceMeshGL::use_checkerboard_texture()
         // clean up
         delete[] tex;
 
-        srgb_ = false;
         texture_mode_ = CheckerboardTexture;
     }
 }
@@ -509,7 +503,6 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     phong_shader_.set_uniform("alpha", alpha_);
     phong_shader_.set_uniform("use_lighting", true);
     phong_shader_.set_uniform("use_texture", false);
-    phong_shader_.set_uniform("use_srgb", false);
     phong_shader_.set_uniform("show_texture_layout", false);
 
     glBindVertexArray(vertex_array_object_);
@@ -533,8 +526,8 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             // overlay edges
             glDepthRange(0.0, 1.0);
             glDepthFunc(GL_LEQUAL);
-            phong_shader_.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
-            phong_shader_.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
+            phong_shader_.set_uniform("front_color", vec3(0, 0, 0)); // ambient color is sufficient
+            phong_shader_.set_uniform("back_color",  vec3(0, 0, 0));
             phong_shader_.set_uniform("use_lighting", false);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
             glDrawElements(GL_LINES, n_edges_, GL_UNSIGNED_INT, nullptr);
@@ -554,10 +547,9 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     {
         if (n_faces())
         {
-            phong_shader_.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
+            phong_shader_.set_uniform("front_color", vec3(0.8, 0.8, 0.8));
             phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
             phong_shader_.set_uniform("use_texture", true);
-            phong_shader_.set_uniform("use_srgb", srgb_);
             glBindTexture(GL_TEXTURE_2D, texture_);
             glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
         }
