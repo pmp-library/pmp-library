@@ -16,6 +16,7 @@
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 #include <pmp/algorithms/SurfaceGeodesic.h>
+#include <pmp/algorithms/HoleFilling.h>
 
 #include <imgui.h>
 
@@ -214,6 +215,56 @@ void MeshProcessingViewer::process_imgui()
             l /= (Scalar)mesh_.n_edges();
             SurfaceRemeshing(mesh_).uniform_remeshing(l);
             update_mesh();
+        }
+    }
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    if (ImGui::CollapsingHeader("Hole Filling"))
+    {
+        if (ImGui::Button("Close smallest hole"))
+        {
+            // find smallest hole
+            Halfedge      hmin;
+            unsigned int  lmin(mesh_.n_halfedges());
+            for (auto h: mesh_.halfedges())
+            {
+                if (mesh_.is_boundary(h))
+                {
+                    Scalar l(0);
+                    Halfedge hh=h;
+                    do 
+                    {
+                        ++l;
+                        if (!mesh_.is_manifold(mesh_.to_vertex(hh)))
+                        {
+                            l += 123456;
+                            break;
+                        }
+                        hh = mesh_.next_halfedge(hh);
+                    }
+                    while (hh != h);
+
+                    if (l < lmin)
+                    {
+                        lmin=l;
+                        hmin=h;
+                    }
+                }
+            }
+
+            // close smallest hole
+            if (hmin.is_valid())
+            {
+                HoleFilling hf(mesh_);
+                hf.fill_hole(hmin);
+                update_mesh();
+            }
+            else
+            {
+                std::cerr << "No manifold boundary loop found\n";
+            }
         }
     }
 }
