@@ -53,6 +53,7 @@ static const char* phong_fshader =
     "\n"
     "uniform bool   use_lighting;\n"
     "uniform bool   use_texture;\n"
+    "uniform bool   use_srgb;\n"
     "uniform vec3   front_color;\n"
     "uniform vec3   back_color;\n"
     "uniform float  ambient;\n"
@@ -118,8 +119,7 @@ static const char* phong_fshader =
     "    }\n"
     "    \n"
     "   if (use_texture) rgb *= texture(mytexture, v2f_tex).xyz;\n"
-    //"   rgb = pow(clamp(rgb, 0.0, 1.0), vec3(0.45));\n"
-    "   rgb = sqrt(clamp(rgb, 0.0, 1.0));\n"
+    "   if (use_srgb)    rgb  = pow(clamp(rgb, 0.0, 1.0), vec3(0.45));\n"
     "   \n"
     "    f_color = vec4(rgb, alpha);\n"
     "}";
