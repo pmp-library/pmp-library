@@ -23,7 +23,6 @@ TrackballViewer::TrackballViewer(const char* title, int width, int height,
     // init mouse buttons
     for (bool& i : button_down_)
         i = false;
-    wheel_pos_ = 0;
 
     // define basic draw modes
     add_draw_mode("Wireframe");
@@ -196,7 +195,6 @@ void TrackballViewer::mouse(int button, int action, int mods)
 
 void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 {
-    wheel_pos_ += yoffset;
     float d = -(float)yoffset * 0.12 * radius_;
 #ifdef __EMSCRIPTEN__
     d *= 0.5; // scrolling in browser is faster
