@@ -669,6 +669,34 @@ Mat4<Scalar> translation_matrix(const Vector<Scalar, 3>& t)
 
 //-----------------------------------------------------------------------------
 
+//! OpenGL matrix for scaling x/y/z by s
+template <typename Scalar>
+Mat4<Scalar> scaling_matrix(const Scalar s)
+{
+    Mat4<Scalar> m(Scalar(0));
+    m(0, 0) = m(1, 1) = m(2, 2) = s;
+    m(3, 3) = 1.0f;
+
+    return m;
+}
+
+//-----------------------------------------------------------------------------
+
+//! OpenGL matrix for scaling x/y/z by the components of s
+template <typename Scalar>
+Mat4<Scalar> scaling_matrix(const Vector<Scalar, 3>& s)
+{
+    Mat4<Scalar> m(Scalar(0));
+    m(0, 0) = s[0];
+    m(1, 1) = s[1];
+    m(2, 2) = s[2];
+    m(3, 3) = 1.0f;
+
+    return m;
+}
+
+//-----------------------------------------------------------------------------
+
 //! OpenGL matrix for rotation around x-axis by given angle (in degrees)
 template <typename Scalar>
 Mat4<Scalar> rotation_matrix_x(Scalar angle)
