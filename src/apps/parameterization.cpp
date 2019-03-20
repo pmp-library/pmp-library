@@ -72,7 +72,7 @@ void Viewer::process_imgui()
 void Viewer::draw(const std::string& draw_mode)
 {
     // normal mesh draw
-    glViewport(0, 0, width_, height_);
+    glViewport(0, 0, width(), height());
     mesh_.draw(projection_matrix_, modelview_matrix_, draw_mode);
 
     // draw uv layout
@@ -81,8 +81,8 @@ void Viewer::draw(const std::string& draw_mode)
         glClear(GL_DEPTH_BUFFER_BIT);
 
         // setup viewport
-        GLint size = std::min(width_, height_) / 4;
-        glViewport(width_ - size - 1, height_ - size - 1, size, size);
+        GLint size = std::min(width(), height()) / 4;
+        glViewport(width() - size - 1, height() - size - 1, size, size);
 
         // setup matrices
         mat4 P = ortho_matrix(0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
@@ -93,7 +93,7 @@ void Viewer::draw(const std::string& draw_mode)
     }
 
     // reset viewport
-    glViewport(0, 0, width_, height_);
+    glViewport(0, 0, width(), height());
 }
 
 //=============================================================================

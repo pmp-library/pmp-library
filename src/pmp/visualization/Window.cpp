@@ -118,6 +118,12 @@ Window::Window(const char* title, int width, int height, bool showgui)
 #ifndef __EMSCRIPTEN__
     add_help_item("Esc/Q", "Quit application");
 #endif
+
+
+    // init mouse button state and modifiers
+    for (bool& i : button_)
+        i = false;
+    ctrl_pressed_ = shift_pressed_ = alt_pressed_ = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -261,6 +267,13 @@ void Window::add_help_item(std::string key, std::string description, int pos)
         it += pos;
         help_items_.insert( it, std::make_pair(key, description) );
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void Window::clear_help_items()
+{
+    help_items_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -427,6 +440,24 @@ void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode,
     ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
     if (!ImGui::GetIO().WantCaptureKeyboard)
     {
+        // remember modifier status
+        switch(key)
+        {
+            case GLFW_KEY_LEFT_CONTROL:
+            case GLFW_KEY_RIGHT_CONTROL:
+                instance_->ctrl_pressed_ = (action != GLFW_RELEASE);
+                break;
+            case GLFW_KEY_LEFT_SHIFT:
+            case GLFW_KEY_RIGHT_SHIFT:
+                instance_->shift_pressed_ = (action != GLFW_RELEASE);
+                break;
+            case GLFW_KEY_LEFT_ALT:
+            case GLFW_KEY_RIGHT_ALT:
+                instance_->alt_pressed_ = (action != GLFW_RELEASE);
+                break;
+        }
+
+        // send event to window
         instance_->keyboard(key, scancode, action, mods);
     }
 }
@@ -495,6 +526,7 @@ void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
     ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
     if (!ImGui::GetIO().WantCaptureMouse)
     {
+        instance_->button_[button] = (action==GLFW_PRESS);
         instance_->mouse(button, action, mods);
     }
 }

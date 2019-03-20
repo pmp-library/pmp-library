@@ -82,10 +82,9 @@ protected: //----------------------------------- callbacks as member functions
     //! this function is called just before rendering
     virtual void do_processing() {}
 
-    //! get position of mouse cursor
-    void cursor_pos(double& x, double& y) const;
 
 protected:
+
     //! setup ImGUI user interface
     void init_imgui();
 
@@ -98,13 +97,44 @@ protected:
     //!  show or hide ImGUI
     void show_imgui(bool b) { show_imgui_ = b; }
 
+    //! clear help items
+    void clear_help_items();
+
     //! add key binding (or general action description)
     void add_help_item(std::string key, std::string description, int position=-1);
 
     //! show ImGUI help dialog
     void show_help();
 
-protected:
+protected: //------------------------------------------ GLFW related functions
+
+    //! width of window
+    int width() const { return width_; }
+    //! height of window
+    int height() const { return height_; }
+
+    //! highDPI scaling
+    float high_dpi_scaling() const { return scaling_; }
+
+    //! get position of mouse cursor
+    void cursor_pos(double& x, double& y) const;
+
+    //! is left mouse button pressed down?
+    bool left_mouse_pressed() const { return button_[GLFW_MOUSE_BUTTON_LEFT]; }
+    //! is right mouse button pressed down?
+    bool right_mouse_pressed() const { return button_[GLFW_MOUSE_BUTTON_RIGHT]; }
+    //! is middle mouse button pressed down?
+    bool middle_mouse_pressed() const { return button_[GLFW_MOUSE_BUTTON_MIDDLE]; }
+
+    //! is CTRL modifier key pressed down?
+    bool ctrl_pressed() const { return ctrl_pressed_; }
+    //! is ALT modifier key pressed down?
+    bool alt_pressed() const { return alt_pressed_; }
+    //! is SHIFT modifier key pressed down?
+    bool shift_pressed() const { return shift_pressed_; }
+
+private:
+
     //! GLFW window pointer
     GLFWwindow* window_;
 
@@ -114,10 +144,17 @@ protected:
     //! highDPI scaling
     float scaling_, pixel_ratio_;
 
+    // whether to show ImGUI menu
     bool show_imgui_;
+    // scale ImGUI menu
     float imgui_scale_;
+    // show ImGUI help dialog
     bool show_help_;
+    // items for ImGUI help dialog
     std::vector< std::pair<std::string, std::string> > help_items_;
+
+    // which mouse buttons and modifier keys are pressed down
+    bool button_[7], ctrl_pressed_, alt_pressed_, shift_pressed_;
 };
 
 //=============================================================================

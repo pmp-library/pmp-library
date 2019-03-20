@@ -20,10 +20,6 @@ TrackballViewer::TrackballViewer(const char* title, int width, int height,
                                  bool showgui)
     : Window(title, width, height, showgui)
 {
-    // init mouse buttons
-    for (bool& i : button_down_)
-        i = false;
-
     // define basic draw modes
     add_draw_mode("Wireframe");
     add_draw_mode("Solid Flat");
@@ -127,9 +123,6 @@ void TrackballViewer::keyboard(int key, int code, int action, int mods)
 
 void TrackballViewer::resize(int width, int height)
 {
-    width_ = width;
-    height_ = height;
-
     glViewport(0, 0, width, height);
 }
 
@@ -152,7 +145,7 @@ void TrackballViewer::display()
 
     // update projection matrix
     projection_matrix_ =
-        perspective_matrix(fovy_, (float)width_ / (float)height_, near_, far_);
+        perspective_matrix(fovy_, (float)width() / (float)height(), near_, far_);
 
     // draw the scene in current draw mode
     if (draw_mode_ < draw_mode_names_.size())
@@ -163,19 +156,15 @@ void TrackballViewer::display()
 
 //-----------------------------------------------------------------------------
 
-void TrackballViewer::mouse(int button, int action, int mods)
+void TrackballViewer::mouse(int /*button*/, int action, int /*mods*/)
 {
-    // record current modifier keys
-    modifiers_ = mods;
-
     // mouse press
     if (action == GLFW_PRESS)
     {
         last_point_ok_ = map_to_sphere(last_point_2d_, last_point_3d_);
-        button_down_[button] = true;
 
         // set rotation center
-        if (modifiers_ == GLFW_MOD_CONTROL)
+        if (ctrl_pressed())
         {
             double x, y;
             cursor_pos(x, y);
@@ -187,7 +176,6 @@ void TrackballViewer::mouse(int button, int action, int mods)
     else
     {
         last_point_ok_ = false;
-        button_down_[button] = false;
     }
 }
 
@@ -207,23 +195,19 @@ void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 void TrackballViewer::motion(double xpos, double ypos)
 {
     // zoom
-    if ((button_down_[GLFW_MOUSE_BUTTON_RIGHT]) ||
-        (button_down_[GLFW_MOUSE_BUTTON_LEFT] &&
-         (modifiers_ == GLFW_MOD_SHIFT)))
+    if (right_mouse_pressed() || (left_mouse_pressed() && shift_pressed()))
     {
         zoom(xpos, ypos);
     }
 
     // translation
-    else if (button_down_[GLFW_MOUSE_BUTTON_MIDDLE] ||
-             (button_down_[GLFW_MOUSE_BUTTON_LEFT] &&
-              (modifiers_ == GLFW_MOD_ALT)))
+    else if (middle_mouse_pressed() || (left_mouse_pressed() && alt_pressed()))
     {
         translation(xpos, ypos);
     }
 
     // rotation
-    else if (button_down_[GLFW_MOUSE_BUTTON_LEFT])
+    else if (left_mouse_pressed())
     {
         rotation(xpos, ypos);
     }
@@ -273,6 +257,13 @@ void TrackballViewer::view_all()
 
 //-----------------------------------------------------------------------------
 
+bool TrackballViewer::pick(vec3& result)
+{
+    double x, y;
+    cursor_pos(x,y);
+    return pick(x, y, result);
+}
+
 bool TrackballViewer::pick(int x, int y, vec3& result)
 {
 #ifndef __EMSCRIPTEN__ // WebGL cannot read depth buffer
@@ -282,8 +273,8 @@ bool TrackballViewer::pick(int x, int y, vec3& result)
     glGetIntegerv(GL_VIEWPORT, viewport);
 
     // take into accout highDPI scaling
-    x *= scaling_;
-    y *= scaling_;
+    x *= high_dpi_scaling();
+    y *= high_dpi_scaling();
 
     // in OpenGL y=0 is at the 'bottom'
     y = viewport[3] - y;
@@ -335,11 +326,13 @@ void TrackballViewer::fly_to(int x, int y)
 
 bool TrackballViewer::map_to_sphere(const ivec2& point2D, vec3& result)
 {
-    if ((point2D[0] >= 0) && (point2D[0] <= width_) && (point2D[1] >= 0) &&
-        (point2D[1] <= height_))
+    if ((point2D[0] >= 0) && (point2D[0] <= width()) && (point2D[1] >= 0) &&
+        (point2D[1] <= height()))
     {
-        double x = (double)(point2D[0] - 0.5 * width_) / (double)width_;
-        double y = (double)(0.5 * height_ - point2D[1]) / (double)height_;
+        double w = width();
+        double h = height();
+        double x = (double)(point2D[0] - 0.5*w) / w;
+        double y = (double)(0.5*h - point2D[1]) / h;
         double sinx = sin(M_PI * x * 0.5);
         double siny = sin(M_PI * y * 0.5);
         double sinx2siny2 = sinx * sinx + siny * siny;
@@ -392,12 +385,12 @@ void TrackballViewer::translation(int x, int y)
     vec4 ec = modelview_matrix_ * mc;
     float z = -(ec[2] / ec[3]);
 
-    float aspect = (float)width_ / (float)height_;
+    float aspect = (float)width() / (float)height();
     float up = tan(fovy_ / 2.0f * M_PI / 180.f) * near_;
     float right = aspect * up;
 
-    translate(vec3(2.0 * dx / width_ * right / near_ * z,
-                   -2.0 * dy / height_ * up / near_ * z, 0.0f));
+    translate(vec3(2.0 * dx / width() * right / near_ * z,
+                   -2.0 * dy / height() * up / near_ * z, 0.0f));
 }
 
 //-----------------------------------------------------------------------------
@@ -405,7 +398,7 @@ void TrackballViewer::translation(int x, int y)
 void TrackballViewer::zoom(int, int y)
 {
     float dy = y - last_point_2d_[1];
-    float h = height_;
+    float h = height();
     translate(vec3(0.0, 0.0, radius_ * dy * 3.0 / h));
 }
 

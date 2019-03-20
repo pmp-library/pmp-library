@@ -275,7 +275,7 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
 {
     if (action == GLFW_PRESS &&
         button == GLFW_MOUSE_BUTTON_MIDDLE &&
-        modifiers_ == GLFW_MOD_SHIFT)
+        shift_pressed())
     {
         double x, y;
         cursor_pos(x, y);

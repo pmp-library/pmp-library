@@ -90,7 +90,10 @@ protected: //-------------------------------------------- trackball interaction
     //! turn a mouse event into a zoom, i.e., translation in z-direction. calls translate().
     void zoom(int x, int y);
 
-    //! get 3D position Distributed under the mouse cursor
+    //! get 3D position under the mouse cursor
+    bool pick(vec3& result);
+
+    //! get 3D position of 2D position (x,y)
     bool pick(int x, int y, vec3& result);
 
     //! fly toward the position Distributed under the mouse cursor and set rotation center to it
@@ -126,8 +129,6 @@ protected: //----------------------------------------------------- private data
     ivec2 last_point_2d_;
     vec3 last_point_3d_;
     bool last_point_ok_;
-    bool button_down_[7];
-    int modifiers_;
 };
 
 //=============================================================================
