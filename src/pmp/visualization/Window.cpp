@@ -95,7 +95,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
 #else
     pixel_ratio_ = emscripten_get_device_pixel_ratio();
     if (pixel_ratio_ != 1)
-        std::cout << "highDPI scaling: " << scaling_ << std::endl;
+        std::cout << "highDPI scaling: " << pixel_ratio_ << std::endl;
     imgui_scale_ = pixel_ratio_;
 #endif
 
