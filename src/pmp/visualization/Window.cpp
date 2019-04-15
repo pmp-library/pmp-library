@@ -133,9 +133,7 @@ Window::~Window()
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-
-    glfwDestroyWindow(window_);
-    glfwTerminate();
+    glfwTerminate(); // this automatically destroys remaining windows
 }
 
 //-----------------------------------------------------------------------------
@@ -308,6 +306,10 @@ void Window::show_help()
         {
             show_help_ = false;
             ImGui::CloseCurrentPopup();
+
+            // reset mouse button state and modifiers
+            for (bool& b : button_) b = false;
+            ctrl_pressed_ = shift_pressed_ = alt_pressed_ = false;
         }
 
         ImGui::EndPopup();
@@ -326,7 +328,6 @@ int Window::run()
         Window::render_frame();
     }
 #endif
-    glfwDestroyWindow(window_);
     return EXIT_SUCCESS;
 }
 
