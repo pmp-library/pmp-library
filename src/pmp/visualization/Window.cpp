@@ -106,7 +106,11 @@ Window::Window(const char* title, int width, int height, bool showgui)
 
 
 
-    // detect highDPI scaling
+    // detect highDPI framebuffer scaling and UI scaling
+    // this part is OS dependent:
+    // MacOS: just ratio of framebuffer size and window size
+    // Linux: use new GLFW content scaling
+    // Emscripten: use device pixel ratio
     int window_width, window_height, framebuffer_width, framebuffer_height;
     glfwGetWindowSize(window_, &window_width, &window_height);
     glfwGetFramebufferSize(window_, &framebuffer_width, &framebuffer_height);
@@ -117,11 +121,14 @@ Window::Window(const char* title, int width, int height, bool showgui)
     if (scaling_ != 1)
         std::cout << "highDPI scaling: " << scaling_ << std::endl;
 
+#ifndef __APPLE__ // not needed for MacOS retina
     float sx, sy;
     glfwGetWindowContentScale(window_, &sx, &sy);
     imgui_scale_ = int(0.5*(sx+sy));
     if (imgui_scale_ != 1)
-        std::cout << "UI scaling: " << imgui_scale_ << sy << std::endl;
+        std::cout << "UI scaling: " << imgui_scale_ << std::endl;
+#endif
+
 #else
     pixel_ratio_ = emscripten_get_device_pixel_ratio();
     if (pixel_ratio_ != 1)
