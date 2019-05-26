@@ -104,6 +104,8 @@ Window::Window(const char* title, int width, int height, bool showgui)
     // call glGetError once to clear error queue
     glGetError();
 
+
+
     // detect highDPI scaling
     int window_width, window_height, framebuffer_width, framebuffer_height;
     glfwGetWindowSize(window_, &window_width, &window_height);
@@ -114,6 +116,12 @@ Window::Window(const char* title, int width, int height, bool showgui)
     scaling_ = framebuffer_width / window_width;
     if (scaling_ != 1)
         std::cout << "highDPI scaling: " << scaling_ << std::endl;
+
+    float sx, sy;
+    glfwGetWindowContentScale(window_, &sx, &sy);
+    imgui_scale_ = int(0.5*(sx+sy));
+    if (imgui_scale_ != 1)
+        std::cout << "UI scaling: " << imgui_scale_ << sy << std::endl;
 #else
     pixel_ratio_ = emscripten_get_device_pixel_ratio();
     if (pixel_ratio_ != 1)
