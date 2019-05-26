@@ -4,7 +4,7 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
@@ -12,12 +12,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - Compile-time switch `PMP_SCALAR_TYPE` to choose between float/double as Scalar
 - Support point set rendering for surface meshes without faces
+- Add hole filling based on Liepa algorithm
+- Add explicit warranty and liability disclaimer
 
 ### Changed
 
+- Breaking change: Public members in Window and TrackballViewer classes made
+  private and encapsulated through access functions
+- SurfaceMeshIO: Readers no longer call mesh.clear() before loading a mesh
+- Change SurfaceSmoothing to avoid model shrinking
 - Improve normal computation for polygonal faces
-- Upgrade ImGui to version 1.68
+- Upgrade ImGui to version 1.70
 - Upgrade Eigen to version 3.3.7
+- Documentation updates
 
 ### Fixed
 
