@@ -19,7 +19,6 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 - Breaking change: Public members in Window and TrackballViewer classes made
   private and encapsulated through access functions
-- SurfaceMeshIO: Readers no longer call mesh.clear() before loading a mesh
 - Change SurfaceSmoothing to avoid model shrinking
 - Improve normal computation for polygonal faces
 - Upgrade ImGui to version 1.70
