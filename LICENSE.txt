@@ -1,4 +1,4 @@
-MIT License (with additional disclaimer)
+MIT License
 
 Copyright (C) 2011-2019 The pmp-library developers
 Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
@@ -19,36 +19,3 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-Disclaimer of Warranties and Liability. You acknowledge that the individual
-providing and/or licensing this software is doing so in his or her
-individual capacity, and that no past or present employer of such
-individual has any role whatsoever in making this software available to
-you. You expressly acknowledge that you must look solely to the individual
-providing and/or licensing this software, and not to his or her past or
-present employer, for any warranties, support, maintenance, upgrades,
-modifications, new releases, or remedies in respect of your use of such
-software. NO PAST OR PRESENT EMPLOYER OF THE INDIVIDUAL PROVIDING AND/OR
-LICENSING THIS SOFTWARE MAKES ANY WARRANTY OF ANY KIND, WHETHER EXPRESS,
-IMPLIED, STATUTORY OR OTHERWISE,
-
-WITH RESPECT TO THE SOFTWARE, AND ALL SUCH WARRANTIES ARE EXPRESSLY
-DISCLAIMED. IN NO EVENT WILL ANY PAST OR PRESENT EMPLOYER OF THE INDIVIDUAL
-PROVIDING AND/OR LICENSING THIS SOFTWARE BE LIABLE TO YOU UNDER ANY LEGAL
-OR EQUITABLE THEORY IN CONNECTION WITH THE SOFTWARE, INCLUDING FOR ANY USE,
-INTERRUPTION, DELAY, OR INABILITY TO USE THE SOFTWARE, OR FOR PERSONAL
-INJURY, OR ANY INCIDENTAL, SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES
-WHATSOEVER, INCLUDING, WITHOUT LIMITATION, DAMAGES FOR LOSS OF PROFITS,
-CORRUPTION OR LOSS OF DATA, FAILURE TO TRANSMIT OR RECEIVE ANY DATA,
-BUSINESS INTERRUPTION OR ANY OTHER COMMERCIAL DAMAGES OR LOSSES, ARISING
-OUT OF OR RELATED TO YOUR USE OR INABILITY TO USE THE SOFTWARE, HOWEVER
-CAUSED. You agree to indemnify, defend, and hold harmless the past and
-present employers of the individual providing and/or licensing this
-software and their respective officers, directors, employees, agents,
-affiliates, successors, and assigns from and against any and all losses,
-damages, liabilities, or costs (including attorneys’ fees) resulting from
-any claim, suit, action, or proceeding based on your use of the
-software. The past and present employers of the individual providing and/or
-licensing this software, and their respective officers, directors,
-employees, agents, affiliates, successors, and assigns, are express third
-party beneficiaries of this agreement with the right to enforce its terms.
