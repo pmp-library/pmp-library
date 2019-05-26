@@ -31,12 +31,12 @@ namespace pmp {
 //! by isometric remeshing, and finished by curvature-minimizing fairing of the
 //! filled-in patch.
 //! See \cite liepa_2003_filling for details.
-class HoleFilling
+class SurfaceHoleFilling
 {
 public:
 
     /// construct with mesh
-    HoleFilling(SurfaceMesh& mesh);
+    SurfaceHoleFilling(SurfaceMesh& mesh);
 
     /// fill the hole specified by halfedge h
     bool fill_hole(Halfedge h);

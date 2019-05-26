@@ -9,19 +9,19 @@
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/HoleFilling.h>
+#include <pmp/algorithms/SurfaceHoleFilling.h>
 
 using namespace pmp;
 
-class HoleFillingTest : public ::testing::Test
+class SurfaceHoleFillingTest : public ::testing::Test
 {
 public:
-    HoleFillingTest()
+    SurfaceHoleFillingTest()
     {
         EXPECT_TRUE(mesh.read("pmp-data/off/hemisphere.off"));
     }
 
-    Halfedge find_boundary() const 
+    Halfedge find_boundary() const
     {
         for (auto h: mesh.halfedges())
             if (mesh.is_boundary(h))
@@ -32,18 +32,17 @@ public:
     SurfaceMesh mesh;
 };
 
-TEST_F(HoleFillingTest, hemisphere)
+TEST_F(SurfaceHoleFillingTest, hemisphere)
 {
     // find boundary halfedge
     Halfedge h = find_boundary();
     EXPECT_TRUE(h.is_valid());
 
     // fill hole
-    HoleFilling hf(mesh);
+    SurfaceHoleFilling hf(mesh);
     hf.fill_hole(h);
 
     // now we should not find a hole
     h = find_boundary();
     EXPECT_FALSE(h.is_valid());
 }
-

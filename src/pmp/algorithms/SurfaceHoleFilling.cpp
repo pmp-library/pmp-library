@@ -1,6 +1,6 @@
 //=============================================================================
 
-#include <pmp/algorithms/HoleFilling.h>
+#include <pmp/algorithms/SurfaceHoleFilling.h>
 #include <pmp/algorithms/SurfaceFairing.h>
 
 #include <Eigen/Dense>
@@ -16,8 +16,8 @@ namespace pmp {
 //=============================================================================
 
 
-HoleFilling::
-HoleFilling(SurfaceMesh& _mesh)
+SurfaceHoleFilling::
+SurfaceHoleFilling(SurfaceMesh& _mesh)
   : mesh_(_mesh)
 {
     points_  = mesh_.vertex_property<Point>("v:point");
@@ -28,7 +28,7 @@ HoleFilling(SurfaceMesh& _mesh)
 
 
 bool
-HoleFilling::
+SurfaceHoleFilling::
 is_interior_edge(Vertex _a, Vertex _b) const
 {
     Halfedge h = mesh_.find_halfedge(_a,_b);
@@ -41,7 +41,7 @@ is_interior_edge(Vertex _a, Vertex _b) const
 
 
 Scalar
-HoleFilling::
+SurfaceHoleFilling::
 compute_area(Vertex _a,
              Vertex _b,
              Vertex _c) const
@@ -54,7 +54,7 @@ compute_area(Vertex _a,
 
 
 Point
-HoleFilling::
+SurfaceHoleFilling::
 compute_normal(Vertex _a,
                Vertex _b,
                Vertex _c) const
@@ -67,7 +67,7 @@ compute_normal(Vertex _a,
 
 
 Scalar
-HoleFilling::
+SurfaceHoleFilling::
 compute_angle(const Point& _n1,
               const Point& _n2) const
 {
@@ -79,7 +79,7 @@ compute_angle(const Point& _n1,
 
 
 bool
-HoleFilling::
+SurfaceHoleFilling::
 fill_hole(Halfedge _h)
 {
     // is it really a hole?
@@ -94,8 +94,8 @@ fill_hole(Halfedge _h)
 
     // lock vertices/edge that already exist, to be later able to
     // identify the filled-in vertices/edges
-    vlocked_ = mesh_.add_vertex_property<bool>("HoleFilling:vlocked", false);
-    elocked_ = mesh_.add_edge_property<bool>("HoleFilling:elocked", false);
+    vlocked_ = mesh_.add_vertex_property<bool>("SurfaceHoleFilling:vlocked", false);
+    elocked_ = mesh_.add_edge_property<bool>("SurfaceHoleFilling:elocked", false);
     for (auto v: mesh_.vertices())  vlocked_[v] = true;
     for (auto e: mesh_.edges())     elocked_[e] = true;
 
@@ -123,7 +123,7 @@ fill_hole(Halfedge _h)
 
 
 bool
-HoleFilling::
+SurfaceHoleFilling::
 triangulate_hole(Halfedge _h)
 {
     // trace hole
@@ -134,7 +134,7 @@ triangulate_hole(Halfedge _h)
         // check for manifoldness
         if (!mesh_.is_manifold(mesh_.to_vertex(h)))
         {
-            std::cerr << "[HoleFilling] Non-manifold hole\n";
+            std::cerr << "[SurfaceHoleFilling] Non-manifold hole\n";
             return false;
         }
 
@@ -223,8 +223,8 @@ triangulate_hole(Halfedge _h)
 //-----------------------------------------------------------------------------
 
 
-HoleFilling::Weight
-HoleFilling::
+SurfaceHoleFilling::Weight
+SurfaceHoleFilling::
 compute_weight(int _i, int _j, int _k) const
 {
     const Vertex a = hole_vertex(_i);
@@ -275,7 +275,7 @@ compute_weight(int _i, int _j, int _k) const
 
 
 void
-HoleFilling::
+SurfaceHoleFilling::
 refine()
 {
     const int n = hole_.size();
@@ -308,7 +308,7 @@ refine()
 
 
 void
-HoleFilling::
+SurfaceHoleFilling::
 split_long_edges(const Scalar _lmax)
 {
     bool ok;
@@ -342,7 +342,7 @@ split_long_edges(const Scalar _lmax)
 
 
 void
-HoleFilling::
+SurfaceHoleFilling::
 collapse_short_edges(const Scalar _lmin)
 {
     bool ok;
@@ -388,7 +388,7 @@ collapse_short_edges(const Scalar _lmin)
 
 
 void
-HoleFilling::
+SurfaceHoleFilling::
 flip_edges()
 {
     Vertex    v0, v1, v2, v3;
@@ -457,11 +457,11 @@ flip_edges()
 
 
 void
-HoleFilling::
+SurfaceHoleFilling::
 relaxation()
 {
     // properties
-    VertexProperty<int> idx = mesh_.add_vertex_property<int>("HoleFilling:idx", -1);
+    VertexProperty<int> idx = mesh_.add_vertex_property<int>("SurfaceHoleFilling:idx", -1);
 
 
     // collect free vertices
@@ -529,7 +529,7 @@ relaxation()
     Eigen::MatrixXd X = solver.solve(AtB);
     if (solver.info() != Eigen::Success)
     {
-        std::cerr << "[HoleFilling] Solver failed\n";
+        std::cerr << "[SurfaceHoleFilling] Solver failed\n";
         return;
     }
 
@@ -553,7 +553,7 @@ relaxation()
 
 
 void
-HoleFilling::
+SurfaceHoleFilling::
 fairing()
 {
     // convert non-locked into selection

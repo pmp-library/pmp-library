@@ -16,7 +16,7 @@
 #include <pmp/algorithms/SurfaceRemeshing.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 #include <pmp/algorithms/SurfaceGeodesic.h>
-#include <pmp/algorithms/HoleFilling.h>
+#include <pmp/algorithms/SurfaceHoleFilling.h>
 
 #include <imgui.h>
 
@@ -257,7 +257,7 @@ void MeshProcessingViewer::process_imgui()
             // close smallest hole
             if (hmin.is_valid())
             {
-                HoleFilling hf(mesh_);
+                SurfaceHoleFilling hf(mesh_);
                 hf.fill_hole(hmin);
                 update_mesh();
             }
