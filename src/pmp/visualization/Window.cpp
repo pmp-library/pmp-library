@@ -52,13 +52,35 @@ Window::Window(const char* title, int width, int height, bool showgui)
 
     if (!window_)
     {
-        glfwTerminate();
         std::cerr << "Cannot create GLFW window.\n";
+        glfwTerminate();
         exit(EXIT_FAILURE);
     }
 
     glfwMakeContextCurrent(window_);
     instance_ = this;
+
+    // check for sufficient OpenGL version
+    GLint major, minor;
+    glGetIntegerv(GL_MAJOR_VERSION, &major);
+    glGetIntegerv(GL_MINOR_VERSION, &minor);
+    GLint glversion = 10*major+minor;
+#ifdef __EMSCRIPTEN__
+    if (glversion < 30)
+    {
+        std::cerr << "Cannot get WebGL2 context. Try using Firefox or Chrome/Chromium.\n";
+        EM_ASM(alert("Cannot get WebGL2 context. Try using Firefox or Chrome/Chromium."));
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+#else
+    if (glversion < 32)
+    {
+        std::cerr << "Cannot get modern OpenGL context.\n";
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+#endif
 
     // enable v-sync
     glfwSwapInterval(1);
