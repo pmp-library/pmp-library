@@ -2,9 +2,9 @@
 // Copyright (C) 2011-2019 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
-// Distributed under the terms of the MIT license, see LICENSE.txt for details.
+// Distributed under a MIT-style license, see LICENSE.txt for details.
 //
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT-with-employer-disclaimer
 //=============================================================================
 
 #include <pmp/visualization/Shader.h>
