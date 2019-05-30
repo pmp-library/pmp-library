@@ -8,6 +8,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+## [1.1.0] 2019-05-30
+
 ### Added
 
 - Compile-time switch `PMP_SCALAR_TYPE` to choose between float/double as Scalar
@@ -21,6 +23,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
   private and encapsulated through access functions
 - Change SurfaceSmoothing to avoid model shrinking
 - Improve normal computation for polygonal faces
+- Upgrade GLFW to version 3.3
 - Upgrade ImGui to version 1.70
 - Upgrade Eigen to version 3.3.7
 - Documentation updates
