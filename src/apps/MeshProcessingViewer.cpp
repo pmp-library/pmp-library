@@ -26,6 +26,7 @@ MeshProcessingViewer::MeshProcessingViewer(const char* title, int width, int hei
     : MeshViewer(title, width, height),
       smoother_(mesh_)
 {
+    crease_angle_ = 90.0;
     set_draw_mode("Hidden Line");
 
     // add help items

@@ -34,6 +34,7 @@ Viewer::Viewer(const char* title, int width, int height)
     : MeshViewer(title, width, height),
       smoother_(mesh_)
 {
+    crease_angle_ = 180.0;
 }
 
 //=============================================================================

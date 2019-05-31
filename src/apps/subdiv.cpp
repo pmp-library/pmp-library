@@ -31,6 +31,7 @@ Viewer::Viewer(const char* title, int width, int height, bool showgui)
     : MeshViewer(title, width, height, showgui)
 {
     set_draw_mode("Hidden Line");
+    crease_angle_ = 0.0;
 }
 
 //=============================================================================

@@ -32,7 +32,7 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
     add_draw_mode("Texture");
     set_draw_mode("Smooth Shading");
 
-    crease_angle_ = 90.0;
+    crease_angle_ = 180.0;
 
     // add help items
     add_help_item("Backspace", "Reload mesh", 3);
@@ -74,7 +74,7 @@ bool MeshViewer::load_mesh(const char* filename)
                   << " vertices, " << mesh_.n_faces() << " faces\n";
 
         filename_ = filename;
-        crease_angle_ = mesh_.crease_angle();
+        mesh_.set_crease_angle(crease_angle_);
         return true;
     }
 
