@@ -3,18 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112654893-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-112654893-1');
-    </script>
     <style>
       body { margin:0px; padding: 0px; overflow: hidden; }
       .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
       div.emscripten { text-align: center; }
-      canvas.emscripten {
+      canvas.emscripten { 
           border:           0px none;  /* no border, otherwise mouse coords will be wrong */
           padding:          0px;       /* no padding, otherwise mouse coords will be wrong */
           background-color: white;
@@ -30,15 +23,15 @@
   <body>
     <div class="emscripten" id="status">Downloading...</div>
     <div class="emscripten">
-      <progress value="0" max="100" id="progress" hidden=1></progress>
+      <progress value="0" max="100" id="progress" hidden=1></progress>  
     </div>
     <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-
+    
     <script type='text/javascript'>
       var statusElement = document.getElementById('status');
       var progressElement = document.getElementById('progress');
 
-      function getUrlVars()
+      function getUrlVars() 
       {
           var vars = {};
           var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
@@ -58,7 +51,7 @@
                   FS.createPreloadedFile('./', filename, modelFileName, true, false);
               }
         }],
-
+        
           postRun: [],
 
 
@@ -259,3 +252,5 @@ function intArrayToString(array) {
 </script>
   </body>
 </html>
+
+
