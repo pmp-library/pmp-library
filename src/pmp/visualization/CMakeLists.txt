@@ -15,7 +15,7 @@ else()
         add_library(pmp_vis STATIC ${SRCS} ${HDRS})
         target_link_libraries(pmp_vis pmp stb_image imgui glfw glew ${OPENGL_LIBRARIES})
         install(TARGETS pmp_vis DESTINATION lib)
-        install(FILES ${HDRS} DESTINATION include/pmp/gl)
+        install(FILES ${HDRS} DESTINATION include/pmp/visualization)
     endif()
 
 endif()
