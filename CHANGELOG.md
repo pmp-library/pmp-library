@@ -8,6 +8,10 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix erroneous header install path (visualization)
+
 ## [1.1.0] 2019-05-30
 
 ### Added
