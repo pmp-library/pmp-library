@@ -13,6 +13,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Fix erroneous header install path (visualization)
 - Fix bug hole filling (when filling single-triangle holes).
   Thanks a lot to Pierre Buyssens for reporting this bug!
+- Fix bug when fairing a mesh w/o boundary constraints
+  Thanks a lot to Pierre Buyssens for reporting this bug!
 
 ## [1.1.0] 2019-05-30
 
