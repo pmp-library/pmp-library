@@ -128,6 +128,13 @@ void SurfaceFairing::fair(unsigned int k)
         }
     }
 
+    // we need locked vertices as boundary constraints
+    if (vertices.size() == mesh_.n_vertices())
+    {
+        std::cerr << "SurfaceFairing: need locked vertices as boundary constraints.\n";
+        return;
+    }
+
     // construct matrix & rhs
     const unsigned int n = vertices.size();
     SparseMatrix A(n, n);
