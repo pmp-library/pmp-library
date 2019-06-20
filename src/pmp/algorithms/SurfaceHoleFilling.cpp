@@ -556,6 +556,14 @@ void
 SurfaceHoleFilling::
 fairing()
 {
+    // did the refinement insert new vertices?
+    // if yes, then trigger fairing; otherwise don't.
+    bool new_vertices = false;
+    for (auto v: mesh_.vertices())
+        if (!vlocked_[v])
+            new_vertices = true;
+    if (!new_vertices) return;
+
     // convert non-locked into selection
     auto vsel = mesh_.add_vertex_property<bool>("v:selected");
     for (auto v: mesh_.vertices())
