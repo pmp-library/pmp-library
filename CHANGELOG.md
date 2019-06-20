@@ -11,6 +11,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 ### Fixed
 
 - Fix erroneous header install path (visualization)
+- Fix bug hole filling (when filling single-triangle holes).
+  Thanks a lot to Pierre Buyssens for reporting this bug!
 
 ## [1.1.0] 2019-05-30
 
