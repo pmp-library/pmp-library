@@ -14,6 +14,7 @@
 #include <iostream>
 #include <assert.h>
 #include <limits>
+#include <initializer_list>
 
 //=============================================================================
 
@@ -48,6 +49,34 @@ public:
         for (int i = 0; i < size(); ++i)
             data_[i] = s;
     }
+
+    //! constructor with row-wise initializer list of M*N entries
+    explicit Matrix(const std::initializer_list<Scalar> && values)
+    {
+        assert(values.size() == M*N);
+        int i=0;
+        for (Scalar v : values)
+        {
+            // convert row-wise initializer list to 
+            // column-wise matrix storage
+            data_[M*(i%N) + i/N] = v;
+            ++i;
+        }
+    }
+
+    //! constructor with N column vectors of dimension M
+    explicit Matrix(const std::initializer_list< Matrix<Scalar,M,1> > && columns)
+    {
+        assert(columns.size() == N);
+        int j=0, i;
+        for (const Matrix<Scalar,M,1>& v: columns)
+        {
+            for (i=0; i<M; ++i)
+                data_[M * j + i] = v[i];
+            ++j;
+        }
+    }
+
 
     //! constructor for 2D vectors
     explicit Matrix(Scalar x, Scalar y)
@@ -86,12 +115,26 @@ public:
         data_[3] = w;
     }
 
+    //! construct 3x3 matrix from 3 column vectors
+    // clang-format off
+    Matrix(Matrix<Scalar, 3, 1> c0,
+           Matrix<Scalar, 3, 1> c1,
+           Matrix<Scalar, 3, 1> c2)
+    {
+        static_assert(M == 3 && N == 3, "only for 3x3 matrices");
+        (*this)(0,0) = c0[0]; (*this)(0,1) = c1[0]; (*this)(0,2) = c2[0];
+        (*this)(1,0) = c0[1]; (*this)(1,1) = c1[1]; (*this)(1,2) = c2[1];
+        (*this)(2,0) = c0[2]; (*this)(2,1) = c1[2]; (*this)(2,2) = c2[2];
+    }
+    // clang-format on
+
+
     //! construct 4x4 matrix from 4 column vectors
     // clang-format off
-    Matrix(Matrix<Scalar, 4, 1> c0,
-           Matrix<Scalar, 4, 1> c1,
-           Matrix<Scalar, 4, 1> c2,
-           Matrix<Scalar, 4, 1> c3)
+    [[deprecated]] Matrix(Matrix<Scalar, 4, 1> c0,
+                          Matrix<Scalar, 4, 1> c1,
+                          Matrix<Scalar, 4, 1> c2,
+                          Matrix<Scalar, 4, 1> c3)
     {
         static_assert(M == 4 && N == 4, "only for 4x4 matrices");
         (*this)(0,0) = c0[0]; (*this)(0,1) = c1[0]; (*this)(0,2) = c2[0]; (*this)(0,3) = c3[0];
@@ -101,12 +144,12 @@ public:
     }
     // clang-format on
 
-    //! construct from 16 (row-wise) entries
+    //! construct 4x4 matrix from 16 (row-wise) entries
     // clang-format off
-    Matrix(Scalar m00, Scalar m01, Scalar m02, Scalar m03,
-           Scalar m10, Scalar m11, Scalar m12, Scalar m13,
-           Scalar m20, Scalar m21, Scalar m22, Scalar m23,
-           Scalar m30, Scalar m31, Scalar m32, Scalar m33)
+    [[deprecated]] Matrix(Scalar m00, Scalar m01, Scalar m02, Scalar m03,
+                          Scalar m10, Scalar m11, Scalar m12, Scalar m13,
+                          Scalar m20, Scalar m21, Scalar m22, Scalar m23,
+                          Scalar m30, Scalar m31, Scalar m32, Scalar m33)
     {
         static_assert(M == 4 && N == 4, "only for 4x4 matrices");
         (*this)(0,0) = m00; (*this)(0,1) = m01; (*this)(0,2) = m02; (*this)(0,3) = m03;

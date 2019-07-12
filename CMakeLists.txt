@@ -106,14 +106,14 @@ endif()
 
 # set default compiler flags
 if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pedantic -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pedantic -Wall -Wextra")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "7.0.0")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-in-bool-context")
   endif()
 endif()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND NOT EMSCRIPTEN)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pedantic -Wall -Wextra -Wno-unused-parameter")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pedantic -Wall -Wextra -Wno-unused-parameter")
 endif()
 
 if(WIN32)
@@ -121,7 +121,7 @@ if(WIN32)
 endif()
 
 if (EMSCRIPTEN)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -s WASM=0 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -s WASM=0 -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1")
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
