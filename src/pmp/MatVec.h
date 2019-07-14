@@ -57,7 +57,7 @@ public:
         int i=0;
         for (Scalar v : values)
         {
-            // convert row-wise initializer list to 
+            // convert row-wise initializer list to
             // column-wise matrix storage
             data_[M*(i%N) + i/N] = v;
             ++i;
@@ -131,10 +131,10 @@ public:
 
     //! construct 4x4 matrix from 4 column vectors
     // clang-format off
-    [[deprecated]] Matrix(Matrix<Scalar, 4, 1> c0,
-                          Matrix<Scalar, 4, 1> c1,
-                          Matrix<Scalar, 4, 1> c2,
-                          Matrix<Scalar, 4, 1> c3)
+    Matrix(Matrix<Scalar, 4, 1> c0,
+           Matrix<Scalar, 4, 1> c1,
+           Matrix<Scalar, 4, 1> c2,
+           Matrix<Scalar, 4, 1> c3)
     {
         static_assert(M == 4 && N == 4, "only for 4x4 matrices");
         (*this)(0,0) = c0[0]; (*this)(0,1) = c1[0]; (*this)(0,2) = c2[0]; (*this)(0,3) = c3[0];
@@ -146,10 +146,10 @@ public:
 
     //! construct 4x4 matrix from 16 (row-wise) entries
     // clang-format off
-    [[deprecated]] Matrix(Scalar m00, Scalar m01, Scalar m02, Scalar m03,
-                          Scalar m10, Scalar m11, Scalar m12, Scalar m13,
-                          Scalar m20, Scalar m21, Scalar m22, Scalar m23,
-                          Scalar m30, Scalar m31, Scalar m32, Scalar m33)
+    Matrix(Scalar m00, Scalar m01, Scalar m02, Scalar m03,
+           Scalar m10, Scalar m11, Scalar m12, Scalar m13,
+           Scalar m20, Scalar m21, Scalar m22, Scalar m23,
+           Scalar m30, Scalar m31, Scalar m32, Scalar m33)
     {
         static_assert(M == 4 && N == 4, "only for 4x4 matrices");
         (*this)(0,0) = m00; (*this)(0,1) = m01; (*this)(0,2) = m02; (*this)(0,3) = m03;
