@@ -8,6 +8,10 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+### Added
+
+- Add constructors using initializer lists to Matrix/Vector classes
+
 ### Fixed
 
 - Fix erroneous header install path (visualization)
