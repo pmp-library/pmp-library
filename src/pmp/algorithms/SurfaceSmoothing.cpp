@@ -24,10 +24,9 @@ using Triplet = Eigen::Triplet<double>;
 
 //=============================================================================
 
-SurfaceSmoothing::SurfaceSmoothing(SurfaceMesh& mesh)
-    : mesh_(mesh)
+SurfaceSmoothing::SurfaceSmoothing(SurfaceMesh& mesh) : mesh_(mesh)
 {
-    how_many_edge_weights_   = 0;
+    how_many_edge_weights_ = 0;
     how_many_vertex_weights_ = 0;
 }
 
@@ -36,10 +35,12 @@ SurfaceSmoothing::SurfaceSmoothing(SurfaceMesh& mesh)
 SurfaceSmoothing::~SurfaceSmoothing()
 {
     auto vweight = mesh_.get_vertex_property<Scalar>("v:area");
-    if (vweight) mesh_.remove_vertex_property(vweight);
+    if (vweight)
+        mesh_.remove_vertex_property(vweight);
 
     auto eweight = mesh_.get_edge_property<Scalar>("e:cotan");
-    if (eweight) mesh_.remove_edge_property(eweight);
+    if (eweight)
+        mesh_.remove_edge_property(eweight);
 }
 
 //-----------------------------------------------------------------------------
@@ -47,7 +48,7 @@ SurfaceSmoothing::~SurfaceSmoothing()
 void SurfaceSmoothing::compute_edge_weights(bool use_uniform_laplace)
 {
     auto eweight = mesh_.edge_property<Scalar>("e:cotan");
-    
+
     if (use_uniform_laplace)
     {
         for (auto e : mesh_.edges())
@@ -63,7 +64,7 @@ void SurfaceSmoothing::compute_edge_weights(bool use_uniform_laplace)
 }
 
 //-----------------------------------------------------------------------------
-    
+
 void SurfaceSmoothing::compute_vertex_weights(bool use_uniform_laplace)
 {
     auto vweight = mesh_.vertex_property<Scalar>("v:area");
@@ -91,15 +92,13 @@ void SurfaceSmoothing::explicit_smoothing(unsigned int iters,
         return;
 
     // compute Laplace weight per edge: cotan or uniform
-    if (!mesh_.has_edge_property("e:cotan") || 
+    if (!mesh_.has_edge_property("e:cotan") ||
         how_many_edge_weights_ != mesh_.n_edges())
         compute_edge_weights(use_uniform_laplace);
 
-
-    auto points  = mesh_.get_vertex_property<Point>("v:point");
+    auto points = mesh_.get_vertex_property<Point>("v:point");
     auto eweight = mesh_.get_edge_property<Scalar>("e:cotan");
     auto laplace = mesh_.add_vertex_property<Point>("v:laplace");
-
 
     // smoothing iterations
     Vertex vv;
@@ -150,22 +149,22 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
         return;
 
     // compute edge weights if they don't exist or if the mesh changed
-    if (!mesh_.has_edge_property("e:cotan") || how_many_edge_weights_ != mesh_.n_edges())
+    if (!mesh_.has_edge_property("e:cotan") ||
+        how_many_edge_weights_ != mesh_.n_edges())
         compute_edge_weights(use_uniform_laplace);
 
     // compute vertex weights
     compute_vertex_weights(use_uniform_laplace);
 
-
     // store center and area
     Point center_before = centroid(mesh_);
-    Scalar  area_before = surface_area(mesh_);
+    Scalar area_before = surface_area(mesh_);
 
     // properties
-    auto points  = mesh_.get_vertex_property<Point>("v:point");
+    auto points = mesh_.get_vertex_property<Point>("v:point");
     auto vweight = mesh_.get_vertex_property<Scalar>("v:area");
     auto eweight = mesh_.get_edge_property<Scalar>("e:cotan");
-    auto idx     = mesh_.add_vertex_property<int>("v:idx", -1);
+    auto idx = mesh_.add_vertex_property<int>("v:idx", -1);
 
     // collect free (non-boundary) vertices in array free_vertices[]
     // assign indices such that idx[ free_vertices[i] ] == i
@@ -250,22 +249,20 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
         }
     }
 
-
     if (rescale)
     {
         // restore original surface area
         Scalar area_after = surface_area(mesh_);
-        Scalar scale = sqrt(area_before/area_after);
-        for (auto v: mesh_.vertices())
+        Scalar scale = sqrt(area_before / area_after);
+        for (auto v : mesh_.vertices())
             mesh_.position(v) *= scale;
 
         // restore original center
         Point center_after = centroid(mesh_);
         Point trans = center_before - center_after;
-        for (auto v: mesh_.vertices())
+        for (auto v : mesh_.vertices())
             mesh_.position(v) += trans;
     }
-
 
     // clean-up
     mesh_.remove_vertex_property(idx);

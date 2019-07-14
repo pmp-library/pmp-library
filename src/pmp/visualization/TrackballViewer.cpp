@@ -144,8 +144,8 @@ void TrackballViewer::display()
     far_ = std::max(0.002f * radius_, z + radius_);
 
     // update projection matrix
-    projection_matrix_ =
-        perspective_matrix(fovy_, (float)width() / (float)height(), near_, far_);
+    projection_matrix_ = perspective_matrix(
+        fovy_, (float)width() / (float)height(), near_, far_);
 
     // draw the scene in current draw mode
     if (draw_mode_ < draw_mode_names_.size())
@@ -260,7 +260,7 @@ void TrackballViewer::view_all()
 bool TrackballViewer::pick(vec3& result)
 {
     double x, y;
-    cursor_pos(x,y);
+    cursor_pos(x, y);
     return pick(x, y, result);
 }
 
@@ -331,8 +331,8 @@ bool TrackballViewer::map_to_sphere(const ivec2& point2D, vec3& result)
     {
         double w = width();
         double h = height();
-        double x = (double)(point2D[0] - 0.5*w) / w;
-        double y = (double)(0.5*h - point2D[1]) / h;
+        double x = (double)(point2D[0] - 0.5 * w) / w;
+        double y = (double)(0.5 * h - point2D[1]) / h;
         double sinx = sin(M_PI * x * 0.5);
         double siny = sin(M_PI * y * 0.5);
         double sinx2siny2 = sinx * sinx + siny * siny;

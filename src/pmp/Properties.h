@@ -304,8 +304,8 @@ public:
     template <class T>
     void remove(Property<T>& h)
     {
-        std::vector<BasePropertyArray*>::iterator it = parrays_.begin(),
-                                                  end = parrays_.end();
+        std::vector<BasePropertyArray *>::iterator it = parrays_.begin(),
+                                                   end = parrays_.end();
         for (; it != end; ++it)
         {
             if (*it == h.parray_)

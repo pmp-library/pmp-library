@@ -25,28 +25,28 @@ SurfaceMeshGL::SurfaceMeshGL()
 {
     // initialize GL buffers to zero
     vertex_array_object_ = 0;
-    vertex_buffer_       = 0;
-    normal_buffer_       = 0;
-    tex_coord_buffer_    = 0;
-    edge_buffer_         = 0;
-    feature_buffer_      = 0;
+    vertex_buffer_ = 0;
+    normal_buffer_ = 0;
+    tex_coord_buffer_ = 0;
+    edge_buffer_ = 0;
+    feature_buffer_ = 0;
 
     // initialize buffer sizes
-    n_vertices_     = 0;
-    n_edges_        = 0;
-    n_triangles_    = 0;
-    n_features_     = 0;
+    n_vertices_ = 0;
+    n_edges_ = 0;
+    n_triangles_ = 0;
+    n_features_ = 0;
     have_texcoords_ = false;
 
     // material parameters
-    front_color_  = vec3(0.6, 0.6, 0.6);
-    back_color_   = vec3(0.5, 0.0, 0.0);
-    ambient_      = 0.1;
-    diffuse_      = 0.8;
-    specular_     = 0.6;
-    shininess_    = 100.0;
-    alpha_        = 1.0;
-    srgb_         = false;
+    front_color_ = vec3(0.6, 0.6, 0.6);
+    back_color_ = vec3(0.5, 0.0, 0.0);
+    ambient_ = 0.1;
+    diffuse_ = 0.8;
+    specular_ = 0.6;
+    shininess_ = 100.0;
+    alpha_ = 1.0;
+    srgb_ = false;
     crease_angle_ = 180.0;
 
     // initialize texture
@@ -251,21 +251,22 @@ void SurfaceMeshGL::update_opengl_buffers()
         // reserve memory
         positionArray.reserve(3 * n_faces());
         normalArray.reserve(3 * n_faces());
-        if (htex || vtex) texArray.reserve(3 * n_faces());
+        if (htex || vtex)
+            texArray.reserve(3 * n_faces());
 
         // precompute normals for easy cases
-        FaceProperty<Normal>    fnormals;
-        VertexProperty<Normal>  vnormals;
+        FaceProperty<Normal> fnormals;
+        VertexProperty<Normal> vnormals;
         if (crease_angle_ < 1)
         {
             fnormals = add_face_property<Normal>("gl:fnormal");
-            for (auto f: faces())
+            for (auto f : faces())
                 fnormals[f] = SurfaceNormals::compute_face_normal(*this, f);
         }
         else if (crease_angle_ > 170)
         {
             vnormals = add_vertex_property<Normal>("gl:vnormal");
-            for (auto v: vertices())
+            for (auto v : vertices())
                 vnormals[v] = SurfaceNormals::compute_vertex_normal(*this, v);
         }
 
@@ -306,7 +307,8 @@ void SurfaceMeshGL::update_opengl_buffers()
                 }
                 else
                 {
-                    n = SurfaceNormals::compute_corner_normal(*this, h, creaseAngle);
+                    n = SurfaceNormals::compute_corner_normal(*this, h,
+                                                              creaseAngle);
                 }
                 cornerNormals.push_back((vec3)n);
             }
@@ -342,11 +344,12 @@ void SurfaceMeshGL::update_opengl_buffers()
                 vertex_indices[cornerVertices[i2]] = vidx++;
             }
         }
-    
-       
+
         // clean up
-        if (vnormals) remove_vertex_property(vnormals);
-        if (fnormals) remove_face_property(fnormals);
+        if (vnormals)
+            remove_vertex_property(vnormals);
+        if (fnormals)
+            remove_face_property(fnormals);
     }
 
     // we have a point cloud
@@ -356,44 +359,41 @@ void SurfaceMeshGL::update_opengl_buffers()
         if (position)
         {
             positionArray.reserve(n_vertices());
-            for (auto v: vertices())
-                positionArray.push_back( (vec3) position[v] );
+            for (auto v : vertices())
+                positionArray.push_back((vec3)position[v]);
         }
 
         auto normals = get_vertex_property<Point>("v:normal");
         if (normals)
         {
             normalArray.reserve(n_vertices());
-            for (auto v: vertices())
-                normalArray.push_back( (vec3) normals[v] );
+            for (auto v : vertices())
+                normalArray.push_back((vec3)normals[v]);
         }
     }
-
-
 
     // upload vertices
     if (!positionArray.empty())
     {
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
         glBufferData(GL_ARRAY_BUFFER, positionArray.size() * 3 * sizeof(float),
-                positionArray.data(), GL_STATIC_DRAW);
+                     positionArray.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
         glEnableVertexAttribArray(0);
         n_vertices_ = positionArray.size();
     }
-    else n_vertices_ = 0;
-
+    else
+        n_vertices_ = 0;
 
     // upload normals
     if (!normalArray.empty())
     {
         glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
         glBufferData(GL_ARRAY_BUFFER, normalArray.size() * 3 * sizeof(float),
-                normalArray.data(), GL_STATIC_DRAW);
+                     normalArray.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
         glEnableVertexAttribArray(1);
     }
-
 
     // upload texture coordinates
     if (!texArray.empty())
@@ -405,8 +405,8 @@ void SurfaceMeshGL::update_opengl_buffers()
         glEnableVertexAttribArray(2);
         have_texcoords_ = true;
     }
-    else have_texcoords_ = false;
-
+    else
+        have_texcoords_ = false;
 
     // edge indices
     if (n_edges())
@@ -420,12 +420,12 @@ void SurfaceMeshGL::update_opengl_buffers()
         }
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                edgeArray.size() * sizeof(unsigned int), edgeArray.data(),
-                GL_STATIC_DRAW);
+                     edgeArray.size() * sizeof(unsigned int), edgeArray.data(),
+                     GL_STATIC_DRAW);
         n_edges_ = edgeArray.size();
     }
-    else n_edges_ = 0;
-
+    else
+        n_edges_ = 0;
 
     // feature edges
     auto efeature = get_edge_property<bool>("e:feature");
@@ -448,8 +448,8 @@ void SurfaceMeshGL::update_opengl_buffers()
                      GL_STATIC_DRAW);
         n_features_ = features.size();
     }
-    else n_features_ = 0;
-
+    else
+        n_features_ = 0;
 
     // unbind vertex arry
     glBindVertexArray(0);

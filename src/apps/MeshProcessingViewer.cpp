@@ -22,9 +22,9 @@
 
 //=============================================================================
 
-MeshProcessingViewer::MeshProcessingViewer(const char* title, int width, int height)
-    : MeshViewer(title, width, height),
-      smoother_(mesh_)
+MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
+                                           int height)
+    : MeshViewer(title, width, height), smoother_(mesh_)
 {
     crease_angle_ = 90.0;
     set_draw_mode("Hidden Line");
@@ -227,15 +227,15 @@ void MeshProcessingViewer::process_imgui()
         if (ImGui::Button("Close smallest hole"))
         {
             // find smallest hole
-            Halfedge      hmin;
-            unsigned int  lmin(mesh_.n_halfedges());
-            for (auto h: mesh_.halfedges())
+            Halfedge hmin;
+            unsigned int lmin(mesh_.n_halfedges());
+            for (auto h : mesh_.halfedges())
             {
                 if (mesh_.is_boundary(h))
                 {
                     Scalar l(0);
-                    Halfedge hh=h;
-                    do 
+                    Halfedge hh = h;
+                    do
                     {
                         ++l;
                         if (!mesh_.is_manifold(mesh_.to_vertex(hh)))
@@ -244,13 +244,12 @@ void MeshProcessingViewer::process_imgui()
                             break;
                         }
                         hh = mesh_.next_halfedge(hh);
-                    }
-                    while (hh != h);
+                    } while (hh != h);
 
                     if (l < lmin)
                     {
-                        lmin=l;
-                        hmin=h;
+                        lmin = l;
+                        hmin = h;
                     }
                 }
             }
@@ -274,8 +273,7 @@ void MeshProcessingViewer::process_imgui()
 
 void MeshProcessingViewer::mouse(int button, int action, int mods)
 {
-    if (action == GLFW_PRESS &&
-        button == GLFW_MOUSE_BUTTON_MIDDLE &&
+    if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_MIDDLE &&
         shift_pressed())
     {
         double x, y;

@@ -32,9 +32,12 @@ Window* Window::instance_ = nullptr;
 //-----------------------------------------------------------------------------
 
 Window::Window(const char* title, int width, int height, bool showgui)
-    : width_(width), height_(height),
-      scaling_(1), pixel_ratio_(1),
-      show_imgui_(showgui), imgui_scale_(1.0),
+    : width_(width),
+      height_(height),
+      scaling_(1),
+      pixel_ratio_(1),
+      show_imgui_(showgui),
+      imgui_scale_(1.0),
       show_help_(false)
 {
     // initialize glfw window
@@ -64,12 +67,15 @@ Window::Window(const char* title, int width, int height, bool showgui)
     GLint major, minor;
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
-    GLint glversion = 10*major+minor;
+    GLint glversion = 10 * major + minor;
 #ifdef __EMSCRIPTEN__
     if (glversion < 30)
     {
-        std::cerr << "Cannot get WebGL2 context. Try using Firefox or Chrome/Chromium.\n";
-        EM_ASM(alert("Cannot get WebGL2 context. Try using Firefox or Chrome/Chromium."));
+        std::cerr << "Cannot get WebGL2 context. Try using Firefox or "
+                     "Chrome/Chromium.\n";
+        EM_ASM(
+            alert("Cannot get WebGL2 context. Try using Firefox or "
+                  "Chrome/Chromium."));
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
@@ -104,8 +110,6 @@ Window::Window(const char* title, int width, int height, bool showgui)
     // call glGetError once to clear error queue
     glGetError();
 
-
-
     // detect highDPI framebuffer scaling and UI scaling
     // this part is OS dependent:
     // MacOS: just ratio of framebuffer size and window size
@@ -124,7 +128,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
 #ifndef __APPLE__ // not needed for MacOS retina
     float sx, sy;
     glfwGetWindowContentScale(window_, &sx, &sy);
-    imgui_scale_ = int(0.5*(sx+sy));
+    imgui_scale_ = int(0.5 * (sx + sy));
     if (imgui_scale_ != 1)
         std::cout << "UI scaling: " << imgui_scale_ << std::endl;
 #endif
@@ -135,7 +139,6 @@ Window::Window(const char* title, int width, int height, bool showgui)
         std::cout << "highDPI scaling: " << pixel_ratio_ << std::endl;
     imgui_scale_ = pixel_ratio_;
 #endif
-
 
     // register glfw callbacks
     glfwSetErrorCallback(glfw_error);
@@ -155,7 +158,6 @@ Window::Window(const char* title, int width, int height, bool showgui)
 #ifndef __EMSCRIPTEN__
     add_help_item("Esc/Q", "Quit application");
 #endif
-
 
     // init mouse button state and modifiers
     for (bool& i : button_)
@@ -180,7 +182,8 @@ void Window::init_imgui()
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGuiIO& io = ImGui::GetIO();
+    (void)io;
     io.IniFilename = nullptr;
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window_, false);
@@ -194,60 +197,69 @@ void Window::init_imgui()
     // load Lato font from pre-compiled ttf file
     io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
                                              LatoLatin_compressed_size,
-                                             14*imgui_scale_);
+                                             14 * imgui_scale_);
 
     // window style
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowBorderSize = 0;
-    style.WindowRounding   = 4 * imgui_scale_;
-    style.FrameRounding    = 4 * imgui_scale_;
-    style.GrabMinSize      = 10 * imgui_scale_;
-    style.GrabRounding     = 4 * imgui_scale_;
+    style.WindowRounding = 4 * imgui_scale_;
+    style.FrameRounding = 4 * imgui_scale_;
+    style.GrabMinSize = 10 * imgui_scale_;
+    style.GrabRounding = 4 * imgui_scale_;
 
     // color scheme adapted from
     // https://github.com/ocornut/imgui/pull/511#issuecomment-175719267
-    style.Colors[ImGuiCol_Text]                 = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_TextDisabled]         = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
-    style.Colors[ImGuiCol_WindowBg]             = ImVec4(0.90f, 0.90f, 0.90f, 0.70f);
-    style.Colors[ImGuiCol_ChildBg]              = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-    style.Colors[ImGuiCol_PopupBg]              = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
-    style.Colors[ImGuiCol_Border]               = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
-    style.Colors[ImGuiCol_BorderShadow]         = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
-    style.Colors[ImGuiCol_FrameBg]              = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-    style.Colors[ImGuiCol_FrameBgHovered]       = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_FrameBgActive]        = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
-    style.Colors[ImGuiCol_TitleBg]              = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_TitleBgActive]        = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_TitleBgCollapsed]     = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_MenuBarBg]            = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
-    style.Colors[ImGuiCol_ScrollbarBg]          = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
-    style.Colors[ImGuiCol_ScrollbarGrab]        = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
-    style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
-    style.Colors[ImGuiCol_ScrollbarGrabActive]  = ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
-    style.Colors[ImGuiCol_CheckMark]            = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_SliderGrab]           = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
-    style.Colors[ImGuiCol_SliderGrabActive]     = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Button]               = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_ButtonHovered]        = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_ButtonActive]         = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Header]               = ImVec4(0.16f, 0.62f, 0.87f, 0.31f);
-    style.Colors[ImGuiCol_HeaderHovered]        = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_HeaderActive]         = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_Text] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+    style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.90f, 0.90f, 0.90f, 0.70f);
+    style.Colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    style.Colors[ImGuiCol_PopupBg] = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
+    style.Colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
+    style.Colors[ImGuiCol_BorderShadow] = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
+    style.Colors[ImGuiCol_FrameBg] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+    style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
+    style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
+    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
+    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
+    style.Colors[ImGuiCol_TitleBgCollapsed] =
+        ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
+    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+    style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
+    style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
+    style.Colors[ImGuiCol_ScrollbarGrabHovered] =
+        ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
+    style.Colors[ImGuiCol_ScrollbarGrabActive] =
+        ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
+    style.Colors[ImGuiCol_CheckMark] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
+    style.Colors[ImGuiCol_SliderGrabActive] =
+        ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_Button] = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
+    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
+    style.Colors[ImGuiCol_Header] = ImVec4(0.16f, 0.62f, 0.87f, 0.31f);
+    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
+    style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
     //style.Colors[ImGuiCol_Column]               = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
     //style.Colors[ImGuiCol_ColumnHovered]        = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
     //style.Colors[ImGuiCol_ColumnActive]         = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_ResizeGrip]           = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
-    style.Colors[ImGuiCol_ResizeGripHovered]    = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
-    style.Colors[ImGuiCol_ResizeGripActive]     = ImVec4(0.16f, 0.62f, 0.87f, 0.95f);
+    style.Colors[ImGuiCol_ResizeGrip] = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
+    style.Colors[ImGuiCol_ResizeGripHovered] =
+        ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
+    style.Colors[ImGuiCol_ResizeGripActive] =
+        ImVec4(0.16f, 0.62f, 0.87f, 0.95f);
     //style.Colors[ImGuiCol_CloseButton]          = ImVec4(0.59f, 0.59f, 0.59f, 0.50f);
     //style.Colors[ImGuiCol_CloseButtonHovered]   = ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
     //style.Colors[ImGuiCol_CloseButtonActive]    = ImVec4(0.98f, 0.39f, 0.36f, 1.00f);
-    style.Colors[ImGuiCol_PlotLines]            = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
-    style.Colors[ImGuiCol_PlotLinesHovered]     = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
-    style.Colors[ImGuiCol_PlotHistogram]        = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_TextSelectedBg]       = ImVec4(0.16f, 0.62f, 0.87f, 0.35f);
-    style.Colors[ImGuiCol_ModalWindowDimBg]     = ImVec4(0.20f, 0.20f, 0.20f, 0.70f);
+    style.Colors[ImGuiCol_PlotLines] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
+    style.Colors[ImGuiCol_PlotLinesHovered] =
+        ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+    style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
+    style.Colors[ImGuiCol_PlotHistogramHovered] =
+        ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+    style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.16f, 0.62f, 0.87f, 0.35f);
+    style.Colors[ImGuiCol_ModalWindowDimBg] =
+        ImVec4(0.20f, 0.20f, 0.20f, 0.70f);
 }
 
 //-----------------------------------------------------------------------------
@@ -260,10 +272,9 @@ void Window::scale_imgui(float scale)
     // reload font
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->Clear();
-    io.Fonts->AddFontFromMemoryCompressedTTF(
-            LatoLatin_compressed_data,
-            LatoLatin_compressed_size,
-            14*imgui_scale_);
+    io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
+                                             LatoLatin_compressed_size,
+                                             14 * imgui_scale_);
 
     // trigger font texture regeneration
     ImGui_ImplOpenGL3_DestroyFontsTexture();
@@ -271,36 +282,36 @@ void Window::scale_imgui(float scale)
 
     // adjust element styles (scaled version of default style or pmp style)
     ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowPadding          = ImVec2(8*scale, 8*scale);
-    style.WindowRounding         = 4 * scale;
-    style.FramePadding           = ImVec2(4*scale, 2*scale);
-    style.FrameRounding          = 4 * scale;
-    style.ItemSpacing            = ImVec2(8*scale, 4*scale);
-    style.ItemInnerSpacing       = ImVec2(4*scale, 4*scale);
-    style.IndentSpacing          = 21 * scale;
-    style.ColumnsMinSpacing      =  6 * scale;
-    style.ScrollbarSize          = 16 * scale;
-    style.ScrollbarRounding      =  9 * scale;
-    style.GrabMinSize            = 10 * scale;
-    style.GrabRounding           =  4 * scale;
-    style.TabRounding            =  4 * scale;
-    style.DisplayWindowPadding   = ImVec2(19*scale, 19*scale);
-    style.DisplaySafeAreaPadding = ImVec2(3*scale, 3*scale);
+    style.WindowPadding = ImVec2(8 * scale, 8 * scale);
+    style.WindowRounding = 4 * scale;
+    style.FramePadding = ImVec2(4 * scale, 2 * scale);
+    style.FrameRounding = 4 * scale;
+    style.ItemSpacing = ImVec2(8 * scale, 4 * scale);
+    style.ItemInnerSpacing = ImVec2(4 * scale, 4 * scale);
+    style.IndentSpacing = 21 * scale;
+    style.ColumnsMinSpacing = 6 * scale;
+    style.ScrollbarSize = 16 * scale;
+    style.ScrollbarRounding = 9 * scale;
+    style.GrabMinSize = 10 * scale;
+    style.GrabRounding = 4 * scale;
+    style.TabRounding = 4 * scale;
+    style.DisplayWindowPadding = ImVec2(19 * scale, 19 * scale);
+    style.DisplaySafeAreaPadding = ImVec2(3 * scale, 3 * scale);
 }
 
 //-----------------------------------------------------------------------------
 
 void Window::add_help_item(std::string key, std::string description, int pos)
 {
-    if (pos==-1)
+    if (pos == -1)
     {
-        help_items_.push_back( std::make_pair(key, description) );
+        help_items_.push_back(std::make_pair(key, description));
     }
     else
     {
         auto it = help_items_.begin();
         it += pos;
-        help_items_.insert( it, std::make_pair(key, description) );
+        help_items_.insert(it, std::make_pair(key, description));
     }
 }
 
@@ -315,37 +326,44 @@ void Window::clear_help_items()
 
 void Window::show_help()
 {
-    if (!show_help_) return;
+    if (!show_help_)
+        return;
 
     ImGui::OpenPopup("Key Bindings");
 
     ImGui::SetNextWindowFocus();
-    if (ImGui::BeginPopupModal("Key Bindings", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    if (ImGui::BeginPopupModal("Key Bindings", NULL,
+                               ImGuiWindowFlags_AlwaysAutoResize))
     {
         ImGui::Columns(2, "help items");
-        ImGui::SetColumnWidth(0, 100*imgui_scale_);
-        ImGui::SetColumnWidth(1, 200*imgui_scale_);
+        ImGui::SetColumnWidth(0, 100 * imgui_scale_);
+        ImGui::SetColumnWidth(1, 200 * imgui_scale_);
         ImGui::Separator();
-        ImGui::Text("Trigger"); ImGui::NextColumn();
-        ImGui::Text("Description"); ImGui::NextColumn();
+        ImGui::Text("Trigger");
+        ImGui::NextColumn();
+        ImGui::Text("Description");
+        ImGui::NextColumn();
         ImGui::Separator();
 
-        for (const auto& item: help_items_)
+        for (const auto& item : help_items_)
         {
-            ImGui::Text("%s", item.first.c_str()); ImGui::NextColumn();
-            ImGui::Text("%s", item.second.c_str()); ImGui::NextColumn();
+            ImGui::Text("%s", item.first.c_str());
+            ImGui::NextColumn();
+            ImGui::Text("%s", item.second.c_str());
+            ImGui::NextColumn();
         }
 
         ImGui::Columns(1);
         ImGui::Separator();
 
-        if (ImGui::Button("OK", ImVec2(300*imgui_scale_,0)))
+        if (ImGui::Button("OK", ImVec2(300 * imgui_scale_, 0)))
         {
             show_help_ = false;
             ImGui::CloseCurrentPopup();
 
             // reset mouse button state and modifiers
-            for (bool& b : button_) b = false;
+            for (bool& b : button_)
+                b = false;
             ctrl_pressed_ = shift_pressed_ = alt_pressed_ = false;
         }
 
@@ -381,11 +399,11 @@ void Window::render_frame()
     emscripten_get_canvas_element_size("#canvas", &w, &h);
     emscripten_get_element_css_size("#canvas", &dw, &dh);
     double s = instance_->pixel_ratio_;
-    if (w != int(dw*s) || h != int(dh*s))
+    if (w != int(dw * s) || h != int(dh * s))
     {
         // set canvas size to match element css size
-        w = int(dw*s);
-        h = int(dh*s);
+        w = int(dw * s);
+        h = int(dh * s);
         // set canvas size
         emscripten_set_canvas_element_size("#canvas", w, h);
         // inform GLFW of this change, since ImGUI asks GLFW for window size
@@ -407,8 +425,8 @@ void Window::render_frame()
         // prepare, process, and finish applications ImGUI dialog
         ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
         ImGui::Begin(
-                "Mesh Info", nullptr,
-                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
+            "Mesh Info", nullptr,
+            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
         ImGui::Text("Press '?' for help");
         ImGui::Spacing();
         ImGui::Separator();
@@ -479,7 +497,7 @@ void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode,
     if (!ImGui::GetIO().WantCaptureKeyboard)
     {
         // remember modifier status
-        switch(key)
+        switch (key)
         {
             case GLFW_KEY_LEFT_CONTROL:
             case GLFW_KEY_RIGHT_CONTROL:
@@ -564,7 +582,7 @@ void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
     ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
     if (!ImGui::GetIO().WantCaptureMouse)
     {
-        instance_->button_[button] = (action==GLFW_PRESS);
+        instance_->button_[button] = (action == GLFW_PRESS);
         instance_->mouse(button, action, mods);
     }
 }
@@ -578,8 +596,10 @@ void Window::glfw_scroll(GLFWwindow* window, double xoffset, double yoffset)
 
     // thresholding for cross-browser handling
     const float t = 1;
-    if (yoffset > t) yoffset=t;
-    else if (yoffset < -t) yoffset = -t;
+    if (yoffset > t)
+        yoffset = t;
+    else if (yoffset < -t)
+        yoffset = -t;
 #endif
 
     ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);

@@ -51,32 +51,31 @@ public:
     }
 
     //! constructor with row-wise initializer list of M*N entries
-    explicit Matrix(const std::initializer_list<Scalar> && values)
+    explicit Matrix(const std::initializer_list<Scalar>&& values)
     {
-        assert(values.size() == M*N);
-        int i=0;
+        assert(values.size() == M * N);
+        int i = 0;
         for (Scalar v : values)
         {
             // convert row-wise initializer list to
             // column-wise matrix storage
-            data_[M*(i%N) + i/N] = v;
+            data_[M * (i % N) + i / N] = v;
             ++i;
         }
     }
 
     //! constructor with N column vectors of dimension M
-    explicit Matrix(const std::initializer_list< Matrix<Scalar,M,1> > && columns)
+    explicit Matrix(const std::initializer_list<Matrix<Scalar, M, 1>>&& columns)
     {
         assert(columns.size() == N);
-        int j=0, i;
-        for (const Matrix<Scalar,M,1>& v: columns)
+        int j = 0, i;
+        for (const Matrix<Scalar, M, 1>& v : columns)
         {
-            for (i=0; i<M; ++i)
+            for (i = 0; i < M; ++i)
                 data_[M * j + i] = v[i];
             ++j;
         }
     }
-
 
     //! constructor for 2D vectors
     explicit Matrix(Scalar x, Scalar y)
@@ -127,7 +126,6 @@ public:
         (*this)(2,0) = c0[2]; (*this)(2,1) = c1[2]; (*this)(2,2) = c2[2];
     }
     // clang-format on
-
 
     //! construct 4x4 matrix from 4 column vectors
     // clang-format off
@@ -838,19 +836,19 @@ Mat4<Scalar> rotation_matrix(const Vector<Scalar, 4>& quat)
     Scalar s1(1);
     Scalar s2(2);
 
-    m(0,0) = s1 - s2 * quat[1] * quat[1] - s2 * quat[2] * quat[2];
-    m(1,0) = s2 * quat[0] * quat[1] + s2 * quat[3] * quat[2];
-    m(2,0) = s2 * quat[0] * quat[2] - s2 * quat[3] * quat[1];
+    m(0, 0) = s1 - s2 * quat[1] * quat[1] - s2 * quat[2] * quat[2];
+    m(1, 0) = s2 * quat[0] * quat[1] + s2 * quat[3] * quat[2];
+    m(2, 0) = s2 * quat[0] * quat[2] - s2 * quat[3] * quat[1];
 
-    m(0,1) = s2 * quat[0] * quat[1] - s2 * quat[3] * quat[2];
-    m(1,1) = s1 - s2 * quat[0] * quat[0] - s2 * quat[2] * quat[2];
-    m(2,1) = s2 * quat[1] * quat[2] + s2 * quat[3] * quat[0];
+    m(0, 1) = s2 * quat[0] * quat[1] - s2 * quat[3] * quat[2];
+    m(1, 1) = s1 - s2 * quat[0] * quat[0] - s2 * quat[2] * quat[2];
+    m(2, 1) = s2 * quat[1] * quat[2] + s2 * quat[3] * quat[0];
 
-    m(0,2) = s2 * quat[0] * quat[2] + s2 * quat[3] * quat[1];
-    m(1,2) = s2 * quat[1] * quat[2] - s2 * quat[3] * quat[0];
-    m(2,2) = s1 - s2 * quat[0] * quat[0] - s2 * quat[1] * quat[1];
+    m(0, 2) = s2 * quat[0] * quat[2] + s2 * quat[3] * quat[1];
+    m(1, 2) = s2 * quat[1] * quat[2] - s2 * quat[3] * quat[0];
+    m(2, 2) = s1 - s2 * quat[0] * quat[0] - s2 * quat[1] * quat[1];
 
-    m(3,3) = 1.0f;
+    m(3, 3) = 1.0f;
 
     return m;
 }

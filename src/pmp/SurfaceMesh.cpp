@@ -157,22 +157,22 @@ void SurfaceMesh::clear()
 
     // really free their memory
     free_memory();
-    
+
     // add the standard properties back
     oprops_.push_back();
-    vpoint_   = add_vertex_property<Point>("v:point");
-    vconn_    = add_vertex_property<VertexConnectivity>("v:connectivity");
-    hconn_    = add_halfedge_property<HalfedgeConnectivity>("h:connectivity");
-    fconn_    = add_face_property<FaceConnectivity>("f:connectivity");
+    vpoint_ = add_vertex_property<Point>("v:point");
+    vconn_ = add_vertex_property<VertexConnectivity>("v:connectivity");
+    hconn_ = add_halfedge_property<HalfedgeConnectivity>("h:connectivity");
+    fconn_ = add_face_property<FaceConnectivity>("f:connectivity");
     vdeleted_ = add_vertex_property<bool>("v:deleted", false);
     edeleted_ = add_edge_property<bool>("e:deleted", false);
     fdeleted_ = add_face_property<bool>("f:deleted", false);
 
     // set initial status (as in constructor)
     deleted_vertices_ = 0;
-    deleted_edges_    = 0;
-    deleted_faces_    = 0;
-    has_garbage_      = false;
+    deleted_edges_ = 0;
+    deleted_faces_ = 0;
+    has_garbage_ = false;
 }
 
 //-----------------------------------------------------------------------------

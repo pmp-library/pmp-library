@@ -34,40 +34,36 @@ namespace pmp {
 class SurfaceHoleFilling
 {
 public:
-
     /// construct with mesh
     SurfaceHoleFilling(SurfaceMesh& mesh);
 
     /// fill the hole specified by halfedge h
     bool fill_hole(Halfedge h);
 
-
-
 private: //------------------------------------------------------ private types
-
     struct Weight
     {
-        Weight(Scalar _angle=FLT_MAX, Scalar _area=FLT_MAX)
-            : angle(_angle), area(_area) {}
+        Weight(Scalar _angle = FLT_MAX, Scalar _area = FLT_MAX)
+            : angle(_angle), area(_area)
+        {
+        }
 
         Weight operator+(const Weight& _rhs) const
         {
-            return Weight( std::max(angle, _rhs.angle), area + _rhs.area );
+            return Weight(std::max(angle, _rhs.angle), area + _rhs.area);
         }
 
-        bool operator<(const Weight& _rhs ) const
+        bool operator<(const Weight& _rhs) const
         {
-            return (angle < _rhs.angle || (angle == _rhs.angle && area < _rhs.area));
+            return (angle < _rhs.angle ||
+                    (angle == _rhs.angle && area < _rhs.area));
         }
 
         Scalar angle;
         Scalar area;
     };
 
-
-
 private: //-------------------------------------------------- private functions
-
     // compute optimal triangulation of hole
     bool triangulate_hole(Halfedge h);
 
@@ -82,10 +78,7 @@ private: //-------------------------------------------------- private functions
     void relaxation();
     void fairing();
 
-
-
 private: //--------------------------------------------------- helper functions
-
     // return i'th vertex of hole
     Vertex hole_vertex(unsigned int i) const
     {
@@ -93,54 +86,42 @@ private: //--------------------------------------------------- helper functions
         return mesh_.to_vertex(hole_[i]);
     }
 
-
     // return vertex opposite edge (i-1,i)
     Vertex opposite_vertex(unsigned int i) const
     {
-        assert(i<hole_.size());
-        return mesh_.to_vertex(mesh_.next_halfedge(mesh_.opposite_halfedge(hole_[i])));
+        assert(i < hole_.size());
+        return mesh_.to_vertex(
+            mesh_.next_halfedge(mesh_.opposite_halfedge(hole_[i])));
     }
 
-
     // does interior edge (_a,_b) exist already?
-    bool is_interior_edge(Vertex _a,
-                          Vertex _b) const;
+    bool is_interior_edge(Vertex _a, Vertex _b) const;
 
     // triangle area
-    Scalar compute_area(Vertex _a,
-                        Vertex _b,
-                        Vertex _c) const;
+    Scalar compute_area(Vertex _a, Vertex _b, Vertex _c) const;
 
     // triangle normal
-    Point compute_normal(Vertex _a,
-                         Vertex _b,
-                         Vertex _c) const;
+    Point compute_normal(Vertex _a, Vertex _b, Vertex _c) const;
 
     // dihedral angle
-    Scalar compute_angle(const Point& _n1,
-                         const Point& _n2) const;
-
+    Scalar compute_angle(const Point& _n1, const Point& _n2) const;
 
 private: //------------------------------------------------------- private data
-
     // mesh and properties
     SurfaceMesh& mesh_;
-    VertexProperty<Point>  points_;
-    VertexProperty<bool>   vlocked_;
-    EdgeProperty<bool>     elocked_;
+    VertexProperty<Point> points_;
+    VertexProperty<bool> vlocked_;
+    EdgeProperty<bool> elocked_;
 
-    std::vector<Halfedge>  hole_;
+    std::vector<Halfedge> hole_;
 
     // data for computing optimal triangulation
-    std::vector< std::vector<Weight> >   weight_;
-    std::vector< std::vector<int> >      index_;
+    std::vector<std::vector<Weight>> weight_;
+    std::vector<std::vector<int>> index_;
 };
-
-
 
 //=============================================================================
 /// @}
 //=============================================================================
 }
 //=============================================================================
-

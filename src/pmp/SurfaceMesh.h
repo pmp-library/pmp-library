@@ -1310,7 +1310,6 @@ public:
         return vprops_.exists(name);
     }
 
-
     //! add a halfedge property of type \c T with name \c name and default
     //! value \c t.  fails if a property named \c name exists already,
     //! since the name has to be unique. in this case it returns an
@@ -1382,7 +1381,6 @@ public:
         return hprops_.exists(name);
     }
 
-
     //! remove the edge property \c p
     template <class T>
     void remove_edge_property(EdgeProperty<T>& p)
@@ -1395,7 +1393,6 @@ public:
     {
         return eprops_.exists(name);
     }
-
 
     //! get the type_info \c T of halfedge property named \c name. returns an
     //! typeid(void) if the property does not exist or if the type does not
@@ -1477,7 +1474,6 @@ public:
     {
         return fprops_.exists(name);
     }
-
 
     //! get the type_info \c T of face property named \c name . returns an
     //! typeid(void) if the property does not exist or if the type does not

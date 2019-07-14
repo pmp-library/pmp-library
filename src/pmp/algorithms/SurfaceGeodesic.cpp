@@ -16,12 +16,10 @@ namespace pmp {
 
 //=============================================================================
 
-SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh, 
-                                 bool use_virtual_edges)
-    : mesh_(mesh),
-      use_virtual_edges_(use_virtual_edges)
+SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh, bool use_virtual_edges)
+    : mesh_(mesh), use_virtual_edges_(use_virtual_edges)
 {
-    distance_  = mesh_.add_vertex_property<Scalar>("geodesic:distance");
+    distance_ = mesh_.add_vertex_property<Scalar>("geodesic:distance");
     processed_ = mesh_.add_vertex_property<bool>("geodesic:processed");
 
     if (use_virtual_edges_)
@@ -152,15 +150,13 @@ void SurfaceGeodesic::find_virtual_edges()
 //-----------------------------------------------------------------------------
 
 unsigned int SurfaceGeodesic::compute(const std::vector<Vertex>& seed,
-                                      Scalar maxdist,
-                                      unsigned int maxnum,
+                                      Scalar maxdist, unsigned int maxnum,
                                       std::vector<Vertex>* neighbors)
 {
     unsigned int num(0);
 
     // generate front
-    front_   = new PriorityQueue(VertexCmp(distance_));
-
+    front_ = new PriorityQueue(VertexCmp(distance_));
 
     // initialize front with given seed
     num = init_front(seed, neighbors);
@@ -175,14 +171,13 @@ unsigned int SurfaceGeodesic::compute(const std::vector<Vertex>& seed,
     if (num > maxnum)
     {
         num = maxnum;
-        if (neighbors) neighbors->resize(maxnum);
+        if (neighbors)
+            neighbors->resize(maxnum);
     }
-
 
     // propagate up to max distance or max number of neighbors
     if (num < maxnum)
-        num += propagate_front(maxdist, maxnum-num, neighbors);
-
+        num += propagate_front(maxdist, maxnum - num, neighbors);
 
     // clean up
     delete front_;
@@ -204,7 +199,7 @@ unsigned int SurfaceGeodesic::init_front(const std::vector<Vertex>& seed,
     for (auto v : mesh_.vertices())
     {
         processed_[v] = false;
-        distance_[v]  = FLT_MAX;
+        distance_[v] = FLT_MAX;
     }
 
     // initialize neighbor array
@@ -215,7 +210,7 @@ unsigned int SurfaceGeodesic::init_front(const std::vector<Vertex>& seed,
     for (auto v : seed)
     {
         processed_[v] = true;
-        distance_[v]  = 0.0;
+        distance_[v] = 0.0;
     }
 
     // initialize seed's one-ring
@@ -227,10 +222,11 @@ unsigned int SurfaceGeodesic::init_front(const std::vector<Vertex>& seed,
                 pmp::distance(mesh_.position(v), mesh_.position(vv));
             if (dist < distance_[vv])
             {
-                distance_[vv]  = dist;
+                distance_[vv] = dist;
                 processed_[vv] = true;
                 ++num;
-                if (neighbors) neighbors->push_back(vv);
+                if (neighbors)
+                    neighbors->push_back(vv);
             }
         }
     }
@@ -256,7 +252,8 @@ unsigned int SurfaceGeodesic::init_front(const std::vector<Vertex>& seed,
 
 //-----------------------------------------------------------------------------
 
-unsigned int SurfaceGeodesic::propagate_front(Scalar maxdist, unsigned int maxnum,
+unsigned int SurfaceGeodesic::propagate_front(Scalar maxdist,
+                                              unsigned int maxnum,
                                               std::vector<Vertex>* neighbors)
 {
     unsigned int num(0);
@@ -269,8 +266,8 @@ unsigned int SurfaceGeodesic::propagate_front(Scalar maxdist, unsigned int maxnu
         assert(!processed_[v]);
         processed_[v] = true;
         ++num;
-        if (neighbors) neighbors->push_back(v);
-
+        if (neighbors)
+            neighbors->push_back(v);
 
         // did we reach maximum distance?
         if (distance_[v] > maxdist)

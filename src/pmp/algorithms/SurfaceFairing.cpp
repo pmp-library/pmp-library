@@ -131,7 +131,8 @@ void SurfaceFairing::fair(unsigned int k)
     // we need locked vertices as boundary constraints
     if (vertices.size() == mesh_.n_vertices())
     {
-        std::cerr << "SurfaceFairing: need locked vertices as boundary constraints.\n";
+        std::cerr << "SurfaceFairing: need locked vertices as boundary "
+                     "constraints.\n";
         return;
     }
 

@@ -56,9 +56,7 @@ public:
     //! use (normalized) distances as texture coordinates
     void distance_to_texture_coordinates();
 
-
 private: // private types
-
     // functor for comparing two vertices w.r.t. their geodesic distance
     class VertexCmp
     {
@@ -89,9 +87,7 @@ private: // private types
     // set for storing virtual edges
     typedef std::map<Halfedge, VirtualEdge> VirtualEdges;
 
-
 private: // private methods
-
     void find_virtual_edges();
     unsigned int init_front(const std::vector<Vertex>& seed,
                             std::vector<Vertex>* neighbors);
@@ -101,14 +97,12 @@ private: // private methods
     Scalar distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0 = FLT_MAX,
                     Scalar r1 = FLT_MAX);
 
-
 private: // private data
-
     SurfaceMesh& mesh_;
 
     bool use_virtual_edges_;
     VirtualEdges virtual_edges_;
-    
+
     PriorityQueue* front_;
 
     VertexProperty<Scalar> distance_;

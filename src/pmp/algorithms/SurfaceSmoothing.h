@@ -46,14 +46,13 @@ public:
                             bool rescale = true);
 
     //! Initialize edge and vertex weights.
-    void initialize(bool use_uniform_laplace=false)
+    void initialize(bool use_uniform_laplace = false)
     {
         compute_edge_weights(use_uniform_laplace);
         compute_vertex_weights(use_uniform_laplace);
     }
 
 private:
-
     //! Initialize cotan/uniform Laplace weights.
     void compute_edge_weights(bool use_uniform_laplace);
 

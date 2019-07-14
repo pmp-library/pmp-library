@@ -575,7 +575,8 @@ bool SurfaceMeshIO::write_off_binary(const SurfaceMesh& mesh)
     fclose(out);
     IndexType nv = (IndexType)mesh.n_vertices();
     IndexType nf = (IndexType)mesh.n_faces();
-    IndexType ne = 0;;
+    IndexType ne = 0;
+    ;
 
     out = fopen(filename_.c_str(), "ab");
     tfwrite(out, nv);

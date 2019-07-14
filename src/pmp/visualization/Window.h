@@ -82,9 +82,7 @@ protected: //----------------------------------- callbacks as member functions
     //! this function is called just before rendering
     virtual void do_processing() {}
 
-
 protected:
-
     //! setup ImGUI user interface
     void init_imgui();
 
@@ -101,13 +99,13 @@ protected:
     void clear_help_items();
 
     //! add key binding (or general action description)
-    void add_help_item(std::string key, std::string description, int position=-1);
+    void add_help_item(std::string key, std::string description,
+                       int position = -1);
 
     //! show ImGUI help dialog
     void show_help();
 
 protected: //------------------------------------------ GLFW related functions
-
     //! width of window
     int width() const { return width_; }
     //! height of window
@@ -122,9 +120,15 @@ protected: //------------------------------------------ GLFW related functions
     //! is left mouse button pressed down?
     bool left_mouse_pressed() const { return button_[GLFW_MOUSE_BUTTON_LEFT]; }
     //! is right mouse button pressed down?
-    bool right_mouse_pressed() const { return button_[GLFW_MOUSE_BUTTON_RIGHT]; }
+    bool right_mouse_pressed() const
+    {
+        return button_[GLFW_MOUSE_BUTTON_RIGHT];
+    }
     //! is middle mouse button pressed down?
-    bool middle_mouse_pressed() const { return button_[GLFW_MOUSE_BUTTON_MIDDLE]; }
+    bool middle_mouse_pressed() const
+    {
+        return button_[GLFW_MOUSE_BUTTON_MIDDLE];
+    }
 
     //! is CTRL modifier key pressed down?
     bool ctrl_pressed() const { return ctrl_pressed_; }
@@ -134,7 +138,6 @@ protected: //------------------------------------------ GLFW related functions
     bool shift_pressed() const { return shift_pressed_; }
 
 private:
-
     //! GLFW window pointer
     GLFWwindow* window_;
 
@@ -151,7 +154,7 @@ private:
     // show ImGUI help dialog
     bool show_help_;
     // items for ImGUI help dialog
-    std::vector< std::pair<std::string, std::string> > help_items_;
+    std::vector<std::pair<std::string, std::string>> help_items_;
 
     // which mouse buttons and modifier keys are pressed down
     bool button_[7], ctrl_pressed_, alt_pressed_, shift_pressed_;
