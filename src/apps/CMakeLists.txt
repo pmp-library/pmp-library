@@ -3,7 +3,7 @@ if (EMSCRIPTEN)
 
     add_executable(mview mview.cpp data/shell.html)
     target_link_libraries(mview pmp_vis)
-    set_target_properties(mview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off")
+    set_target_properties(mview PROPERTIES LINK_FLAGS "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html")
 
     add_executable(curview curview.cpp data/shell.html)
     target_link_libraries(curview pmp_vis)
