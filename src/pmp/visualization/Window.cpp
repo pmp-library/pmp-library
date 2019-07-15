@@ -71,11 +71,11 @@ Window::Window(const char* title, int width, int height, bool showgui)
 #ifdef __EMSCRIPTEN__
     if (glversion < 30)
     {
-        std::cerr << "Cannot get WebGL2 context. Try using Firefox or "
-                     "Chrome/Chromium.\n";
-        EM_ASM(
-            alert("Cannot get WebGL2 context. Try using Firefox or "
-                  "Chrome/Chromium."));
+        // clang-format will line-break strings, which will break EM_ASM
+        // clang-format off
+        std::cerr << "Cannot get WebGL2 context. Try using Firefox or Chrome/Chromium.\n";
+        EM_ASM(alert("Cannot get WebGL2 context. Try using Firefox or Chrome/Chromium."));
+        // clang-format on
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
