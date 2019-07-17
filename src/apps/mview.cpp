@@ -8,26 +8,61 @@
 //=============================================================================
 
 #include <pmp/visualization/MeshViewer.h>
+#include <unistd.h>
+
+using namespace pmp;
 
 //=============================================================================
 
-int main(int argc, char **argv)
+void usage_and_exit()
 {
-#ifndef __EMSCRIPTEN__
-    pmp::MeshViewer viewer("MeshViewer", 800, 600);
-    if (argc > 1)
-        viewer.load_mesh(argv[1]);
-    if (argc > 2)
-        viewer.load_texture(argv[2], GL_SRGB8);
+    std::cerr << "Usage:\nmview [-g] [-t texture] <input>\n\nOptions\n"
+              << " -g:  show GUI controls (toggle with 'g')\n"
+              << " -t:  specify texture image (mesh has to provide texture coordinates)\n"
+              << "\n";
+    exit(1);
+}
+
+//----------------------------------------------------------------------------
+
+int main(int argc, char** argv)
+{
+    char* input   = nullptr;
+    char* texture = nullptr;
+    bool gui      = false;
+
+    // parse command line parameters
+    int c;
+    while ((c = getopt(argc, argv, "gt:")) != -1)
+    {
+        switch (c)
+        {
+            case 'g':
+                gui = true;
+                break;
+
+            case 't':
+                texture = optarg;
+                break;
+
+            default:
+                usage_and_exit();
+        }
+    }
+   
+    // get input mesh filename
+    if (optind < argc)
+        input = argv[optind];
+   
+    // need a mesh!
+    if (!input) usage_and_exit();
+
+    // open window, start application
+    MeshViewer viewer("MeshViewer", 800, 600, gui);
+    viewer.load_mesh(input);
+    if (texture)
+        viewer.load_texture(texture, GL_SRGB8);
     return viewer.run();
-#else
-    pmp::MeshViewer viewer("MeshViewer", 800, 600, false);
-    if (argc > 1)
-        viewer.load_mesh(argv[1]);
-    if (argc > 2)
-        viewer.load_texture(argv[2], GL_SRGB8);
-    return viewer.run();
-#endif
 }
 
 //=============================================================================

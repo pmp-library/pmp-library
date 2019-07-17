@@ -42,14 +42,24 @@
 
       var Module = {
         preRun: [ function(){
-	          var modelFileName = getUrlVars()["model"];
-	          if ( modelFileName )
-              {
-                  var filename = modelFileName.split('/').pop();
-                  console.log("reading " + modelFileName);
-                  Module.arguments = [filename];
-                  FS.createPreloadedFile('./', filename, modelFileName, true, false);
-              }
+            // show GUI?
+            if (window.frameElement && window.frameElement.hasAttribute("controls"))
+            { 
+                // we are in an iframe which has 'controls' property
+                // start with '-g', which shows gui controls
+                console.log("show gui");
+                Module.arguments.push("-g");
+            }
+
+            // filename specified?
+            var modelFileName = getUrlVars()["model"];
+            if ( modelFileName )
+            {
+                var filename = modelFileName.split('/').pop();
+                console.log("reading " + modelFileName);
+                Module.arguments.push(filename);
+                FS.createPreloadedFile('./', filename, modelFileName, true, false);
+            }
         }],
         
           postRun: [],
