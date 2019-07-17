@@ -525,7 +525,8 @@ void Window::character(unsigned int c)
     switch (c)
     {
         case 63: // question mark
-            show_help_ = true;
+            show_help_  = true;
+            show_imgui_ = true;
             break;
     }
 }
