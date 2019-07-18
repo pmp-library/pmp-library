@@ -8,7 +8,6 @@
 //=============================================================================
 
 #include <pmp/visualization/MeshViewer.h>
-#include <unistd.h>
 
 using namespace pmp;
 
@@ -16,7 +15,8 @@ using namespace pmp;
 
 void usage_and_exit()
 {
-    std::cerr << "Usage:\nmview [-g] [-t texture] <input>\n\nOptions\n"
+    std::cerr << "Usage:\nmview [-g] [-t texture] <input>\n\n"
+              << "Options\n"
               << " -g:  show GUI controls (toggle with 'g')\n"
               << " -t:  specify texture image (mesh has to provide texture coordinates)\n"
               << "\n";
@@ -32,27 +32,30 @@ int main(int argc, char** argv)
     bool gui      = false;
 
     // parse command line parameters
-    int c;
-    while ((c = getopt(argc, argv, "gt:")) != -1)
+    for (int i=0; i<argc; ++i)
     {
-        switch (c)
+        if (std::string(argv[i]) == std::string("-g"))
         {
-            case 'g':
-                gui = true;
-                break;
-
-            case 't':
-                texture = optarg;
-                break;
-
-            default:
-                usage_and_exit();
+            gui = true;
+        }
+        else if (std::string(argv[i]) == std::string("-t"))
+        {
+            if (i+1 < argc)
+            {
+                texture = argv[i+1];
+                ++i;
+            }
+        }
+        else if (std::string(argv[i]) == std::string("-h"))
+        {
+            usage_and_exit();
+        }
+        else
+        {
+            input = argv[i];
         }
     }
    
-    // get input mesh filename
-    if (optind < argc)
-        input = argv[optind];
    
     // need a mesh!
     if (!input) usage_and_exit();
