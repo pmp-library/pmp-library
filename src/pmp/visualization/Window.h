@@ -158,6 +158,12 @@ private:
 
     // which mouse buttons and modifier keys are pressed down
     bool button_[7], ctrl_pressed_, alt_pressed_, shift_pressed_;
+
+    // fullscreen-related backups
+    int backup_xpos_, backup_ypos_, backup_width_, backup_height_;
+    bool is_fullscreen() const;
+    void enter_fullscreen();
+    void exit_fullscreen();
 };
 
 //=============================================================================

@@ -153,6 +153,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     init_imgui();
 
     // add help items
+    add_help_item("F", "Toggle fullscreen mode");
     add_help_item("G", "Toggle GUI dialog");
     add_help_item("PageUp/Down", "Scale GUI dialogs");
 #ifndef __EMSCRIPTEN__
@@ -404,10 +405,8 @@ void Window::render_frame()
         // set canvas size to match element css size
         w = int(dw * s);
         h = int(dh * s);
-        // set canvas size
         emscripten_set_canvas_element_size("#canvas", w, h);
-        // inform GLFW of this change, since ImGUI asks GLFW for window size
-        glfwSetWindowSize(instance_->window_, w, h);
+        glfw_resize(instance_->window_, w, h);
     }
 #endif
 
@@ -548,6 +547,15 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
             break;
         }
 #endif
+        case GLFW_KEY_F:
+        {
+            if (!is_fullscreen())
+                enter_fullscreen();
+            else
+                exit_fullscreen();
+            break;
+        }
+
         case GLFW_KEY_G:
         {
             show_imgui(!show_imgui());
@@ -567,6 +575,77 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+
+// fullscreen handling from here:
+// https://github.com/emscripten-core/emscripten/issues/5124
+
+#ifdef __EMSCRIPTEN__
+
+bool Window::is_fullscreen() const
+{
+    EmscriptenFullscreenChangeEvent fsce;
+    emscripten_get_fullscreen_status(&fsce);
+    return fsce.isFullscreen;
+}
+
+void Window::enter_fullscreen()
+{
+    // get screen size
+    int w = EM_ASM_INT({ return screen.width; });
+    int h = EM_ASM_INT({ return screen.height; });
+
+    // Workaround https://github.com/kripken/emscripten/issues/5124#issuecomment-292849872
+    EM_ASM(JSEvents.inEventHandler = true);
+    EM_ASM(JSEvents.currentEventHandler = {allowsDeferredCalls:true});
+
+    // remember window size
+    glfwGetWindowSize(window_, &backup_width_, &backup_height_);
+    
+    // setting window to screen size triggers fullscreen mode
+    glfwSetWindowSize(window_, w, h); 
+}
+
+void Window::exit_fullscreen()
+{
+    emscripten_exit_fullscreen();
+    glfwSetWindowSize(window_, backup_width_, backup_height_); 
+}
+
+#else
+
+bool Window::is_fullscreen() const
+{
+    return glfwGetWindowMonitor(window_) != nullptr;
+}
+
+void Window::enter_fullscreen()
+{
+    // get monitor
+    GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+
+    // get resolution
+    const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+
+    // remember window position and size
+    glfwGetWindowPos(window_,  &backup_xpos_, &backup_ypos_);
+    glfwGetWindowSize(window_, &backup_width_, &backup_height_);
+
+    // switch to fullscreen on primary monitor
+    glfwSetWindowMonitor(window_, monitor, 
+                         0, 0, mode->width, mode->height, 
+                         GLFW_DONT_CARE);
+}
+
+void Window::exit_fullscreen()
+{
+    glfwSetWindowMonitor(window_, nullptr, 
+                         backup_xpos_, backup_ypos_, backup_width_, backup_height_, 
+                         GLFW_DONT_CARE);
+}
+
+#endif
 
 //-----------------------------------------------------------------------------
 
@@ -614,6 +693,7 @@ void Window::glfw_scroll(GLFWwindow* window, double xoffset, double yoffset)
 
 void Window::glfw_resize(GLFWwindow* /*window*/, int width, int height)
 {
+    std::cerr << "resize to " << width << "x" << height << std::endl;
     instance_->width_ = width;
     instance_->height_ = height;
     instance_->resize(width, height);

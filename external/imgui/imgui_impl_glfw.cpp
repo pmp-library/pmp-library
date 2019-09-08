@@ -35,6 +35,12 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 
+// MARIO
+#if __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#include <emscripten/html5.h>
+#endif
+
 // GLFW
 #include <GLFW/glfw3.h>
 #ifdef _WIN32
@@ -311,8 +317,14 @@ void ImGui_ImplGlfw_NewFrame()
     // Setup display size (every frame to accommodate for window resizing)
     int w, h;
     int display_w, display_h;
+#ifndef __EMSCRIPTEN__ // MARIO: special handling for emscripten required
     glfwGetWindowSize(g_Window, &w, &h);
     glfwGetFramebufferSize(g_Window, &display_w, &display_h);
+#else
+    emscripten_get_canvas_element_size("#canvas", &display_w, &display_h);
+    w = display_w;
+    h = display_h;
+#endif
     io.DisplaySize = ImVec2((float)w, (float)h);
     if (w > 0 && h > 0)
         io.DisplayFramebufferScale = ImVec2((float)display_w / w, (float)display_h / h);
