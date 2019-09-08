@@ -26,8 +26,8 @@ MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
                                            int height)
     : MeshViewer(title, width, height), smoother_(mesh_)
 {
-    crease_angle_ = 90.0;
-    set_draw_mode("Hidden Line");
+    //crease_angle_ = 90.0;
+    //set_draw_mode("Hidden Line");
 
     // add help items
     add_help_item("O", "Flip mesh orientation", 5);
