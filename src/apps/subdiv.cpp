@@ -10,6 +10,7 @@
 #include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/SurfaceSubdivision.h>
 #include <pmp/algorithms/SurfaceFeatures.h>
+#include <pmp/algorithms/SurfaceTriangulation.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -60,7 +61,8 @@ void Viewer::process_imgui()
 
         if (ImGui::Button("Triangulate Mesh"))
         {
-            mesh_.triangulate();
+            SurfaceTriangulation tesselator(mesh_);
+            tesselator.triangulate();
             update_mesh();
         }
 
