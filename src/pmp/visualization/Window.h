@@ -105,6 +105,11 @@ protected:
     //! show ImGUI help dialog
     void show_help();
 
+    //! take a screenshot, save it to `title-n.png` using the window title
+    //! and an incremented number `n`.
+    void screenshot();
+
+
 protected: //------------------------------------------ GLFW related functions
     //! width of window
     int width() const { return width_; }
@@ -141,6 +146,9 @@ private:
     //! GLFW window pointer
     GLFWwindow* window_;
 
+    //! window title
+    std::string title_;
+
     //! current viewport dimension
     int width_, height_;
 
@@ -164,6 +172,9 @@ private:
     bool is_fullscreen() const;
     void enter_fullscreen();
     void exit_fullscreen();
+
+    // screenshot number
+    unsigned int screenshot_number_;
 };
 
 //=============================================================================

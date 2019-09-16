@@ -15,6 +15,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include <lato-font.h>
+#include <stb_image_write.h>
 
 #if __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
@@ -32,18 +33,23 @@ Window* Window::instance_ = nullptr;
 //-----------------------------------------------------------------------------
 
 Window::Window(const char* title, int width, int height, bool showgui)
-    : width_(width),
+    : title_(title),
+      width_(width),
       height_(height),
       scaling_(1),
       pixel_ratio_(1),
       show_imgui_(showgui),
       imgui_scale_(1.0),
-      show_help_(false)
+      show_help_(false),
+      screenshot_number_(0)
 {
     // initialize glfw window
     if (!glfwInit())
         exit(EXIT_FAILURE);
 
+    // remove spaces from title
+    for (auto &c: title_) if (c == ' ') c = '_';
+    
     // request core profile and OpenGL version 3.2
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -546,6 +552,12 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
             exit(0);
             break;
         }
+
+        case GLFW_KEY_PRINT_SCREEN:
+        {
+            screenshot();
+            break;
+        }
 #endif
         case GLFW_KEY_F:
         {
@@ -706,6 +718,28 @@ void Window::cursor_pos(double& x, double& y) const
     glfwGetCursorPos(window_, &x, &y);
     x *= instance_->scaling_;
     y *= instance_->scaling_;
+}
+
+//-----------------------------------------------------------------------------
+
+void Window::screenshot()
+{
+    char filename[100];
+    sprintf(filename, "%s-%d.png", title_.c_str(), screenshot_number_++);
+    std::cout << "Save screenshot to " << filename << std::endl;
+
+    // allocate buffer
+    unsigned char *data = new unsigned char[4*width_*height_];
+
+    // read framebuffer
+    glfwMakeContextCurrent(window_);
+    glReadPixels(0, 0, width_, height_, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+    // write to file
+    //stbi_write_png(filename, width_, height_, 4, data, 4*width_*sizeof(unsigned char));
+
+    // clean up
+    delete [] data;
 }
 
 //=============================================================================
