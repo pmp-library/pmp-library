@@ -53,7 +53,7 @@ void SurfaceTriangulation::triangulate(Face f)
     if (n <= 3) return;
 
     // delete polygon
-    mesh_.delete_face(f);
+    //mesh_.delete_face(f);
 
     // compute minimal triangulation by dynamic programming
     weight_.clear();
@@ -111,10 +111,11 @@ void SurfaceTriangulation::triangulate(Face f)
             continue;
         int split = index_[start][end];
 
-        //insert_edge(start, split);
-        //insert_edge(split, end);
-        mesh_.add_triangle(vertices_[start], vertices_[split], vertices_[end]);
+        insert_edge(start, split);
+        insert_edge(split, end);
         
+        //mesh_.add_triangle(vertices_[start], vertices_[split], vertices_[end]);
+
         todo.push_back(ivec2(start, split));
         todo.push_back(ivec2(split, end));
     }
@@ -139,12 +140,12 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
     // this would result in an invalid triangulation
     // -> prevent by giving infinite weight
     // (this happens for suzanne.obj!)
-    if (is_interior_edge(a, b) || 
-        is_interior_edge(b, c) ||
-        is_interior_edge(c, a))
-        return FLT_MAX;
-    //if (is_edge(a,b) && is_edge(b,c) && is_edge(c,a))
+    //if (is_interior_edge(a, b) || 
+        //is_interior_edge(b, c) ||
+        //is_interior_edge(c, a))
         //return FLT_MAX;
+    if (is_edge(a,b) && is_edge(b,c) && is_edge(c,a))
+        return FLT_MAX;
 
     // compute area
     return sqrnorm(cross(points_[b] - points_[a], points_[c] - points_[a]));
