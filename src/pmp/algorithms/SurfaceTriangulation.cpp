@@ -10,28 +10,31 @@ namespace pmp {
 
 SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& _mesh) : mesh_(_mesh)
 {
-    points_ = mesh_.vertex_property<Point>("v:point");
+    points_    = mesh_.vertex_property<Point>("v:point");
+    objective_ = MIN_AREA;
+    objective_ = MAX_ANGLE;
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceTriangulation::triangulate()
+void SurfaceTriangulation::triangulate(Objective _o)
 {
     for (auto f: mesh_.faces())
-        triangulate(f);
+        triangulate(f, _o);
 
-    mesh_.garbage_collection();
-
-    std::cout << "Triangle mesh? " << mesh_.is_triangle_mesh() << std::endl;
+    std::cout << "Triangle mesh? " << (mesh_.is_triangle_mesh() ? "yes" : "no") << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceTriangulation::triangulate(Face f)
+void SurfaceTriangulation::triangulate(Face f, Objective _o)
 {
-    Halfedge _h = mesh_.halfedge(f);
+    // store objective
+    objective_ = _o;
+
 
     // collect polygon halfedges
+    Halfedge _h = mesh_.halfedge(f);
     halfedges_.clear();
     vertices_.clear();
     Halfedge h = _h;
@@ -51,9 +54,6 @@ void SurfaceTriangulation::triangulate(Face f)
     // do we have at least four vertices?
     const int n = halfedges_.size();
     if (n <= 3) return;
-
-    // delete polygon
-    //mesh_.delete_face(f);
 
     // compute minimal triangulation by dynamic programming
     weight_.clear();
@@ -84,7 +84,20 @@ void SurfaceTriangulation::triangulate(Face f)
             // find best split i < m < i+j
             for (m = i + 1; m < k; ++m)
             {
-                w = weight_[i][m] + compute_weight(i, m, k) + weight_[m][k];
+                switch (objective_)
+                {
+                    case MIN_AREA:
+                        w = weight_[i][m] + compute_weight(i, m, k) + weight_[m][k];
+                        break;
+                    case MAX_ANGLE:
+                        w = std::max(weight_[i][m], std::max(compute_weight(i, m, k), weight_[m][k]));
+                        break;
+                    default:
+                        // should never happen
+                        exit(1);
+                        break;
+                }
+
                 if (w < wmin)
                 {
                     wmin = w;
@@ -113,8 +126,6 @@ void SurfaceTriangulation::triangulate(Face f)
 
         insert_edge(start, split);
         insert_edge(split, end);
-        
-        //mesh_.add_triangle(vertices_[start], vertices_[split], vertices_[end]);
 
         todo.push_back(ivec2(start, split));
         todo.push_back(ivec2(split, end));
@@ -147,8 +158,30 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
     if (is_edge(a,b) && is_edge(b,c) && is_edge(c,a))
         return FLT_MAX;
 
-    // compute area
-    return sqrnorm(cross(points_[b] - points_[a], points_[c] - points_[a]));
+    const Point& pa = points_[a];
+    const Point& pb = points_[b];
+    const Point& pc = points_[c];
+
+    Scalar w = FLT_MAX;
+    switch (objective_)
+    {
+        // compute squared triangle area
+        case MIN_AREA:
+            w = sqrnorm(cross(pb-pa, pc-pa));
+            break;
+
+        // compute one over minimum angle
+        // or cosine of minimum angle
+        // maximum cosine (which should then be minimized)
+        case MAX_ANGLE:
+            Scalar cosa = dot(normalize(pb-pa), normalize(pc-pa));
+            Scalar cosb = dot(normalize(pa-pb), normalize(pc-pb));
+            Scalar cosc = dot(normalize(pa-pc), normalize(pb-pc));
+            w = std::max(cosa, std::max(cosb, cosc));
+            break;
+    }
+
+    return w;
 }
 
 //-----------------------------------------------------------------------------

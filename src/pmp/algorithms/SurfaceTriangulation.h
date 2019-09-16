@@ -32,14 +32,20 @@ namespace pmp {
 class SurfaceTriangulation
 {
 public:
+
+    /// triangulation objective: find the triangulation that minimizes the
+    /// sum of squared triangle areas, or the one that maximizes the minimum
+    /// angle.
+    enum Objective { MIN_AREA, MAX_ANGLE } objective_;
+
     /// construct with mesh
     SurfaceTriangulation(SurfaceMesh& mesh);
 
     /// triangulate all faces
-    void triangulate();
+    void triangulate(Objective _o = MIN_AREA);
 
     /// triangulate a particular face f
-    void triangulate(Face f);
+    void triangulate(Face f, Objective _o = MIN_AREA);
 
 
 private: //-------------------------------------------------- private functions
