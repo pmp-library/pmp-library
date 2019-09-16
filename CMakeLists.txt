@@ -26,13 +26,17 @@ set(EIGEN_SOURCE_DIR "external/eigen")
 set(RPLY_SOURCE_DIR "external/rply")
 set(STBI_SOURCE_DIR "external/stb_image")
 
+# setup STB Image 
+# (place *before* GLFW since GLFW has an old copy of stb_image_write.h)
+include_directories(${STBI_SOURCE_DIR})
+add_subdirectory(${STBI_SOURCE_DIR})
+
 # Building only the GLFW lib
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
 set(GLFW_INSTALL OFF CACHE BOOL "")
-
 
 # setup use of GLFW and GLEW
 if (NOT EMSCRIPTEN)
@@ -62,10 +66,6 @@ add_subdirectory(${IMGUI_SOURCE_DIR})
 # setup PLY
 include_directories(${RPLY_SOURCE_DIR})
 add_subdirectory(${RPLY_SOURCE_DIR})
-
-# setup STB Image
-include_directories(${STBI_SOURCE_DIR})
-add_subdirectory(${STBI_SOURCE_DIR})
 
 # setup Eigen
 include_directories(${EIGEN_SOURCE_DIR})

@@ -163,6 +163,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     add_help_item("G", "Toggle GUI dialog");
     add_help_item("PageUp/Down", "Scale GUI dialogs");
 #ifndef __EMSCRIPTEN__
+    add_help_item("PrtScr", "Save screenshot");
     add_help_item("Esc/Q", "Quit application");
 #endif
 
@@ -729,14 +730,16 @@ void Window::screenshot()
     std::cout << "Save screenshot to " << filename << std::endl;
 
     // allocate buffer
-    unsigned char *data = new unsigned char[4*width_*height_];
+    unsigned char *data = new unsigned char[3*width_*height_];
 
     // read framebuffer
     glfwMakeContextCurrent(window_);
-    glReadPixels(0, 0, width_, height_, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glReadPixels(0, 0, width_, height_, GL_RGB, GL_UNSIGNED_BYTE, data);
 
     // write to file
-    //stbi_write_png(filename, width_, height_, 4, data, 4*width_*sizeof(unsigned char));
+    stbi_flip_vertically_on_write(true);
+    stbi_write_png(filename, width_, height_, 3, data, 3*width_);
 
     // clean up
     delete [] data;
