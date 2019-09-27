@@ -12,6 +12,7 @@
 #include <cmath>
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
+#include <cmath>
 
 //=============================================================================
 
@@ -281,7 +282,8 @@ void SurfaceParameterization::lscm()
         dvec3 c = (dvec3)pos[mesh_.to_vertex(hc)];
 
         // calculate local coordinate system
-        dvec3 z = cross(c - b, a - b);
+        //dvec3 z = cross(c - b, a - b);
+        dvec3 z = normalize(cross(normalize(c-b), normalize(a-b)));
         dvec3 x = normalize(b - a);
         dvec3 y = normalize(cross(z, x));
 
@@ -291,9 +293,12 @@ void SurfaceParameterization::lscm()
         dvec2 c2d(dot(c - a, x), dot(c - a, y));
 
         // calculate double triangle area
+        z = cross(c - b, a - b);
         double area = norm(z);
         if (area)
             area = 1.0 / area;
+
+        area = 1.0;
 
         // calculate W_j,Ti (index by corner a,b,c and real/imaginary)
         double w_ar = c2d[0] - b2d[0];

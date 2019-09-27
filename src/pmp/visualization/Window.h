@@ -119,6 +119,9 @@ protected: //------------------------------------------ GLFW related functions
     //! highDPI scaling
     float high_dpi_scaling() const { return scaling_; }
 
+    //! imgui scaling
+    float imgui_scaling() const { return imgui_scale_; }
+
     //! get position of mouse cursor
     void cursor_pos(double& x, double& y) const;
 
