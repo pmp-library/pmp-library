@@ -57,8 +57,6 @@ script:
   - make -j 2
   - make test
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then make docs ; fi
-  - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then make coverage ; fi
-
 
 after_success:
   - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then coveralls --gcov-options '\-lp' --root .. -E ".*external.*" -E ".*CMakeFiles.*" -E ".*tests/.*.cpp.*" ; fi
