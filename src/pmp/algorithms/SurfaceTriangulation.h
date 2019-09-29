@@ -24,8 +24,7 @@ namespace pmp {
 
 //=============================================================================
 
-//! \brief Triangulate polygons to get a pure triangle mesh
-
+//! \brief Triangulate polygons to get a pure triangle mesh.
 //! \details Tringulate n-gons into n-2 triangles. Find the triangulation that
 //! minimizes the sum of squared triangle areas.
 //! See \cite liepa_2003_filling for details.
@@ -33,19 +32,19 @@ class SurfaceTriangulation
 {
 public:
 
-    /// triangulation objective: find the triangulation that minimizes the
-    /// sum of squared triangle areas, or the one that maximizes the minimum
-    /// angle.
+    //! triangulation objective: find the triangulation that minimizes the
+    //! sum of squared triangle areas, or the one that maximizes the minimum
+    //! angle.
     enum Objective { MIN_AREA, MAX_ANGLE } objective_;
 
-    /// construct with mesh
+    //! construct with mesh
     SurfaceTriangulation(SurfaceMesh& mesh);
 
-    /// triangulate all faces
-    void triangulate(Objective _o = MIN_AREA);
+    //! triangulate all faces
+    void triangulate(Objective o = MIN_AREA);
 
-    /// triangulate a particular face f
-    void triangulate(Face f, Objective _o = MIN_AREA);
+    //! triangulate a particular face f
+    void triangulate(Face f, Objective o = MIN_AREA);
 
 
 private: //-------------------------------------------------- private functions
@@ -53,11 +52,11 @@ private: //-------------------------------------------------- private functions
     // compute the weight of the triangle (i,j,k).
     Scalar compute_weight(int i, int j, int k) const;
 
-    // does edge (_a,_b) exist?
-    bool is_edge(Vertex _a, Vertex _b) const;
+    // does edge (a,b) exist?
+    bool is_edge(Vertex a, Vertex b) const;
 
-    // does edge (_a,_b) exist and is non-boundary?
-    bool is_interior_edge(Vertex _a, Vertex _b) const;
+    // does edge (a,b) exist and is non-boundary?
+    bool is_interior_edge(Vertex a, Vertex b) const;
 
     // add edges from vertex i to j
     bool insert_edge(int i, int j);

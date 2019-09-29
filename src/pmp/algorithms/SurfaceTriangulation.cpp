@@ -8,7 +8,7 @@ namespace pmp {
 
 //=============================================================================
 
-SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& _mesh) : mesh_(_mesh)
+SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& mesh) : mesh_(mesh)
 {
     points_    = mesh_.vertex_property<Point>("v:point");
     objective_ = MIN_AREA;
@@ -17,27 +17,27 @@ SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& _mesh) : mesh_(_mesh)
 
 //-----------------------------------------------------------------------------
 
-void SurfaceTriangulation::triangulate(Objective _o)
+void SurfaceTriangulation::triangulate(Objective o)
 {
     for (auto f: mesh_.faces())
-        triangulate(f, _o);
+        triangulate(f, o);
 
     std::cout << "Triangle mesh? " << (mesh_.is_triangle_mesh() ? "yes" : "no") << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceTriangulation::triangulate(Face f, Objective _o)
+void SurfaceTriangulation::triangulate(Face f, Objective o)
 {
     // store objective
-    objective_ = _o;
+    objective_ = o;
 
 
     // collect polygon halfedges
-    Halfedge _h = mesh_.halfedge(f);
+    Halfedge h0 = mesh_.halfedge(f);
     halfedges_.clear();
     vertices_.clear();
-    Halfedge h = _h;
+    Halfedge h = h0;
     do
     {
         if (!mesh_.is_manifold(mesh_.to_vertex(h)))
@@ -49,7 +49,7 @@ void SurfaceTriangulation::triangulate(Face f, Objective _o)
         halfedges_.push_back(h);
         vertices_.push_back(mesh_.to_vertex(h));
     } 
-    while ((h = mesh_.next_halfedge(h)) != _h);
+    while ((h = mesh_.next_halfedge(h)) != h0);
 
     // do we have at least four vertices?
     const int n = halfedges_.size();
@@ -186,16 +186,16 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceTriangulation::is_edge(Vertex _a, Vertex _b) const
+bool SurfaceTriangulation::is_edge(Vertex a, Vertex b) const
 {
-    return mesh_.find_halfedge(_a, _b).is_valid();
+    return mesh_.find_halfedge(a, b).is_valid();
 }
 
 //-----------------------------------------------------------------------------
 
-bool SurfaceTriangulation::is_interior_edge(Vertex _a, Vertex _b) const
+bool SurfaceTriangulation::is_interior_edge(Vertex a, Vertex b) const
 {
-    Halfedge h = mesh_.find_halfedge(_a, _b);
+    Halfedge h = mesh_.find_halfedge(a, b);
     if (!h.is_valid())
         return false; // edge does not exist
     return (!mesh_.is_boundary(h) &&
