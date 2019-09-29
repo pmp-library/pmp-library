@@ -29,22 +29,29 @@ continuous integration builds. See the also the `tests` sub-directory of the
 repository. You can locally run the test suite from your build directory by
 invoking the
 
-    $ make test
+    make test
 
 target. To obtain more detailed test output we recommend to invoke the Google
 Test runner directly:
 
-    $ cd tests
-    $ ./gtest_runner
-
+    cd tests
+    ./gtest_runner
 
 ## Code Coverage
 
-We track the overall code coverage rate of our unit tests
-using [gcov](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html), which is part
-of [GCC](https://gcc.gnu.org/). To check the code coverage locally run
+We track the overall code coverage rate of our unit tests using
+[gcov](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html), which is part of
+[GCC](https://gcc.gnu.org/). Generating the coverage report also requires the
+[lcov](http://ltp.sourceforge.net/coverage/lcov.php) package to be installed.
 
-    $ make coverage
+To check the code coverage locally run cmake in `Debug` mode with the
+`ENABLE_COVERAGE` flag sett to `true`:
+
+    cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=true ..
+
+Rebuild and run the `coverage` target:
+
+    make && make coverage
 
 This will run the test suite and collect the coverage data. A HTML report of the
 results will be generated to `coverage/index.html`. We generally try to maintain

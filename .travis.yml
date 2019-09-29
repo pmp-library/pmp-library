@@ -51,6 +51,7 @@ before_script:
   - mkdir build
   - cd build
   - if [ "$CONFIG" != "Alternatives" ]; then cmake -DCMAKE_BUILD_TYPE=${CONFIG} .. ; else cmake -DCMAKE_BUILD_TYPE=Debug -DPMP_INDEX_TYPE=64 -DPMP_SCALAR_TYPE=64 .. ; fi
+  - if [ "$CONFIG" == "Debug" ] && [ "$CXX" == "g++" ] && [ "$TRAVIS_OS_NAME" == linux ] ; then cmake -DENABLE_COVERAGE=true .. ; fi
 
 script:
   - make -j 2

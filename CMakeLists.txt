@@ -74,7 +74,7 @@ include(AddFileDependencies)
 include_directories(${PROJECT_SOURCE_DIR}/src/)
 
 # setup for code coverage testing
-if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCXX)
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCXX AND ENABLE_COVERAGE)
   enable_testing()
 
   # set compiler flags
