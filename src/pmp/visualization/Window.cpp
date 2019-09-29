@@ -706,7 +706,6 @@ void Window::glfw_scroll(GLFWwindow* window, double xoffset, double yoffset)
 
 void Window::glfw_resize(GLFWwindow* /*window*/, int width, int height)
 {
-    std::cerr << "resize to " << width << "x" << height << std::endl;
     instance_->width_ = width;
     instance_->height_ = height;
     instance_->resize(width, height);
