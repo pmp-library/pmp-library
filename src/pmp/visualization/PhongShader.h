@@ -80,7 +80,8 @@ static const char* phong_fshader =
     "       vec3 N  = normalize(v2f_normal);\n"
     "       vec3 V  = normalize(v2f_view);\n"
     "       \n"
-    "       if (!gl_FrontFacing) N = -N;\n"
+    //"       if (!gl_FrontFacing) N = -N;\n" // gl_FrontFacing does not work on Mario's new MacBook
+    "       if (dot(N,V)<0.0) N = -N;\n"
     "       \n"
     "       vec3  R;\n"
     "       float NL, RV;\n"
@@ -124,8 +125,6 @@ static const char* phong_fshader =
     "    f_color = vec4(rgb, alpha);\n"
     "}";
 
-
-//=============================================================================
 
 //=============================================================================
 // clang-format on
