@@ -41,74 +41,82 @@
       }
 
       var Module = {
-        preRun: [ function(){
-            // show GUI?
-            if (window.frameElement && window.frameElement.hasAttribute("controls"))
-            { 
-                // we are in an iframe which has 'controls' property
-                // start with '-g', which shows gui controls
-                console.log("show gui");
-                Module.arguments.push("-g");
-            }
 
-            // filename specified?
-            var modelFileName = getUrlVars()["model"];
-            if ( modelFileName )
-            {
-                var filename = modelFileName.split('/').pop();
-                console.log("reading " + modelFileName);
-                Module.arguments.push(filename);
-                FS.createPreloadedFile('./', filename, modelFileName, true, false);
-            }
-        }],
+          preRun: [ function(){
+              // GUI controls speficied as iframe attribute?
+              if (window.frameElement && window.frameElement.hasAttribute("controls"))
+              { 
+                  // we are in an iframe which has 'controls' property
+                  // start with '-g', which shows gui controls
+                  console.log("show gui");
+                  Module.arguments.push("-g");
+              }
+
+              // filename specified as URI query?
+              var modelFileName = getUrlVars()["model"];
+
+              // filename specified as iframe attribute?
+              if (!modelFileName && window.frameElement && window.frameElement.hasAttribute("model"))
+              {
+                  modelFileName = window.frameElement.getAttribute("model");
+              }
+
+              // do we have a filename?
+              if ( modelFileName )
+              {
+                  var filename = modelFileName.split('/').pop();
+                  console.log("reading " + modelFileName);
+                  Module.arguments.push(filename);
+                  FS.createPreloadedFile('./', filename, modelFileName, true, false);
+              }
+          }],
         
           postRun: [],
 
+          print: function(text) {
+              console.log(text);
+          },
 
-        print: function(text) {
-            console.log(text);
-        },
+          printErr: function(text) {
+              console.error(text);
+          },
 
-        printErr: function(text) {
-            console.error(text);
-        },
+          canvas: (function() {
+              var canvas = document.getElementById('canvas');
 
-        canvas: (function() {
-          var canvas = document.getElementById('canvas');
+              // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+              // application robust, you may want to override this behavior before shipping!
+              // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+              canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
 
-          // As a default initial behavior, pop up an alert when webgl context is lost. To make your
-          // application robust, you may want to override this behavior before shipping!
-          // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
-          canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+              return canvas;
+          })(),
 
-          return canvas;
-        })(),
+          setStatus: function(text) {
+              if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+              if (text === Module.setStatus.text) return;
+              var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+              var now = Date.now();
+              if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
+              if (m) {
+                  text = m[1];
+                  progressElement.value = parseInt(m[2])*100;
+                  progressElement.max = parseInt(m[4])*100;
+                  progressElement.hidden = false;
+              } else {
+                  progressElement.value = null;
+                  progressElement.max = null;
+                  progressElement.hidden = true;
+              }
+              statusElement.innerHTML = text;
+          },
 
-        setStatus: function(text) {
-          if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
-          if (text === Module.setStatus.text) return;
-          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
-          var now = Date.now();
-          if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
-          if (m) {
-            text = m[1];
-            progressElement.value = parseInt(m[2])*100;
-            progressElement.max = parseInt(m[4])*100;
-            progressElement.hidden = false;
-          } else {
-            progressElement.value = null;
-            progressElement.max = null;
-            progressElement.hidden = true;
+          totalDependencies: 0,
+
+          monitorRunDependencies: function(left) {
+              this.totalDependencies = Math.max(this.totalDependencies, left);
+              Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
           }
-          statusElement.innerHTML = text;
-        },
-
-        totalDependencies: 0,
-
-        monitorRunDependencies: function(left) {
-          this.totalDependencies = Math.max(this.totalDependencies, left);
-          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
-        }
 
       };
 
