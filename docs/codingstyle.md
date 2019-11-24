@@ -16,30 +16,30 @@ The names of user-defined types such as classes, structs and enums use
 `CamelCase` notation. The names of persons such as Cholesky or Delaunay are
 properly capitalized as well.
 
-~~~~{.cpp}
+```cpp
     class SurfaceMesh { ... };
     struct Flags { ... };
     enum TextureMode { ColdWarmTexture, CheckerboardTexture, OtherTexture };
-~~~~
+```
 
 ### Functions
 
 Function names are written using `snake_case`. All characters are
 lowercase. Separate words by underscores.
 
-~~~~{.cpp}
+```cpp
     class MeshViewer
     {
         bool load_mesh(const char* filename);
     };
-~~~~
+```
 
 ### Variables
 
 Variable names use `snake_case` notation. All characters are lowercase. Separate
 words with underscores. Class member variables have an underscore `_` suffix.
 
-~~~~{.cpp}
+```cpp
     int global_var;
 
     class ExampleClass
@@ -48,12 +48,12 @@ words with underscores. Class member variables have an underscore `_` suffix.
         double member_variable_;
         static double static_member_;
     };
-~~~~
+```
 
 _Exception:_ Public members of a `struct` holding just a group of variables
 may omit the underscore suffix:
 
-~~~~{.cpp}
+```cpp
     struct NearestNeighbor
     {
         Scalar dist;
@@ -61,16 +61,16 @@ may omit the underscore suffix:
         Point nearest;
         int tests;
     };
-~~~~
+```
 
 _Exception:_ For the sake of similarity with common mathematical notation, we
 sometimes use uppercase letters, e.g., to denote matrices when solving a linear
 system:
 
-~~~~{.cpp}
+```cpp
     Eigen::SparseMatrix<dobule> A(n, n);
     Eigen::MatrixXd B(n, 3);
-~~~~
+```
 
 ### File Names
 
@@ -89,7 +89,7 @@ The expressions following an `if, else, while, do ... while` or `for` statement
 should always be enclosed in braces. The braces enclosing a block should be
 placed in the same column, on separate lines.
 
-~~~~{.cpp}
+```cpp
     if (foo == bar)
     {
         std::cout << "baz" << std::endl;
@@ -98,7 +98,7 @@ placed in the same column, on separate lines.
     {
         std::cout << "barbaz" << std::endl;
     }
-~~~~
+```
 
 ### Line Length
 
@@ -151,7 +151,7 @@ could look like:
 //! \param[in] use_bar toggle to switch method
 //! \param[out] results filled with results from foo
 //!
-//! \returns true on success.
+//! \return true on success.
 \endverbatim
 
 Another good practice is to document pre- and post-conditions for performing an
@@ -165,7 +165,13 @@ it implemented in this manner?
 
 ### Include Guards
 
-Use the <tt>\#pragma once</tt> compiler directive at the beginning of each
+Use the
+
+```cpp
+#pragma once
+```
+
+compiler directive at the beginning of each
 header file in order to protect against multiple inclusion. Although this is not
 officially part of the language this feature is supported by all major
 compilers and is much more convenient than conventional header guards.
@@ -175,16 +181,14 @@ compilers and is much more convenient than conventional header guards.
 Use the `pmp` namespace in order to avoid conflicts. In source files, do not add
 an additional level of indentation due to the namespace:
 
-~~~~{.cpp}
-        namespace pmp {
-
-        class ExampleClass
-        {
-        ...
-        };
-
-        }
-~~~~
+```cpp
+namespace pmp {
+class ExampleClass
+{
+...
+};
+}
+```
 
 ### Boolean Prefixes
 
@@ -224,24 +228,22 @@ and the corresponding `.clang-format` configuration file from the repository to
 properly format your code. We also provide a convenience CMake target to run
 clang-format on all source files:
 
-    $ make clang-format
+```bash
+make clang-format
+```
 
 This requires that the `clang-format` executable is found during CMake
 configuration. The exact path to the executable can be specified using
 
-    $ cmake -DCLANG_FORMAT_EXE=<path/to/executable> ..
-
-Look for a line like this
-
-    -- clang-format found: /usr/bin/clang-format
-
-in the CMake configuration output.
+```bash
+cmake -DCLANG_FORMAT_EXE=<path/to/executable> ..
+```
 
 In case you want to preserve the special formatting of a particular code block
 such as a matrix intialization add the `// clang-format off` and `//
 clang-format on` directives around this block:
 
-~~~~{.cpp}
+```cpp
     // clang-format off
     Mat4<Scalar> m;
     m(0, 0) = x[0]; m(0, 1) = x[1]; m(0, 2) = x[2]; m(0, 3) = -dot(x, eye);
@@ -249,7 +251,7 @@ clang-format on` directives around this block:
     m(2, 0) = z[0]; m(2, 1) = z[1]; m(2, 2) = z[2]; m(2, 3) = -dot(z, eye);
     m(3, 0) = 0.0;  m(3, 1) = 0.0;  m(3, 2) = 0.0;  m(3, 3) = 1.0;
     // clang-format on
-~~~~
+```
 
 ## See Also
 

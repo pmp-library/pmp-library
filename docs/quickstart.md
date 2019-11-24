@@ -9,15 +9,15 @@ using pmp-library.
 
 Fetch the repository:
 
-    $ git clone --recursive https://github.com/pmp-library/pmp-library.git
+    git clone --recursive https://github.com/pmp-library/pmp-library.git
 
 Configure and build:
 
-    $ cd pmp-library && mkdir build && cd build && cmake .. && make
+    cd pmp-library && mkdir build && cd build && cmake .. && make
 
 Load and view a mesh:
 
-    $ ./mview ../external/pmp-data/off/bunny.off
+    ./mview ../external/pmp-data/off/bunny.off
 
 ## Using the Project Template
 
@@ -26,10 +26,10 @@ applications using the pmp-library. It directly includes the pmp-library
 repository as a git submodule. To get started, just clone the repository
 recursively:
 
-    $ git clone --recursive https://github.com/pmp-library/pmp-template.git
+    git clone --recursive https://github.com/pmp-library/pmp-template.git
 
 Configure and build:
 
-    $ cd pmp-template && mkdir build && cd build && cmake .. && make
+    cd pmp-template && mkdir build && cd build && cmake .. && make
 
 This will automatically build the pmp-library and its dependecies.
