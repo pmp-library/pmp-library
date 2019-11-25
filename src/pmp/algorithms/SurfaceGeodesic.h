@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
@@ -27,33 +27,47 @@ namespace pmp {
 //=============================================================================
 
 //! \brief Compute geodesic distance from a set of seed vertices
-//!
-//! The methods works by a Dykstra-like breadth first traversal from
+//! \details The method works by a Dykstra-like breadth first traversal from
 //! the seed vertices, implemented by a heap structure.
 //! See \cite kimmel_1998_geodesic for details.
 class SurfaceGeodesic
 {
 public:
-    //! Construct with mesh. Computes virtual edges only (if set to true).
-    //! Call compute() to compute geodesic distances.
+    //! \brief Construct from mesh.
+    //! \param mesh The mesh on which to compute the geodesic distances.
+    //! \param use_virtual_edges A flag to control the use of virtual edges.
+    //! Default: true.
+    //! \sa compute() to actually compute the geodesic distances.
     SurfaceGeodesic(SurfaceMesh& mesh, bool use_virtual_edges = true);
 
     // destructor
     ~SurfaceGeodesic();
 
-    //! Compute geodesic distances from specified seed points
-    //! up to the specified maximum distance and
-    //! up to a maximum number of neighbors.
-    //! returns how many neighbors have been found
+    //! \brief Compute geodesic distances from specified seed points.
+    //! \param[in] seed The vector of seed vertices.
+    //! \param[in] maxdist The maximum distance up to which to compute the
+    //! geodesic distances.
+    //! \param[in] maxnum The maximum number of neighbors up to which to
+    //! compute the geodesic distances.
+    //! \param[out] neighbors The vector of neighbor vertices.
+    //! \return The number of neighbors that have been found.
     unsigned int compute(const std::vector<Vertex>& seed,
                          Scalar maxdist = FLT_MAX,
                          unsigned int maxnum = INT_MAX,
                          std::vector<Vertex>* neighbors = nullptr);
 
-    //! access computed geodesic distance
+    //! \brief Access the computed geodesic distance.
+    //! \param[in] v The vertex for which to return the geodesic distance.
+    //! \return The geodesic distance of vertex \p v.
+    //! \pre The function compute() has been called before.
+    //! \pre The vertex \p v needs to be a valid vertex handle of the mesh
+    //! used during construction.
     Scalar operator()(Vertex v) const { return distance_[v]; }
 
-    //! use (normalized) distances as texture coordinates
+    //! \brief Use the normalized distances as texture coordinates
+    //! \details Stores the normalized distances in a vertex property of type
+    //! TexCoord named "v:tex". Re-uses any existing vertex property of the
+    //! same type and name.
     void distance_to_texture_coordinates();
 
 private: // private types
