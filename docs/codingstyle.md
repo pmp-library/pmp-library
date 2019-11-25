@@ -228,16 +228,12 @@ and the corresponding `.clang-format` configuration file from the repository to
 properly format your code. We also provide a convenience CMake target to run
 clang-format on all source files:
 
-```bash
-make clang-format
-```
+    make clang-format
 
 This requires that the `clang-format` executable is found during CMake
 configuration. The exact path to the executable can be specified using
 
-```bash
-cmake -DCLANG_FORMAT_EXE=<path/to/executable> ..
-```
+    cmake -DCLANG_FORMAT_EXE=<path/to/executable> ..
 
 In case you want to preserve the special formatting of a particular code block
 such as a matrix intialization add the `// clang-format off` and `//
