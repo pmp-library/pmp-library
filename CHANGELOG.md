@@ -8,6 +8,10 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+### Eigen
+
+- Upgrade Eigen to current master version to get rid of a compile error on Windows
+
 ### Added
 
 - Add constructors using initializer lists to Matrix/Vector classes
