@@ -62,7 +62,7 @@ bool MeshViewer::load_mesh(const char* filename)
         // set draw mode
         if (mesh_.n_faces())
         {
-            set_draw_mode("Solid Smooth");
+            set_draw_mode("Smooth Shading");
         }
         else if (mesh_.n_vertices())
         {
