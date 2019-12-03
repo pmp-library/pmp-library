@@ -282,7 +282,6 @@ void SurfaceParameterization::lscm()
         dvec3 c = (dvec3)pos[mesh_.to_vertex(hc)];
 
         // calculate local coordinate system
-        //dvec3 z = cross(c - b, a - b);
         dvec3 z = normalize(cross(normalize(c-b), normalize(a-b)));
         dvec3 x = normalize(b - a);
         dvec3 y = normalize(cross(z, x));
@@ -298,7 +297,8 @@ void SurfaceParameterization::lscm()
         if (area)
             area = 1.0 / area;
 
-        area = 1.0;
+        // uncommend the following line if your meshes are very bad...
+        //area = 1.0;
 
         // calculate W_j,Ti (index by corner a,b,c and real/imaginary)
         double w_ar = c2d[0] - b2d[0];
