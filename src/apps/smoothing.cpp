@@ -91,9 +91,18 @@ void Viewer::process_imgui()
 
         if (ImGui::Button("Implicit Smoothing"))
         {
+            // does the mesh have a boundary?
+            bool has_boundary=false;
+            for (auto v: mesh_.vertices())
+                if (mesh_.is_boundary(v))
+                    has_boundary = true;
+
+            // only re-scale if we don't have a (fixed) boundary
+            bool rescale = !has_boundary;
+
             Scalar dt =
                 uniform_laplace ? timestep : timestep * radius_ * radius_;
-            smoother_.implicit_smoothing(dt, uniform_laplace);
+            smoother_.implicit_smoothing(dt, uniform_laplace, rescale);
             update_mesh();
         }
     }
