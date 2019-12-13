@@ -1662,6 +1662,11 @@ public:
     //! to call garbage_collection() to finally remove them.
     void collapse(Halfedge h);
 
+    //! Remove edge and merge its two incident faces into one.
+    //! This operation requires that the edge has two incident faces
+    //! and that these two are not equal.
+    bool remove_edge(Edge e);
+
     //! Split the face \c f by first adding point \c p to the mesh and then
     //! inserting edges between \c p and the vertices of \c f. For a triangle
     //! this is a standard one-to-three split.
@@ -1854,10 +1859,10 @@ private:
     void adjust_outgoing_halfedge(Vertex v);
 
     //! Helper for halfedge collapse
-    void remove_edge(Halfedge h);
+    void remove_edge_helper(Halfedge h);
 
     //! Helper for halfedge collapse
-    void remove_loop(Halfedge h);
+    void remove_loop_helper(Halfedge h);
 
     //! are there any deleted entities?
     inline bool has_garbage() const { return has_garbage_; }
