@@ -117,6 +117,7 @@ private:
 
     //! shaders
     Shader phong_shader_;
+    Shader matcap_shader_;
 
     //! material properties
     vec3 front_color_, back_color_;

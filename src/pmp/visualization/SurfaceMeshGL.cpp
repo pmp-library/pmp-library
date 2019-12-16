@@ -9,6 +9,7 @@
 
 #include <pmp/visualization/SurfaceMeshGL.h>
 #include <pmp/visualization/PhongShader.h>
+#include <pmp/visualization/MatCapShader.h>
 #include <pmp/visualization/ColdWarmTexture.h>
 #include <pmp/algorithms/SurfaceNormals.h>
 
@@ -67,15 +68,6 @@ SurfaceMeshGL::~SurfaceMeshGL()
     glDeleteVertexArrays(1, &vertex_array_object_);
     glDeleteTextures(1, &texture_);
 }
-
-//-----------------------------------------------------------------------------
-
-//void SurfaceMeshGL::useTexture(GLuint texID)
-//{
-//glDeleteTextures(1, &texture_);
-//texture_     = texID;
-//texture_mode_ = OtherTexture;
-//}
 
 //-----------------------------------------------------------------------------
 
@@ -477,6 +469,13 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             exit(1);
     }
 
+    // load shader?
+    if (!matcap_shader_.is_valid())
+    {
+        if (!matcap_shader_.source(matcap_vshader, matcap_fshader))
+            exit(1);
+    }
+
     // we need some texture, otherwise WebGL complains
     if (!texture_)
     {
@@ -546,6 +545,20 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     {
         if (n_faces())
         {
+            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+        }
+    }
+
+    else if (draw_mode == "MatCap")
+    {
+        if (n_faces())
+        {
+            matcap_shader_.use();
+            matcap_shader_.set_uniform("modelview_projection_matrix", mvp_matrix);
+            matcap_shader_.set_uniform("modelview_matrix", mv_matrix);
+            matcap_shader_.set_uniform("normal_matrix", n_matrix);
+            matcap_shader_.set_uniform("alpha", alpha_);
+            glBindTexture(GL_TEXTURE_2D, texture_);
             glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
         }
     }
