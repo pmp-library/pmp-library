@@ -121,11 +121,9 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
 
 bool SurfaceMeshGL::load_matcap(const char* filename)
 {
-    std::cout << "A";
     if (!load_texture(filename, GL_RGB, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE))
         return false;
 
-    std::cout << "B";
     texture_mode_ = MatCapTexture;
     return true;
 }

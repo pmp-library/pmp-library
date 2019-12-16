@@ -86,7 +86,6 @@ bool MeshViewer::load_mesh(const char* filename)
 
 bool MeshViewer::load_matcap(const char* filename)
 {
-    std::cerr << "hahah";
     if (!mesh_.load_matcap(filename))
         return false;
     set_draw_mode("Texture");

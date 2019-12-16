@@ -75,12 +75,10 @@ int main(int argc, char** argv)
     viewer.load_mesh(input);
     if (texture)
     {
-        std::cout << "load texture " << texture << std::endl;
         viewer.load_texture(texture, GL_SRGB8);
     }
     else if (matcap)
     {
-        std::cout << "load matcap " << matcap << std::endl;
         viewer.load_matcap(matcap);
     }
 
