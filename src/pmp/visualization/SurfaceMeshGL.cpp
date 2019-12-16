@@ -119,6 +119,19 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
 
 //-----------------------------------------------------------------------------
 
+bool SurfaceMeshGL::load_matcap(const char* filename)
+{
+    std::cout << "A";
+    if (!load_texture(filename, GL_RGB, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE))
+        return false;
+
+    std::cout << "B";
+    texture_mode_ = MatCapTexture;
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
 void SurfaceMeshGL::use_cold_warm_texture()
 {
     if (texture_mode_ != ColdWarmTexture)
@@ -549,30 +562,28 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
         }
     }
 
-    else if (draw_mode == "MatCap")
-    {
-        if (n_faces())
-        {
-            matcap_shader_.use();
-            matcap_shader_.set_uniform("modelview_projection_matrix", mvp_matrix);
-            matcap_shader_.set_uniform("modelview_matrix", mv_matrix);
-            matcap_shader_.set_uniform("normal_matrix", n_matrix);
-            matcap_shader_.set_uniform("alpha", alpha_);
-            glBindTexture(GL_TEXTURE_2D, texture_);
-            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
-        }
-    }
-
     else if (draw_mode == "Texture")
     {
         if (n_faces())
         {
-            phong_shader_.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
-            phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
-            phong_shader_.set_uniform("use_texture", true);
-            phong_shader_.set_uniform("use_srgb", srgb_);
-            glBindTexture(GL_TEXTURE_2D, texture_);
-            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            if (texture_mode_ == MatCapTexture)
+            {
+                matcap_shader_.use();
+                matcap_shader_.set_uniform("modelview_projection_matrix", mvp_matrix);
+                matcap_shader_.set_uniform("normal_matrix", n_matrix);
+                matcap_shader_.set_uniform("alpha", alpha_);
+                glBindTexture(GL_TEXTURE_2D, texture_);
+                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            }
+            else
+            {
+                phong_shader_.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
+                phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
+                phong_shader_.set_uniform("use_texture", true);
+                phong_shader_.set_uniform("use_srgb", srgb_);
+                glBindTexture(GL_TEXTURE_2D, texture_);
+                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            }
         }
     }
 

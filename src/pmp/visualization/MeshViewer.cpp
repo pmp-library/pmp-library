@@ -29,7 +29,6 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
     add_draw_mode("Points");
     add_draw_mode("Hidden Line");
     add_draw_mode("Smooth Shading");
-    add_draw_mode("MatCap");
     add_draw_mode("Texture");
     set_draw_mode("Smooth Shading");
 
@@ -81,6 +80,17 @@ bool MeshViewer::load_mesh(const char* filename)
 
     std::cerr << "Failed to read mesh from " << filename << " !" << std::endl;
     return false;
+}
+
+//-----------------------------------------------------------------------------
+
+bool MeshViewer::load_matcap(const char* filename)
+{
+    std::cerr << "hahah";
+    if (!mesh_.load_matcap(filename))
+        return false;
+    set_draw_mode("Texture");
+    return true;
 }
 
 //-----------------------------------------------------------------------------

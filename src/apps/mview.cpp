@@ -19,6 +19,7 @@ void usage_and_exit()
               << "Options\n"
               << " -g:  show GUI controls (toggle with 'g')\n"
               << " -t:  specify texture image (mesh has to provide texture coordinates)\n"
+              << " -m:  specify matcap image\n"
               << "\n";
     exit(1);
 }
@@ -29,6 +30,7 @@ int main(int argc, char** argv)
 {
     char* input   = nullptr;
     char* texture = nullptr;
+    char* matcap  = nullptr;
     bool gui      = false;
 
     // parse command line parameters
@@ -43,6 +45,14 @@ int main(int argc, char** argv)
             if (i+1 < argc)
             {
                 texture = argv[i+1];
+                ++i;
+            }
+        }
+        else if (std::string(argv[i]) == std::string("-m"))
+        {
+            if (i+1 < argc)
+            {
+                matcap = argv[i+1];
                 ++i;
             }
         }
@@ -64,7 +74,16 @@ int main(int argc, char** argv)
     MeshViewer viewer("MeshViewer", 800, 600, gui);
     viewer.load_mesh(input);
     if (texture)
+    {
+        std::cout << "load texture " << texture << std::endl;
         viewer.load_texture(texture, GL_SRGB8);
+    }
+    else if (matcap)
+    {
+        std::cout << "load matcap " << matcap << std::endl;
+        viewer.load_matcap(matcap);
+    }
+
     return viewer.run();
 }
 

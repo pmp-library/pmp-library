@@ -99,6 +99,14 @@ public:
                       GLint mag_filter = GL_LINEAR,
                       GLint wrap = GL_CLAMP_TO_EDGE);
 
+    //! load mat-cap texture from file
+    //! \param filename the location and name of the texture
+    //! \param min_filter interpolation filter for minification
+    //! \param mag_filter interpolation filter for magnification
+    //! \param wrap texture coordinates wrap preference
+    bool load_matcap(const char* filename);
+
+
 private:
     //! OpenGL buffers
     GLuint vertex_array_object_;
@@ -131,6 +139,7 @@ private:
     {
         ColdWarmTexture,
         CheckerboardTexture,
+        MatCapTexture,
         OtherTexture
     } texture_mode_;
 };
