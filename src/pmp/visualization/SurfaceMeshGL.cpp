@@ -78,7 +78,7 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     int width, height, nComponents;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* img =
-        stbi_load(filename, &width, &height, &nComponents, 3); // enforce RGB
+        stbi_load(filename, &width, &height, &nComponents, 4); // enforce RGBA
     if (!img)
         return false;
 
@@ -92,7 +92,7 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     // upload texture data
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB,
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA,
                  GL_UNSIGNED_BYTE, img);
 
     // set texture parameters
@@ -121,7 +121,7 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
 
 bool SurfaceMeshGL::load_matcap(const char* filename)
 {
-    if (!load_texture(filename, GL_RGB, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE))
+    if (!load_texture(filename, GL_RGBA, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE))
         return false;
 
     texture_mode_ = MatCapTexture;

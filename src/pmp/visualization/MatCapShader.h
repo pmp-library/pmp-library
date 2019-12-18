@@ -49,8 +49,9 @@ static const char* matcap_fshader =
     "\n"
     "void main()\n"
     "{\n"
-    "    vec3 rgb = texture(matcap, v2f_texcoord.xy).rgb;\n"
-    "    f_color  = vec4(rgb, alpha);\n"
+    "    vec4 rgba = texture(matcap, v2f_texcoord.xy);\n"
+    "    rgba.a *= alpha;\n"
+    "    f_color = rgba;\n"
     "}";
 
 
