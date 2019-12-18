@@ -1662,6 +1662,9 @@ public:
     //! to call garbage_collection() to finally remove them.
     void collapse(Halfedge h);
 
+    //! returns whether removing the edge \c e is topologically legal.
+    bool is_removal_ok(Edge e);
+
     //! Remove edge and merge its two incident faces into one.
     //! This operation requires that the edge has two incident faces
     //! and that these two are not equal.

@@ -965,8 +965,33 @@ bool SurfaceMesh::is_collapse_ok(Halfedge v0v1)
 
 //-----------------------------------------------------------------------------
 
+bool SurfaceMesh::is_removal_ok(Edge e)
+{
+    Halfedge h0 = halfedge(e, 0);
+    Halfedge h1 = halfedge(e, 1);
+    Face f0 = face(h0);
+    Face f1 = face(h1);
+
+    // boundary?
+    if (!f0.is_valid() || !f1.is_valid()) return false;
+
+    // same face?
+    if (f0 == f1) return false;
+
+    // are the two faces connect through another edge?
+    for (auto h: halfedges(f0))
+        if (h != h0 && face(opposite_halfedge(h)) == f1)
+            return false;
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
 bool SurfaceMesh::remove_edge(Edge e)
 {
+    if (!is_removal_ok(e)) return false;
+
     Halfedge h0 = halfedge(e, 0);
     Halfedge h1 = halfedge(e, 1);
 
@@ -975,11 +1000,6 @@ bool SurfaceMesh::remove_edge(Edge e)
 
     Face f0 = face(h0);
     Face f1 = face(h1);
-
-    // boundary?
-    if (!f0.is_valid() || !f1.is_valid()) return false;
-    // same face?
-    if (f0 == f1) return false;
 
     Halfedge h0_prev = prev_halfedge(h0);
     Halfedge h0_next = next_halfedge(h0);

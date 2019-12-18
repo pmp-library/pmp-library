@@ -75,16 +75,19 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
                 Point  p0 = mesh_.position(v0);
                 Point  p1 = mesh_.position(v1);
                 l = distance(p0,p1);
-                if (l > ll)
+                if (l > ll && mesh_.is_removal_ok(e))
                 {
                     ll = l;
                     ee = e;
                 }
             }
 
-            std::cout << "Merge faces incident to edge " << ee << std::endl;
-            mesh_.remove_edge(ee);
-            update_mesh();
+            if (ee.is_valid())
+            {
+                std::cout << "Merge faces incident to edge " << ee << std::endl;
+                mesh_.remove_edge(ee);
+                update_mesh();
+            }
             break;
         }
 
