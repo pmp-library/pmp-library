@@ -969,8 +969,10 @@ bool SurfaceMesh::is_removal_ok(Edge e)
 {
     Halfedge h0 = halfedge(e, 0);
     Halfedge h1 = halfedge(e, 1);
-    Face f0 = face(h0);
-    Face f1 = face(h1);
+    Vertex   v0 = to_vertex(h0);
+    Vertex   v1 = to_vertex(h1);
+    Face     f0 = face(h0);
+    Face     f1 = face(h1);
 
     // boundary?
     if (!f0.is_valid() || !f1.is_valid()) return false;
@@ -978,10 +980,12 @@ bool SurfaceMesh::is_removal_ok(Edge e)
     // same face?
     if (f0 == f1) return false;
 
-    // are the two faces connect through another edge?
-    for (auto h: halfedges(f0))
-        if (h != h0 && face(opposite_halfedge(h)) == f1)
-            return false;
+    // are the two faces connect through another vertex?
+    for (auto v: vertices(f0))
+        if (v != v0 && v != v1)
+            for (auto f: faces(v))
+                if (f == f1)
+                    return false;
 
     return true;
 }
