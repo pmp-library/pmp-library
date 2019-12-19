@@ -48,7 +48,6 @@
               { 
                   // we are in an iframe which has 'controls' property
                   // start with '-g', which shows gui controls
-                  console.log("show gui");
                   Module.arguments.push("-g");
               }
 
@@ -65,10 +64,20 @@
               if ( modelFileName )
               {
                   var filename = modelFileName.split('/').pop();
-                  console.log("reading " + modelFileName);
-                  Module.arguments.push(filename);
+                  Module.arguments = [filename];
                   FS.createPreloadedFile('./', filename, modelFileName, true, false);
               }
+
+              // matcap specified as iframe attribute?
+              if (window.frameElement && window.frameElement.hasAttribute("material"))
+              {
+                  var matFileName = window.frameElement.getAttribute("material");
+                  var filename = matFileName.split('/').pop();
+                  Module.arguments.push("-m");
+                  Module.arguments.push(filename);
+                  FS.createPreloadedFile('./', filename, matFileName, true, false);
+              }
+
           }],
         
           postRun: [],
