@@ -82,6 +82,12 @@ SurfaceMeshGL::~SurfaceMeshGL()
 bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
                                  GLint min_filter, GLint mag_filter, GLint wrap)
 {
+#ifdef __EMSCRIPTEN__
+    // emscripen/WebGL does not like mapmapping for SRGB textures
+    if (min_filter==GL_LINEAR_MIPMAP_LINEAR && format==GL_SRGB8)
+        min_filter = GL_LINEAR;
+#endif
+
     // load with stb_image
     int width, height, nComponents;
     stbi_set_flip_vertically_on_load(true);
@@ -100,20 +106,19 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     // upload texture data
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, img);
-
-    // set texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
 
     // compute mipmaps
     if (min_filter == GL_LINEAR_MIPMAP_LINEAR)
     {
         glGenerateMipmap(GL_TEXTURE_2D);
     }
+
+    // set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
     // use SRGB rendering?
     srgb_ = (format == GL_SRGB8);
