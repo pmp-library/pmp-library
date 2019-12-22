@@ -31,46 +31,65 @@
       var statusElement = document.getElementById('status');
       var progressElement = document.getElementById('progress');
 
-      function getUrlVars() 
+
+      // collect arguments from parent iframe and location.search
+      var vars = {};
+      window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,name,value) {
+          vars[name] = value;
+      });
+      if (window.frameElement && window.frameElement.hasAttributes())
       {
-          var vars = {};
-          var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-              vars[key] = value;
-          });
-          return vars;
+          var attrs = window.frameElement.attributes;
+          for ( var i=0; i<attrs.length; i++)
+            vars[attrs[i].name] = attrs[i].value;
       }
+
+
+      // here we collect the command line arguments to pass to the main function
+      var argv = [];
 
       var Module = {
 
           preRun: [ function(){
-              // GUI controls speficied as iframe attribute?
-              if (window.frameElement && window.frameElement.hasAttribute("controls"))
+
+              // show imgui controls?
+              if (vars['controls'])
               { 
-                  // we are in an iframe which has 'controls' property
-                  // start with '-g', which shows gui controls
-                  console.log("show gui");
-                  Module.arguments.push("-g");
+                  argv.push("-g");
               }
 
-              // filename specified as URI query?
-              var modelFileName = getUrlVars()["model"];
-
-              // filename specified as iframe attribute?
-              if (!modelFileName && window.frameElement && window.frameElement.hasAttribute("model"))
+              // model to be loaded 
+              if (vars['model'])
               {
-                  modelFileName = window.frameElement.getAttribute("model");
-              }
-
-              // do we have a filename?
-              if ( modelFileName )
-              {
+                  var modelFileName = vars['model'];
                   var filename = modelFileName.split('/').pop();
-                  console.log("reading " + modelFileName);
-                  Module.arguments.push(filename);
                   FS.createPreloadedFile('./', filename, modelFileName, true, false);
+                  argv.push(filename);
+              }
+
+              // matcap to be used
+              if (vars['material'])
+              {
+                  var matFileName = vars['material'];
+                  var filename = matFileName.split('/').pop();
+                  FS.createPreloadedFile('./', filename, matFileName, true, false);
+                  argv.push("-m");
+                  argv.push(filename);
+              }
+
+              // texture to be used
+              if (vars['texture'])
+              {
+                  var texFileName = vars['texture'];
+                  var filename = texFileName.split('/').pop();
+                  FS.createPreloadedFile('./', filename, texFileName, true, false);
+                  argv.push("-t");
+                  argv.push(filename);
               }
           }],
-        
+       
+          arguments: argv,
+
           postRun: [],
 
           print: function(text) {
