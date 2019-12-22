@@ -76,15 +76,42 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
 {
 #ifdef __EMSCRIPTEN__
     // emscripen/WebGL does not like mapmapping for SRGB textures
-    if (min_filter==GL_LINEAR_MIPMAP_LINEAR && format==GL_SRGB8)
+    if ((min_filter==GL_NEAREST_MIPMAP_NEAREST ||
+         min_filter==GL_NEAREST_MIPMAP_LINEAR ||
+         min_filter==GL_LINEAR_MIPMAP_NEAREST ||
+         min_filter==GL_LINEAR_MIPMAP_LINEAR) &&
+        (format==GL_SRGB8))
         min_filter = GL_LINEAR;
 #endif
 
+    // choose number of components (RGB or RGBA) based on format
+    int    loadComponents;
+    GLint  loadFormat;
+    switch(format)
+    {
+        case GL_RGB:
+        case GL_SRGB8:
+            loadComponents = 3;
+            loadFormat     = GL_RGB;
+            break;
+
+        case GL_RGBA:
+        case GL_SRGB8_ALPHA8:
+            loadComponents = 4;
+            loadFormat     = GL_RGBA;
+            break;
+
+        default:
+            loadComponents = 3;
+            loadFormat     = GL_RGB;
+    }
+
+
     // load with stb_image
-    int width, height, nComponents;
+    int width, height, n;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* img =
-        stbi_load(filename, &width, &height, &nComponents, 4); // enforce RGBA
+        stbi_load(filename, &width, &height, &n, loadComponents);
     if (!img)
         return false;
 
@@ -98,7 +125,7 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     // upload texture data
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, loadFormat, GL_UNSIGNED_BYTE, img);
 
     // compute mipmaps
     if (min_filter == GL_LINEAR_MIPMAP_LINEAR)
