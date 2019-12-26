@@ -225,9 +225,6 @@ void TrackballViewer::init()
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glEnable(GL_DEPTH_TEST);
 
-    // allow for transparent objects
-    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
-
     // init modelview
     modelview_matrix_ = mat4::identity();
 

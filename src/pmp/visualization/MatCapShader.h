@@ -13,9 +13,13 @@
 // spherical environment mapping is just the normal's XY
 // scaled by 0.5 and shifted by 0.5.
 // scale by 0.49 to avoid artifacts at gracing angles
-static const char* matcap_vshader = R"glsl(
-#version 300 es
-
+static const char* matcap_vshader = 
+#ifndef __EMSCRIPTEN__
+    "#version 330"
+#else
+    "#version 300 es"
+#endif
+R"glsl(
 layout (location=0) in vec4 v_position;
 layout (location=1) in vec3 v_normal;
 out vec2 v2f_texcoord;
@@ -27,12 +31,17 @@ void main()
     vec3 n = normalize(normal_matrix * v_normal);
     v2f_texcoord = 0.49 * n.xy + 0.5;
     gl_Position = modelview_projection_matrix * v_position;
-};
+}
 )glsl";
 
 
-static const char* matcap_fshader = R"glsl(
-#version 300 es
+static const char* matcap_fshader = 
+#ifndef __EMSCRIPTEN__
+    "#version 330"
+#else
+    "#version 300 es"
+#endif
+R"glsl(
 precision mediump float;
 
 in vec2 v2f_texcoord;
@@ -45,7 +54,7 @@ void main()
     vec4 rgba = texture(matcap, v2f_texcoord.xy);
     rgba.a *= alpha;
     f_color = rgba;
-};
+}
 )glsl";
 
 

@@ -41,7 +41,7 @@ SurfaceMeshGL::SurfaceMeshGL()
 
     // material parameters
     front_color_ = vec3(0.6, 0.6, 0.6);
-    back_color_ = vec3(0.5, 0.0, 0.0);
+    back_color_ = 0.3 * front_color_;
     ambient_ = 0.1;
     diffuse_ = 0.8;
     specular_ = 0.6;
@@ -529,6 +529,9 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     if (is_empty())
         return;
 
+    // allow for transparent objects
+    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+
     // setup matrices
     mat4 mv_matrix = modelview_matrix;
     mat4 mvp_matrix = projection_matrix * modelview_matrix;
@@ -571,6 +574,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             // draw faces
             glDepthRange(0.01, 1.0);
             glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
             // overlay edges
             glDepthRange(0.0, 1.0);
@@ -654,6 +658,9 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glDepthFunc(GL_LESS);
     }
+
+    // disable transparency (doesn't work well with imgui)
+    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     glBindVertexArray(0);
     glCheckError();

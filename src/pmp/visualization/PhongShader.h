@@ -9,9 +9,13 @@
 
 // clang-format off
 
-static const char* phong_vshader = R"glsl(
-#version 300 es
-
+static const char* phong_vshader = 
+#ifndef __EMSCRIPTEN__
+    "#version 330"
+#else
+    "#version 300 es"
+#endif
+R"glsl(
 layout (location=0) in vec4 v_position;
 layout (location=1) in vec3 v_normal;
 layout (location=2) in vec2 v_tex;
@@ -34,12 +38,17 @@ void main()
     v2f_view     = -(modelview_matrix * pos).xyz;
     gl_PointSize = point_size;
     gl_Position  = modelview_projection_matrix * pos;
-};
+}
 )glsl";
 
 
-static const char* phong_fshader = R"glsl(
-#version 300 es
+static const char* phong_fshader = 
+#ifndef __EMSCRIPTEN__
+    "#version 330"
+#else
+    "#version 300 es"
+#endif
+R"glsl(
 precision mediump float;
 
 in vec3  v2f_normal;
@@ -65,26 +74,25 @@ out vec4 f_color;
 
 void main()
 {
-    vec3 L1 = normalize(light1);
-    vec3 L2 = normalize(light2);
-    vec3 V  = normalize(v2f_view);
-    vec3 N  = normalize(v2f_normal);
-
     vec3 color = front_color;
     vec3 rgb;
 
-    // front-facing or back-facing?
-    // (gl_FrontFacing does not work with Apple's shitty OpenGL drivers)
-    if (dot(N,V) < 0.0) 
-    {
-        N = -N;
-        color = back_color;
-    }
-
     if (use_lighting)
     {
-        vec3  R;
+        vec3 L1 = normalize(light1);
+        vec3 L2 = normalize(light2);
+        vec3 V  = normalize(v2f_view);
+        vec3 N  = normalize(v2f_normal);
+        vec3 R;
         float NL, RV;
+
+        // front-facing or back-facing?
+        // (gl_FrontFacing does not work with Apple's shitty OpenGL drivers)
+        if (dot(N,V) < 0.0) 
+        {
+            N = -N;
+            color = back_color;
+        }
 
         rgb = ambient * 0.1 * color;
 
@@ -123,7 +131,7 @@ void main()
     if (use_srgb)    rgb  = pow(clamp(rgb, 0.0, 1.0), vec3(0.45));
 
     f_color = vec4(rgb, alpha);
-};
+}
 )glsl";
 
 
