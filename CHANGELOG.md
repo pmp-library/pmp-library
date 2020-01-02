@@ -15,6 +15,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 ### Added
 
 - Add constructors using initializer lists to Matrix/Vector classes
+- Add assignment from and cast from Eigen matrices and vectors
 
 ### Fixed
 

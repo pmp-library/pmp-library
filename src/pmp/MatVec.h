@@ -15,6 +15,7 @@
 #include <assert.h>
 #include <limits>
 #include <initializer_list>
+#include <Eigen/Dense>
 
 //=============================================================================
 
@@ -164,6 +165,38 @@ public:
     {
         for (int i = 0; i < size(); ++i)
             data_[i] = static_cast<Scalar>(m[i]);
+    }
+
+    //! assign from Eigen
+    template <typename Derived>
+    Matrix<Scalar, M, N>& operator=(const Eigen::MatrixBase<Derived>& m)
+    {
+        // don't distinguish between row and column vectors
+        if (m.rows()==1 || m.cols()==1)
+        {
+            assert( m.size()==size() );
+            for (int i = 0; i < size(); ++i)
+                (*this)[i] = m[i];
+        }
+        else
+        {
+            assert(m.rows()==rows() && m.cols()==cols());
+            for (int i = 0; i < rows(); ++i)
+                for (int j = 0; j < cols(); ++j)
+                    (*this)(i,j) = m(i,j);
+        }
+        return *this;
+    }
+
+    //! cast to Eigen
+    template <typename OtherScalar>
+    operator Eigen::Matrix<OtherScalar, M, N>() const
+    {
+        Eigen::Matrix<OtherScalar, M, N> m;
+        for (int i = 0; i < rows(); ++i)
+            for (int j = 0; j < cols(); ++j)
+                m(i,j) = static_cast<OtherScalar>((*this)(i,j));
+        return m;
     }
 
     //! return identity matrix (only for square matrices, N==M)

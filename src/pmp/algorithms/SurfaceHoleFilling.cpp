@@ -456,9 +456,7 @@ void SurfaceHoleFilling::relaxation()
         else
             triplets.emplace_back(i, idx[v], c);
 
-        B(i, 0) = b[0];
-        B(i, 1) = b[1];
-        B(i, 2) = b[2];
+        B.row(i) = (Eigen::Vector3d) b;
     }
 
     // solve least squares system
@@ -477,10 +475,7 @@ void SurfaceHoleFilling::relaxation()
     // copy solution to mesh vertices
     for (int i = 0; i < n; ++i)
     {
-        Vertex v = vertices[i];
-        points_[v][0] = X(i, 0);
-        points_[v][1] = X(i, 1);
-        points_[v][2] = X(i, 2);
+        points_[vertices[i]] = X.row(i);
     }
 
     // clean up
