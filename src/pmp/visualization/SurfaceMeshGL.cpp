@@ -11,9 +11,9 @@
 #include <pmp/visualization/PhongShader.h>
 #include <pmp/visualization/ColdWarmTexture.h>
 #include <pmp/algorithms/SurfaceNormals.h>
+#include <pmp/Timer.h>
 
 #include <stb_image.h>
-#include <cfloat>
 
 //=============================================================================
 
@@ -216,6 +216,8 @@ void SurfaceMeshGL::set_crease_angle(Scalar ca)
 
 void SurfaceMeshGL::update_opengl_buffers()
 {
+    Timer timer; timer.start();
+
     // are buffers already initialized?
     if (!vertex_array_object_)
     {
@@ -244,6 +246,7 @@ void SurfaceMeshGL::update_opengl_buffers()
     std::vector<vec3> positionArray;
     std::vector<vec3> normalArray;
     std::vector<vec2> texArray;
+    std::vector<ivec3> triangles;
 
     // we have a mesh: fill arrays by looping over faces
     if (n_faces())
@@ -273,7 +276,9 @@ void SurfaceMeshGL::update_opengl_buffers()
         // data per face (for all corners)
         std::vector<Halfedge> cornerHalfedges;
         std::vector<Vertex> cornerVertices;
+        std::vector<vec3> cornerPositions;
         std::vector<vec3> cornerNormals;
+        std::vector<vec2> cornerTexCoords;
 
         // convert from degrees to radians
         const Scalar creaseAngle = crease_angle_ / 180.0 * M_PI;
@@ -286,16 +291,18 @@ void SurfaceMeshGL::update_opengl_buffers()
             // collect corner positions and normals
             cornerHalfedges.clear();
             cornerVertices.clear();
+            cornerPositions.clear();
             cornerNormals.clear();
+            cornerTexCoords.clear();
             Vertex v;
             Normal n;
 
             for (auto h : halfedges(f))
             {
-                cornerHalfedges.push_back(h);
-
                 v = to_vertex(h);
+                cornerHalfedges.push_back(h);
                 cornerVertices.push_back(v);
+                cornerPositions.push_back((vec3)vpos[v]);
 
                 if (crease_angle_ < 1)
                 {
@@ -311,32 +318,45 @@ void SurfaceMeshGL::update_opengl_buffers()
                                                               creaseAngle);
                 }
                 cornerNormals.push_back((vec3)n);
+
+                if (htex)
+                {
+                    cornerTexCoords.push_back((vec2) htex[h]);
+                }
+                else if (vtex)
+                {
+                    cornerTexCoords.push_back((vec2) vtex[v]);
+                }
             }
             assert(cornerVertices.size() >= 3);
 
             // tessellate face into triangles
+#if 0
             int i0, i1, i2, nc = cornerVertices.size();
             for (i0 = 0, i1 = 1, i2 = 2; i2 < nc; ++i1, ++i2)
             {
-                positionArray.push_back((vec3)vpos[cornerVertices[i0]]);
-                positionArray.push_back((vec3)vpos[cornerVertices[i1]]);
-                positionArray.push_back((vec3)vpos[cornerVertices[i2]]);
+#else
+            triangulate(cornerPositions, triangles);
+            for (auto& t: triangles)
+            {
+                int i0 = t[0];
+                int i1 = t[1];
+                int i2 = t[2];
+#endif
 
-                normalArray.push_back((vec3)cornerNormals[i0]);
-                normalArray.push_back((vec3)cornerNormals[i1]);
-                normalArray.push_back((vec3)cornerNormals[i2]);
+                positionArray.push_back(cornerPositions[i0]);
+                positionArray.push_back(cornerPositions[i1]);
+                positionArray.push_back(cornerPositions[i2]);
 
-                if (htex)
+                normalArray.push_back(cornerNormals[i0]);
+                normalArray.push_back(cornerNormals[i1]);
+                normalArray.push_back(cornerNormals[i2]);
+
+                if (htex || vtex)
                 {
-                    texArray.push_back((vec2)htex[cornerHalfedges[i0]]);
-                    texArray.push_back((vec2)htex[cornerHalfedges[i1]]);
-                    texArray.push_back((vec2)htex[cornerHalfedges[i2]]);
-                }
-                else if (vtex)
-                {
-                    texArray.push_back((vec2)vtex[cornerVertices[i0]]);
-                    texArray.push_back((vec2)vtex[cornerVertices[i1]]);
-                    texArray.push_back((vec2)vtex[cornerVertices[i2]]);
+                    texArray.push_back(cornerTexCoords[i0]);
+                    texArray.push_back(cornerTexCoords[i1]);
+                    texArray.push_back(cornerTexCoords[i2]);
                 }
 
                 vertex_indices[cornerVertices[i0]] = vidx++;
@@ -456,6 +476,9 @@ void SurfaceMeshGL::update_opengl_buffers()
 
     // remove vertex index property again
     remove_vertex_property(vertex_indices);
+
+    timer.stop();
+    std::cout << "Update mesh took " << timer << std::endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -603,6 +626,104 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
 
     glBindVertexArray(0);
     glCheckError();
+}
+
+//-----------------------------------------------------------------------------
+
+void SurfaceMeshGL::triangulate(const std::vector<vec3>& points, 
+                                std::vector<ivec3>& triangles)
+{
+    const int n = points.size();
+
+    triangles.clear();
+    triangles.reserve(n-2);
+
+    // triangle? nothing to do
+    if (n==3)
+    {
+        triangles.push_back( ivec3(0,1,2) );
+        return;
+    }
+
+    // quad? simply compare to two options
+    else if (n==4)
+    {
+        if (area(points[0], points[1], points[2]) +
+            area(points[0], points[2], points[3]) <
+            area(points[0], points[1], points[3]) +
+            area(points[1], points[2], points[3]))
+        {
+            triangles.push_back( ivec3(0,1,2) );
+            triangles.push_back( ivec3(0,2,3) );
+        }
+        else
+        {
+            triangles.push_back( ivec3(0,1,3) );
+            triangles.push_back( ivec3(1,2,3) );
+        }
+        return;
+    }
+
+
+    // n-gon with n>4? compute triangulation by dynamic programming
+    init_triangulation(n);
+    int i, j, m, k, imin;
+    Scalar w, wmin;
+
+    // initialize 2-gons
+    for (i=0; i<n-1; ++i)
+    {
+        triangulation(i, i+1) = Triangulation(0.0, -1);
+    }
+
+    // n-gons with n>2
+    for (j=2; j<n; ++j)
+    {
+        // for all n-gons [i,i+j]
+        for (i=0; i<n-j; ++i)
+        {
+            k = i + j;
+
+            wmin = FLT_MAX;
+            imin = -1;
+
+            // find best split i < m < i+j
+            for (m = i + 1; m < k; ++m)
+            {
+                w = triangulation(i,m).area + 
+                    area(points[i], points[m], points[k]) + 
+                    triangulation(m,k).area;
+
+                if (w < wmin)
+                {
+                    wmin = w;
+                    imin = m;
+                }
+            }
+
+            triangulation(i,k) = Triangulation(wmin, imin);
+        }
+    }
+
+    // build triangles from triangulation table
+    std::vector<ivec2> todo;
+    todo.reserve(n);
+    todo.push_back(ivec2(0, n-1));
+    while (!todo.empty())
+    {
+        ivec2 tri = todo.back();
+        todo.pop_back();
+        int start = tri[0];
+        int end = tri[1];
+        if (end - start < 2)
+            continue;
+        int split = triangulation(start, end).split;
+        
+        triangles.push_back( ivec3(start, split, end) );
+
+        todo.push_back(ivec2(start, split));
+        todo.push_back(ivec2(split, end));
+    }
 }
 
 //=============================================================================
