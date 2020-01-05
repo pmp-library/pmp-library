@@ -31,19 +31,32 @@
       var statusElement = document.getElementById('status');
       var progressElement = document.getElementById('progress');
 
-
-      // collect arguments from parent iframe and location.search
-      var vars = {};
-      window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,name,value) {
-          vars[name] = value;
-      });
-      if (window.frameElement && window.frameElement.hasAttributes())
-      {
-          var attrs = window.frameElement.attributes;
-          for ( var i=0; i<attrs.length; i++)
-            vars[attrs[i].name] = attrs[i].value;
+      var urlParams = new URLSearchParams(window.location.search);
+      var frameElem = window.frameElement;
+      
+      function hasParam(name) {
+          if (urlParams && urlParams.has(name))
+              return true;
+          else if (frameElem && frameElem.hasAttribute(name))
+              return true;
+          return false;
       }
-
+      
+      function getParam(name) {
+          if (urlParams && urlParams.has(name))
+              return urlParams.get(name);
+          else if (frameElem && frameElem.hasAttribute(name))
+              return frameElem.getAttribute(name);
+          return undefined;
+      }
+      
+      function getFile(name) {
+          var base = (window.location != window.parent.location) ? document.referrer : document.location.href;
+          var url  = new URL(name, base);
+          var path = url.pathname;
+          var file = path.split('/').pop();
+          return [ file, path ];
+      }
 
       // here we collect the command line arguments to pass to the main function
       var argv = [];
@@ -53,41 +66,38 @@
           preRun: [ function(){
 
               // show imgui controls?
-              if (vars['controls'])
+              if (hasParam('controls'))
               { 
                   argv.push("-g");
               }
 
               // model to be loaded 
-              if (vars['model'])
+              if (hasParam('model'))
               {
-                  var modelFileName = vars['model'];
-                  var filename = modelFileName.split('/').pop();
-                  FS.createPreloadedFile('./', filename, modelFileName, true, false);
+                  var [filename, pathname ] = getFile(getParam('model'));
+                  FS.createPreloadedFile('./', filename, pathname, true, false);
                   argv.push(filename);
               }
 
               // matcap to be used
-              if (vars['material'])
+              if (hasParam('material'))
               {
-                  var matFileName = vars['material'];
-                  var filename = matFileName.split('/').pop();
-                  FS.createPreloadedFile('./', filename, matFileName, true, false);
+                  var [filename, pathname] = getFile(getParam('material'));
+                  FS.createPreloadedFile('./', filename, pathname, true, false);
                   argv.push("-m");
                   argv.push(filename);
               }
 
               // texture to be used
-              if (vars['texture'])
+              if (hasParam('texture'))
               {
-                  var texFileName = vars['texture'];
-                  var filename = texFileName.split('/').pop();
-                  FS.createPreloadedFile('./', filename, texFileName, true, false);
+                  var [filename, pathname] = getFile(getParam('texture'));
+                  FS.createPreloadedFile('./', filename, pathname, true, false);
                   argv.push("-t");
                   argv.push(filename);
               }
           }],
-       
+
           arguments: argv,
 
           postRun: [],
