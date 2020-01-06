@@ -3,8 +3,7 @@ language: cpp
 # configure branches to build
 branches:
   only:
-  - master
-  - develop
+  - /.*/
 
 # build configuration matrix
 matrix:
