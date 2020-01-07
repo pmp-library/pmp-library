@@ -130,7 +130,7 @@ private: // helpers for computing triangulation of a polygon
     }
 
     // compute squared area of triangle. used for triangulate().
-    inline Scalar area(const Point& p0, const Point& p1, const Point& p2) const
+    inline Scalar area(const vec3& p0, const vec3& p1, const vec3& p2) const
     {
         return sqrnorm(cross(p1-p0, p2-p0));
     }
