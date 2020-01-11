@@ -99,11 +99,11 @@ public:
                       GLint mag_filter = GL_LINEAR,
                       GLint wrap = GL_CLAMP_TO_EDGE);
 
-    //! load mat-cap texture from file
+    //! Load mat-cap texture from file. The mat-cap will be used
+    //! whenever the drawing mode is "Texture". This also means
+    //! that you cannot have texture and mat-cap at the same time.
     //! \param filename the location and name of the texture
-    //! \param min_filter interpolation filter for minification
-    //! \param mag_filter interpolation filter for magnification
-    //! \param wrap texture coordinates wrap preference
+    //! \sa See src/apps/mview.cpp for an example usage.
     bool load_matcap(const char* filename);
 
 
