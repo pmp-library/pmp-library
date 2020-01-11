@@ -96,6 +96,17 @@
                   argv.push("-t");
                   argv.push(filename);
               }
+
+              // matcap specified as iframe attribute?
+              if (window.frameElement && window.frameElement.hasAttribute("material"))
+              {
+                  var matFileName = window.frameElement.getAttribute("material");
+                  var filename = matFileName.split('/').pop();
+                  Module.arguments.push("-m");
+                  Module.arguments.push(filename);
+                  FS.createPreloadedFile('./', filename, matFileName, true, false);
+              }
+
           }],
 
           arguments: argv,
