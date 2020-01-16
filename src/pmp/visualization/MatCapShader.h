@@ -22,14 +22,13 @@ static const char* matcap_vshader =
 R"glsl(
 layout (location=0) in vec4 v_position;
 layout (location=1) in vec3 v_normal;
-out vec2 v2f_texcoord;
+out vec3 v2f_normal;
 uniform mat4 modelview_projection_matrix;
 uniform mat3 normal_matrix;
 
 void main()
 {
-    vec3 n = normalize(normal_matrix * v_normal);
-    v2f_texcoord = 0.49 * n.xy + 0.5;
+    v2f_normal = normalize(normal_matrix * v_normal);
     gl_Position = modelview_projection_matrix * v_position;
 }
 )glsl";
@@ -44,14 +43,15 @@ static const char* matcap_fshader =
 R"glsl(
 precision mediump float;
 
-in vec2 v2f_texcoord;
+in vec3 v2f_normal;
 uniform sampler2D matcap;
 uniform float  alpha;
 out vec4 f_color;
 
 void main()
 {
-    vec4 rgba = texture(matcap, v2f_texcoord.xy);
+    vec2 uv = normalize(v2f_normal).xy * 0.49 + 0.5;
+    vec4 rgba = texture(matcap, uv);
     rgba.a *= alpha;
     f_color = rgba;
 }
