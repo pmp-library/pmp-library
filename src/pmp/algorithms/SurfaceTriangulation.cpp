@@ -11,8 +11,6 @@ namespace pmp {
 SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& mesh) : mesh_(mesh)
 {
     points_    = mesh_.vertex_property<Point>("v:point");
-    objective_ = MIN_AREA;
-    objective_ = MAX_ANGLE;
 }
 
 //-----------------------------------------------------------------------------
@@ -42,7 +40,7 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
     {
         if (!mesh_.is_manifold(mesh_.to_vertex(h)))
         {
-            std::cerr << "[SurfaceTriangulation] Non-manifold polygon\n";
+            //std::cout << "[SurfaceTriangulation] Non-manifold polygon\n";
             return;
         }
 
@@ -57,47 +55,36 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
 
     // compute minimal triangulation by dynamic programming
     weight_.clear();
-    weight_.resize(n, std::vector<Scalar>(n, FLT_MAX));
+    weight_.resize(n, std::vector<Weight>(n, Weight()));
     index_.clear();
     index_.resize(n, std::vector<int>(n, 0));
 
     int i, j, m, k, imin;
-    Scalar w, wmin;
+    Weight w, wmin;
 
     // initialize 2-gons
     for (i = 0; i < n - 1; ++i)
     {
-        weight_[i][i + 1] = 0.0;
+        weight_[i][i + 1] = Weight(0,0);
         index_[i][i + 1] = -1;
     }
 
     // n-gons with n>2
     for (j = 2; j < n; ++j)
     {
+        //PMP_SHOW(j);
+
         // for all n-gons [i,i+j]
         for (i = 0; i < n - j; ++i)
         {
             k = i + j;
-            wmin = FLT_MAX;
+            wmin = Weight();
             imin = -1;
 
             // find best split i < m < i+j
             for (m = i + 1; m < k; ++m)
             {
-                switch (objective_)
-                {
-                    case MIN_AREA:
-                        w = weight_[i][m] + compute_weight(i, m, k) + weight_[m][k];
-                        break;
-                    case MAX_ANGLE:
-                        w = std::max(weight_[i][m], std::max(compute_weight(i, m, k), weight_[m][k]));
-                        break;
-                    default:
-                        // should never happen
-                        exit(1);
-                        break;
-                }
-
+                w = weight_[i][m] + compute_weight(i, m, k) + weight_[m][k];
                 if (w < wmin)
                 {
                     wmin = w;
@@ -107,6 +94,7 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
 
             weight_[i][k] = wmin;
             index_[i][k] = imin;
+            //std::cout << "index[" << i << ", " << k << "] = " << imin << std::endl;
         }
     }
 
@@ -141,11 +129,12 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
 
 //-----------------------------------------------------------------------------
 
-Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
+SurfaceTriangulation::Weight SurfaceTriangulation::compute_weight(int i, int j, int k) const
 {
     const Vertex a = vertices_[i];
     const Vertex b = vertices_[j];
     const Vertex c = vertices_[k];
+    Vertex d;
 
     // if one of the potential edges already exists as NON-boundary edge
     // this would result in an invalid triangulation
@@ -155,33 +144,54 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
         //is_interior_edge(b, c) ||
         //is_interior_edge(c, a))
         //return FLT_MAX;
-    if (is_edge(a,b) && is_edge(b,c) && is_edge(c,a))
-        return FLT_MAX;
+    //if (is_edge(a,b) && is_edge(b,c) && is_edge(c,a))
+        //return FLT_MAX;
 
-    const Point& pa = points_[a];
-    const Point& pb = points_[b];
-    const Point& pc = points_[c];
+    // compute area
+    const Scalar area = compute_area(a, b, c);
 
-    Scalar w = FLT_MAX;
-    switch (objective_)
+    // compute dihedral angles with...
+    Scalar angle(0);
+    const Point n = compute_normal(a, b, c);
+
+    // ...neighbor to (i,j)
+    if (i+1 != j)
     {
-        // compute squared triangle area
-        case MIN_AREA:
-            w = sqrnorm(cross(pb-pa, pc-pa));
-            break;
-
-        // compute one over minimum angle
-        // or cosine of minimum angle
-        // maximum cosine (which should then be minimized)
-        case MAX_ANGLE:
-            Scalar cosa = dot(normalize(pb-pa), normalize(pc-pa));
-            Scalar cosb = dot(normalize(pa-pb), normalize(pc-pb));
-            Scalar cosc = dot(normalize(pa-pc), normalize(pb-pc));
-            w = std::max(cosa, std::max(cosb, cosc));
-            break;
+        d = hole_vertex(index_[i][j]);
+        angle = std::max(angle, compute_angle(n, compute_normal(a, d, b)));
     }
 
-    return w;
+    // ...neighbor to (j,k)
+    if (j+1 != k)
+    {
+        d = hole_vertex(index_[j][k]);
+        angle = std::max(angle, compute_angle(n, compute_normal(b, d, c)));
+    }
+
+    return Weight(angle, area);
+}
+
+//-----------------------------------------------------------------------------
+
+Scalar SurfaceTriangulation::compute_area(Vertex _a, Vertex _b, Vertex _c) const
+{
+    return sqrnorm(cross(points_[_b] - points_[_a], points_[_c] - points_[_a]));
+}
+
+//-----------------------------------------------------------------------------
+
+Point SurfaceTriangulation::compute_normal(Vertex _a, Vertex _b, Vertex _c) const
+{
+    return normalize(
+        cross(points_[_b] - points_[_a], points_[_c] - points_[_a]));
+}
+
+//-----------------------------------------------------------------------------
+
+Scalar SurfaceTriangulation::compute_angle(const Point& _n1,
+                                         const Point& _n2) const
+{
+    return (1.0 - dot(_n1, _n2));
 }
 
 //-----------------------------------------------------------------------------
