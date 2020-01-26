@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2018 The pmp-library developers
+// Copyright (C) 2011-2020 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
@@ -13,7 +13,7 @@
 // spherical environment mapping is just the normal's XY
 // scaled by 0.5 and shifted by 0.5.
 // scale by 0.49 to avoid artifacts at gracing angles
-static const char* matcap_vshader = 
+static const char* matcap_vshader =
 #ifndef __EMSCRIPTEN__
     "#version 330"
 #else
@@ -34,7 +34,7 @@ void main()
 )glsl";
 
 
-static const char* matcap_fshader = 
+static const char* matcap_fshader =
 #ifndef __EMSCRIPTEN__
     "#version 330"
 #else

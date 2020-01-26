@@ -41,7 +41,7 @@ SurfaceMeshGL::SurfaceMeshGL()
 
     // material parameters
     front_color_ = vec3(0.6, 0.6, 0.6);
-    back_color_ = 0.3 * front_color_;
+    back_color_ = vec3(0.5, 0.0, 0.0);
     ambient_ = 0.1;
     diffuse_ = 0.8;
     specular_ = 0.6;
