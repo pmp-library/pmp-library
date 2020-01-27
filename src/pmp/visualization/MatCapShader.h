@@ -48,10 +48,24 @@ uniform sampler2D matcap;
 uniform float  alpha;
 out vec4 f_color;
 
+vec2 uv;
+vec4 rgba;
+
 void main()
 {
-    vec2 uv = normalize(v2f_normal).xy * 0.49 + 0.5;
-    vec4 rgba = texture(matcap, uv);
+    if (v2f_normal.z < 0.0) // back-facing?
+    {
+        // invert normal, damp color
+        uv = normalize(-v2f_normal).xy * 0.49 + 0.5;
+        rgba = texture(matcap, uv);
+        rgba.rgb *= 0.5;
+    }
+    else // front-facing
+    {
+        uv = normalize(v2f_normal).xy * 0.49 + 0.5;
+        rgba = texture(matcap, uv);
+    }
+
     rgba.a *= alpha;
     f_color = rgba;
 }
