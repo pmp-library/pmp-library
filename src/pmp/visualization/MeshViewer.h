@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
+// Copyright (C) 2011-2020 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
@@ -35,6 +35,9 @@ public:
 
     //! load a mesh from file \c filename
     virtual bool load_mesh(const char* filename);
+
+    //! load a matcap texture from file \c filename
+    bool load_matcap(const char* filename);
 
     //! load a texture from file \c filename
     bool load_texture(const char* filename, GLint format = GL_RGB,

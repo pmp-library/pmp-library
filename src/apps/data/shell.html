@@ -31,55 +31,75 @@
       var statusElement = document.getElementById('status');
       var progressElement = document.getElementById('progress');
 
-      function getUrlVars() 
-      {
-          var vars = {};
-          var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
-              vars[key] = value;
-          });
-          return vars;
+      var urlParams = new URLSearchParams(window.location.search);
+      var frameElem = window.frameElement;
+      
+      function hasParam(name) {
+          if (urlParams && urlParams.has(name))
+              return true;
+          else if (frameElem && frameElem.hasAttribute(name))
+              return true;
+          return false;
       }
+      
+      function getParam(name) {
+          if (urlParams && urlParams.has(name))
+              return urlParams.get(name);
+          else if (frameElem && frameElem.hasAttribute(name))
+              return frameElem.getAttribute(name);
+          return undefined;
+      }
+      
+      function getFile(name) {
+          var base = (window.location != window.parent.location) ? document.referrer : document.location.href;
+          var url  = new URL(name, base);
+          var path = url.pathname;
+          var file = path.split('/').pop();
+          return [ file, path ];
+      }
+
+      // here we collect the command line arguments to pass to the main function
+      var argv = [];
 
       var Module = {
 
           preRun: [ function(){
-              // GUI controls speficied as iframe attribute?
-              if (window.frameElement && window.frameElement.hasAttribute("controls"))
+
+              // show imgui controls?
+              if (hasParam('controls'))
               { 
-                  // we are in an iframe which has 'controls' property
-                  // start with '-g', which shows gui controls
-                  Module.arguments.push("-g");
+                  argv.push("-g");
               }
 
-              // filename specified as URI query?
-              var modelFileName = getUrlVars()["model"];
-
-              // filename specified as iframe attribute?
-              if (!modelFileName && window.frameElement && window.frameElement.hasAttribute("model"))
+              // model to be loaded 
+              if (hasParam('model'))
               {
-                  modelFileName = window.frameElement.getAttribute("model");
+                  var [filename, pathname ] = getFile(getParam('model'));
+                  FS.createPreloadedFile('./', filename, pathname, true, false);
+                  argv.push(filename);
               }
 
-              // do we have a filename?
-              if ( modelFileName )
+              // matcap to be used
+              if (hasParam('material'))
               {
-                  var filename = modelFileName.split('/').pop();
-                  Module.arguments = [filename];
-                  FS.createPreloadedFile('./', filename, modelFileName, true, false);
+                  var [filename, pathname] = getFile(getParam('material'));
+                  FS.createPreloadedFile('./', filename, pathname, true, false);
+                  argv.push("-m");
+                  argv.push(filename);
               }
 
-              // matcap specified as iframe attribute?
-              if (window.frameElement && window.frameElement.hasAttribute("material"))
+              // texture to be used
+              if (hasParam('texture'))
               {
-                  var matFileName = window.frameElement.getAttribute("material");
-                  var filename = matFileName.split('/').pop();
-                  Module.arguments.push("-m");
-                  Module.arguments.push(filename);
-                  FS.createPreloadedFile('./', filename, matFileName, true, false);
+                  var [filename, pathname] = getFile(getParam('texture'));
+                  FS.createPreloadedFile('./', filename, pathname, true, false);
+                  argv.push("-t");
+                  argv.push(filename);
               }
-
           }],
-        
+
+          arguments: argv,
+
           postRun: [],
 
           print: function(text) {
