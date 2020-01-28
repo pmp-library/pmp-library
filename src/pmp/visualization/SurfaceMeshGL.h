@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
+// Copyright (C) 2011-2020 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
@@ -100,6 +100,14 @@ public:
                       GLint mag_filter = GL_LINEAR,
                       GLint wrap = GL_CLAMP_TO_EDGE);
 
+    //! Load mat-cap texture from file. The mat-cap will be used
+    //! whenever the drawing mode is "Texture". This also means
+    //! that you cannot have texture and mat-cap at the same time.
+    //! \param filename the location and name of the texture
+    //! \sa See src/apps/mview.cpp for an example usage.
+    bool load_matcap(const char* filename);
+
+
 private: // helpers for computing triangulation of a polygon
 
     struct Triangulation
@@ -140,7 +148,6 @@ private: // helpers for computing triangulation of a polygon
     void triangulate(const std::vector<vec3>& points, std::vector<ivec3>& triangles);
 
 
-
 private:
     //! OpenGL buffers
     GLuint vertex_array_object_;
@@ -159,6 +166,7 @@ private:
 
     //! shaders
     Shader phong_shader_;
+    Shader matcap_shader_;
 
     //! material properties
     vec3 front_color_, back_color_;
@@ -172,6 +180,7 @@ private:
     {
         ColdWarmTexture,
         CheckerboardTexture,
+        MatCapTexture,
         OtherTexture
     } texture_mode_;
 };

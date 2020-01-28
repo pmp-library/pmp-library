@@ -19,7 +19,7 @@ namespace pmp {
 
 //=============================================================================
 
-Shader::Shader() : pid_(0), vid_(0), fid_(0)
+Shader::Shader() : pid_(0)
 {
 }
 
@@ -35,19 +35,24 @@ Shader::~Shader()
 void Shader::cleanup()
 {
     if (pid_)
+    {
         glDeleteProgram(pid_);
-    if (vid_)
-        glDeleteShader(vid_);
-    if (fid_)
-        glDeleteShader(fid_);
+        pid_ = 0;
+    }
 
-    pid_ = vid_ = fid_ = 0;
+    for (GLint id : shaders_)
+    {
+        glDeleteShader(id);
+    }
+    shaders_.clear();
 }
 
 //-----------------------------------------------------------------------------
 
 bool Shader::source(const char* vshader, const char* fshader)
 {
+    GLint id;
+
     // cleanup existing shaders first
     cleanup();
 
@@ -55,22 +60,24 @@ bool Shader::source(const char* vshader, const char* fshader)
     pid_ = glCreateProgram();
 
     // vertex shader
-    vid_ = compile(vshader, GL_VERTEX_SHADER);
-    if (!vid_)
+    id = compile(vshader, GL_VERTEX_SHADER);
+    if (!id)
     {
         std::cerr << "Cannot compile vertex shader!\n";
         return false;
     }
-    glAttachShader(pid_, vid_);
+    glAttachShader(pid_, id);
+    shaders_.push_back(id);
 
     // fragment shader
-    fid_ = compile(fshader, GL_FRAGMENT_SHADER);
-    if (!fid_)
+    id = compile(fshader, GL_FRAGMENT_SHADER);
+    if (!id)
     {
         std::cerr << "Cannot compile fragment shader!\n";
         return false;
     }
-    glAttachShader(pid_, fid_);
+    glAttachShader(pid_, id);
+    shaders_.push_back(id);
 
     // link program
     if (!link())
@@ -84,8 +91,11 @@ bool Shader::source(const char* vshader, const char* fshader)
 
 //-----------------------------------------------------------------------------
 
-bool Shader::load(const char* vfile, const char* ffile)
+bool Shader::load(const char* vfile, const char* ffile,
+                  const char* gfile, const char* tcfile, const char* tefile)
 {
+    GLint id;
+
     // cleanup existing shaders first
     cleanup();
 
@@ -93,22 +103,63 @@ bool Shader::load(const char* vfile, const char* ffile)
     pid_ = glCreateProgram();
 
     // vertex shader
-    vid_ = load_and_compile(vfile, GL_VERTEX_SHADER);
-    if (!vid_)
+    id = load_and_compile(vfile, GL_VERTEX_SHADER);
+    if (!id)
     {
         std::cerr << "Cannot compile vertex shader!\n";
         return false;
     }
-    glAttachShader(pid_, vid_);
+    glAttachShader(pid_, id);
+    shaders_.push_back(id);
 
     // fragment shader
-    fid_ = load_and_compile(ffile, GL_FRAGMENT_SHADER);
-    if (!fid_)
+    id = load_and_compile(ffile, GL_FRAGMENT_SHADER);
+    if (!id)
     {
         std::cerr << "Cannot compile fragment shader!\n";
         return false;
     }
-    glAttachShader(pid_, fid_);
+    glAttachShader(pid_, id);
+    shaders_.push_back(id);
+
+    // tessellation control shader
+    if (tcfile)
+    {
+        id = load_and_compile(tcfile, GL_TESS_CONTROL_SHADER);
+        if (!id)
+        {
+            std::cerr << "Cannot compile tessellation control shader!\n";
+            return false;
+        }
+        glAttachShader(pid_, id);
+        shaders_.push_back(id);
+    }
+
+    // tessellation evaluation shader
+    if (tefile)
+    {
+        id = load_and_compile(tefile, GL_TESS_EVALUATION_SHADER);
+        if (!id)
+        {
+            std::cerr << "Cannot compile tessellation evaluation shader!\n";
+            return false;
+        }
+        glAttachShader(pid_, id);
+        shaders_.push_back(id);
+    }
+
+    // geometry shader
+    if (gfile)
+    {
+        id = load_and_compile(gfile, GL_GEOMETRY_SHADER);
+        if (!id)
+        {
+            std::cerr << "Cannot compile geometry shader!\n";
+            return false;
+        }
+        glAttachShader(pid_, id);
+        shaders_.push_back(id);
+    }
 
     // link program
     if (!link())

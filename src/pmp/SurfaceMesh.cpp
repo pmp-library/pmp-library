@@ -965,6 +965,78 @@ bool SurfaceMesh::is_collapse_ok(Halfedge v0v1)
 
 //-----------------------------------------------------------------------------
 
+bool SurfaceMesh::is_removal_ok(Edge e)
+{
+    Halfedge h0 = halfedge(e, 0);
+    Halfedge h1 = halfedge(e, 1);
+    Vertex   v0 = to_vertex(h0);
+    Vertex   v1 = to_vertex(h1);
+    Face     f0 = face(h0);
+    Face     f1 = face(h1);
+
+    // boundary?
+    if (!f0.is_valid() || !f1.is_valid()) return false;
+
+    // same face?
+    if (f0 == f1) return false;
+
+    // are the two faces connect through another vertex?
+    for (auto v: vertices(f0))
+        if (v != v0 && v != v1)
+            for (auto f: faces(v))
+                if (f == f1)
+                    return false;
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SurfaceMesh::remove_edge(Edge e)
+{
+    if (!is_removal_ok(e)) return false;
+
+    Halfedge h0 = halfedge(e, 0);
+    Halfedge h1 = halfedge(e, 1);
+
+    Vertex v0 = to_vertex(h0);
+    Vertex v1 = to_vertex(h1);
+
+    Face f0 = face(h0);
+    Face f1 = face(h1);
+
+    Halfedge h0_prev = prev_halfedge(h0);
+    Halfedge h0_next = next_halfedge(h0);
+    Halfedge h1_prev = prev_halfedge(h1);
+    Halfedge h1_next = next_halfedge(h1);
+
+    // adjust vertex->halfedge
+    if (halfedge(v0) == h1)  set_halfedge(v0, h0_next);
+    if (halfedge(v1) == h0)  set_halfedge(v1, h1_next);
+
+    // adjust halfedge->face
+    for (auto h: halfedges(f0))
+        set_face(h, f1);
+
+    // adjust halfedge->halfedge
+    set_next_halfedge(h1_prev, h0_next);
+    set_next_halfedge(h0_prev, h1_next);
+
+    // adjust face->halfedge
+    if (halfedge(f1) == h1) set_halfedge(f1, h1_next);
+
+    // delete face f0 and edge e
+    fdeleted_[f0] = true;
+    ++deleted_faces_;
+    edeleted_[e] = true;
+    ++deleted_edges_;
+    has_garbage_ = true;
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
 void SurfaceMesh::collapse(Halfedge h)
 {
     Halfedge h0 = h;
@@ -973,18 +1045,18 @@ void SurfaceMesh::collapse(Halfedge h)
     Halfedge o1 = next_halfedge(o0);
 
     // remove edge
-    remove_edge(h0);
+    remove_edge_helper(h0);
 
     // remove loops
     if (next_halfedge(next_halfedge(h1)) == h1)
-        remove_loop(h1);
+        remove_loop_helper(h1);
     if (next_halfedge(next_halfedge(o1)) == o1)
-        remove_loop(o1);
+        remove_loop_helper(o1);
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceMesh::remove_edge(Halfedge h)
+void SurfaceMesh::remove_edge_helper(Halfedge h)
 {
     Halfedge hn = next_halfedge(h);
     Halfedge hp = prev_halfedge(h);
@@ -1033,7 +1105,7 @@ void SurfaceMesh::remove_edge(Halfedge h)
 
 //-----------------------------------------------------------------------------
 
-void SurfaceMesh::remove_loop(Halfedge h)
+void SurfaceMesh::remove_loop_helper(Halfedge h)
 {
     Halfedge h0 = h;
     Halfedge h1 = next_halfedge(h0);

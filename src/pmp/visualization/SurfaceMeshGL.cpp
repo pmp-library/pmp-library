@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
+// Copyright (C) 2011-2020 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
@@ -9,6 +9,7 @@
 
 #include <pmp/visualization/SurfaceMeshGL.h>
 #include <pmp/visualization/PhongShader.h>
+#include <pmp/visualization/MatCapShader.h>
 #include <pmp/visualization/ColdWarmTexture.h>
 #include <pmp/algorithms/SurfaceNormals.h>
 #include <pmp/Timer.h>
@@ -70,23 +71,47 @@ SurfaceMeshGL::~SurfaceMeshGL()
 
 //-----------------------------------------------------------------------------
 
-//void SurfaceMeshGL::useTexture(GLuint texID)
-//{
-//glDeleteTextures(1, &texture_);
-//texture_     = texID;
-//texture_mode_ = OtherTexture;
-//}
-
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
                                  GLint min_filter, GLint mag_filter, GLint wrap)
 {
+#ifdef __EMSCRIPTEN__
+    // emscripen/WebGL does not like mapmapping for SRGB textures
+    if ((min_filter==GL_NEAREST_MIPMAP_NEAREST ||
+         min_filter==GL_NEAREST_MIPMAP_LINEAR ||
+         min_filter==GL_LINEAR_MIPMAP_NEAREST ||
+         min_filter==GL_LINEAR_MIPMAP_LINEAR) &&
+        (format==GL_SRGB8))
+        min_filter = GL_LINEAR;
+#endif
+
+    // choose number of components (RGB or RGBA) based on format
+    int    loadComponents;
+    GLint  loadFormat;
+    switch(format)
+    {
+        case GL_RGB:
+        case GL_SRGB8:
+            loadComponents = 3;
+            loadFormat     = GL_RGB;
+            break;
+
+        case GL_RGBA:
+        case GL_SRGB8_ALPHA8:
+            loadComponents = 4;
+            loadFormat     = GL_RGBA;
+            break;
+
+        default:
+            loadComponents = 3;
+            loadFormat     = GL_RGB;
+    }
+
+
     // load with stb_image
-    int width, height, nComponents;
+    int width, height, n;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* img =
-        stbi_load(filename, &width, &height, &nComponents, 3); // enforce RGB
+        stbi_load(filename, &width, &height, &n, loadComponents);
     if (!img)
         return false;
 
@@ -100,20 +125,19 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     // upload texture data
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, img);
-
-    // set texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, loadFormat, GL_UNSIGNED_BYTE, img);
 
     // compute mipmaps
     if (min_filter == GL_LINEAR_MIPMAP_LINEAR)
     {
         glGenerateMipmap(GL_TEXTURE_2D);
     }
+
+    // set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
     // use SRGB rendering?
     srgb_ = (format == GL_SRGB8);
@@ -122,6 +146,17 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     stbi_image_free(img);
 
     texture_mode_ = OtherTexture;
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SurfaceMeshGL::load_matcap(const char* filename)
+{
+    if (!load_texture(filename, GL_RGBA, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE))
+        return false;
+
+    texture_mode_ = MatCapTexture;
     return true;
 }
 
@@ -500,6 +535,13 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             exit(1);
     }
 
+    // load shader?
+    if (!matcap_shader_.is_valid())
+    {
+        if (!matcap_shader_.source(matcap_vshader, matcap_fshader))
+            exit(1);
+    }
+
     // we need some texture, otherwise WebGL complains
     if (!texture_)
     {
@@ -509,6 +551,9 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     // empty mesh?
     if (is_empty())
         return;
+
+    // allow for transparent objects
+    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     // setup matrices
     mat4 mv_matrix = modelview_matrix;
@@ -552,6 +597,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             // draw faces
             glDepthRange(0.01, 1.0);
             glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
             // overlay edges
             glDepthRange(0.0, 1.0);
@@ -577,12 +623,24 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     {
         if (n_faces())
         {
-            phong_shader_.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
-            phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
-            phong_shader_.set_uniform("use_texture", true);
-            phong_shader_.set_uniform("use_srgb", srgb_);
-            glBindTexture(GL_TEXTURE_2D, texture_);
-            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            if (texture_mode_ == MatCapTexture)
+            {
+                matcap_shader_.use();
+                matcap_shader_.set_uniform("modelview_projection_matrix", mvp_matrix);
+                matcap_shader_.set_uniform("normal_matrix", n_matrix);
+                matcap_shader_.set_uniform("alpha", alpha_);
+                glBindTexture(GL_TEXTURE_2D, texture_);
+                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            }
+            else
+            {
+                phong_shader_.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
+                phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
+                phong_shader_.set_uniform("use_texture", true);
+                phong_shader_.set_uniform("use_srgb", srgb_);
+                glBindTexture(GL_TEXTURE_2D, texture_);
+                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            }
         }
     }
 
@@ -623,6 +681,9 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glDepthFunc(GL_LESS);
     }
+
+    // disable transparency (doesn't work well with imgui)
+    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     glBindVertexArray(0);
     glCheckError();
