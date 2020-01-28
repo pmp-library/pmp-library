@@ -237,7 +237,12 @@ public:
     Scalar* data() { return data_; }
 
     //! normalize matrix/vector by dividing through Frobenius/Euclidean norm
-    void normalize() { *this /= norm(*this); }
+    void normalize() 
+    { 
+        Scalar n = norm(*this);
+        n = (n > std::numeric_limits<Scalar>::min()) ? 1.0 / n : 0.0;
+        *this *= n;
+    }
 
     //! divide matrix by scalar
     Matrix<Scalar, M, N>& operator/=(const Scalar s)
