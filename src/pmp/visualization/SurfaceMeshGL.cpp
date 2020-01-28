@@ -12,7 +12,6 @@
 #include <pmp/visualization/MatCapShader.h>
 #include <pmp/visualization/ColdWarmTexture.h>
 #include <pmp/algorithms/SurfaceNormals.h>
-#include <pmp/Timer.h>
 
 #include <stb_image.h>
 
@@ -251,8 +250,6 @@ void SurfaceMeshGL::set_crease_angle(Scalar ca)
 
 void SurfaceMeshGL::update_opengl_buffers()
 {
-    Timer timer; timer.start();
-
     // are buffers already initialized?
     if (!vertex_array_object_)
     {
@@ -366,18 +363,12 @@ void SurfaceMeshGL::update_opengl_buffers()
             assert(cornerVertices.size() >= 3);
 
             // tessellate face into triangles
-#if 0
-            int i0, i1, i2, nc = cornerVertices.size();
-            for (i0 = 0, i1 = 1, i2 = 2; i2 < nc; ++i1, ++i2)
-            {
-#else
             triangulate(cornerPositions, triangles);
             for (auto& t: triangles)
             {
                 int i0 = t[0];
                 int i1 = t[1];
                 int i2 = t[2];
-#endif
 
                 positionArray.push_back(cornerPositions[i0]);
                 positionArray.push_back(cornerPositions[i1]);
@@ -511,9 +502,6 @@ void SurfaceMeshGL::update_opengl_buffers()
 
     // remove vertex index property again
     remove_vertex_property(vertex_indices);
-
-    timer.stop();
-    std::cout << "Update mesh took " << timer << std::endl;
 }
 
 //-----------------------------------------------------------------------------
