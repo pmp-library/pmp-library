@@ -158,6 +158,26 @@ public:
     }
     // clang-format on
 
+    //! construct from Eigen
+    template <typename Derived>
+    Matrix(const Eigen::MatrixBase<Derived>& m)
+    {
+        // don't distinguish between row and column vectors
+        if (m.rows()==1 || m.cols()==1)
+        {
+            assert( m.size()==size() );
+            for (int i = 0; i < size(); ++i)
+                (*this)[i] = m[i];
+        }
+        else
+        {
+            assert(m.rows()==rows() && m.cols()==cols());
+            for (int i = 0; i < rows(); ++i)
+                for (int j = 0; j < cols(); ++j)
+                    (*this)(i,j) = m(i,j);
+        }
+    }
+
     //! copy constructor from other scalar type
     //! is also invoked for type-casting
     template <typename OtherScalarType>
