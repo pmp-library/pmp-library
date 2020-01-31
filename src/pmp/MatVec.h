@@ -167,7 +167,7 @@ public:
         {
             assert( m.size()==size() );
             for (int i = 0; i < size(); ++i)
-                (*this)[i] = m[i];
+                (*this)[i] = m(i);
         }
         else
         {
@@ -196,7 +196,7 @@ public:
         {
             assert( m.size()==size() );
             for (int i = 0; i < size(); ++i)
-                (*this)[i] = m[i];
+                (*this)[i] = m(i);
         }
         else
         {

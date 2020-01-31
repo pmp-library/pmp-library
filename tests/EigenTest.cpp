@@ -38,6 +38,19 @@ TEST_F(EigenTest, construct_from_eigen)
         ivec4 pmpVec = eigenVec;
         EXPECT_EQ(pmpVec[1], 2);
     }
+
+    {
+        Eigen::Matrix2d eigenMat; 
+        eigenMat << 1.0, 2.0, 3.0, 4.0;
+        mat2 pmpMat = eigenMat;
+        EXPECT_EQ(pmpMat(1,1), 4.0);
+    }
+    {
+        Eigen::MatrixXd eigenMat(2,2); 
+        eigenMat << 1.0, 2.0, 3.0, 4.0;
+        mat2 pmpMat;
+        pmpMat = eigenMat;
+    }
 }
 
 TEST_F(EigenTest, assignment_from_eigen)
@@ -60,6 +73,19 @@ TEST_F(EigenTest, assignment_from_eigen)
         pmpVec = eigenVec;
         EXPECT_EQ(pmpVec[1], 2);
     }
+
+    {
+        Eigen::Matrix2d eigenMat; 
+        eigenMat << 1.0, 2.0, 3.0, 4.0;
+        mat2 pmpMat; pmpMat = eigenMat;
+        EXPECT_EQ(pmpMat(1,1), 4.0);
+    }
+    {
+        Eigen::MatrixXd eigenMat(2,2); 
+        eigenMat << 1.0, 2.0, 3.0, 4.0;
+        mat2 pmpMat = eigenMat;
+        EXPECT_EQ(pmpMat(1,1), 4.0);
+    }
 }
 
 TEST_F(EigenTest, cast_to_eigen)
@@ -78,6 +104,14 @@ TEST_F(EigenTest, cast_to_eigen)
         ivec4 pmpVec(1, 2, 3, 4);
         Eigen::Vector4i eigenVec = static_cast<Eigen::Vector4i>(pmpVec);
         EXPECT_EQ(eigenVec[1], 2);
+    }
+
+    {
+        dmat3 pmpMat{1.0, 2.0, 3.0, 
+                     4.0, 5.0, 6.0, 
+                     7.0, 8.0, 9.0};
+        Eigen::Matrix3f eigenMat = static_cast<Eigen::Matrix3f>(pmpMat);
+        EXPECT_EQ(eigenMat(1,1), 5.0);
     }
 }
 
