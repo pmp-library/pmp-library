@@ -13,6 +13,7 @@
 #include <pmp/visualization/Shader.h>
 #include <pmp/MatVec.h>
 #include <pmp/SurfaceMesh.h>
+#include <cfloat>
 
 //=============================================================================
 
@@ -105,6 +106,46 @@ public:
     //! \param filename the location and name of the texture
     //! \sa See src/apps/mview.cpp for an example usage.
     bool load_matcap(const char* filename);
+
+
+private: // helpers for computing triangulation of a polygon
+
+    struct Triangulation
+    {
+        Triangulation(Scalar a=FLT_MAX, int s=-1) : area(a), split(s) {}
+        Scalar area;
+        int split;
+    };
+
+    // table to hold triangulation data
+    std::vector<Triangulation> triangulation_;
+
+    // valence of currently triangulated polygon
+    unsigned int polygon_valence_;
+
+    // reserve n*n array for computing triangulation
+    void init_triangulation(unsigned int n)
+    {
+        triangulation_.clear();
+        triangulation_.resize(n*n);
+        polygon_valence_ = n;
+    }
+
+    // access triangulation array
+    Triangulation& triangulation(int start, int end)
+    {
+        return triangulation_[polygon_valence_*start + end];
+    }
+
+    // compute squared area of triangle. used for triangulate().
+    inline Scalar area(const vec3& p0, const vec3& p1, const vec3& p2) const
+    {
+        return sqrnorm(cross(p1-p0, p2-p0));
+    }
+
+    // triangulate a polygon such that the sum of squared triangle areas is minimized.
+    // this prevents overlapping/folding triangles for non-convex polygons.
+    void triangulate(const std::vector<vec3>& points, std::vector<ivec3>& triangles);
 
 
 private:

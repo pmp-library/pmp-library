@@ -189,6 +189,7 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     std::vector<Triplet> triplets;
 
     // setup matrix A and rhs B
+    dvec3 b;
     double ww;
     Vertex v, vv;
     Edge e;
@@ -197,9 +198,7 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
         v = free_vertices[i];
 
         // rhs row
-        B(i, 0) = points[v][0] / vweight[v];
-        B(i, 1) = points[v][1] / vweight[v];
-        B(i, 2) = points[v][2] / vweight[v];
+        b = static_cast<dvec3>(points[v]) / vweight[v];
 
         // lhs row
         ww = 0.0;
@@ -212,15 +211,15 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
             // fixed boundary vertex -> right hand side
             if (mesh_.is_boundary(vv))
             {
-                B(i, 0) -= -timestep * eweight[e] * points[vv][0];
-                B(i, 1) -= -timestep * eweight[e] * points[vv][1];
-                B(i, 2) -= -timestep * eweight[e] * points[vv][2];
+                b -= -timestep * eweight[e] * static_cast<dvec3>(points[vv]);
             }
             // free interior vertex -> matrix
             else
             {
                 triplets.emplace_back(i, idx[vv], -timestep * eweight[e]);
             }
+
+            B.row(i) = (Eigen::Vector3d) b;
         }
 
         // center vertex -> matrix
@@ -242,10 +241,7 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
         // copy solution
         for (unsigned int i = 0; i < n; ++i)
         {
-            v = free_vertices[i];
-            points[v][0] = X(i, 0);
-            points[v][1] = X(i, 1);
-            points[v][2] = X(i, 2);
+            points[ free_vertices[i] ] = X.row(i);
         }
     }
 

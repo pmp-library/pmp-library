@@ -140,15 +140,14 @@ void SurfaceFairing::fair(unsigned int k)
     const unsigned int n = vertices.size();
     SparseMatrix A(n, n);
     Eigen::MatrixXd B(n, 3);
+    dvec3 b;
 
     std::map<Vertex, double> row;
     std::vector<Triplet> triplets;
 
     for (unsigned int i = 0; i < n; ++i)
     {
-        B(i, 0) = 0.0;
-        B(i, 1) = 0.0;
-        B(i, 2) = 0.0;
+        b = dvec3(0.0);
 
         setup_matrix_row(vertices[i], vweight_, eweight_, k, row);
 
@@ -163,11 +162,11 @@ void SurfaceFairing::fair(unsigned int k)
             }
             else
             {
-                B(i, 0) -= w * points_[v][0];
-                B(i, 1) -= w * points_[v][1];
-                B(i, 2) -= w * points_[v][2];
+                b -= w * static_cast<dvec3>(points_[v]);
             }
         }
+
+        B.row(i) = (Eigen::Vector3d) b;
     }
 
     A.setFromTriplets(triplets.begin(), triplets.end());
@@ -183,10 +182,7 @@ void SurfaceFairing::fair(unsigned int k)
     else
     {
         for (unsigned int i = 0; i < n; ++i)
-        {
-            auto v = vertices[i];
-            points_[v] = Point(X(idx_[v], 0), X(idx_[v], 1), X(idx_[v], 2));
-        }
+            points_[vertices[i]] = X.row(i);
     }
 }
 

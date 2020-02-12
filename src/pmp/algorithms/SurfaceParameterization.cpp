@@ -135,6 +135,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     Eigen::SparseMatrix<double> A(n, n);
     Eigen::MatrixXd B(n, 2);
     std::vector<Eigen::Triplet<double>> triplets;
+    dvec2 b;
     double w, ww;
     Vertex v, vv;
     Edge e;
@@ -143,8 +144,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
         v = free_vertices[i];
 
         // rhs row
-        B(i, 0) = 0.0;
-        B(i, 1) = 0.0;
+        b = dvec2(0.0);
 
         // lhs row
         ww = 0.0;
@@ -157,8 +157,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
 
             if (mesh_.is_boundary(vv))
             {
-                B(i, 0) -= -w * tex[vv][0];
-                B(i, 1) -= -w * tex[vv][1];
+                b -= -w * static_cast<dvec2>(tex[vv]);
             }
             else
             {
@@ -166,6 +165,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
             }
         }
         triplets.emplace_back(i, i, ww);
+        B.row(i) = (Eigen::Vector2d) b;
     }
 
     // build sparse matrix from triplets
@@ -183,9 +183,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
         // copy solution
         for (i = 0; i < n; ++i)
         {
-            v = free_vertices[i];
-            tex[v][0] = X(i, 0);
-            tex[v][1] = X(i, 1);
+            tex[free_vertices[i]] = X.row(i);
         }
     }
 
