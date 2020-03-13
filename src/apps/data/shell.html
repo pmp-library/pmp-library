@@ -37,7 +37,7 @@
       function hasParam(name) {
           if (urlParams && urlParams.has(name))
               return true;
-          else if (frameElem && frameElem.hasAttribute(name))
+          else if (frameElem && frameElem.hasAttribute("data-"+name))
               return true;
           return false;
       }
@@ -45,8 +45,8 @@
       function getParam(name) {
           if (urlParams && urlParams.has(name))
               return urlParams.get(name);
-          else if (frameElem && frameElem.hasAttribute(name))
-              return frameElem.getAttribute(name);
+          else if (frameElem && frameElem.hasAttribute("data-"+name))
+              return frameElem.getAttribute("data-"+name);
           return undefined;
       }
       
