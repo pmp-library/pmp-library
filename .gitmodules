@@ -9,4 +9,4 @@
 	url = https://github.com/pmp-library/pmp-data.git
 [submodule "external/eigen"]
 	path = external/eigen
-	url = https://github.com/eigenteam/eigen-git-mirror.git
+	url = https://gitlab.com/libeigen/eigen.git
