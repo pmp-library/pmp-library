@@ -8,22 +8,19 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
-### Eigen
+### External libraries
 
 - Upgrade Eigen to current master version to get rid of a compile error on Windows
-
-### ImGui
-
 - Upgrade ImGui to version 1.75
-
-### stb_image
-
 - Upgrade stb_image to current master version
 
 ### Added
 
 - Add constructors using initializer lists to Matrix/Vector classes
 - Add assignment from and cast from Eigen matrices and vectors
+- Improved rendering of general polygons, avoiding erroneous
+  tessellation into overlapping/flipped triangles in case of
+  non-convex polygons.
 
 ### Fixed
 
