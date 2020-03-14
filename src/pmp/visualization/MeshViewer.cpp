@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
+// Copyright (C) 2011-2020 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
@@ -80,6 +80,16 @@ bool MeshViewer::load_mesh(const char* filename)
 
     std::cerr << "Failed to read mesh from " << filename << " !" << std::endl;
     return false;
+}
+
+//-----------------------------------------------------------------------------
+
+bool MeshViewer::load_matcap(const char* filename)
+{
+    if (!mesh_.load_matcap(filename))
+        return false;
+    set_draw_mode("Texture");
+    return true;
 }
 
 //-----------------------------------------------------------------------------

@@ -54,6 +54,9 @@ public:
     static Normal compute_vertex_normal(const SurfaceMesh& mesh, Vertex v);
 
     //! \brief Compute the normal vector of face \c f.
+    //! \details Normal is computed as (normalized) sum of per-corner
+    //! cross products of the two incident edges. This corresponds to
+    //! the normalized vector area in \cite alexa_2011_laplace
     static Normal compute_face_normal(const SurfaceMesh& mesh, Face f);
 
     //! \brief Compute the normal vector of the polygon corner specified by the

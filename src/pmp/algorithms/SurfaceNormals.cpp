@@ -15,65 +15,6 @@ namespace pmp {
 
 //=============================================================================
 
-Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
-{
-    Point nn(0, 0, 0);
-    Halfedge h = mesh.halfedge(v);
-
-    if (h.is_valid())
-    {
-        auto vpoint = mesh.get_vertex_property<Point>("v:point");
-
-        const Halfedge hend = h;
-        const Point p0 = vpoint[v];
-
-        Point n, p1, p2;
-        Scalar cosine, angle, denom;
-
-        do
-        {
-            if (!mesh.is_boundary(h))
-            {
-                p1 = vpoint[mesh.to_vertex(h)];
-                p1 -= p0;
-
-                p2 = vpoint[mesh.from_vertex(mesh.prev_halfedge(h))];
-                p2 -= p0;
-
-                // check whether we can robustly compute angle
-                denom = sqrt(dot(p1, p1) * dot(p2, p2));
-                if (denom > std::numeric_limits<Scalar>::min())
-                {
-                    cosine = dot(p1, p2) / denom;
-                    if (cosine < -1.0)
-                        cosine = -1.0;
-                    else if (cosine > 1.0)
-                        cosine = 1.0;
-                    angle = acos(cosine);
-
-                    n = cross(p1, p2);
-
-                    // check whether normal is != 0
-                    denom = norm(n);
-                    if (denom > std::numeric_limits<Scalar>::min())
-                    {
-                        n *= angle / denom;
-                        nn += n;
-                    }
-                }
-            }
-
-            h = mesh.cw_rotated_halfedge(h);
-        } while (h != hend);
-
-        nn = normalize(nn);
-    }
-
-    return nn;
-}
-
-//-----------------------------------------------------------------------------
-
 Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh, Face f)
 {
     Halfedge h = mesh.halfedge(f);
@@ -112,6 +53,61 @@ Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh, Face f)
 
 //-----------------------------------------------------------------------------
 
+Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
+{
+    Point nn(0, 0, 0);
+
+    if (!mesh.is_isolated(v))
+    {
+        auto vpoint = mesh.get_vertex_property<Point>("v:point");
+        const Point p0 = vpoint[v];
+
+        Normal n;
+        Point p1, p2;
+        Scalar cosine, angle, denom;
+        bool is_triangle;
+
+        for (auto h: mesh.halfedges(v))
+        {
+            if (!mesh.is_boundary(h))
+            {
+                p1 = vpoint[mesh.to_vertex(h)];
+                p1 -= p0;
+                p2 = vpoint[mesh.from_vertex(mesh.prev_halfedge(h))];
+                p2 -= p0;
+
+                // check whether we can robustly compute angle
+                denom = sqrt(dot(p1, p1) * dot(p2, p2));
+                if (denom > std::numeric_limits<Scalar>::min())
+                {
+                    cosine = dot(p1, p2) / denom;
+                    if (cosine < -1.0)
+                        cosine = -1.0;
+                    else if (cosine > 1.0)
+                        cosine = 1.0;
+                    angle = acos(cosine);
+
+                    // compute triangle or polygon normal
+                    is_triangle = (mesh.next_halfedge(mesh.next_halfedge(mesh.next_halfedge(h))) == h);
+                    n = is_triangle ? 
+                        normalize(cross(p1,p2)) :
+                        compute_face_normal(mesh, mesh.face(h));
+
+                    n *= angle;
+                    nn += n;
+                }
+            }
+        }
+
+        nn = normalize(nn);
+    }
+
+    return nn;
+}
+
+//-----------------------------------------------------------------------------
+
+
 Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
                                              Halfedge h, Scalar crease_angle)
 {
@@ -138,13 +134,10 @@ Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
 
         Point n, p1, p2;
         Scalar cosine, angle, denom;
+        bool is_triangle;
 
         // compute normal of h's face
-        p1 = vpoint[mesh.to_vertex(mesh.next_halfedge(h))];
-        p1 -= p0;
-        p2 = vpoint[mesh.from_vertex(h)];
-        p2 -= p0;
-        const Point nf = normalize(cross(p1, p2));
+        const Point nf = compute_face_normal(mesh, mesh.face(h));
 
         // average over all incident faces
         do
@@ -156,31 +149,29 @@ Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
                 p2 = vpoint[mesh.from_vertex(h)];
                 p2 -= p0;
 
-                n = cross(p1, p2);
+                // compute triangle or polygon normal
+                is_triangle = (mesh.next_halfedge(mesh.next_halfedge(mesh.next_halfedge(h))) == h);
+                n = is_triangle ? 
+                    normalize(cross(p1,p2)) :
+                    compute_face_normal(mesh, mesh.face(h));
 
-                // check whether normal is != 0
-                denom = norm(n);
-                if (denom > std::numeric_limits<Scalar>::min())
+                // check whether normal is withing crease_angle bound
+                if (dot(n, nf) >= cos_crease_angle)
                 {
-                    n /= denom;
 
-                    // check whether normal is withing crease_angle bound
-                    if (dot(n, nf) >= cos_crease_angle)
+                    // check whether we can robustly compute angle
+                    denom = sqrt(dot(p1, p1) * dot(p2, p2));
+                    if (denom > std::numeric_limits<Scalar>::min())
                     {
-                        // check whether we can robustly compute angle
-                        denom = sqrt(dot(p1, p1) * dot(p2, p2));
-                        if (denom > std::numeric_limits<Scalar>::min())
-                        {
-                            cosine = dot(p1, p2) / denom;
-                            if (cosine < -1.0)
-                                cosine = -1.0;
-                            else if (cosine > 1.0)
-                                cosine = 1.0;
-                            angle = acos(cosine);
+                        cosine = dot(p1, p2) / denom;
+                        if (cosine < -1.0)
+                            cosine = -1.0;
+                        else if (cosine > 1.0)
+                            cosine = 1.0;
+                        angle = acos(cosine);
 
-                            n *= angle;
-                            nn += n;
-                        }
+                        n *= angle;
+                        nn += n;
                     }
                 }
             }

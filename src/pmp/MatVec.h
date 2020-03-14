@@ -158,6 +158,26 @@ public:
     }
     // clang-format on
 
+    //! construct from Eigen
+    template <typename Derived>
+    Matrix(const Eigen::MatrixBase<Derived>& m)
+    {
+        // don't distinguish between row and column vectors
+        if (m.rows()==1 || m.cols()==1)
+        {
+            assert( m.size()==size() );
+            for (int i = 0; i < size(); ++i)
+                (*this)[i] = m(i);
+        }
+        else
+        {
+            assert(m.rows()==rows() && m.cols()==cols());
+            for (int i = 0; i < rows(); ++i)
+                for (int j = 0; j < cols(); ++j)
+                    (*this)(i,j) = m(i,j);
+        }
+    }
+
     //! copy constructor from other scalar type
     //! is also invoked for type-casting
     template <typename OtherScalarType>
@@ -176,7 +196,7 @@ public:
         {
             assert( m.size()==size() );
             for (int i = 0; i < size(); ++i)
-                (*this)[i] = m[i];
+                (*this)[i] = m(i);
         }
         else
         {
@@ -237,7 +257,12 @@ public:
     Scalar* data() { return data_; }
 
     //! normalize matrix/vector by dividing through Frobenius/Euclidean norm
-    void normalize() { *this /= norm(*this); }
+    void normalize() 
+    { 
+        Scalar n = norm(*this);
+        n = (n > std::numeric_limits<Scalar>::min()) ? 1.0 / n : 0.0;
+        *this *= n;
+    }
 
     //! divide matrix by scalar
     Matrix<Scalar, M, N>& operator/=(const Scalar s)

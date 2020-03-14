@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
+// Copyright (C) 2011-2020 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
@@ -9,11 +9,11 @@
 
 #include <pmp/visualization/SurfaceMeshGL.h>
 #include <pmp/visualization/PhongShader.h>
+#include <pmp/visualization/MatCapShader.h>
 #include <pmp/visualization/ColdWarmTexture.h>
 #include <pmp/algorithms/SurfaceNormals.h>
 
 #include <stb_image.h>
-#include <cfloat>
 
 //=============================================================================
 
@@ -70,23 +70,47 @@ SurfaceMeshGL::~SurfaceMeshGL()
 
 //-----------------------------------------------------------------------------
 
-//void SurfaceMeshGL::useTexture(GLuint texID)
-//{
-//glDeleteTextures(1, &texture_);
-//texture_     = texID;
-//texture_mode_ = OtherTexture;
-//}
-
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
                                  GLint min_filter, GLint mag_filter, GLint wrap)
 {
+#ifdef __EMSCRIPTEN__
+    // emscripen/WebGL does not like mapmapping for SRGB textures
+    if ((min_filter==GL_NEAREST_MIPMAP_NEAREST ||
+         min_filter==GL_NEAREST_MIPMAP_LINEAR ||
+         min_filter==GL_LINEAR_MIPMAP_NEAREST ||
+         min_filter==GL_LINEAR_MIPMAP_LINEAR) &&
+        (format==GL_SRGB8))
+        min_filter = GL_LINEAR;
+#endif
+
+    // choose number of components (RGB or RGBA) based on format
+    int    loadComponents;
+    GLint  loadFormat;
+    switch(format)
+    {
+        case GL_RGB:
+        case GL_SRGB8:
+            loadComponents = 3;
+            loadFormat     = GL_RGB;
+            break;
+
+        case GL_RGBA:
+        case GL_SRGB8_ALPHA8:
+            loadComponents = 4;
+            loadFormat     = GL_RGBA;
+            break;
+
+        default:
+            loadComponents = 3;
+            loadFormat     = GL_RGB;
+    }
+
+
     // load with stb_image
-    int width, height, nComponents;
+    int width, height, n;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* img =
-        stbi_load(filename, &width, &height, &nComponents, 3); // enforce RGB
+        stbi_load(filename, &width, &height, &n, loadComponents);
     if (!img)
         return false;
 
@@ -100,20 +124,19 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     // upload texture data
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_RGB,
-                 GL_UNSIGNED_BYTE, img);
-
-    // set texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, loadFormat, GL_UNSIGNED_BYTE, img);
 
     // compute mipmaps
     if (min_filter == GL_LINEAR_MIPMAP_LINEAR)
     {
         glGenerateMipmap(GL_TEXTURE_2D);
     }
+
+    // set texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
     // use SRGB rendering?
     srgb_ = (format == GL_SRGB8);
@@ -122,6 +145,17 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     stbi_image_free(img);
 
     texture_mode_ = OtherTexture;
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SurfaceMeshGL::load_matcap(const char* filename)
+{
+    if (!load_texture(filename, GL_RGBA, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE))
+        return false;
+
+    texture_mode_ = MatCapTexture;
     return true;
 }
 
@@ -244,6 +278,7 @@ void SurfaceMeshGL::update_opengl_buffers()
     std::vector<vec3> positionArray;
     std::vector<vec3> normalArray;
     std::vector<vec2> texArray;
+    std::vector<ivec3> triangles;
 
     // we have a mesh: fill arrays by looping over faces
     if (n_faces())
@@ -273,7 +308,9 @@ void SurfaceMeshGL::update_opengl_buffers()
         // data per face (for all corners)
         std::vector<Halfedge> cornerHalfedges;
         std::vector<Vertex> cornerVertices;
+        std::vector<vec3> cornerPositions;
         std::vector<vec3> cornerNormals;
+        std::vector<vec2> cornerTexCoords;
 
         // convert from degrees to radians
         const Scalar creaseAngle = crease_angle_ / 180.0 * M_PI;
@@ -286,16 +323,18 @@ void SurfaceMeshGL::update_opengl_buffers()
             // collect corner positions and normals
             cornerHalfedges.clear();
             cornerVertices.clear();
+            cornerPositions.clear();
             cornerNormals.clear();
+            cornerTexCoords.clear();
             Vertex v;
             Normal n;
 
             for (auto h : halfedges(f))
             {
-                cornerHalfedges.push_back(h);
-
                 v = to_vertex(h);
+                cornerHalfedges.push_back(h);
                 cornerVertices.push_back(v);
+                cornerPositions.push_back((vec3)vpos[v]);
 
                 if (crease_angle_ < 1)
                 {
@@ -311,32 +350,39 @@ void SurfaceMeshGL::update_opengl_buffers()
                                                               creaseAngle);
                 }
                 cornerNormals.push_back((vec3)n);
+
+                if (htex)
+                {
+                    cornerTexCoords.push_back((vec2) htex[h]);
+                }
+                else if (vtex)
+                {
+                    cornerTexCoords.push_back((vec2) vtex[v]);
+                }
             }
             assert(cornerVertices.size() >= 3);
 
             // tessellate face into triangles
-            int i0, i1, i2, nc = cornerVertices.size();
-            for (i0 = 0, i1 = 1, i2 = 2; i2 < nc; ++i1, ++i2)
+            triangulate(cornerPositions, triangles);
+            for (auto& t: triangles)
             {
-                positionArray.push_back((vec3)vpos[cornerVertices[i0]]);
-                positionArray.push_back((vec3)vpos[cornerVertices[i1]]);
-                positionArray.push_back((vec3)vpos[cornerVertices[i2]]);
+                int i0 = t[0];
+                int i1 = t[1];
+                int i2 = t[2];
 
-                normalArray.push_back((vec3)cornerNormals[i0]);
-                normalArray.push_back((vec3)cornerNormals[i1]);
-                normalArray.push_back((vec3)cornerNormals[i2]);
+                positionArray.push_back(cornerPositions[i0]);
+                positionArray.push_back(cornerPositions[i1]);
+                positionArray.push_back(cornerPositions[i2]);
 
-                if (htex)
+                normalArray.push_back(cornerNormals[i0]);
+                normalArray.push_back(cornerNormals[i1]);
+                normalArray.push_back(cornerNormals[i2]);
+
+                if (htex || vtex)
                 {
-                    texArray.push_back((vec2)htex[cornerHalfedges[i0]]);
-                    texArray.push_back((vec2)htex[cornerHalfedges[i1]]);
-                    texArray.push_back((vec2)htex[cornerHalfedges[i2]]);
-                }
-                else if (vtex)
-                {
-                    texArray.push_back((vec2)vtex[cornerVertices[i0]]);
-                    texArray.push_back((vec2)vtex[cornerVertices[i1]]);
-                    texArray.push_back((vec2)vtex[cornerVertices[i2]]);
+                    texArray.push_back(cornerTexCoords[i0]);
+                    texArray.push_back(cornerTexCoords[i1]);
+                    texArray.push_back(cornerTexCoords[i2]);
                 }
 
                 vertex_indices[cornerVertices[i0]] = vidx++;
@@ -477,6 +523,13 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             exit(1);
     }
 
+    // load shader?
+    if (!matcap_shader_.is_valid())
+    {
+        if (!matcap_shader_.source(matcap_vshader, matcap_fshader))
+            exit(1);
+    }
+
     // we need some texture, otherwise WebGL complains
     if (!texture_)
     {
@@ -486,6 +539,9 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     // empty mesh?
     if (is_empty())
         return;
+
+    // allow for transparent objects
+    glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     // setup matrices
     mat4 mv_matrix = modelview_matrix;
@@ -529,6 +585,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             // draw faces
             glDepthRange(0.01, 1.0);
             glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
             // overlay edges
             glDepthRange(0.0, 1.0);
@@ -554,12 +611,24 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     {
         if (n_faces())
         {
-            phong_shader_.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
-            phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
-            phong_shader_.set_uniform("use_texture", true);
-            phong_shader_.set_uniform("use_srgb", srgb_);
-            glBindTexture(GL_TEXTURE_2D, texture_);
-            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            if (texture_mode_ == MatCapTexture)
+            {
+                matcap_shader_.use();
+                matcap_shader_.set_uniform("modelview_projection_matrix", mvp_matrix);
+                matcap_shader_.set_uniform("normal_matrix", n_matrix);
+                matcap_shader_.set_uniform("alpha", alpha_);
+                glBindTexture(GL_TEXTURE_2D, texture_);
+                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            }
+            else
+            {
+                phong_shader_.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
+                phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
+                phong_shader_.set_uniform("use_texture", true);
+                phong_shader_.set_uniform("use_srgb", srgb_);
+                glBindTexture(GL_TEXTURE_2D, texture_);
+                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            }
         }
     }
 
@@ -601,8 +670,109 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
         glDepthFunc(GL_LESS);
     }
 
+    // disable transparency (doesn't work well with imgui)
+    glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
+
     glBindVertexArray(0);
     glCheckError();
+}
+
+//-----------------------------------------------------------------------------
+
+void SurfaceMeshGL::triangulate(const std::vector<vec3>& points, 
+                                std::vector<ivec3>& triangles)
+{
+    const int n = points.size();
+
+    triangles.clear();
+    triangles.reserve(n-2);
+
+    // triangle? nothing to do
+    if (n==3)
+    {
+        triangles.push_back( ivec3(0,1,2) );
+        return;
+    }
+
+    // quad? simply compare to two options
+    else if (n==4)
+    {
+        if (area(points[0], points[1], points[2]) +
+            area(points[0], points[2], points[3]) <
+            area(points[0], points[1], points[3]) +
+            area(points[1], points[2], points[3]))
+        {
+            triangles.push_back( ivec3(0,1,2) );
+            triangles.push_back( ivec3(0,2,3) );
+        }
+        else
+        {
+            triangles.push_back( ivec3(0,1,3) );
+            triangles.push_back( ivec3(1,2,3) );
+        }
+        return;
+    }
+
+
+    // n-gon with n>4? compute triangulation by dynamic programming
+    init_triangulation(n);
+    int i, j, m, k, imin;
+    Scalar w, wmin;
+
+    // initialize 2-gons
+    for (i=0; i<n-1; ++i)
+    {
+        triangulation(i, i+1) = Triangulation(0.0, -1);
+    }
+
+    // n-gons with n>2
+    for (j=2; j<n; ++j)
+    {
+        // for all n-gons [i,i+j]
+        for (i=0; i<n-j; ++i)
+        {
+            k = i + j;
+
+            wmin = FLT_MAX;
+            imin = -1;
+
+            // find best split i < m < i+j
+            for (m = i + 1; m < k; ++m)
+            {
+                w = triangulation(i,m).area + 
+                    area(points[i], points[m], points[k]) + 
+                    triangulation(m,k).area;
+
+                if (w < wmin)
+                {
+                    wmin = w;
+                    imin = m;
+                }
+            }
+
+            triangulation(i,k) = Triangulation(wmin, imin);
+        }
+    }
+
+    // build triangles from triangulation table
+    std::vector<ivec2> todo;
+    todo.reserve(n);
+    todo.push_back(ivec2(0, n-1));
+    while (!todo.empty())
+    {
+        ivec2 tri = todo.back();
+        todo.pop_back();
+        int start = tri[0];
+        int end = tri[1];
+        if (end - start < 2)
+            continue;
+        int split = triangulation(start, end).split;
+        
+        triangles.push_back( ivec3(start, split, end) );
+
+        todo.push_back(ivec2(start, split));
+        todo.push_back(ivec2(split, end));
+    }
 }
 
 //=============================================================================
