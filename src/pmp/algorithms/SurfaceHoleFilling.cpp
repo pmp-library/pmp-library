@@ -112,7 +112,6 @@ bool SurfaceHoleFilling::triangulate_hole(Halfedge _h)
         hole_.push_back(h);
     } while ((h = mesh_.next_halfedge(h)) != _h);
     const int n = hole_.size();
-    std::cout << n << " hole edges\n";
 
     // compute minimal triangulation by dynamic programming
     weight_.clear();

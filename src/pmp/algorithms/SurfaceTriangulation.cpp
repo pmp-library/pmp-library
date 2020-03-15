@@ -21,8 +21,6 @@ void SurfaceTriangulation::triangulate(Objective o)
 {
     for (auto f: mesh_.faces())
         triangulate(f, o);
-
-    std::cout << "Triangle mesh? " << (mesh_.is_triangle_mesh() ? "yes" : "no") << std::endl;
 }
 
 //-----------------------------------------------------------------------------

@@ -394,7 +394,6 @@ void SurfaceCurvature::curvature_to_texture_coordinates() const
     }
     std::sort(values.begin(), values.end());
     unsigned int n = values.size() - 1;
-    std::cout << "curvature: [" << values[0] << ", " << values[n - 1] << "]\n";
 
     // clamp upper/lower 5%
     unsigned int i = n / 20;

@@ -206,9 +206,6 @@ void SurfaceSubdivision::catmull_clark()
 
 void SurfaceSubdivision::loop()
 {
-    Timer t;
-    t.start();
-
     if (!mesh_.is_triangle_mesh())
         return;
 
@@ -362,9 +359,6 @@ void SurfaceSubdivision::loop()
     // clean-up properties
     mesh_.remove_vertex_property(vpoint);
     mesh_.remove_edge_property(epoint);
-
-    t.stop();
-    std::cout << "subdiv took " << t.elapsed() << std::endl;
 }
 
 //-----------------------------------------------------------------------------
