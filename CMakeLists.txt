@@ -7,6 +7,11 @@ set(PMP_MINOR_VERSION 1)
 set(PMP_PATCH_VERSION 0)
 set(PMP_VERSION ${PMP_MAJOR_VERSION}.${PMP_MINOR_VERSION}.${PMP_PATCH_VERSION})
 
+set(CMAKE_PROJECT_VERSION ${PMP_VERSION})
+set(CMAKE_PROJECT_VERSION_MAJOR ${PMP_MAJOR_VERSION})
+set(CMAKE_PROJECT_VERSION_MINOR ${PMP_MINOR_VERSION})
+set(CMAKE_PROJECT_VERSION_PATCH ${PMP_PATCH_VERSION})
+
 option(PMP_BUILD_APPS     "Build the PMP applications"  ON)
 option(PMP_BUILD_EXAMPLES "Build the PMP examples"      ON)
 option(PMP_BUILD_TESTS    "Build the PMP test programs" ON)
@@ -26,7 +31,7 @@ set(EIGEN_SOURCE_DIR "external/eigen")
 set(RPLY_SOURCE_DIR "external/rply")
 set(STBI_SOURCE_DIR "external/stb_image")
 
-# setup STB Image 
+# setup STB Image
 # (place *before* GLFW since GLFW has an old copy of stb_image_write.h)
 include_directories(${STBI_SOURCE_DIR})
 add_subdirectory(${STBI_SOURCE_DIR})
