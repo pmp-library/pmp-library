@@ -8,6 +8,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+## [1.2.0] 2019-03-15
+
 ### External libraries
 
 - Upgrade Eigen to current master version to get rid of a compile error on Windows
@@ -21,6 +23,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Improved rendering of general polygons, avoiding erroneous
   tessellation into overlapping/flipped triangles in case of
   non-convex polygons.
+- Added support for rendering using matcaps
 
 ### Fixed
 

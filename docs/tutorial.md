@@ -236,3 +236,37 @@ if (argc > 1)
 if (argc > 2)
     mesh.write(argv[2]);
 ```
+
+## Eigen Interoperability
+
+The pmp-library supports some level of interoperability with Eigen. The
+pmp::Matrix and pmp::Vector classes can be constructed/assigned from Eigen
+matrix/vector types. In addition, it possible to cast the pmp::Matrix and
+pmp::Vector classes to Eigen.
+
+Example for construction:
+
+```cpp
+    // construction from Eigen
+    Eigen::Vector3d eigenVec(1.0, 2.0, 3.0);
+    pmp::dvec3 pmpVec = eigenVec;
+```
+
+Example for assignment:
+
+```cpp
+    // assignment from Eigen
+    Eigen::Vector3d eigenVec(1.0, 2.0, 3.0);
+    pmp::dvec3 pmpVec;
+    pmpVec = eigenVec;
+```
+
+Example for cast:
+
+```cpp
+    // cast to Eigen
+    pmp::vec3 pmpVec(1.0, 2.0, 3.0);
+    Eigen::Vector3f eigenVec = static_cast<Eigen::Vector3f>(pmpVec);
+```
+
+See the reference documentation for pmp::Matrix and pmp::Vector for more details.
