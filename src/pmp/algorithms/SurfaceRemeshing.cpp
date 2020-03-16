@@ -207,8 +207,13 @@ void SurfaceRemeshing::preprocessing()
                         c += w * curv.max_abs_curvature(vv);
                     }
                 }
-
-                c /= ww;
+               
+                // For feature vertices with all neighbors being feature vertices, ww==0.
+                // In this case, we will use c=0 (no better idea)
+                if (ww)
+                {
+                    c /= ww;
+                }
             }
 
             // get edge length from curvature
