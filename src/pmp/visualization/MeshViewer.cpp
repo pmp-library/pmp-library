@@ -60,11 +60,7 @@ bool MeshViewer::load_mesh(const char* filename)
         update_mesh();
 
         // set draw mode
-        if (mesh_.n_faces())
-        {
-            set_draw_mode("Smooth Shading");
-        }
-        else if (mesh_.n_vertices())
+        if (mesh_.n_faces() == 0)
         {
             set_draw_mode("Points");
         }
