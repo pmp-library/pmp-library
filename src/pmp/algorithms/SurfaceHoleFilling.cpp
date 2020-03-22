@@ -109,7 +109,7 @@ void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
         // check for manifoldness
         if (!mesh_.is_manifold(mesh_.to_vertex(h)))
         {
-            auto what = "[SurfaceHoleFilling] Non-manifold hole.";
+            auto what = "SurfaceHoleFilling: Non-manifold hole.";
             throw InvalidInputException(what);
         }
 

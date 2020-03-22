@@ -60,13 +60,6 @@ void SurfaceParameterization::setup_boundary_constraints()
         if (mesh_.is_boundary(*vit))
             break;
 
-    // no boundary found ?
-    if (vit == vend)
-    {
-        auto what = "SurfaceParameterization: Mesh has no boundary.";
-        throw InvalidInputException(what);
-    }
-
     // collect boundary loop
     vh = *vit;
     hh = mesh_.halfedge(vh);
@@ -220,15 +213,6 @@ void SurfaceParameterization::setup_lscm_boundary()
     for (auto v : mesh_.vertices())
         if (mesh_.is_boundary(v))
             boundary.push_back(v);
-
-    // no boundary?
-    if (boundary.empty())
-    {
-        mesh_.remove_vertex_property(tex);
-        mesh_.remove_vertex_property(locked);
-        auto what = "SurfaceParameterization: Mesh has no boundary.";
-        throw InvalidInputException(what);
-    }
 
     // find boundary vertices with largest distance
     Scalar diam(0.0), d;
@@ -426,7 +410,6 @@ void SurfaceParameterization::lscm()
         // clean-up
         mesh_.remove_vertex_property(idx);
         mesh_.remove_vertex_property(locked);
-        mesh_.remove_vertex_property(tex);
         mesh_.remove_halfedge_property(weight);
         auto what = "SurfaceParameterization: Failed solve linear system.";
         throw SolverException(what);

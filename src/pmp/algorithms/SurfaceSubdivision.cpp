@@ -368,6 +368,12 @@ void SurfaceSubdivision::loop()
 
 void SurfaceSubdivision::sqrt3()
 {
+    if (!mesh_.is_triangle_mesh())
+    {
+        auto what = "SurfaceSubdivision: Not a triangle mesh.";
+        throw InvalidInputException(what);
+    }
+
     // reserve memory
     int nv = mesh_.n_vertices();
     int ne = mesh_.n_edges();
