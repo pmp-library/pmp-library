@@ -34,6 +34,8 @@ public:
 
     //! Perform one step of Loop subdivision.
     //! See \cite loop_1987_smooth for details.
+    //! \pre Requires a pure triangle mesh as input.
+    //! \throw InvalidInputException in case the input violates the precondition.
     void loop();
 
     //! Perform one step of sqrt3 subdivision.

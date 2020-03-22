@@ -207,7 +207,10 @@ void SurfaceSubdivision::catmull_clark()
 void SurfaceSubdivision::loop()
 {
     if (!mesh_.is_triangle_mesh())
-        return;
+    {
+        auto what = "SurfaceSubdivision: Not a triangle mesh.";
+        throw InvalidInputException(what);
+    }
 
     // reserve memory
     size_t nv = mesh_.n_vertices();

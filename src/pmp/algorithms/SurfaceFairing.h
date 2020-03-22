@@ -41,6 +41,7 @@ public:
     void minimize_curvature() { fair(2); }
 
     //! compute surface by solving k-harmonic equation
+    //! \throw SolverException in case of failure to solve the linear system
     void fair(unsigned int k = 2);
 
 private:
