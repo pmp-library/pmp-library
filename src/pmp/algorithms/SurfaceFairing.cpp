@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
+// Copyright (C) 2011-2020 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
@@ -131,9 +131,8 @@ void SurfaceFairing::fair(unsigned int k)
     // we need locked vertices as boundary constraints
     if (vertices.size() == mesh_.n_vertices())
     {
-        std::cerr << "SurfaceFairing: need locked vertices as boundary "
-                     "constraints.\n";
-        return;
+        auto what = "SurfaceFairing: Missing boundary constraints.";
+        throw InvalidInputException(what);
     }
 
     // construct matrix & rhs
@@ -166,7 +165,7 @@ void SurfaceFairing::fair(unsigned int k)
             }
         }
 
-        B.row(i) = (Eigen::Vector3d) b;
+        B.row(i) = (Eigen::Vector3d)b;
     }
 
     A.setFromTriplets(triplets.begin(), triplets.end());
@@ -177,7 +176,7 @@ void SurfaceFairing::fair(unsigned int k)
 
     if (solver.info() != Eigen::Success)
     {
-        std::cerr << "SurfaceFairing: Could not solve linear system\n";
+        throw SolverException("SurfaceFairing: Failed to solve linear system.");
     }
     else
     {
