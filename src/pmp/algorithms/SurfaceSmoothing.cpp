@@ -234,8 +234,8 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     Eigen::MatrixXd X = solver.solve(B);
     if (solver.info() != Eigen::Success)
     {
-        throw SolverException(
-            "SurfaceSmoothing: Failed to solve linear system.");
+        auto what = "SurfaceSmoothing: Failed to solve linear system.";
+        throw SolverException(what);
     }
     else
     {
