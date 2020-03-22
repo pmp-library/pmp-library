@@ -23,24 +23,11 @@ namespace pmp {
 SurfaceParameterization::SurfaceParameterization(SurfaceMesh& mesh)
     : mesh_(mesh)
 {
-    bool has_boundary = false;
-    for (auto v : mesh_.vertices())
-        if (mesh_.is_boundary(v))
-        {
-            has_boundary = true;
-            break;
-        }
-
-    if (!has_boundary)
-    {
-        auto what = "SurfaceParameterization: Mesh has no boundary.";
-        throw InvalidInputException(what);
-    }
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceParameterization::setup_boundary_constraints()
+bool SurfaceParameterization::setup_boundary_constraints()
 {
     // get properties
     auto points = mesh_.vertex_property<Point>("v:point");
@@ -63,8 +50,8 @@ void SurfaceParameterization::setup_boundary_constraints()
     // no boundary found ?
     if (vit == vend)
     {
-        auto what = "SurfaceParameterization: Mesh has no boundary.";
-        throw InvalidInputException(what);
+        std::cerr << "Mesh has no boundary." << std::endl;
+        return false;
     }
 
     // collect boundary loop
@@ -102,6 +89,8 @@ void SurfaceParameterization::setup_boundary_constraints()
             l += distance(points[loop[i]], points[loop[(i + 1) % n]]);
         }
     }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +98,11 @@ void SurfaceParameterization::setup_boundary_constraints()
 void SurfaceParameterization::harmonic(bool use_uniform_weights)
 {
     // map boundary to circle
-    setup_boundary_constraints();
+    if (!setup_boundary_constraints())
+    {
+        std::cerr << "Could not perform setup of boundary constraints.\n";
+        return;
+    }
 
     // get properties
     auto tex = mesh_.vertex_property<TexCoord>("v:tex");
@@ -172,7 +165,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
             }
         }
         triplets.emplace_back(i, i, ww);
-        B.row(i) = (Eigen::Vector2d)b;
+        B.row(i) = (Eigen::Vector2d) b;
     }
 
     // build sparse matrix from triplets
@@ -183,8 +176,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     Eigen::MatrixXd X = solver.solve(B);
     if (solver.info() != Eigen::Success)
     {
-        auto what = "SurfaceParameterization: Failed to solve linear system.";
-        throw SolverException(what);
+        std::cerr << "SurfaceParameterization: Could not solve linear system\n";
     }
     else
     {
@@ -202,7 +194,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
 
 //-----------------------------------------------------------------------------
 
-void SurfaceParameterization::setup_lscm_boundary()
+bool SurfaceParameterization::setup_lscm_boundary()
 {
     // constrain the two boundary vertices farthest from each other to fix
     // the translation and rotation of the resulting parameterization
@@ -221,8 +213,7 @@ void SurfaceParameterization::setup_lscm_boundary()
     // no boundary?
     if (boundary.empty())
     {
-        auto what = "SurfaceParameterization: Mesh has no boundary.";
-        throw InvalidInputException(what);
+        return false;
     }
 
     // find boundary vertices with largest distance
@@ -252,6 +243,8 @@ void SurfaceParameterization::setup_lscm_boundary()
     tex[v2] = TexCoord(1.0, 1.0);
     locked[v1] = true;
     locked[v2] = true;
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -259,7 +252,8 @@ void SurfaceParameterization::setup_lscm_boundary()
 void SurfaceParameterization::lscm()
 {
     // boundary constraints
-    setup_lscm_boundary();
+    if (!setup_lscm_boundary())
+        return;
 
     // properties
     auto pos = mesh_.vertex_property<Point>("v:point");
@@ -286,7 +280,7 @@ void SurfaceParameterization::lscm()
         dvec3 c = (dvec3)pos[mesh_.to_vertex(hc)];
 
         // calculate local coordinate system
-        dvec3 z = normalize(cross(normalize(c - b), normalize(a - b)));
+        dvec3 z = normalize(cross(normalize(c-b), normalize(a-b)));
         dvec3 x = normalize(b - a);
         dvec3 y = normalize(cross(z, x));
 
@@ -418,8 +412,7 @@ void SurfaceParameterization::lscm()
     Eigen::VectorXd x = solver.solve(b);
     if (solver.info() != Eigen::Success)
     {
-        auto what = "SurfaceParameterization: Failed solve linear system.";
-        throw SolverException(what);
+        std::cerr << "SurfaceParameterization: Could not solve linear system\n";
     }
     else
     {

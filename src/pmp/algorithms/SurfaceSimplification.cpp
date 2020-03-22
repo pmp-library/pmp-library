@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2020 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
@@ -24,9 +24,6 @@ SurfaceSimplification::SurfaceSimplification(SurfaceMesh& mesh)
     : mesh_(mesh), initialized_(false), queue_(nullptr)
 
 {
-    if (!mesh_.is_triangle_mesh())
-        throw InvalidInputException("Input is not a pure triangle mesh!");
-
     aspect_ratio_ = 0;
     edge_length_ = 0;
     max_valence_ = 0;
@@ -61,6 +58,9 @@ void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
                                        Scalar normal_deviation,
                                        Scalar hausdorff_error)
 {
+    if (!mesh_.is_triangle_mesh())
+        return;
+
     // store parameters
     aspect_ratio_ = aspect_ratio;
     max_valence_ = max_valence;
@@ -148,6 +148,12 @@ void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
 
 void SurfaceSimplification::simplify(unsigned int n_vertices)
 {
+    if (!mesh_.is_triangle_mesh())
+    {
+        std::cerr << "Not a triangle mesh!" << std::endl;
+        return;
+    }
+
     // make sure the decimater is initialized
     if (!initialized_)
         initialize();
@@ -196,6 +202,7 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
         // perform collapse
         mesh_.collapse(h);
         --nv;
+        //if (nv % 1000 == 0) std::cerr << nv << "\r";
 
         // postprocessing, e.g., update quadrics
         postprocess_collapse(cd);

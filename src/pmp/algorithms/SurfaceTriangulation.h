@@ -31,14 +31,11 @@ namespace pmp {
 class SurfaceTriangulation
 {
 public:
+
     //! triangulation objective: find the triangulation that minimizes the
     //! sum of squared triangle areas, or the one that maximizes the minimum
     //! angle.
-    enum Objective
-    {
-        MIN_AREA,
-        MAX_ANGLE
-    } objective_;
+    enum Objective { MIN_AREA, MAX_ANGLE } objective_;
 
     //! construct with mesh
     SurfaceTriangulation(SurfaceMesh& mesh);
@@ -47,11 +44,11 @@ public:
     void triangulate(Objective o = MIN_AREA);
 
     //! triangulate a particular face f
-    //! \pre The input face is manifold
-    //! \throw InvalidInputException in case the input precondition is violated
     void triangulate(Face f, Objective o = MIN_AREA);
 
+
 private: //-------------------------------------------------- private functions
+
     // compute the weight of the triangle (i,j,k).
     Scalar compute_weight(int i, int j, int k) const;
 
@@ -64,12 +61,14 @@ private: //-------------------------------------------------- private functions
     // add edges from vertex i to j
     bool insert_edge(int i, int j);
 
+
 private: //------------------------------------------------------- private data
+
     // mesh and properties
     SurfaceMesh& mesh_;
     VertexProperty<Point> points_;
     std::vector<Halfedge> halfedges_;
-    std::vector<Vertex> vertices_;
+    std::vector<Vertex>   vertices_;
 
     // data for computing optimal triangulation
     std::vector<std::vector<Scalar>> weight_;
@@ -79,5 +78,5 @@ private: //------------------------------------------------------- private data
 //=============================================================================
 /// @}
 //=============================================================================
-} // namespace pmp
+}
 //=============================================================================

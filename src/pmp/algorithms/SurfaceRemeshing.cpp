@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright (C) 2011-2020 The pmp-library developers
+// Copyright (C) 2011-2019 The pmp-library developers
 //
 // This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
@@ -16,7 +16,6 @@
 #include <cfloat>
 #include <cmath>
 #include <algorithm>
-#include <stdexcept>
 
 //=============================================================================
 
@@ -27,9 +26,6 @@ namespace pmp {
 SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
     : mesh_(mesh), refmesh_(nullptr), kd_tree_(nullptr)
 {
-    if (!mesh_.is_triangle_mesh())
-        throw InvalidInputException("Input is not a pure triangle mesh!");
-
     points_ = mesh_.vertex_property<Point>("v:point");
 
     SurfaceNormals::compute_vertex_normals(mesh_);
@@ -46,6 +42,12 @@ void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
                                          unsigned int iterations,
                                          bool use_projection)
 {
+    if (!mesh_.is_triangle_mesh())
+    {
+        std::cerr << "Not a triangle mesh!" << std::endl;
+        return;
+    }
+
     uniform_ = true;
     use_projection_ = use_projection;
     target_edge_length_ = edge_length;
@@ -78,6 +80,12 @@ void SurfaceRemeshing::adaptive_remeshing(Scalar min_edge_length,
                                           unsigned int iterations,
                                           bool use_projection)
 {
+    if (!mesh_.is_triangle_mesh())
+    {
+        std::cerr << "Not a triangle mesh!" << std::endl;
+        return;
+    }
+
     uniform_ = false;
     min_edge_length_ = min_edge_length;
     max_edge_length_ = max_edge_length;
@@ -199,7 +207,7 @@ void SurfaceRemeshing::preprocessing()
                         c += w * curv.max_abs_curvature(vv);
                     }
                 }
-
+               
                 // For feature vertices with all neighbors being feature vertices, ww==0.
                 // In this case, we will use c=0 (no better idea)
                 if (ww)

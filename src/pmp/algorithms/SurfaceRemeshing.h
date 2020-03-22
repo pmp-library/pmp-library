@@ -31,27 +31,17 @@ namespace pmp {
 class SurfaceRemeshing
 {
 public:
-    //! \brief Construct with mesh to be remeshed.
-    //! \pre Input mesh needs to be a pure triangle mesh.
-    //! \throw InvalidInputException if the input precondition is violated.
+    //! Construct with mesh to be remeshed.
     SurfaceRemeshing(SurfaceMesh& mesh);
 
     // destructor
     ~SurfaceRemeshing();
 
-    //! \brief Perform uniform remeshing.
-    //! \param edge_length the target edge length.
-    //! \param iterations the number of iterations
-    //! \param use_projection use back-projection to the input surface
+    //! uniform remeshing with target edge length
     void uniform_remeshing(Scalar edge_length, unsigned int iterations = 10,
                            bool use_projection = true);
 
-    //! \brief Perform adaptive remeshing.
-    //! \param min_edge_length the minimum edge length.
-    //! \param max_edge_length the maximum edge length.
-    //! \param approx_error the maximum approximation error
-    //! \param iterations the number of iterations
-    //! \param use_projection use back-projection to the input surface
+    //! adaptive remeshing with min/max edge length and approximation error
     void adaptive_remeshing(Scalar min_edge_length, Scalar max_edge_length,
                             Scalar approx_error, unsigned int iterations = 10,
                             bool use_projection = true);

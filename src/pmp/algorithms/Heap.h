@@ -132,11 +132,13 @@ public:
             if (((j = left(i)) < size()) &&
                 interface_.greater(entry(i), entry(j)))
             {
+                std::cerr << "Heap condition violated\n";
                 ok = false;
             }
             if (((j = right(i)) < size()) &&
                 interface_.greater(entry(i), entry(j)))
             {
+                std::cerr << "Heap condition violated\n";
                 ok = false;
             }
         }

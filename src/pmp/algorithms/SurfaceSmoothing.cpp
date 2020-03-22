@@ -219,7 +219,7 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
                 triplets.emplace_back(i, idx[vv], -timestep * eweight[e]);
             }
 
-            B.row(i) = (Eigen::Vector3d)b;
+            B.row(i) = (Eigen::Vector3d) b;
         }
 
         // center vertex -> matrix
@@ -234,15 +234,14 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     Eigen::MatrixXd X = solver.solve(B);
     if (solver.info() != Eigen::Success)
     {
-        throw SolverException(
-            "SurfaceSmoothing: Failed to solve linear system.");
+        std::cerr << "SurfaceSmoothing: Could not solve linear system\n";
     }
     else
     {
         // copy solution
         for (unsigned int i = 0; i < n; ++i)
         {
-            points[free_vertices[i]] = X.row(i);
+            points[ free_vertices[i] ] = X.row(i);
         }
     }
 

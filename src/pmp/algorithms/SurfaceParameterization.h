@@ -28,25 +28,21 @@ namespace pmp {
 class SurfaceParameterization
 {
 public:
-    //! \brief Construct with mesh to be parameterized.
-    //! \pre The mesh has a boundary.
-    //! \throw InvalidInputException if the input precondition is violated.
+    //! Construct with mesh to be parameterized.
     SurfaceParameterization(SurfaceMesh& mesh);
 
-    //! \brief Compute discrete harmonic parameterization.
-    //! \throw SolverException in case of failure to solve the linear system.
+    //! Compute discrete harmonic parameterization.
     void harmonic(bool use_uniform_weights = false);
 
-    //! \brief Compute parameterization based on least squares conformal mapping.
-    //! \throw SolverException in case of failure to solve the linear system.
+    //! Compute parameterization based on least squares conformal mapping.
     void lscm();
 
 private:
     //! setup boundary constraints: map surface boundary to unit circle
-    void setup_boundary_constraints();
+    bool setup_boundary_constraints();
 
     //! setup boundary: pin the two farthest boundary vertices
-    void setup_lscm_boundary();
+    bool setup_lscm_boundary();
 
 private:
     //! the mesh

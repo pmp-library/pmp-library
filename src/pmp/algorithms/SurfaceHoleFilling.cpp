@@ -56,14 +56,15 @@ Scalar SurfaceHoleFilling::compute_angle(const Point& _n1,
 
 //-----------------------------------------------------------------------------
 
-void SurfaceHoleFilling::fill_hole(Halfedge _h)
+bool SurfaceHoleFilling::fill_hole(Halfedge _h)
 {
     // is it really a hole?
     if (!mesh_.is_boundary(_h))
     {
-        auto what = "SurfaceHoleFilling: Not a boundary halfedge.";
-        throw InvalidInputException(what);
+        return false;
     }
+
+    bool ok = false;
 
     // lock vertices/edge that already exist, to be later able to
     // identify the filled-in vertices/edges
@@ -76,30 +77,25 @@ void SurfaceHoleFilling::fill_hole(Halfedge _h)
     for (auto e : mesh_.edges())
         elocked_[e] = true;
 
-    try
+    // first do minimal triangulation
+    if (triangulate_hole(_h))
     {
-        triangulate_hole(_h); // do minimal triangulation
-        refine();             // refine filled-in edges
-    }
-    catch (InvalidInputException& e)
-    {
-        // clean up
-        hole_.clear();
-        mesh_.remove_vertex_property(vlocked_);
-        mesh_.remove_edge_property(elocked_);
-
-        throw e;
+        // refine filled-in edges
+        refine();
+        ok = true;
     }
 
     // clean up
     hole_.clear();
     mesh_.remove_vertex_property(vlocked_);
     mesh_.remove_edge_property(elocked_);
+
+    return ok;
 }
 
 //-----------------------------------------------------------------------------
 
-void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
+bool SurfaceHoleFilling::triangulate_hole(Halfedge _h)
 {
     // trace hole
     hole_.clear();
@@ -109,8 +105,8 @@ void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
         // check for manifoldness
         if (!mesh_.is_manifold(mesh_.to_vertex(h)))
         {
-            auto what = "[SurfaceHoleFilling] Non-manifold hole.";
-            throw InvalidInputException(what);
+            std::cerr << "[SurfaceHoleFilling] Non-manifold hole\n";
+            return false;
         }
 
         hole_.push_back(h);
@@ -183,6 +179,8 @@ void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
     // clean up
     weight_.clear();
     index_.clear();
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -457,7 +455,7 @@ void SurfaceHoleFilling::relaxation()
         else
             triplets.emplace_back(i, idx[v], c);
 
-        B.row(i) = (Eigen::Vector3d)b;
+        B.row(i) = (Eigen::Vector3d) b;
     }
 
     // solve least squares system
@@ -469,8 +467,8 @@ void SurfaceHoleFilling::relaxation()
     Eigen::MatrixXd X = solver.solve(AtB);
     if (solver.info() != Eigen::Success)
     {
-        auto what = "SurfaceHoleFilling: Failed to solve linear system.";
-        throw SolverException(what);
+        std::cerr << "[SurfaceHoleFilling] Solver failed\n";
+        return;
     }
 
     // copy solution to mesh vertices
@@ -510,5 +508,5 @@ void SurfaceHoleFilling::fairing()
 }
 
 //=============================================================================
-} // namespace pmp
+}
 //=============================================================================

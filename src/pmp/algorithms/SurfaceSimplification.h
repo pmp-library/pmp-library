@@ -34,9 +34,7 @@ namespace pmp {
 class SurfaceSimplification
 {
 public:
-    //! \brief Construct with mesh to be simplified.
-    //! \pre Input mesh needs to be a pure triangle mesh.
-    //! \throw InvalidInputException if the input precondition is violated.
+    //! Construct with mesh to be simplified.
     SurfaceSimplification(SurfaceMesh& mesh);
 
     // destructor

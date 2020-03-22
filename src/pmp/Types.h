@@ -10,9 +10,7 @@
 //=============================================================================
 
 #include <pmp/MatVec.h>
-
 #include <cstdint> // for std::uint_least32_t
-#include <stdexcept>
 
 //=============================================================================
 
@@ -84,25 +82,6 @@ struct IOFlags
     bool use_face_normals = false;       //!< read / write face normals
     bool use_face_colors = false;        //!< read / write face colors
     bool use_halfedge_texcoords = false; //!< read / write halfedge texcoords
-};
-
-//! \brief Exception indicating invalid input passed to a function.
-//! \details This exception should be used to signal violation of a
-//! precondition, e.g., if an algorithm expects a pure triangle mesh but a
-//! general polygon mesh is passed instead.
-class InvalidInputException : public std::invalid_argument
-{
-public:
-    InvalidInputException(const std::string& what) : std::invalid_argument(what)
-    {
-    }
-};
-
-//! \brief Exception indicating failure so solve an equation system.
-class SolverException : public std::runtime_error
-{
-public:
-    SolverException(const std::string& what) : std::runtime_error(what) {}
 };
 
 //! @}
