@@ -34,13 +34,12 @@ TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_features)
     sf.detect_angle(25);
 
     auto bb = mesh.bounds().size();
-    SurfaceRemeshing(mesh).adaptive_remeshing(
-        0.001 * bb,  // min length
-        1.0 * bb,    // max length
-        0.001 * bb, // approx. error
-        1, // iterations
-        false); // no projection
-    EXPECT_EQ(mesh.n_vertices(),size_t(3216));
+    SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb, // min length
+                                              1.0 * bb,   // max length
+                                              0.001 * bb, // approx. error
+                                              1,          // iterations
+                                              false);     // no projection
+    EXPECT_EQ(mesh.n_vertices(), size_t(3188));
 }
 
 TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_boundary)
@@ -49,11 +48,10 @@ TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_boundary)
     mesh.clear();
     mesh.read("pmp-data/off/hemisphere.off");
     auto bb = mesh.bounds().size();
-    SurfaceRemeshing(mesh).adaptive_remeshing(
-        0.001 * bb,  // min length
-        1.0 * bb,    // max length
-        0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.n_vertices(),size_t(452));
+    SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
+                                              1.0 * bb,    // max length
+                                              0.001 * bb); // approx. error
+    EXPECT_EQ(mesh.n_vertices(), size_t(452));
 }
 
 TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
@@ -70,11 +68,10 @@ TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
             selected[v] = true;
         }
     auto bb = mesh.bounds().size();
-    SurfaceRemeshing(mesh).adaptive_remeshing(
-        0.001 * bb,  // min length
-        1.0 * bb,    // max length
-        0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.n_vertices(),size_t(1182));
+    SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
+                                              1.0 * bb,    // max length
+                                              0.001 * bb); // approx. error
+    EXPECT_EQ(mesh.n_vertices(), size_t(1182));
 }
 
 TEST_F(SurfaceRemeshingTest, uniform_remeshing)
@@ -85,5 +82,5 @@ TEST_F(SurfaceRemeshingTest, uniform_remeshing)
                       mesh.position(mesh.vertex(eit, 1)));
     l /= (Scalar)mesh.n_edges();
     SurfaceRemeshing(mesh).uniform_remeshing(l);
-    EXPECT_EQ(mesh.n_vertices(),size_t(642));
+    EXPECT_EQ(mesh.n_vertices(), size_t(642));
 }
