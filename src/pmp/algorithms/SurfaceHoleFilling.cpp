@@ -58,6 +58,11 @@ Scalar SurfaceHoleFilling::compute_angle(const Point& _n1,
 
 void SurfaceHoleFilling::fill_hole(Halfedge _h)
 {
+    if (!h.is_valid())
+    {
+        throw InvalidInputException("SurfaceHoleFilling: Invalid halfedge.");
+    }
+
     // is it really a hole?
     if (!mesh_.is_boundary(_h))
     {

@@ -37,7 +37,8 @@ public:
     //! construct with mesh
     SurfaceHoleFilling(SurfaceMesh& mesh);
 
-    //! Fill the hole specified by halfedge h
+    //! \brief Fill the hole specified by halfedge \a h
+    //! \pre The specified halfedge is valid.
     //! \pre The specified halfedge is a boundary halfedge.
     //! \pre The specified halfedge is not adjacent to a non-manifold hole.
     //! \throw InvalidInputException in case on of the input preconditions is violated
