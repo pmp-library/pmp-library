@@ -56,7 +56,7 @@ Scalar SurfaceHoleFilling::compute_angle(const Point& _n1,
 
 //-----------------------------------------------------------------------------
 
-void SurfaceHoleFilling::fill_hole(Halfedge _h)
+void SurfaceHoleFilling::fill_hole(Halfedge h)
 {
     if (!h.is_valid())
     {
@@ -64,7 +64,7 @@ void SurfaceHoleFilling::fill_hole(Halfedge _h)
     }
 
     // is it really a hole?
-    if (!mesh_.is_boundary(_h))
+    if (!mesh_.is_boundary(h))
     {
         auto what = "SurfaceHoleFilling: Not a boundary halfedge.";
         throw InvalidInputException(what);
@@ -83,8 +83,8 @@ void SurfaceHoleFilling::fill_hole(Halfedge _h)
 
     try
     {
-        triangulate_hole(_h); // do minimal triangulation
-        refine();             // refine filled-in edges
+        triangulate_hole(h); // do minimal triangulation
+        refine();            // refine filled-in edges
     }
     catch (InvalidInputException& e)
     {
