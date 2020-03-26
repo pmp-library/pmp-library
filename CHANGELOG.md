@@ -8,6 +8,10 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+- Fix bug in bounding box computation.
+  Thanks a lot to Jascha Achenbach for reporting this bug!
+
+
 ## [1.2.0] 2019-03-15
 
 ### External libraries
@@ -23,14 +27,15 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Improved rendering of general polygons, avoiding erroneous
   tessellation into overlapping/flipped triangles in case of
   non-convex polygons.
-- Added support for rendering using matcaps
+- Added support for rendering using MatCaps.
+  Thanks to Alec Jacobson for suggesting this!
 
 ### Fixed
 
 - Fix erroneous header install path (visualization)
 - Fix bug hole filling (when filling single-triangle holes).
   Thanks a lot to Pierre Buyssens for reporting this bug!
-- Fix bug when fairing a mesh w/o boundary constraints
+- Fix bug when fairing a mesh w/o boundary constraints.
   Thanks a lot to Pierre Buyssens for reporting this bug!
 
 ## [1.1.0] 2019-05-30

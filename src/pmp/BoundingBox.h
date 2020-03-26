@@ -42,7 +42,7 @@ public:
         {
             if (p[i] < min_[i])
                 min_[i] = p[i];
-            else if (p[i] > max_[i])
+            if (p[i] > max_[i])
                 max_[i] = p[i];
         }
         return *this;

@@ -78,9 +78,9 @@ void Viewer::process_imgui()
         {
             auto bb = mesh_.bounds().size();
             SurfaceRemeshing(mesh_).adaptive_remeshing(
-                0.001 * bb,  // min length
-                0.100 * bb,  // max length
-                0.001 * bb); // approx. error
+                0.0010 * bb,  // min length
+                0.0500 * bb,  // max length
+                0.0005 * bb); // approx. error
             update_mesh();
         }
     }

@@ -117,7 +117,6 @@ void SurfaceRemeshing::preprocessing()
 
     // lock unselected vertices if some vertices are selected
     auto vselected = mesh_.get_vertex_property<bool>("v:selected");
-
     if (vselected)
     {
         bool has_selection = false;
@@ -172,41 +171,56 @@ void SurfaceRemeshing::preprocessing()
     else
     {
         // compute curvature for all mesh vertices, using cotan or Cohen-Steiner
-        // do 2 post-smoothing steps to get a smoother sizing field
+        // don't use two-ring neighborhood, since we otherwise compute
+        // curvature over sharp features edges, leading to high curvatures.
         SurfaceCurvature curv(mesh_);
-        //curv.analyze(1);
-        curv.analyze_tensor(1, true);
+        curv.analyze(1);
+        //curv.analyze_tensor(1, true);
 
+        // use vsizing_ to store/smooth curvatures to avoid another vertex property
+
+        // curvature values for feature vertices are not meaningful.
+        // mark them as negative values.
         for (auto v : mesh_.vertices())
         {
-            // maximum absolute curvature
-            Scalar c = curv.max_abs_curvature(v);
+            if (vfeature_ && vfeature_[v])
+                vsizing_[v] = -1.0;
+            else
+                vsizing_[v] = curv.max_abs_curvature(v);
+        }
 
-            // curvature of feature vertices: average of non-feature neighbors
-            if (vfeature_[v])
+        // curvature values might be noisy. smooth them.
+        // don't consider feature vertices' curvatures.
+        // do this for two iterations, to propagate curvatures
+        // from non-feature regions to feature vertices.
+        for (int iters = 0; iters < 2; ++iters)
+        {
+            for (auto v : mesh_.vertices())
             {
-                Vertex vv;
                 Scalar w, ww = 0.0;
-                c = 0.0;
+                Scalar c, cc = 0.0;
 
                 for (auto h : mesh_.halfedges(v))
                 {
-                    vv = mesh_.to_vertex(h);
-                    if (!vfeature_[vv])
+                    c = vsizing_[mesh_.to_vertex(h)];
+                    if (c > 0.0)
                     {
                         w = std::max(0.0, cotan_weight(mesh_, mesh_.edge(h)));
                         ww += w;
-                        c += w * curv.max_abs_curvature(vv);
+                        cc += w * c;
                     }
                 }
 
-                // For feature vertices with all neighbors being feature vertices, ww==0.
-                // In this case, we will use c=0 (no better idea)
                 if (ww)
-                {
-                    c /= ww;
-                }
+                    cc /= ww;
+                vsizing_[v] = cc;
             }
+        }
+
+        // now convert per-vertex curvature into target edge length
+        for (auto v : mesh_.vertices())
+        {
+            Scalar c = vsizing_[v];
 
             // get edge length from curvature
             const Scalar r = 1.0 / c;

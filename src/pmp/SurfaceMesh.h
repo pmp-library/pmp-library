@@ -956,7 +956,7 @@ public:
     //! -------|-------|--------|---------|--------|----------
     //! OFF    | yes   | yes    | a       | a      | a
     //! OBJ    | yes   | no     | a       | no     | no
-    //! STL    | yes   | yes    | no      | no     | no
+    //! STL    | yes   | no     | no      | no     | no
     //! PLY    | yes   | yes    | no      | no     | no
     //! PMP    | no    | yes    | no      | no     | no
     //! XYZ    | yes   | no     | a       | no     | no
