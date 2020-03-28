@@ -105,6 +105,15 @@ public:
     SolverException(const std::string& what) : std::runtime_error(what) {}
 };
 
+//! \brief Exception indicating failure to allocate a new resource.
+//! \details This exception signals an error resulting from an attempt to exceed
+//! implementation-defined allocation limits.
+class AllocationException : public std::length_error
+{
+public:
+    AllocationException(const std::string& what) : std::length_error(what) {}
+};
+
 //! @}
 
 //! \defgroup core core
