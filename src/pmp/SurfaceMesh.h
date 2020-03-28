@@ -973,7 +973,8 @@ public:
     //! add a new vertex with position \c p
     Vertex add_vertex(const Point& p);
 
-    //! add a new face with vertex list \c vertices
+    //! \brief Add a new face with vertex list \c vertices
+    //! \throw TopologyException in case a topological error occurs.
     //! \sa add_triangle, add_quad
     Face add_face(const std::vector<Vertex>& vertices);
 

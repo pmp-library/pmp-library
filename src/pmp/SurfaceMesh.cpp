@@ -339,8 +339,8 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
     {
         if (!is_boundary(vertices[i]))
         {
-            std::cerr << "SurfaceMesh::add_face: complex vertex\n";
-            return Face();
+            auto what = "SurfaceMesh::add_face: Complex vertex.";
+            throw TopologyException(what);
         }
 
         halfedges[i] = find_halfedge(vertices[i], vertices[ii]);
@@ -348,8 +348,8 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
 
         if (!isNew[i] && !is_boundary(halfedges[i]))
         {
-            std::cerr << "SurfaceMesh::add_face: complex edge\n";
-            return Face();
+            auto what = "SurfaceMesh::add_face: Complex edge.";
+            throw TopologyException(what);
         }
     }
 
@@ -383,9 +383,9 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
                 // ok ?
                 if (boundaryNext == innerNext)
                 {
-                    std::cerr
-                        << "SurfaceMeshT::add_face: patch re-linking failed\n";
-                    return Face();
+                    auto what =
+                        "SurfaceMesh::add_face: Patch re-linking failed.";
+                    throw TopologyException(what);
                 }
 
                 // other halfedges' handles
@@ -969,21 +969,23 @@ bool SurfaceMesh::is_removal_ok(Edge e)
 {
     Halfedge h0 = halfedge(e, 0);
     Halfedge h1 = halfedge(e, 1);
-    Vertex   v0 = to_vertex(h0);
-    Vertex   v1 = to_vertex(h1);
-    Face     f0 = face(h0);
-    Face     f1 = face(h1);
+    Vertex v0 = to_vertex(h0);
+    Vertex v1 = to_vertex(h1);
+    Face f0 = face(h0);
+    Face f1 = face(h1);
 
     // boundary?
-    if (!f0.is_valid() || !f1.is_valid()) return false;
+    if (!f0.is_valid() || !f1.is_valid())
+        return false;
 
     // same face?
-    if (f0 == f1) return false;
+    if (f0 == f1)
+        return false;
 
     // are the two faces connect through another vertex?
-    for (auto v: vertices(f0))
+    for (auto v : vertices(f0))
         if (v != v0 && v != v1)
-            for (auto f: faces(v))
+            for (auto f : faces(v))
                 if (f == f1)
                     return false;
 
@@ -994,7 +996,8 @@ bool SurfaceMesh::is_removal_ok(Edge e)
 
 bool SurfaceMesh::remove_edge(Edge e)
 {
-    if (!is_removal_ok(e)) return false;
+    if (!is_removal_ok(e))
+        return false;
 
     Halfedge h0 = halfedge(e, 0);
     Halfedge h1 = halfedge(e, 1);
@@ -1011,11 +1014,13 @@ bool SurfaceMesh::remove_edge(Edge e)
     Halfedge h1_next = next_halfedge(h1);
 
     // adjust vertex->halfedge
-    if (halfedge(v0) == h1)  set_halfedge(v0, h0_next);
-    if (halfedge(v1) == h0)  set_halfedge(v1, h1_next);
+    if (halfedge(v0) == h1)
+        set_halfedge(v0, h0_next);
+    if (halfedge(v1) == h0)
+        set_halfedge(v1, h1_next);
 
     // adjust halfedge->face
-    for (auto h: halfedges(f0))
+    for (auto h : halfedges(f0))
         set_face(h, f1);
 
     // adjust halfedge->halfedge
@@ -1023,7 +1028,8 @@ bool SurfaceMesh::remove_edge(Edge e)
     set_next_halfedge(h0_prev, h1_next);
 
     // adjust face->halfedge
-    if (halfedge(f1) == h1) set_halfedge(f1, h1_next);
+    if (halfedge(f1) == h1)
+        set_halfedge(f1, h1_next);
 
     // delete face f0 and edge e
     fdeleted_[f0] = true;

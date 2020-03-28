@@ -114,6 +114,13 @@ public:
     AllocationException(const std::string& what) : std::length_error(what) {}
 };
 
+//! \brief Exception indicating a topological error has occurred.
+class TopologyException : public std::logic_error
+{
+public:
+    TopologyException(const std::string& what) : std::logic_error(what) {}
+};
+
 //! @}
 
 //! \defgroup core core
