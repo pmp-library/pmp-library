@@ -184,19 +184,20 @@ void SurfaceRemeshing::preprocessing()
         // compute curvature for all mesh vertices, using cotan or Cohen-Steiner
         // don't use two-ring neighborhood, since we otherwise compute
         // curvature over sharp features edges, leading to high curvatures.
+        // prefer tensor analysis over cotan-Laplace, since the former is more
+        // robust and gives better results on the boundary.
         SurfaceCurvature curv(mesh_);
-        curv.analyze(1);
-        //curv.analyze_tensor(1, true);
+        curv.analyze_tensor(1);
 
 
         // use vsizing_ to store/smooth curvatures to avoid another vertex property
 
 
-        // curvature values for feature vertices are not meaningful.
-        // mark them as negative values.
+        // curvature values for feature vertices and boundary vertices 
+        // are not meaningful. mark them as negative values.
         for (auto v : mesh_.vertices())
         {
-            if (vfeature_ && vfeature_[v])
+            if (mesh_.is_boundary(v) || (vfeature_ && vfeature_[v]))
                 vsizing_[v] = -1.0;
             else
                 vsizing_[v] = curv.max_abs_curvature(v);
@@ -205,6 +206,7 @@ void SurfaceRemeshing::preprocessing()
 
         // curvature values might be noisy. smooth them.
         // don't consider feature vertices' curvatures.
+        // don't consider boundary vertices' curvatures.
         // do this for two iterations, to propagate curvatures
         // from non-feature regions to feature vertices.
         for (int iters=0; iters<2; ++iters)
