@@ -39,7 +39,7 @@ TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_features)
                                               0.001 * bb, // approx. error
                                               1,          // iterations
                                               false);     // no projection
-    EXPECT_EQ(mesh.n_vertices(), size_t(826));
+    EXPECT_EQ(mesh.n_vertices(), size_t(845));
 }
 
 TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_boundary)
@@ -51,7 +51,7 @@ TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_boundary)
     SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
                                               1.0 * bb,    // max length
                                               0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.n_vertices(), size_t(445));
+    EXPECT_EQ(mesh.n_vertices(), size_t(463));
 }
 
 TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
@@ -71,7 +71,7 @@ TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
     SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
                                               1.0 * bb,    // max length
                                               0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.n_vertices(), size_t(1179));
+    EXPECT_EQ(mesh.n_vertices(), size_t(1184));
 }
 
 TEST_F(SurfaceRemeshingTest, uniform_remeshing)
