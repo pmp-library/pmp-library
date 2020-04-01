@@ -29,6 +29,9 @@ public:
     //! Construct with mesh to be analyzed.
     SurfaceFeatures(SurfaceMesh& mesh);
 
+    //! Destructor
+    ~SurfaceFeatures();
+
     //! Clear features.
     void clear();
 
