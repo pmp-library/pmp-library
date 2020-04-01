@@ -66,6 +66,8 @@ private:
     void tangential_smoothing(unsigned int iterations);
     void remove_caps();
 
+    Point minimize_squared_areas(Vertex v);
+
     void project_to_reference(Vertex v);
 
     bool is_too_long(Vertex v0, Vertex v1) const

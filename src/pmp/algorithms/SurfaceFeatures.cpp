@@ -24,6 +24,14 @@ SurfaceFeatures::SurfaceFeatures(SurfaceMesh& mesh) : mesh_(mesh)
 
 //-----------------------------------------------------------------------------
 
+SurfaceFeatures::~SurfaceFeatures()
+{
+    mesh_.remove_vertex_property(vfeature_);
+    mesh_.remove_edge_property(efeature_);
+}
+
+//-----------------------------------------------------------------------------
+
 void SurfaceFeatures::clear()
 {
     for (auto v : mesh_.vertices())

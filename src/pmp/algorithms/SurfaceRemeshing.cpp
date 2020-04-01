@@ -705,6 +705,7 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
                 }
                 else
                 {
+#if 0
                     u = Point(0.0);
                     t = Point(0.0);
                     ww = 0;
@@ -737,6 +738,15 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
                     u -= n * dot(u, n);
 
                     update[v] = u;
+#else
+                    Point p = minimize_squared_areas(v);
+                    u = p - mesh_.position(v);
+
+                    n = vnormal_[v];
+                    u -= n * dot(u, n);
+
+                    update[v] = u;
+#endif
                 }
             }
         }
@@ -826,6 +836,56 @@ void SurfaceRemeshing::remove_caps()
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+
+Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
+{
+    // setup matrix of one-ring neighbors' positions
+    const unsigned int n = mesh_.valence(v);
+    Eigen::MatrixXd poly(n,3);
+    int i=0;
+    for (auto vv: mesh_.vertices(v))
+    {
+        poly.row(i++) = (Eigen::Vector3d)points_[vv];
+    }
+
+
+    // build Hessian and Jacobian
+    Eigen::Matrix3d H;
+    H.setZero();
+    Eigen::Vector3d J;
+    J.setZero();
+    for (unsigned int i = 0; i < n; ++i) 
+    {
+        Eigen::Vector3d p = poly.row(i);
+        Eigen::Vector3d q = poly.row((i + 1) % n);
+        Eigen::Vector3d d = p - q;
+
+        double w = 1.0 / d.norm();
+
+        H(0, 0) += w * (d(1) * d(1) + d(2) * d(2));
+        H(1, 0) += w * (-d(0) * d(1));
+        H(2, 0) += w * (-d(0) * d(2));
+
+        H(0, 1) += w * (-d(0) * d(1));
+        H(1, 1) += w * (d(0) * d(0) + d(2) * d(2));
+        H(2, 1) += w * (-d(1) * d(2));
+
+        H(0, 2) += w * (-d(0) * d(2));
+        H(1, 2) += w * (-d(1) * d(2));
+        H(2, 2) += w * (d(0) * d(0) + d(1) * d(1));
+
+        J(0) += w * (-d(1) * p(1) * q(0) - d(2) * p(2) * q(0) + d(1) * p(0) * q(1) + d(2) * p(0) * q(2));
+        J(1) += w * (d(0) * p(1) * q(0) - d(0) * p(0) * q(1) - d(2) * p(2) * q(1) + d(2) * p(1) * q(2));
+        J(2) += w * (d(0) * p(2) * q(0) + d(1) * p(2) * q(1) - d(0) * p(0) * q(2) - d(1) * p(1) * q(2));
+    }
+
+    // compute minimizer
+    Eigen::Vector3d x = H.lu().solve(-J);
+
+    return Point(x);
 }
 
 //=============================================================================
