@@ -8,6 +8,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+- Add PMP_INSTALL option to CMake.
 - Fix bug in bounding box computation.
   Thanks a lot to Jascha Achenbach for reporting this bug!
 

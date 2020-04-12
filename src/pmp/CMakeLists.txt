@@ -34,7 +34,7 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.6.0")
 endif()
 
 
-if(NOT EMSCRIPTEN)
+if(NOT EMSCRIPTEN AND PMP_INSTALL)
 
   target_include_directories(pmp PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
