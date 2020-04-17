@@ -371,6 +371,17 @@ typedef Vector<int, 4> ivec4;
 //! template specialization for a vector of four unsigned int values
 typedef Vector<unsigned int, 4> uvec4;
 
+//! template specialization for a vector of four float values
+typedef Vector<float, 8> vec8;
+//! template specialization for a vector of four double values
+typedef Vector<double, 8> dvec8;
+//! template specialization for a vector of four bool values
+typedef Vector<bool, 8> bvec8;
+//! template specialization for a vector of four int values
+typedef Vector<int, 8> ivec8;
+//! template specialization for a vector of four unsigned int values
+typedef Vector<unsigned int, 8> uvec8;
+
 //! template specialization for a 2x2 matrix of float values
 typedef Mat2<float> mat2;
 //! template specialization for a 2x2 matrix of double values
