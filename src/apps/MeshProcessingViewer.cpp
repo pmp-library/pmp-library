@@ -17,6 +17,7 @@
 #include <pmp/algorithms/SurfaceCurvature.h>
 #include <pmp/algorithms/SurfaceGeodesic.h>
 #include <pmp/algorithms/SurfaceHoleFilling.h>
+#include <pmp/algorithms/SurfacePrimitives.h>
 
 #include <imgui.h>
 
@@ -67,14 +68,14 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         case GLFW_KEY_M: // merge two faces incident to longest edge
         {
             Scalar l, ll(0);
-            Edge   ee;
-            for (auto e: mesh_.edges())
+            Edge ee;
+            for (auto e : mesh_.edges())
             {
                 Vertex v0 = mesh_.vertex(e, 0);
                 Vertex v1 = mesh_.vertex(e, 1);
-                Point  p0 = mesh_.position(v0);
-                Point  p1 = mesh_.position(v1);
-                l = distance(p0,p1);
+                Point p0 = mesh_.position(v0);
+                Point p1 = mesh_.position(v1);
+                l = distance(p0, p1);
                 if (l > ll && mesh_.is_removal_ok(e))
                 {
                     ll = l;
@@ -88,6 +89,17 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
                 mesh_.remove_edge(ee);
                 update_mesh();
             }
+            break;
+        }
+
+        case GLFW_KEY_G:
+        {
+            SurfacePrimitives generator(mesh_);
+            generator.uv_sphere();
+            BoundingBox bb = mesh_.bounds();
+            set_scene((vec3)bb.center(), 0.5 * bb.size());
+            set_draw_mode("Hidden Line");
+            update_mesh();
             break;
         }
 
