@@ -66,4 +66,25 @@ void SurfacePrimitives::uv_sphere(const vec3& center, Scalar radius,
     }
 }
 
+void SurfacePrimitives::unit_cube()
+{
+    mesh_.clear();
+
+    auto v0 = mesh_.add_vertex(Point(0, 0, 0));
+    auto v1 = mesh_.add_vertex(Point(1, 0, 0));
+    auto v2 = mesh_.add_vertex(Point(1, 1, 0));
+    auto v3 = mesh_.add_vertex(Point(0, 1, 0));
+    auto v4 = mesh_.add_vertex(Point(0, 0, 1));
+    auto v5 = mesh_.add_vertex(Point(1, 0, 1));
+    auto v6 = mesh_.add_vertex(Point(1, 1, 1));
+    auto v7 = mesh_.add_vertex(Point(0, 1, 1));
+
+    mesh_.add_quad(v3, v2, v1, v0);
+    mesh_.add_quad(v2, v6, v5, v1);
+    mesh_.add_quad(v5, v6, v7, v4);
+    mesh_.add_quad(v0, v4, v7, v3);
+    mesh_.add_quad(v3, v7, v6, v2);
+    mesh_.add_quad(v1, v5, v4, v0);
+}
+
 } // namespace pmp
