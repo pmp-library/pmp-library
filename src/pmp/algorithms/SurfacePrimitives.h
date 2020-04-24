@@ -20,7 +20,7 @@ class SurfacePrimitives
 public:
     SurfacePrimitives(SurfaceMesh& mesh) : mesh_(mesh){};
 
-    //! Generate UV sphere with given \p center, \p radius, and  .
+    //! Generate UV sphere with given \p center, \p radius, \p n_slices, and \p n_stacks.
     void uv_sphere(const vec3& center = vec3(0, 0, 0), Scalar radius = 1.0,
                    size_t n_slices = 15, size_t n_stacks = 15);
 
