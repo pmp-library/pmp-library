@@ -455,7 +455,7 @@ void SurfaceHoleFilling::relaxation()
         else
             triplets.emplace_back(i, idx[v], c);
 
-        B.row(i) = (Eigen::Vector3d) b;
+        B.row(i) = (Eigen::Vector3d)b;
     }
 
     // solve least squares system
@@ -508,5 +508,5 @@ void SurfaceHoleFilling::fairing()
 }
 
 //=============================================================================
-}
+} // namespace pmp
 //=============================================================================

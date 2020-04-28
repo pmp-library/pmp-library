@@ -109,7 +109,6 @@ protected:
     //! and an incremented number `n`.
     void screenshot();
 
-
 protected: //------------------------------------------ GLFW related functions
     //! width of window
     int width() const { return width_; }

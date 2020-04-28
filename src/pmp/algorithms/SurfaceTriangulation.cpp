@@ -10,7 +10,7 @@ namespace pmp {
 
 SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& mesh) : mesh_(mesh)
 {
-    points_    = mesh_.vertex_property<Point>("v:point");
+    points_ = mesh_.vertex_property<Point>("v:point");
     objective_ = MIN_AREA;
     objective_ = MAX_ANGLE;
 }
@@ -19,7 +19,7 @@ SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& mesh) : mesh_(mesh)
 
 void SurfaceTriangulation::triangulate(Objective o)
 {
-    for (auto f: mesh_.faces())
+    for (auto f : mesh_.faces())
         triangulate(f, o);
 }
 
@@ -29,7 +29,6 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
 {
     // store objective
     objective_ = o;
-
 
     // collect polygon halfedges
     Halfedge h0 = mesh_.halfedge(f);
@@ -46,12 +45,12 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
 
         halfedges_.push_back(h);
         vertices_.push_back(mesh_.to_vertex(h));
-    } 
-    while ((h = mesh_.next_halfedge(h)) != h0);
+    } while ((h = mesh_.next_halfedge(h)) != h0);
 
     // do we have at least four vertices?
     const int n = halfedges_.size();
-    if (n <= 3) return;
+    if (n <= 3)
+        return;
 
     // compute minimal triangulation by dynamic programming
     weight_.clear();
@@ -85,10 +84,13 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
                 switch (objective_)
                 {
                     case MIN_AREA:
-                        w = weight_[i][m] + compute_weight(i, m, k) + weight_[m][k];
+                        w = weight_[i][m] + compute_weight(i, m, k) +
+                            weight_[m][k];
                         break;
                     case MAX_ANGLE:
-                        w = std::max(weight_[i][m], std::max(compute_weight(i, m, k), weight_[m][k]));
+                        w = std::max(
+                            weight_[i][m],
+                            std::max(compute_weight(i, m, k), weight_[m][k]));
                         break;
                     default:
                         // should never happen
@@ -129,7 +131,6 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
         todo.push_back(ivec2(split, end));
     }
 
-
     // clean up
     weight_.clear();
     index_.clear();
@@ -149,11 +150,11 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
     // this would result in an invalid triangulation
     // -> prevent by giving infinite weight
     // (this happens for suzanne.obj!)
-    //if (is_interior_edge(a, b) || 
-        //is_interior_edge(b, c) ||
-        //is_interior_edge(c, a))
-        //return FLT_MAX;
-    if (is_edge(a,b) && is_edge(b,c) && is_edge(c,a))
+    //if (is_interior_edge(a, b) ||
+    //is_interior_edge(b, c) ||
+    //is_interior_edge(c, a))
+    //return FLT_MAX;
+    if (is_edge(a, b) && is_edge(b, c) && is_edge(c, a))
         return FLT_MAX;
 
     const Point& pa = points_[a];
@@ -165,16 +166,16 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
     {
         // compute squared triangle area
         case MIN_AREA:
-            w = sqrnorm(cross(pb-pa, pc-pa));
+            w = sqrnorm(cross(pb - pa, pc - pa));
             break;
 
         // compute one over minimum angle
         // or cosine of minimum angle
         // maximum cosine (which should then be minimized)
         case MAX_ANGLE:
-            Scalar cosa = dot(normalize(pb-pa), normalize(pc-pa));
-            Scalar cosb = dot(normalize(pa-pb), normalize(pc-pb));
-            Scalar cosc = dot(normalize(pa-pc), normalize(pb-pc));
+            Scalar cosa = dot(normalize(pb - pa), normalize(pc - pa));
+            Scalar cosb = dot(normalize(pa - pb), normalize(pc - pb));
+            Scalar cosc = dot(normalize(pa - pc), normalize(pb - pc));
             w = std::max(cosa, std::max(cosb, cosc));
             break;
     }
@@ -206,8 +207,8 @@ bool SurfaceTriangulation::insert_edge(int i, int j)
 {
     Halfedge h0 = halfedges_[i];
     Halfedge h1 = halfedges_[j];
-    Vertex   v0 = vertices_[i];
-    Vertex   v1 = vertices_[j];
+    Vertex v0 = vertices_[i];
+    Vertex v1 = vertices_[j];
 
     // does edge already exist?
     if (mesh_.find_halfedge(v0, v1).is_valid())
@@ -218,7 +219,8 @@ bool SurfaceTriangulation::insert_edge(int i, int j)
     // can we reach v1 from h0?
     {
         Halfedge h = h0;
-        do {
+        do
+        {
             h = mesh_.next_halfedge(h);
             if (mesh_.to_vertex(h) == v1)
             {
@@ -231,7 +233,8 @@ bool SurfaceTriangulation::insert_edge(int i, int j)
     // can we reach v0 from h1?
     {
         Halfedge h = h1;
-        do {
+        do
+        {
             h = mesh_.next_halfedge(h);
             if (mesh_.to_vertex(h) == v0)
             {
@@ -241,10 +244,10 @@ bool SurfaceTriangulation::insert_edge(int i, int j)
         } while (h != h1);
     }
 
-    std::cerr << "[SurfaceTriangulation] This should not happen...\n"; 
+    std::cerr << "[SurfaceTriangulation] This should not happen...\n";
     return false;
 }
 
 //=============================================================================
-}
+} // namespace pmp
 //=============================================================================

@@ -43,11 +43,12 @@ bool Viewer::load_mesh(const char* filename)
     if (MeshViewer::load_mesh(filename))
     {
         // alloc tex coordinates
-        mesh_.vertex_property<TexCoord>("v:tex", TexCoord(0,0));
+        mesh_.vertex_property<TexCoord>("v:tex", TexCoord(0, 0));
         update_mesh();
         return true;
     }
-    else return false;
+    else
+        return false;
 }
 
 //----------------------------------------------------------------------------

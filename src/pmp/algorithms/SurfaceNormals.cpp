@@ -67,7 +67,7 @@ Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
         Scalar cosine, angle, denom;
         bool is_triangle;
 
-        for (auto h: mesh.halfedges(v))
+        for (auto h : mesh.halfedges(v))
         {
             if (!mesh.is_boundary(h))
             {
@@ -88,10 +88,10 @@ Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
                     angle = acos(cosine);
 
                     // compute triangle or polygon normal
-                    is_triangle = (mesh.next_halfedge(mesh.next_halfedge(mesh.next_halfedge(h))) == h);
-                    n = is_triangle ? 
-                        normalize(cross(p1,p2)) :
-                        compute_face_normal(mesh, mesh.face(h));
+                    is_triangle = (mesh.next_halfedge(mesh.next_halfedge(
+                                       mesh.next_halfedge(h))) == h);
+                    n = is_triangle ? normalize(cross(p1, p2))
+                                    : compute_face_normal(mesh, mesh.face(h));
 
                     n *= angle;
                     nn += n;
@@ -106,7 +106,6 @@ Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
 }
 
 //-----------------------------------------------------------------------------
-
 
 Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
                                              Halfedge h, Scalar crease_angle)
@@ -150,10 +149,10 @@ Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
                 p2 -= p0;
 
                 // compute triangle or polygon normal
-                is_triangle = (mesh.next_halfedge(mesh.next_halfedge(mesh.next_halfedge(h))) == h);
-                n = is_triangle ? 
-                    normalize(cross(p1,p2)) :
-                    compute_face_normal(mesh, mesh.face(h));
+                is_triangle = (mesh.next_halfedge(mesh.next_halfedge(
+                                   mesh.next_halfedge(h))) == h);
+                n = is_triangle ? normalize(cross(p1, p2))
+                                : compute_face_normal(mesh, mesh.face(h));
 
                 // check whether normal is withing crease_angle bound
                 if (dot(n, nf) >= cos_crease_angle)

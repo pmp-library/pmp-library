@@ -166,7 +166,7 @@ void SurfaceFairing::fair(unsigned int k)
             }
         }
 
-        B.row(i) = (Eigen::Vector3d) b;
+        B.row(i) = (Eigen::Vector3d)b;
     }
 
     A.setFromTriplets(triplets.begin(), triplets.end());

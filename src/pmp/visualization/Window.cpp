@@ -48,8 +48,10 @@ Window::Window(const char* title, int width, int height, bool showgui)
         exit(EXIT_FAILURE);
 
     // remove spaces from title
-    for (auto &c: title_) if (c == ' ') c = '_';
-    
+    for (auto& c : title_)
+        if (c == ' ')
+            c = '_';
+
     // request core profile and OpenGL version 3.2
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
@@ -531,7 +533,7 @@ void Window::character(unsigned int c)
     switch (c)
     {
         case 63: // question mark
-            show_help_  = true;
+            show_help_ = true;
             show_imgui_ = true;
             break;
     }
@@ -611,19 +613,19 @@ void Window::enter_fullscreen()
 
     // Workaround https://github.com/kripken/emscripten/issues/5124#issuecomment-292849872
     EM_ASM(JSEvents.inEventHandler = true);
-    EM_ASM(JSEvents.currentEventHandler = {allowsDeferredCalls:true});
+    EM_ASM(JSEvents.currentEventHandler = {allowsDeferredCalls : true});
 
     // remember window size
     glfwGetWindowSize(window_, &backup_width_, &backup_height_);
-    
+
     // setting window to screen size triggers fullscreen mode
-    glfwSetWindowSize(window_, w, h); 
+    glfwSetWindowSize(window_, w, h);
 }
 
 void Window::exit_fullscreen()
 {
     emscripten_exit_fullscreen();
-    glfwSetWindowSize(window_, backup_width_, backup_height_); 
+    glfwSetWindowSize(window_, backup_width_, backup_height_);
 }
 
 #else
@@ -636,26 +638,24 @@ bool Window::is_fullscreen() const
 void Window::enter_fullscreen()
 {
     // get monitor
-    GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
     // get resolution
-    const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
     // remember window position and size
-    glfwGetWindowPos(window_,  &backup_xpos_, &backup_ypos_);
+    glfwGetWindowPos(window_, &backup_xpos_, &backup_ypos_);
     glfwGetWindowSize(window_, &backup_width_, &backup_height_);
 
     // switch to fullscreen on primary monitor
-    glfwSetWindowMonitor(window_, monitor, 
-                         0, 0, mode->width, mode->height, 
+    glfwSetWindowMonitor(window_, monitor, 0, 0, mode->width, mode->height,
                          GLFW_DONT_CARE);
 }
 
 void Window::exit_fullscreen()
 {
-    glfwSetWindowMonitor(window_, nullptr, 
-                         backup_xpos_, backup_ypos_, backup_width_, backup_height_, 
-                         GLFW_DONT_CARE);
+    glfwSetWindowMonitor(window_, nullptr, backup_xpos_, backup_ypos_,
+                         backup_width_, backup_height_, GLFW_DONT_CARE);
 }
 
 #endif
@@ -729,7 +729,7 @@ void Window::screenshot()
     std::cout << "Save screenshot to " << filename << std::endl;
 
     // allocate buffer
-    unsigned char *data = new unsigned char[3*width_*height_];
+    unsigned char* data = new unsigned char[3 * width_ * height_];
 
     // read framebuffer
     glfwMakeContextCurrent(window_);
@@ -738,10 +738,10 @@ void Window::screenshot()
 
     // write to file
     stbi_flip_vertically_on_write(true);
-    stbi_write_png(filename, width_, height_, 3, data, 3*width_);
+    stbi_write_png(filename, width_, height_, 3, data, 3 * width_);
 
     // clean up
-    delete [] data;
+    delete[] data;
 }
 
 //=============================================================================

@@ -219,7 +219,7 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
                 triplets.emplace_back(i, idx[vv], -timestep * eweight[e]);
             }
 
-            B.row(i) = (Eigen::Vector3d) b;
+            B.row(i) = (Eigen::Vector3d)b;
         }
 
         // center vertex -> matrix
@@ -241,7 +241,7 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
         // copy solution
         for (unsigned int i = 0; i < n; ++i)
         {
-            points[ free_vertices[i] ] = X.row(i);
+            points[free_vertices[i]] = X.row(i);
         }
     }
 

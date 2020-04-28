@@ -15,6 +15,7 @@ KeepEmptyLinesAtTheStartOfBlocks: true
 ReflowComments: false
 BreakBeforeBraces: Custom
 BraceWrapping:
+  AfterCaseLabel:  true
   AfterClass:      true
   AfterControlStatement: true
   AfterEnum:       true

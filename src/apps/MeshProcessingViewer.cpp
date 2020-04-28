@@ -64,7 +64,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             update_mesh();
             break;
         }
-
         case GLFW_KEY_M: // merge two faces incident to longest edge
         {
             Scalar l, ll(0);
@@ -91,7 +90,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             }
             break;
         }
-
         case GLFW_KEY_G:
         {
             SurfacePrimitives generator(mesh_);
@@ -103,7 +101,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             update_mesh();
             break;
         }
-
         default:
         {
             MeshViewer::keyboard(key, scancode, action, mods);

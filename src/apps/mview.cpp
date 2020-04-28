@@ -18,7 +18,8 @@ void usage_and_exit()
     std::cerr << "Usage:\nmview [-g] [-t texture] <input>\n\n"
               << "Options\n"
               << " -g:  show GUI controls (toggle with 'g')\n"
-              << " -t:  specify texture image (mesh has to provide texture coordinates)\n"
+              << " -t:  specify texture image (mesh has to provide texture "
+                 "coordinates)\n"
               << " -m:  specify matcap image\n"
               << "\n";
     exit(1);
@@ -28,13 +29,13 @@ void usage_and_exit()
 
 int main(int argc, char** argv)
 {
-    char* input   = nullptr;
+    char* input = nullptr;
     char* texture = nullptr;
-    char* matcap  = nullptr;
-    bool gui      = false;
+    char* matcap = nullptr;
+    bool gui = false;
 
     // parse command line parameters
-    for (int i=0; i<argc; ++i)
+    for (int i = 0; i < argc; ++i)
     {
         if (std::string(argv[i]) == std::string("-g"))
         {
@@ -42,17 +43,17 @@ int main(int argc, char** argv)
         }
         else if (std::string(argv[i]) == std::string("-t"))
         {
-            if (i+1 < argc)
+            if (i + 1 < argc)
             {
-                texture = argv[i+1];
+                texture = argv[i + 1];
                 ++i;
             }
         }
         else if (std::string(argv[i]) == std::string("-m"))
         {
-            if (i+1 < argc)
+            if (i + 1 < argc)
             {
-                matcap = argv[i+1];
+                matcap = argv[i + 1];
                 ++i;
             }
         }
@@ -65,10 +66,10 @@ int main(int argc, char** argv)
             input = argv[i];
         }
     }
-   
-   
+
     // need a mesh!
-    if (!input) usage_and_exit();
+    if (!input)
+        usage_and_exit();
 
     // open window, start application
     MeshViewer viewer("MeshViewer", 800, 600, gui);
