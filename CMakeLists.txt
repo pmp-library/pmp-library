@@ -4,6 +4,7 @@ project(pmp-library)
 cmake_minimum_required(VERSION 3.0.2)
 
 cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0072 OLD)
 
 set(PMP_MAJOR_VERSION 1)
 set(PMP_MINOR_VERSION 2)
