@@ -123,7 +123,6 @@ void SurfaceRemeshing::preprocessing()
     elocked_ = mesh_.add_edge_property<bool>("e:locked", false);
     vsizing_ = mesh_.add_vertex_property<Scalar>("v:sizing");
 
-
     // lock unselected vertices if some vertices are selected
     auto vselected = mesh_.get_vertex_property<bool>("v:selected");
     if (vselected)
@@ -154,7 +153,6 @@ void SurfaceRemeshing::preprocessing()
         }
     }
 
-
     // lock feature corners
     for (auto v : mesh_.vertices())
     {
@@ -169,7 +167,6 @@ void SurfaceRemeshing::preprocessing()
                 vlocked_[v] = true;
         }
     }
-
 
     // compute sizing field
     if (uniform_)
@@ -189,11 +186,9 @@ void SurfaceRemeshing::preprocessing()
         SurfaceCurvature curv(mesh_);
         curv.analyze_tensor(1);
 
-
         // use vsizing_ to store/smooth curvatures to avoid another vertex property
 
-
-        // curvature values for feature vertices and boundary vertices 
+        // curvature values for feature vertices and boundary vertices
         // are not meaningful. mark them as negative values.
         for (auto v : mesh_.vertices())
         {
@@ -203,13 +198,12 @@ void SurfaceRemeshing::preprocessing()
                 vsizing_[v] = curv.max_abs_curvature(v);
         }
 
-
         // curvature values might be noisy. smooth them.
         // don't consider feature vertices' curvatures.
         // don't consider boundary vertices' curvatures.
         // do this for two iterations, to propagate curvatures
         // from non-feature regions to feature vertices.
-        for (int iters=0; iters<2; ++iters)
+        for (int iters = 0; iters < 2; ++iters)
         {
             for (auto v : mesh_.vertices())
             {
@@ -218,7 +212,7 @@ void SurfaceRemeshing::preprocessing()
 
                 for (auto h : mesh_.halfedges(v))
                 {
-                    c  = vsizing_[mesh_.to_vertex(h)];
+                    c = vsizing_[mesh_.to_vertex(h)];
                     if (c > 0.0)
                     {
                         w = std::max(0.0, cotan_weight(mesh_, mesh_.edge(h)));
@@ -226,12 +220,12 @@ void SurfaceRemeshing::preprocessing()
                         cc += w * c;
                     }
                 }
-               
-                if (ww) cc /= ww;
+
+                if (ww)
+                    cc /= ww;
                 vsizing_[v] = cc;
             }
         }
-
 
         // now convert per-vertex curvature into target edge length
         for (auto v : mesh_.vertices())
@@ -264,7 +258,6 @@ void SurfaceRemeshing::preprocessing()
             vsizing_[v] = h;
         }
     }
-
 
     if (use_projection_)
     {
@@ -859,20 +852,19 @@ Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
 {
     // setup matrix of one-ring neighbors' positions
     const unsigned int n = mesh_.valence(v);
-    Eigen::MatrixXd poly(n,3);
-    int i=0;
-    for (auto vv: mesh_.vertices(v))
+    Eigen::MatrixXd poly(n, 3);
+    int i = 0;
+    for (auto vv : mesh_.vertices(v))
     {
         poly.row(i++) = (Eigen::Vector3d)points_[vv];
     }
-
 
     // build Hessian and Jacobian
     Eigen::Matrix3d H;
     H.setZero();
     Eigen::Vector3d J;
     J.setZero();
-    for (unsigned int i = 0; i < n; ++i) 
+    for (unsigned int i = 0; i < n; ++i)
     {
         Eigen::Vector3d p = poly.row(i);
         Eigen::Vector3d q = poly.row((i + 1) % n);
@@ -892,9 +884,12 @@ Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
         H(1, 2) += w * (-d(1) * d(2));
         H(2, 2) += w * (d(0) * d(0) + d(1) * d(1));
 
-        J(0) += w * (-d(1) * p(1) * q(0) - d(2) * p(2) * q(0) + d(1) * p(0) * q(1) + d(2) * p(0) * q(2));
-        J(1) += w * (d(0) * p(1) * q(0) - d(0) * p(0) * q(1) - d(2) * p(2) * q(1) + d(2) * p(1) * q(2));
-        J(2) += w * (d(0) * p(2) * q(0) + d(1) * p(2) * q(1) - d(0) * p(0) * q(2) - d(1) * p(1) * q(2));
+        J(0) += w * (-d(1) * p(1) * q(0) - d(2) * p(2) * q(0) +
+                     d(1) * p(0) * q(1) + d(2) * p(0) * q(2));
+        J(1) += w * (d(0) * p(1) * q(0) - d(0) * p(0) * q(1) -
+                     d(2) * p(2) * q(1) + d(2) * p(1) * q(2));
+        J(2) += w * (d(0) * p(2) * q(0) + d(1) * p(2) * q(1) -
+                     d(0) * p(0) * q(2) - d(1) * p(1) * q(2));
     }
 
     // compute minimizer

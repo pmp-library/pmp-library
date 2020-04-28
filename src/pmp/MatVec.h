@@ -163,18 +163,18 @@ public:
     Matrix(const Eigen::MatrixBase<Derived>& m)
     {
         // don't distinguish between row and column vectors
-        if (m.rows()==1 || m.cols()==1)
+        if (m.rows() == 1 || m.cols() == 1)
         {
-            assert( m.size()==size() );
+            assert(m.size() == size());
             for (int i = 0; i < size(); ++i)
                 (*this)[i] = m(i);
         }
         else
         {
-            assert(m.rows()==rows() && m.cols()==cols());
+            assert(m.rows() == rows() && m.cols() == cols());
             for (int i = 0; i < rows(); ++i)
                 for (int j = 0; j < cols(); ++j)
-                    (*this)(i,j) = m(i,j);
+                    (*this)(i, j) = m(i, j);
         }
     }
 
@@ -192,18 +192,18 @@ public:
     Matrix<Scalar, M, N>& operator=(const Eigen::MatrixBase<Derived>& m)
     {
         // don't distinguish between row and column vectors
-        if (m.rows()==1 || m.cols()==1)
+        if (m.rows() == 1 || m.cols() == 1)
         {
-            assert( m.size()==size() );
+            assert(m.size() == size());
             for (int i = 0; i < size(); ++i)
                 (*this)[i] = m(i);
         }
         else
         {
-            assert(m.rows()==rows() && m.cols()==cols());
+            assert(m.rows() == rows() && m.cols() == cols());
             for (int i = 0; i < rows(); ++i)
                 for (int j = 0; j < cols(); ++j)
-                    (*this)(i,j) = m(i,j);
+                    (*this)(i, j) = m(i, j);
         }
         return *this;
     }
@@ -215,7 +215,7 @@ public:
         Eigen::Matrix<OtherScalar, M, N> m;
         for (int i = 0; i < rows(); ++i)
             for (int j = 0; j < cols(); ++j)
-                m(i,j) = static_cast<OtherScalar>((*this)(i,j));
+                m(i, j) = static_cast<OtherScalar>((*this)(i, j));
         return m;
     }
 
@@ -257,8 +257,8 @@ public:
     Scalar* data() { return data_; }
 
     //! normalize matrix/vector by dividing through Frobenius/Euclidean norm
-    void normalize() 
-    { 
+    void normalize()
+    {
         Scalar n = norm(*this);
         n = (n > std::numeric_limits<Scalar>::min()) ? 1.0 / n : 0.0;
         *this *= n;

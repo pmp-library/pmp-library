@@ -63,18 +63,17 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             update_mesh();
             break;
         }
-
         case GLFW_KEY_M: // merge two faces incident to longest edge
         {
             Scalar l, ll(0);
-            Edge   ee;
-            for (auto e: mesh_.edges())
+            Edge ee;
+            for (auto e : mesh_.edges())
             {
                 Vertex v0 = mesh_.vertex(e, 0);
                 Vertex v1 = mesh_.vertex(e, 1);
-                Point  p0 = mesh_.position(v0);
-                Point  p1 = mesh_.position(v1);
-                l = distance(p0,p1);
+                Point p0 = mesh_.position(v0);
+                Point p1 = mesh_.position(v1);
+                l = distance(p0, p1);
                 if (l > ll && mesh_.is_removal_ok(e))
                 {
                     ll = l;
@@ -90,7 +89,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             }
             break;
         }
-
         default:
         {
             MeshViewer::keyboard(key, scancode, action, mods);

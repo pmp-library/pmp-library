@@ -165,7 +165,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
             }
         }
         triplets.emplace_back(i, i, ww);
-        B.row(i) = (Eigen::Vector2d) b;
+        B.row(i) = (Eigen::Vector2d)b;
     }
 
     // build sparse matrix from triplets
@@ -280,7 +280,7 @@ void SurfaceParameterization::lscm()
         dvec3 c = (dvec3)pos[mesh_.to_vertex(hc)];
 
         // calculate local coordinate system
-        dvec3 z = normalize(cross(normalize(c-b), normalize(a-b)));
+        dvec3 z = normalize(cross(normalize(c - b), normalize(a - b)));
         dvec3 x = normalize(b - a);
         dvec3 y = normalize(cross(z, x));
 

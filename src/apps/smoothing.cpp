@@ -92,8 +92,8 @@ void Viewer::process_imgui()
         if (ImGui::Button("Implicit Smoothing"))
         {
             // does the mesh have a boundary?
-            bool has_boundary=false;
-            for (auto v: mesh_.vertices())
+            bool has_boundary = false;
+            for (auto v : mesh_.vertices())
                 if (mesh_.is_boundary(v))
                     has_boundary = true;
 

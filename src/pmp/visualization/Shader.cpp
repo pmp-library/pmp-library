@@ -19,9 +19,7 @@ namespace pmp {
 
 //=============================================================================
 
-Shader::Shader() : pid_(0)
-{
-}
+Shader::Shader() : pid_(0) {}
 
 //-----------------------------------------------------------------------------
 
@@ -91,8 +89,8 @@ bool Shader::source(const char* vshader, const char* fshader)
 
 //-----------------------------------------------------------------------------
 
-bool Shader::load(const char* vfile, const char* ffile,
-                  const char* gfile, const char* tcfile, const char* tefile)
+bool Shader::load(const char* vfile, const char* ffile, const char* gfile,
+                  const char* tcfile, const char* tefile)
 {
     GLint id;
 

@@ -50,11 +50,8 @@ public:
     //! \param gfile filename of geometry shader
     //! \param tcfile filename of tessellation control shader
     //! \param tefile filename of tessellation evaluation shader
-    bool load(const char* vfile, 
-              const char* ffile,
-              const char* gfile=nullptr,
-              const char* tcfile=nullptr, 
-              const char* tefile=nullptr);
+    bool load(const char* vfile, const char* ffile, const char* gfile = nullptr,
+              const char* tcfile = nullptr, const char* tefile = nullptr);
 
     //! enable/bind this shader program
     void use();
@@ -89,7 +86,7 @@ public:
     //! \param name string of the uniform name
     //! \param mat the value for the uniform
     void set_uniform(const char* name, const mat3& mat);
-    
+
     //! upload mat4 uniform
     //! \param name string of the uniform name
     //! \param mat the value for the uniform
@@ -119,7 +116,7 @@ private:
     //! id of the linked shader program
     GLint pid_;
 
-	//! id of the vertex shader
+    //! id of the vertex shader
     std::vector<GLint> shaders_;
 };
 
