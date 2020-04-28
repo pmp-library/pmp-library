@@ -87,4 +87,50 @@ void SurfacePrimitives::unit_cube()
     mesh_.add_quad(v1, v5, v4, v0);
 }
 
+void SurfacePrimitives::icosahedron()
+{
+    mesh_.clear();
+
+    double t = (1.0 + std::sqrt(5.0)) / 2.0;
+
+    auto v0 = mesh_.add_vertex(vec3(-1, t, 0));
+    auto v1 = mesh_.add_vertex(vec3(1, t, 0));
+    auto v2 = mesh_.add_vertex(vec3(-1, -t, 0));
+    auto v3 = mesh_.add_vertex(vec3(1, -t, 0));
+
+    auto v4 = mesh_.add_vertex(vec3(0, -1, t));
+    auto v5 = mesh_.add_vertex(vec3(0, 1, t));
+    auto v6 = mesh_.add_vertex(vec3(0, -1, -t));
+    auto v7 = mesh_.add_vertex(vec3(0, 1, -t));
+
+    auto v8 = mesh_.add_vertex(vec3(t, 0, -1));
+    auto v9 = mesh_.add_vertex(vec3(t, 0, 1));
+    auto v10 = mesh_.add_vertex(vec3(-t, 0, -1));
+    auto v11 = mesh_.add_vertex(vec3(-t, 0, 1));
+
+    mesh_.add_triangle(v0, v11, v5);
+    mesh_.add_triangle(v0, v5, v1);
+    mesh_.add_triangle(v0, v1, v7);
+    mesh_.add_triangle(v0, v7, v10);
+    mesh_.add_triangle(v0, v10, v11);
+
+    mesh_.add_triangle(v1, v5, v9);
+    mesh_.add_triangle(v5, v11, v4);
+    mesh_.add_triangle(v11, v10, v2);
+    mesh_.add_triangle(v10, v7, v6);
+    mesh_.add_triangle(v7, v1, v8);
+
+    mesh_.add_triangle(v3, v9, v4);
+    mesh_.add_triangle(v3, v4, v2);
+    mesh_.add_triangle(v3, v2, v6);
+    mesh_.add_triangle(v3, v6, v8);
+    mesh_.add_triangle(v3, v8, v9);
+
+    mesh_.add_triangle(v4, v9, v5);
+    mesh_.add_triangle(v2, v4, v11);
+    mesh_.add_triangle(v6, v2, v10);
+    mesh_.add_triangle(v8, v6, v7);
+    mesh_.add_triangle(v9, v8, v1);
+}
+
 } // namespace pmp

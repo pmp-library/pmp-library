@@ -27,6 +27,9 @@ public:
     //! Generate unit cube quad mesh.
     void unit_cube();
 
+    //! Generate icosahedron.
+    void icosahedron();
+
 private:
     SurfaceMesh& mesh_;
 };
