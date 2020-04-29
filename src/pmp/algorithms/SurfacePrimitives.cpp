@@ -11,7 +11,7 @@
 
 namespace pmp {
 
-void SurfacePrimitives::uv_sphere(const vec3& center, Scalar radius,
+void SurfacePrimitives::uv_sphere(const Point& center, Scalar radius,
                                   size_t n_slices, size_t n_stacks)
 {
     mesh_.clear();
@@ -93,20 +93,20 @@ void SurfacePrimitives::icosahedron()
 
     double t = (1.0 + std::sqrt(5.0)) / 2.0;
 
-    auto v0 = mesh_.add_vertex(vec3(-1, t, 0));
-    auto v1 = mesh_.add_vertex(vec3(1, t, 0));
-    auto v2 = mesh_.add_vertex(vec3(-1, -t, 0));
-    auto v3 = mesh_.add_vertex(vec3(1, -t, 0));
+    auto v0 = mesh_.add_vertex(Point(-1, t, 0));
+    auto v1 = mesh_.add_vertex(Point(1, t, 0));
+    auto v2 = mesh_.add_vertex(Point(-1, -t, 0));
+    auto v3 = mesh_.add_vertex(Point(1, -t, 0));
 
-    auto v4 = mesh_.add_vertex(vec3(0, -1, t));
-    auto v5 = mesh_.add_vertex(vec3(0, 1, t));
-    auto v6 = mesh_.add_vertex(vec3(0, -1, -t));
-    auto v7 = mesh_.add_vertex(vec3(0, 1, -t));
+    auto v4 = mesh_.add_vertex(Point(0, -1, t));
+    auto v5 = mesh_.add_vertex(Point(0, 1, t));
+    auto v6 = mesh_.add_vertex(Point(0, -1, -t));
+    auto v7 = mesh_.add_vertex(Point(0, 1, -t));
 
-    auto v8 = mesh_.add_vertex(vec3(t, 0, -1));
-    auto v9 = mesh_.add_vertex(vec3(t, 0, 1));
-    auto v10 = mesh_.add_vertex(vec3(-t, 0, -1));
-    auto v11 = mesh_.add_vertex(vec3(-t, 0, 1));
+    auto v8 = mesh_.add_vertex(Point(t, 0, -1));
+    auto v9 = mesh_.add_vertex(Point(t, 0, 1));
+    auto v10 = mesh_.add_vertex(Point(-t, 0, -1));
+    auto v11 = mesh_.add_vertex(Point(-t, 0, 1));
 
     mesh_.add_triangle(v0, v11, v5);
     mesh_.add_triangle(v0, v5, v1);
