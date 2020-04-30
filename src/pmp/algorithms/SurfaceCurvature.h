@@ -18,17 +18,12 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
-
 //! \brief Compute per-vertex curvature (min,max,mean,Gaussian).
-
 //! \details Curvature values for boundary vertices are interpolated from their
 //! interior neighbors. Curvature values can be smoothed. See
 //! \cite meyer_2003_discrete and \cite cohen-steiner_2003_restricted for
 //! details.
+//! \ingroup algorithms
 class SurfaceCurvature
 {
 public:
@@ -93,8 +88,6 @@ private:
     VertexProperty<Scalar> max_curvature_;
 };
 
-//=============================================================================
-//! @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

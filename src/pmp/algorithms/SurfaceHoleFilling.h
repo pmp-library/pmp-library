@@ -19,18 +19,13 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
-
 //! \brief Close simple holes
-
 //! \details Close simple holes (boundary loops of manifold vertices) by first
 //! filling the hole with an angle/area-minimizing triangulation, followed
 //! by isometric remeshing, and finished by curvature-minimizing fairing of the
 //! filled-in patch.
 //! See \cite liepa_2003_filling for details.
+//! \ingroup algorithms
 class SurfaceHoleFilling
 {
 public:
@@ -120,8 +115,6 @@ private: //------------------------------------------------------- private data
     std::vector<std::vector<int>> index_;
 };
 
-//=============================================================================
-/// @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

@@ -21,15 +21,11 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
-
 //! \brief Compute geodesic distance from a set of seed vertices
 //! \details The method works by a Dykstra-like breadth first traversal from
 //! the seed vertices, implemented by a heap structure.
 //! See \cite kimmel_1998_geodesic for details.
+//! \ingroup algorithms
 class SurfaceGeodesic
 {
 public:
@@ -123,8 +119,6 @@ private: // private data
     VertexProperty<bool> processed_;
 };
 
-//=============================================================================
-//! @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

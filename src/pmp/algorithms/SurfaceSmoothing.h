@@ -17,13 +17,9 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
-
 //! \brief A class for Laplacian smoothing
 //! \details See also \cite desbrun_1999_implicit and \cite kazhdan_2012
+//! \ingroup algorithms
 class SurfaceSmoothing
 {
 public:
@@ -69,8 +65,6 @@ private:
     unsigned int how_many_vertex_weights_;
 };
 
-//=============================================================================
-//! @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

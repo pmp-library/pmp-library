@@ -19,10 +19,8 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//!@{
-
-//! A class implementing a normal cone.
+//! \brief A class implementing a normal cone.
+//! \ingroup algorithms
 class NormalCone
 {
 public:
@@ -84,8 +82,6 @@ private:
     Scalar angle_;
 };
 
-//=============================================================================
-//!@}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

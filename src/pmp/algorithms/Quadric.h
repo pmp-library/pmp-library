@@ -17,11 +17,9 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//!@{
-
-//! This class stores a quadric as a symmetrix 4x4 matrix. Used by the error
-//! quadric mesh decimation algorithms.
+//! \brief This class stores a quadric as a symmetric 4x4 matrix.
+//! \details Used by the error quadric mesh decimation algorithms.
+//! \ingroup algorithms
 class Quadric
 {
 public: // clang-format off
@@ -92,8 +90,6 @@ private:
         j_;
 }; // clang-format on
 
-//=============================================================================
-//!@}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

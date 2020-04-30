@@ -17,10 +17,8 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//!@{
-
-//! A class implementing a heap.
+//! \brief A class implementing a heap.
+//! \ingroup algorithms
 template <class HeapEntry, class HeapInterface>
 class Heap : private std::vector<HeapEntry>
 {
@@ -219,8 +217,6 @@ private:
     HeapInterface interface_;
 };
 
-//=============================================================================
-//!@}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

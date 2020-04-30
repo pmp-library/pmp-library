@@ -19,15 +19,11 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
-
 //! \brief Triangulate polygons to get a pure triangle mesh.
 //! \details Tringulate n-gons into n-2 triangles. Find the triangulation that
 //! minimizes the sum of squared triangle areas.
 //! See \cite liepa_2003_filling for details.
+//! \ingroup algorithms
 class SurfaceTriangulation
 {
 public:
@@ -74,8 +70,6 @@ private: //------------------------------------------------------- private data
     std::vector<std::vector<int>> index_;
 };
 
-//=============================================================================
-/// @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

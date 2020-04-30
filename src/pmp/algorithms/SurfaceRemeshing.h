@@ -18,16 +18,12 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
-
 //! \brief A class for uniform and adaptive surface remeshing.
 //! \details The algorithm implemented here performs incremental remeshing based
 //! on edge collapse, split, flip, and tangential relaxation.
 //! See \cite botsch_2004_remeshing and \cite dunyach_2013_adaptive for a more
 //! detailed description.
+//! \ingroup algorithms
 class SurfaceRemeshing
 {
 public:
@@ -97,8 +93,6 @@ private:
     VertexProperty<Scalar> refsizing_;
 };
 
-//=============================================================================
-//! @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

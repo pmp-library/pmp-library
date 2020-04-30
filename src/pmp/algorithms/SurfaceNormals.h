@@ -17,11 +17,6 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
-
 //! \brief A class for computing surface normals.
 //! \details This class provides a set of static functions for computing surface
 //! normal information, either
@@ -33,6 +28,7 @@ namespace pmp {
 //! The convenience functions compute_vertex_normals() and compute_face_normals()
 //! compute the normals for the whole mesh and add a corresponding vertex or
 //! face property.
+//! \ingroup algorithms
 class SurfaceNormals
 {
 public:
@@ -67,8 +63,6 @@ public:
                                         Scalar crease_angle);
 };
 
-//=============================================================================
-//! @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

@@ -17,14 +17,10 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
-
 //! \brief A class for surface parameterization.
 //! \details See \cite levy_2002_least and \cite desbrun_2002_intrinsic
 //! for more details.
+//! \ingroup algorithms
 class SurfaceParameterization
 {
 public:
@@ -49,8 +45,6 @@ private:
     SurfaceMesh& mesh_;
 };
 
-//=============================================================================
-//! @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

@@ -23,14 +23,12 @@
 namespace pmp {
 
 //=============================================================================
-//! \addtogroup algorithms algorithms
-//! @{
-//=============================================================================
 
 //! \brief Surface mesh simplification based on approximation error and fairness criteria.
 //! \details Performs incremental greedy mesh simplification based on halfedge
 //! collapses. See \cite kobbelt_1998_general and \cite garland_1997_surface for
 //! details.
+//!\ingroup algorithms
 class SurfaceSimplification
 {
 public:
@@ -151,8 +149,6 @@ private: //------------------------------------------------------- private data
     unsigned int max_valence_;
 };
 
-//=============================================================================
-//! @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

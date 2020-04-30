@@ -17,13 +17,10 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//! @{
-
-//! A class providing surface subdivision algorithms
+//! \brief A class providing surface subdivision algorithms.
+//! \ingroup algorithms
 class SurfaceSubdivision
 {
-
 public:
     //! Construct with mesh to be subdivided.
     SurfaceSubdivision(SurfaceMesh& mesh);
@@ -47,8 +44,6 @@ private:
     EdgeProperty<bool> efeature_;
 };
 
-//=============================================================================
-//! @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================

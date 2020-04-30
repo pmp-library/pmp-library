@@ -17,12 +17,8 @@ namespace pmp {
 
 //=============================================================================
 
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
-
-//! Detect and mark feature edges based on boundary or dihedral angle
+//! \brief Detect and mark feature edges based on boundary or dihedral angle.
+//! \ingroup algorithms
 class SurfaceFeatures
 {
 public:
@@ -45,8 +41,6 @@ private:
     EdgeProperty<bool> efeature_;
 };
 
-//=============================================================================
-//! @}
 //=============================================================================
 } // namespace pmp
 //=============================================================================
