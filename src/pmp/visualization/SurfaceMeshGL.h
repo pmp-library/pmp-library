@@ -1,30 +1,19 @@
-//=============================================================================
-// Copyright (C) 2011-2020 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
-#pragma once
-//=============================================================================
 
-#include <pmp/visualization/GL.h>
-#include <pmp/visualization/Shader.h>
-#include <pmp/MatVec.h>
-#include <pmp/SurfaceMesh.h>
+#pragma once
+
 #include <cfloat>
 
-//=============================================================================
+#include "pmp/SurfaceMesh.h"
+#include "pmp/visualization/GL.h"
+#include "pmp/visualization/Shader.h"
+#include "pmp/MatVec.h"
 
 namespace pmp {
 
-//=============================================================================
-
 //! \addtogroup visualization visualization
 //! @{
-
-//=============================================================================
 
 //! Class for rendering surface meshes using OpenGL
 class SurfaceMeshGL : public SurfaceMesh
@@ -107,12 +96,10 @@ public:
     //! \sa See src/apps/mview.cpp for an example usage.
     bool load_matcap(const char* filename);
 
-
 private: // helpers for computing triangulation of a polygon
-
     struct Triangulation
     {
-        Triangulation(Scalar a=FLT_MAX, int s=-1) : area(a), split(s) {}
+        Triangulation(Scalar a = FLT_MAX, int s = -1) : area(a), split(s) {}
         Scalar area;
         int split;
     };
@@ -127,26 +114,26 @@ private: // helpers for computing triangulation of a polygon
     void init_triangulation(unsigned int n)
     {
         triangulation_.clear();
-        triangulation_.resize(n*n);
+        triangulation_.resize(n * n);
         polygon_valence_ = n;
     }
 
     // access triangulation array
     Triangulation& triangulation(int start, int end)
     {
-        return triangulation_[polygon_valence_*start + end];
+        return triangulation_[polygon_valence_ * start + end];
     }
 
     // compute squared area of triangle. used for triangulate().
     inline Scalar area(const vec3& p0, const vec3& p1, const vec3& p2) const
     {
-        return sqrnorm(cross(p1-p0, p2-p0));
+        return sqrnorm(cross(p1 - p0, p2 - p0));
     }
 
     // triangulate a polygon such that the sum of squared triangle areas is minimized.
     // this prevents overlapping/folding triangles for non-convex polygons.
-    void triangulate(const std::vector<vec3>& points, std::vector<ivec3>& triangles);
-
+    void triangulate(const std::vector<vec3>& points,
+                     std::vector<ivec3>& triangles);
 
 private:
     //! OpenGL buffers
@@ -185,8 +172,6 @@ private:
     } texture_mode_;
 };
 
-//=============================================================================
 //! @}
-//=============================================================================
+
 } // namespace pmp
-//=============================================================================

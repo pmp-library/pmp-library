@@ -1,25 +1,16 @@
-//=============================================================================
-// Copyright (C) 2011-2020 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include "MeshViewer.h"
-
-#include <imgui.h>
+#include "pmp/visualization/MeshViewer.h"
 
 #include <cfloat>
+
 #include <iostream>
 #include <sstream>
 
-//=============================================================================
+#include <imgui.h>
 
 namespace pmp {
-
-//=============================================================================
 
 MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
     : TrackballViewer(title, width, height, showgui)
@@ -41,11 +32,7 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
 #endif
 }
 
-//-----------------------------------------------------------------------------
-
 MeshViewer::~MeshViewer() = default;
-
-//-----------------------------------------------------------------------------
 
 bool MeshViewer::load_mesh(const char* filename)
 {
@@ -78,8 +65,6 @@ bool MeshViewer::load_mesh(const char* filename)
     return false;
 }
 
-//-----------------------------------------------------------------------------
-
 bool MeshViewer::load_matcap(const char* filename)
 {
     if (!mesh_.load_matcap(filename))
@@ -87,8 +72,6 @@ bool MeshViewer::load_matcap(const char* filename)
     set_draw_mode("Texture");
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 bool MeshViewer::load_texture(const char* filename, GLint format,
                               GLint min_filter, GLint mag_filter, GLint wrap)
@@ -108,8 +91,6 @@ bool MeshViewer::load_texture(const char* filename, GLint format,
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 void MeshViewer::update_mesh()
 {
     // update scene center and radius, but don't update camera view
@@ -120,8 +101,6 @@ void MeshViewer::update_mesh()
     // re-compute face and vertex normals
     mesh_.update_opengl_buffers();
 }
-
-//-----------------------------------------------------------------------------
 
 void MeshViewer::process_imgui()
 {
@@ -144,15 +123,11 @@ void MeshViewer::process_imgui()
     }
 }
 
-//-----------------------------------------------------------------------------
-
 void MeshViewer::draw(const std::string& drawMode)
 {
     // draw mesh
     mesh_.draw(projection_matrix_, modelview_matrix_, drawMode);
 }
-
-//-----------------------------------------------------------------------------
 
 void MeshViewer::keyboard(int key, int scancode, int action, int mods)
 {
@@ -181,8 +156,6 @@ void MeshViewer::keyboard(int key, int scancode, int action, int mods)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 Vertex MeshViewer::pick_vertex(int x, int y)
 {
     Vertex vmin;
@@ -206,6 +179,4 @@ Vertex MeshViewer::pick_vertex(int x, int y)
     return vmin;
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

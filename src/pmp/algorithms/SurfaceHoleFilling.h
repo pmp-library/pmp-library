@@ -1,36 +1,23 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
-#include <pmp/SurfaceMesh.h>
+#include <cfloat>
+
 #include <vector>
-#include <float.h>
 
-//=============================================================================
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
-//=============================================================================
-
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
-
 //! \brief Close simple holes
-
 //! \details Close simple holes (boundary loops of manifold vertices) by first
 //! filling the hole with an angle/area-minimizing triangulation, followed
 //! by isometric remeshing, and finished by curvature-minimizing fairing of the
 //! filled-in patch.
 //! See \cite liepa_2003_filling for details.
+//! \ingroup algorithms
 class SurfaceHoleFilling
 {
 public:
@@ -44,7 +31,7 @@ public:
     //! \throw InvalidInputException in case on of the input preconditions is violated
     void fill_hole(Halfedge h);
 
-private: //------------------------------------------------------ private types
+private:
     struct Weight
     {
         Weight(Scalar _angle = FLT_MAX, Scalar _area = FLT_MAX)
@@ -67,7 +54,6 @@ private: //------------------------------------------------------ private types
         Scalar area;
     };
 
-private: //-------------------------------------------------- private functions
     // compute optimal triangulation of hole
     //! \throw InvalidInputException in case of a non-manifold hole.
     void triangulate_hole(Halfedge h);
@@ -83,7 +69,6 @@ private: //-------------------------------------------------- private functions
     void relaxation();
     void fairing();
 
-private: //--------------------------------------------------- helper functions
     // return i'th vertex of hole
     Vertex hole_vertex(unsigned int i) const
     {
@@ -111,7 +96,6 @@ private: //--------------------------------------------------- helper functions
     // dihedral angle
     Scalar compute_angle(const Point& _n1, const Point& _n2) const;
 
-private: //------------------------------------------------------- private data
     // mesh and properties
     SurfaceMesh& mesh_;
     VertexProperty<Point> points_;
@@ -125,8 +109,4 @@ private: //------------------------------------------------------- private data
     std::vector<std::vector<int>> index_;
 };
 
-//=============================================================================
-/// @}
-//=============================================================================
 } // namespace pmp
-//=============================================================================

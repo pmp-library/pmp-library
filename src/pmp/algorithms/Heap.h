@@ -1,26 +1,14 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 #include <vector>
 
-//=============================================================================
-
 namespace pmp {
 
-//=============================================================================
-
-//! \addtogroup algorithms algorithms
-//!@{
-
-//! A class implementing a heap.
+//! \brief A class implementing a heap.
+//! \ingroup algorithms
 template <class HeapEntry, class HeapInterface>
 class Heap : private std::vector<HeapEntry>
 {
@@ -217,8 +205,4 @@ private:
     HeapInterface interface_;
 };
 
-//=============================================================================
-//!@}
-//=============================================================================
 } // namespace pmp
-//=============================================================================

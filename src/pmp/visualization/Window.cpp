@@ -1,11 +1,5 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "Window.h"
 #include <algorithm>
@@ -22,15 +16,9 @@
 #include <emscripten/html5.h>
 #endif
 
-//=============================================================================
-
 namespace pmp {
 
-//=============================================================================
-
 Window* Window::instance_ = nullptr;
-
-//-----------------------------------------------------------------------------
 
 Window::Window(const char* title, int width, int height, bool showgui)
     : title_(title),
@@ -48,8 +36,10 @@ Window::Window(const char* title, int width, int height, bool showgui)
         exit(EXIT_FAILURE);
 
     // remove spaces from title
-    for (auto &c: title_) if (c == ' ') c = '_';
-    
+    for (auto& c : title_)
+        if (c == ' ')
+            c = '_';
+
     // request core profile and OpenGL version 3.2
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
@@ -173,8 +163,6 @@ Window::Window(const char* title, int width, int height, bool showgui)
     ctrl_pressed_ = shift_pressed_ = alt_pressed_ = false;
 }
 
-//-----------------------------------------------------------------------------
-
 Window::~Window()
 {
     ImGui_ImplOpenGL3_Shutdown();
@@ -182,8 +170,6 @@ Window::~Window()
     ImGui::DestroyContext();
     glfwTerminate(); // this automatically destroys remaining windows
 }
-
-//-----------------------------------------------------------------------------
 
 void Window::init_imgui()
 {
@@ -270,8 +256,6 @@ void Window::init_imgui()
         ImVec4(0.20f, 0.20f, 0.20f, 0.70f);
 }
 
-//-----------------------------------------------------------------------------
-
 void Window::scale_imgui(float scale)
 {
     // scale imgui scale by new factor
@@ -307,8 +291,6 @@ void Window::scale_imgui(float scale)
     style.DisplaySafeAreaPadding = ImVec2(3 * scale, 3 * scale);
 }
 
-//-----------------------------------------------------------------------------
-
 void Window::add_help_item(std::string key, std::string description, int pos)
 {
     if (pos == -1)
@@ -323,14 +305,10 @@ void Window::add_help_item(std::string key, std::string description, int pos)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 void Window::clear_help_items()
 {
     help_items_.clear();
 }
-
-//-----------------------------------------------------------------------------
 
 void Window::show_help()
 {
@@ -379,8 +357,6 @@ void Window::show_help()
     }
 }
 
-//-----------------------------------------------------------------------------
-
 int Window::run()
 {
 #if __EMSCRIPTEN__
@@ -393,8 +369,6 @@ int Window::run()
 #endif
     return EXIT_SUCCESS;
 }
-
-//-----------------------------------------------------------------------------
 
 void Window::render_frame()
 {
@@ -476,14 +450,10 @@ void Window::render_frame()
     glfwPollEvents();
 }
 
-//-----------------------------------------------------------------------------
-
 void Window::glfw_error(int error, const char* description)
 {
     std::cerr << "error (" << error << "):" << description << std::endl;
 }
-
-//-----------------------------------------------------------------------------
 
 void Window::glfw_character(GLFWwindow* window, unsigned int c)
 {
@@ -493,8 +463,6 @@ void Window::glfw_character(GLFWwindow* window, unsigned int c)
         instance_->character(c);
     }
 }
-
-//-----------------------------------------------------------------------------
 
 void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode,
                            int action, int mods)
@@ -524,20 +492,16 @@ void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode,
     }
 }
 
-//-----------------------------------------------------------------------------
-
 void Window::character(unsigned int c)
 {
     switch (c)
     {
         case 63: // question mark
-            show_help_  = true;
+            show_help_ = true;
             show_imgui_ = true;
             break;
     }
 }
-
-//-----------------------------------------------------------------------------
 
 void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
 {
@@ -589,8 +553,6 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 // fullscreen handling from here:
 // https://github.com/emscripten-core/emscripten/issues/5124
 
@@ -611,19 +573,19 @@ void Window::enter_fullscreen()
 
     // Workaround https://github.com/kripken/emscripten/issues/5124#issuecomment-292849872
     EM_ASM(JSEvents.inEventHandler = true);
-    EM_ASM(JSEvents.currentEventHandler = {allowsDeferredCalls:true});
+    EM_ASM(JSEvents.currentEventHandler = {allowsDeferredCalls : true});
 
     // remember window size
     glfwGetWindowSize(window_, &backup_width_, &backup_height_);
-    
+
     // setting window to screen size triggers fullscreen mode
-    glfwSetWindowSize(window_, w, h); 
+    glfwSetWindowSize(window_, w, h);
 }
 
 void Window::exit_fullscreen()
 {
     emscripten_exit_fullscreen();
-    glfwSetWindowSize(window_, backup_width_, backup_height_); 
+    glfwSetWindowSize(window_, backup_width_, backup_height_);
 }
 
 #else
@@ -636,39 +598,33 @@ bool Window::is_fullscreen() const
 void Window::enter_fullscreen()
 {
     // get monitor
-    GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
     // get resolution
-    const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
     // remember window position and size
-    glfwGetWindowPos(window_,  &backup_xpos_, &backup_ypos_);
+    glfwGetWindowPos(window_, &backup_xpos_, &backup_ypos_);
     glfwGetWindowSize(window_, &backup_width_, &backup_height_);
 
     // switch to fullscreen on primary monitor
-    glfwSetWindowMonitor(window_, monitor, 
-                         0, 0, mode->width, mode->height, 
+    glfwSetWindowMonitor(window_, monitor, 0, 0, mode->width, mode->height,
                          GLFW_DONT_CARE);
 }
 
 void Window::exit_fullscreen()
 {
-    glfwSetWindowMonitor(window_, nullptr, 
-                         backup_xpos_, backup_ypos_, backup_width_, backup_height_, 
-                         GLFW_DONT_CARE);
+    glfwSetWindowMonitor(window_, nullptr, backup_xpos_, backup_ypos_,
+                         backup_width_, backup_height_, GLFW_DONT_CARE);
 }
 
 #endif
-
-//-----------------------------------------------------------------------------
 
 void Window::glfw_motion(GLFWwindow* /*window*/, double xpos, double ypos)
 {
     // correct for highDPI scaling
     instance_->motion(instance_->scaling_ * xpos, instance_->scaling_ * ypos);
 }
-
-//-----------------------------------------------------------------------------
 
 void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
 {
@@ -679,8 +635,6 @@ void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
         instance_->mouse(button, action, mods);
     }
 }
-
-//-----------------------------------------------------------------------------
 
 void Window::glfw_scroll(GLFWwindow* window, double xoffset, double yoffset)
 {
@@ -702,16 +656,12 @@ void Window::glfw_scroll(GLFWwindow* window, double xoffset, double yoffset)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 void Window::glfw_resize(GLFWwindow* /*window*/, int width, int height)
 {
     instance_->width_ = width;
     instance_->height_ = height;
     instance_->resize(width, height);
 }
-
-//-----------------------------------------------------------------------------
 
 void Window::cursor_pos(double& x, double& y) const
 {
@@ -720,8 +670,6 @@ void Window::cursor_pos(double& x, double& y) const
     y *= instance_->scaling_;
 }
 
-//-----------------------------------------------------------------------------
-
 void Window::screenshot()
 {
     char filename[100];
@@ -729,7 +677,7 @@ void Window::screenshot()
     std::cout << "Save screenshot to " << filename << std::endl;
 
     // allocate buffer
-    unsigned char *data = new unsigned char[3*width_*height_];
+    unsigned char* data = new unsigned char[3 * width_ * height_];
 
     // read framebuffer
     glfwMakeContextCurrent(window_);
@@ -738,12 +686,10 @@ void Window::screenshot()
 
     // write to file
     stbi_flip_vertically_on_write(true);
-    stbi_write_png(filename, width_, height_, 3, data, 3*width_);
+    stbi_write_png(filename, width_, height_, 3, data, 3 * width_);
 
     // clean up
-    delete [] data;
+    delete[] data;
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

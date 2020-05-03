@@ -1,15 +1,9 @@
-//=============================================================================
-// Copyright (C) 2011-2020 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 // clang-format off
 
-static const char* phong_vshader = 
+static const char* phong_vshader =
 #ifndef __EMSCRIPTEN__
     "#version 330"
 #else
@@ -42,11 +36,16 @@ void main()
 )glsl";
 
 
-static const char* phong_fshader = 
+static const char* phong_fshader =
 #ifndef __EMSCRIPTEN__
-    "#version 330"
+    "#version 330\n"
 #else
-    "#version 300 es"
+    "#version 300 es\n"
+#endif
+#ifdef __APPLE__
+    "bool is_apple = true;"
+#else
+    "bool is_apple = false;"
 #endif
 R"glsl(
 precision mediump float;
@@ -74,7 +73,8 @@ out vec4 f_color;
 
 void main()
 {
-    vec3 color = front_color;
+    vec3 color = gl_FrontFacing ? front_color : back_color;
+
     vec3 rgb;
 
     if (use_lighting)
@@ -87,11 +87,16 @@ void main()
         float NL, RV;
 
         // front-facing or back-facing?
-        // (gl_FrontFacing does not work with Apple's shitty OpenGL drivers)
-        if (dot(N,V) < 0.0) 
+        if (!gl_FrontFacing) N = -N;
+
+        // gl_FrontFacing does not work with Apple's OpenGL drivers
+        if (is_apple)
         {
-            N = -N;
-            color = back_color;
+            if (dot(N,V) < 0.0)
+            {
+                N = -N;
+                color = back_color;
+            }
         }
 
         rgb = ambient * 0.1 * color;
@@ -102,7 +107,7 @@ void main()
             rgb += diffuse * NL * color;
             R  = normalize(-reflect(L1, N));
             RV = dot(R, V);
-            if (RV > 0.0) 
+            if (RV > 0.0)
             {
                 rgb += vec3( specular * pow(RV, shininess) );
             }
@@ -114,7 +119,7 @@ void main()
             rgb += diffuse * NL * color;
             R  = normalize(-reflect(L2, N));
             RV = dot(R, V);
-            if (RV > 0.0) 
+            if (RV > 0.0)
             {
                 rgb += vec3( specular * pow(RV, shininess) );
             }
@@ -134,7 +139,4 @@ void main()
 }
 )glsl";
 
-
-//=============================================================================
 // clang-format on
-//=============================================================================

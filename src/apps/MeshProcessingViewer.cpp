@@ -1,11 +1,5 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "MeshProcessingViewer.h"
 
@@ -20,8 +14,6 @@
 
 #include <imgui.h>
 
-//=============================================================================
-
 MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
                                            int height)
     : MeshViewer(title, width, height), smoother_(mesh_)
@@ -32,8 +24,6 @@ MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
     // add help items
     add_help_item("O", "Flip mesh orientation", 5);
 }
-
-//----------------------------------------------------------------------------
 
 void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 {
@@ -63,18 +53,17 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             update_mesh();
             break;
         }
-
         case GLFW_KEY_M: // merge two faces incident to longest edge
         {
             Scalar l, ll(0);
-            Edge   ee;
-            for (auto e: mesh_.edges())
+            Edge ee;
+            for (auto e : mesh_.edges())
             {
                 Vertex v0 = mesh_.vertex(e, 0);
                 Vertex v1 = mesh_.vertex(e, 1);
-                Point  p0 = mesh_.position(v0);
-                Point  p1 = mesh_.position(v1);
-                l = distance(p0,p1);
+                Point p0 = mesh_.position(v0);
+                Point p1 = mesh_.position(v1);
+                l = distance(p0, p1);
                 if (l > ll && mesh_.is_removal_ok(e))
                 {
                     ll = l;
@@ -90,7 +79,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             }
             break;
         }
-
         default:
         {
             MeshViewer::keyboard(key, scancode, action, mods);
@@ -98,8 +86,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         }
     }
 }
-
-//----------------------------------------------------------------------------
 
 void MeshProcessingViewer::process_imgui()
 {
@@ -296,8 +282,6 @@ void MeshProcessingViewer::process_imgui()
     }
 }
 
-//----------------------------------------------------------------------------
-
 void MeshProcessingViewer::mouse(int button, int action, int mods)
 {
     if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_MIDDLE &&
@@ -328,5 +312,3 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
         MeshViewer::mouse(button, action, mods);
     }
 }
-
-//=============================================================================

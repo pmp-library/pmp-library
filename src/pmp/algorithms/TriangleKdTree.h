@@ -1,35 +1,24 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
-#pragma once
-//=============================================================================
 
-#include <pmp/SurfaceMesh.h>
+#pragma once
+
 #include <vector>
 
-//=============================================================================
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
-//=============================================================================
-
-//! \addtogroup algorithms algorithms
-//!@{
-
-//! A k-d tree for triangles
+//! \brief A k-d tree for triangles
+//! \ingroup algorithms
 class TriangleKdTree
 {
 public:
-    //! construct with mesh
+    //! Construct with mesh.
     TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces = 10,
                    unsigned int max_depth = 30);
 
-    //! destructur
+    //! destructor
     ~TriangleKdTree() { delete root_; }
 
     //! nearest neighbor information
@@ -91,12 +80,7 @@ private:
     void nearest_recurse(Node* node, const Point& point,
                          NearestNeighbor& data) const;
 
-private:
     Node* root_;
 };
 
-//=============================================================================
-//!@}
-//=============================================================================
 } // namespace pmp
-//=============================================================================

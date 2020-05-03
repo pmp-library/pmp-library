@@ -1,21 +1,12 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/algorithms/DistancePointTriangle.h>
+#include "pmp/algorithms/DistancePointTriangle.h"
+
 #include <cfloat>
 #include <cmath>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 Scalar dist_point_line_segment(const Point& p, const Point& v0, const Point& v1,
                                Point& nearest_point)
@@ -37,8 +28,6 @@ Scalar dist_point_line_segment(const Point& p, const Point& v0, const Point& v1,
     nearest_point = min_v;
     return norm(d1);
 }
-
-//-----------------------------------------------------------------------------
 
 Scalar dist_point_triangle(const Point& p, const Point& v0, const Point& v1,
                            const Point& v2, Point& nearest_point)
@@ -222,6 +211,4 @@ Scalar dist_point_triangle(const Point& p, const Point& v0, const Point& v1,
     return norm(v0p);
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

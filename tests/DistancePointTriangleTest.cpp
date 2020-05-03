@@ -1,11 +1,6 @@
-//=============================================================================
-// Copyright (C) 2017-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+
+// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "gtest/gtest.h"
 
@@ -18,9 +13,9 @@ using namespace pmp;
 class DistancePointTriangleTest : public ::testing::Test
 {
 public:
-    SurfaceMesh         mesh;
+    SurfaceMesh mesh;
     Vertex v0, v1, v2, v3;
-    Face   f0;
+    Face f0;
 
     void add_degenerate_triangle()
     {
@@ -34,8 +29,8 @@ public:
 TEST_F(DistancePointTriangleTest, distance_point_degenerate_triangle)
 {
     add_degenerate_triangle();
-    Point  p(0, 1, 0);
-    Point  nearest;
+    Point p(0, 1, 0);
+    Point nearest;
     Scalar dist = dist_point_triangle(p, mesh.position(v0), mesh.position(v1),
                                       mesh.position(v2), nearest);
     EXPECT_FLOAT_EQ(dist, 1.0);

@@ -94,9 +94,10 @@ In order to build the full HTML manual and reference documentation call
 
     make doxygen
 
-The resulting HTML documentation can be found in the `docs/html/`
-sub-directory. Note: this requires [Doxygen](http://www.doxygen.nl/) to be
-installed.
+The resulting HTML documentation can be found in the `docs/html/` sub-directory.
+Note: this requires [Doxygen](http://www.doxygen.nl/) to be installed. In order
+to generate proper bibliographical references please install
+[BibTex](http://www.bibtex.org/) as well.
 
 ## Installation
 

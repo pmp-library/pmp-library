@@ -1,28 +1,17 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
-#pragma once
-//=============================================================================
 
-#include <pmp/visualization/GL.h>
-#include <pmp/MatVec.h>
+#pragma once
+
 #include <vector>
 
-//=============================================================================
+#include "pmp/visualization/GL.h"
+#include "pmp/MatVec.h"
 
 namespace pmp {
 
-//=============================================================================
-
 //! \addtogroup visualization visualization
 //! @{
-
-//=============================================================================
 
 //! shader class for easy handling of the shader
 class Shader
@@ -50,11 +39,8 @@ public:
     //! \param gfile filename of geometry shader
     //! \param tcfile filename of tessellation control shader
     //! \param tefile filename of tessellation evaluation shader
-    bool load(const char* vfile, 
-              const char* ffile,
-              const char* gfile=nullptr,
-              const char* tcfile=nullptr, 
-              const char* tefile=nullptr);
+    bool load(const char* vfile, const char* ffile, const char* gfile = nullptr,
+              const char* tcfile = nullptr, const char* tefile = nullptr);
 
     //! enable/bind this shader program
     void use();
@@ -89,7 +75,7 @@ public:
     //! \param name string of the uniform name
     //! \param mat the value for the uniform
     void set_uniform(const char* name, const mat3& mat);
-    
+
     //! upload mat4 uniform
     //! \param name string of the uniform name
     //! \param mat the value for the uniform
@@ -115,16 +101,13 @@ private:
     //! relink: use this after setting/changing attrib location
     bool link();
 
-private:
     //! id of the linked shader program
     GLint pid_;
 
-	//! id of the vertex shader
+    //! id of the vertex shader
     std::vector<GLint> shaders_;
 };
 
-//=============================================================================
 //! @}
-//=============================================================================
+
 } // namespace pmp
-//=============================================================================

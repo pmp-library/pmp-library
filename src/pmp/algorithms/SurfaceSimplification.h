@@ -1,36 +1,23 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
-
-#include <pmp/SurfaceMesh.h>
-
-#include <pmp/algorithms/Heap.h>
-#include <pmp/algorithms/NormalCone.h>
-#include <pmp/algorithms/Quadric.h>
 
 #include <set>
 #include <vector>
 
-//=============================================================================
+#include "pmp/SurfaceMesh.h"
+#include "pmp/algorithms/Heap.h"
+#include "pmp/algorithms/NormalCone.h"
+#include "pmp/algorithms/Quadric.h"
 
 namespace pmp {
-
-//=============================================================================
-//! \addtogroup algorithms algorithms
-//! @{
-//=============================================================================
 
 //! \brief Surface mesh simplification based on approximation error and fairness criteria.
 //! \details Performs incremental greedy mesh simplification based on halfedge
 //! collapses. See \cite kobbelt_1998_general and \cite garland_1997_surface for
 //! details.
+//! \ingroup algorithms
 class SurfaceSimplification
 {
 public:
@@ -50,7 +37,7 @@ public:
     //! Simplify mesh to \p n vertices.
     void simplify(unsigned int n_vertices);
 
-private: //------------------------------------------------------ private types
+private:
     //! Store data for an halfedge collapse
     /*
                 vl
@@ -105,7 +92,6 @@ private: //------------------------------------------------------ private types
 
     typedef std::vector<Point> Points;
 
-private: //-------------------------------------------------- private functions
     // put the vertex v in the priority queue
     void enqueue_vertex(Vertex v);
 
@@ -124,7 +110,6 @@ private: //-------------------------------------------------- private functions
     // compute distance from p to triagle f
     Scalar distance(Face f, const Point& p) const;
 
-private: //------------------------------------------------------- private data
     SurfaceMesh& mesh_;
 
     bool initialized_;
@@ -153,8 +138,4 @@ private: //------------------------------------------------------- private data
     unsigned int max_valence_;
 };
 
-//=============================================================================
-//! @}
-//=============================================================================
 } // namespace pmp
-//=============================================================================

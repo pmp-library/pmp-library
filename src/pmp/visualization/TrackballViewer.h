@@ -1,25 +1,15 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
-#pragma once
-//=============================================================================
 
-#include <pmp/visualization/Window.h>
-#include <pmp/MatVec.h>
+#pragma once
 
 #include <string>
 #include <vector>
 
-//=============================================================================
+#include "pmp/visualization/Window.h"
+#include "pmp/MatVec.h"
 
 namespace pmp {
-
-//=============================================================================
 
 //! \addtogroup visualization visualization
 //! @{
@@ -27,8 +17,7 @@ namespace pmp {
 //! A simple GLFW viewer with trackball user interface
 class TrackballViewer : public Window
 {
-
-public: //------------------------------------------------------ public methods
+public:
     //! constructor
     TrackballViewer(const char* title, int width, int height,
                     bool showgui = true);
@@ -43,7 +32,7 @@ public: //------------------------------------------------------ public methods
     //! adjust camera such that the whole scene (defined by set_scene()) is visible
     void view_all();
 
-protected: //----------------------------------- callbacks as member functions
+protected:
     //! this function is called when the scene has to be rendered. it
     //! clears the buffers, calls the draw() method, and performs buffer swap
     virtual void display(void) override;
@@ -63,7 +52,7 @@ protected: //----------------------------------- callbacks as member functions
     //! this function is called if the window is resized
     virtual void resize(int width, int height) override;
 
-protected: //------------------------------------------- handling of draw modes
+protected:
     //! reset the list of draw modes
     void clear_draw_modes();
 
@@ -73,14 +62,14 @@ protected: //------------------------------------------- handling of draw modes
     //! activate a draw mode
     void set_draw_mode(const std::string& drawMode);
 
-protected: //-------------------------------------------------------- rendering
+protected:
     //! initialize all OpenGL states
     virtual void init();
 
     //! this function is responsible for rendering the scene
     virtual void draw(const std::string& drawMode) = 0;
 
-protected: //-------------------------------------------- trackball interaction
+protected:
     //! turn a mouse event into a rotation around the scene center. calls rotate().
     void rotation(int x, int y);
 
@@ -108,7 +97,7 @@ protected: //-------------------------------------------- trackball interaction
     //! virtual trackball: map 2D screen point to unit sphere. used by rotate().
     bool map_to_sphere(const ivec2& point, vec3& result);
 
-protected: //----------------------------------------------------- private data
+protected:
     //! draw modes
     unsigned int draw_mode_;
     unsigned int n_draw_modes_;
@@ -131,8 +120,6 @@ protected: //----------------------------------------------------- private data
     bool last_point_ok_;
 };
 
-//=============================================================================
 //! @}
-//=============================================================================
+
 } // namespace pmp
-//=============================================================================

@@ -1,27 +1,18 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
-#pragma once
-//=============================================================================
 
-#include <algorithm>
-#include <string>
-#include <typeinfo>
-#include <vector>
+#pragma once
+
 #include <cassert>
+
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <typeinfo>
 #include <iostream>
 
-//== NAMESPACE ================================================================
-
 namespace pmp {
-
-//== CLASS DEFINITION =========================================================
 
 class BasePropertyArray
 {
@@ -59,8 +50,6 @@ public:
 protected:
     std::string name_;
 };
-
-//== CLASS DEFINITION =========================================================
 
 template <class T>
 class PropertyArray : public BasePropertyArray
@@ -135,8 +124,6 @@ inline const bool* PropertyArray<bool>::data() const
     return nullptr;
 }
 
-//== CLASS DEFINITION =========================================================
-
 template <class T>
 class Property
 {
@@ -194,8 +181,6 @@ private:
 private:
     PropertyArray<T>* parray_;
 };
-
-//== CLASS DEFINITION =========================================================
 
 class PropertyContainer
 {
@@ -304,8 +289,8 @@ public:
     template <class T>
     void remove(Property<T>& h)
     {
-        std::vector<BasePropertyArray *>::iterator it = parrays_.begin(),
-                                                   end = parrays_.end();
+        std::vector<BasePropertyArray*>::iterator it = parrays_.begin(),
+                                                  end = parrays_.end();
         for (; it != end; ++it)
         {
             if (*it == h.parray_)
@@ -369,6 +354,4 @@ private:
     size_t size_;
 };
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

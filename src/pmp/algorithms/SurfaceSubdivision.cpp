@@ -1,20 +1,9 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/algorithms/SurfaceSubdivision.h>
-#include <pmp/Timer.h>
-
-//=============================================================================
+#include "pmp/algorithms/SurfaceSubdivision.h"
 
 namespace pmp {
-
-//=============================================================================
 
 SurfaceSubdivision::SurfaceSubdivision(SurfaceMesh& mesh) : mesh_(mesh)
 {
@@ -22,8 +11,6 @@ SurfaceSubdivision::SurfaceSubdivision(SurfaceMesh& mesh) : mesh_(mesh)
     vfeature_ = mesh_.get_vertex_property<bool>("v:feature");
     efeature_ = mesh_.get_edge_property<bool>("e:feature");
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceSubdivision::catmull_clark()
 {
@@ -202,8 +189,6 @@ void SurfaceSubdivision::catmull_clark()
     mesh_.remove_face_property(fpoint);
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceSubdivision::loop()
 {
     if (!mesh_.is_triangle_mesh())
@@ -364,8 +349,6 @@ void SurfaceSubdivision::loop()
     mesh_.remove_edge_property(epoint);
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceSubdivision::sqrt3()
 {
     if (!mesh_.is_triangle_mesh())
@@ -442,6 +425,4 @@ void SurfaceSubdivision::sqrt3()
     }
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

@@ -4,6 +4,9 @@ project(pmp-library)
 cmake_minimum_required(VERSION 3.0.2)
 
 cmake_policy(SET CMP0048 NEW)
+if(${CMAKE_VERSION} VERSION_GREATER "3.11.0")
+cmake_policy(SET CMP0072 OLD)
+endif()
 
 set(PMP_MAJOR_VERSION 1)
 set(PMP_MINOR_VERSION 2)
@@ -115,7 +118,7 @@ endif()
 
 # set default compiler flags
 if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pedantic -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pedantic -Wall -Wextra -Wno-deprecated-copy")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "7.0.0")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-in-bool-context")
   endif()

@@ -1,20 +1,9 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/algorithms/SurfaceGeodesic.h>
-#include <pmp/MatVec.h>
-
-//=============================================================================
+#include "pmp/algorithms/SurfaceGeodesic.h"
 
 namespace pmp {
-
-//=============================================================================
 
 SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh, bool use_virtual_edges)
     : mesh_(mesh), use_virtual_edges_(use_virtual_edges)
@@ -26,15 +15,11 @@ SurfaceGeodesic::SurfaceGeodesic(SurfaceMesh& mesh, bool use_virtual_edges)
         find_virtual_edges();
 }
 
-//-----------------------------------------------------------------------------
-
 SurfaceGeodesic::~SurfaceGeodesic()
 {
     mesh_.remove_vertex_property(distance_);
     mesh_.remove_vertex_property(processed_);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceGeodesic::find_virtual_edges()
 {
@@ -147,8 +132,6 @@ void SurfaceGeodesic::find_virtual_edges()
               << " virtual edges\n";
 }
 
-//-----------------------------------------------------------------------------
-
 unsigned int SurfaceGeodesic::compute(const std::vector<Vertex>& seed,
                                       Scalar maxdist, unsigned int maxnum,
                                       std::vector<Vertex>* neighbors)
@@ -184,8 +167,6 @@ unsigned int SurfaceGeodesic::compute(const std::vector<Vertex>& seed,
 
     return num;
 }
-
-//-----------------------------------------------------------------------------
 
 unsigned int SurfaceGeodesic::init_front(const std::vector<Vertex>& seed,
                                          std::vector<Vertex>* neighbors)
@@ -250,8 +231,6 @@ unsigned int SurfaceGeodesic::init_front(const std::vector<Vertex>& seed,
     return num;
 }
 
-//-----------------------------------------------------------------------------
-
 unsigned int SurfaceGeodesic::propagate_front(Scalar maxdist,
                                               unsigned int maxnum,
                                               std::vector<Vertex>* neighbors)
@@ -289,8 +268,6 @@ unsigned int SurfaceGeodesic::propagate_front(Scalar maxdist,
 
     return num;
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceGeodesic::heap_vertex(Vertex v)
 {
@@ -378,14 +355,10 @@ void SurfaceGeodesic::heap_vertex(Vertex v)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 bool valid_triangle(double a, double b, double c)
 {
     return (a + b > c && a + c > b && b + c > a);
 }
-
-//-----------------------------------------------------------------------------
 
 Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
                                  Scalar r1)
@@ -446,8 +419,6 @@ Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
     return dykstra;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceGeodesic::distance_to_texture_coordinates()
 {
     // find maximum distance
@@ -474,6 +445,4 @@ void SurfaceGeodesic::distance_to_texture_coordinates()
     }
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

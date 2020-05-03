@@ -1,22 +1,12 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 #include <chrono>
 #include <iostream>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 //! \addtogroup core core
 //!@{
@@ -73,8 +63,6 @@ private:
     bool is_running_;
 };
 
-//=============================================================================
-
 //! output a timer to a stream
 inline std::ostream& operator<<(std::ostream& os, const Timer& timer)
 {
@@ -82,8 +70,6 @@ inline std::ostream& operator<<(std::ostream& os, const Timer& timer)
     return os;
 }
 
-//=============================================================================
 //!@}
-//=============================================================================
+
 } // namespace pmp
-//=============================================================================

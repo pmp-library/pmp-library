@@ -1,13 +1,7 @@
-//=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2017 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 // Windows
 #if _WIN32
@@ -20,8 +14,6 @@
 
 #include <stdlib.h>
 #include <iostream>
-
-//=============================================================================
 
 //! Check for OpenGL errors.
 inline void glCheckError(bool force = false)
@@ -76,5 +68,3 @@ inline void glCheckError(bool force = false)
         } while (error != GL_NO_ERROR);
     }
 }
-
-//=============================================================================

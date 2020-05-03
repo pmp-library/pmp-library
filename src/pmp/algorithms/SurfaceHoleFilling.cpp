@@ -1,26 +1,22 @@
-//=============================================================================
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/algorithms/SurfaceHoleFilling.h>
-#include <pmp/algorithms/SurfaceFairing.h>
+#include "pmp/algorithms/SurfaceHoleFilling.h"
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
+#include "pmp/algorithms/SurfaceFairing.h"
+
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 SurfaceHoleFilling::SurfaceHoleFilling(SurfaceMesh& _mesh) : mesh_(_mesh)
 {
     points_ = mesh_.vertex_property<Point>("v:point");
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceHoleFilling::is_interior_edge(Vertex _a, Vertex _b) const
 {
@@ -31,14 +27,10 @@ bool SurfaceHoleFilling::is_interior_edge(Vertex _a, Vertex _b) const
             !mesh_.is_boundary(mesh_.opposite_halfedge(h)));
 }
 
-//-----------------------------------------------------------------------------
-
 Scalar SurfaceHoleFilling::compute_area(Vertex _a, Vertex _b, Vertex _c) const
 {
     return sqrnorm(cross(points_[_b] - points_[_a], points_[_c] - points_[_a]));
 }
-
-//-----------------------------------------------------------------------------
 
 Point SurfaceHoleFilling::compute_normal(Vertex _a, Vertex _b, Vertex _c) const
 {
@@ -46,15 +38,11 @@ Point SurfaceHoleFilling::compute_normal(Vertex _a, Vertex _b, Vertex _c) const
         cross(points_[_b] - points_[_a], points_[_c] - points_[_a]));
 }
 
-//-----------------------------------------------------------------------------
-
 Scalar SurfaceHoleFilling::compute_angle(const Point& _n1,
                                          const Point& _n2) const
 {
     return (1.0 - dot(_n1, _n2));
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceHoleFilling::fill_hole(Halfedge h)
 {
@@ -101,8 +89,6 @@ void SurfaceHoleFilling::fill_hole(Halfedge h)
     mesh_.remove_vertex_property(vlocked_);
     mesh_.remove_edge_property(elocked_);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
 {
@@ -190,8 +176,6 @@ void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
     index_.clear();
 }
 
-//-----------------------------------------------------------------------------
-
 SurfaceHoleFilling::Weight SurfaceHoleFilling::compute_weight(int _i, int _j,
                                                               int _k) const
 {
@@ -233,8 +217,6 @@ SurfaceHoleFilling::Weight SurfaceHoleFilling::compute_weight(int _i, int _j,
     return Weight(angle, area);
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceHoleFilling::refine()
 {
     const int n = hole_.size();
@@ -261,8 +243,6 @@ void SurfaceHoleFilling::refine()
     }
     fairing();
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceHoleFilling::split_long_edges(const Scalar _lmax)
 {
@@ -291,8 +271,6 @@ void SurfaceHoleFilling::split_long_edges(const Scalar _lmax)
         }
     }
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceHoleFilling::collapse_short_edges(const Scalar _lmin)
 {
@@ -335,8 +313,6 @@ void SurfaceHoleFilling::collapse_short_edges(const Scalar _lmin)
 
     mesh_.garbage_collection();
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceHoleFilling::flip_edges()
 {
@@ -401,8 +377,6 @@ void SurfaceHoleFilling::flip_edges()
         }
     }
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceHoleFilling::relaxation()
 {
@@ -490,8 +464,6 @@ void SurfaceHoleFilling::relaxation()
     mesh_.remove_vertex_property(idx);
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceHoleFilling::fairing()
 {
     // did the refinement insert new vertices?
@@ -525,6 +497,4 @@ void SurfaceHoleFilling::fairing()
     mesh_.remove_vertex_property(vsel);
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================
