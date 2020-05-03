@@ -1,13 +1,7 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 #include <pmp/SurfaceMesh.h>
 
@@ -18,11 +12,7 @@
 #include <set>
 #include <vector>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 //! \brief Surface mesh simplification based on approximation error and fairness criteria.
 //! \details Performs incremental greedy mesh simplification based on halfedge
@@ -149,6 +139,4 @@ private: //------------------------------------------------------- private data
     unsigned int max_valence_;
 };
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

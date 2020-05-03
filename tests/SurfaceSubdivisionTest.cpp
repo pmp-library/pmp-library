@@ -1,11 +1,6 @@
-//=============================================================================
-// Copyright (C) 2017-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+
+// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "gtest/gtest.h"
 
@@ -28,7 +23,7 @@ public:
 TEST_F(SurfaceSubdivisionTest, loop_subdivision)
 {
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.n_vertices(),size_t(2562));
+    EXPECT_EQ(mesh.n_vertices(), size_t(2562));
 }
 
 // loop subdivision with features
@@ -38,7 +33,7 @@ TEST_F(SurfaceSubdivisionTest, loop_with_features)
     sf.detect_angle(25);
 
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.n_vertices(),size_t(2562));
+    EXPECT_EQ(mesh.n_vertices(), size_t(2562));
 }
 
 // loop subdivision with features
@@ -48,7 +43,7 @@ TEST_F(SurfaceSubdivisionTest, loop_with_boundary)
     mesh.read("pmp-data/off/hemisphere.off");
 
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.n_vertices(),size_t(7321));
+    EXPECT_EQ(mesh.n_vertices(), size_t(7321));
 }
 
 // Catmull-Clark subdivision on suzanne quad mesh
@@ -57,7 +52,7 @@ TEST_F(SurfaceSubdivisionTest, catmull_clark_subdivision)
     mesh.clear();
     mesh.read("pmp-data/obj/suzanne.obj");
     SurfaceSubdivision(mesh).catmull_clark();
-    EXPECT_EQ(mesh.n_vertices(),size_t(2012));
+    EXPECT_EQ(mesh.n_vertices(), size_t(2012));
 }
 
 // Catmull-Clark subdivision on fandisk quad mesh
@@ -70,12 +65,12 @@ TEST_F(SurfaceSubdivisionTest, catmull_clark_with_features)
     sf.detect_angle(25);
 
     SurfaceSubdivision(mesh).catmull_clark();
-    EXPECT_EQ(mesh.n_vertices(),size_t(3058));
+    EXPECT_EQ(mesh.n_vertices(), size_t(3058));
 }
 
 // plain sqrt3 subdivision
 TEST_F(SurfaceSubdivisionTest, sqrt3Subdivision)
 {
     SurfaceSubdivision(mesh).sqrt3();
-    EXPECT_EQ(mesh.n_vertices(),size_t(1922));
+    EXPECT_EQ(mesh.n_vertices(), size_t(1922));
 }

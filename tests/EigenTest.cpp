@@ -1,11 +1,6 @@
-//=============================================================================
-// Copyright (C) 2017-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+
+// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "gtest/gtest.h"
 
@@ -15,10 +10,9 @@
 
 using namespace pmp;
 
-class EigenTest: public ::testing::Test
+class EigenTest : public ::testing::Test
 {
 public:
-
 };
 
 TEST_F(EigenTest, construct_from_eigen)
@@ -40,13 +34,13 @@ TEST_F(EigenTest, construct_from_eigen)
     }
 
     {
-        Eigen::Matrix2d eigenMat; 
+        Eigen::Matrix2d eigenMat;
         eigenMat << 1.0, 2.0, 3.0, 4.0;
         mat2 pmpMat = eigenMat;
-        EXPECT_EQ(pmpMat(1,1), 4.0);
+        EXPECT_EQ(pmpMat(1, 1), 4.0);
     }
     {
-        Eigen::MatrixXd eigenMat(2,2); 
+        Eigen::MatrixXd eigenMat(2, 2);
         eigenMat << 1.0, 2.0, 3.0, 4.0;
         mat2 pmpMat;
         pmpMat = eigenMat;
@@ -75,16 +69,17 @@ TEST_F(EigenTest, assignment_from_eigen)
     }
 
     {
-        Eigen::Matrix2d eigenMat; 
+        Eigen::Matrix2d eigenMat;
         eigenMat << 1.0, 2.0, 3.0, 4.0;
-        mat2 pmpMat; pmpMat = eigenMat;
-        EXPECT_EQ(pmpMat(1,1), 4.0);
+        mat2 pmpMat;
+        pmpMat = eigenMat;
+        EXPECT_EQ(pmpMat(1, 1), 4.0);
     }
     {
-        Eigen::MatrixXd eigenMat(2,2); 
+        Eigen::MatrixXd eigenMat(2, 2);
         eigenMat << 1.0, 2.0, 3.0, 4.0;
         mat2 pmpMat = eigenMat;
-        EXPECT_EQ(pmpMat(1,1), 4.0);
+        EXPECT_EQ(pmpMat(1, 1), 4.0);
     }
 }
 
@@ -107,11 +102,8 @@ TEST_F(EigenTest, cast_to_eigen)
     }
 
     {
-        dmat3 pmpMat{1.0, 2.0, 3.0, 
-                     4.0, 5.0, 6.0, 
-                     7.0, 8.0, 9.0};
+        dmat3 pmpMat{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0};
         Eigen::Matrix3f eigenMat = static_cast<Eigen::Matrix3f>(pmpMat);
-        EXPECT_EQ(eigenMat(1,1), 5.0);
+        EXPECT_EQ(eigenMat(1, 1), 5.0);
     }
 }
-

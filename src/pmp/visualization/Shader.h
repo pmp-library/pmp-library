@@ -1,28 +1,16 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 #include <pmp/visualization/GL.h>
 #include <pmp/MatVec.h>
 #include <vector>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 //! \addtogroup visualization visualization
 //! @{
-
-//=============================================================================
 
 //! shader class for easy handling of the shader
 class Shader
@@ -120,8 +108,6 @@ private:
     std::vector<GLint> shaders_;
 };
 
-//=============================================================================
 //! @}
-//=============================================================================
+
 } // namespace pmp
-//=============================================================================

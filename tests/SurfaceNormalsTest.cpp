@@ -1,11 +1,6 @@
-//=============================================================================
-// Copyright (C) 2018-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+
+// Copyright 2018-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "gtest/gtest.h"
 
@@ -42,19 +37,19 @@ TEST_F(SurfaceNormalsTest, compute_corner_normal)
 {
     mesh.read("pmp-data/stl/icosahedron_ascii.stl");
     auto h = Halfedge(0);
-    auto n = SurfaceNormals::compute_corner_normal(mesh,h,(Scalar)M_PI/3.0);
+    auto n = SurfaceNormals::compute_corner_normal(mesh, h, (Scalar)M_PI / 3.0);
     EXPECT_GT(norm(n), 0);
 }
 
 TEST_F(SurfaceNormalsTest, polygonal_face_normal)
 {
     std::vector<Vertex> vertices(5);
-    vertices[0] = mesh.add_vertex(Point(0,0,0));
-    vertices[1] = mesh.add_vertex(Point(1,0,0));
-    vertices[2] = mesh.add_vertex(Point(1,1,0));
-    vertices[3] = mesh.add_vertex(Point(0.5,1,0));
-    vertices[4] = mesh.add_vertex(Point(0,1,0));
+    vertices[0] = mesh.add_vertex(Point(0, 0, 0));
+    vertices[1] = mesh.add_vertex(Point(1, 0, 0));
+    vertices[2] = mesh.add_vertex(Point(1, 1, 0));
+    vertices[3] = mesh.add_vertex(Point(0.5, 1, 0));
+    vertices[4] = mesh.add_vertex(Point(0, 1, 0));
     auto f0 = mesh.add_face(vertices);
-    auto n0 = SurfaceNormals::compute_face_normal(mesh,f0);
+    auto n0 = SurfaceNormals::compute_face_normal(mesh, f0);
     EXPECT_GT(norm(n0), 0);
 }

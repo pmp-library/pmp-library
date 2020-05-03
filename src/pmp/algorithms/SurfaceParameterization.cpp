@@ -1,11 +1,5 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include <pmp/algorithms/SurfaceParameterization.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
@@ -14,18 +8,12 @@
 #include <Eigen/Sparse>
 #include <cmath>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 SurfaceParameterization::SurfaceParameterization(SurfaceMesh& mesh)
     : mesh_(mesh)
 {
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceParameterization::setup_boundary_constraints()
 {
@@ -92,8 +80,6 @@ bool SurfaceParameterization::setup_boundary_constraints()
 
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceParameterization::harmonic(bool use_uniform_weights)
 {
@@ -192,8 +178,6 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     mesh_.remove_edge_property(eweight);
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceParameterization::setup_lscm_boundary()
 {
     // constrain the two boundary vertices farthest from each other to fix
@@ -246,8 +230,6 @@ bool SurfaceParameterization::setup_lscm_boundary()
 
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceParameterization::lscm()
 {
@@ -444,6 +426,4 @@ void SurfaceParameterization::lscm()
     mesh_.remove_halfedge_property(weight);
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

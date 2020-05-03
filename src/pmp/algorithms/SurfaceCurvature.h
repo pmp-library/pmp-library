@@ -1,22 +1,12 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 #include <pmp/SurfaceMesh.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 //! \brief Compute per-vertex curvature (min,max,mean,Gaussian).
 //! \details Curvature values for boundary vertices are interpolated from their
@@ -88,6 +78,4 @@ private:
     VertexProperty<Scalar> max_curvature_;
 };
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

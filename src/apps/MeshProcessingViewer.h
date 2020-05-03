@@ -1,20 +1,12 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 #include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/SurfaceSmoothing.h>
 
 using namespace pmp;
-
-//=============================================================================
 
 class MeshProcessingViewer : public pmp::MeshViewer
 {
@@ -36,5 +28,3 @@ private:
     // smoother has to remember cotan weights, hence it global member
     SurfaceSmoothing smoother_;
 };
-
-//=============================================================================

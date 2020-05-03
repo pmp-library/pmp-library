@@ -1,11 +1,5 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include <pmp/algorithms/SurfaceSmoothing.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
@@ -13,24 +7,16 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;
-
-//=============================================================================
 
 SurfaceSmoothing::SurfaceSmoothing(SurfaceMesh& mesh) : mesh_(mesh)
 {
     how_many_edge_weights_ = 0;
     how_many_vertex_weights_ = 0;
 }
-
-//-----------------------------------------------------------------------------
 
 SurfaceSmoothing::~SurfaceSmoothing()
 {
@@ -42,8 +28,6 @@ SurfaceSmoothing::~SurfaceSmoothing()
     if (eweight)
         mesh_.remove_edge_property(eweight);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceSmoothing::compute_edge_weights(bool use_uniform_laplace)
 {
@@ -63,8 +47,6 @@ void SurfaceSmoothing::compute_edge_weights(bool use_uniform_laplace)
     how_many_edge_weights_ = mesh_.n_edges();
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceSmoothing::compute_vertex_weights(bool use_uniform_laplace)
 {
     auto vweight = mesh_.vertex_property<Scalar>("v:area");
@@ -82,8 +64,6 @@ void SurfaceSmoothing::compute_vertex_weights(bool use_uniform_laplace)
 
     how_many_vertex_weights_ = mesh_.n_vertices();
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceSmoothing::explicit_smoothing(unsigned int iters,
                                           bool use_uniform_laplace)
@@ -138,8 +118,6 @@ void SurfaceSmoothing::explicit_smoothing(unsigned int iters,
     // clean-up custom properties
     mesh_.remove_vertex_property(laplace);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
                                           bool use_uniform_laplace,
@@ -264,6 +242,4 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     mesh_.remove_vertex_property(idx);
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

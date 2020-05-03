@@ -1,20 +1,10 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "TrackballViewer.h"
 #include <algorithm>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 TrackballViewer::TrackballViewer(const char* title, int width, int height,
                                  bool showgui)
@@ -35,19 +25,13 @@ TrackballViewer::TrackballViewer(const char* title, int width, int height,
     add_help_item("Space", "Cycle through draw modes", 2);
 }
 
-//-----------------------------------------------------------------------------
-
 TrackballViewer::~TrackballViewer() = default;
-
-//-----------------------------------------------------------------------------
 
 void TrackballViewer::clear_draw_modes()
 {
     n_draw_modes_ = 0;
     draw_mode_names_.clear();
 }
-
-//-----------------------------------------------------------------------------
 
 unsigned int TrackballViewer::add_draw_mode(const std::string& s)
 {
@@ -56,8 +40,6 @@ unsigned int TrackballViewer::add_draw_mode(const std::string& s)
 
     return n_draw_modes_ - 1;
 }
-
-//-----------------------------------------------------------------------------
 
 void TrackballViewer::set_draw_mode(const std::string& s)
 {
@@ -70,8 +52,6 @@ void TrackballViewer::set_draw_mode(const std::string& s)
         }
     }
 }
-
-//-----------------------------------------------------------------------------
 
 void TrackballViewer::keyboard(int key, int code, int action, int mods)
 {
@@ -119,14 +99,10 @@ void TrackballViewer::keyboard(int key, int code, int action, int mods)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 void TrackballViewer::resize(int width, int height)
 {
     glViewport(0, 0, width, height);
 }
-
-//-----------------------------------------------------------------------------
 
 void TrackballViewer::display()
 {
@@ -154,8 +130,6 @@ void TrackballViewer::display()
         draw("");
 }
 
-//-----------------------------------------------------------------------------
-
 void TrackballViewer::mouse(int /*button*/, int action, int /*mods*/)
 {
     // mouse press
@@ -179,8 +153,6 @@ void TrackballViewer::mouse(int /*button*/, int action, int /*mods*/)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 {
     float d = -(float)yoffset * 0.12 * radius_;
@@ -189,8 +161,6 @@ void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 #endif
     translate(vec3(0.0, 0.0, d));
 }
-
-//-----------------------------------------------------------------------------
 
 void TrackballViewer::motion(double xpos, double ypos)
 {
@@ -217,8 +187,6 @@ void TrackballViewer::motion(double xpos, double ypos)
     last_point_ok_ = map_to_sphere(last_point_2d_, last_point_3d_);
 }
 
-//-----------------------------------------------------------------------------
-
 void TrackballViewer::init()
 {
     // set initial state
@@ -237,8 +205,6 @@ void TrackballViewer::init()
 #endif
 }
 
-//-----------------------------------------------------------------------------
-
 void TrackballViewer::set_scene(const vec3& center, float radius)
 {
     center_ = center;
@@ -246,16 +212,12 @@ void TrackballViewer::set_scene(const vec3& center, float radius)
     view_all();
 }
 
-//-----------------------------------------------------------------------------
-
 void TrackballViewer::view_all()
 {
     vec4 c = vec4(center_, 1.0);
     vec4 t = modelview_matrix_ * c;
     translate(vec3(-t[0], -t[1], -t[2] - 2.5 * radius_));
 }
-
-//-----------------------------------------------------------------------------
 
 bool TrackballViewer::pick(vec3& result)
 {
@@ -308,8 +270,6 @@ bool TrackballViewer::pick(int x, int y, vec3& result)
     return false;
 }
 
-//-----------------------------------------------------------------------------
-
 void TrackballViewer::fly_to(int x, int y)
 {
     vec3 p;
@@ -321,8 +281,6 @@ void TrackballViewer::fly_to(int x, int y)
         translate(vec3(-t[0], -t[1], -0.5 * t[2]));
     }
 }
-
-//-----------------------------------------------------------------------------
 
 bool TrackballViewer::map_to_sphere(const ivec2& point2D, vec3& result)
 {
@@ -346,8 +304,6 @@ bool TrackballViewer::map_to_sphere(const ivec2& point2D, vec3& result)
     else
         return false;
 }
-
-//-----------------------------------------------------------------------------
 
 void TrackballViewer::rotation(int x, int y)
 {
@@ -374,8 +330,6 @@ void TrackballViewer::rotation(int x, int y)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 void TrackballViewer::translation(int x, int y)
 {
     float dx = x - last_point_2d_[0];
@@ -393,8 +347,6 @@ void TrackballViewer::translation(int x, int y)
                    -2.0 * dy / height() * up / near_ * z, 0.0f));
 }
 
-//-----------------------------------------------------------------------------
-
 void TrackballViewer::zoom(int, int y)
 {
     float dy = y - last_point_2d_[1];
@@ -402,14 +354,10 @@ void TrackballViewer::zoom(int, int y)
     translate(vec3(0.0, 0.0, radius_ * dy * 3.0 / h));
 }
 
-//-----------------------------------------------------------------------------
-
 void TrackballViewer::translate(const vec3& t)
 {
     modelview_matrix_ = translation_matrix(t) * modelview_matrix_;
 }
-
-//-----------------------------------------------------------------------------
 
 void TrackballViewer::rotate(const vec3& axis, float angle)
 {
@@ -422,6 +370,4 @@ void TrackballViewer::rotate(const vec3& axis, float angle)
                         translation_matrix(-c) * modelview_matrix_;
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

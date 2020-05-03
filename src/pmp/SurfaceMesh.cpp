@@ -1,12 +1,6 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include <pmp/SurfaceMesh.h>
 #include <pmp/SurfaceMeshIO.h>
@@ -40,11 +34,7 @@ SurfaceMesh::SurfaceMesh()
     has_garbage_ = false;
 }
 
-//-----------------------------------------------------------------------------
-
 SurfaceMesh::~SurfaceMesh() = default;
-
-//-----------------------------------------------------------------------------
 
 SurfaceMesh& SurfaceMesh::operator=(const SurfaceMesh& rhs)
 {
@@ -77,8 +67,6 @@ SurfaceMesh& SurfaceMesh::operator=(const SurfaceMesh& rhs)
 
     return *this;
 }
-
-//-----------------------------------------------------------------------------
 
 SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
 {
@@ -128,23 +116,17 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
     return *this;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMesh::read(const std::string& filename, const IOFlags& flags)
 {
     SurfaceMeshIO reader(filename, flags);
     return reader.read(*this);
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMesh::write(const std::string& filename, const IOFlags& flags) const
 {
     SurfaceMeshIO writer(filename, flags);
     return writer.write(*this);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMesh::clear()
 {
@@ -175,8 +157,6 @@ void SurfaceMesh::clear()
     has_garbage_ = false;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceMesh::free_memory()
 {
     vprops_.free_memory();
@@ -186,8 +166,6 @@ void SurfaceMesh::free_memory()
     fprops_.free_memory();
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceMesh::reserve(size_t nvertices, size_t nedges, size_t nfaces)
 {
     oprops_.reserve(1);
@@ -196,8 +174,6 @@ void SurfaceMesh::reserve(size_t nvertices, size_t nedges, size_t nfaces)
     eprops_.reserve(nedges);
     fprops_.reserve(nfaces);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMesh::property_stats() const
 {
@@ -224,8 +200,6 @@ void SurfaceMesh::property_stats() const
         std::cout << "\t" << prop << std::endl;
 }
 
-//-----------------------------------------------------------------------------
-
 Halfedge SurfaceMesh::find_halfedge(Vertex start, Vertex end) const
 {
     assert(is_valid(start) && is_valid(end));
@@ -246,15 +220,11 @@ Halfedge SurfaceMesh::find_halfedge(Vertex start, Vertex end) const
     return Halfedge();
 }
 
-//-----------------------------------------------------------------------------
-
 Edge SurfaceMesh::find_edge(Vertex a, Vertex b) const
 {
     Halfedge h = find_halfedge(a, b);
     return h.is_valid() ? edge(h) : Edge();
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMesh::adjust_outgoing_halfedge(Vertex v)
 {
@@ -275,8 +245,6 @@ void SurfaceMesh::adjust_outgoing_halfedge(Vertex v)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 Vertex SurfaceMesh::add_vertex(const Point& p)
 {
     Vertex v = new_vertex();
@@ -284,8 +252,6 @@ Vertex SurfaceMesh::add_vertex(const Point& p)
         vpoint_[v] = p;
     return v;
 }
-
-//-----------------------------------------------------------------------------
 
 Face SurfaceMesh::add_triangle(Vertex v0, Vertex v1, Vertex v2)
 {
@@ -296,8 +262,6 @@ Face SurfaceMesh::add_triangle(Vertex v0, Vertex v1, Vertex v2)
     return add_face(add_face_vertices_);
 }
 
-//-----------------------------------------------------------------------------
-
 Face SurfaceMesh::add_quad(Vertex v0, Vertex v1, Vertex v2, Vertex v3)
 {
     add_face_vertices_.resize(4);
@@ -307,8 +271,6 @@ Face SurfaceMesh::add_quad(Vertex v0, Vertex v1, Vertex v2, Vertex v3)
     add_face_vertices_[3] = v3;
     return add_face(add_face_vertices_);
 }
-
-//-----------------------------------------------------------------------------
 
 Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
 {
@@ -491,8 +453,6 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
     return f;
 }
 
-//-----------------------------------------------------------------------------
-
 size_t SurfaceMesh::valence(Vertex v) const
 {
     size_t count(0);
@@ -505,8 +465,6 @@ size_t SurfaceMesh::valence(Vertex v) const
 
     return count;
 }
-
-//-----------------------------------------------------------------------------
 
 size_t SurfaceMesh::valence(Face f) const
 {
@@ -521,8 +479,6 @@ size_t SurfaceMesh::valence(Face f) const
     return count;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMesh::is_triangle_mesh() const
 {
     for (auto f : faces())
@@ -531,8 +487,6 @@ bool SurfaceMesh::is_triangle_mesh() const
 
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceMesh::is_quad_mesh() const
 {
@@ -543,8 +497,6 @@ bool SurfaceMesh::is_quad_mesh() const
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceMesh::triangulate()
 {
     // The iterators will stay valid, even though new faces are added, because
@@ -553,8 +505,6 @@ void SurfaceMesh::triangulate()
     for (auto fit = faces_begin(); fit != fend; ++fit)
         triangulate(*fit);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMesh::triangulate(Face f)
 {
@@ -594,8 +544,6 @@ void SurfaceMesh::triangulate(Face f)
 
     set_face(baseH, f);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMesh::split(Face f, Vertex v)
 {
@@ -643,8 +591,6 @@ void SurfaceMesh::split(Face f, Vertex v)
 
     set_halfedge(v, hold);
 }
-
-//-----------------------------------------------------------------------------
 
 Halfedge SurfaceMesh::split(Edge e, Vertex v)
 {
@@ -742,8 +688,6 @@ Halfedge SurfaceMesh::split(Edge e, Vertex v)
     return t1;
 }
 
-//-----------------------------------------------------------------------------
-
 Halfedge SurfaceMesh::insert_vertex(Halfedge h0, Vertex v)
 {
     // before:
@@ -797,8 +741,6 @@ Halfedge SurfaceMesh::insert_vertex(Halfedge h0, Vertex v)
     return o1;
 }
 
-//-----------------------------------------------------------------------------
-
 Halfedge SurfaceMesh::insert_edge(Halfedge h0, Halfedge h1)
 {
     assert(face(h0) == face(h1));
@@ -835,8 +777,6 @@ Halfedge SurfaceMesh::insert_edge(Halfedge h0, Halfedge h1)
     return h4;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMesh::is_flip_ok(Edge e) const
 {
     // boundary edges cannot be flipped
@@ -858,8 +798,6 @@ bool SurfaceMesh::is_flip_ok(Edge e) const
 
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMesh::flip(Edge e)
 {
@@ -906,8 +844,6 @@ void SurfaceMesh::flip(Edge e)
     if (halfedge(vb0) == a0)
         set_halfedge(vb0, b1);
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceMesh::is_collapse_ok(Halfedge v0v1)
 {
@@ -963,8 +899,6 @@ bool SurfaceMesh::is_collapse_ok(Halfedge v0v1)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMesh::is_removal_ok(Edge e)
 {
     Halfedge h0 = halfedge(e, 0);
@@ -991,8 +925,6 @@ bool SurfaceMesh::is_removal_ok(Edge e)
 
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceMesh::remove_edge(Edge e)
 {
@@ -1041,8 +973,6 @@ bool SurfaceMesh::remove_edge(Edge e)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceMesh::collapse(Halfedge h)
 {
     Halfedge h0 = h;
@@ -1059,8 +989,6 @@ void SurfaceMesh::collapse(Halfedge h)
     if (next_halfedge(next_halfedge(o1)) == o1)
         remove_loop_helper(o1);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMesh::remove_edge_helper(Halfedge h)
 {
@@ -1109,8 +1037,6 @@ void SurfaceMesh::remove_edge_helper(Halfedge h)
     has_garbage_ = true;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceMesh::remove_loop_helper(Halfedge h)
 {
     Halfedge h0 = h;
@@ -1156,8 +1082,6 @@ void SurfaceMesh::remove_loop_helper(Halfedge h)
     has_garbage_ = true;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceMesh::delete_vertex(Vertex v)
 {
     if (is_deleted(v))
@@ -1183,8 +1107,6 @@ void SurfaceMesh::delete_vertex(Vertex v)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceMesh::delete_edge(Edge e)
 {
     if (is_deleted(e))
@@ -1198,8 +1120,6 @@ void SurfaceMesh::delete_edge(Edge e)
     if (f1.is_valid())
         delete_face(f1);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMesh::delete_face(Face f)
 {
@@ -1310,8 +1230,6 @@ void SurfaceMesh::delete_face(Face f)
 
     has_garbage_ = true;
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMesh::garbage_collection()
 {
@@ -1454,6 +1372,4 @@ void SurfaceMesh::garbage_collection()
     has_garbage_ = false;
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

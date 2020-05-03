@@ -1,12 +1,7 @@
-//=============================================================================
 
 #include <pmp/algorithms/SurfaceTriangulation.h>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& mesh) : mesh_(mesh)
 {
@@ -15,15 +10,11 @@ SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& mesh) : mesh_(mesh)
     objective_ = MAX_ANGLE;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceTriangulation::triangulate(Objective o)
 {
     for (auto f : mesh_.faces())
         triangulate(f, o);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceTriangulation::triangulate(Face f, Objective o)
 {
@@ -138,8 +129,6 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
     vertices_.clear();
 }
 
-//-----------------------------------------------------------------------------
-
 Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
 {
     const Vertex a = vertices_[i];
@@ -183,14 +172,10 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
     return w;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceTriangulation::is_edge(Vertex a, Vertex b) const
 {
     return mesh_.find_halfedge(a, b).is_valid();
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceTriangulation::is_interior_edge(Vertex a, Vertex b) const
 {
@@ -200,8 +185,6 @@ bool SurfaceTriangulation::is_interior_edge(Vertex a, Vertex b) const
     return (!mesh_.is_boundary(h) &&
             !mesh_.is_boundary(mesh_.opposite_halfedge(h)));
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceTriangulation::insert_edge(int i, int j)
 {
@@ -248,6 +231,4 @@ bool SurfaceTriangulation::insert_edge(int i, int j)
     return false;
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

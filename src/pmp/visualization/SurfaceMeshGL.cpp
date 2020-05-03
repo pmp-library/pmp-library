@@ -1,11 +1,5 @@
-//=============================================================================
-// Copyright (C) 2011-2020 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include <pmp/visualization/SurfaceMeshGL.h>
 #include <pmp/visualization/PhongShader.h>
@@ -15,11 +9,7 @@
 
 #include <stb_image.h>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 SurfaceMeshGL::SurfaceMeshGL()
 {
@@ -54,8 +44,6 @@ SurfaceMeshGL::SurfaceMeshGL()
     texture_mode_ = OtherTexture;
 }
 
-//-----------------------------------------------------------------------------
-
 SurfaceMeshGL::~SurfaceMeshGL()
 {
     // delete OpenGL buffers
@@ -67,8 +55,6 @@ SurfaceMeshGL::~SurfaceMeshGL()
     glDeleteVertexArrays(1, &vertex_array_object_);
     glDeleteTextures(1, &texture_);
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
                                  GLint min_filter, GLint mag_filter, GLint wrap)
@@ -148,8 +134,6 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshGL::load_matcap(const char* filename)
 {
     if (!load_texture(filename, GL_RGBA, GL_LINEAR, GL_LINEAR,
@@ -159,8 +143,6 @@ bool SurfaceMeshGL::load_matcap(const char* filename)
     texture_mode_ = MatCapTexture;
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMeshGL::use_cold_warm_texture()
 {
@@ -184,8 +166,6 @@ void SurfaceMeshGL::use_cold_warm_texture()
         texture_mode_ = ColdWarmTexture;
     }
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMeshGL::use_checkerboard_texture()
 {
@@ -236,8 +216,6 @@ void SurfaceMeshGL::use_checkerboard_texture()
     }
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceMeshGL::set_crease_angle(Scalar ca)
 {
     if (ca != crease_angle_)
@@ -246,8 +224,6 @@ void SurfaceMeshGL::set_crease_angle(Scalar ca)
         update_opengl_buffers();
     }
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceMeshGL::update_opengl_buffers()
 {
@@ -505,8 +481,6 @@ void SurfaceMeshGL::update_opengl_buffers()
     remove_vertex_property(vertex_indices);
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceMeshGL::draw(const mat4& projection_matrix,
                          const mat4& modelview_matrix,
                          const std::string draw_mode)
@@ -679,8 +653,6 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     glCheckError();
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceMeshGL::triangulate(const std::vector<vec3>& points,
                                 std::vector<ivec3>& triangles)
 {
@@ -776,6 +748,4 @@ void SurfaceMeshGL::triangulate(const std::vector<vec3>& points,
     }
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

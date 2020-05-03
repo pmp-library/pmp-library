@@ -1,22 +1,12 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 #include <pmp/SurfaceMesh.h>
 #include <vector>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 //! \brief A k-d tree for triangles
 //! \ingroup algorithms
@@ -93,6 +83,4 @@ private:
     Node* root_;
 };
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

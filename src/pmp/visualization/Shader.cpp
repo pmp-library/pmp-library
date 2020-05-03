@@ -1,11 +1,5 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include <pmp/visualization/Shader.h>
 #include <iostream>
@@ -13,22 +7,14 @@
 #include <sstream>
 #include <cassert>
 
-//=============================================================================
-
 namespace pmp {
 
-//=============================================================================
-
 Shader::Shader() : pid_(0) {}
-
-//-----------------------------------------------------------------------------
 
 Shader::~Shader()
 {
     cleanup();
 }
-
-//-----------------------------------------------------------------------------
 
 void Shader::cleanup()
 {
@@ -44,8 +30,6 @@ void Shader::cleanup()
     }
     shaders_.clear();
 }
-
-//-----------------------------------------------------------------------------
 
 bool Shader::source(const char* vshader, const char* fshader)
 {
@@ -86,8 +70,6 @@ bool Shader::source(const char* vshader, const char* fshader)
 
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 bool Shader::load(const char* vfile, const char* ffile, const char* gfile,
                   const char* tcfile, const char* tefile)
@@ -169,8 +151,6 @@ bool Shader::load(const char* vfile, const char* ffile, const char* gfile,
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool Shader::link()
 {
     glLinkProgram(pid_);
@@ -194,8 +174,6 @@ bool Shader::link()
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool Shader::load(const char* filename, std::string& source)
 {
     std::ifstream ifs(filename);
@@ -212,8 +190,6 @@ bool Shader::load(const char* filename, std::string& source)
     ifs.close();
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 GLint Shader::compile(const char* source, GLenum type)
 {
@@ -250,8 +226,6 @@ GLint Shader::compile(const char* source, GLenum type)
     return id;
 }
 
-//-----------------------------------------------------------------------------
-
 GLint Shader::load_and_compile(const char* filename, GLenum type)
 {
     std::string source;
@@ -264,22 +238,16 @@ GLint Shader::load_and_compile(const char* filename, GLenum type)
     return compile(source.c_str(), type);
 }
 
-//-----------------------------------------------------------------------------
-
 void Shader::use()
 {
     if (pid_)
         glUseProgram(pid_);
 }
 
-//-----------------------------------------------------------------------------
-
 void Shader::disable()
 {
     glUseProgram(0);
 }
-
-//-----------------------------------------------------------------------------
 
 void Shader::bind_attribute(const char* name, GLuint index)
 {
@@ -288,8 +256,6 @@ void Shader::bind_attribute(const char* name, GLuint index)
     glBindAttribLocation(pid_, index, name);
     link(); // have to re-link now!
 }
-
-//-----------------------------------------------------------------------------
 
 void Shader::set_uniform(const char* name, float value)
 {
@@ -304,8 +270,6 @@ void Shader::set_uniform(const char* name, float value)
     glUniform1f(location, value);
 }
 
-//-----------------------------------------------------------------------------
-
 void Shader::set_uniform(const char* name, int value)
 {
     if (!pid_)
@@ -318,8 +282,6 @@ void Shader::set_uniform(const char* name, int value)
     }
     glUniform1i(location, value);
 }
-
-//-----------------------------------------------------------------------------
 
 void Shader::set_uniform(const char* name, const vec3& vec)
 {
@@ -334,8 +296,6 @@ void Shader::set_uniform(const char* name, const vec3& vec)
     glUniform3f(location, vec[0], vec[1], vec[2]);
 }
 
-//-----------------------------------------------------------------------------
-
 void Shader::set_uniform(const char* name, const vec4& vec)
 {
     if (!pid_)
@@ -348,8 +308,6 @@ void Shader::set_uniform(const char* name, const vec4& vec)
     }
     glUniform4f(location, vec[0], vec[1], vec[2], vec[3]);
 }
-
-//-----------------------------------------------------------------------------
 
 void Shader::set_uniform(const char* name, const mat3& mat)
 {
@@ -364,8 +322,6 @@ void Shader::set_uniform(const char* name, const mat3& mat)
     glUniformMatrix3fv(location, 1, false, mat.data());
 }
 
-//-----------------------------------------------------------------------------
-
 void Shader::set_uniform(const char* name, const mat4& mat)
 {
     if (!pid_)
@@ -379,6 +335,4 @@ void Shader::set_uniform(const char* name, const mat4& mat)
     glUniformMatrix4fv(location, 1, false, mat.data());
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

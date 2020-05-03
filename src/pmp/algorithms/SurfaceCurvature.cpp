@@ -1,21 +1,11 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include <pmp/algorithms/SurfaceCurvature.h>
 #include <pmp/algorithms/SurfaceNormals.h>
 #include <pmp/MatVec.h>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 SurfaceCurvature::SurfaceCurvature(SurfaceMesh& mesh) : mesh_(mesh)
 {
@@ -23,15 +13,11 @@ SurfaceCurvature::SurfaceCurvature(SurfaceMesh& mesh) : mesh_(mesh)
     max_curvature_ = mesh_.add_vertex_property<Scalar>("curv:max");
 }
 
-//-----------------------------------------------------------------------------
-
 SurfaceCurvature::~SurfaceCurvature()
 {
     mesh_.remove_vertex_property(min_curvature_);
     mesh_.remove_vertex_property(max_curvature_);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceCurvature::analyze(unsigned int post_smoothing_steps)
 {
@@ -131,8 +117,6 @@ void SurfaceCurvature::analyze(unsigned int post_smoothing_steps)
     // smooth curvature values
     smooth_curvatures(post_smoothing_steps);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceCurvature::analyze_tensor(unsigned int post_smoothing_steps,
                                       bool two_ring_neighborhood)
@@ -286,8 +270,6 @@ void SurfaceCurvature::analyze_tensor(unsigned int post_smoothing_steps,
     smooth_curvatures(post_smoothing_steps);
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceCurvature::smooth_curvatures(unsigned int iterations)
 {
     Scalar kmin, kmax;
@@ -339,8 +321,6 @@ void SurfaceCurvature::smooth_curvatures(unsigned int iterations)
     mesh_.remove_edge_property(cotan);
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceCurvature::mean_curvature_to_texture_coordinates() const
 {
     auto curvatures = mesh_.add_vertex_property<Scalar>("v:curv");
@@ -351,8 +331,6 @@ void SurfaceCurvature::mean_curvature_to_texture_coordinates() const
     curvature_to_texture_coordinates();
     mesh_.remove_vertex_property<Scalar>(curvatures);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceCurvature::gauss_curvature_to_texture_coordinates() const
 {
@@ -365,8 +343,6 @@ void SurfaceCurvature::gauss_curvature_to_texture_coordinates() const
     mesh_.remove_vertex_property<Scalar>(curvatures);
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceCurvature::max_curvature_to_texture_coordinates() const
 {
     auto curvatures = mesh_.add_vertex_property<Scalar>("v:curv");
@@ -377,8 +353,6 @@ void SurfaceCurvature::max_curvature_to_texture_coordinates() const
     curvature_to_texture_coordinates();
     mesh_.remove_vertex_property<Scalar>(curvatures);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceCurvature::curvature_to_texture_coordinates() const
 {
@@ -419,6 +393,4 @@ void SurfaceCurvature::curvature_to_texture_coordinates() const
     }
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

@@ -1,11 +1,5 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "MeshProcessingViewer.h"
 
@@ -20,8 +14,6 @@
 
 #include <imgui.h>
 
-//=============================================================================
-
 MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
                                            int height)
     : MeshViewer(title, width, height), smoother_(mesh_)
@@ -32,8 +24,6 @@ MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
     // add help items
     add_help_item("O", "Flip mesh orientation", 5);
 }
-
-//----------------------------------------------------------------------------
 
 void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 {
@@ -96,8 +86,6 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         }
     }
 }
-
-//----------------------------------------------------------------------------
 
 void MeshProcessingViewer::process_imgui()
 {
@@ -294,8 +282,6 @@ void MeshProcessingViewer::process_imgui()
     }
 }
 
-//----------------------------------------------------------------------------
-
 void MeshProcessingViewer::mouse(int button, int action, int mods)
 {
     if (action == GLFW_PRESS && button == GLFW_MOUSE_BUTTON_MIDDLE &&
@@ -326,5 +312,3 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
         MeshViewer::mouse(button, action, mods);
     }
 }
-
-//=============================================================================

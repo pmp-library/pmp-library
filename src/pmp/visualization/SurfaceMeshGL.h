@@ -1,13 +1,7 @@
-//=============================================================================
-// Copyright (C) 2011-2020 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 #include <pmp/visualization/GL.h>
 #include <pmp/visualization/Shader.h>
@@ -15,16 +9,10 @@
 #include <pmp/SurfaceMesh.h>
 #include <cfloat>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 //! \addtogroup visualization visualization
 //! @{
-
-//=============================================================================
 
 //! Class for rendering surface meshes using OpenGL
 class SurfaceMeshGL : public SurfaceMesh
@@ -183,8 +171,6 @@ private:
     } texture_mode_;
 };
 
-//=============================================================================
 //! @}
-//=============================================================================
+
 } // namespace pmp
-//=============================================================================

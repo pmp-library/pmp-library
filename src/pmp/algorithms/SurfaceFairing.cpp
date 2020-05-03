@@ -1,11 +1,5 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include <pmp/algorithms/SurfaceFairing.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
@@ -13,16 +7,10 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;
-
-//=============================================================================
 
 SurfaceFairing::SurfaceFairing(SurfaceMesh& mesh) : mesh_(mesh)
 {
@@ -35,8 +23,6 @@ SurfaceFairing::SurfaceFairing(SurfaceMesh& mesh) : mesh_(mesh)
     idx_ = mesh_.add_vertex_property<int>("fairing:idx", -1);
 }
 
-//-----------------------------------------------------------------------------
-
 SurfaceFairing::~SurfaceFairing()
 {
     // remove properties
@@ -45,8 +31,6 @@ SurfaceFairing::~SurfaceFairing()
     mesh_.remove_edge_property(eweight_);
     mesh_.remove_vertex_property(idx_);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceFairing::fair(unsigned int k)
 {
@@ -186,8 +170,6 @@ void SurfaceFairing::fair(unsigned int k)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 struct Triple
 {
     Triple() = default;
@@ -201,8 +183,6 @@ struct Triple
     double weight_;
     unsigned int degree_;
 };
-
-//-----------------------------------------------------------------------------
 
 void SurfaceFairing::setup_matrix_row(const Vertex v,
                                       VertexProperty<double> vweight,
@@ -259,6 +239,4 @@ void SurfaceFairing::setup_matrix_row(const Vertex v,
     }
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

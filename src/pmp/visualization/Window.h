@@ -1,24 +1,14 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 #include <pmp/visualization/GL.h>
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <utility>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 //! \addtogroup visualization visualization
 //! @{
@@ -26,7 +16,6 @@ namespace pmp {
 //! A window provided by GLFW
 class Window
 {
-
 public: //------------------------------------------------------ public methods
     //! constructor
     Window(const char* title, int width, int height, bool showgui = true);
@@ -179,8 +168,6 @@ private:
     unsigned int screenshot_number_;
 };
 
-//=============================================================================
 //! @}
-//=============================================================================
+
 } // namespace pmp
-//=============================================================================
