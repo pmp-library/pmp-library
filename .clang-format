@@ -11,7 +11,8 @@ SpacesBeforeTrailingComments: 1
 SortIncludes: false
 AccessModifierOffset: -4
 Standard: Cpp11
-KeepEmptyLinesAtTheStartOfBlocks: true
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
 ReflowComments: false
 BreakBeforeBraces: Custom
 BraceWrapping:
