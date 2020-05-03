@@ -116,7 +116,7 @@ line as well as on empty lines.
 This section describes some basic programming conventions developers should
 adhere to.
 
-### Declaration order
+### Declaration Order
 
 Group the sections of a class in the following order: public, protected,
 private.
@@ -171,10 +171,30 @@ Use the
 #pragma once
 ```
 
-compiler directive at the beginning of each
-header file in order to protect against multiple inclusion. Although this is not
-officially part of the language this feature is supported by all major
-compilers and is much more convenient than conventional header guards.
+compiler directive at the beginning of each header file in order to protect
+against multiple inclusion. Although this is not officially part of the language
+this feature is supported by all major compilers and is much more convenient
+than conventional header guards.
+
+### Header Include Order
+
+Use the following order to include header files:
+
+1. Related header
+2. C standard library headers
+3. C++ standard library headers
+4. Other library headers
+5. Project library headers
+
+Separate each group by a blank line. Optional: Sort headers alphabetically within a group.
+
+### Include Style
+
+Use quotes to include other project headers. Use the full relative path from the project `src` directory. Example:
+
+```cpp
+#include "pmp/algorithms/SurfaceRemeshing.h"
+```
 
 ### Namespace
 
