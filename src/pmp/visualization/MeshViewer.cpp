@@ -1,13 +1,14 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "MeshViewer.h"
-
-#include <imgui.h>
+#include "pmp/visualization/MeshViewer.h"
 
 #include <cfloat>
+
 #include <iostream>
 #include <sstream>
+
+#include <imgui.h>
 
 namespace pmp {
 

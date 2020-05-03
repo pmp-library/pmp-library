@@ -1,16 +1,15 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
-#include <pmp/SurfaceMesh.h>
-
-#include <pmp/algorithms/Heap.h>
-#include <pmp/algorithms/NormalCone.h>
-#include <pmp/algorithms/Quadric.h>
-
 #include <set>
 #include <vector>
+
+#include "pmp/SurfaceMesh.h"
+#include "pmp/algorithms/Heap.h"
+#include "pmp/algorithms/NormalCone.h"
+#include "pmp/algorithms/Quadric.h"
 
 namespace pmp {
 
@@ -18,7 +17,7 @@ namespace pmp {
 //! \details Performs incremental greedy mesh simplification based on halfedge
 //! collapses. See \cite kobbelt_1998_general and \cite garland_1997_surface for
 //! details.
-//!\ingroup algorithms
+//! \ingroup algorithms
 class SurfaceSimplification
 {
 public:

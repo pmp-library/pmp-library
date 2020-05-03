@@ -1,13 +1,14 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/visualization/SurfaceMeshGL.h>
-#include <pmp/visualization/PhongShader.h>
-#include <pmp/visualization/MatCapShader.h>
-#include <pmp/visualization/ColdWarmTexture.h>
-#include <pmp/algorithms/SurfaceNormals.h>
+#include "pmp/visualization/SurfaceMeshGL.h"
 
 #include <stb_image.h>
+
+#include "pmp/visualization/PhongShader.h"
+#include "pmp/visualization/MatCapShader.h"
+#include "pmp/visualization/ColdWarmTexture.h"
+#include "pmp/algorithms/SurfaceNormals.h"
 
 namespace pmp {
 

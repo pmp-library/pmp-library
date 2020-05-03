@@ -1,9 +1,12 @@
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/algorithms/SurfaceHoleFilling.h>
-#include <pmp/algorithms/SurfaceFairing.h>
+#include "pmp/algorithms/SurfaceHoleFilling.h"
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
+
+#include "pmp/algorithms/SurfaceFairing.h"
 
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;

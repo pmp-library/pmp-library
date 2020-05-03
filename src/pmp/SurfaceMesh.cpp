@@ -1,11 +1,12 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/SurfaceMesh.h>
-#include <pmp/SurfaceMeshIO.h>
+#include "pmp/SurfaceMesh.h"
 
 #include <cmath>
+
+#include "pmp/SurfaceMeshIO.h"
 
 namespace pmp {
 

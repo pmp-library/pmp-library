@@ -1,15 +1,18 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/algorithms/SurfaceRemeshing.h>
-#include <pmp/algorithms/DistancePointTriangle.h>
-#include <pmp/algorithms/SurfaceCurvature.h>
-#include <pmp/algorithms/SurfaceNormals.h>
-#include <pmp/algorithms/BarycentricCoordinates.h>
+#include "pmp/algorithms/SurfaceRemeshing.h"
 
 #include <cfloat>
 #include <cmath>
+
 #include <algorithm>
+
+#include "pmp/algorithms/TriangleKdTree.h"
+#include "pmp/algorithms/SurfaceCurvature.h"
+#include "pmp/algorithms/SurfaceNormals.h"
+#include "pmp/algorithms/BarycentricCoordinates.h"
+#include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
 

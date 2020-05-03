@@ -1,10 +1,11 @@
-// Copyright 2011-2017 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
-#include <pmp/MatVec.h>
-#include <cstdint> // for std::uint_least32_t
+#include <cstdint>
+
+#include "pmp/MatVec.h"
 
 //! \def PMP_ASSERT(x)
 //! Custom assert macro that allows to silence unused variable warnings with no

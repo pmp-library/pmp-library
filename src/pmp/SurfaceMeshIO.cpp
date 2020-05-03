@@ -2,15 +2,16 @@
 // Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/SurfaceMeshIO.h>
-
-#include <rply.h>
+#include "pmp/SurfaceMeshIO.h"
 
 #include <clocale>
 #include <cfloat>
-#include <fstream>
 #include <cstring>
 #include <cctype>
+
+#include <fstream>
+
+#include <rply.h>
 
 // helper function
 template <typename T>

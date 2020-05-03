@@ -3,11 +3,12 @@
 
 #pragma once
 
-#include <pmp/visualization/GL.h>
-#include <pmp/visualization/Shader.h>
-#include <pmp/MatVec.h>
-#include <pmp/SurfaceMesh.h>
 #include <cfloat>
+
+#include "pmp/SurfaceMesh.h"
+#include "pmp/visualization/GL.h"
+#include "pmp/visualization/Shader.h"
+#include "pmp/MatVec.h"
 
 namespace pmp {
 

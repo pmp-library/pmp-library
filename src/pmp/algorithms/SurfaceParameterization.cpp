@@ -1,12 +1,14 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/algorithms/SurfaceParameterization.h>
-#include <pmp/algorithms/DifferentialGeometry.h>
+#include "pmp/algorithms/SurfaceParameterization.h"
+
 #include <cmath>
+
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <cmath>
+
+#include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
 

@@ -1,8 +1,8 @@
-// Copyright 2019 the Polygon Mesh Processing Library developers.
+// Copyright 2019-2020 the Polygon Mesh Processing Library developers.
 // Copyright (c) 2010 Martin Reddy. All rights reserved.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/Version.h>
+#include "pmp/Version.h"
 
 #include <sstream>
 #include <string>

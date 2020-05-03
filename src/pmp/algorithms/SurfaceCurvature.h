@@ -1,10 +1,9 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
-#include <pmp/SurfaceMesh.h>
-#include <pmp/algorithms/DifferentialGeometry.h>
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
@@ -20,7 +19,7 @@ public:
     //! construct with mesh to be analyzed
     SurfaceCurvature(SurfaceMesh& mesh);
 
-    // destructor
+    //! destructor
     ~SurfaceCurvature();
 
     //! compute curvature information for each vertex, optionally followed

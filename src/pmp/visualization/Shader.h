@@ -1,11 +1,12 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
-#include <pmp/visualization/GL.h>
-#include <pmp/MatVec.h>
 #include <vector>
+
+#include "pmp/visualization/GL.h"
+#include "pmp/MatVec.h"
 
 namespace pmp {
 
@@ -100,7 +101,6 @@ private:
     //! relink: use this after setting/changing attrib location
     bool link();
 
-private:
     //! id of the linked shader program
     GLint pid_;
 

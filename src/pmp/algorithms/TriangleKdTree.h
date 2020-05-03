@@ -1,10 +1,11 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
-#include <pmp/SurfaceMesh.h>
 #include <vector>
+
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
@@ -13,11 +14,11 @@ namespace pmp {
 class TriangleKdTree
 {
 public:
-    //! construct with mesh
+    //! Construct with mesh.
     TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces = 10,
                    unsigned int max_depth = 30);
 
-    //! destructur
+    //! destructor
     ~TriangleKdTree() { delete root_; }
 
     //! nearest neighbor information
@@ -79,7 +80,6 @@ private:
     void nearest_recurse(Node* node, const Point& point,
                          NearestNeighbor& data) const;
 
-private:
     Node* root_;
 };
 

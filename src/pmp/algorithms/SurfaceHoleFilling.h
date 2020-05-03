@@ -1,11 +1,13 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
-#include <pmp/SurfaceMesh.h>
+#include <cfloat>
+
 #include <vector>
-#include <float.h>
+
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
@@ -19,10 +21,10 @@ namespace pmp {
 class SurfaceHoleFilling
 {
 public:
-    /// construct with mesh
+    //! construct with mesh
     SurfaceHoleFilling(SurfaceMesh& mesh);
 
-    /// fill the hole specified by halfedge h
+    //! fill the hole specified by halfedge h
     bool fill_hole(Halfedge h);
 
 private:

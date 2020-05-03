@@ -1,13 +1,15 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
-#include <pmp/SurfaceMesh.h>
+#include <cfloat>
+#include <climits>
+
 #include <vector>
 #include <set>
-#include <float.h>
-#include <limits.h>
+
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
@@ -56,7 +58,7 @@ public:
     //! same type and name.
     void distance_to_texture_coordinates();
 
-private: // private types
+private:
     // functor for comparing two vertices w.r.t. their geodesic distance
     class VertexCmp
     {
@@ -87,7 +89,6 @@ private: // private types
     // set for storing virtual edges
     typedef std::map<Halfedge, VirtualEdge> VirtualEdges;
 
-private: // private methods
     void find_virtual_edges();
     unsigned int init_front(const std::vector<Vertex>& seed,
                             std::vector<Vertex>* neighbors);
@@ -97,7 +98,6 @@ private: // private methods
     Scalar distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0 = FLT_MAX,
                     Scalar r1 = FLT_MAX);
 
-private: // private data
     SurfaceMesh& mesh_;
 
     bool use_virtual_edges_;

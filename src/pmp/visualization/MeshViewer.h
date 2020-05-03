@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include <pmp/visualization/SurfaceMeshGL.h>
-#include <pmp/visualization/TrackballViewer.h>
+#include "pmp/visualization/TrackballViewer.h"
+#include "pmp/visualization/SurfaceMeshGL.h"
 
 namespace pmp {
 

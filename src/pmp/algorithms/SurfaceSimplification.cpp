@@ -1,12 +1,14 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/algorithms/SurfaceSimplification.h>
-#include <pmp/algorithms/DistancePointTriangle.h>
-#include <pmp/algorithms/SurfaceNormals.h>
+#include "pmp/algorithms/SurfaceSimplification.h"
 
 #include <cfloat>
-#include <iterator> // for back_inserter on Windows
+
+#include <iterator>
+
+#include "pmp/algorithms/DistancePointTriangle.h"
+#include "pmp/algorithms/SurfaceNormals.h"
 
 namespace pmp {
 

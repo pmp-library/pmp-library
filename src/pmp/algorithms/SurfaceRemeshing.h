@@ -1,12 +1,13 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
-#include <pmp/SurfaceMesh.h>
-#include <pmp/algorithms/TriangleKdTree.h>
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
+
+class TriangleKdTree;
 
 //! \brief A class for uniform and adaptive surface remeshing.
 //! \details The algorithm implemented here performs incremental remeshing based
