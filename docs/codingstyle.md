@@ -17,9 +17,9 @@ The names of user-defined types such as classes, structs and enums use
 properly capitalized as well.
 
 ```cpp
-    class SurfaceMesh { ... };
-    struct Flags { ... };
-    enum TextureMode { ColdWarmTexture, CheckerboardTexture, OtherTexture };
+class SurfaceMesh { ... };
+struct Flags { ... };
+enum TextureMode { ColdWarmTexture, CheckerboardTexture, OtherTexture };
 ```
 
 ### Functions
@@ -28,10 +28,10 @@ Function names are written using `snake_case`. All characters are
 lowercase. Separate words by underscores.
 
 ```cpp
-    class MeshViewer
-    {
-        bool load_mesh(const char* filename);
-    };
+class MeshViewer
+{
+    bool load_mesh(const char* filename);
+};
 ```
 
 ### Variables
@@ -40,27 +40,27 @@ Variable names use `snake_case` notation. All characters are lowercase. Separate
 words with underscores. Class member variables have an underscore `_` suffix.
 
 ```cpp
-    int global_var;
+int global_var;
 
-    class ExampleClass
-    {
-    protected:
-        double member_variable_;
-        static double static_member_;
-    };
+class ExampleClass
+{
+protected:
+    double member_variable_;
+    static double static_member_;
+};
 ```
 
 _Exception:_ Public members of a `struct` holding just a group of variables
 may omit the underscore suffix:
 
 ```cpp
-    struct NearestNeighbor
-    {
-        Scalar dist;
-        SurfaceMesh::Face face;
-        Point nearest;
-        int tests;
-    };
+struct NearestNeighbor
+{
+    Scalar dist;
+    SurfaceMesh::Face face;
+    Point nearest;
+    int tests;
+};
 ```
 
 _Exception:_ For the sake of similarity with common mathematical notation, we
@@ -68,8 +68,8 @@ sometimes use uppercase letters, e.g., to denote matrices when solving a linear
 system:
 
 ```cpp
-    Eigen::SparseMatrix<dobule> A(n, n);
-    Eigen::MatrixXd B(n, 3);
+Eigen::SparseMatrix<dobule> A(n, n);
+Eigen::MatrixXd B(n, 3);
 ```
 
 ### File Names
@@ -90,14 +90,14 @@ should always be enclosed in braces. The braces enclosing a block should be
 placed in the same column, on separate lines.
 
 ```cpp
-    if (foo == bar)
-    {
-        std::cout << "baz" << std::endl;
-    }
-    else
-    {
-        std::cout << "barbaz" << std::endl;
-    }
+if (foo == bar)
+{
+    std::cout << "baz" << std::endl;
+}
+else
+{
+    std::cout << "barbaz" << std::endl;
+}
 ```
 
 ### Line Length
@@ -260,13 +260,13 @@ such as a matrix intialization add the `// clang-format off` and `//
 clang-format on` directives around this block:
 
 ```cpp
-    // clang-format off
-    Mat4<Scalar> m;
-    m(0, 0) = x[0]; m(0, 1) = x[1]; m(0, 2) = x[2]; m(0, 3) = -dot(x, eye);
-    m(1, 0) = y[0]; m(1, 1) = y[1]; m(1, 2) = y[2]; m(1, 3) = -dot(y, eye);
-    m(2, 0) = z[0]; m(2, 1) = z[1]; m(2, 2) = z[2]; m(2, 3) = -dot(z, eye);
-    m(3, 0) = 0.0;  m(3, 1) = 0.0;  m(3, 2) = 0.0;  m(3, 3) = 1.0;
-    // clang-format on
+// clang-format off
+Mat4<Scalar> m;
+m(0, 0) = x[0]; m(0, 1) = x[1]; m(0, 2) = x[2]; m(0, 3) = -dot(x, eye);
+m(1, 0) = y[0]; m(1, 1) = y[1]; m(1, 2) = y[2]; m(1, 3) = -dot(y, eye);
+m(2, 0) = z[0]; m(2, 1) = z[1]; m(2, 2) = z[2]; m(2, 3) = -dot(z, eye);
+m(3, 0) = 0.0;  m(3, 1) = 0.0;  m(3, 2) = 0.0;  m(3, 3) = 1.0;
+// clang-format on
 ```
 
 ## See Also
