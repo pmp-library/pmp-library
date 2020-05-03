@@ -36,7 +36,7 @@ public:
     //! Simplify mesh to \p n vertices.
     void simplify(unsigned int n_vertices);
 
-private: //------------------------------------------------------ private types
+private:
     //! Store data for an halfedge collapse
     /*
                 vl
@@ -91,7 +91,6 @@ private: //------------------------------------------------------ private types
 
     typedef std::vector<Point> Points;
 
-private: //-------------------------------------------------- private functions
     // put the vertex v in the priority queue
     void enqueue_vertex(Vertex v);
 
@@ -110,7 +109,6 @@ private: //-------------------------------------------------- private functions
     // compute distance from p to triagle f
     Scalar distance(Face f, const Point& p) const;
 
-private: //------------------------------------------------------- private data
     SurfaceMesh& mesh_;
 
     bool initialized_;

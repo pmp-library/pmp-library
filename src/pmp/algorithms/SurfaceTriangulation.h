@@ -35,7 +35,7 @@ public:
     //! triangulate a particular face f
     void triangulate(Face f, Objective o = MIN_AREA);
 
-private: //-------------------------------------------------- private functions
+private:
     // compute the weight of the triangle (i,j,k).
     Scalar compute_weight(int i, int j, int k) const;
 
@@ -48,7 +48,6 @@ private: //-------------------------------------------------- private functions
     // add edges from vertex i to j
     bool insert_edge(int i, int j);
 
-private: //------------------------------------------------------- private data
     // mesh and properties
     SurfaceMesh& mesh_;
     VertexProperty<Point> points_;

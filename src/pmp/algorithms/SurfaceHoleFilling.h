@@ -25,7 +25,7 @@ public:
     /// fill the hole specified by halfedge h
     bool fill_hole(Halfedge h);
 
-private: //------------------------------------------------------ private types
+private:
     struct Weight
     {
         Weight(Scalar _angle = FLT_MAX, Scalar _area = FLT_MAX)
@@ -48,7 +48,6 @@ private: //------------------------------------------------------ private types
         Scalar area;
     };
 
-private: //-------------------------------------------------- private functions
     // compute optimal triangulation of hole
     bool triangulate_hole(Halfedge h);
 
@@ -63,7 +62,6 @@ private: //-------------------------------------------------- private functions
     void relaxation();
     void fairing();
 
-private: //--------------------------------------------------- helper functions
     // return i'th vertex of hole
     Vertex hole_vertex(unsigned int i) const
     {
@@ -91,7 +89,6 @@ private: //--------------------------------------------------- helper functions
     // dihedral angle
     Scalar compute_angle(const Point& _n1, const Point& _n2) const;
 
-private: //------------------------------------------------------- private data
     // mesh and properties
     SurfaceMesh& mesh_;
     VertexProperty<Point> points_;

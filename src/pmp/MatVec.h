@@ -308,8 +308,6 @@ protected:
     Scalar data_[N * M];
 };
 
-//== TEMPLATE SPECIALIZATIONS =================================================
-
 //! template specialization for Vector as Nx1 matrix
 template <typename Scalar, int M>
 using Vector = Matrix<Scalar, M, 1>;
@@ -325,8 +323,6 @@ using Mat3 = Matrix<Scalar, 3, 3>;
 //! template specialization for 2x2 matrices
 template <typename Scalar>
 using Mat2 = Matrix<Scalar, 2, 2>;
-
-//== TYPEDEFS =================================================================
 
 //! template specialization for a vector of two float values
 typedef Vector<float, 2> vec2;
@@ -384,8 +380,6 @@ typedef Mat3<double> dmat3;
 typedef Mat4<float> mat4;
 //! template specialization for a 4x4 matrix of double values
 typedef Mat4<double> dmat4;
-
-//== GENERAL MATRIX FUNCTIONS =================================================
 
 //! output a matrix by printing its space-separated compontens
 template <typename Scalar, int M, int N>
@@ -564,8 +558,6 @@ inline Matrix<Scalar, M, N> max(const Matrix<Scalar, M, N>& m1,
         result[i] = std::max(m1[i], m2[i]);
     return result;
 }
-
-//== Mat4 functions ===========================================================
 
 //! OpenGL viewport matrix with parameters left, bottom, width, height
 template <typename Scalar>
@@ -965,8 +957,6 @@ Mat4<Scalar> inverse(const Mat4<Scalar>& m)
     return Inverse;
 }
 
-//== Mat3 functions ===========================================================
-
 //! return the inverse of a 3x3 matrix
 template <typename Scalar>
 Mat3<Scalar> inverse(const Mat3<Scalar>& m)
@@ -1111,8 +1101,6 @@ bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
 
     return false;
 }
-
-//== Vector functions =========================================================
 
 //! read the space-separated components of a vector from a stream
 template <typename Scalar, int N>

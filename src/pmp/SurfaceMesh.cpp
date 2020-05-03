@@ -7,11 +7,7 @@
 
 #include <cmath>
 
-//== NAMESPACE ================================================================
-
 namespace pmp {
-
-//== IMPLEMENTATION ===========================================================
 
 SurfaceMesh::SurfaceMesh()
 {

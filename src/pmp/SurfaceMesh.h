@@ -980,13 +980,13 @@ public:
     //! returns number of (deleted and valid) vertices in the mesh
     size_t vertices_size() const { return vprops_.size(); }
 
-    //! returns number of (deleted and valid)halfedge in the mesh
+    //! returns number of (deleted and valid) halfedges in the mesh
     size_t halfedges_size() const { return hprops_.size(); }
 
-    //! returns number of (deleted and valid)edges in the mesh
+    //! returns number of (deleted and valid) edges in the mesh
     size_t edges_size() const { return eprops_.size(); }
 
-    //! returns number of (deleted and valid)faces in the mesh
+    //! returns number of (deleted and valid) faces in the mesh
     size_t faces_size() const { return fprops_.size(); }
 
     //! returns number of vertices in the mesh
@@ -1001,7 +1001,7 @@ public:
     //! returns number of faces in the mesh
     size_t n_faces() const { return faces_size() - deleted_faces_; }
 
-    //! returns true iff the mesh is empty, i.e., has no vertices
+    //! returns true if the mesh is empty, i.e., has no vertices
     bool is_empty() const { return n_vertices() == 0; }
 
     //! clear mesh: remove all vertices, edges, faces

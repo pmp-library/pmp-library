@@ -11,11 +11,7 @@
 #include <cassert>
 #include <iostream>
 
-//== NAMESPACE ================================================================
-
 namespace pmp {
-
-//== CLASS DEFINITION =========================================================
 
 class BasePropertyArray
 {
@@ -53,8 +49,6 @@ public:
 protected:
     std::string name_;
 };
-
-//== CLASS DEFINITION =========================================================
 
 template <class T>
 class PropertyArray : public BasePropertyArray
@@ -129,8 +123,6 @@ inline const bool* PropertyArray<bool>::data() const
     return nullptr;
 }
 
-//== CLASS DEFINITION =========================================================
-
 template <class T>
 class Property
 {
@@ -188,8 +180,6 @@ private:
 private:
     PropertyArray<T>* parray_;
 };
-
-//== CLASS DEFINITION =========================================================
 
 class PropertyContainer
 {

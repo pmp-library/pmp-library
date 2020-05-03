@@ -16,7 +16,7 @@ namespace pmp {
 //! A window provided by GLFW
 class Window
 {
-public: //------------------------------------------------------ public methods
+public:
     //! constructor
     Window(const char* title, int width, int height, bool showgui = true);
 
@@ -26,7 +26,7 @@ public: //------------------------------------------------------ public methods
     //! main window loop
     int run();
 
-private: //----------------------------- static wrapper functions for callbacks
+private:
     static void glfw_error(int error, const char* description);
     static void glfw_keyboard(GLFWwindow* window, int key, int scancode,
                               int action, int mods);
@@ -41,7 +41,7 @@ private: //----------------------------- static wrapper functions for callbacks
 
     static Window* instance_;
 
-protected: //----------------------------------- callbacks as member functions
+protected:
     //! this function is called when the scene has to be rendered. it
     //! clears the buffers, calls the draw() method, and performs buffer swap
     virtual void display(void) = 0;
@@ -98,7 +98,7 @@ protected:
     //! and an incremented number `n`.
     void screenshot();
 
-protected: //------------------------------------------ GLFW related functions
+protected:
     //! width of window
     int width() const { return width_; }
     //! height of window
