@@ -1,15 +1,15 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/SurfaceMeshIO.h"
 
 #include <clocale>
-#include <cfloat>
 #include <cstring>
 #include <cctype>
 
 #include <fstream>
+#include <limits>
 
 #include <rply.h>
 
@@ -1029,7 +1029,7 @@ bool SurfaceMeshIO::write_ply(const SurfaceMesh& mesh)
 class CmpVec
 {
 public:
-    CmpVec(float eps = FLT_MIN) : eps_(eps) {}
+    CmpVec(Scalar eps = std::numeric_limits<Scalar>::min()) : eps_(eps) {}
 
     bool operator()(const vec3& v0, const vec3& v1) const
     {
@@ -1047,7 +1047,7 @@ public:
     }
 
 private:
-    float eps_;
+    Scalar eps_;
 };
 
 bool SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
@@ -1059,7 +1059,7 @@ bool SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
     std::vector<Vertex> vertices(3);
     size_t n_items(0);
 
-    CmpVec comp(FLT_MIN);
+    CmpVec comp(std::numeric_limits<Scalar>::min());
     std::map<vec3, Vertex, CmpVec> vMap(comp);
     std::map<vec3, Vertex, CmpVec>::iterator vMapIt;
 

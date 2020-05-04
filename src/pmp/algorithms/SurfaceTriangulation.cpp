@@ -3,6 +3,8 @@
 
 #include "pmp/algorithms/SurfaceTriangulation.h"
 
+#include <limits>
+
 namespace pmp {
 
 SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& mesh) : mesh_(mesh)
@@ -47,7 +49,8 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
 
     // compute minimal triangulation by dynamic programming
     weight_.clear();
-    weight_.resize(n, std::vector<Scalar>(n, FLT_MAX));
+    weight_.resize(n,
+                   std::vector<Scalar>(n, std::numeric_limits<Scalar>::max()));
     index_.clear();
     index_.resize(n, std::vector<int>(n, 0));
 
@@ -68,7 +71,7 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
         for (i = 0; i < n - j; ++i)
         {
             k = i + j;
-            wmin = FLT_MAX;
+            wmin = std::numeric_limits<Scalar>::max();
             imin = -1;
 
             // find best split i < m < i+j
@@ -144,15 +147,15 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
     //if (is_interior_edge(a, b) ||
     //is_interior_edge(b, c) ||
     //is_interior_edge(c, a))
-    //return FLT_MAX;
+    //return std::numeric_limits<Scalar>::max();
     if (is_edge(a, b) && is_edge(b, c) && is_edge(c, a))
-        return FLT_MAX;
+        return std::numeric_limits<Scalar>::max();
 
     const Point& pa = points_[a];
     const Point& pb = points_[b];
     const Point& pc = points_[c];
 
-    Scalar w = FLT_MAX;
+    Scalar w = std::numeric_limits<Scalar>::max();
     switch (objective_)
     {
         // compute squared triangle area

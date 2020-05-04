@@ -3,9 +3,8 @@
 
 #include "pmp/algorithms/SurfaceSimplification.h"
 
-#include <cfloat>
-
 #include <iterator>
+#include <limits>
 
 #include "pmp/algorithms/DistancePointTriangle.h"
 #include "pmp/algorithms/SurfaceNormals.h"
@@ -209,7 +208,7 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
 
 void SurfaceSimplification::enqueue_vertex(Vertex v)
 {
-    float prio, min_prio(FLT_MAX);
+    float prio, min_prio(std::numeric_limits<float>::max());
     Halfedge min_h;
 
     // find best out-going halfedge
@@ -515,7 +514,7 @@ void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
 
         for (auto point : points)
         {
-            dd = FLT_MAX;
+            dd = std::numeric_limits<Scalar>::max();
 
             for (auto f : mesh_.faces(cd.v1))
             {

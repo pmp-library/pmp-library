@@ -3,8 +3,9 @@
 
 #include "pmp/algorithms/DistancePointTriangle.h"
 
-#include <cfloat>
 #include <cmath>
+
+#include <limits>
 
 namespace pmp {
 
@@ -16,7 +17,7 @@ Scalar dist_point_line_segment(const Point& p, const Point& v0, const Point& v1,
     Point min_v(v0);
     Scalar t = dot(d2, d2);
 
-    if (t > FLT_MIN)
+    if (t > std::numeric_limits<Scalar>::min())
     {
         t = dot(d1, d2) / t;
         if (t > 1.0)
@@ -38,10 +39,10 @@ Scalar dist_point_triangle(const Point& p, const Point& v0, const Point& v1,
     Scalar d = sqrnorm(n);
 
     // Check if the triangle is degenerated -> measure dist to line segments
-    if (fabs(d) < FLT_MIN)
+    if (fabs(d) < std::numeric_limits<Scalar>::min())
     {
         Point q, qq;
-        Scalar d, dd(FLT_MAX);
+        Scalar d, dd(std::numeric_limits<Scalar>::max());
 
         dd = dist_point_line_segment(p, v0, v1, qq);
 

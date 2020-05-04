@@ -707,7 +707,7 @@ void SurfaceMeshGL::triangulate(const std::vector<vec3>& points,
         {
             k = i + j;
 
-            wmin = FLT_MAX;
+            wmin = std::numeric_limits<Scalar>::max();
             imin = -1;
 
             // find best split i < m < i+j
