@@ -12,10 +12,8 @@
 
 namespace pmp {
 
-//! \addtogroup visualization visualization
-//! @{
-
 //! A window provided by GLFW
+//! \ingroup visualization
 class Window
 {
 public:
@@ -169,7 +167,5 @@ private:
     // screenshot number
     unsigned int screenshot_number_;
 };
-
-//! @}
 
 } // namespace pmp

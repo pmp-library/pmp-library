@@ -29,7 +29,16 @@
 //! The pmp-library namespace
 namespace pmp {
 
-//! \addtogroup core core
+//! \defgroup core core
+//! \brief Core data structure and utilities.
+
+//! \defgroup algorithms algorithms
+//! \brief Geometry processing algorithms.
+
+//! \defgroup visualization visualization
+//! \brief Visualization tools using OpenGL.
+
+//! \ingroup core
 //! @{
 
 //! Scalar type
@@ -74,14 +83,5 @@ struct IOFlags
 };
 
 //! @}
-
-//! \defgroup core core
-//! \brief Core data structure and utilities.
-
-//! \defgroup algorithms algorithms
-//! \brief Geometry processing algorithms.
-
-//! \defgroup visualization visualization
-//! \brief Visualization tools using OpenGL.
 
 } // namespace pmp

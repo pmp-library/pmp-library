@@ -8,7 +8,7 @@
 
 namespace pmp {
 
-//! \addtogroup algorithms algorithms
+//! \ingroup algorithms
 //! @{
 
 //! clamp cotangent values as if angles are in [1, 179]

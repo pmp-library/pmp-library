@@ -11,10 +11,8 @@
 
 namespace pmp {
 
-//! \addtogroup visualization visualization
-//! @{
-
 //! A simple GLFW viewer with trackball user interface
+//! \ingroup visualization
 class TrackballViewer : public Window
 {
 public:
@@ -119,7 +117,5 @@ protected:
     vec3 last_point_3d_;
     bool last_point_ok_;
 };
-
-//! @}
 
 } // namespace pmp

@@ -12,10 +12,8 @@
 
 namespace pmp {
 
-//! \addtogroup visualization visualization
-//! @{
-
 //! Class for rendering surface meshes using OpenGL
+//! \ingroup visualization
 class SurfaceMeshGL : public SurfaceMesh
 {
 public:
@@ -174,7 +172,5 @@ private:
         OtherTexture
     } texture_mode_;
 };
-
-//! @}
 
 } // namespace pmp

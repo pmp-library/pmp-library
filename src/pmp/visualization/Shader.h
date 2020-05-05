@@ -10,10 +10,8 @@
 
 namespace pmp {
 
-//! \addtogroup visualization visualization
-//! @{
-
 //! shader class for easy handling of the shader
+//! \ingroup visualization
 class Shader
 {
 public:
@@ -107,7 +105,5 @@ private:
     //! id of the vertex shader
     std::vector<GLint> shaders_;
 };
-
-//! @}
 
 } // namespace pmp
