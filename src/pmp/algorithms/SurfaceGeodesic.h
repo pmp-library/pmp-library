@@ -3,11 +3,9 @@
 
 #pragma once
 
-#include <cfloat>
-#include <climits>
-
-#include <vector>
+#include <limits>
 #include <set>
+#include <vector>
 
 #include "pmp/SurfaceMesh.h"
 
@@ -40,7 +38,7 @@ public:
     //! \param[out] neighbors The vector of neighbor vertices.
     //! \return The number of neighbors that have been found.
     unsigned int compute(const std::vector<Vertex>& seed,
-                         Scalar maxdist = FLT_MAX,
+                         Scalar maxdist = std::numeric_limits<Scalar>::max(),
                          unsigned int maxnum = INT_MAX,
                          std::vector<Vertex>* neighbors = nullptr);
 
@@ -95,8 +93,9 @@ private:
     unsigned int propagate_front(Scalar maxdist, unsigned int maxnum,
                                  std::vector<Vertex>* neighbors);
     void heap_vertex(Vertex v);
-    Scalar distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0 = FLT_MAX,
-                    Scalar r1 = FLT_MAX);
+    Scalar distance(Vertex v0, Vertex v1, Vertex v2,
+                    Scalar r0 = std::numeric_limits<Scalar>::max(),
+                    Scalar r1 = std::numeric_limits<Scalar>::max());
 
     SurfaceMesh& mesh_;
 

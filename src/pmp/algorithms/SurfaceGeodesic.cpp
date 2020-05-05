@@ -180,7 +180,7 @@ unsigned int SurfaceGeodesic::init_front(const std::vector<Vertex>& seed,
     for (auto v : mesh_.vertices())
     {
         processed_[v] = false;
-        distance_[v] = FLT_MAX;
+        distance_[v] = std::numeric_limits<Scalar>::max();
     }
 
     // initialize neighbor array
@@ -274,7 +274,7 @@ void SurfaceGeodesic::heap_vertex(Vertex v)
     assert(!processed_[v]);
 
     Vertex v0, v1, vv, v0_min, v1_min;
-    Scalar dist, dist_min(FLT_MAX), d;
+    Scalar dist, dist_min(std::numeric_limits<Scalar>::max()), d;
     typename VirtualEdges::const_iterator ve_it, ve_end(virtual_edges_.end());
     bool found(false);
 
@@ -311,7 +311,8 @@ void SurfaceGeodesic::heap_vertex(Vertex v)
 
                 if (processed_[v0] && processed_[vv])
                 {
-                    dist = distance(v0, vv, v, FLT_MAX, d);
+                    dist = distance(v0, vv, v,
+                                    std::numeric_limits<Scalar>::max(), d);
                     if (dist < dist_min)
                     {
                         dist_min = dist;
@@ -321,7 +322,8 @@ void SurfaceGeodesic::heap_vertex(Vertex v)
 
                 if (processed_[v1] && processed_[vv])
                 {
-                    dist = distance(vv, v1, v, d, FLT_MAX);
+                    dist = distance(vv, v1, v, d,
+                                    std::numeric_limits<Scalar>::max());
                     if (dist < dist_min)
                     {
                         dist_min = dist;
@@ -335,7 +337,7 @@ void SurfaceGeodesic::heap_vertex(Vertex v)
     // update priority queue
     if (found)
     {
-        if (distance_[v] != FLT_MAX)
+        if (distance_[v] != std::numeric_limits<Scalar>::max())
         {
             auto it = front_->find(v);
             assert(it != front_->end());
@@ -347,10 +349,10 @@ void SurfaceGeodesic::heap_vertex(Vertex v)
     }
     else
     {
-        if (distance_[v] != FLT_MAX)
+        if (distance_[v] != std::numeric_limits<Scalar>::max())
         {
             front_->erase(v);
-            distance_[v] = FLT_MAX;
+            distance_[v] = std::numeric_limits<Scalar>::max();
         }
     }
 }
@@ -375,8 +377,8 @@ Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         C = mesh_.position(v2);
         TA = distance_[v0];
         TB = distance_[v1];
-        a = r1 == FLT_MAX ? pmp::distance(B, C) : r1;
-        b = r0 == FLT_MAX ? pmp::distance(A, C) : r0;
+        a = r1 == std::numeric_limits<Scalar>::max() ? pmp::distance(B, C) : r1;
+        b = r0 == std::numeric_limits<Scalar>::max() ? pmp::distance(A, C) : r0;
     }
     else
     {
@@ -385,8 +387,8 @@ Scalar SurfaceGeodesic::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         C = mesh_.position(v2);
         TA = distance_[v1];
         TB = distance_[v0];
-        a = r0 == FLT_MAX ? pmp::distance(B, C) : r0;
-        b = r1 == FLT_MAX ? pmp::distance(A, C) : r1;
+        a = r0 == std::numeric_limits<Scalar>::max() ? pmp::distance(B, C) : r0;
+        b = r1 == std::numeric_limits<Scalar>::max() ? pmp::distance(A, C) : r1;
     }
 
     // Dykstra: propagate along edges
@@ -425,7 +427,7 @@ void SurfaceGeodesic::distance_to_texture_coordinates()
     Scalar maxdist(0);
     for (auto v : mesh_.vertices())
     {
-        if (distance_[v] < FLT_MAX)
+        if (distance_[v] < std::numeric_limits<Scalar>::max())
         {
             maxdist = std::max(maxdist, distance_[v]);
         }
@@ -434,7 +436,7 @@ void SurfaceGeodesic::distance_to_texture_coordinates()
     auto tex = mesh_.vertex_property<TexCoord>("v:tex");
     for (auto v : mesh_.vertices())
     {
-        if (distance_[v] < FLT_MAX)
+        if (distance_[v] < std::numeric_limits<Scalar>::max())
         {
             tex[v] = TexCoord(distance_[v] / maxdist, 0.0);
         }

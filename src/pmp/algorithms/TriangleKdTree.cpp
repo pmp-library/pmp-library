@@ -3,7 +3,7 @@
 
 #include "pmp/algorithms/TriangleKdTree.h"
 
-#include <cfloat>
+#include <limits>
 
 #include "pmp/algorithms/DistancePointTriangle.h"
 #include "pmp/BoundingBox.h"
@@ -158,7 +158,7 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
 TriangleKdTree::NearestNeighbor TriangleKdTree::nearest(const Point& p) const
 {
     NearestNeighbor data;
-    data.dist = FLT_MAX;
+    data.dist = std::numeric_limits<Scalar>::max();
     data.tests = 0;
     nearest_recurse(root_, p, data);
     return data;

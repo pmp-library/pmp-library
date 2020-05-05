@@ -3,9 +3,8 @@
 
 #include "pmp/visualization/MeshViewer.h"
 
-#include <cfloat>
-
 #include <iostream>
+#include <limits>
 #include <sstream>
 
 #include <imgui.h>
@@ -161,7 +160,7 @@ Vertex MeshViewer::pick_vertex(int x, int y)
     Vertex vmin;
 
     vec3 p;
-    Scalar d, dmin(FLT_MAX);
+    Scalar d, dmin(std::numeric_limits<Scalar>::max());
 
     if (TrackballViewer::pick(x, y, p))
     {

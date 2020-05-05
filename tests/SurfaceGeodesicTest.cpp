@@ -75,14 +75,16 @@ TEST(SurfaceGeodesicTest, geodesic_maxnum)
     unsigned int num;
     SurfaceGeodesic geodist(mesh);
     std::vector<Vertex> neighbors;
-    num = geodist.compute(std::vector<Vertex>{Vertex(0)}, FLT_MAX, maxnum,
-                          &neighbors);
+    num =
+        geodist.compute(std::vector<Vertex>{Vertex(0)},
+                        std::numeric_limits<Scalar>::max(), maxnum, &neighbors);
     EXPECT_TRUE(num == maxnum);
     EXPECT_TRUE(neighbors.size() == maxnum);
 
     // test for another seed
-    num = geodist.compute(std::vector<Vertex>{Vertex(12345)}, FLT_MAX, maxnum,
-                          &neighbors);
+    num =
+        geodist.compute(std::vector<Vertex>{Vertex(12345)},
+                        std::numeric_limits<Scalar>::max(), maxnum, &neighbors);
     EXPECT_TRUE(num == maxnum);
     EXPECT_TRUE(neighbors.size() == maxnum);
 

@@ -8,10 +8,8 @@
 
 namespace pmp {
 
-//! \addtogroup visualization visualization
-//! @{
-
 //! Simple viewer for a SurfaceMesh
+//! \ingroup visualization
 class MeshViewer : public TrackballViewer
 {
 public:
@@ -55,7 +53,5 @@ protected:
     std::string filename_; //!< the current file
     float crease_angle_;
 };
-
-//! @}
 
 } // namespace pmp

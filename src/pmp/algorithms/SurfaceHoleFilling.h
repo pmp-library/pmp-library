@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include <cfloat>
-
+#include <limits>
 #include <vector>
 
 #include "pmp/SurfaceMesh.h"
@@ -34,7 +33,8 @@ public:
 private:
     struct Weight
     {
-        Weight(Scalar _angle = FLT_MAX, Scalar _area = FLT_MAX)
+        Weight(Scalar _angle = std::numeric_limits<Scalar>::max(),
+               Scalar _area = std::numeric_limits<Scalar>::max())
             : angle(_angle), area(_area)
         {
         }

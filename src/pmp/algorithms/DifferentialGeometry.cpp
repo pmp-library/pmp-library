@@ -4,7 +4,6 @@
 #include "pmp/algorithms/DifferentialGeometry.h"
 
 #include <cmath>
-#include <cfloat>
 
 #include <limits>
 

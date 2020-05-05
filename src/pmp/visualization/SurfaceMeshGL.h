@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <cfloat>
+#include <limits>
 
 #include "pmp/SurfaceMesh.h"
 #include "pmp/visualization/GL.h"
@@ -12,10 +12,8 @@
 
 namespace pmp {
 
-//! \addtogroup visualization visualization
-//! @{
-
 //! Class for rendering surface meshes using OpenGL
+//! \ingroup visualization
 class SurfaceMeshGL : public SurfaceMesh
 {
 public:
@@ -99,7 +97,10 @@ public:
 private: // helpers for computing triangulation of a polygon
     struct Triangulation
     {
-        Triangulation(Scalar a = FLT_MAX, int s = -1) : area(a), split(s) {}
+        Triangulation(Scalar a = std::numeric_limits<Scalar>::max(), int s = -1)
+            : area(a), split(s)
+        {
+        }
         Scalar area;
         int split;
     };
@@ -171,7 +172,5 @@ private:
         OtherTexture
     } texture_mode_;
 };
-
-//! @}
 
 } // namespace pmp

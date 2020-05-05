@@ -3,7 +3,6 @@
 
 #include "pmp/algorithms/SurfaceRemeshing.h"
 
-#include <cfloat>
 #include <cmath>
 
 #include <algorithm>

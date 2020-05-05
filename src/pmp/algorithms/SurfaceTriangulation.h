@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <cfloat>
 #include <vector>
 
 #include "pmp/SurfaceMesh.h"

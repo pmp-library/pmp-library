@@ -153,11 +153,13 @@ endif()
 
 # choose size of the scalar type
 if(PMP_SCALAR_TYPE EQUAL 64)
-    add_definitions(-DPMP_SCALAR_TYPE_64)
+  message(STATUS "Using 64-bit scalar type")
+  add_definitions(-DPMP_SCALAR_TYPE_64)
 endif()
 
 # choose size of the index type
 if(PMP_INDEX_TYPE EQUAL 64)
+  message(STATUS "Using 64-bit index type")
   add_definitions(-DPMP_INDEX_TYPE_64)
 endif()
 

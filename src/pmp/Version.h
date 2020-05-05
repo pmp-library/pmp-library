@@ -1,4 +1,4 @@
-// Copyright 2019 the Polygon Mesh Processing Library developers.
+// Copyright 2019-2020 the Polygon Mesh Processing Library developers.
 // Copyright (c) 2010 Martin Reddy. All rights reserved.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
@@ -12,10 +12,8 @@
 
 namespace pmp {
 
-//! \addtogroup core core
-//!@{
-
 //! API version information
+//! \ingroup core
 class Version
 {
 public:
@@ -37,7 +35,5 @@ public:
     //! return true if the named feature is available in this version
     static bool has_feature(const std::string &name);
 };
-
-//!@}
 
 } // namespace pmp

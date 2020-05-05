@@ -7,10 +7,8 @@
 
 namespace pmp {
 
-//! \addtogroup core core
-//!@{
-
 //! Simple class for representing a bounding box
+//! \ingroup core
 class BoundingBox
 {
 public:
@@ -71,7 +69,5 @@ public:
 private:
     Point min_, max_;
 };
-
-//!@}
 
 } // namespace pmp

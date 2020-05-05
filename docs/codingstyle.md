@@ -50,8 +50,8 @@ protected:
 };
 ```
 
-_Exception:_ Public members of a `struct` holding just a group of variables
-may omit the underscore suffix:
+_Exception:_ Public members of a `struct` holding just a group of variables may
+omit the underscore suffix:
 
 ```cpp
 struct NearestNeighbor
@@ -68,7 +68,7 @@ sometimes use uppercase letters, e.g., to denote matrices when solving a linear
 system:
 
 ```cpp
-Eigen::SparseMatrix<dobule> A(n, n);
+Eigen::SparseMatrix<double> A(n, n);
 Eigen::MatrixXd B(n, 3);
 ```
 
@@ -107,9 +107,9 @@ statement per line.
 
 ### Indentation
 
-Use spaces instead of tabs. Indent the code by four spaces for each
-level of indentation. Avoid trailing whitespaces at the end of a
-line as well as on empty lines.
+Use spaces instead of tabs. Indent the code by four spaces for each level of
+indentation. Avoid trailing whitespace at the end of a line as well as on empty
+lines.
 
 ## Miscellaneous
 
@@ -125,9 +125,16 @@ Use one section for each type of access specifier.
 
 Omit empty sections.
 
-Within a section use the following order: typedefs and enums, constants,
-constructors, destructor, operators, methods, static methods, data members,
-static data members.
+Within a section use the following order:
+
+1. typedefs and enums
+2. constants
+3. constructors and destructor
+4. operators
+5. methods
+6. static methods
+7. data members
+8. static data members
 
 ### Comments
 
@@ -136,11 +143,11 @@ Use C++-style comments, i.e., `// my comment.`
 ### Doxygen Documentation Comments
 
 We use [Doxygen](http://www.doxygen.org/index.html) to generate our API
-documentation. All public types and interfaces should be properly
-documented. This usually includes a short abstract not longer than a sentence as
-well as a more detailed discussion of what the function does. We use `//!` for
-doxygen comments. The following is an example what a full documentation comment
-could look like:
+documentation. All public types and interfaces should be properly documented.
+This usually includes a short abstract not longer than a sentence as well as a
+more detailed discussion of what the function does. We use `//!` for Doxygen
+comments. The following is an example what a full documentation comment could
+look like:
 
 \verbatim
 //! \brief Does foo.
@@ -186,11 +193,13 @@ Use the following order to include header files:
 4. Other library headers
 5. Project library headers
 
-Separate each group by a blank line. Optional: Sort headers alphabetically within a group.
+Separate each group by a blank line. Optional: Sort headers alphabetically
+within a group.
 
 ### Include Style
 
-Use quotes to include other project headers. Use the full relative path from the project `src` directory. Example:
+Use quotes to include other project headers. Use the full relative path from the
+project `src` directory. Example:
 
 ```cpp
 #include "pmp/algorithms/SurfaceRemeshing.h"
@@ -230,7 +239,7 @@ determine the proper types.
 
 ### Structs vs. Classes
 
-Use plain structs for data objectes providing nothing but a collection of other
+Use plain structs for data objects providing nothing but a collection of other
 data types, e.g., a collection of parameters passed to a functions. Such a
 struct should not contain any further functionality than what is required for
 construction, destruction, or initialization. In contrast to class member
@@ -241,6 +250,11 @@ variables, struct members do not have a underscore `_` suffix.
 Localize variable scope and avoid declaring all variables at the beginning of a
 function or code block.
 
+### Prefer C++ over C
+
+Give preference to C++ and STL constructs over C-style ones. Example: Use
+`std::numeric_limits<float>\:\:max()` instead of `FLT_MAX`.
+
 ## Using clang-format
 
 Please use the [clang-format](https://clang.llvm.org/docs/ClangFormat.html) tool
@@ -248,12 +262,16 @@ and the corresponding `.clang-format` configuration file from the repository to
 properly format your code. We also provide a convenience CMake target to run
 clang-format on all source files:
 
+```shell
     make clang-format
+```
 
 This requires that the `clang-format` executable is found during CMake
 configuration. The exact path to the executable can be specified using
 
+```shell
     cmake -DCLANG_FORMAT_EXE=<path/to/executable> ..
+```
 
 In case you want to preserve the special formatting of a particular code block
 such as a matrix intialization add the `// clang-format off` and `//

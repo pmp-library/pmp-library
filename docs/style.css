@@ -26,13 +26,13 @@ h1, h2, h3, h4, h5, h6 {
     height: 55px;
 }
 
-#footer hr
+#nav-path hr
 {
     margin: 0;
     padding: 0;
 }
 
-#footer address
+#nav-path address
 {
     border-top: 2px solid #09a8ff;
     padding-top: 10px;

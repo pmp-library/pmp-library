@@ -8,7 +8,7 @@
 
 namespace pmp {
 
-//! \addtogroup algorithms algorithms
+//! \ingroup algorithms
 //! @{
 
 //! clamp cotangent values as if angles are in [1, 179]
@@ -92,7 +92,7 @@ struct VertexCurvature
 };
 
 //! compute min, max, mean, and Gaussian curvature for vertex v. this will not
-//! give realiable values for boundary vertices.
+//! give reliable values for boundary vertices.
 VertexCurvature vertex_curvature(const SurfaceMesh& mesh, Vertex v);
 
 //! @}

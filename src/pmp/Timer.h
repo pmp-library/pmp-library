@@ -1,4 +1,4 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
@@ -8,10 +8,8 @@
 
 namespace pmp {
 
-//! \addtogroup core core
-//!@{
-
 //! A simple timer class.
+//! \ingroup core
 class Timer
 {
 public:
@@ -69,7 +67,5 @@ inline std::ostream& operator<<(std::ostream& os, const Timer& timer)
     os << timer.elapsed() << " ms";
     return os;
 }
-
-//!@}
 
 } // namespace pmp
