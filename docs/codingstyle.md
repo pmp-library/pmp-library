@@ -253,7 +253,7 @@ function or code block.
 ### Prefer C++ over C
 
 Give preference to C++ and STL constructs over C-style ones. Example: Use
-`std::numeric_limits<>::max()` instead of `FLT_MAX`.
+`std::numeric_limits<float>\:\:max()` instead of `FLT_MAX`.
 
 ## Using clang-format
 
