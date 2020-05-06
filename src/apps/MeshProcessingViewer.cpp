@@ -1,4 +1,4 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "MeshProcessingViewer.h"
@@ -85,7 +85,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             SurfacePrimitives generator(mesh_);
             //generator.uv_sphere();
             //generator.unit_cube();
-            generator.icosahedron();
+            generator.icosphere(3);
             BoundingBox bb = mesh_.bounds();
             set_scene((vec3)bb.center(), 0.5 * bb.size());
             set_draw_mode("Hidden Line");

@@ -1,13 +1,7 @@
-//=============================================================================
-// Copyright (C) 2011-2020 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
-
 #include "SurfacePrimitives.h"
+#include "SurfaceSubdivision.h"
 
 namespace pmp {
 
@@ -131,6 +125,14 @@ void SurfacePrimitives::icosahedron()
     mesh_.add_triangle(v6, v2, v10);
     mesh_.add_triangle(v8, v6, v7);
     mesh_.add_triangle(v9, v8, v1);
+}
+
+void SurfacePrimitives::icosphere(size_t n_subdivisions)
+{
+    icosahedron();
+    SurfaceSubdivision subdiv(mesh_);
+    while (n_subdivisions-- > 0)
+        subdiv.loop();
 }
 
 } // namespace pmp
