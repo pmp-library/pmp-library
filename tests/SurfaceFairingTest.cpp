@@ -1,11 +1,6 @@
-//=============================================================================
-// Copyright (C) 2017-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+
+// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "gtest/gtest.h"
 
@@ -30,7 +25,7 @@ TEST_F(SurfaceFairingTest, fairing)
     SurfaceFairing sf(mesh);
     sf.fair();
     auto bbs = mesh.bounds().max()[2];
-    EXPECT_LT(bbs,bbz);
+    EXPECT_LT(bbs, bbz);
 }
 
 TEST_F(SurfaceFairingTest, fairing_selected)
@@ -38,16 +33,16 @@ TEST_F(SurfaceFairingTest, fairing_selected)
     mesh.read("pmp-data/off/sphere_low.off");
     auto bb = mesh.bounds();
     Scalar yrange = bb.max()[1] - bb.min()[1];
-    auto vselected = mesh.vertex_property<bool>("v:selected",false);
+    auto vselected = mesh.vertex_property<bool>("v:selected", false);
     for (auto v : mesh.vertices())
     {
         auto p = mesh.position(v);
-        if (p[1] >= (bb.max()[1] - 0.2*yrange))
+        if (p[1] >= (bb.max()[1] - 0.2 * yrange))
         {
             vselected[v] = false;
         }
-        else if (p[1] < (bb.max()[1] - 0.2*yrange) &&
-                 p[1] > (bb.max()[1] - 0.8*yrange))
+        else if (p[1] < (bb.max()[1] - 0.2 * yrange) &&
+                 p[1] > (bb.max()[1] - 0.8 * yrange))
         {
             vselected[v] = true;
         }
@@ -59,5 +54,5 @@ TEST_F(SurfaceFairingTest, fairing_selected)
     SurfaceFairing sf(mesh);
     sf.fair();
     auto bb2 = mesh.bounds();
-    EXPECT_LT(bb2.size(),bb.size());
+    EXPECT_LT(bb2.size(), bb.size());
 }

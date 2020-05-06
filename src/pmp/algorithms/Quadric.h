@@ -1,27 +1,15 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
-#include <pmp/Types.h>
-
-//=============================================================================
+#include "pmp/Types.h"
 
 namespace pmp {
 
-//=============================================================================
-
-//! \addtogroup algorithms algorithms
-//!@{
-
-//! This class stores a quadric as a symmetrix 4x4 matrix. Used by the error
-//! quadric mesh decimation algorithms.
+//! \brief This class stores a quadric as a symmetric 4x4 matrix.
+//! \details Used by the error quadric mesh decimation algorithms.
+//! \ingroup algorithms
 class Quadric
 {
 public: // clang-format off
@@ -92,8 +80,4 @@ private:
         j_;
 }; // clang-format on
 
-//=============================================================================
-//!@}
-//=============================================================================
 } // namespace pmp
-//=============================================================================

@@ -1,11 +1,6 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "SurfaceMeshTest.h"
 
@@ -112,10 +107,10 @@ TEST_F(SurfaceMeshTest, delete_center_edge)
 
 TEST_F(SurfaceMeshTest, copy)
 {
-    auto v0 = mesh.add_vertex(Point(0,0,0));
-    auto v1 = mesh.add_vertex(Point(1,0,0));
-    auto v2 = mesh.add_vertex(Point(0,1,0));
-    mesh.add_triangle(v0,v1,v2);
+    auto v0 = mesh.add_vertex(Point(0, 0, 0));
+    auto v1 = mesh.add_vertex(Point(1, 0, 0));
+    auto v2 = mesh.add_vertex(Point(0, 1, 0));
+    mesh.add_triangle(v0, v1, v2);
 
     SurfaceMesh m2 = mesh;
     EXPECT_EQ(m2.n_vertices(), size_t(3));
@@ -125,10 +120,10 @@ TEST_F(SurfaceMeshTest, copy)
 
 TEST_F(SurfaceMeshTest, assignment)
 {
-    auto v0 = mesh.add_vertex(Point(0,0,0));
-    auto v1 = mesh.add_vertex(Point(1,0,0));
-    auto v2 = mesh.add_vertex(Point(0,1,0));
-    mesh.add_triangle(v0,v1,v2);
+    auto v0 = mesh.add_vertex(Point(0, 0, 0));
+    auto v1 = mesh.add_vertex(Point(1, 0, 0));
+    auto v2 = mesh.add_vertex(Point(0, 1, 0));
+    mesh.add_triangle(v0, v1, v2);
 
     SurfaceMesh m2;
     m2.assign(mesh);
@@ -153,7 +148,6 @@ TEST_F(SurfaceMeshTest, object_properties)
     EXPECT_EQ(mesh.object_properties().size(), size_t(0));
 }
 
-
 TEST_F(SurfaceMeshTest, vertex_properties)
 {
     add_triangle();
@@ -163,13 +157,13 @@ TEST_F(SurfaceMeshTest, vertex_properties)
     // explicit add
     auto vidx = mesh.add_vertex_property<int>("v:idx");
     vidx[v0] = 0;
-    EXPECT_EQ(mesh.vertex_properties().size(), osize+1);
+    EXPECT_EQ(mesh.vertex_properties().size(), osize + 1);
     mesh.remove_vertex_property(vidx);
     EXPECT_EQ(mesh.vertex_properties().size(), osize);
 
     // implicit add
     vidx = mesh.vertex_property<int>("v:idx2");
-    EXPECT_EQ(mesh.vertex_properties().size(), osize+1);
+    EXPECT_EQ(mesh.vertex_properties().size(), osize + 1);
     mesh.remove_vertex_property(vidx);
     EXPECT_EQ(mesh.vertex_properties().size(), osize);
 }
@@ -271,7 +265,6 @@ TEST_F(SurfaceMeshTest, face_iterators)
     EXPECT_EQ(sumIdx, size_t(0));
 }
 
-
 TEST_F(SurfaceMeshTest, is_triangle_mesh)
 {
     add_triangle();
@@ -280,11 +273,11 @@ TEST_F(SurfaceMeshTest, is_triangle_mesh)
 
 TEST_F(SurfaceMeshTest, is_quad_mesh)
 {
-    auto v0 = mesh.add_vertex(Point(0,0,0));
-    auto v1 = mesh.add_vertex(Point(1,0,0));
-    auto v2 = mesh.add_vertex(Point(1,1,0));
-    auto v3 = mesh.add_vertex(Point(0,1,0));
-    mesh.add_quad(v0,v1,v2,v3);
+    auto v0 = mesh.add_vertex(Point(0, 0, 0));
+    auto v1 = mesh.add_vertex(Point(1, 0, 0));
+    auto v2 = mesh.add_vertex(Point(1, 1, 0));
+    auto v3 = mesh.add_vertex(Point(0, 1, 0));
+    mesh.add_quad(v0, v1, v2, v3);
     EXPECT_TRUE(mesh.is_quad_mesh());
     EXPECT_FALSE(mesh.is_triangle_mesh());
     mesh.triangulate();
@@ -294,11 +287,11 @@ TEST_F(SurfaceMeshTest, is_quad_mesh)
 TEST_F(SurfaceMeshTest, poly_mesh)
 {
     std::vector<Vertex> vertices(5);
-    vertices[0] = mesh.add_vertex(Point(0,0,0));
-    vertices[1] = mesh.add_vertex(Point(1,0,0));
-    vertices[2] = mesh.add_vertex(Point(1,1,0));
-    vertices[3] = mesh.add_vertex(Point(0.5,1,0));
-    vertices[4] = mesh.add_vertex(Point(0,1,0));
+    vertices[0] = mesh.add_vertex(Point(0, 0, 0));
+    vertices[1] = mesh.add_vertex(Point(1, 0, 0));
+    vertices[2] = mesh.add_vertex(Point(1, 1, 0));
+    vertices[3] = mesh.add_vertex(Point(0.5, 1, 0));
+    vertices[4] = mesh.add_vertex(Point(0, 1, 0));
     mesh.add_face(vertices);
     EXPECT_FALSE(mesh.is_triangle_mesh());
     EXPECT_FALSE(mesh.is_quad_mesh());
@@ -322,7 +315,7 @@ TEST_F(SurfaceMeshTest, collapse)
     add_quad();
     mesh.triangulate();
     EXPECT_EQ(mesh.n_faces(), size_t(2));
-    auto h0  = mesh.find_halfedge(v3,v2);
+    auto h0 = mesh.find_halfedge(v3, v2);
     if (mesh.is_collapse_ok(h0))
         mesh.collapse(h0);
     mesh.garbage_collection();
@@ -333,8 +326,8 @@ TEST_F(SurfaceMeshTest, face_split)
 {
     add_quad();
     EXPECT_EQ(mesh.n_faces(), size_t(1));
-    Point p(0.5,0.5,0);
-    mesh.split(f0,p);
+    Point p(0.5, 0.5, 0);
+    mesh.split(f0, p);
     EXPECT_EQ(mesh.n_faces(), size_t(4));
 }
 
@@ -342,11 +335,11 @@ TEST_F(SurfaceMeshTest, edge_split)
 {
     add_triangle();
     EXPECT_EQ(mesh.n_faces(), size_t(1));
-    auto e = mesh.find_edge(v0,v1);
+    auto e = mesh.find_edge(v0, v1);
     Point p0 = mesh.position(v0);
     Point p1 = mesh.position(v1);
     Point p = (p0 + p1) * 0.5;
-    mesh.split(e,p);
+    mesh.split(e, p);
     EXPECT_EQ(mesh.n_faces(), size_t(2));
 }
 
@@ -359,7 +352,7 @@ TEST_F(SurfaceMeshTest, edge_flip)
     // the two vertices of the center edge
     Vertex v0(4);
     Vertex v1(5);
-    auto e = mesh.find_edge(v0,v1);
+    auto e = mesh.find_edge(v0, v1);
     if (mesh.is_flip_ok(e))
         mesh.flip(e);
     EXPECT_EQ(mesh.n_vertices(), size_t(10));
@@ -391,5 +384,3 @@ TEST_F(SurfaceMeshTest, property_stats)
 {
     mesh.property_stats();
 }
-
-//=============================================================================

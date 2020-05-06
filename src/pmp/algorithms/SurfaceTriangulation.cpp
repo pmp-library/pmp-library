@@ -1,12 +1,11 @@
-//=============================================================================
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/algorithms/SurfaceTriangulation.h>
+#include "pmp/algorithms/SurfaceTriangulation.h"
 
-//=============================================================================
+#include <limits>
 
 namespace pmp {
-
-//=============================================================================
 
 SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& mesh) : mesh_(mesh)
 {
@@ -15,15 +14,11 @@ SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& mesh) : mesh_(mesh)
     objective_ = MAX_ANGLE;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceTriangulation::triangulate(Objective o)
 {
     for (auto f : mesh_.faces())
         triangulate(f, o);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceTriangulation::triangulate(Face f, Objective o)
 {
@@ -54,7 +49,8 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
 
     // compute minimal triangulation by dynamic programming
     weight_.clear();
-    weight_.resize(n, std::vector<Scalar>(n, FLT_MAX));
+    weight_.resize(n,
+                   std::vector<Scalar>(n, std::numeric_limits<Scalar>::max()));
     index_.clear();
     index_.resize(n, std::vector<int>(n, 0));
 
@@ -75,7 +71,7 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
         for (i = 0; i < n - j; ++i)
         {
             k = i + j;
-            wmin = FLT_MAX;
+            wmin = std::numeric_limits<Scalar>::max();
             imin = -1;
 
             // find best split i < m < i+j
@@ -138,8 +134,6 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
     vertices_.clear();
 }
 
-//-----------------------------------------------------------------------------
-
 Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
 {
     const Vertex a = vertices_[i];
@@ -153,15 +147,15 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
     //if (is_interior_edge(a, b) ||
     //is_interior_edge(b, c) ||
     //is_interior_edge(c, a))
-    //return FLT_MAX;
+    //return std::numeric_limits<Scalar>::max();
     if (is_edge(a, b) && is_edge(b, c) && is_edge(c, a))
-        return FLT_MAX;
+        return std::numeric_limits<Scalar>::max();
 
     const Point& pa = points_[a];
     const Point& pb = points_[b];
     const Point& pc = points_[c];
 
-    Scalar w = FLT_MAX;
+    Scalar w = std::numeric_limits<Scalar>::max();
     switch (objective_)
     {
         // compute squared triangle area
@@ -183,14 +177,10 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
     return w;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceTriangulation::is_edge(Vertex a, Vertex b) const
 {
     return mesh_.find_halfedge(a, b).is_valid();
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceTriangulation::is_interior_edge(Vertex a, Vertex b) const
 {
@@ -200,8 +190,6 @@ bool SurfaceTriangulation::is_interior_edge(Vertex a, Vertex b) const
     return (!mesh_.is_boundary(h) &&
             !mesh_.is_boundary(mesh_.opposite_halfedge(h)));
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceTriangulation::insert_edge(int i, int j)
 {
@@ -248,6 +236,4 @@ bool SurfaceTriangulation::insert_edge(int i, int j)
     return false;
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

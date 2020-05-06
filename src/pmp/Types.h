@@ -1,18 +1,11 @@
-//=============================================================================
-// Copyright (C) 2011-2017 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
-#include <pmp/MatVec.h>
-#include <cstdint> // for std::uint_least32_t
+#include <cstdint>
 
-//=============================================================================
+#include "pmp/MatVec.h"
 
 //! \def PMP_ASSERT(x)
 //! Custom assert macro that allows to silence unused variable warnings with no
@@ -33,14 +26,19 @@
 //! A simple pretty-printing debug macro. Prints the expression and its value.
 #define PMP_SHOW(x) std::cerr << #x " = '" << x << "'" << std::endl;
 
-//=============================================================================
-
 //! The pmp-library namespace
 namespace pmp {
 
-//=============================================================================
+//! \defgroup core core
+//! \brief Core data structure and utilities.
 
-//! \addtogroup core core
+//! \defgroup algorithms algorithms
+//! \brief Geometry processing algorithms.
+
+//! \defgroup visualization visualization
+//! \brief Visualization tools using OpenGL.
+
+//! \ingroup core
 //! @{
 
 //! Scalar type
@@ -86,15 +84,4 @@ struct IOFlags
 
 //! @}
 
-//! \defgroup core core
-//! \brief Core data structure and utilities.
-
-//! \defgroup algorithms algorithms
-//! \brief Geometry processing algorithms.
-
-//! \defgroup visualization visualization
-//! \brief Visualization tools using OpenGL.
-
-//=============================================================================
 } // namespace pmp
-//=============================================================================

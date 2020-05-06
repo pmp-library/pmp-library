@@ -1,22 +1,17 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/SurfaceMeshIO.h>
-
-#include <rply.h>
+#include "pmp/SurfaceMeshIO.h"
 
 #include <clocale>
-#include <cfloat>
-#include <fstream>
 #include <cstring>
 #include <cctype>
+
+#include <fstream>
+#include <limits>
+
+#include <rply.h>
 
 // helper function
 template <typename T>
@@ -34,11 +29,7 @@ void tfwrite(FILE* out, const T& t)
     PMP_ASSERT(n_items > 0);
 }
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 bool SurfaceMeshIO::read(SurfaceMesh& mesh)
 {
@@ -88,8 +79,6 @@ bool SurfaceMeshIO::read(SurfaceMesh& mesh)
     return false;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshIO::write(const SurfaceMesh& mesh)
 {
     // extract file extension
@@ -128,8 +117,6 @@ bool SurfaceMeshIO::write(const SurfaceMesh& mesh)
     // we didn't find a writer module
     return false;
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
 {
@@ -294,8 +281,6 @@ bool SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshIO::write_obj(const SurfaceMesh& mesh)
 {
     FILE* out = fopen(filename_.c_str(), "w");
@@ -383,8 +368,6 @@ bool SurfaceMeshIO::write_obj(const SurfaceMesh& mesh)
     fclose(out);
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                     const bool has_texcoords, const bool has_colors)
@@ -494,8 +477,6 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                      const bool has_texcoords, const bool has_colors)
 {
@@ -563,8 +544,6 @@ bool read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshIO::write_off_binary(const SurfaceMesh& mesh)
 {
     FILE* out = fopen(filename_.c_str(), "w");
@@ -599,8 +578,6 @@ bool SurfaceMeshIO::write_off_binary(const SurfaceMesh& mesh)
     fclose(out);
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceMeshIO::read_off(SurfaceMesh& mesh)
 {
@@ -679,8 +656,6 @@ bool SurfaceMeshIO::read_off(SurfaceMesh& mesh)
     fclose(in);
     return ok;
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceMeshIO::write_off(const SurfaceMesh& mesh)
 {
@@ -763,8 +738,6 @@ bool SurfaceMeshIO::write_off(const SurfaceMesh& mesh)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshIO::read_pmp(SurfaceMesh& mesh)
 {
     // open file (in binary mode)
@@ -823,8 +796,6 @@ bool SurfaceMeshIO::read_pmp(SurfaceMesh& mesh)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshIO::read_xyz(SurfaceMesh& mesh)
 {
     // open file (in ASCII mode)
@@ -859,8 +830,6 @@ bool SurfaceMeshIO::read_xyz(SurfaceMesh& mesh)
     fclose(in);
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 // \todo remove duplication with read_xyz
 bool SurfaceMeshIO::read_agi(SurfaceMesh& mesh)
@@ -897,8 +866,6 @@ bool SurfaceMeshIO::read_agi(SurfaceMesh& mesh)
     fclose(in);
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceMeshIO::write_pmp(const SurfaceMesh& mesh)
 {
@@ -946,8 +913,6 @@ bool SurfaceMeshIO::write_pmp(const SurfaceMesh& mesh)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 // helper to assemble vertex data
 static int vertexCallback(p_ply_argument argument)
 {
@@ -964,8 +929,6 @@ static int vertexCallback(p_ply_argument argument)
 
     return 1;
 }
-
-//-----------------------------------------------------------------------------
 
 // helper to assemble face data
 static int faceCallback(p_ply_argument argument)
@@ -991,8 +954,6 @@ static int faceCallback(p_ply_argument argument)
 
     return 1;
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceMeshIO::read_ply(SurfaceMesh& mesh)
 {
@@ -1029,8 +990,6 @@ bool SurfaceMeshIO::read_ply(SurfaceMesh& mesh)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshIO::write_ply(const SurfaceMesh& mesh)
 {
     e_ply_storage_mode mode = flags_.use_binary ? PLY_LITTLE_ENDIAN : PLY_ASCII;
@@ -1066,13 +1025,11 @@ bool SurfaceMeshIO::write_ply(const SurfaceMesh& mesh)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 // helper class for STL reader
 class CmpVec
 {
 public:
-    CmpVec(float eps = FLT_MIN) : eps_(eps) {}
+    CmpVec(Scalar eps = std::numeric_limits<Scalar>::min()) : eps_(eps) {}
 
     bool operator()(const vec3& v0, const vec3& v1) const
     {
@@ -1090,10 +1047,8 @@ public:
     }
 
 private:
-    float eps_;
+    Scalar eps_;
 };
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
 {
@@ -1104,7 +1059,7 @@ bool SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
     std::vector<Vertex> vertices(3);
     size_t n_items(0);
 
-    CmpVec comp(FLT_MIN);
+    CmpVec comp(std::numeric_limits<Scalar>::min());
     std::map<vec3, Vertex, CmpVec> vMap(comp);
     std::map<vec3, Vertex, CmpVec>::iterator vMapIt;
 
@@ -1229,8 +1184,6 @@ bool SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshIO::write_stl(const SurfaceMesh& mesh)
 {
     if (!mesh.is_triangle_mesh())
@@ -1273,8 +1226,6 @@ bool SurfaceMeshIO::write_stl(const SurfaceMesh& mesh)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 bool SurfaceMeshIO::write_xyz(const SurfaceMesh& mesh)
 {
     std::ofstream ofs(filename_);
@@ -1297,6 +1248,4 @@ bool SurfaceMeshIO::write_xyz(const SurfaceMesh& mesh)
     return true;
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

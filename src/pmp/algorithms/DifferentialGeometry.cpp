@@ -1,30 +1,18 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/algorithms/DifferentialGeometry.h>
+#include "pmp/algorithms/DifferentialGeometry.h"
+
+#include <cmath>
 
 #include <limits>
-#include <cmath>
-#include <cfloat>
-
-//=============================================================================
 
 namespace pmp {
-
-//=============================================================================
 
 Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2)
 {
     return Scalar(0.5) * norm(cross(p1 - p0, p2 - p0));
 }
-
-//-----------------------------------------------------------------------------
 
 Scalar triangle_area(const SurfaceMesh& mesh, Face f)
 {
@@ -38,8 +26,6 @@ Scalar triangle_area(const SurfaceMesh& mesh, Face f)
     return triangle_area(p0, p1, p2);
 }
 
-//-----------------------------------------------------------------------------
-
 Scalar surface_area(const SurfaceMesh& mesh)
 {
     Scalar area(0);
@@ -49,8 +35,6 @@ Scalar surface_area(const SurfaceMesh& mesh)
     }
     return area;
 }
-
-//-----------------------------------------------------------------------------
 
 Point centroid(const SurfaceMesh& mesh, Face f)
 {
@@ -64,8 +48,6 @@ Point centroid(const SurfaceMesh& mesh, Face f)
     c /= n;
     return c;
 }
-
-//-----------------------------------------------------------------------------
 
 Point centroid(const SurfaceMesh& mesh)
 {
@@ -81,8 +63,6 @@ Point centroid(const SurfaceMesh& mesh)
     center /= area;
     return center;
 }
-
-//-----------------------------------------------------------------------------
 
 double cotan_weight(const SurfaceMesh& mesh, Edge e)
 {
@@ -127,8 +107,6 @@ double cotan_weight(const SurfaceMesh& mesh, Edge e)
 
     return weight;
 }
-
-//-----------------------------------------------------------------------------
 
 double voronoi_area(const SurfaceMesh& mesh, Vertex v)
 {
@@ -202,8 +180,6 @@ double voronoi_area(const SurfaceMesh& mesh, Vertex v)
     return area;
 }
 
-//-----------------------------------------------------------------------------
-
 double voronoi_area_barycentric(const SurfaceMesh& mesh, Vertex v)
 {
     double area(0.0);
@@ -235,8 +211,6 @@ double voronoi_area_barycentric(const SurfaceMesh& mesh, Vertex v)
     return area;
 }
 
-//-----------------------------------------------------------------------------
-
 Point laplace(const SurfaceMesh& mesh, Vertex v)
 {
     Point laplace(0.0, 0.0, 0.0);
@@ -258,8 +232,6 @@ Point laplace(const SurfaceMesh& mesh, Vertex v)
 
     return laplace;
 }
-
-//-----------------------------------------------------------------------------
 
 Scalar angle_sum(const SurfaceMesh& mesh, Vertex v)
 {
@@ -287,8 +259,6 @@ Scalar angle_sum(const SurfaceMesh& mesh, Vertex v)
     return angles;
 }
 
-//-----------------------------------------------------------------------------
-
 VertexCurvature vertex_curvature(const SurfaceMesh& mesh, Vertex v)
 {
     VertexCurvature c;
@@ -315,6 +285,4 @@ VertexCurvature vertex_curvature(const SurfaceMesh& mesh, Vertex v)
     return c;
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

@@ -1,35 +1,21 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
-#include <pmp/SurfaceMesh.h>
-#include <vector>
+#include <limits>
 #include <set>
-#include <float.h>
-#include <limits.h>
+#include <vector>
 
-//=============================================================================
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
-
-//=============================================================================
-
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
 
 //! \brief Compute geodesic distance from a set of seed vertices
 //! \details The method works by a Dykstra-like breadth first traversal from
 //! the seed vertices, implemented by a heap structure.
 //! See \cite kimmel_1998_geodesic for details.
+//! \ingroup algorithms
 class SurfaceGeodesic
 {
 public:
@@ -52,7 +38,7 @@ public:
     //! \param[out] neighbors The vector of neighbor vertices.
     //! \return The number of neighbors that have been found.
     unsigned int compute(const std::vector<Vertex>& seed,
-                         Scalar maxdist = FLT_MAX,
+                         Scalar maxdist = std::numeric_limits<Scalar>::max(),
                          unsigned int maxnum = INT_MAX,
                          std::vector<Vertex>* neighbors = nullptr);
 
@@ -70,7 +56,7 @@ public:
     //! same type and name.
     void distance_to_texture_coordinates();
 
-private: // private types
+private:
     // functor for comparing two vertices w.r.t. their geodesic distance
     class VertexCmp
     {
@@ -101,17 +87,16 @@ private: // private types
     // set for storing virtual edges
     typedef std::map<Halfedge, VirtualEdge> VirtualEdges;
 
-private: // private methods
     void find_virtual_edges();
     unsigned int init_front(const std::vector<Vertex>& seed,
                             std::vector<Vertex>* neighbors);
     unsigned int propagate_front(Scalar maxdist, unsigned int maxnum,
                                  std::vector<Vertex>* neighbors);
     void heap_vertex(Vertex v);
-    Scalar distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0 = FLT_MAX,
-                    Scalar r1 = FLT_MAX);
+    Scalar distance(Vertex v0, Vertex v1, Vertex v2,
+                    Scalar r0 = std::numeric_limits<Scalar>::max(),
+                    Scalar r1 = std::numeric_limits<Scalar>::max());
 
-private: // private data
     SurfaceMesh& mesh_;
 
     bool use_virtual_edges_;
@@ -123,8 +108,4 @@ private: // private data
     VertexProperty<bool> processed_;
 };
 
-//=============================================================================
-//! @}
-//=============================================================================
 } // namespace pmp
-//=============================================================================

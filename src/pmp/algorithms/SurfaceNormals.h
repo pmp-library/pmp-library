@@ -1,26 +1,11 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
-#include <pmp/SurfaceMesh.h>
-
-//=============================================================================
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
-
-//=============================================================================
-
-//! \addtogroup algorithms algorithms
-//! @{
-
-//=============================================================================
 
 //! \brief A class for computing surface normals.
 //! \details This class provides a set of static functions for computing surface
@@ -33,6 +18,7 @@ namespace pmp {
 //! The convenience functions compute_vertex_normals() and compute_face_normals()
 //! compute the normals for the whole mesh and add a corresponding vertex or
 //! face property.
+//! \ingroup algorithms
 class SurfaceNormals
 {
 public:
@@ -67,8 +53,4 @@ public:
                                         Scalar crease_angle);
 };
 
-//=============================================================================
-//! @}
-//=============================================================================
 } // namespace pmp
-//=============================================================================

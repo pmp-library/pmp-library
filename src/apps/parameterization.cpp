@@ -1,19 +1,11 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/SurfaceParameterization.h>
 #include <imgui.h>
 
 using namespace pmp;
-
-//=============================================================================
 
 class Viewer : public MeshViewer
 {
@@ -29,14 +21,10 @@ private:
     SurfaceParameterization param_;
 };
 
-//=============================================================================
-
 Viewer::Viewer(const char* title, int width, int height)
     : MeshViewer(title, width, height), param_(mesh_)
 {
 }
-
-//----------------------------------------------------------------------------
 
 bool Viewer::load_mesh(const char* filename)
 {
@@ -50,8 +38,6 @@ bool Viewer::load_mesh(const char* filename)
     else
         return false;
 }
-
-//----------------------------------------------------------------------------
 
 void Viewer::process_imgui()
 {
@@ -83,8 +69,6 @@ void Viewer::process_imgui()
     }
 }
 
-//=============================================================================
-
 void Viewer::draw(const std::string& draw_mode)
 {
     // normal mesh draw
@@ -112,8 +96,6 @@ void Viewer::draw(const std::string& draw_mode)
     glViewport(0, 0, width(), height());
 }
 
-//=============================================================================
-
 int main(int argc, char** argv)
 {
 #ifndef __EMSCRIPTEN__
@@ -127,5 +109,3 @@ int main(int argc, char** argv)
     return window.run();
 #endif
 }
-
-//=============================================================================

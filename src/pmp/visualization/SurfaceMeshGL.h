@@ -1,32 +1,19 @@
-//=============================================================================
-// Copyright (C) 2011-2020 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
-#include <pmp/visualization/GL.h>
-#include <pmp/visualization/Shader.h>
-#include <pmp/MatVec.h>
-#include <pmp/SurfaceMesh.h>
-#include <cfloat>
+#include <limits>
 
-//=============================================================================
+#include "pmp/SurfaceMesh.h"
+#include "pmp/visualization/GL.h"
+#include "pmp/visualization/Shader.h"
+#include "pmp/MatVec.h"
 
 namespace pmp {
 
-//=============================================================================
-
-//! \addtogroup visualization visualization
-//! @{
-
-//=============================================================================
-
 //! Class for rendering surface meshes using OpenGL
+//! \ingroup visualization
 class SurfaceMeshGL : public SurfaceMesh
 {
 public:
@@ -110,7 +97,10 @@ public:
 private: // helpers for computing triangulation of a polygon
     struct Triangulation
     {
-        Triangulation(Scalar a = FLT_MAX, int s = -1) : area(a), split(s) {}
+        Triangulation(Scalar a = std::numeric_limits<Scalar>::max(), int s = -1)
+            : area(a), split(s)
+        {
+        }
         Scalar area;
         int split;
     };
@@ -183,8 +173,4 @@ private:
     } texture_mode_;
 };
 
-//=============================================================================
-//! @}
-//=============================================================================
 } // namespace pmp
-//=============================================================================

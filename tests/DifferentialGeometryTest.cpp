@@ -1,11 +1,6 @@
-//=============================================================================
-// Copyright (C) 2017-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+
+// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include "gtest/gtest.h"
 
@@ -18,9 +13,9 @@ using namespace pmp;
 class DifferentialGeometryTest : public ::testing::Test
 {
 public:
-    SurfaceMesh         mesh;
+    SurfaceMesh mesh;
     Vertex v0, v1, v2, v3;
-    Face   f0;
+    Face f0;
 
     void add_triangle()
     {
@@ -35,8 +30,8 @@ public:
         ASSERT_TRUE(mesh.read("pmp-data/off/vertex_onering.off"));
         EXPECT_EQ(mesh.n_vertices(), size_t(7));
         EXPECT_EQ(mesh.n_faces(), size_t(6));
-        v0            = Vertex(3); // the central vertex
-        auto points   = mesh.get_vertex_property<Point>("v:point");
+        v0 = Vertex(3); // the central vertex
+        auto points = mesh.get_vertex_property<Point>("v:point");
         points[v0][2] = 0.1; // lift central vertex
     }
 

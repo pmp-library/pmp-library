@@ -4,7 +4,9 @@ project(pmp-library)
 cmake_minimum_required(VERSION 3.0.2)
 
 cmake_policy(SET CMP0048 NEW)
+if(${CMAKE_VERSION} VERSION_GREATER "3.11.0")
 cmake_policy(SET CMP0072 OLD)
+endif()
 
 set(PMP_MAJOR_VERSION 1)
 set(PMP_MINOR_VERSION 2)
@@ -150,11 +152,13 @@ endif()
 
 # choose size of the scalar type
 if(PMP_SCALAR_TYPE EQUAL 64)
-    add_definitions(-DPMP_SCALAR_TYPE_64)
+  message(STATUS "Using 64-bit scalar type")
+  add_definitions(-DPMP_SCALAR_TYPE_64)
 endif()
 
 # choose size of the index type
 if(PMP_INDEX_TYPE EQUAL 64)
+  message(STATUS "Using 64-bit index type")
   add_definitions(-DPMP_INDEX_TYPE_64)
 endif()
 

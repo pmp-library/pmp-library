@@ -1,19 +1,11 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
 #include <imgui.h>
 
 using namespace pmp;
-
-//=============================================================================
 
 class Viewer : public MeshViewer
 {
@@ -24,15 +16,11 @@ protected:
     virtual void process_imgui();
 };
 
-//=============================================================================
-
 Viewer::Viewer(const char* title, int width, int height, bool showgui)
     : MeshViewer(title, width, height, showgui)
 {
     set_draw_mode("Solid Smooth");
 }
-
-//=============================================================================
 
 void Viewer::process_imgui()
 {
@@ -70,8 +58,6 @@ void Viewer::process_imgui()
     }
 }
 
-//=============================================================================
-
 int main(int argc, char** argv)
 {
 #ifndef __EMSCRIPTEN__
@@ -85,5 +71,3 @@ int main(int argc, char** argv)
     return window.run();
 #endif
 }
-
-//=============================================================================

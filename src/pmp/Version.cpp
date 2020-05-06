@@ -1,24 +1,14 @@
-//=============================================================================
-// Copyright (C) 2019 The pmp-library developers
+// Copyright 2019-2020 the Polygon Mesh Processing Library developers.
 // Copyright (c) 2010 Martin Reddy. All rights reserved.
-//
-// This file is part of the Polygon Mesh Processing Library.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/Version.h>
+#include "pmp/Version.h"
 
 #include <sstream>
 #include <string>
 #include <set>
 
-//=============================================================================
-
 namespace pmp {
-
-//=============================================================================
 
 int Version::get_major()
 {
@@ -79,6 +69,4 @@ bool Version::has_feature(const std::string& name)
     return features.find(name) != features.end();
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================
