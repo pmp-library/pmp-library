@@ -15,7 +15,7 @@
 
 namespace pmp {
 
-//! \ingroup core
+//! \addtogroup core
 //!@{
 
 //! Base class for MxN matrix

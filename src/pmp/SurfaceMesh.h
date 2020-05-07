@@ -17,7 +17,7 @@ namespace pmp {
 
 class SurfaceMeshIO;
 
-//! \ingroup core
+//! \addtogroup core
 //!@{
 
 // Handle Types

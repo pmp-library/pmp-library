@@ -7,7 +7,7 @@
 
 namespace pmp {
 
-//! \ingroup algorithms
+//! \addtogroup algorithms
 //! @{
 
 //! Compute the distance of a point p to a line segment given by points (v0,v1).
