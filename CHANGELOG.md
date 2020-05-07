@@ -8,6 +8,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## [Unreleased]
 
+### Fixed
+
 - Fix rendering issues around sharp corners (Linux, Windows)
 - Fix bug in adaptive remeshing leading to over-refinement of corner vertices.
 - Fix bug in bounding box computation.
