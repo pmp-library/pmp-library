@@ -11,6 +11,8 @@ processing and visualizing polygon surface meshes. Its core features are:
 - Canonical mesh processing algorithms
 - Ready-to-use visualization tools
 
+![Demo](docs/images/demo.gif)
+
 See [www.pmp-library.org](http://www.pmp-library.org) for more information.
 
 ## Getting Started
