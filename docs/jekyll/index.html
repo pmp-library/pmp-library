@@ -61,12 +61,17 @@ layout: default
 
 <div style="background:white;padding-top:2em;padding-bottom:1em;text-align:center;">
   <div class="container">
-    <h2>Latest News</h2>
-    {% for post in site.posts %}
-    <p>
-      {{ post.date | date_to_string }}:&nbsp;&nbsp;<a href="{{post.url}}">{{post.title}}</a>
-    </p>
-    {% endfor %}
+    <h2 class="mb-4">Latest News</h2>
+    <div class="mb-4">
+      {% for post in site.posts limit:3 %}
+      <p>
+        {{ post.date | date_to_string }}:&nbsp;&nbsp;<a href="{{post.url}}">{{post.title}}</a>
+      </p>
+      {% endfor %}
+    </div>
+    <a href="archive.html">
+      <i aria-hidden="true" class="fas fa-archive" title="archive icon" style="font-size: 90%;"></i>&nbsp;Archive
+    </a>
   </div>
 </div>
 
