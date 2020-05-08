@@ -5,10 +5,13 @@
 [![Coverage Status](https://coveralls.io/repos/github/pmp-library/pmp-library/badge.svg?branch=master)](https://coveralls.io/github/pmp-library/pmp-library?branch=master)
 
 The Polygon Mesh Processing Library is a modern C++ open-source library for
-digital geometry processing. It provides an efficient and easy to use mesh data
-structure, implementations of canonical geometry processing algorithms, as well
-as ready-to-use visualization tools for rapid prototyping.
-See the [home page](http://www.pmp-library.org) for more information.
+processing polygonal 3D surface meshes. Its core features are:
+
+- An efficient and easy-to-use mesh data structure
+- Canonical mesh processing algorithms
+- Ready-to-use visualization tools
+
+See [www.pmp-library.org](http://www.pmp-library.org) for more information.
 
 ## Getting Started
 
@@ -66,7 +69,6 @@ year   = {2020},
 
 ## License
 
-The pmp-library is provided under a simple and flexible
-MIT-style
+The pmp-library is provided under a simple and flexible MIT-style
 [license](https://github.com/pmp-library/pmp-library/blob/master/LICENSE.txt),
 thereby allowing for both open-source and commercial usage.
