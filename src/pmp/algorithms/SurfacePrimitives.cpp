@@ -1,7 +1,9 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
+
 #include "SurfacePrimitives.h"
 #include "SurfaceSubdivision.h"
+#include "DifferentialGeometry.h"
 
 namespace pmp {
 
@@ -133,6 +135,12 @@ void SurfacePrimitives::icosphere(size_t n_subdivisions)
     SurfaceSubdivision subdiv(mesh_);
     for (size_t i = 0; i < n_subdivisions; i++)
         subdiv.loop();
+}
+
+void SurfacePrimitives::dodecahedron()
+{
+    icosahedron();
+    dual(mesh_);
 }
 
 } // namespace pmp

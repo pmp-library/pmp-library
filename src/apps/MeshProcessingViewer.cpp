@@ -83,9 +83,10 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         case GLFW_KEY_G:
         {
             SurfacePrimitives generator(mesh_);
-            //generator.uv_sphere();
-            //generator.unit_cube();
-            generator.icosphere(3);
+            // generator.uv_sphere();
+            // generator.unit_cube();
+            // generator.icosphere(3);
+            generator.dodecahedron();
             BoundingBox bb = mesh_.bounds();
             set_scene((vec3)bb.center(), 0.5 * bb.size());
             set_draw_mode("Hidden Line");
