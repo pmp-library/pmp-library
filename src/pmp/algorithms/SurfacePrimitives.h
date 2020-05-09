@@ -14,26 +14,29 @@ class SurfacePrimitives
 public:
     SurfacePrimitives(SurfaceMesh& mesh) : mesh_(mesh){};
 
-    //! Generate UV sphere with given \p center, \p radius, \p n_slices, and \p n_stacks.
-    void uv_sphere(const Point& center = Point(0, 0, 0), Scalar radius = 1.0,
-                   size_t n_slices = 15, size_t n_stacks = 15);
+    //! Generate tetrahedron.
+    void tetrahedron();
 
     //! Generate hexahedron.
     void hexahedron();
 
-    //! Generate icosahedron.
-    void icosahedron();
+    //! Generate octahedron.
+    void octahedron();
 
     //! Generate dodecahedron.
     void dodecahedron();
 
-    //! Generate octahedron.
-    void octahedron();
+    //! Generate icosahedron.
+    void icosahedron();
 
     //! \brief Generate icosphere refined by \p n_subdivisions .
     //! \details Uses Loop subdivision to refine the initial icosahedron.
     //! \sa SurfaceSubdivision
     void icosphere(size_t n_subdivisions = 3);
+
+    //! Generate UV sphere with given \p center, \p radius, \p n_slices, and \p n_stacks.
+    void uv_sphere(const Point& center = Point(0, 0, 0), Scalar radius = 1.0,
+                   size_t n_slices = 15, size_t n_stacks = 15);
 
 private:
     SurfaceMesh& mesh_;
