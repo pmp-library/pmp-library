@@ -18,8 +18,8 @@ public:
     void uv_sphere(const Point& center = Point(0, 0, 0), Scalar radius = 1.0,
                    size_t n_slices = 15, size_t n_stacks = 15);
 
-    //! Generate unit cube quad mesh.
-    void unit_cube();
+    //! Generate hexahedron.
+    void hexahedron();
 
     //! Generate icosahedron.
     void icosahedron();

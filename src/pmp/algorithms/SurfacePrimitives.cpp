@@ -62,7 +62,7 @@ void SurfacePrimitives::uv_sphere(const Point& center, Scalar radius,
     }
 }
 
-void SurfacePrimitives::unit_cube()
+void SurfacePrimitives::hexahedron()
 {
     mesh_.clear();
 
@@ -145,7 +145,7 @@ void SurfacePrimitives::dodecahedron()
 
 void SurfacePrimitives::octahedron()
 {
-    unit_cube();
+    hexahedron();
     dualize(mesh_);
 }
 
