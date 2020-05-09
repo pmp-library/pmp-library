@@ -131,7 +131,7 @@ void SurfacePrimitives::icosphere(size_t n_subdivisions)
 {
     icosahedron();
     SurfaceSubdivision subdiv(mesh_);
-    while (n_subdivisions-- > 0)
+    for (size_t i = 0; i < n_subdivisions; i++)
         subdiv.loop();
 }
 
