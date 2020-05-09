@@ -27,6 +27,9 @@ public:
     //! Generate dodecahedron.
     void dodecahedron();
 
+    //! Generate octahedron.
+    void octahedron();
+
     //! \brief Generate icosphere refined by \p n_subdivisions .
     //! \details Uses Loop subdivision to refine the initial icosahedron.
     //! \sa SurfaceSubdivision

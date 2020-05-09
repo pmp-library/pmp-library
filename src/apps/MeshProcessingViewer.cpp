@@ -86,7 +86,8 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             // generator.uv_sphere();
             // generator.unit_cube();
             // generator.icosphere(3);
-            generator.dodecahedron();
+            // generator.dodecahedron();
+            generator.octahedron();
             BoundingBox bb = mesh_.bounds();
             set_scene((vec3)bb.center(), 0.5 * bb.size());
             set_draw_mode("Hidden Line");

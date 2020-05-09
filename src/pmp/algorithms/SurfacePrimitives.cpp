@@ -143,4 +143,10 @@ void SurfacePrimitives::dodecahedron()
     dual(mesh_);
 }
 
+void SurfacePrimitives::octahedron()
+{
+    unit_cube();
+    dual(mesh_);
+}
+
 } // namespace pmp
