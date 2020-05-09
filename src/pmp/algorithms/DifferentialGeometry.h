@@ -67,7 +67,7 @@ Point centroid(const SurfaceMesh& mesh);
 
 //! \brief Compute dual of a mesh.
 //! \warning Changes the mesh in place. All properties are cleared.
-void dual(SurfaceMesh& mesh);
+void dualize(SurfaceMesh& mesh);
 
 //! compute the cotangent weight for edge e
 double cotan_weight(const SurfaceMesh& mesh, Edge e);

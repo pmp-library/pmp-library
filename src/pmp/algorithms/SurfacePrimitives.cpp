@@ -140,13 +140,13 @@ void SurfacePrimitives::icosphere(size_t n_subdivisions)
 void SurfacePrimitives::dodecahedron()
 {
     icosahedron();
-    dual(mesh_);
+    dualize(mesh_);
 }
 
 void SurfacePrimitives::octahedron()
 {
     unit_cube();
-    dual(mesh_);
+    dualize(mesh_);
 }
 
 } // namespace pmp

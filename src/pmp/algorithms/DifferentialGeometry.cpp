@@ -64,7 +64,7 @@ Point centroid(const SurfaceMesh& mesh)
     return center;
 }
 
-void dual(SurfaceMesh& mesh)
+void dualize(SurfaceMesh& mesh)
 {
     // the new dualized mesh
     SurfaceMesh dual;
