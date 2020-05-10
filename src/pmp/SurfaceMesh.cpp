@@ -505,10 +505,10 @@ void SurfaceMesh::triangulate()
 
 void SurfaceMesh::triangulate(Face f)
 {
-    // Split an arbitrary face into triangles by connecting each vertex of \c f
-    // after its second to \c v .\c f will remain valid (it will become one of
-    // the triangles). The halfedge handles of the new triangles will point to
-    // the old halfedges.
+    // Split an arbitrary face into triangles by connecting each vertex of face
+    // f after its second to vertex v. Face f will remain valid (it will become
+    // one of the triangles). The halfedge handles of the new triangles will
+    // point to the old halfedges.
 
     Halfedge baseH = halfedge(f);
     Vertex startV = from_vertex(baseH);
@@ -544,8 +544,8 @@ void SurfaceMesh::triangulate(Face f)
 
 void SurfaceMesh::split(Face f, Vertex v)
 {
-    // Split an arbitrary face into triangles by connecting each vertex of \c f
-    // to \c v . \c f will remain valid (it will become one of the
+    // Split an arbitrary face into triangles by connecting each vertex of face
+    // f to vertex v . Face f will remain valid (it will become one of the
     // triangles). The halfedge handles of the new triangles will point to the
     // old halfedges.
 

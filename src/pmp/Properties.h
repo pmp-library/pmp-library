@@ -223,7 +223,7 @@ public:
         return names;
     }
 
-    // add a property with name \c name and default value \c t
+    // add a property with name \p name and default value \p t
     template <class T>
     Property<T> add(const std::string& name, const T t = T())
     {
