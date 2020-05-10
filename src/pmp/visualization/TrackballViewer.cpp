@@ -192,6 +192,7 @@ void TrackballViewer::init()
     // set initial state
     glClearColor(1.0, 1.0, 1.0, 1.0);
     glEnable(GL_DEPTH_TEST);
+    glFrontFace(GL_CCW);
 
     // init modelview
     modelview_matrix_ = mat4::identity();

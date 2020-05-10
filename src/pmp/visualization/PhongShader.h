@@ -42,11 +42,6 @@ static const char* phong_fshader =
 #else
     "#version 300 es\n"
 #endif
-#ifdef __APPLE__
-    "bool is_apple = true;"
-#else
-    "bool is_apple = false;"
-#endif
 R"glsl(
 precision mediump float;
 
@@ -82,22 +77,9 @@ void main()
         vec3 L1 = normalize(light1);
         vec3 L2 = normalize(light2);
         vec3 V  = normalize(v2f_view);
-        vec3 N  = normalize(v2f_normal);
+        vec3 N  = gl_FrontFacing ? normalize(v2f_normal) : -normalize(v2f_normal);
         vec3 R;
         float NL, RV;
-
-        // front-facing or back-facing?
-        if (!gl_FrontFacing) N = -N;
-
-        // gl_FrontFacing does not work with Apple's OpenGL drivers
-        if (is_apple)
-        {
-            if (dot(N,V) < 0.0)
-            {
-                N = -N;
-                color = back_color;
-            }
-        }
 
         rgb = ambient * 0.1 * color;
 
