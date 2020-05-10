@@ -13,10 +13,11 @@
 
 namespace pmp {
 
-//! \brief Surface mesh simplification based on approximation error and fairness criteria.
+//! \brief Surface mesh simplification based on approximation error and fairness
+//! criteria.
 //! \details Performs incremental greedy mesh simplification based on halfedge
-//! collapses. See \cite kobbelt_1998_general and \cite garland_1997_surface for
-//! details.
+//! collapses.
+//! See \cite kobbelt_1998_general and \cite garland_1997_surface for details.
 //! \ingroup algorithms
 class SurfaceSimplification
 {
@@ -24,7 +25,7 @@ public:
     //! Construct with mesh to be simplified.
     SurfaceSimplification(SurfaceMesh& mesh);
 
-    // destructor
+    //! Destructor.
     ~SurfaceSimplification();
 
     //! Initialize with given parameters.
@@ -32,30 +33,28 @@ public:
                     unsigned int max_valence = 0, Scalar normal_deviation = 0.0,
                     Scalar hausdorff_error = 0.0);
 
-    //! Simplify mesh to \p n vertices.
+    //! Simplify mesh to \p n_vertices.
     void simplify(unsigned int n_vertices);
 
 private:
-    //! Store data for an halfedge collapse
-    /*
-                vl
-                *
-               / \
-              /   \
-             / fl  \
-         v0 *------>* v1
-             \ fr  /
-              \   /
-               \ /
-                *
-                vr
-    */
+    // Store data for an halfedge collapse
     struct CollapseData
     {
         CollapseData(SurfaceMesh& sm, Halfedge h);
 
         SurfaceMesh& mesh;
 
+        //        vl
+        //        *
+        //       / \
+        //      /   \
+        //     / fl  \
+        // v0 *------>* v1
+        //     \ fr  /
+        //      \   /
+        //       \ /
+        //        *
+        //        vr
         Halfedge v0v1; // Halfedge to be collapsed
         Halfedge v1v0; // Reverse halfedge
         Vertex v0;     // Vertex to be removed
@@ -67,7 +66,7 @@ private:
         Halfedge v1vl, vlv0, v0vr, vrv1;
     };
 
-    //! Heap interface
+    // Heap interface
     class HeapInterface
     {
     public:
@@ -105,7 +104,7 @@ private:
     // compute aspect ratio for face f
     Scalar aspect_ratio(Face f) const;
 
-    // compute distance from p to triagle f
+    // compute distance from point p to triangle f
     Scalar distance(Face f, const Point& p) const;
 
     SurfaceMesh& mesh_;
