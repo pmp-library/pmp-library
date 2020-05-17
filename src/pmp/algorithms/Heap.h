@@ -18,7 +18,7 @@ public:
     //! Constructor
     Heap() : HeapVector() {}
 
-    //! Construct with a given \c HeapInterface.
+    //! Construct with a given \p HeapInterface.
     Heap(const HeapInterface& i) : HeapVector(), interface_(i) {}
 
     //! Destructor.

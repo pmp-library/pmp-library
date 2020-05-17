@@ -47,17 +47,17 @@ vec4 rgba;
 
 void main()
 {
-    if (v2f_normal.z < 0.0) // back-facing?
+    if (gl_FrontFacing)
+    {
+        uv = normalize(v2f_normal).xy * 0.49 + 0.5;
+        rgba = texture(matcap, uv);
+    }
+    else
     {
         // invert normal, damp color
         uv = normalize(-v2f_normal).xy * 0.49 + 0.5;
         rgba = texture(matcap, uv);
         rgba.rgb *= 0.5;
-    }
-    else // front-facing
-    {
-        uv = normalize(v2f_normal).xy * 0.49 + 0.5;
-        rgba = texture(matcap, uv);
     }
 
     rgba.a *= alpha;
