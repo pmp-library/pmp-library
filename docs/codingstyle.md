@@ -161,6 +161,8 @@ look like:
 //! \return true on success.
 \endverbatim
 
+Use `\p` to reference (member) function parameters.
+
 Another good practice is to document pre- and post-conditions for performing an
 operation. Those can be documented using the `\pre` and `\post` Doxygen
 [special commands](https://www.stack.nl/~dimitri/doxygen/manual/commands.html).

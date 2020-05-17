@@ -606,7 +606,7 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
 {
     Vertex v1, v2, v3, vv;
     Edge e;
-    Scalar w, ww, area;
+    Scalar w, ww;
     Point u, n, t, b;
 
     // add property
@@ -677,40 +677,6 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
                 }
                 else
                 {
-#if 0
-                    u = Point(0.0);
-                    t = Point(0.0);
-                    ww = 0;
-
-                    for (auto h : mesh_.halfedges(v))
-                    {
-                        v1 = v;
-                        v2 = mesh_.to_vertex(h);
-                        v3 = mesh_.to_vertex(mesh_.next_halfedge(h));
-
-                        b = points_[v1];
-                        b += points_[v2];
-                        b += points_[v3];
-                        b *= (1.0 / 3.0);
-
-                        area = norm(cross(points_[v2] - points_[v1],
-                                          points_[v3] - points_[v1]));
-                        w = area /
-                            pow((vsizing_[v1] + vsizing_[v2] + vsizing_[v3]) /
-                                    3.0,
-                                2.0);
-
-                        u += w * b;
-                        ww += w;
-                    }
-
-                    u /= ww;
-                    u -= points_[v];
-                    n = vnormal_[v];
-                    u -= n * dot(u, n);
-
-                    update[v] = u;
-#else
                     Point p = minimize_squared_areas(v);
                     u = p - mesh_.position(v);
 
@@ -718,7 +684,6 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
                     u -= n * dot(u, n);
 
                     update[v] = u;
-#endif
                 }
             }
         }

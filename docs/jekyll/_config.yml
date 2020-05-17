@@ -1,5 +1,5 @@
 title: 'The Polygon Mesh Processing Library'
-description: 'The official homepage of the Polygon Mesh Processing Libray, a simple and efficient modern C++ library for processing and visualizing polygon surface meshes.'
+description: 'The official homepage of the Polygon Mesh Processing Library, a simple and efficient modern C++ library for processing and visualizing polygon surface meshes.'
 url: 'https://www.pmp-library.org'
 sass:
   sass_dir: css

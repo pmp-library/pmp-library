@@ -4,11 +4,14 @@ layout: default
 
 <div class="jumbotron jumbotron-fluid no-pad">
   <div class="container" style="text-align:center">
-    <img src="/images/pmp-logo-main.png" style="width: 700px;max-width:100%;padding-bottom:30px" alt="Polygon Mesh Processing Library log"/>
+    <img src="/images/pmp-logo-main.png" style="width: 700px;max-width:100%;padding-bottom:30px"
+      alt="Polygon Mesh Processing Library log" />
     <div class="buttons">
       <a class="btn btn-primary" href="mpview.html"><i class="far fa-play-circle"></i>&nbsp;Try Online</a>
-      <a class="btn btn-primary" href="https://github.com/pmp-library/pmp-library/archive/1.1.0.zip" role="button"><i class="fas fa-download"></i>&nbsp;Download</a>
-      <a class="btn btn-primary" href="https://github.com/pmp-library/pmp-library/" role="button"><i class="fab fa-github"></i>&nbsp;GitHub</a>
+      <a class="btn btn-primary" href="https://github.com/pmp-library/pmp-library/archive/1.2.1.zip" role="button"><i
+          class="fas fa-download"></i>&nbsp;Download</a>
+      <a class="btn btn-primary" href="https://github.com/pmp-library/pmp-library/" role="button"><i
+          class="fab fa-github"></i>&nbsp;GitHub</a>
     </div>
   </div>
 </div>
@@ -58,12 +61,17 @@ layout: default
 
 <div style="background:white;padding-top:2em;padding-bottom:1em;text-align:center;">
   <div class="container">
-    <h2>Latest News</h2>
-    {% for post in site.posts %}
-    <p>
-      {{ post.date | date_to_string }}:&nbsp;&nbsp;<a href="{{post.url}}">{{post.title}}</a>
-    </p>
-    {% endfor %}
+    <h2 class="mb-4">Latest News</h2>
+    <div class="mb-4">
+      {% for post in site.posts limit:3 %}
+      <p>
+        {{ post.date | date_to_string }}:&nbsp;&nbsp;<a href="{{post.url}}">{{post.title}}</a>
+      </p>
+      {% endfor %}
+    </div>
+    <a href="archive.html">
+      <i aria-hidden="true" class="fas fa-archive" title="archive icon" style="font-size: 90%;"></i>&nbsp;Archive
+    </a>
   </div>
 </div>
 
@@ -121,7 +129,7 @@ layout: default
       </div>
     </div>
 
-    <div class="row"  style="margin-bottom: 2em;">
+    <div class="row" style="margin-bottom: 2em;">
       <div class="col-md">
         <h5>License</h5>
         <p>
@@ -143,11 +151,11 @@ layout: default
           If you are using the pmp-library for research projects, please
           acknowledge its use by referencing
         </p>
-       <pre style="line-height: 1.25em;">@misc{pmp-library,
+        <pre style="line-height: 1.25em;">@misc{pmp-library,
 title  = {The Polygon Mesh Processing Library},
 author = {Daniel Sieger and Mario Botsch},
 note   = {http://www.pmp-library.org},
-year   = {2019},
+year   = {2020},
 }</pre>
         <p>
           For references to specific algorithms implemented in the library check
