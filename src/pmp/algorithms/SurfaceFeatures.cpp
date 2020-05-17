@@ -1,28 +1,16 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/algorithms/SurfaceFeatures.h>
-#include <pmp/algorithms/SurfaceNormals.h>
-
-//=============================================================================
+#include "pmp/algorithms/SurfaceFeatures.h"
+#include "pmp/algorithms/SurfaceNormals.h"
 
 namespace pmp {
-
-//=============================================================================
 
 SurfaceFeatures::SurfaceFeatures(SurfaceMesh& mesh) : mesh_(mesh)
 {
     vfeature_ = mesh_.vertex_property("v:feature", false);
     efeature_ = mesh_.edge_property("e:feature", false);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceFeatures::clear()
 {
@@ -32,8 +20,6 @@ void SurfaceFeatures::clear()
     for (auto e : mesh_.edges())
         efeature_[e] = false;
 }
-
-//-----------------------------------------------------------------------------
 
 size_t SurfaceFeatures::detect_boundary()
 {
@@ -50,8 +36,6 @@ size_t SurfaceFeatures::detect_boundary()
         }
     return n_edges;
 }
-
-//-----------------------------------------------------------------------------
 
 size_t SurfaceFeatures::detect_angle(Scalar angle)
 {
@@ -79,6 +63,4 @@ size_t SurfaceFeatures::detect_angle(Scalar angle)
     return n_edges;
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

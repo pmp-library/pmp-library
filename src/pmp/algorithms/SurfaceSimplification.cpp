@@ -1,24 +1,15 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/algorithms/SurfaceSimplification.h>
-#include <pmp/algorithms/DistancePointTriangle.h>
-#include <pmp/algorithms/SurfaceNormals.h>
+#include "pmp/algorithms/SurfaceSimplification.h"
 
-#include <cfloat>
-#include <iterator> // for back_inserter on Windows
+#include <iterator>
+#include <limits>
 
-//=============================================================================
+#include "pmp/algorithms/DistancePointTriangle.h"
+#include "pmp/algorithms/SurfaceNormals.h"
 
 namespace pmp {
-
-//=============================================================================
 
 SurfaceSimplification::SurfaceSimplification(SurfaceMesh& mesh)
     : mesh_(mesh), initialized_(false), queue_(nullptr)
@@ -41,8 +32,6 @@ SurfaceSimplification::SurfaceSimplification(SurfaceMesh& mesh)
     fnormal_ = mesh_.face_property<Normal>("f:normal");
 }
 
-//-----------------------------------------------------------------------------
-
 SurfaceSimplification::~SurfaceSimplification()
 {
     // remove added properties
@@ -50,8 +39,6 @@ SurfaceSimplification::~SurfaceSimplification()
     mesh_.remove_face_property(normal_cone_);
     mesh_.remove_face_property(face_points_);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
                                        unsigned int max_valence,
@@ -144,8 +131,6 @@ void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
     initialized_ = true;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceSimplification::simplify(unsigned int n_vertices)
 {
     if (!mesh_.is_triangle_mesh())
@@ -221,11 +206,9 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
     mesh_.remove_vertex_property(vtarget_);
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceSimplification::enqueue_vertex(Vertex v)
 {
-    float prio, min_prio(FLT_MAX);
+    float prio, min_prio(std::numeric_limits<float>::max());
     Halfedge min_h;
 
     // find best out-going halfedge
@@ -265,8 +248,6 @@ void SurfaceSimplification::enqueue_vertex(Vertex v)
         vtarget_[v] = min_h;
     }
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceSimplification::is_collapse_legal(const CollapseData& cd)
 {
@@ -458,8 +439,6 @@ bool SurfaceSimplification::is_collapse_legal(const CollapseData& cd)
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 float SurfaceSimplification::priority(const CollapseData& cd)
 {
     // computer quadric error metric
@@ -467,8 +446,6 @@ float SurfaceSimplification::priority(const CollapseData& cd)
     Q += vquadric_[cd.v1];
     return Q(vpoint_[cd.v1]);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
 {
@@ -537,7 +514,7 @@ void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
 
         for (auto point : points)
         {
-            dd = FLT_MAX;
+            dd = std::numeric_limits<Scalar>::max();
 
             for (auto f : mesh_.faces(cd.v1))
             {
@@ -553,8 +530,6 @@ void SurfaceSimplification::postprocess_collapse(const CollapseData& cd)
         }
     }
 }
-
-//-----------------------------------------------------------------------------
 
 Scalar SurfaceSimplification::aspect_ratio(Face f) const
 {
@@ -585,8 +560,6 @@ Scalar SurfaceSimplification::aspect_ratio(Face f) const
     return l / a;
 }
 
-//-----------------------------------------------------------------------------
-
 Scalar SurfaceSimplification::distance(Face f, const Point& p) const
 {
     SurfaceMesh::VertexAroundFaceCirculator fvit = mesh_.vertices(f);
@@ -599,8 +572,6 @@ Scalar SurfaceSimplification::distance(Face f, const Point& p) const
 
     return dist_point_triangle(p, p0, p1, p2, n);
 }
-
-//-----------------------------------------------------------------------------
 
 SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh& sm, Halfedge h)
     : mesh(sm)
@@ -629,6 +600,4 @@ SurfaceSimplification::CollapseData::CollapseData(SurfaceMesh& sm, Halfedge h)
     }
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

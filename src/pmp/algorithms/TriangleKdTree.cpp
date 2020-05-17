@@ -1,23 +1,14 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/algorithms/TriangleKdTree.h>
-#include <pmp/algorithms/DifferentialGeometry.h>
-#include <pmp/algorithms/DistancePointTriangle.h>
-#include <pmp/BoundingBox.h>
-#include <cfloat>
+#include "pmp/algorithms/TriangleKdTree.h"
 
-//=============================================================================
+#include <limits>
+
+#include "pmp/algorithms/DistancePointTriangle.h"
+#include "pmp/BoundingBox.h"
 
 namespace pmp {
-
-//=============================================================================
 
 TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces,
                                unsigned int max_depth)
@@ -46,8 +37,6 @@ TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces,
     // call recursive helper
     build_recurse(root_, max_faces, max_depth);
 }
-
-//-----------------------------------------------------------------------------
 
 unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
                                            unsigned int depth)
@@ -166,18 +155,14 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
     }
 }
 
-//-----------------------------------------------------------------------------
-
 TriangleKdTree::NearestNeighbor TriangleKdTree::nearest(const Point& p) const
 {
     NearestNeighbor data;
-    data.dist = FLT_MAX;
+    data.dist = std::numeric_limits<Scalar>::max();
     data.tests = 0;
     nearest_recurse(root_, p, data);
     return data;
 }
-
-//-----------------------------------------------------------------------------
 
 void TriangleKdTree::nearest_recurse(Node* node, const Point& point,
                                      NearestNeighbor& data) const
@@ -222,6 +207,4 @@ void TriangleKdTree::nearest_recurse(Node* node, const Point& point,
     }
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

@@ -1,13 +1,7 @@
-//=============================================================================
-// Copyright (C) 2017-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2017-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
 #if defined _WIN32
 #include <psapi.h>
@@ -21,16 +15,10 @@
 #include <mach/mach.h>
 #endif
 
-//=============================================================================
-
 namespace pmp {
 
-//=============================================================================
-
-//! \addtogroup core core
-//!@{
-
 //! A simple class to retrieve memory usage information.
+//! \ingroup core
 class MemoryUsage
 {
 public:
@@ -42,8 +30,6 @@ public:
     //! \return the current resident set size (RSS) in bytes
     static size_t current_size();
 };
-
-//-----------------------------------------------------------------------------
 
 size_t MemoryUsage::max_size()
 {
@@ -67,8 +53,6 @@ size_t MemoryUsage::max_size()
 #endif
     return 0;
 }
-
-//-----------------------------------------------------------------------------
 
 size_t MemoryUsage::current_size()
 {
@@ -117,8 +101,4 @@ size_t MemoryUsage::current_size()
 #endif
 }
 
-//=============================================================================
-//!@}
-//=============================================================================
 } // namespace pmp
-//=============================================================================

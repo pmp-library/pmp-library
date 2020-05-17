@@ -1,24 +1,14 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
-#include <pmp/Types.h>
-#include <pmp/SurfaceMesh.h>
-
-//=============================================================================
+#include "pmp/Types.h"
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
-//=============================================================================
-
-//! \addtogroup algorithms algorithms
+//! \addtogroup algorithms
 //! @{
 
 //! clamp cotangent values as if angles are in [1, 179]
@@ -102,11 +92,9 @@ struct VertexCurvature
 };
 
 //! compute min, max, mean, and Gaussian curvature for vertex v. this will not
-//! give realiable values for boundary vertices.
+//! give reliable values for boundary vertices.
 VertexCurvature vertex_curvature(const SurfaceMesh& mesh, Vertex v);
 
-//=============================================================================
 //! @}
-//=============================================================================
+
 } // namespace pmp
-//=============================================================================

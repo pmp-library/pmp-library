@@ -1,24 +1,15 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-// Copyright (C) 2001-2005 by Computer Graphics Group, RWTH Aachen
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
-#pragma once
-//=============================================================================
 
-#include <pmp/SurfaceMesh.h>
+#pragma once
 
 #include <string>
 
-//=============================================================================
+#include "pmp/Types.h"
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
-
-//=============================================================================
 
 class SurfaceMeshIO
 {
@@ -54,6 +45,4 @@ private:
     IOFlags flags_;
 };
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

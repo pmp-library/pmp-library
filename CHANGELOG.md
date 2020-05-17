@@ -6,14 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## Unreleased
 
 - SurfaceFeatures now returns the number of boundary / feature edges detected.
+
+## [1.2.1] 2020-05-10
+
+### Fixed
+
+- Fix rendering issues around sharp edges
+- Fix bug in adaptive remeshing leading to over-refinement of corner vertices.
 - Fix bug in bounding box computation.
   Thanks a lot to Jascha Achenbach for reporting this bug!
 
-
-## [1.2.0] 2019-03-15
+## [1.2.0] 2020-03-15
 
 ### External libraries
 

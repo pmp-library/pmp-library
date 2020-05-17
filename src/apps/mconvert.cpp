@@ -1,18 +1,10 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
 #include <pmp/SurfaceMesh.h>
 #include <unistd.h>
 
 using namespace pmp;
-
-//=============================================================================
 
 void usage_and_exit()
 {
@@ -21,8 +13,6 @@ void usage_and_exit()
               << "\n";
     exit(1);
 }
-
-//----------------------------------------------------------------------------
 
 int main(int argc, char** argv)
 {
@@ -78,5 +68,3 @@ int main(int argc, char** argv)
 
     exit(0);
 }
-
-//=============================================================================

@@ -1,29 +1,15 @@
-//=============================================================================
-// Copyright (C) 2011-2020 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
+
 #pragma once
-//=============================================================================
 
-#include <pmp/visualization/SurfaceMeshGL.h>
-#include <pmp/visualization/TrackballViewer.h>
-
-//=============================================================================
+#include "pmp/visualization/TrackballViewer.h"
+#include "pmp/visualization/SurfaceMeshGL.h"
 
 namespace pmp {
 
-//=============================================================================
-
-//! \addtogroup visualization visualization
-//! @{
-
-//=============================================================================
-
 //! Simple viewer for a SurfaceMesh
+//! \ingroup visualization
 class MeshViewer : public TrackballViewer
 {
 public:
@@ -33,13 +19,13 @@ public:
     //! destructor
     virtual ~MeshViewer();
 
-    //! load a mesh from file \c filename
+    //! load a mesh from file \p filename
     virtual bool load_mesh(const char* filename);
 
-    //! load a matcap texture from file \c filename
+    //! load a matcap texture from file \p filename
     bool load_matcap(const char* filename);
 
-    //! load a texture from file \c filename
+    //! load a texture from file \p filename
     bool load_texture(const char* filename, GLint format = GL_RGB,
                       GLint min_filter = GL_LINEAR_MIPMAP_LINEAR,
                       GLint mag_filter = GL_LINEAR,
@@ -68,8 +54,4 @@ protected:
     float crease_angle_;
 };
 
-//=============================================================================
-//! @}
-//=============================================================================
 } // namespace pmp
-//=============================================================================

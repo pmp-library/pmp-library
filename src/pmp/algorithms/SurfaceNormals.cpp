@@ -1,19 +1,9 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include "SurfaceNormals.h"
-
-//=============================================================================
+#include "pmp/algorithms/SurfaceNormals.h"
 
 namespace pmp {
-
-//=============================================================================
 
 Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh, Face f)
 {
@@ -51,8 +41,6 @@ Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh, Face f)
     }
 }
 
-//-----------------------------------------------------------------------------
-
 Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
 {
     Point nn(0, 0, 0);
@@ -67,7 +55,7 @@ Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
         Scalar cosine, angle, denom;
         bool is_triangle;
 
-        for (auto h: mesh.halfedges(v))
+        for (auto h : mesh.halfedges(v))
         {
             if (!mesh.is_boundary(h))
             {
@@ -88,10 +76,10 @@ Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
                     angle = acos(cosine);
 
                     // compute triangle or polygon normal
-                    is_triangle = (mesh.next_halfedge(mesh.next_halfedge(mesh.next_halfedge(h))) == h);
-                    n = is_triangle ? 
-                        normalize(cross(p1,p2)) :
-                        compute_face_normal(mesh, mesh.face(h));
+                    is_triangle = (mesh.next_halfedge(mesh.next_halfedge(
+                                       mesh.next_halfedge(h))) == h);
+                    n = is_triangle ? normalize(cross(p1, p2))
+                                    : compute_face_normal(mesh, mesh.face(h));
 
                     n *= angle;
                     nn += n;
@@ -104,9 +92,6 @@ Normal SurfaceNormals::compute_vertex_normal(const SurfaceMesh& mesh, Vertex v)
 
     return nn;
 }
-
-//-----------------------------------------------------------------------------
-
 
 Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
                                              Halfedge h, Scalar crease_angle)
@@ -150,15 +135,14 @@ Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
                 p2 -= p0;
 
                 // compute triangle or polygon normal
-                is_triangle = (mesh.next_halfedge(mesh.next_halfedge(mesh.next_halfedge(h))) == h);
-                n = is_triangle ? 
-                    normalize(cross(p1,p2)) :
-                    compute_face_normal(mesh, mesh.face(h));
+                is_triangle = (mesh.next_halfedge(mesh.next_halfedge(
+                                   mesh.next_halfedge(h))) == h);
+                n = is_triangle ? normalize(cross(p1, p2))
+                                : compute_face_normal(mesh, mesh.face(h));
 
                 // check whether normal is withing crease_angle bound
                 if (dot(n, nf) >= cos_crease_angle)
                 {
-
                     // check whether we can robustly compute angle
                     denom = sqrt(dot(p1, p1) * dot(p2, p2));
                     if (denom > std::numeric_limits<Scalar>::min())
@@ -185,16 +169,12 @@ Normal SurfaceNormals::compute_corner_normal(const SurfaceMesh& mesh,
     return nn;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceNormals::compute_vertex_normals(SurfaceMesh& mesh)
 {
     auto vnormal = mesh.vertex_property<Normal>("v:normal");
     for (auto v : mesh.vertices())
         vnormal[v] = compute_vertex_normal(mesh, v);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceNormals::compute_face_normals(SurfaceMesh& mesh)
 {
@@ -203,6 +183,4 @@ void SurfaceNormals::compute_face_normals(SurfaceMesh& mesh)
         fnormal[f] = compute_face_normal(mesh, f);
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

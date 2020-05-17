@@ -10,24 +10,24 @@ system. Version 3.0.2 or greater is required. The pmp-library requires a
 C++11-compliant compiler. We continuously build and test the pmp-library
 with the following compilers and operating systems:
 
-Operating System | Compiler
------------------|--------------------
-Linux            | gcc 4.8.4, clang 3.9.0
-Mac OS-X         | AppleClang 8.1.0
-Windows          | Visual Studio 2015, 2017
+| Operating System | Compiler                 |
+| ---------------- | ------------------------ |
+| Linux            | gcc 4.8.4, clang 3.9.0   |
+| Mac OS-X         | AppleClang 8.1.0         |
+| Windows          | Visual Studio 2015, 2017 |
 
 ## Dependencies
 
 Some parts of the pmp-library depends on the following third-party libraries:
 
-Library                                   | Description                       | Version
-------------------------------------------|-----------------------------------|--------------
-[Eigen](http://eigen.tuxfamily.org)       | C++ linear algebra library        | &ge; 3.3.7
-[OpenGL](http://opengl.org)               | Open Graphics Library             | &ge; 3.3
-[GLEW](http://glew.sourceforge.net)       | OpenGL Extension Wrangler Library | &ge; 2.1.0
-[GLFW](http://glfw.org)                   | Graphics Library Framework        | &ge; 3.3
-[ImGui](https://github.com/ocornut/imgui) | Immediate Mode GUI                | &ge; 1.70
-[Google Test](https://github.com/google/googletest) | C++ Test Framework      | &ge; 1.8.0
+| Library                                             | Description                       | Version    |
+| --------------------------------------------------- | --------------------------------- | ---------- |
+| [Eigen](http://eigen.tuxfamily.org)                 | C++ linear algebra library        | &ge; 3.3.7 |
+| [OpenGL](http://opengl.org)                         | Open Graphics Library             | &ge; 3.3   |
+| [GLEW](http://glew.sourceforge.net)                 | OpenGL Extension Wrangler Library | &ge; 2.1.0 |
+| [GLFW](http://glfw.org)                             | Graphics Library Framework        | &ge; 3.3   |
+| [ImGui](https://github.com/ocornut/imgui)           | Immediate Mode GUI                | &ge; 1.70  |
+| [Google Test](https://github.com/google/googletest) | C++ Test Framework                | &ge; 1.8.0 |
 
 By default, we include the corresponding libraries using git submodules. Note
 that OpenGL and related dependencies are optional. They are only needed if you
@@ -64,11 +64,11 @@ In order to compile the included examples configure `CMake` with
 
 Commonly used flags are shown below.
 
-Flag                 | Description
----------------------|-------------------------------------------------
-`CMAKE_BUILD_TYPE`   | Specify the build type, e.g. Debug or Release.
-`CMAKE_CXX_COMPILER` | Specify the compiler to be used.
-`CMAKE_CXX_FLAGS`    | Specify additional compiler flags, e.g. `-DNDEBUG`
+| Flag                 | Description                                        |
+| -------------------- | -------------------------------------------------- |
+| `CMAKE_BUILD_TYPE`   | Specify the build type, e.g. Debug or Release.     |
+| `CMAKE_CXX_COMPILER` | Specify the compiler to be used.                   |
+| `CMAKE_CXX_FLAGS`    | Specify additional compiler flags, e.g. `-DNDEBUG` |
 
 For additional information on using `CMake` and
 customizing its configuration see
@@ -94,9 +94,10 @@ In order to build the full HTML manual and reference documentation call
 
     make doxygen
 
-The resulting HTML documentation can be found in the `docs/html/`
-sub-directory. Note: this requires [Doxygen](http://www.doxygen.nl/) to be
-installed.
+The resulting HTML documentation can be found in the `docs/html/` sub-directory.
+Note: this requires [Doxygen](http://www.doxygen.nl/) to be installed. In order
+to generate proper bibliographical references please install
+[BibTex](http://www.bibtex.org/) as well.
 
 ## Installation
 
@@ -130,15 +131,13 @@ This way, you can simply link your own target against pmp-library
 
     target_link_libraries(your_target pmp)
 
-### Note
-
-The usage described above is currently limited to the @ref core and @ref
-algorithms modules of the pmp-library. If you want to use the @ref visualization
-module you need to link your target against `pmp_vis` and its dependencies:
-`stb_image`, `imgui`, `glfw`, `glew`, as well as your platform OpenGL
-library. In this case, however, we recommend to use
-the [project template](https://github.com/pmp-library/pmp-template), see also
-[Quickstart](quickstart.html) .
+**Note:** The usage described above is currently limited to the @ref core and
+@ref algorithms modules of the pmp-library. If you want to use the @ref
+visualization module you need to link your target against `pmp_vis` and its
+dependencies: `stb_image`, `imgui`, `glfw`, `glew`, as well as your platform
+OpenGL library. In this case, however, we recommend to use the [project
+template](https://github.com/pmp-library/pmp-template). See also
+[Quickstart](quickstart.html).
 
 ## Build Options
 

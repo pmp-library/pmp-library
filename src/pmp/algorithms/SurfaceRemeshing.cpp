@@ -1,27 +1,19 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/algorithms/SurfaceRemeshing.h>
-#include <pmp/algorithms/DistancePointTriangle.h>
-#include <pmp/algorithms/SurfaceCurvature.h>
-#include <pmp/algorithms/SurfaceNormals.h>
-#include <pmp/algorithms/BarycentricCoordinates.h>
+#include "pmp/algorithms/SurfaceRemeshing.h"
 
-#include <cfloat>
 #include <cmath>
+
 #include <algorithm>
 
-//=============================================================================
+#include "pmp/algorithms/TriangleKdTree.h"
+#include "pmp/algorithms/SurfaceCurvature.h"
+#include "pmp/algorithms/SurfaceNormals.h"
+#include "pmp/algorithms/BarycentricCoordinates.h"
+#include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
-
-//=============================================================================
 
 SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
     : mesh_(mesh), refmesh_(nullptr), kd_tree_(nullptr)
@@ -32,11 +24,7 @@ SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
     vnormal_ = mesh_.vertex_property<Point>("v:normal");
 }
 
-//-----------------------------------------------------------------------------
-
 SurfaceRemeshing::~SurfaceRemeshing() = default;
-
-//-----------------------------------------------------------------------------
 
 void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
                                          unsigned int iterations,
@@ -71,8 +59,6 @@ void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
 
     postprocessing();
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceRemeshing::adaptive_remeshing(Scalar min_edge_length,
                                           Scalar max_edge_length,
@@ -112,8 +98,6 @@ void SurfaceRemeshing::adaptive_remeshing(Scalar min_edge_length,
     postprocessing();
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceRemeshing::preprocessing()
 {
     // properties
@@ -122,7 +106,6 @@ void SurfaceRemeshing::preprocessing()
     vlocked_ = mesh_.add_vertex_property<bool>("v:locked", false);
     elocked_ = mesh_.add_edge_property<bool>("e:locked", false);
     vsizing_ = mesh_.add_vertex_property<Scalar>("v:sizing");
-
 
     // lock unselected vertices if some vertices are selected
     auto vselected = mesh_.get_vertex_property<bool>("v:selected");
@@ -154,7 +137,6 @@ void SurfaceRemeshing::preprocessing()
         }
     }
 
-
     // lock feature corners
     for (auto v : mesh_.vertices())
     {
@@ -169,7 +151,6 @@ void SurfaceRemeshing::preprocessing()
                 vlocked_[v] = true;
         }
     }
-
 
     // compute sizing field
     if (uniform_)
@@ -189,11 +170,9 @@ void SurfaceRemeshing::preprocessing()
         SurfaceCurvature curv(mesh_);
         curv.analyze_tensor(1);
 
-
         // use vsizing_ to store/smooth curvatures to avoid another vertex property
 
-
-        // curvature values for feature vertices and boundary vertices 
+        // curvature values for feature vertices and boundary vertices
         // are not meaningful. mark them as negative values.
         for (auto v : mesh_.vertices())
         {
@@ -203,13 +182,12 @@ void SurfaceRemeshing::preprocessing()
                 vsizing_[v] = curv.max_abs_curvature(v);
         }
 
-
         // curvature values might be noisy. smooth them.
         // don't consider feature vertices' curvatures.
         // don't consider boundary vertices' curvatures.
         // do this for two iterations, to propagate curvatures
         // from non-feature regions to feature vertices.
-        for (int iters=0; iters<2; ++iters)
+        for (int iters = 0; iters < 2; ++iters)
         {
             for (auto v : mesh_.vertices())
             {
@@ -218,7 +196,7 @@ void SurfaceRemeshing::preprocessing()
 
                 for (auto h : mesh_.halfedges(v))
                 {
-                    c  = vsizing_[mesh_.to_vertex(h)];
+                    c = vsizing_[mesh_.to_vertex(h)];
                     if (c > 0.0)
                     {
                         w = std::max(0.0, cotan_weight(mesh_, mesh_.edge(h)));
@@ -226,12 +204,12 @@ void SurfaceRemeshing::preprocessing()
                         cc += w * c;
                     }
                 }
-               
-                if (ww) cc /= ww;
+
+                if (ww)
+                    cc /= ww;
                 vsizing_[v] = cc;
             }
         }
-
 
         // now convert per-vertex curvature into target edge length
         for (auto v : mesh_.vertices())
@@ -265,7 +243,6 @@ void SurfaceRemeshing::preprocessing()
         }
     }
 
-
     if (use_projection_)
     {
         // build reference mesh
@@ -287,8 +264,6 @@ void SurfaceRemeshing::preprocessing()
     }
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceRemeshing::postprocessing()
 {
     // delete kd-tree and reference mesh
@@ -303,8 +278,6 @@ void SurfaceRemeshing::postprocessing()
     mesh_.remove_edge_property(elocked_);
     mesh_.remove_vertex_property(vsizing_);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceRemeshing::project_to_reference(Vertex v)
 {
@@ -354,8 +327,6 @@ void SurfaceRemeshing::project_to_reference(Vertex v)
     vnormal_[v] = n;
     vsizing_[v] = s;
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceRemeshing::split_long_edges()
 {
@@ -407,8 +378,6 @@ void SurfaceRemeshing::split_long_edges()
         }
     }
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceRemeshing::collapse_short_edges()
 {
@@ -550,8 +519,6 @@ void SurfaceRemeshing::collapse_short_edges()
     mesh_.garbage_collection();
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceRemeshing::flip_edges()
 {
     Vertex v0, v1, v2, v3;
@@ -643,13 +610,11 @@ void SurfaceRemeshing::flip_edges()
     mesh_.remove_vertex_property(valence);
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
 {
     Vertex v1, v2, v3, vv;
     Edge e;
-    Scalar w, ww, area;
+    Scalar w, ww;
     Point u, n, t, b;
 
     // add property
@@ -720,40 +685,6 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
                 }
                 else
                 {
-#if 0
-                    u = Point(0.0);
-                    t = Point(0.0);
-                    ww = 0;
-
-                    for (auto h : mesh_.halfedges(v))
-                    {
-                        v1 = v;
-                        v2 = mesh_.to_vertex(h);
-                        v3 = mesh_.to_vertex(mesh_.next_halfedge(h));
-
-                        b = points_[v1];
-                        b += points_[v2];
-                        b += points_[v3];
-                        b *= (1.0 / 3.0);
-
-                        area = norm(cross(points_[v2] - points_[v1],
-                                          points_[v3] - points_[v1]));
-                        w = area /
-                            pow((vsizing_[v1] + vsizing_[v2] + vsizing_[v3]) /
-                                    3.0,
-                                2.0);
-
-                        u += w * b;
-                        ww += w;
-                    }
-
-                    u /= ww;
-                    u -= points_[v];
-                    n = vnormal_[v];
-                    u -= n * dot(u, n);
-
-                    update[v] = u;
-#else
                     Point p = minimize_squared_areas(v);
                     u = p - mesh_.position(v);
 
@@ -761,7 +692,6 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
                     u -= n * dot(u, n);
 
                     update[v] = u;
-#endif
                 }
             }
         }
@@ -794,8 +724,6 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
     // remove property
     mesh_.remove_vertex_property(update);
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceRemeshing::remove_caps()
 {
@@ -853,26 +781,23 @@ void SurfaceRemeshing::remove_caps()
     }
 }
 
-//-----------------------------------------------------------------------------
-
 Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
 {
     // setup matrix of one-ring neighbors' positions
     const unsigned int n = mesh_.valence(v);
-    Eigen::MatrixXd poly(n,3);
-    int i=0;
-    for (auto vv: mesh_.vertices(v))
+    Eigen::MatrixXd poly(n, 3);
+    int i = 0;
+    for (auto vv : mesh_.vertices(v))
     {
         poly.row(i++) = (Eigen::Vector3d)points_[vv];
     }
-
 
     // build Hessian and Jacobian
     Eigen::Matrix3d H;
     H.setZero();
     Eigen::Vector3d J;
     J.setZero();
-    for (unsigned int i = 0; i < n; ++i) 
+    for (unsigned int i = 0; i < n; ++i)
     {
         Eigen::Vector3d p = poly.row(i);
         Eigen::Vector3d q = poly.row((i + 1) % n);
@@ -892,9 +817,12 @@ Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
         H(1, 2) += w * (-d(1) * d(2));
         H(2, 2) += w * (d(0) * d(0) + d(1) * d(1));
 
-        J(0) += w * (-d(1) * p(1) * q(0) - d(2) * p(2) * q(0) + d(1) * p(0) * q(1) + d(2) * p(0) * q(2));
-        J(1) += w * (d(0) * p(1) * q(0) - d(0) * p(0) * q(1) - d(2) * p(2) * q(1) + d(2) * p(1) * q(2));
-        J(2) += w * (d(0) * p(2) * q(0) + d(1) * p(2) * q(1) - d(0) * p(0) * q(2) - d(1) * p(1) * q(2));
+        J(0) += w * (-d(1) * p(1) * q(0) - d(2) * p(2) * q(0) +
+                     d(1) * p(0) * q(1) + d(2) * p(0) * q(2));
+        J(1) += w * (d(0) * p(1) * q(0) - d(0) * p(0) * q(1) -
+                     d(2) * p(2) * q(1) + d(2) * p(1) * q(2));
+        J(2) += w * (d(0) * p(2) * q(0) + d(1) * p(2) * q(1) -
+                     d(0) * p(0) * q(2) - d(1) * p(1) * q(2));
     }
 
     // compute minimizer
@@ -903,6 +831,4 @@ Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
     return Point(x);
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================

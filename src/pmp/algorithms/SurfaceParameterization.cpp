@@ -1,31 +1,21 @@
-//=============================================================================
-// Copyright (C) 2011-2019 The pmp-library developers
-//
-// This file is part of the Polygon Mesh Processing Library.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
-//
-// SPDX-License-Identifier: MIT-with-employer-disclaimer
-//=============================================================================
 
-#include <pmp/algorithms/SurfaceParameterization.h>
-#include <pmp/algorithms/DifferentialGeometry.h>
+#include "pmp/algorithms/SurfaceParameterization.h"
+
 #include <cmath>
+
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
-#include <cmath>
 
-//=============================================================================
+#include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
-
-//=============================================================================
 
 SurfaceParameterization::SurfaceParameterization(SurfaceMesh& mesh)
     : mesh_(mesh)
 {
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceParameterization::setup_boundary_constraints()
 {
@@ -92,8 +82,6 @@ bool SurfaceParameterization::setup_boundary_constraints()
 
     return true;
 }
-
-//-----------------------------------------------------------------------------
 
 void SurfaceParameterization::harmonic(bool use_uniform_weights)
 {
@@ -165,7 +153,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
             }
         }
         triplets.emplace_back(i, i, ww);
-        B.row(i) = (Eigen::Vector2d) b;
+        B.row(i) = (Eigen::Vector2d)b;
     }
 
     // build sparse matrix from triplets
@@ -191,8 +179,6 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     mesh_.remove_vertex_property(idx);
     mesh_.remove_edge_property(eweight);
 }
-
-//-----------------------------------------------------------------------------
 
 bool SurfaceParameterization::setup_lscm_boundary()
 {
@@ -247,8 +233,6 @@ bool SurfaceParameterization::setup_lscm_boundary()
     return true;
 }
 
-//-----------------------------------------------------------------------------
-
 void SurfaceParameterization::lscm()
 {
     // boundary constraints
@@ -280,7 +264,7 @@ void SurfaceParameterization::lscm()
         dvec3 c = (dvec3)pos[mesh_.to_vertex(hc)];
 
         // calculate local coordinate system
-        dvec3 z = normalize(cross(normalize(c-b), normalize(a-b)));
+        dvec3 z = normalize(cross(normalize(c - b), normalize(a - b)));
         dvec3 x = normalize(b - a);
         dvec3 y = normalize(cross(z, x));
 
@@ -444,6 +428,4 @@ void SurfaceParameterization::lscm()
     mesh_.remove_halfedge_property(weight);
 }
 
-//=============================================================================
 } // namespace pmp
-//=============================================================================
