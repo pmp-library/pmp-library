@@ -44,17 +44,18 @@ private:
 
         SurfaceMesh& mesh;
 
-        //        vl
-        //        *
-        //       / \
-        //      /   \
-        //     / fl  \
-        // v0 *------>* v1
-        //     \ fr  /
-        //      \   /
-        //       \ /
-        //        *
-        //        vr
+        /*        vl
+         *        *
+         *       / \
+         *      /   \
+         *     / fl  \
+         * v0 *------>* v1
+         *     \ fr  /
+         *      \   /
+         *       \ /
+         *        *
+         *        vr
+         */
         Halfedge v0v1; // Halfedge to be collapsed
         Halfedge v1v0; // Reverse halfedge
         Vertex v0;     // Vertex to be removed
