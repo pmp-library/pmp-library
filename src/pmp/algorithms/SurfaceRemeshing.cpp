@@ -614,7 +614,7 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
 {
     Vertex v1, v2, v3, vv;
     Edge e;
-    Scalar w, ww, area;
+    Scalar w, ww;
     Point u, n, t, b;
 
     // add property
@@ -686,6 +686,7 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
                 else
                 {
 #if 0
+                    Scalar area;
                     u = Point(0.0);
                     t = Point(0.0);
                     ww = 0;
