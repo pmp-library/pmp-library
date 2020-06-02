@@ -133,8 +133,8 @@ private: // helpers for computing triangulation of a polygon
 
     // triangulate a polygon such that the sum of squared triangle areas is minimized.
     // this prevents overlapping/folding triangles for non-convex polygons.
-    void triangulate(const std::vector<vec3>& points,
-                     std::vector<ivec3>& triangles);
+    void tesselate(const std::vector<vec3>& points,
+                   std::vector<ivec3>& triangles);
 
 private:
     //! OpenGL buffers

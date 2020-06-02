@@ -341,7 +341,7 @@ void SurfaceMeshGL::update_opengl_buffers()
             assert(cornerVertices.size() >= 3);
 
             // tessellate face into triangles
-            triangulate(cornerPositions, triangles);
+            tesselate(cornerPositions, triangles);
             for (auto& t : triangles)
             {
                 int i0 = t[0];
@@ -654,8 +654,8 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     glCheckError();
 }
 
-void SurfaceMeshGL::triangulate(const std::vector<vec3>& points,
-                                std::vector<ivec3>& triangles)
+void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
+                              std::vector<ivec3>& triangles)
 {
     const int n = points.size();
 
