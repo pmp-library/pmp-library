@@ -261,6 +261,14 @@ public:
             return *this;
         }
 
+        //! post-increment iterator
+        VertexIterator operator++(int)
+        {
+            VertexIterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement iterator
         VertexIterator& operator--()
         {
@@ -317,6 +325,14 @@ public:
                    mesh_->is_deleted(handle_))
                 ++handle_.idx_;
             return *this;
+        }
+
+        //! post-increment iterator
+        HalfedgeIterator operator++(int)
+        {
+            HalfedgeIterator tmp = *this;
+            ++(*this);
+            return tmp;
         }
 
         //! pre-decrement iterator
@@ -376,6 +392,14 @@ public:
             return *this;
         }
 
+        //! post-increment iterator
+        EdgeIterator operator++(int)
+        {
+            EdgeIterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement iterator
         EdgeIterator& operator--()
         {
@@ -431,6 +455,14 @@ public:
                    mesh_->is_deleted(handle_))
                 ++handle_.idx_;
             return *this;
+        }
+
+        //! post-increment iterator
+        FaceIterator operator++(int)
+        {
+            FaceIterator tmp = *this;
+            ++(*this);
+            return tmp;
         }
 
         //! pre-decrement iterator
