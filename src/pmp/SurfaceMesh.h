@@ -1817,6 +1817,8 @@ private:
     };
 
     //!@}
+
+public:
     //! \name Allocate new elements
     //!@{
 
@@ -1832,6 +1834,26 @@ private:
         }
         vprops_.push_back();
         return Vertex(vertices_size() - 1);
+    }
+
+    //! allocate a new edge, resize edge and halfedge properties accordingly.
+    Halfedge new_edge()
+    {
+        if (halfedges_size() == PMP_MAX_INDEX - 1)
+        {
+            std::cerr << "new_edge: cannot allocate edge, max. index reached"
+                      << std::endl;
+            return Halfedge();
+        }
+
+        eprops_.push_back();
+        hprops_.push_back();
+        hprops_.push_back();
+
+        Halfedge h0(halfedges_size() - 2);
+        Halfedge h1(halfedges_size() - 1);
+
+        return h0;
     }
 
     //! allocate a new edge, resize edge and halfedge properties accordingly.
@@ -1874,6 +1896,8 @@ private:
     }
 
     //!@}
+
+private:
     //! \name Helper functions
     //!@{
 
