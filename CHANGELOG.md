@@ -8,6 +8,9 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+- Add post-increment iterators and make low level functions to add elements
+  public. This makes it possible to use CGAL algorithms on a PMP SurfaceMesh.
+  Thanks to @afabri for contributing the changes!
 - Add PMP_INSTALL option to CMake.
 
 ## [1.2.1] 2020-05-10

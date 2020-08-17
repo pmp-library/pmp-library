@@ -261,6 +261,14 @@ public:
             return *this;
         }
 
+        //! post-increment iterator
+        VertexIterator operator++(int)
+        {
+            VertexIterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement iterator
         VertexIterator& operator--()
         {
@@ -317,6 +325,14 @@ public:
                    mesh_->is_deleted(handle_))
                 ++handle_.idx_;
             return *this;
+        }
+
+        //! post-increment iterator
+        HalfedgeIterator operator++(int)
+        {
+            HalfedgeIterator tmp = *this;
+            ++(*this);
+            return tmp;
         }
 
         //! pre-decrement iterator
@@ -376,6 +392,14 @@ public:
             return *this;
         }
 
+        //! post-increment iterator
+        EdgeIterator operator++(int)
+        {
+            EdgeIterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement iterator
         EdgeIterator& operator--()
         {
@@ -431,6 +455,14 @@ public:
                    mesh_->is_deleted(handle_))
                 ++handle_.idx_;
             return *this;
+        }
+
+        //! post-increment iterator
+        FaceIterator operator++(int)
+        {
+            FaceIterator tmp = *this;
+            ++(*this);
+            return tmp;
         }
 
         //! pre-decrement iterator
@@ -1786,6 +1818,8 @@ private:
     };
 
     //!@}
+
+public:
     //! \name Allocate new elements
     //!@{
 
@@ -1805,6 +1839,28 @@ private:
 
     //! \brief Allocate a new edge, resize edge and halfedge properties accordingly.
     //! \throw AllocationException in case of failure to allocate a new edge.
+    Halfedge new_edge()
+    {
+        if (halfedges_size() == PMP_MAX_INDEX - 1)
+        {
+            auto what = "SurfaceMesh: cannot allocate edge, max. index reached";
+            throw AllocationException(what);
+        }
+
+        eprops_.push_back();
+        hprops_.push_back();
+        hprops_.push_back();
+
+        Halfedge h0(halfedges_size() - 2);
+        Halfedge h1(halfedges_size() - 1);
+
+        return h0;
+    }
+
+    //! \brief Allocate a new edge, resize edge and halfedge properties accordingly.
+    //! \throw AllocationException in case of failure to allocate a new edge.
+    //! \param start starting Vertex of the new edge
+    //! \param end end Vertex of the new edge
     Halfedge new_edge(Vertex start, Vertex end)
     {
         assert(start != end);
@@ -1843,6 +1899,8 @@ private:
     }
 
     //!@}
+
+private:
     //! \name Helper functions
     //!@{
 
