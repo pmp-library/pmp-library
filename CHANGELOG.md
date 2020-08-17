@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+- Add post-increment iterators and make low level functions to add elements
+  public. This makes it possible to use CGAL algorithms on a PMP SurfaceMesh.
+  Thanks to @afabri for contributing the changes!
+
 ## [1.2.1] 2020-05-10
 
 ### Fixed
