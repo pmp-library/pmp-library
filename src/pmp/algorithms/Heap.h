@@ -110,7 +110,8 @@ public:
         upheap(pos);
     }
 
-    //! check heap condition
+    //! \brief Check heap condition.
+    //! \return \c true if heap condition is satisfied, \c false if not.
     bool check()
     {
         bool ok(true);
