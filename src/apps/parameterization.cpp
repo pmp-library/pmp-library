@@ -16,13 +16,10 @@ public:
 protected:
     virtual void process_imgui() override;
     virtual void draw(const std::string& _draw_mode) override;
-
-private:
-    SurfaceParameterization param_;
 };
 
 Viewer::Viewer(const char* title, int width, int height)
-    : MeshViewer(title, width, height), param_(mesh_)
+    : MeshViewer(title, width, height)
 {
 }
 
@@ -52,7 +49,8 @@ void Viewer::process_imgui()
         ImGui::Spacing();
         if (ImGui::Button("Discrete Harmonic Param"))
         {
-            param_.harmonic();
+            SurfaceParameterization param(mesh_);
+            param.harmonic();
             mesh_.use_checkerboard_texture();
             set_draw_mode("Texture");
             update_mesh();
@@ -61,7 +59,8 @@ void Viewer::process_imgui()
         ImGui::Spacing();
         if (ImGui::Button("Least Squares Conformal Map"))
         {
-            param_.lscm();
+            SurfaceParameterization param(mesh_);
+            param.lscm();
             mesh_.use_checkerboard_texture();
             set_draw_mode("Texture");
             update_mesh();

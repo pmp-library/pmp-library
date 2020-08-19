@@ -33,6 +33,8 @@ public:
     void triangulate(Objective o = MIN_AREA);
 
     //! triangulate a particular face f
+    //! \pre The input face is manifold
+    //! \throw InvalidInputException in case the input precondition is violated
     void triangulate(Face f, Objective o = MIN_AREA);
 
 private:

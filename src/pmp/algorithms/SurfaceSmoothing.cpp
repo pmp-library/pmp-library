@@ -213,7 +213,10 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     Eigen::MatrixXd X = solver.solve(B);
     if (solver.info() != Eigen::Success)
     {
-        std::cerr << "SurfaceSmoothing: Could not solve linear system\n";
+        // clean-up
+        mesh_.remove_vertex_property(idx);
+        auto what = "SurfaceSmoothing: Failed to solve linear system.";
+        throw SolverException(what);
     }
     else
     {

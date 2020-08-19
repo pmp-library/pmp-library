@@ -468,10 +468,7 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
             vertices[j] = Vertex(idx);
             lp += nc;
         }
-        if (vertices.size() == nv)
-            mesh.add_face(vertices);
-        else
-            std::cerr << "OFF: fail to read face " << i << std::endl;
+        mesh.add_face(vertices);
     }
 
     return true;
@@ -1188,15 +1185,16 @@ bool SurfaceMeshIO::write_stl(const SurfaceMesh& mesh)
 {
     if (!mesh.is_triangle_mesh())
     {
-        std::cerr << "write_stl: not a triangle mesh!" << std::endl;
+        auto what = "SurfaceMeshIO::write_stl: Not a triangle mesh.";
+        throw InvalidInputException(what);
         return false;
     }
 
     auto fnormals = mesh.get_face_property<Normal>("f:normal");
     if (!fnormals)
     {
-        std::cerr << "write_stl: no face normals present!" << std::endl;
-        return false;
+        auto what = "SurfaceMeshIO::write_stl: No face normals present.";
+        throw InvalidInputException(what);
     }
 
     std::ofstream ofs(filename_.c_str());

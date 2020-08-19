@@ -993,7 +993,8 @@ public:
     //! add a new vertex with position \p p
     Vertex add_vertex(const Point& p);
 
-    //! add a new face with vertex list \p vertices
+    //! \brief Add a new face with vertex list \p vertices
+    //! \throw TopologyException in case a topological error occurs.
     //! \sa add_triangle, add_quad
     Face add_face(const std::vector<Vertex>& vertices);
 
@@ -1822,28 +1823,28 @@ public:
     //! \name Allocate new elements
     //!@{
 
-    //! allocate a new vertex, resize vertex properties accordingly.
+    //! \brief Allocate a new vertex, resize vertex properties accordingly.
+    //! \throw AllocationException in case of failure to allocate a new vertex.
     Vertex new_vertex()
     {
         if (vertices_size() == PMP_MAX_INDEX - 1)
         {
-            std::cerr
-                << "new_vertex: cannot allocate vertex, max. index reached"
-                << std::endl;
-            return Vertex();
+            auto what =
+                "SurfaceMesh: cannot allocate vertex, max. index reached";
+            throw AllocationException(what);
         }
         vprops_.push_back();
         return Vertex(vertices_size() - 1);
     }
 
-    //! allocate a new edge, resize edge and halfedge properties accordingly.
+    //! \brief Allocate a new edge, resize edge and halfedge properties accordingly.
+    //! \throw AllocationException in case of failure to allocate a new edge.
     Halfedge new_edge()
     {
         if (halfedges_size() == PMP_MAX_INDEX - 1)
         {
-            std::cerr << "new_edge: cannot allocate edge, max. index reached"
-                      << std::endl;
-            return Halfedge();
+            auto what = "SurfaceMesh: cannot allocate edge, max. index reached";
+            throw AllocationException(what);
         }
 
         eprops_.push_back();
@@ -1856,16 +1857,18 @@ public:
         return h0;
     }
 
-    //! allocate a new edge, resize edge and halfedge properties accordingly.
+    //! \brief Allocate a new edge, resize edge and halfedge properties accordingly.
+    //! \throw AllocationException in case of failure to allocate a new edge.
+    //! \param start starting Vertex of the new edge
+    //! \param end end Vertex of the new edge
     Halfedge new_edge(Vertex start, Vertex end)
     {
         assert(start != end);
 
         if (halfedges_size() == PMP_MAX_INDEX - 1)
         {
-            std::cerr << "new_edge: cannot allocate edge, max. index reached"
-                      << std::endl;
-            return Halfedge();
+            auto what = "SurfaceMesh: cannot allocate edge, max. index reached";
+            throw AllocationException(what);
         }
 
         eprops_.push_back();
@@ -1881,14 +1884,14 @@ public:
         return h0;
     }
 
-    //! allocate a new face, resize face properties accordingly.
+    //! \brief Allocate a new face, resize face properties accordingly.
+    //! \throw AllocationException in case of failure to allocate a new face.
     Face new_face()
     {
         if (faces_size() == PMP_MAX_INDEX - 1)
         {
-            std::cerr << "new_face: cannot allocate face, max. index reached"
-                      << std::endl;
-            return Face();
+            auto what = "SurfaceMesh: cannot allocate face, max. index reached";
+            throw AllocationException(what);
         }
 
         fprops_.push_back();
