@@ -8,6 +8,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+- Update Eigen to post-3.3.8 version
 - Improve API by reporting errors using exceptions (see #16)
 - Add post-increment iterators and make low level functions to add elements
   public. This makes it possible to use CGAL algorithms on a PMP SurfaceMesh.
