@@ -136,8 +136,13 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     compute_vertex_weights(use_uniform_laplace);
 
     // store center and area
-    Point center_before = centroid(mesh_);
-    Scalar area_before = surface_area(mesh_);
+    Point center_before;
+    Scalar area_before;
+    if (rescale)
+    {
+        center_before = centroid(mesh_);
+        area_before = surface_area(mesh_);
+    }
 
     // properties
     auto points = mesh_.get_vertex_property<Point>("v:point");
