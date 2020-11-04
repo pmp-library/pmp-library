@@ -25,7 +25,6 @@ Window::Window(const char* title, int width, int height, bool showgui)
       width_(width),
       height_(height),
       scaling_(1),
-      pixel_ratio_(1),
       show_imgui_(showgui),
       imgui_scale_(1.0),
       show_help_(false),
