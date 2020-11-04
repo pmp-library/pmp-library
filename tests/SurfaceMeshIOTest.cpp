@@ -89,7 +89,7 @@ TEST_F(SurfaceMeshIOTest, stl_io)
     EXPECT_EQ(mesh.n_edges(), size_t(30));
 
     // try to write without normals being present
-    EXPECT_FALSE(mesh.write("test.stl"));
+    ASSERT_THROW(mesh.write("test.stl"), InvalidInputException);
 
     // the same with normals computed
     SurfaceNormals::compute_face_normals(mesh);
@@ -98,7 +98,7 @@ TEST_F(SurfaceMeshIOTest, stl_io)
     // try to write non-triangle mesh
     mesh.clear();
     add_quad();
-    EXPECT_FALSE(mesh.write("test.stl"));
+    ASSERT_THROW(mesh.write("test.stl"), InvalidInputException);
 }
 
 TEST_F(SurfaceMeshIOTest, ply_io)

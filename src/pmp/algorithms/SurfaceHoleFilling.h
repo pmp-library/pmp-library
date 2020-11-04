@@ -23,8 +23,12 @@ public:
     //! construct with mesh
     SurfaceHoleFilling(SurfaceMesh& mesh);
 
-    //! fill the hole specified by halfedge h
-    bool fill_hole(Halfedge h);
+    //! \brief Fill the hole specified by halfedge \a h
+    //! \pre The specified halfedge is valid.
+    //! \pre The specified halfedge is a boundary halfedge.
+    //! \pre The specified halfedge is not adjacent to a non-manifold hole.
+    //! \throw InvalidInputException in case on of the input preconditions is violated
+    void fill_hole(Halfedge h);
 
 private:
     struct Weight
@@ -51,7 +55,8 @@ private:
     };
 
     // compute optimal triangulation of hole
-    bool triangulate_hole(Halfedge h);
+    //! \throw InvalidInputException in case of a non-manifold hole.
+    void triangulate_hole(Halfedge h);
 
     // compute the weight of the triangle (i,j,k).
     Weight compute_weight(int i, int j, int k) const;

@@ -15,9 +15,22 @@ namespace pmp {
 SurfaceParameterization::SurfaceParameterization(SurfaceMesh& mesh)
     : mesh_(mesh)
 {
+    bool has_boundary = false;
+    for (auto v : mesh_.vertices())
+        if (mesh_.is_boundary(v))
+        {
+            has_boundary = true;
+            break;
+        }
+
+    if (!has_boundary)
+    {
+        auto what = "SurfaceParameterization: Mesh has no boundary.";
+        throw InvalidInputException(what);
+    }
 }
 
-bool SurfaceParameterization::setup_boundary_constraints()
+void SurfaceParameterization::setup_boundary_constraints()
 {
     // get properties
     auto points = mesh_.vertex_property<Point>("v:point");
@@ -36,13 +49,6 @@ bool SurfaceParameterization::setup_boundary_constraints()
     for (vit = mesh_.vertices_begin(); vit != vend; ++vit)
         if (mesh_.is_boundary(*vit))
             break;
-
-    // no boundary found ?
-    if (vit == vend)
-    {
-        std::cerr << "Mesh has no boundary." << std::endl;
-        return false;
-    }
 
     // collect boundary loop
     vh = *vit;
@@ -79,18 +85,12 @@ bool SurfaceParameterization::setup_boundary_constraints()
             l += distance(points[loop[i]], points[loop[(i + 1) % n]]);
         }
     }
-
-    return true;
 }
 
 void SurfaceParameterization::harmonic(bool use_uniform_weights)
 {
     // map boundary to circle
-    if (!setup_boundary_constraints())
-    {
-        std::cerr << "Could not perform setup of boundary constraints.\n";
-        return;
-    }
+    setup_boundary_constraints();
 
     // get properties
     auto tex = mesh_.vertex_property<TexCoord>("v:tex");
@@ -164,7 +164,11 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     Eigen::MatrixXd X = solver.solve(B);
     if (solver.info() != Eigen::Success)
     {
-        std::cerr << "SurfaceParameterization: Could not solve linear system\n";
+        // clean-up
+        mesh_.remove_vertex_property(idx);
+        mesh_.remove_edge_property(eweight);
+        auto what = "SurfaceParameterization: Failed to solve linear system.";
+        throw SolverException(what);
     }
     else
     {
@@ -180,7 +184,7 @@ void SurfaceParameterization::harmonic(bool use_uniform_weights)
     mesh_.remove_edge_property(eweight);
 }
 
-bool SurfaceParameterization::setup_lscm_boundary()
+void SurfaceParameterization::setup_lscm_boundary()
 {
     // constrain the two boundary vertices farthest from each other to fix
     // the translation and rotation of the resulting parameterization
@@ -195,12 +199,6 @@ bool SurfaceParameterization::setup_lscm_boundary()
     for (auto v : mesh_.vertices())
         if (mesh_.is_boundary(v))
             boundary.push_back(v);
-
-    // no boundary?
-    if (boundary.empty())
-    {
-        return false;
-    }
 
     // find boundary vertices with largest distance
     Scalar diam(0.0), d;
@@ -229,15 +227,12 @@ bool SurfaceParameterization::setup_lscm_boundary()
     tex[v2] = TexCoord(1.0, 1.0);
     locked[v1] = true;
     locked[v2] = true;
-
-    return true;
 }
 
 void SurfaceParameterization::lscm()
 {
     // boundary constraints
-    if (!setup_lscm_boundary())
-        return;
+    setup_lscm_boundary();
 
     // properties
     auto pos = mesh_.vertex_property<Point>("v:point");
@@ -396,7 +391,12 @@ void SurfaceParameterization::lscm()
     Eigen::VectorXd x = solver.solve(b);
     if (solver.info() != Eigen::Success)
     {
-        std::cerr << "SurfaceParameterization: Could not solve linear system\n";
+        // clean-up
+        mesh_.remove_vertex_property(idx);
+        mesh_.remove_vertex_property(locked);
+        mesh_.remove_halfedge_property(weight);
+        auto what = "SurfaceParameterization: Failed solve linear system.";
+        throw SolverException(what);
     }
     else
     {

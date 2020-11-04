@@ -22,6 +22,7 @@ option(PMP_BUILD_APPS     "Build the PMP applications"  ON)
 option(PMP_BUILD_EXAMPLES "Build the PMP examples"      ON)
 option(PMP_BUILD_TESTS    "Build the PMP test programs" ON)
 option(PMP_BUILD_DOCS     "Build the PMP documentation" ON)
+option(PMP_INSTALL        "Install the PMP library and headers" ON)
 
 # set output paths
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
@@ -195,7 +196,7 @@ set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
 set(CPACK_SOURCE_GENERATOR "ZIP")
 include(CPack)
 
-if(NOT EMSCRIPTEN)
+if(NOT EMSCRIPTEN AND PMP_INSTALL)
 
   # Generate package configuration files
   include(CMakePackageConfigHelpers)
@@ -224,7 +225,7 @@ if(NOT EMSCRIPTEN)
 endif()
 
 # add uninstall target if none is defined
-if(NOT TARGET uninstall)
+if(NOT TARGET uninstall AND PMP_INSTALL)
 
   configure_file("${CMAKE_MODULE_PATH}/cmake_uninstall.cmake.in"
     cmake_uninstall.cmake IMMEDIATE @ONLY)

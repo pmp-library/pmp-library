@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include <algorithm>
+#include <stdexcept>
 
 #include "pmp/algorithms/TriangleKdTree.h"
 #include "pmp/algorithms/SurfaceCurvature.h"
@@ -18,6 +19,9 @@ namespace pmp {
 SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
     : mesh_(mesh), refmesh_(nullptr), kd_tree_(nullptr)
 {
+    if (!mesh_.is_triangle_mesh())
+        throw InvalidInputException("Input is not a pure triangle mesh!");
+
     points_ = mesh_.vertex_property<Point>("v:point");
 
     SurfaceNormals::compute_vertex_normals(mesh_);
@@ -30,12 +34,6 @@ void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
                                          unsigned int iterations,
                                          bool use_projection)
 {
-    if (!mesh_.is_triangle_mesh())
-    {
-        std::cerr << "Not a triangle mesh!" << std::endl;
-        return;
-    }
-
     uniform_ = true;
     use_projection_ = use_projection;
     target_edge_length_ = edge_length;
@@ -66,12 +64,6 @@ void SurfaceRemeshing::adaptive_remeshing(Scalar min_edge_length,
                                           unsigned int iterations,
                                           bool use_projection)
 {
-    if (!mesh_.is_triangle_mesh())
-    {
-        std::cerr << "Not a triangle mesh!" << std::endl;
-        return;
-    }
-
     uniform_ = false;
     min_edge_length_ = min_edge_length;
     max_edge_length_ = max_edge_length;
