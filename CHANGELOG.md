@@ -8,6 +8,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+- Update stb_image to version 2.26 and stb_image_writer to version 1.15.
 - Update GLFW to branch 3.3-stable to fix keyboard input on Linux.
 - Update Eigen to post-3.3.8 version.
 - Improve API by reporting errors using exceptions (see #16).
