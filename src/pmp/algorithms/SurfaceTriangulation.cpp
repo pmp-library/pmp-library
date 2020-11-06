@@ -34,8 +34,8 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
     {
         if (!mesh_.is_manifold(mesh_.to_vertex(h)))
         {
-            std::cerr << "[SurfaceTriangulation] Non-manifold polygon\n";
-            return;
+            auto what = "[SurfaceTriangulation] Non-manifold polygon";
+            throw InvalidInputException(what);
         }
 
         halfedges_.push_back(h);
@@ -232,7 +232,6 @@ bool SurfaceTriangulation::insert_edge(int i, int j)
         } while (h != h1);
     }
 
-    std::cerr << "[SurfaceTriangulation] This should not happen...\n";
     return false;
 }
 

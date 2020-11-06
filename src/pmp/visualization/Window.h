@@ -144,7 +144,10 @@ private:
     int width_, height_;
 
     //! highDPI scaling
-    float scaling_, pixel_ratio_;
+    float scaling_;
+#if __EMSCRIPTEN__
+    float pixel_ratio_;
+#endif
 
     // whether to show ImGUI menu
     bool show_imgui_;

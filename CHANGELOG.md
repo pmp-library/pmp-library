@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+- Update stb_image to version 2.26 and stb_image_writer to version 1.15.
+- Update GLFW to branch 3.3-stable to fix keyboard input on Linux.
+- Update Eigen to post-3.3.8 version.
+- Improve API by reporting errors using exceptions (see #16).
+- Add post-increment iterators and make low level functions to add elements
+  public. This makes it possible to use CGAL algorithms on a PMP SurfaceMesh.
+  Thanks to @afabri for contributing the changes!
+- Add PMP_INSTALL option to CMake.
+
 ## [1.2.1] 2020-05-10
 
 ### Fixed
