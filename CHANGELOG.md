@@ -8,8 +8,9 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
-- Update Eigen to post-3.3.8 version
-- Improve API by reporting errors using exceptions (see #16)
+- Update GLFW to branch 3.3-stable to fix keyboard input on Linux.
+- Update Eigen to post-3.3.8 version.
+- Improve API by reporting errors using exceptions (see #16).
 - Add post-increment iterators and make low level functions to add elements
   public. This makes it possible to use CGAL algorithms on a PMP SurfaceMesh.
   Thanks to @afabri for contributing the changes!
