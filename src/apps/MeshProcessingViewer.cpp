@@ -80,14 +80,41 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             }
             break;
         }
-        case GLFW_KEY_G:
+        case GLFW_KEY_1:
+        case GLFW_KEY_2:
+        case GLFW_KEY_3:
+        case GLFW_KEY_4:
+        case GLFW_KEY_5:
+        case GLFW_KEY_6:
+        case GLFW_KEY_7:
         {
             SurfacePrimitives generator(mesh_);
-            // generator.uv_sphere();
-            // generator.unit_cube();
-            // generator.icosphere(3);
-            // generator.dodecahedron();
-            generator.tetrahedron();
+
+            switch (key)
+            {
+                case GLFW_KEY_1:
+                    generator.tetrahedron();
+                    break;
+                case GLFW_KEY_2:
+                    generator.octahedron();
+                    break;
+                case GLFW_KEY_3:
+                    generator.hexahedron();
+                    break;
+                case GLFW_KEY_4:
+                    generator.icosahedron();
+                    break;
+                case GLFW_KEY_5:
+                    generator.dodecahedron();
+                    break;
+                case GLFW_KEY_6:
+                    generator.icosphere(3);
+                    break;
+                case GLFW_KEY_7:
+                    generator.uv_sphere();
+                    break;
+            }
+
             BoundingBox bb = mesh_.bounds();
             set_scene((vec3)bb.center(), 0.5 * bb.size());
             set_draw_mode("Hidden Line");
