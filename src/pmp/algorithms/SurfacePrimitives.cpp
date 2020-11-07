@@ -125,7 +125,10 @@ void SurfacePrimitives::icosphere(size_t n_subdivisions)
     icosahedron();
     SurfaceSubdivision subdiv(mesh_);
     for (size_t i = 0; i < n_subdivisions; i++)
+    {
         subdiv.loop();
+        project_to_unit_sphere(mesh_);
+    }
 }
 
 void SurfacePrimitives::uv_sphere(const Point& center, Scalar radius,
