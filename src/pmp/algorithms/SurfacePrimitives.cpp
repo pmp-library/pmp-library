@@ -17,64 +17,70 @@ void project_to_unit_sphere(SurfaceMesh& mesh)
     }
 }
 
-void SurfacePrimitives::tetrahedron()
+SurfaceMesh tetrahedron()
 {
-    mesh_.clear();
+    SurfaceMesh mesh;
     float a = 1.0f / 3.0f;
     float b = sqrt(8.0f / 9.0f);
     float c = sqrt(2.0f / 9.0f);
     float d = sqrt(2.0f / 3.0f);
 
-    auto v0 = mesh_.add_vertex(Point(0, 0, 1));
-    auto v1 = mesh_.add_vertex(Point(-c, d, -a));
-    auto v2 = mesh_.add_vertex(Point(-c, -d, -a));
-    auto v3 = mesh_.add_vertex(Point(b, 0, -a));
+    auto v0 = mesh.add_vertex(Point(0, 0, 1));
+    auto v1 = mesh.add_vertex(Point(-c, d, -a));
+    auto v2 = mesh.add_vertex(Point(-c, -d, -a));
+    auto v3 = mesh.add_vertex(Point(b, 0, -a));
 
-    mesh_.add_triangle(v0, v1, v2);
-    mesh_.add_triangle(v0, v2, v3);
-    mesh_.add_triangle(v0, v3, v1);
-    mesh_.add_triangle(v3, v2, v1);
+    mesh.add_triangle(v0, v1, v2);
+    mesh.add_triangle(v0, v2, v3);
+    mesh.add_triangle(v0, v3, v1);
+    mesh.add_triangle(v3, v2, v1);
+
+    return mesh;
 }
 
-void SurfacePrimitives::hexahedron()
+SurfaceMesh hexahedron()
 {
-    mesh_.clear();
+    SurfaceMesh mesh;
 
     float a = 1.0f / sqrt(3.0f);
-    auto v0 = mesh_.add_vertex(Point(-a, -a, -a));
-    auto v1 = mesh_.add_vertex(Point(a, -a, -a));
-    auto v2 = mesh_.add_vertex(Point(a, a, -a));
-    auto v3 = mesh_.add_vertex(Point(-a, a, -a));
-    auto v4 = mesh_.add_vertex(Point(-a, -a, a));
-    auto v5 = mesh_.add_vertex(Point(a, -a, a));
-    auto v6 = mesh_.add_vertex(Point(a, a, a));
-    auto v7 = mesh_.add_vertex(Point(-a, a, a));
+    auto v0 = mesh.add_vertex(Point(-a, -a, -a));
+    auto v1 = mesh.add_vertex(Point(a, -a, -a));
+    auto v2 = mesh.add_vertex(Point(a, a, -a));
+    auto v3 = mesh.add_vertex(Point(-a, a, -a));
+    auto v4 = mesh.add_vertex(Point(-a, -a, a));
+    auto v5 = mesh.add_vertex(Point(a, -a, a));
+    auto v6 = mesh.add_vertex(Point(a, a, a));
+    auto v7 = mesh.add_vertex(Point(-a, a, a));
 
-    mesh_.add_quad(v3, v2, v1, v0);
-    mesh_.add_quad(v2, v6, v5, v1);
-    mesh_.add_quad(v5, v6, v7, v4);
-    mesh_.add_quad(v0, v4, v7, v3);
-    mesh_.add_quad(v3, v7, v6, v2);
-    mesh_.add_quad(v1, v5, v4, v0);
+    mesh.add_quad(v3, v2, v1, v0);
+    mesh.add_quad(v2, v6, v5, v1);
+    mesh.add_quad(v5, v6, v7, v4);
+    mesh.add_quad(v0, v4, v7, v3);
+    mesh.add_quad(v3, v7, v6, v2);
+    mesh.add_quad(v1, v5, v4, v0);
+
+    return mesh;
 }
 
-void SurfacePrimitives::octahedron()
+SurfaceMesh octahedron()
 {
-    hexahedron();
-    dualize(mesh_);
-    project_to_unit_sphere(mesh_);
+    auto mesh = hexahedron();
+    dualize(mesh);
+    project_to_unit_sphere(mesh);
+    return mesh;
 }
 
-void SurfacePrimitives::dodecahedron()
+SurfaceMesh dodecahedron()
 {
-    icosahedron();
-    dualize(mesh_);
-    project_to_unit_sphere(mesh_);
+    auto mesh = icosahedron();
+    dualize(mesh);
+    project_to_unit_sphere(mesh);
+    return mesh;
 }
 
-void SurfacePrimitives::icosahedron()
+SurfaceMesh icosahedron()
 {
-    mesh_.clear();
+    SurfaceMesh mesh;
 
     // adapted from http://paulbourke.net/geometry/platonic/
     float radius = 1.0;
@@ -85,70 +91,74 @@ void SurfacePrimitives::icosahedron()
     float a = (radius / ratio) * 0.5;
     float b = (radius / ratio) / (2.0f * phi);
 
-    auto v1 = mesh_.add_vertex(Point(0, b, -a));
-    auto v2 = mesh_.add_vertex(Point(b, a, 0));
-    auto v3 = mesh_.add_vertex(Point(-b, a, 0));
-    auto v4 = mesh_.add_vertex(Point(0, b, a));
-    auto v5 = mesh_.add_vertex(Point(0, -b, a));
-    auto v6 = mesh_.add_vertex(Point(-a, 0, b));
-    auto v7 = mesh_.add_vertex(Point(0, -b, -a));
-    auto v8 = mesh_.add_vertex(Point(a, 0, -b));
-    auto v9 = mesh_.add_vertex(Point(a, 0, b));
-    auto v10 = mesh_.add_vertex(Point(-a, 0, -b));
-    auto v11 = mesh_.add_vertex(Point(b, -a, 0));
-    auto v12 = mesh_.add_vertex(Point(-b, -a, 0));
+    auto v1 = mesh.add_vertex(Point(0, b, -a));
+    auto v2 = mesh.add_vertex(Point(b, a, 0));
+    auto v3 = mesh.add_vertex(Point(-b, a, 0));
+    auto v4 = mesh.add_vertex(Point(0, b, a));
+    auto v5 = mesh.add_vertex(Point(0, -b, a));
+    auto v6 = mesh.add_vertex(Point(-a, 0, b));
+    auto v7 = mesh.add_vertex(Point(0, -b, -a));
+    auto v8 = mesh.add_vertex(Point(a, 0, -b));
+    auto v9 = mesh.add_vertex(Point(a, 0, b));
+    auto v10 = mesh.add_vertex(Point(-a, 0, -b));
+    auto v11 = mesh.add_vertex(Point(b, -a, 0));
+    auto v12 = mesh.add_vertex(Point(-b, -a, 0));
 
-    mesh_.add_triangle(v3, v2, v1);
-    mesh_.add_triangle(v2, v3, v4);
-    mesh_.add_triangle(v6, v5, v4);
-    mesh_.add_triangle(v5, v9, v4);
-    mesh_.add_triangle(v8, v7, v1);
-    mesh_.add_triangle(v7, v10, v1);
-    mesh_.add_triangle(v12, v11, v5);
-    mesh_.add_triangle(v11, v12, v7);
-    mesh_.add_triangle(v10, v6, v3);
-    mesh_.add_triangle(v6, v10, v12);
-    mesh_.add_triangle(v9, v8, v2);
-    mesh_.add_triangle(v8, v9, v11);
-    mesh_.add_triangle(v3, v6, v4);
-    mesh_.add_triangle(v9, v2, v4);
-    mesh_.add_triangle(v10, v3, v1);
-    mesh_.add_triangle(v2, v8, v1);
-    mesh_.add_triangle(v12, v10, v7);
-    mesh_.add_triangle(v8, v11, v7);
-    mesh_.add_triangle(v6, v12, v5);
-    mesh_.add_triangle(v11, v9, v5);
+    mesh.add_triangle(v3, v2, v1);
+    mesh.add_triangle(v2, v3, v4);
+    mesh.add_triangle(v6, v5, v4);
+    mesh.add_triangle(v5, v9, v4);
+    mesh.add_triangle(v8, v7, v1);
+    mesh.add_triangle(v7, v10, v1);
+    mesh.add_triangle(v12, v11, v5);
+    mesh.add_triangle(v11, v12, v7);
+    mesh.add_triangle(v10, v6, v3);
+    mesh.add_triangle(v6, v10, v12);
+    mesh.add_triangle(v9, v8, v2);
+    mesh.add_triangle(v8, v9, v11);
+    mesh.add_triangle(v3, v6, v4);
+    mesh.add_triangle(v9, v2, v4);
+    mesh.add_triangle(v10, v3, v1);
+    mesh.add_triangle(v2, v8, v1);
+    mesh.add_triangle(v12, v10, v7);
+    mesh.add_triangle(v8, v11, v7);
+    mesh.add_triangle(v6, v12, v5);
+    mesh.add_triangle(v11, v9, v5);
+
+    return mesh;
 }
 
-void SurfacePrimitives::icosphere(size_t n_subdivisions)
+SurfaceMesh icosphere(size_t n_subdivisions)
 {
-    icosahedron();
-    SurfaceSubdivision subdiv(mesh_);
+    auto mesh = icosahedron();
+    SurfaceSubdivision subdiv(mesh);
     for (size_t i = 0; i < n_subdivisions; i++)
     {
         subdiv.loop();
-        project_to_unit_sphere(mesh_);
+        project_to_unit_sphere(mesh);
     }
+    return mesh;
 }
 
-void SurfacePrimitives::quad_sphere(size_t n_subdivisions)
+SurfaceMesh quad_sphere(size_t n_subdivisions)
 {
-    hexahedron();
-    SurfaceSubdivision subdiv(mesh_);
+    auto mesh = hexahedron();
+    SurfaceSubdivision subdiv(mesh);
     for (size_t i = 0; i < n_subdivisions; i++)
     {
         subdiv.catmull_clark();
-        project_to_unit_sphere(mesh_);
+        project_to_unit_sphere(mesh);
     }
+    return mesh;
 }
 
-void SurfacePrimitives::uv_sphere(const Point& center, Scalar radius,
-                                  size_t n_slices, size_t n_stacks)
+SurfaceMesh uv_sphere(const Point& center, Scalar radius, size_t n_slices,
+                      size_t n_stacks)
 {
-    mesh_.clear();
+    SurfaceMesh mesh;
 
     // add top vertex
-    auto v0 = mesh_.add_vertex(Point(center[0], center[1] + radius, center[2]));
+    auto v0 = mesh.add_vertex(Point(center[0], center[1] + radius, center[2]));
 
     // generate vertices per stack / slice
     for (size_t i = 0; i < n_stacks - 1; i++)
@@ -160,12 +170,12 @@ void SurfacePrimitives::uv_sphere(const Point& center, Scalar radius,
             auto x = center[0] + radius * std::sin(phi) * std::cos(theta);
             auto y = center[1] + radius * std::cos(phi);
             auto z = center[2] + radius * std::sin(phi) * std::sin(theta);
-            mesh_.add_vertex(Point(x, y, z));
+            mesh.add_vertex(Point(x, y, z));
         }
     }
 
     // add bottom vertex
-    auto v1 = mesh_.add_vertex(Point(center[0], center[1] - radius, center[2]));
+    auto v1 = mesh.add_vertex(Point(center[0], center[1] - radius, center[2]));
 
     // add top / bottom triangles
     size_t i0, i1;
@@ -173,11 +183,11 @@ void SurfacePrimitives::uv_sphere(const Point& center, Scalar radius,
     {
         i0 = i + 1;
         i1 = (i + 1) % n_slices + 1;
-        mesh_.add_triangle(v0, Vertex(i1), Vertex(i0));
+        mesh.add_triangle(v0, Vertex(i1), Vertex(i0));
 
         i0 = i + n_slices * (n_stacks - 2) + 1;
         i1 = (i + 1) % n_slices + n_slices * (n_stacks - 2) + 1;
-        mesh_.add_triangle(v1, Vertex(i0), Vertex(i1));
+        mesh.add_triangle(v1, Vertex(i0), Vertex(i1));
     }
 
     // add quads per stack / slice
@@ -192,9 +202,11 @@ void SurfacePrimitives::uv_sphere(const Point& center, Scalar radius,
             i1 = idx0 + (i + 1) % n_slices;
             i2 = idx1 + (i + 1) % n_slices;
             i3 = idx1 + i;
-            mesh_.add_quad(Vertex(i0), Vertex(i1), Vertex(i2), Vertex(i3));
+            mesh.add_quad(Vertex(i0), Vertex(i1), Vertex(i2), Vertex(i3));
         }
     }
+
+    return mesh;
 }
 
 } // namespace pmp

@@ -9,9 +9,7 @@ using namespace pmp;
 
 TEST(SurfacePrimitivesTest, tetrahedron)
 {
-    SurfaceMesh mesh;
-    SurfacePrimitives generator(mesh);
-    generator.tetrahedron();
+    auto mesh = tetrahedron();
     EXPECT_EQ(mesh.n_vertices(), 4);
     EXPECT_EQ(mesh.n_edges(), 6);
     EXPECT_EQ(mesh.n_faces(), 4);
@@ -20,9 +18,7 @@ TEST(SurfacePrimitivesTest, tetrahedron)
 
 TEST(SurfacePrimitivesTest, octahedron)
 {
-    SurfaceMesh mesh;
-    SurfacePrimitives generator(mesh);
-    generator.octahedron();
+    auto mesh = octahedron();
     EXPECT_EQ(mesh.n_vertices(), 6);
     EXPECT_EQ(mesh.n_edges(), 12);
     EXPECT_EQ(mesh.n_faces(), 8);
@@ -31,9 +27,7 @@ TEST(SurfacePrimitivesTest, octahedron)
 
 TEST(SurfacePrimitivesTest, hexahedron)
 {
-    SurfaceMesh mesh;
-    SurfacePrimitives generator(mesh);
-    generator.hexahedron();
+    auto mesh = hexahedron();
     EXPECT_EQ(mesh.n_vertices(), 8);
     EXPECT_EQ(mesh.n_edges(), 12);
     EXPECT_EQ(mesh.n_faces(), 6);
@@ -42,9 +36,7 @@ TEST(SurfacePrimitivesTest, hexahedron)
 
 TEST(SurfacePrimitivesTest, icosahedron)
 {
-    SurfaceMesh mesh;
-    SurfacePrimitives generator(mesh);
-    generator.icosahedron();
+    auto mesh = icosahedron();
     EXPECT_EQ(mesh.n_vertices(), 12);
     EXPECT_EQ(mesh.n_edges(), 30);
     EXPECT_EQ(mesh.n_faces(), 20);
@@ -53,9 +45,7 @@ TEST(SurfacePrimitivesTest, icosahedron)
 
 TEST(SurfacePrimitivesTest, dodecahedron)
 {
-    SurfaceMesh mesh;
-    SurfacePrimitives generator(mesh);
-    generator.dodecahedron();
+    auto mesh = dodecahedron();
     EXPECT_EQ(mesh.n_vertices(), 20);
     EXPECT_EQ(mesh.n_edges(), 30);
     EXPECT_EQ(mesh.n_faces(), 12);
@@ -65,9 +55,7 @@ TEST(SurfacePrimitivesTest, dodecahedron)
 
 TEST(SurfacePrimitivesTest, icosphere)
 {
-    SurfaceMesh mesh;
-    SurfacePrimitives generator(mesh);
-    generator.icosphere();
+    auto mesh = icosphere();
     EXPECT_EQ(mesh.n_vertices(), 642);
     EXPECT_EQ(mesh.n_edges(), 1920);
     EXPECT_EQ(mesh.n_faces(), 1280);
@@ -76,9 +64,7 @@ TEST(SurfacePrimitivesTest, icosphere)
 
 TEST(SurfacePrimitivesTest, quad_sphere)
 {
-    SurfaceMesh mesh;
-    SurfacePrimitives generator(mesh);
-    generator.quad_sphere();
+    auto mesh = quad_sphere();
     EXPECT_EQ(mesh.n_vertices(), 386);
     EXPECT_EQ(mesh.n_edges(), 768);
     EXPECT_EQ(mesh.n_faces(), 384);
@@ -87,9 +73,7 @@ TEST(SurfacePrimitivesTest, quad_sphere)
 
 TEST(SurfacePrimitivesTest, uv_sphere)
 {
-    SurfaceMesh mesh;
-    SurfacePrimitives generator(mesh);
-    generator.uv_sphere();
+    auto mesh = uv_sphere();
     EXPECT_EQ(mesh.n_vertices(), 212);
     EXPECT_EQ(mesh.n_edges(), 435);
     EXPECT_EQ(mesh.n_faces(), 225);
