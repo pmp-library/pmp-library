@@ -34,6 +34,11 @@ public:
     //! \sa SurfaceSubdivision
     void icosphere(size_t n_subdivisions = 3);
 
+    //! \brief Generate quad sphere refined by \p n_subdivisions .
+    //! \details Uses Catmull-Clark subdivision to refine the initial hexahedron.
+    //! \sa SurfaceSubdivision
+    void quad_sphere(size_t n_subdivisions = 3);
+
     //! Generate UV sphere with given \p center, \p radius, \p n_slices, and \p n_stacks.
     void uv_sphere(const Point& center = Point(0, 0, 0), Scalar radius = 1.0,
                    size_t n_slices = 15, size_t n_stacks = 15);

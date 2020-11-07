@@ -131,6 +131,17 @@ void SurfacePrimitives::icosphere(size_t n_subdivisions)
     }
 }
 
+void SurfacePrimitives::quad_sphere(size_t n_subdivisions)
+{
+    hexahedron();
+    SurfaceSubdivision subdiv(mesh_);
+    for (size_t i = 0; i < n_subdivisions; i++)
+    {
+        subdiv.catmull_clark();
+        project_to_unit_sphere(mesh_);
+    }
+}
+
 void SurfacePrimitives::uv_sphere(const Point& center, Scalar radius,
                                   size_t n_slices, size_t n_stacks)
 {

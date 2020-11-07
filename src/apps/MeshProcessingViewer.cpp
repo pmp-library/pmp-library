@@ -111,6 +111,9 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
                     generator.icosphere(3);
                     break;
                 case GLFW_KEY_7:
+                    generator.quad_sphere(3);
+                    break;
+                case GLFW_KEY_8:
                     generator.uv_sphere();
                     break;
             }
