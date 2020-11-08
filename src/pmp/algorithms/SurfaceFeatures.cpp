@@ -21,21 +21,26 @@ void SurfaceFeatures::clear()
         efeature_[e] = false;
 }
 
-void SurfaceFeatures::detect_boundary()
+size_t SurfaceFeatures::detect_boundary()
 {
     for (auto v : mesh_.vertices())
         if (mesh_.is_boundary(v))
             vfeature_[v] = true;
 
+    size_t n_edges = 0;
     for (auto e : mesh_.edges())
         if (mesh_.is_boundary(e))
+        {
             efeature_[e] = true;
+            n_edges++;
+        }
+    return n_edges;
 }
 
-void SurfaceFeatures::detect_angle(Scalar angle)
+size_t SurfaceFeatures::detect_angle(Scalar angle)
 {
     const Scalar feature_cosine = cos(angle / 180.0 * M_PI);
-
+    size_t n_edges = 0;
     for (auto e : mesh_.edges())
     {
         if (!mesh_.is_boundary(e))
@@ -51,9 +56,11 @@ void SurfaceFeatures::detect_angle(Scalar angle)
                 efeature_[e] = true;
                 vfeature_[mesh_.vertex(e, 0)] = true;
                 vfeature_[mesh_.vertex(e, 1)] = true;
+                n_edges++;
             }
         }
     }
+    return n_edges;
 }
 
 } // namespace pmp
