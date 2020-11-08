@@ -1,4 +1,4 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "MeshProcessingViewer.h"
@@ -11,6 +11,7 @@
 #include <pmp/algorithms/SurfaceCurvature.h>
 #include <pmp/algorithms/SurfaceGeodesic.h>
 #include <pmp/algorithms/SurfaceHoleFilling.h>
+#include <pmp/algorithms/SurfacePrimitives.h>
 
 #include <imgui.h>
 
@@ -77,6 +78,48 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
                 mesh_.remove_edge(ee);
                 update_mesh();
             }
+            break;
+        }
+        case GLFW_KEY_1:
+        case GLFW_KEY_2:
+        case GLFW_KEY_3:
+        case GLFW_KEY_4:
+        case GLFW_KEY_5:
+        case GLFW_KEY_6:
+        case GLFW_KEY_7:
+        {
+            switch (key)
+            {
+                case GLFW_KEY_1:
+                    mesh_.assign(tetrahedron());
+                    break;
+                case GLFW_KEY_2:
+                    mesh_.assign(octahedron());
+                    break;
+                case GLFW_KEY_3:
+                    mesh_.assign(hexahedron());
+                    break;
+                case GLFW_KEY_4:
+                    mesh_.assign(icosahedron());
+                    break;
+                case GLFW_KEY_5:
+                    mesh_.assign(dodecahedron());
+                    break;
+                case GLFW_KEY_6:
+                    mesh_.assign(icosphere(3));
+                    break;
+                case GLFW_KEY_7:
+                    mesh_.assign(quad_sphere(3));
+                    break;
+                case GLFW_KEY_8:
+                    mesh_.assign(uv_sphere());
+                    break;
+            }
+
+            BoundingBox bb = mesh_.bounds();
+            set_scene((vec3)bb.center(), 0.5 * bb.size());
+            set_draw_mode("Hidden Line");
+            update_mesh();
             break;
         }
         default:
