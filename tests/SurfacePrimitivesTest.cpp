@@ -7,76 +7,97 @@
 
 using namespace pmp;
 
+bool vertices_on_sphere(const SurfaceMesh& mesh)
+{
+    for (auto v: mesh.vertices())
+    {
+        const Scalar n = norm(mesh.position(v));
+        if (n < 0.999 || n > 1.001)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 TEST(SurfacePrimitivesTest, tetrahedron)
 {
     auto mesh = tetrahedron();
-    EXPECT_EQ(mesh.n_vertices(), 4);
-    EXPECT_EQ(mesh.n_edges(), 6);
-    EXPECT_EQ(mesh.n_faces(), 4);
+    EXPECT_EQ(mesh.n_vertices(), 4u);
+    EXPECT_EQ(mesh.n_edges(), 6u);
+    EXPECT_EQ(mesh.n_faces(), 4u);
     EXPECT_TRUE(mesh.is_triangle_mesh());
+    EXPECT_TRUE(vertices_on_sphere(mesh));
 }
 
 TEST(SurfacePrimitivesTest, octahedron)
 {
     auto mesh = octahedron();
-    EXPECT_EQ(mesh.n_vertices(), 6);
-    EXPECT_EQ(mesh.n_edges(), 12);
-    EXPECT_EQ(mesh.n_faces(), 8);
+    EXPECT_EQ(mesh.n_vertices(), 6u);
+    EXPECT_EQ(mesh.n_edges(), 12u);
+    EXPECT_EQ(mesh.n_faces(), 8u);
     EXPECT_TRUE(mesh.is_triangle_mesh());
+    EXPECT_TRUE(vertices_on_sphere(mesh));
 }
 
 TEST(SurfacePrimitivesTest, hexahedron)
 {
     auto mesh = hexahedron();
-    EXPECT_EQ(mesh.n_vertices(), 8);
-    EXPECT_EQ(mesh.n_edges(), 12);
-    EXPECT_EQ(mesh.n_faces(), 6);
+    EXPECT_EQ(mesh.n_vertices(), 8u);
+    EXPECT_EQ(mesh.n_edges(), 12u);
+    EXPECT_EQ(mesh.n_faces(), 6u);
     EXPECT_TRUE(mesh.is_quad_mesh());
+    EXPECT_TRUE(vertices_on_sphere(mesh));
 }
 
 TEST(SurfacePrimitivesTest, icosahedron)
 {
     auto mesh = icosahedron();
-    EXPECT_EQ(mesh.n_vertices(), 12);
-    EXPECT_EQ(mesh.n_edges(), 30);
-    EXPECT_EQ(mesh.n_faces(), 20);
+    EXPECT_EQ(mesh.n_vertices(), 12u);
+    EXPECT_EQ(mesh.n_edges(), 30u);
+    EXPECT_EQ(mesh.n_faces(), 20u);
     EXPECT_TRUE(mesh.is_triangle_mesh());
+    EXPECT_TRUE(vertices_on_sphere(mesh));
 }
 
 TEST(SurfacePrimitivesTest, dodecahedron)
 {
     auto mesh = dodecahedron();
-    EXPECT_EQ(mesh.n_vertices(), 20);
-    EXPECT_EQ(mesh.n_edges(), 30);
-    EXPECT_EQ(mesh.n_faces(), 12);
+    EXPECT_EQ(mesh.n_vertices(), 20u);
+    EXPECT_EQ(mesh.n_edges(), 30u);
+    EXPECT_EQ(mesh.n_faces(), 12u);
     EXPECT_FALSE(mesh.is_triangle_mesh());
     EXPECT_FALSE(mesh.is_quad_mesh());
+    EXPECT_TRUE(vertices_on_sphere(mesh));
 }
 
 TEST(SurfacePrimitivesTest, icosphere)
 {
     auto mesh = icosphere();
-    EXPECT_EQ(mesh.n_vertices(), 642);
-    EXPECT_EQ(mesh.n_edges(), 1920);
-    EXPECT_EQ(mesh.n_faces(), 1280);
+    EXPECT_EQ(mesh.n_vertices(), 642u);
+    EXPECT_EQ(mesh.n_edges(), 1920u);
+    EXPECT_EQ(mesh.n_faces(), 1280u);
     EXPECT_TRUE(mesh.is_triangle_mesh());
+    EXPECT_TRUE(vertices_on_sphere(mesh));
 }
 
 TEST(SurfacePrimitivesTest, quad_sphere)
 {
     auto mesh = quad_sphere();
-    EXPECT_EQ(mesh.n_vertices(), 386);
-    EXPECT_EQ(mesh.n_edges(), 768);
-    EXPECT_EQ(mesh.n_faces(), 384);
+    EXPECT_EQ(mesh.n_vertices(), 386u);
+    EXPECT_EQ(mesh.n_edges(), 768u);
+    EXPECT_EQ(mesh.n_faces(), 384u);
     EXPECT_TRUE(mesh.is_quad_mesh());
+    EXPECT_TRUE(vertices_on_sphere(mesh));
 }
 
 TEST(SurfacePrimitivesTest, uv_sphere)
 {
     auto mesh = uv_sphere();
-    EXPECT_EQ(mesh.n_vertices(), 212);
-    EXPECT_EQ(mesh.n_edges(), 435);
-    EXPECT_EQ(mesh.n_faces(), 225);
+    EXPECT_EQ(mesh.n_vertices(), 212u);
+    EXPECT_EQ(mesh.n_edges(), 435u);
+    EXPECT_EQ(mesh.n_faces(), 225u);
     EXPECT_FALSE(mesh.is_triangle_mesh());
     EXPECT_FALSE(mesh.is_quad_mesh());
+    EXPECT_TRUE(vertices_on_sphere(mesh));
 }
