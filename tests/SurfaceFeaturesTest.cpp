@@ -22,7 +22,8 @@ public:
 TEST_F(SurfaceFeaturesTest, detect_feature_angle)
 {
     SurfaceFeatures sf(mesh);
-    sf.detect_angle(25);
+    auto nf = sf.detect_angle(25);
+    EXPECT_EQ(nf, 240);
 
     auto efeature = mesh.get_edge_property<bool>("e:feature");
     bool found = false;
@@ -50,7 +51,8 @@ TEST_F(SurfaceFeaturesTest, detect_boundary)
     mesh.clear();
     mesh.read("pmp-data/off/vertex_onering.off");
     SurfaceFeatures sf(mesh);
-    sf.detect_boundary();
+    auto nb = sf.detect_boundary();
+    EXPECT_EQ(nb, 6);
 
     auto efeature = mesh.get_edge_property<bool>("e:feature");
     bool found = false;
