@@ -8,6 +8,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+- Add PMP_BUILD_VIS CMake option to enable / disable building the pmp_vis
+  library and its dependecies.
 - SurfaceFeatures now returns the number of boundary / feature edges detected.
 - Add SurfacePrimitives class to generate basic shapes.
 - Update stb_image to version 2.26 and stb_image_writer to version 1.15.

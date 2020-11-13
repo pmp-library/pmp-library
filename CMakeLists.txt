@@ -22,6 +22,7 @@ option(PMP_BUILD_APPS     "Build the PMP applications"  ON)
 option(PMP_BUILD_EXAMPLES "Build the PMP examples"      ON)
 option(PMP_BUILD_TESTS    "Build the PMP test programs" ON)
 option(PMP_BUILD_DOCS     "Build the PMP documentation" ON)
+option(PMP_BUILD_VIS      "Build the PMP visualization tools" ON)
 option(PMP_INSTALL        "Install the PMP library and headers" ON)
 
 # set output paths
@@ -31,56 +32,55 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-set(GLFW_SOURCE_DIR "external/glfw")
-set(GLEW_SOURCE_DIR "external/glew")
-set(IMGUI_SOURCE_DIR "external/imgui")
-set(EIGEN_SOURCE_DIR "external/eigen")
-set(RPLY_SOURCE_DIR "external/rply")
-set(STBI_SOURCE_DIR "external/stb_image")
+if(PMP_BUILD_VIS)
+  set(GLFW_SOURCE_DIR "external/glfw")
+  set(GLEW_SOURCE_DIR "external/glew")
+  set(IMGUI_SOURCE_DIR "external/imgui")
+  set(STBI_SOURCE_DIR "external/stb_image")
 
-# setup STB Image
-# (place *before* GLFW since GLFW has an old copy of stb_image_write.h)
-include_directories(${STBI_SOURCE_DIR})
-add_subdirectory(${STBI_SOURCE_DIR})
+  # setup STB Image
+  # (place *before* GLFW since GLFW has an old copy of stb_image_write.h)
+  include_directories(${STBI_SOURCE_DIR})
+  add_subdirectory(${STBI_SOURCE_DIR})
 
-# Building only the GLFW lib
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
-set(GLFW_INSTALL OFF CACHE BOOL "")
+  # Building only the GLFW lib
+  set(BUILD_SHARED_LIBS OFF CACHE BOOL "")
+  set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
+  set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
+  set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
+  set(GLFW_INSTALL OFF CACHE BOOL "")
 
-# setup use of GLFW and GLEW
-if (NOT EMSCRIPTEN)
-    add_subdirectory(${GLFW_SOURCE_DIR} ${GLEW_SOURCE_DIR})
+  # setup use of GLFW and GLEW
+  if (NOT EMSCRIPTEN)
+      add_subdirectory(${GLFW_SOURCE_DIR} ${GLEW_SOURCE_DIR})
 
-    include_directories(${GLFW_SOURCE_DIR}/include
-                        ${GLFW_SOURCE_DIR}/deps
-                        ${GLEW_SOURCE_DIR}/include)
+      include_directories(${GLFW_SOURCE_DIR}/include
+                          ${GLFW_SOURCE_DIR}/deps
+                          ${GLEW_SOURCE_DIR}/include)
 
-    add_definitions(-DGLEW_STATIC)
-    add_library(glew STATIC
-                ${GLEW_SOURCE_DIR}/src/glew.c
-                ${GLEW_SOURCE_DIR}/include)
-    target_link_libraries(glew ${GLFW_LIBRARIES})
-
-else()
-
+      add_definitions(-DGLEW_STATIC)
+      add_library(glew STATIC
+                  ${GLEW_SOURCE_DIR}/src/glew.c
+                  ${GLEW_SOURCE_DIR}/include)
+      target_link_libraries(glew ${GLFW_LIBRARIES})
+  else()
     # GLEW and GLFW are built-in
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_GLFW=3")
+  endif()
 
-endif()
-
-# setup IMGUI
-include_directories(${IMGUI_SOURCE_DIR})
-add_subdirectory(${IMGUI_SOURCE_DIR})
-
-# setup PLY
-include_directories(${RPLY_SOURCE_DIR})
-add_subdirectory(${RPLY_SOURCE_DIR})
+  # setup IMGUI
+  include_directories(${IMGUI_SOURCE_DIR})
+  add_subdirectory(${IMGUI_SOURCE_DIR})
+endif(PMP_BUILD_VIS)
 
 # setup Eigen
+set(EIGEN_SOURCE_DIR "external/eigen")
 include_directories(${EIGEN_SOURCE_DIR})
+
+# setup PLY
+set(RPLY_SOURCE_DIR "external/rply")
+include_directories(${RPLY_SOURCE_DIR})
+add_subdirectory(${RPLY_SOURCE_DIR})
 
 include(AddFileDependencies)
 include_directories(${PROJECT_SOURCE_DIR}/src/)
@@ -132,7 +132,7 @@ if(WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_USE_MATH_DEFINES -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS")
 endif()
 
-if (EMSCRIPTEN)
+if(EMSCRIPTEN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -s WASM=1 --no-heap-copy -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s MINIFY_HTML=0")
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
@@ -168,7 +168,7 @@ include(clang-tidy)
 
 
 # which directories to process
-if (EMSCRIPTEN)
+if(EMSCRIPTEN)
     add_subdirectory(src/pmp)
     if (PMP_BUILD_APPS)
         add_subdirectory(src/apps)

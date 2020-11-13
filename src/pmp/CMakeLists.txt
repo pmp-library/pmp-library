@@ -15,7 +15,7 @@ if(NOT (UNIX AND ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")))
   endif()
 endif()
 
-if (WIN32 OR EMSCRIPTEN)
+if(WIN32 OR EMSCRIPTEN)
   add_library(pmp STATIC ${SOURCES} ${HEADERS} $<TARGET_OBJECTS:rply>)
 elseif(UNIX)
   add_library(pmp SHARED ${SOURCES} ${HEADERS} $<TARGET_OBJECTS:rply>)
@@ -54,6 +54,8 @@ if(NOT EMSCRIPTEN AND PMP_INSTALL)
 
 endif()
 
+if(PMP_BUILD_VIS)
 add_subdirectory(visualization)
+endif()
 
 include(algorithms/CMakeLists.txt)
