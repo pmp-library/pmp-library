@@ -1,5 +1,5 @@
 
-if(EMSCRIPTEN and PMP_BUILD_VIS)
+if(EMSCRIPTEN AND PMP_BUILD_VIS)
 
     add_executable(mview mview.cpp data/shell.html)
     target_link_libraries(mview pmp_vis)
