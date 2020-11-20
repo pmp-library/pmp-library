@@ -1,5 +1,5 @@
 
-if (EMSCRIPTEN)
+if(EMSCRIPTEN AND PMP_BUILD_VIS)
 
     add_executable(mview mview.cpp data/shell.html)
     target_link_libraries(mview pmp_vis)
@@ -47,7 +47,7 @@ else()
       target_link_libraries(mconvert pmp)
     endif()
 
-    if(OpenGL_FOUND)
+    if(OpenGL_FOUND AND PMP_BUILD_VIS)
         add_executable(mview mview.cpp)
         target_link_libraries(mview pmp_vis)
 
