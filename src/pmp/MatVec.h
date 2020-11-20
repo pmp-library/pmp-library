@@ -1147,11 +1147,11 @@ inline Scalar distance(const Vector<Scalar, N>& v0, const Vector<Scalar, N>& v1)
     return (Scalar)sqrt(dist);
 }
 
-//! compute perpendicular vector (rotate vector by 90 degrees)
+//! compute perpendicular vector (rotate vector counter-clockwise by 90 degrees)
 template <typename Scalar>
 inline Vector<Scalar, 2> perp(const Vector<Scalar, 2>& v)
 {
-    return Vector<Scalar, 2>(v[1], -v[0]);
+    return Vector<Scalar, 2>(-v[1], v[0]);
 }
 
 //! compute the cross product of two vectors (only valid for 3D vectors)
