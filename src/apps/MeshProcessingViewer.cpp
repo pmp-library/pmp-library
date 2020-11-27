@@ -246,6 +246,12 @@ void MeshProcessingViewer::process_imgui()
             SurfaceSubdivision(mesh_).sqrt3();
             update_mesh();
         }
+
+        if (ImGui::Button("Catmull-Clark Subdivision"))
+        {
+            SurfaceSubdivision(mesh_).catmull_clark();
+            update_mesh();
+        }
     }
 
     ImGui::Spacing();
