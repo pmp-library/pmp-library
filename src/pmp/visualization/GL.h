@@ -5,9 +5,7 @@
 
 // Windows
 #if _WIN32
-#define NOMINMAX
 #include <Windows.h>
-#undef NOMINMAX
 #endif
 
 #include <GL/glew.h>
