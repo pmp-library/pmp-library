@@ -8,6 +8,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+- Update googletest to version 1.10.0
 - Change sign of vec2::perp() to correctly model CCW rotation by 90 degrees.
 - Add PMP_BUILD_VIS CMake option to enable / disable building the pmp_vis
   library and its dependecies.
