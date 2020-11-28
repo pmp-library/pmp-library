@@ -86,7 +86,7 @@ include(AddFileDependencies)
 include_directories(${PROJECT_SOURCE_DIR}/src/)
 
 # setup for code coverage testing
-if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCXX AND ENABLE_COVERAGE)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND CMAKE_COMPILER_IS_GNUCXX AND ENABLE_COVERAGE)
   enable_testing()
 
   # set compiler flags
@@ -127,7 +127,7 @@ if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
   endif()
 endif()
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" AND NOT EMSCRIPTEN)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT EMSCRIPTEN)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -Wno-unused-parameter")
 endif()
 
