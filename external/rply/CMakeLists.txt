@@ -1,4 +1,8 @@
 file(GLOB SOURCES ./*.c)
 file(GLOB HEADERS ./*.h)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+if(WIN32)
+  add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+  add_compile_options(/wd4700)
+endif()
 add_library(rply OBJECT ${SOURCES} ${HEADERS})
