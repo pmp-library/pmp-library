@@ -1,0 +1,39 @@
+name: docs
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  docs:
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Install dependencies
+      run: sudo apt-get install doxygen jekyll ruby-jekyll-seo-tag ruby-jekyll-feed xorg-dev texlive-base
+
+    - name: Create build directory
+      run: cmake -E make_directory ${{runner.workspace}}/build
+
+    - name: Configure CMake
+      shell: bash
+      working-directory: ${{runner.workspace}}/build
+      run: cmake $GITHUB_WORKSPACE
+
+    - name: Build docs
+      working-directory: ${{runner.workspace}}/build
+      shell: bash
+      run: cmake --build . --target docs
+
+    - name: GH Pages Deployment
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ${{runner.workspace}}/build/docs/html/
+        force_orphan: true
+        publish_branch: gh-pages
+        cname: www.pmp-library.org
