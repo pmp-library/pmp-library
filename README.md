@@ -1,7 +1,6 @@
 <img src="docs/images/pmp-logo-text.png" alt="logo" width="750px"/>
 
-[![Build Status](https://travis-ci.org/pmp-library/pmp-library.svg?branch=master)](https://travis-ci.org/pmp-library/pmp-library)
-[![Build status](https://ci.appveyor.com/api/projects/status/48ipcc9q7u09adn5?branch=master&svg=true)](https://ci.appveyor.com/project/dsieger/pmp-library)
+![build](https://github.com/pmp-library/pmp-library/workflows/build/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/pmp-library/pmp-library/badge.svg?branch=master)](https://coveralls.io/github/pmp-library/pmp-library?branch=master)
 
 The Polygon Mesh Processing Library is a modern C++ open-source library for
