@@ -18,6 +18,7 @@ jobs:
         submodules: true
 
     - name: Install requirements
+      if: runner.os == 'Linux'
       run: sudo apt-get install xorg-dev libglfw3-dev
 
     - name: Create build directory
