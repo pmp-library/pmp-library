@@ -1,6 +1,14 @@
 name: build
 
 on: [push, pull_request]
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - '.github/workflows/docs.yml'
+  pull_request:
+    paths-ignore:
+    - 'docs/**'
+    - '.github/workflows/docs.yml'
 
 env:
   BUILD_TYPE: Release
