@@ -14,7 +14,7 @@ jobs:
         submodules: true
 
     - name: Install dependencies
-      run: sudo apt-get install doxygen jekyll ruby-jekyll-seo-tag ruby-jekyll-feed xorg-dev
+      run: sudo apt-get install doxygen jekyll ruby-jekyll-seo-tag ruby-jekyll-feed xorg-dev texlive-base
 
     - name: Create build directory
       run: cmake -E make_directory ${{runner.workspace}}/build
