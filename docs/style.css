@@ -173,18 +173,15 @@ div.fragment {
 
 pre.fragment {
     font-family: inconsolataregular;
-    font-size: 110%;
 }
 
 div.line {
     font-family: inconsolataregular;
-    font-size: 110%;
     line-height: 1.1rem;
 }
 
 code {
   font-family: inconsolataregular;
-  font-size: 110%;
 }
 
 .overload {
@@ -198,13 +195,11 @@ table.directory {
 .entry, .memitem, .memItemLeft, .memItemRight
 {
     font-family: inconsolataregular;
-    font-size: 110%;
 }
 
 a.el {
     font-family: inconsolataregular;
     font-weight: normal;
-    font-size: 110%;
 }
 
 table.doxtable th {
@@ -219,7 +214,6 @@ table.doxtable th {
 .memtitle, table.memname {
     font-family: inconsolataregular;
     font-weight: normal;
-    font-size: 110%;
 }
 
 div.groupHeader {
