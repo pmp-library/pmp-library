@@ -7,6 +7,8 @@
 
 namespace pmp {
 
+//! \ingroup algorithms
+//! \brief Calculate barycentric coordinates of point p in triangle (uvw).
 template <typename Scalar>
 const Vector<Scalar, 3> barycentric_coordinates(const Vector<Scalar, 3>& p,
                                                 const Vector<Scalar, 3>& u,
