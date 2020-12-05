@@ -103,7 +103,14 @@ void SurfaceSmoothing::explicit_smoothing(unsigned int iters,
                     w += eweight[e];
                 }
 
-                l /= w;
+                if (1.0 + w == 1.0)
+                {
+                    l = Point(0, 0, 0);
+                }
+                else
+                {
+                    l /= w;
+                }
             }
 
             laplace[v] = l;
