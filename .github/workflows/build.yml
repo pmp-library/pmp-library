@@ -28,6 +28,7 @@ jobs:
         submodules: true
 
     - name: Modify apt sources
+      if: runner.os == 'Linux'
       run: sudo sed -i 's/azure\.//' /etc/apt/sources.list && sudo apt-get update
 
     - name: Install dependencies
