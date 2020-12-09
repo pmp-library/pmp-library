@@ -8,15 +8,15 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+- Update Eigen to version 3.3.9
 - Update googletest to version 1.10.0
 - Change sign of vec2::perp() to correctly model CCW rotation by 90 degrees.
 - Add PMP_BUILD_VIS CMake option to enable / disable building the pmp_vis
-  library and its dependecies.
+  library and its dependencies.
 - SurfaceFeatures now returns the number of boundary / feature edges detected.
 - Add SurfacePrimitives class to generate basic shapes.
 - Update stb_image to version 2.26 and stb_image_writer to version 1.15.
 - Update GLFW to branch 3.3-stable to fix keyboard input on Linux.
-- Update Eigen to post-3.3.8 version
 - Improve API by reporting errors using exceptions (see #16).
 - Add post-increment iterators and make low level functions to add elements
   public. This makes it possible to use CGAL algorithms on a PMP SurfaceMesh.
