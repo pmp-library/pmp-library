@@ -27,6 +27,9 @@ jobs:
       with:
         submodules: true
 
+    - name: Modify apt sources
+      run: sudo sed -i 's/azure\.//' /etc/apt/sources.list && sudo apt-get update
+
     - name: Install dependencies
       if: runner.os == 'Linux'
       run: sudo apt-get install -o Acquire::Retries=3 xorg-dev libglfw3-dev libglu1-mesa-dev
