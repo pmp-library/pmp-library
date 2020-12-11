@@ -193,7 +193,7 @@ double voronoi_area(const SurfaceMesh& mesh, Vertex v)
                 cotq = dotq / triArea;
                 cotr = dotr / triArea;
 
-                // clamp cot(angle) by clamping angle to [1,179]
+                // clamp cot(angle) by clamping angle to [3, 177]
                 area += 0.125 * (sqrnorm(pr) * clamp_cot(cotq) +
                                  sqrnorm(pq) * clamp_cot(cotr));
             }
