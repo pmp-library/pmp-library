@@ -94,6 +94,18 @@ TEST_F(DifferentialGeometryTest, surface_area)
 #endif
 }
 
+TEST_F(DifferentialGeometryTest, mesh_volume)
+{
+    unit_sphere();
+    auto volume = mesh_volume(mesh);
+
+#ifdef PMP_SCALAR_TYPE_64
+    EXPECT_FLOAT_EQ(volume, 4.18733706);
+#else
+    EXPECT_FLOAT_EQ(volume, 4.18731928);
+#endif
+}
+
 TEST_F(DifferentialGeometryTest, centroid)
 {
     unit_sphere();

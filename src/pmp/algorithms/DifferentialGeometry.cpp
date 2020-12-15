@@ -36,6 +36,27 @@ Scalar surface_area(const SurfaceMesh& mesh)
     return area;
 }
 
+Scalar mesh_volume(const SurfaceMesh& mesh)
+{
+    if (!mesh.is_triangle_mesh())
+    {
+       throw InvalidInputException("Input is not a pure triangle mesh!");
+    }
+
+    Scalar volume(0);
+    for (const auto& f : mesh.faces())
+    {
+        auto fv = mesh.vertices(f);
+        const auto& p0 = mesh.position(*fv);
+        const auto& p1 = mesh.position(*(++fv));
+        const auto& p2 = mesh.position(*(++fv));
+
+        volume += 1.0f / 6.0f * dot(cross(p0, p1), p2);
+    }
+
+    return std::abs(volume);
+}
+
 Point centroid(const SurfaceMesh& mesh, Face f)
 {
     Point c(0, 0, 0);
