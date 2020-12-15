@@ -193,7 +193,7 @@ double voronoi_area(const SurfaceMesh& mesh, Vertex v)
                 cotq = dotq / triArea;
                 cotr = dotr / triArea;
 
-                // clamp cot(angle) by clamping angle to [1,179]
+                // clamp cot(angle) by clamping angle to [3, 177]
                 area += 0.125 * (sqrnorm(pr) * clamp_cot(cotq) +
                                  sqrnorm(pq) * clamp_cot(cotr));
             }
@@ -230,7 +230,7 @@ double voronoi_area_barycentric(const SurfaceMesh& mesh, Vertex v)
             pr = mesh.position(mesh.to_vertex(h1));
             pr -= p;
 
-            area += norm(cross(pq, pr)) / 3.0;
+            area += norm(cross(pq, pr)) / 6.0;
         }
     }
 
