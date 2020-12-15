@@ -9,6 +9,14 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: .5em;
 }
 
+.textblock h1 {
+    font-size: x-large;
+}
+
+.textblock h2 {
+    font-size: large;
+}
+
 #nav-sync
 {
     visibility: hidden;
@@ -165,18 +173,15 @@ div.fragment {
 
 pre.fragment {
     font-family: inconsolataregular;
-    font-size: 110%;
 }
 
 div.line {
     font-family: inconsolataregular;
-    font-size: 110%;
     line-height: 1.1rem;
 }
 
 code {
   font-family: inconsolataregular;
-  font-size: 110%;
 }
 
 .overload {
@@ -190,13 +195,11 @@ table.directory {
 .entry, .memitem, .memItemLeft, .memItemRight
 {
     font-family: inconsolataregular;
-    font-size: 110%;
 }
 
 a.el {
     font-family: inconsolataregular;
     font-weight: normal;
-    font-size: 110%;
 }
 
 table.doxtable th {
@@ -211,7 +214,6 @@ table.doxtable th {
 .memtitle, table.memname {
     font-family: inconsolataregular;
     font-weight: normal;
-    font-size: 110%;
 }
 
 div.groupHeader {

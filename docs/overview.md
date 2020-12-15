@@ -9,14 +9,14 @@ canonical geometry processing algorithms such as remeshing, simplification,
 subdivision, and smoothing. The optional @ref visualization module
 provides OpenGL&reg;-based viewers and visualization tools.
 
-## The `core` Module
+## Core
 
 The @ref core of the library provides a simple and efficient data structure for
 representing polygon surface meshes, pmp::SurfaceMesh. It also defines basic
 types such as 3D points and vectors as well as a basic utility classes for
 timing and memory profiling.
 
-## The `algorithms` Module
+## Algorithms
 
 The @ref algorithms module provides implementations of canonical geometry
 processing algorithms such as remeshing or mesh simplification. The class
@@ -25,7 +25,7 @@ class for one type of tasks and name it accordingly. Example: the
 pmp::SurfaceRemeshing class provides remeshing algorithms operating on surface
 meshes.
 
-## The `visualization` Module
+## Visualization
 
 In order to easily create visualizations the library contains an optional @ref
 visualization module including basic viewers, e.g., pmp::MeshViewer. The
