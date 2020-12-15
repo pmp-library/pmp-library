@@ -20,6 +20,43 @@ sure that your code follows the [Coding Style](codingstyle.html) guidelines. In
 case you want to contribute a new algorithm make sure the code is properly
 documented using Doxygen and is accompanied by a unit test, see below.
 
+## Developer Certificate of Origin
+
+Before we can integrate your contribution, we need your permission to do so. We
+use a mechanism called
+[Developer Certificate of Origin (DCO)](https://developercertificate.org/) for
+this. The DCO is a legally binding agreement which asserts that:
+
+1. You have the right to submit the contribution
+2. You agree to the license used by the project (see [LICENSE.txt](https://github.com/pmp-library/pmp-library/blob/master/LICENSE.txt))
+
+In order to agree to the [terms](https://developercertificate.org/) of the DCO,
+you need to "sign off" every commit you wish to contribute by adding a line with
+your full name and e-mail address at the end of the commit message:
+
+```text
+Sign-off-by: Jane Miller <jane.miller@example.com>
+```
+
+**Important**: You must use your real name for signing. We **do not** accept
+anonymous contributions or submissions done under a pseudonym.
+
+If you configured your Git `user.name` and `user.email` appropriately, you can
+sign your commit automatically by
+
+```sh
+git commit -s
+```
+
+Alternatively, you may create an alias in your `.gitconfig` to append `-s` to
+each invocation of `git commit`.
+
+If you forgot to sign a previous commit, you can also amend the sign-off by running
+
+```sh
+git commit --amend -s
+```
+
 ## Unit Testing
 
 The pmp-library has a suite of unit tests that aims at making sure everything
