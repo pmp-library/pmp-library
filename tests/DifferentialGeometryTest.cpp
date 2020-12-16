@@ -94,15 +94,15 @@ TEST_F(DifferentialGeometryTest, surface_area)
 #endif
 }
 
-TEST_F(DifferentialGeometryTest, mesh_volume)
+TEST_F(DifferentialGeometryTest, volume)
 {
     unit_sphere();
-    auto volume = mesh_volume(mesh);
+    auto v = volume(mesh);
 
 #ifdef PMP_SCALAR_TYPE_64
-    EXPECT_FLOAT_EQ(volume, 4.18733706);
+    EXPECT_FLOAT_EQ(v, 4.18733706);
 #else
-    EXPECT_FLOAT_EQ(volume, 4.18731928);
+    EXPECT_FLOAT_EQ(v, 4.18731928);
 #endif
 }
 

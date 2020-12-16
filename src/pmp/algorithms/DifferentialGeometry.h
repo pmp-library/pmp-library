@@ -58,9 +58,11 @@ Scalar triangle_area(const SurfaceMesh& mesh, Face f);
 //! surface area of the mesh (assumes triangular faces)
 Scalar surface_area(const SurfaceMesh& mesh);
 
-//! volume of the mesh (assumes triangular faces). see
-//! \cite zhang_2002_efficient
-Scalar mesh_volume(const SurfaceMesh& mesh);
+//! \brief Compute the volume of a mesh
+//! \details See \cite zhang_2002_efficient for details.
+//! \pre Input mesh needs to be a pure triangle mesh.
+//! \throw InvalidInputException if the input precondition is violated.
+Scalar volume(const SurfaceMesh& mesh);
 
 //! barycenter/centroid of a face
 Point centroid(const SurfaceMesh& mesh, Face f);
