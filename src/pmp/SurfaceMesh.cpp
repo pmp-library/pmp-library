@@ -276,22 +276,22 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
 
     Vertex v;
     size_t i, ii, id;
-    Halfedge innerNext, innerPrev, outerNext, outerPrev, boundaryNext,
-        boundaryPrev, patchStart, patchEnd;
+    Halfedge inner_next, inner_prev, outer_next, outer_prev, boundary_next,
+        boundary_prev, patch_start, patch_end;
 
     // use global arrays to avoid new/delete of local arrays!!!
     std::vector<Halfedge>& halfedges = add_face_halfedges_;
-    std::vector<bool>& isNew = add_face_is_new_;
-    std::vector<bool>& needsAdjust = add_face_needs_adjust_;
-    NextCache& nextCache = add_face_next_cache_;
+    std::vector<bool>& is_new = add_face_is_new_;
+    std::vector<bool>& needs_adjust = add_face_needs_adjust_;
+    NextCache& next_cache = add_face_next_cache_;
     halfedges.clear();
     halfedges.resize(n);
-    isNew.clear();
-    isNew.resize(n);
-    needsAdjust.clear();
-    needsAdjust.resize(n, false);
-    nextCache.clear();
-    nextCache.reserve(3 * n);
+    is_new.clear();
+    is_new.resize(n);
+    needs_adjust.clear();
+    needs_adjust.resize(n, false);
+    next_cache.clear();
+    next_cache.reserve(3 * n);
 
     // test for topological errors
     for (i = 0, ii = 1; i < n; ++i, ++ii, ii %= n)
@@ -303,9 +303,9 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
         }
 
         halfedges[i] = find_halfedge(vertices[i], vertices[ii]);
-        isNew[i] = !halfedges[i].is_valid();
+        is_new[i] = !halfedges[i].is_valid();
 
-        if (!isNew[i] && !is_boundary(halfedges[i]))
+        if (!is_new[i] && !is_boundary(halfedges[i]))
         {
             auto what = "SurfaceMesh::add_face: Complex edge.";
             throw TopologyException(what);
@@ -315,32 +315,32 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
     // re-link patches if necessary
     for (i = 0, ii = 1; i < n; ++i, ++ii, ii %= n)
     {
-        if (!isNew[i] && !isNew[ii])
+        if (!is_new[i] && !is_new[ii])
         {
-            innerPrev = halfedges[i];
-            innerNext = halfedges[ii];
+            inner_prev = halfedges[i];
+            inner_next = halfedges[ii];
 
-            if (next_halfedge(innerPrev) != innerNext)
+            if (next_halfedge(inner_prev) != inner_next)
             {
                 // here comes the ugly part... we have to relink a whole patch
 
                 // search a free gap
                 // free gap will be between boundaryPrev and boundaryNext
-                outerPrev = opposite_halfedge(innerNext);
-                outerNext = opposite_halfedge(innerPrev);
-                boundaryPrev = outerPrev;
+                outer_prev = opposite_halfedge(inner_next);
+                outer_next = opposite_halfedge(inner_prev);
+                boundary_prev = outer_prev;
                 do
                 {
-                    boundaryPrev =
-                        opposite_halfedge(next_halfedge(boundaryPrev));
-                } while (!is_boundary(boundaryPrev) ||
-                         boundaryPrev == innerPrev);
-                boundaryNext = next_halfedge(boundaryPrev);
-                assert(is_boundary(boundaryPrev));
-                assert(is_boundary(boundaryNext));
+                    boundary_prev =
+                        opposite_halfedge(next_halfedge(boundary_prev));
+                } while (!is_boundary(boundary_prev) ||
+                         boundary_prev == inner_prev);
+                boundary_next = next_halfedge(boundary_prev);
+                assert(is_boundary(boundary_prev));
+                assert(is_boundary(boundary_next));
 
                 // ok ?
-                if (boundaryNext == innerNext)
+                if (boundary_next == inner_next)
                 {
                     auto what =
                         "SurfaceMesh::add_face: Patch re-linking failed.";
@@ -348,13 +348,13 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
                 }
 
                 // other halfedges' handles
-                patchStart = next_halfedge(innerPrev);
-                patchEnd = prev_halfedge(innerNext);
+                patch_start = next_halfedge(inner_prev);
+                patch_end = prev_halfedge(inner_next);
 
                 // relink
-                nextCache.emplace_back(boundaryPrev, patchStart);
-                nextCache.emplace_back(patchEnd, boundaryNext);
-                nextCache.emplace_back(innerPrev, innerNext);
+                next_cache.emplace_back(boundary_prev, patch_start);
+                next_cache.emplace_back(patch_end, boundary_next);
+                next_cache.emplace_back(inner_prev, inner_next);
             }
         }
     }
@@ -362,7 +362,7 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
     // create missing edges
     for (i = 0, ii = 1; i < n; ++i, ++ii, ii %= n)
     {
-        if (isNew[i])
+        if (is_new[i])
         {
             halfedges[i] = new_edge(vertices[i], vertices[ii]);
         }
@@ -376,63 +376,63 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
     for (i = 0, ii = 1; i < n; ++i, ++ii, ii %= n)
     {
         v = vertices[ii];
-        innerPrev = halfedges[i];
-        innerNext = halfedges[ii];
+        inner_prev = halfedges[i];
+        inner_next = halfedges[ii];
 
         id = 0;
-        if (isNew[i])
+        if (is_new[i])
             id |= 1;
-        if (isNew[ii])
+        if (is_new[ii])
             id |= 2;
 
         if (id)
         {
-            outerPrev = opposite_halfedge(innerNext);
-            outerNext = opposite_halfedge(innerPrev);
+            outer_prev = opposite_halfedge(inner_next);
+            outer_next = opposite_halfedge(inner_prev);
 
             // set outer links
             switch (id)
             {
                 case 1: // prev is new, next is old
-                    boundaryPrev = prev_halfedge(innerNext);
-                    nextCache.emplace_back(boundaryPrev, outerNext);
-                    set_halfedge(v, outerNext);
+                    boundary_prev = prev_halfedge(inner_next);
+                    next_cache.emplace_back(boundary_prev, outer_next);
+                    set_halfedge(v, outer_next);
                     break;
 
                 case 2: // next is new, prev is old
-                    boundaryNext = next_halfedge(innerPrev);
-                    nextCache.emplace_back(outerPrev, boundaryNext);
-                    set_halfedge(v, boundaryNext);
+                    boundary_next = next_halfedge(inner_prev);
+                    next_cache.emplace_back(outer_prev, boundary_next);
+                    set_halfedge(v, boundary_next);
                     break;
 
                 case 3: // both are new
                     if (!halfedge(v).is_valid())
                     {
-                        set_halfedge(v, outerNext);
-                        nextCache.emplace_back(outerPrev, outerNext);
+                        set_halfedge(v, outer_next);
+                        next_cache.emplace_back(outer_prev, outer_next);
                     }
                     else
                     {
-                        boundaryNext = halfedge(v);
-                        boundaryPrev = prev_halfedge(boundaryNext);
-                        nextCache.emplace_back(boundaryPrev, outerNext);
-                        nextCache.emplace_back(outerPrev, boundaryNext);
+                        boundary_next = halfedge(v);
+                        boundary_prev = prev_halfedge(boundary_next);
+                        next_cache.emplace_back(boundary_prev, outer_next);
+                        next_cache.emplace_back(outer_prev, boundary_next);
                     }
                     break;
             }
 
             // set inner link
-            nextCache.emplace_back(innerPrev, innerNext);
+            next_cache.emplace_back(inner_prev, inner_next);
         }
         else
-            needsAdjust[ii] = (halfedge(v) == innerNext);
+            needs_adjust[ii] = (halfedge(v) == inner_next);
 
         // set face handle
         set_face(halfedges[i], f);
     }
 
     // process next halfedge cache
-    NextCache::const_iterator ncIt(nextCache.begin()), ncEnd(nextCache.end());
+    NextCache::const_iterator ncIt(next_cache.begin()), ncEnd(next_cache.end());
     for (; ncIt != ncEnd; ++ncIt)
     {
         set_next_halfedge(ncIt->first, ncIt->second);
@@ -441,7 +441,7 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
     // adjust vertices' halfedge handle
     for (i = 0; i < n; ++i)
     {
-        if (needsAdjust[i])
+        if (needs_adjust[i])
         {
             adjust_outgoing_halfedge(vertices[i]);
         }
