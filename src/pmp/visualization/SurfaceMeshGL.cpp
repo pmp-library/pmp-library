@@ -17,6 +17,7 @@ SurfaceMeshGL::SurfaceMeshGL()
     // initialize GL buffers to zero
     vertex_array_object_ = 0;
     vertex_buffer_ = 0;
+    vertex_color_buffer_ = 0;
     normal_buffer_ = 0;
     tex_coord_buffer_ = 0;
     edge_buffer_ = 0;
@@ -28,6 +29,7 @@ SurfaceMeshGL::SurfaceMeshGL()
     n_triangles_ = 0;
     n_features_ = 0;
     have_texcoords_ = false;
+    have_vertex_colors_ = false;
 
     // material parameters
     front_color_ = vec3(0.6, 0.6, 0.6);
@@ -38,6 +40,7 @@ SurfaceMeshGL::SurfaceMeshGL()
     shininess_ = 100.0;
     alpha_ = 1.0;
     srgb_ = false;
+    use_vertex_color_if_has_ = false;
     crease_angle_ = 180.0;
 
     // initialize texture
@@ -49,6 +52,7 @@ SurfaceMeshGL::~SurfaceMeshGL()
 {
     // delete OpenGL buffers
     glDeleteBuffers(1, &vertex_buffer_);
+    glDeleteBuffers(1, &vertex_color_buffer_);
     glDeleteBuffers(1, &normal_buffer_);
     glDeleteBuffers(1, &tex_coord_buffer_);
     glDeleteBuffers(1, &edge_buffer_);
@@ -234,6 +238,7 @@ void SurfaceMeshGL::update_opengl_buffers()
         glGenVertexArrays(1, &vertex_array_object_);
         glBindVertexArray(vertex_array_object_);
         glGenBuffers(1, &vertex_buffer_);
+        glGenBuffers(1, &vertex_color_buffer_);
         glGenBuffers(1, &normal_buffer_);
         glGenBuffers(1, &tex_coord_buffer_);
         glGenBuffers(1, &edge_buffer_);
@@ -245,6 +250,7 @@ void SurfaceMeshGL::update_opengl_buffers()
 
     // get vertex properties
     auto vpos = get_vertex_property<Point>("v:point");
+    auto vcolor = get_vertex_property<Color>("v:color");
     auto vtex = get_vertex_property<TexCoord>("v:tex");
     auto htex = get_halfedge_property<TexCoord>("h:tex");
 
@@ -254,6 +260,7 @@ void SurfaceMeshGL::update_opengl_buffers()
     // produce arrays of points, normals, and texcoords
     // (duplicate vertices to allow for flat shading)
     std::vector<vec3> positionArray;
+    std::vector<vec3> position_color_array;
     std::vector<vec3> normalArray;
     std::vector<vec2> texArray;
     std::vector<ivec3> triangles;
@@ -266,6 +273,9 @@ void SurfaceMeshGL::update_opengl_buffers()
         normalArray.reserve(3 * n_faces());
         if (htex || vtex)
             texArray.reserve(3 * n_faces());
+
+        if (vcolor && use_vertex_color_if_has_)
+            position_color_array.reserve(3 * n_faces());
 
         // precompute normals for easy cases
         FaceProperty<Normal> fnormals;
@@ -287,6 +297,7 @@ void SurfaceMeshGL::update_opengl_buffers()
         std::vector<Halfedge> cornerHalfedges;
         std::vector<Vertex> cornerVertices;
         std::vector<vec3> cornerPositions;
+        std::vector<vec3> corner_position_colors;
         std::vector<vec3> cornerNormals;
         std::vector<vec2> cornerTexCoords;
 
@@ -302,6 +313,7 @@ void SurfaceMeshGL::update_opengl_buffers()
             cornerHalfedges.clear();
             cornerVertices.clear();
             cornerPositions.clear();
+            corner_position_colors.clear();
             cornerNormals.clear();
             cornerTexCoords.clear();
             Vertex v;
@@ -313,6 +325,7 @@ void SurfaceMeshGL::update_opengl_buffers()
                 cornerHalfedges.push_back(h);
                 cornerVertices.push_back(v);
                 cornerPositions.push_back((vec3)vpos[v]);
+                corner_position_colors.push_back((vec3)vcolor[v]);
 
                 if (crease_angle_ < 1)
                 {
@@ -363,6 +376,13 @@ void SurfaceMeshGL::update_opengl_buffers()
                     texArray.push_back(cornerTexCoords[i2]);
                 }
 
+                if (vcolor && use_vertex_color_if_has_)
+                {
+                    position_color_array.push_back(corner_position_colors[i0]);
+                    position_color_array.push_back(corner_position_colors[i1]);
+                    position_color_array.push_back(corner_position_colors[i2]);
+                }
+
                 vertex_indices[cornerVertices[i0]] = vidx++;
                 vertex_indices[cornerVertices[i1]] = vidx++;
                 vertex_indices[cornerVertices[i2]] = vidx++;
@@ -393,6 +413,13 @@ void SurfaceMeshGL::update_opengl_buffers()
             normalArray.reserve(n_vertices());
             for (auto v : vertices())
                 normalArray.push_back((vec3)normals[v]);
+        }
+
+        if (vcolor && use_vertex_color_if_has_)
+        {
+            position_color_array.reserve(n_vertices());
+            for (auto v : vertices())
+                position_color_array.push_back((vec3)vcolor[v]);
         }
     }
 
@@ -431,6 +458,20 @@ void SurfaceMeshGL::update_opengl_buffers()
     }
     else
         have_texcoords_ = false;
+
+    // upload colors of vertices
+    if (!position_color_array.empty())
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_color_buffer_);
+        glBufferData(GL_ARRAY_BUFFER,
+                     position_color_array.size() * 3 * sizeof(float),
+                     position_color_array.data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glEnableVertexAttribArray(3);
+        have_vertex_colors_ = true;
+    }
+    else
+        have_vertex_colors_ = false;
 
     // edge indices
     if (n_edges())
@@ -543,6 +584,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     phong_shader_.set_uniform("use_texture", false);
     phong_shader_.set_uniform("use_srgb", false);
     phong_shader_.set_uniform("show_texture_layout", false);
+    phong_shader_.set_uniform("use_vertex_color", have_vertex_colors_);
 
     glBindVertexArray(vertex_array_object_);
 
@@ -569,6 +611,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             phong_shader_.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
             phong_shader_.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
             phong_shader_.set_uniform("use_lighting", false);
+            phong_shader_.set_uniform("use_vertex_color", false);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
             glDrawElements(GL_LINES, n_edges_, GL_UNSIGNED_INT, nullptr);
             glDepthFunc(GL_LESS);
@@ -602,6 +645,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                 phong_shader_.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
                 phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
                 phong_shader_.set_uniform("use_texture", true);
+                phong_shader_.set_uniform("use_vertex_color", false);
                 phong_shader_.set_uniform("use_srgb", srgb_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
                 glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
@@ -614,6 +658,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
         if (n_faces() && have_texcoords_)
         {
             phong_shader_.set_uniform("show_texture_layout", true);
+            phong_shader_.set_uniform("use_vertex_color", false);
             phong_shader_.set_uniform("use_lighting", false);
 
             // draw faces
@@ -638,6 +683,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     {
         phong_shader_.set_uniform("front_color", vec3(0, 1, 0));
         phong_shader_.set_uniform("back_color", vec3(0, 1, 0));
+        phong_shader_.set_uniform("use_vertex_color", false);
         phong_shader_.set_uniform("use_lighting", false);
         glDepthRange(0.0, 1.0);
         glDepthFunc(GL_LEQUAL);
