@@ -13,10 +13,12 @@ R"glsl(
 layout (location=0) in vec4 v_position;
 layout (location=1) in vec3 v_normal;
 layout (location=2) in vec2 v_tex;
+layout (location=3) in vec3 v_color;
 
 out vec3 v2f_normal;
 out vec2 v2f_tex;
 out vec3 v2f_view;
+out vec3 v2f_color;
 
 uniform mat4 modelview_projection_matrix;
 uniform mat4 modelview_matrix;
@@ -30,6 +32,7 @@ void main()
     v2f_tex      = v_tex;
     vec4 pos     = show_texture_layout ? vec4(v_tex, 0.0, 1.0) : v_position;
     v2f_view     = -(modelview_matrix * pos).xyz;
+    v2f_color    = v_color;
     gl_PointSize = point_size;
     gl_Position  = modelview_projection_matrix * pos;
 }
@@ -48,10 +51,12 @@ precision mediump float;
 in vec3  v2f_normal;
 in vec2  v2f_tex;
 in vec3  v2f_view;
+in vec3  v2f_color;
 
 uniform bool   use_lighting;
 uniform bool   use_texture;
 uniform bool   use_srgb;
+uniform bool   use_vertex_color;
 uniform vec3   front_color;
 uniform vec3   back_color;
 uniform float  ambient;
@@ -68,7 +73,7 @@ out vec4 f_color;
 
 void main()
 {
-    vec3 color = gl_FrontFacing ? front_color : back_color;
+    vec3 color = use_vertex_color ? v2f_color : (gl_FrontFacing ? front_color : back_color);
 
     vec3 rgb;
 

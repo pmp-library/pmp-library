@@ -63,6 +63,13 @@ public:
     //! set crease angle (in degrees) for visualization of sharp edges
     void set_crease_angle(Scalar ca);
 
+    //! if has vertex color, then use vertex color to visualize mesh,
+    //! otherwise use back front color to visualize mesh
+    void use_vertex_color_if_has() { use_vertex_color_if_has_ = true; }
+
+    //! use back front color to visualize mesh
+    void use_back_front_color() { use_vertex_color_if_has_ = false; }
+
     //! draw the mesh
     void draw(const mat4& projection_matrix, const mat4& modelview_matrix,
               const std::string draw_mode);
@@ -140,6 +147,7 @@ private:
     //! OpenGL buffers
     GLuint vertex_array_object_;
     GLuint vertex_buffer_;
+    GLuint vertex_color_buffer_;
     GLuint normal_buffer_;
     GLuint tex_coord_buffer_;
     GLuint edge_buffer_;
@@ -151,6 +159,7 @@ private:
     GLsizei n_triangles_;
     GLsizei n_features_;
     bool have_texcoords_;
+    bool have_vertex_colors_;
 
     //! shaders
     Shader phong_shader_;
@@ -160,6 +169,7 @@ private:
     vec3 front_color_, back_color_;
     float ambient_, diffuse_, specular_, shininess_, alpha_;
     bool srgb_;
+    bool use_vertex_color_if_has_;
     float crease_angle_;
 
     //! 1D texture for scalar field rendering
