@@ -8,23 +8,32 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+### Added
+
 - Add support to read non-manifold meshes by duplicating vertices
+- Add SurfacePrimitives class to generate basic shapes.
+- Add support to render colors per face
 - Add support to render colors per vertex, thanks to Xiewei Zhong
 - Add function to compute volume of a mesh, thanks to Xiewei Zhong
-- Update Eigen to version 3.3.9
-- Update googletest to version 1.10.0
-- Change sign of vec2::perp() to correctly model CCW rotation by 90 degrees.
-- Add PMP_BUILD_VIS CMake option to enable / disable building the pmp_vis
-  library and its dependencies.
-- SurfaceFeatures now returns the number of boundary / feature edges detected.
-- Add SurfacePrimitives class to generate basic shapes.
-- Update stb_image to version 2.26 and stb_image_writer to version 1.15.
-- Update GLFW to branch 3.3-stable to fix keyboard input on Linux.
-- Improve API by reporting errors using exceptions (see #16).
 - Add post-increment iterators and make low level functions to add elements
   public. This makes it possible to use CGAL algorithms on a PMP SurfaceMesh.
   Thanks to @afabri for contributing the changes!
 - Add PMP_INSTALL option to CMake.
+- Add PMP_BUILD_VIS CMake option to enable / disable building the pmp_vis
+  library and its dependencies.
+
+### Changed
+
+- Improve API by reporting errors using exceptions (see #16).
+- SurfaceFeatures now returns the number of boundary / feature edges detected.
+- Update Eigen to version 3.3.9
+- Update googletest to version 1.10.0
+- Update stb_image to version 2.26 and stb_image_writer to version 1.15.
+- Update GLFW to branch 3.3-stable to fix keyboard input on Linux.
+
+### Fixed
+
+- Change sign of vec2::perp() to correctly model CCW rotation by 90 degrees.
 
 ## [1.2.1] 2020-05-10
 
