@@ -299,7 +299,7 @@ void SurfaceMeshGL::update_opengl_buffers()
         std::vector<vec3> corner_positions;
         std::vector<vec3> corner_colors;
         std::vector<vec3> corner_normals;
-        std::vector<vec2> corner_Texcoords;
+        std::vector<vec2> corner_texcoords;
 
         // convert from degrees to radians
         const Scalar crease_angle_radians = crease_angle_ / 180.0 * M_PI;
@@ -315,7 +315,7 @@ void SurfaceMeshGL::update_opengl_buffers()
             corner_positions.clear();
             corner_colors.clear();
             corner_normals.clear();
-            corner_Texcoords.clear();
+            corner_texcoords.clear();
             Vertex v;
             Normal n;
 
@@ -343,11 +343,11 @@ void SurfaceMeshGL::update_opengl_buffers()
 
                 if (htex)
                 {
-                    corner_Texcoords.push_back((vec2)htex[h]);
+                    corner_texcoords.push_back((vec2)htex[h]);
                 }
                 else if (vtex)
                 {
-                    corner_Texcoords.push_back((vec2)vtex[v]);
+                    corner_texcoords.push_back((vec2)vtex[v]);
                 }
 
                 if (vcolor && use_vertex_colors_)
@@ -375,9 +375,9 @@ void SurfaceMeshGL::update_opengl_buffers()
 
                 if (htex || vtex)
                 {
-                    tex_array.push_back(corner_Texcoords[i0]);
-                    tex_array.push_back(corner_Texcoords[i1]);
-                    tex_array.push_back(corner_Texcoords[i2]);
+                    tex_array.push_back(corner_texcoords[i0]);
+                    tex_array.push_back(corner_texcoords[i1]);
+                    tex_array.push_back(corner_texcoords[i2]);
                 }
 
                 if (vcolor && use_vertex_colors_)
