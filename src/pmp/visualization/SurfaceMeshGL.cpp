@@ -40,7 +40,7 @@ SurfaceMeshGL::SurfaceMeshGL()
     shininess_ = 100.0;
     alpha_ = 1.0;
     srgb_ = false;
-    use_vertex_colors_ = true;
+    use_colors_ = true;
     crease_angle_ = 180.0;
 
     // initialize texture
@@ -248,11 +248,12 @@ void SurfaceMeshGL::update_opengl_buffers()
     // activate VAO
     glBindVertexArray(vertex_array_object_);
 
-    // get vertex properties
+    // get properties
     auto vpos = get_vertex_property<Point>("v:point");
     auto vcolor = get_vertex_property<Color>("v:color");
     auto vtex = get_vertex_property<TexCoord>("v:tex");
     auto htex = get_halfedge_property<TexCoord>("h:tex");
+    auto fcolor = get_face_property<Color>("f:color");
 
     // index array for remapping vertex indices during duplication
     auto vertex_indices = add_vertex_property<size_t>("v:index");
@@ -274,7 +275,7 @@ void SurfaceMeshGL::update_opengl_buffers()
         if (htex || vtex)
             tex_array.reserve(3 * n_faces());
 
-        if (vcolor && use_vertex_colors_)
+        if ((vcolor || fcolor) && use_colors_)
             color_array.reserve(3 * n_faces());
 
         // precompute normals for easy cases
@@ -350,9 +351,13 @@ void SurfaceMeshGL::update_opengl_buffers()
                     corner_texcoords.push_back((vec2)vtex[v]);
                 }
 
-                if (vcolor && use_vertex_colors_)
+                if (vcolor && use_colors_)
                 {
                     corner_colors.push_back((vec3)vcolor[v]);
+                }
+                else if (fcolor && use_colors_)
+                {
+                    corner_colors.push_back((vec3)fcolor[f]);
                 }
             }
             assert(corner_vertices.size() >= 3);
@@ -380,7 +385,7 @@ void SurfaceMeshGL::update_opengl_buffers()
                     tex_array.push_back(corner_texcoords[i2]);
                 }
 
-                if (vcolor && use_vertex_colors_)
+                if ((vcolor || fcolor) && use_colors_)
                 {
                     color_array.push_back(corner_colors[i0]);
                     color_array.push_back(corner_colors[i1]);
@@ -419,7 +424,7 @@ void SurfaceMeshGL::update_opengl_buffers()
                 normal_array.push_back((vec3)normals[v]);
         }
 
-        if (vcolor && use_vertex_colors_)
+        if (vcolor && use_colors_)
         {
             color_array.reserve(n_vertices());
             for (auto v : vertices())
