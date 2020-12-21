@@ -325,7 +325,6 @@ void SurfaceMeshGL::update_opengl_buffers()
                 cornerHalfedges.push_back(h);
                 cornerVertices.push_back(v);
                 cornerPositions.push_back((vec3)vpos[v]);
-                corner_position_colors.push_back((vec3)vcolor[v]);
 
                 if (crease_angle_ < 1)
                 {
@@ -349,6 +348,11 @@ void SurfaceMeshGL::update_opengl_buffers()
                 else if (vtex)
                 {
                     cornerTexCoords.push_back((vec2)vtex[v]);
+                }
+
+                if (vcolor && use_vertex_color_if_has_)
+                {
+                    corner_position_colors.push_back((vec3)vcolor[v]);
                 }
             }
             assert(cornerVertices.size() >= 3);
