@@ -8,6 +8,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+- Add support to read non-manifold meshes by duplicating vertices
 - Add support to render colors per vertex, thanks to Xiewei Zhong
 - Add function to compute volume of a mesh, thanks to Xiewei Zhong
 - Update Eigen to version 3.3.9

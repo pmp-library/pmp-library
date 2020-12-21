@@ -45,38 +45,42 @@ bool SurfaceMeshIO::read(SurfaceMesh& mesh)
     std::string ext = filename_.substr(dot + 1, filename_.length() - dot - 1);
     std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
 
+    bool success = false;
+
     // extension determines reader
     if (ext == "off")
     {
-        return read_off(mesh);
+        success = read_off(mesh);
     }
     else if (ext == "obj")
     {
-        return read_obj(mesh);
+        success = read_obj(mesh);
     }
     else if (ext == "stl")
     {
-        return read_stl(mesh);
+        success = read_stl(mesh);
     }
     else if (ext == "ply")
     {
-        return read_ply(mesh);
+        success = read_ply(mesh);
     }
     else if (ext == "pmp")
     {
-        return read_pmp(mesh);
+        success = read_pmp(mesh);
     }
     else if (ext == "xyz")
     {
-        return read_xyz(mesh);
+        success = read_xyz(mesh);
     }
     else if (ext == "agi")
     {
-        return read_agi(mesh);
+        success = read_agi(mesh);
     }
 
+    add_failed_faces(mesh);
+
     // we didn't find a reader module
-    return false;
+    return success;
 }
 
 bool SurfaceMeshIO::write(const SurfaceMesh& mesh)
@@ -249,7 +253,7 @@ bool SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
                 }
             }
 
-            Face f = mesh.add_face(vertices);
+            Face f = add_face(mesh, vertices);
 
             // add texture coordinates
             if (with_tex_coord)
@@ -369,8 +373,10 @@ bool SurfaceMeshIO::write_obj(const SurfaceMesh& mesh)
     return true;
 }
 
-bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                    const bool has_texcoords, const bool has_colors)
+bool SurfaceMeshIO::read_off_ascii(SurfaceMesh& mesh, FILE* in,
+                                   const bool has_normals,
+                                   const bool has_texcoords,
+                                   const bool has_colors)
 {
     char line[1000], *lp;
     int nc;
@@ -468,14 +474,16 @@ bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
             vertices[j] = Vertex(idx);
             lp += nc;
         }
-        mesh.add_face(vertices);
+        add_face(mesh, vertices);
     }
 
     return true;
 }
 
-bool read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                     const bool has_texcoords, const bool has_colors)
+bool SurfaceMeshIO::read_off_binary(SurfaceMesh& mesh, FILE* in,
+                                    const bool has_normals,
+                                    const bool has_texcoords,
+                                    const bool has_colors)
 {
     IndexType i, j, idx(0);
     IndexType nv(0), nf(0), ne(0);
@@ -535,7 +543,7 @@ bool read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
             tfread(in, idx);
             vertices[j] = Vertex(idx);
         }
-        mesh.add_face(vertices);
+        add_face(mesh, vertices);
     }
 
     return true;
@@ -1116,7 +1124,7 @@ bool SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
             // Add face only if it is not degenerated
             if ((vertices[0] != vertices[1]) && (vertices[0] != vertices[2]) &&
                 (vertices[1] != vertices[2]))
-                mesh.add_face(vertices);
+                add_face(mesh, vertices);
 
             n_items = fread(line, 1, 2, in);
             PMP_ASSERT(n_items > 0);
@@ -1172,7 +1180,7 @@ bool SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
                 if ((vertices[0] != vertices[1]) &&
                     (vertices[0] != vertices[2]) &&
                     (vertices[1] != vertices[2]))
-                    mesh.add_face(vertices);
+                    add_face(mesh, vertices);
             }
         }
     }
@@ -1244,6 +1252,43 @@ bool SurfaceMeshIO::write_xyz(const SurfaceMesh& mesh)
 
     ofs.close();
     return true;
+}
+
+Face SurfaceMeshIO::add_face(SurfaceMesh& mesh,
+                             const std::vector<Vertex>& vertices)
+{
+    Face f;
+    try
+    {
+        f = mesh.add_face(vertices);
+    }
+    catch (const TopologyException&)
+    {
+        failed_faces_.push_back(vertices);
+    }
+    return f;
+}
+
+void SurfaceMeshIO::add_failed_faces(SurfaceMesh& mesh)
+{
+    for (auto vertices : failed_faces_)
+    {
+        auto duplicates = duplicate_vertices(mesh, vertices);
+        mesh.add_face(duplicates);
+    }
+    failed_faces_.clear();
+}
+
+std::vector<Vertex> SurfaceMeshIO::duplicate_vertices(
+    SurfaceMesh& mesh, const std::vector<Vertex>& vertices) const
+{
+    std::vector<Vertex> duplicates;
+    for (auto v : vertices)
+    {
+        auto dv = mesh.add_vertex(mesh.position(v));
+        duplicates.push_back(dv);
+    }
+    return duplicates;
 }
 
 } // namespace pmp

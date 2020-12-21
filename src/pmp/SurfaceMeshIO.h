@@ -40,9 +40,32 @@ private:
     bool write_pmp(const SurfaceMesh& mesh);
     bool write_xyz(const SurfaceMesh& mesh);
 
+    //! \brief Wrapper around add_face() to catch any topology errors.
+    //! \details Failed faces are stored so they can be added later.
+    //! \return A valid Face *if* it could be added, invalid Face otherwise.
+    Face add_face(SurfaceMesh& mesh, const std::vector<Vertex>& vertices);
+
+    //! \brief Add failed faces after duplicating their vertices.
+    //! \pre failed_faces_ contains only valid vertex indices.
+    //! \post failed faces are added to the mesh and the vector is cleared.
+    void add_failed_faces(SurfaceMesh& mesh);
+
+    //! \brief Duplicate the given set of vertices by adding their points to the mesh again.
+    //! \pre All input vertices are valid and already added to the mesh.
+    //! \return A vector of duplicated vertices.
+    std::vector<Vertex> duplicate_vertices(
+        SurfaceMesh& mesh, const std::vector<Vertex>& vertices) const;
+
+    bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
+                        const bool has_texcoords, const bool has_colors);
+
+    bool read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
+                         const bool has_texcoords, const bool has_colors);
+
 private:
     std::string filename_;
     IOFlags flags_;
+    std::vector<std::vector<Vertex>> failed_faces_;
 };
 
 } // namespace pmp
