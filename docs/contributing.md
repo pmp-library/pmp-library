@@ -35,7 +35,7 @@ you need to "sign off" every commit you wish to contribute by adding a line with
 your full name and e-mail address at the end of the commit message:
 
 ```text
-Sign-off-by: Jane Miller <jane.miller@example.com>
+Signed-off-by: Jane Miller <jane.miller@example.com>
 ```
 
 **Important**: You must use your real name for signing. We **do not** accept
