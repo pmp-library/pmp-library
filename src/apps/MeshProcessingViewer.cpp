@@ -87,6 +87,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         case GLFW_KEY_5:
         case GLFW_KEY_6:
         case GLFW_KEY_7:
+        case GLFW_KEY_8:
         {
             switch (key)
             {
