@@ -1,5 +1,7 @@
 # Coding Style {#codingstyle}
 
+[TOC]
+
 This section describes some of the coding standards that are being used in the
 pmp-library source tree. Although these standards should never be regarded as
 strict requirements they are still important to establish a minimum level of
@@ -287,6 +289,38 @@ m(1, 0) = y[0]; m(1, 1) = y[1]; m(1, 2) = y[2]; m(1, 3) = -dot(y, eye);
 m(2, 0) = z[0]; m(2, 1) = z[1]; m(2, 2) = z[2]; m(2, 3) = -dot(z, eye);
 m(3, 0) = 0.0;  m(3, 1) = 0.0;  m(3, 2) = 0.0;  m(3, 3) = 1.0;
 // clang-format on
+```
+
+## Commit Messages {#commit-messages}
+
+Please write meaningful commit messages. See [this post](https://chris.beams.io/posts/git-commit/) for the why and how.
+
+The basic rules are:
+
+1. Separate subject from body with a blank line
+2. Limit the subject line to 50 characters
+3. Capitalize the subject line
+4. Do not end the subject line with a period
+5. Use the imperative mood in the subject line
+6. Wrap the body at 72 characters
+7. Use the body to explain what and why vs. how
+
+This is what an example might look like:
+
+```text
+Summarize changes in around 50 characters or less
+
+More detailed explanatory text, if necessary. Wrap it to about 72
+characters or so. Explain the problem this commit is solving.
+Focus on why you are making this change as opposed to how. Are there
+any side effects or counter-intuitive consequences?
+
+Reference issues at the bottom, sign off on last line:
+
+Resolves: #123
+See also: #456, #789
+
+Sign-off-by: Jane Miller <jane.miller@example.com>
 ```
 
 ## See Also
