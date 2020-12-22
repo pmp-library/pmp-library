@@ -136,3 +136,19 @@ TEST_F(SurfaceMeshIOTest, xyz_io)
     mesh.read("test.xyz");
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
 }
+
+TEST_F(SurfaceMeshIOTest, complex_edge)
+{
+    mesh.read("pmp-data/obj/cubes_complex_edge.obj");
+    EXPECT_EQ(mesh.n_vertices(), size_t(30));
+    EXPECT_EQ(mesh.n_faces(), size_t(12));
+    EXPECT_EQ(mesh.n_edges(), size_t(35));
+}
+
+TEST_F(SurfaceMeshIOTest, complex_vertex)
+{
+    mesh.read("pmp-data/obj/cubes_complex_vertex.obj");
+    EXPECT_EQ(mesh.n_vertices(), size_t(27));
+    EXPECT_EQ(mesh.n_faces(), size_t(12));
+    EXPECT_EQ(mesh.n_edges(), size_t(33));
+}
