@@ -12,6 +12,7 @@
 #include <pmp/algorithms/SurfaceGeodesic.h>
 #include <pmp/algorithms/SurfaceHoleFilling.h>
 #include <pmp/algorithms/SurfacePrimitives.h>
+#include <pmp/algorithms/FaceOrientationReverse.h>
 
 #include <imgui.h>
 
@@ -328,6 +329,19 @@ void MeshProcessingViewer::process_imgui()
             {
                 std::cerr << "No manifold boundary loop found\n";
             }
+        }
+    }
+
+    ImGui::Spacing();
+    ImGui::Spacing();
+
+    if (ImGui::CollapsingHeader("Others"))
+    {
+        if (ImGui::Button("Reverse face orientation"))
+        {
+            FaceOrientationReverse reverse(mesh_);
+            reverse.reverse();
+            update_mesh();
         }
     }
 }
