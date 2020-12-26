@@ -37,7 +37,7 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{runner.workspace}}/build/docs/html/
+        publish_dir: ${{runner.workspace}}/build/docs/html
         force_orphan: true
         publish_branch: gh-pages
         cname: www.pmp-library.org
