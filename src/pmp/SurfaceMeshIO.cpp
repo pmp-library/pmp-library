@@ -292,80 +292,59 @@ bool SurfaceMeshIO::write_obj(const SurfaceMesh& mesh)
         return false;
 
     // comment
-    fprintf(out, "# OBJ export from SurfaceMesh\n");
+    fprintf(out, "# OBJ export from PMP\n");
 
-    //vertices
-    VertexProperty<Point> points = mesh.get_vertex_property<Point>("v:point");
-    for (SurfaceMesh::VertexIterator vit = mesh.vertices_begin();
-         vit != mesh.vertices_end(); ++vit)
+    // write vertices
+    auto points = mesh.get_vertex_property<Point>("v:point");
+    for (auto v : mesh.vertices())
     {
-        const Point& p = points[*vit];
+        const Point& p = points[v];
         fprintf(out, "v %.10f %.10f %.10f\n", p[0], p[1], p[2]);
     }
 
-    //normals
-    VertexProperty<Point> normals = mesh.get_vertex_property<Point>("v:normal");
+    // write normals
+    auto normals = mesh.get_vertex_property<Normal>("v:normal");
     if (normals)
     {
-        for (SurfaceMesh::VertexIterator vit = mesh.vertices_begin();
-             vit != mesh.vertices_end(); ++vit)
+        for (auto v : mesh.vertices())
         {
-            const Point& p = normals[*vit];
-            fprintf(out, "vn %.10f %.10f %.10f\n", p[0], p[1], p[2]);
+            const Normal& n = normals[v];
+            fprintf(out, "vn %.10f %.10f %.10f\n", n[0], n[1], n[2]);
         }
     }
 
-    // optional texture coordinates
-    // do we have them?
-    std::vector<std::string> hprops = mesh.halfedge_properties();
-    bool with_tex_coord = false;
-    auto hpropEnd = hprops.end();
-    auto hpropStart = hprops.begin();
-    while (hpropStart != hpropEnd)
+    // write texture coordinates
+    auto tex_coords = mesh.get_halfedge_property<TexCoord>("h:tex");
+    if (tex_coords)
     {
-        if (0 == (*hpropStart).compare("h:tex"))
+        for (auto h : mesh.halfedges())
         {
-            with_tex_coord = true;
-        }
-        ++hpropStart;
-    }
-
-    //if so then add
-    if (with_tex_coord)
-    {
-        HalfedgeProperty<TexCoord> texCoord =
-            mesh.get_halfedge_property<TexCoord>("h:tex");
-        for (SurfaceMesh::HalfedgeIterator hit = mesh.halfedges_begin();
-             hit != mesh.halfedges_end(); ++hit)
-        {
-            const TexCoord& pt = texCoord[*hit];
-            fprintf(out, "vt %.10f %.10f \n", pt[0], pt[1]);
+            const TexCoord& pt = tex_coords[h];
+            fprintf(out, "vt %.10f %.10f\n", pt[0], pt[1]);
         }
     }
 
-    //faces
-    for (SurfaceMesh::FaceIterator fit = mesh.faces_begin();
-         fit != mesh.faces_end(); ++fit)
+    // write faces
+    for (auto f : mesh.faces())
     {
         fprintf(out, "f");
-        SurfaceMesh::VertexAroundFaceCirculator fvit = mesh.vertices(*fit),
-                                                fvend = fvit;
-        SurfaceMesh::HalfedgeAroundFaceCirculator fhit = mesh.halfedges(*fit);
-        do
+
+        auto h = mesh.halfedges(f);
+        for (auto v : mesh.vertices(f))
         {
-            if (with_tex_coord)
+            auto idx = v.idx() + 1;
+            if (tex_coords)
             {
                 // write vertex index, texCoord index and normal index
-                fprintf(out, " %d/%d/%d", (*fvit).idx() + 1, (*fhit).idx() + 1,
-                        (*fvit).idx() + 1);
-                ++fhit;
+                fprintf(out, " %d/%d/%d", idx, (*h).idx() + 1, idx);
+                ++h;
             }
             else
             {
                 // write vertex index and normal index
-                fprintf(out, " %d//%d", (*fvit).idx() + 1, (*fvit).idx() + 1);
+                fprintf(out, " %d//%d", idx, idx);
             }
-        } while (++fvit != fvend);
+        }
         fprintf(out, "\n");
     }
 
