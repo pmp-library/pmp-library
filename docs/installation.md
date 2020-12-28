@@ -164,7 +164,7 @@ during build configuration.
 
 ## Building Bundled JavaScript Applications
 
-In order to build the JavaScript applications
+In order to build the JavaScript/WebAssembly applications
 using [emscripten](https://github.com/kripken/emscripten), download the SDK
 from <https://github.com/kripken/emscripten> and follow the installation
 instructions.
@@ -173,10 +173,17 @@ Next, source the environment setup script:
 
     source <path_to_install_dir>/emsdk_env.sh
 
-Create a build directory, run cmake, build, enjoy:
+Create a build directory, run cmake and build:
 
-    mkdir jsbuild
-    cd jsbuild
-    emconfigure cmake ..
+    mkdir html
+    cd html
+    emcmake cmake ..
     make
-    <your-browser> mview.html
+
+Finally, start a local webserver and open the HTML apps:
+
+    python3 -m http.server
+    <your-browser> localhost:8000
+
+You can also run HTML/WASM apps using `emrun mpview.html`, but you might have to adjust 
+some [browser settings](https://emscripten.org/docs/compiling/Running-html-files-with-emrun.html) first.
