@@ -29,6 +29,7 @@ public:
 
     //! compute surface by solving k-harmonic equation
     //! \throw SolverException in case of failure to solve the linear system
+    //! \throw InvalidInputException in case of missing boundary constraints
     void fair(unsigned int k = 2);
 
 private:
