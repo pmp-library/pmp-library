@@ -49,9 +49,17 @@ void Viewer::process_imgui()
 
         if (ImGui::Button("Decimate it!"))
         {
-            SurfaceSimplification ss(mesh_);
-            ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0);
-            ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
+            try
+            {
+                SurfaceSimplification ss(mesh_);
+                ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0);
+                ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
+            }
+            catch (const InvalidInputException& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
     }

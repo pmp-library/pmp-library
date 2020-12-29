@@ -197,7 +197,15 @@ void MeshProcessingViewer::process_imgui()
         if (ImGui::Button("Implicit Smoothing"))
         {
             Scalar dt = timestep * radius_ * radius_;
-            smoother_.implicit_smoothing(dt);
+            try
+            {
+                smoother_.implicit_smoothing(dt);
+            }
+            catch (const SolverException& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
     }
@@ -224,9 +232,17 @@ void MeshProcessingViewer::process_imgui()
 
         if (ImGui::Button("Decimate it!"))
         {
-            SurfaceSimplification ss(mesh_);
-            ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0);
-            ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
+            try
+            {
+                SurfaceSimplification ss(mesh_);
+                ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0);
+                ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
+            }
+            catch (const InvalidInputException& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
     }
@@ -238,13 +254,29 @@ void MeshProcessingViewer::process_imgui()
     {
         if (ImGui::Button("Loop Subdivision"))
         {
-            SurfaceSubdivision(mesh_).loop();
+            try
+            {
+                SurfaceSubdivision(mesh_).loop();
+            }
+            catch (const InvalidInputException& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
 
         if (ImGui::Button("Sqrt(3) Subdivision"))
         {
-            SurfaceSubdivision(mesh_).sqrt3();
+            try
+            {
+                SurfaceSubdivision(mesh_).sqrt3();
+            }
+            catch (const InvalidInputException& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
 
@@ -263,10 +295,19 @@ void MeshProcessingViewer::process_imgui()
         if (ImGui::Button("Adaptive Remeshing"))
         {
             auto bb = mesh_.bounds().size();
-            SurfaceRemeshing(mesh_).adaptive_remeshing(
-                0.001 * bb,  // min length
-                1.0 * bb,    // max length
-                0.001 * bb); // approx. error
+
+            try
+            {
+                SurfaceRemeshing(mesh_).adaptive_remeshing(
+                    0.001 * bb,  // min length
+                    1.0 * bb,    // max length
+                    0.001 * bb); // approx. error
+            }
+            catch (const InvalidInputException& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
 
@@ -277,7 +318,16 @@ void MeshProcessingViewer::process_imgui()
                 l += distance(mesh_.position(mesh_.vertex(eit, 0)),
                               mesh_.position(mesh_.vertex(eit, 1)));
             l /= (Scalar)mesh_.n_edges();
-            SurfaceRemeshing(mesh_).uniform_remeshing(l);
+
+            try
+            {
+                SurfaceRemeshing(mesh_).uniform_remeshing(l);
+            }
+            catch (const InvalidInputException& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
     }
@@ -320,8 +370,16 @@ void MeshProcessingViewer::process_imgui()
             // close smallest hole
             if (hmin.is_valid())
             {
-                SurfaceHoleFilling hf(mesh_);
-                hf.fill_hole(hmin);
+                try
+                {
+                    SurfaceHoleFilling hf(mesh_);
+                    hf.fill_hole(hmin);
+                }
+                catch (const InvalidInputException& e)
+                {
+                    std::cerr << e.what() << std::endl;
+                    return;
+                }
                 update_mesh();
             }
             else

@@ -56,7 +56,15 @@ void Viewer::process_imgui()
                 l += distance(mesh_.position(mesh_.vertex(eit, 0)),
                               mesh_.position(mesh_.vertex(eit, 1)));
             l /= (Scalar)mesh_.n_edges();
-            SurfaceRemeshing(mesh_).uniform_remeshing(l);
+            try
+            {
+                SurfaceRemeshing(mesh_).uniform_remeshing(l);
+            }
+            catch (const InvalidInputException& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
 
@@ -65,10 +73,18 @@ void Viewer::process_imgui()
         if (ImGui::Button("Adaptive"))
         {
             auto bb = mesh_.bounds().size();
-            SurfaceRemeshing(mesh_).adaptive_remeshing(
-                0.0010 * bb,  // min length
-                0.0500 * bb,  // max length
-                0.0005 * bb); // approx. error
+            try
+            {
+                SurfaceRemeshing(mesh_).adaptive_remeshing(
+                    0.0010 * bb,  // min length
+                    0.0500 * bb,  // max length
+                    0.0005 * bb); // approx. error
+            }
+            catch (const InvalidInputException& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
     }

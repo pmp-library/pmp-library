@@ -90,7 +90,15 @@ void Viewer::process_imgui()
 
             Scalar dt =
                 uniform_laplace ? timestep : timestep * radius_ * radius_;
-            smoother_.implicit_smoothing(dt, uniform_laplace, rescale);
+            try
+            {
+                smoother_.implicit_smoothing(dt, uniform_laplace, rescale);
+            }
+            catch (const SolverException& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
     }

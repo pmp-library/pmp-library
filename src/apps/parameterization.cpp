@@ -49,8 +49,16 @@ void Viewer::process_imgui()
         ImGui::Spacing();
         if (ImGui::Button("Discrete Harmonic Param"))
         {
-            SurfaceParameterization param(mesh_);
-            param.harmonic();
+            try
+            {
+                SurfaceParameterization param(mesh_);
+                param.harmonic();
+            }
+            catch (const std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             mesh_.use_checkerboard_texture();
             set_draw_mode("Texture");
             update_mesh();
@@ -59,8 +67,16 @@ void Viewer::process_imgui()
         ImGui::Spacing();
         if (ImGui::Button("Least Squares Conformal Map"))
         {
-            SurfaceParameterization param(mesh_);
-            param.lscm();
+            try
+            {
+                SurfaceParameterization param(mesh_);
+                param.lscm();
+            }
+            catch (const std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             mesh_.use_checkerboard_texture();
             set_draw_mode("Texture");
             update_mesh();

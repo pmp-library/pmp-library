@@ -50,19 +50,43 @@ void Viewer::process_imgui()
         if (ImGui::Button("Minimize Area"))
         {
             SurfaceFairing fair(mesh_);
-            fair.minimize_area();
+            try
+            {
+                fair.minimize_area();
+            }
+            catch (const std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
         if (ImGui::Button("Minimize Curvature"))
         {
             SurfaceFairing fair(mesh_);
-            fair.minimize_curvature();
+            try
+            {
+                fair.minimize_curvature();
+            }
+            catch (const std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
         if (ImGui::Button("Minimize Curvature Variation"))
         {
             SurfaceFairing fair(mesh_);
-            fair.fair(3);
+            try
+            {
+                fair.fair(3);
+            }
+            catch (const std::exception& e)
+            {
+                std::cerr << e.what() << std::endl;
+                return;
+            }
             update_mesh();
         }
     }
