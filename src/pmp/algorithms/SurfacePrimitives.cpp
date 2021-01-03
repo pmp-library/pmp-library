@@ -65,7 +65,7 @@ SurfaceMesh hexahedron()
 SurfaceMesh octahedron()
 {
     auto mesh = hexahedron();
-    dualize(mesh);
+    dual(mesh);
     project_to_unit_sphere(mesh);
     return mesh;
 }
@@ -73,7 +73,7 @@ SurfaceMesh octahedron()
 SurfaceMesh dodecahedron()
 {
     auto mesh = icosahedron();
-    dualize(mesh);
+    dual(mesh);
     project_to_unit_sphere(mesh);
     return mesh;
 }

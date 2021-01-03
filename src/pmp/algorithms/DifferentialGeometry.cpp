@@ -85,17 +85,17 @@ Point centroid(const SurfaceMesh& mesh)
     return center;
 }
 
-void dualize(SurfaceMesh& mesh)
+void dual(SurfaceMesh& mesh)
 {
     // the new dualized mesh
-    SurfaceMesh dual;
+    SurfaceMesh tmp;
 
     // remember new vertices per face
     auto fvertex = mesh.add_face_property<Vertex>("f:vertex");
 
     // add centroid for each face
     for (auto f : mesh.faces())
-        fvertex[f] = dual.add_vertex(centroid(mesh, f));
+        fvertex[f] = tmp.add_vertex(centroid(mesh, f));
 
     // add new face for each vertex
     for (auto v : mesh.vertices())
@@ -104,11 +104,11 @@ void dualize(SurfaceMesh& mesh)
         for (auto f : mesh.faces(v))
             vertices.push_back(fvertex[f]);
 
-        dual.add_face(vertices);
+        tmp.add_face(vertices);
     }
 
     // swap old and new meshes, don't copy properties
-    mesh.assign(dual);
+    mesh.assign(tmp);
 }
 
 double cotan_weight(const SurfaceMesh& mesh, Edge e)
