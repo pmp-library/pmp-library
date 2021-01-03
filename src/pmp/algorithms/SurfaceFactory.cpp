@@ -1,7 +1,7 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "SurfacePrimitives.h"
+#include "SurfaceFactory.h"
 #include "SurfaceSubdivision.h"
 #include "DifferentialGeometry.h"
 
@@ -17,7 +17,7 @@ void project_to_unit_sphere(SurfaceMesh& mesh)
     }
 }
 
-SurfaceMesh tetrahedron()
+SurfaceMesh SurfaceFactory::tetrahedron()
 {
     SurfaceMesh mesh;
     float a = 1.0f / 3.0f;
@@ -38,7 +38,7 @@ SurfaceMesh tetrahedron()
     return mesh;
 }
 
-SurfaceMesh hexahedron()
+SurfaceMesh SurfaceFactory::hexahedron()
 {
     SurfaceMesh mesh;
 
@@ -62,7 +62,7 @@ SurfaceMesh hexahedron()
     return mesh;
 }
 
-SurfaceMesh octahedron()
+SurfaceMesh SurfaceFactory::octahedron()
 {
     auto mesh = hexahedron();
     dual(mesh);
@@ -70,7 +70,7 @@ SurfaceMesh octahedron()
     return mesh;
 }
 
-SurfaceMesh dodecahedron()
+SurfaceMesh SurfaceFactory::dodecahedron()
 {
     auto mesh = icosahedron();
     dual(mesh);
@@ -78,7 +78,7 @@ SurfaceMesh dodecahedron()
     return mesh;
 }
 
-SurfaceMesh icosahedron()
+SurfaceMesh SurfaceFactory::icosahedron()
 {
     SurfaceMesh mesh;
 
@@ -128,7 +128,7 @@ SurfaceMesh icosahedron()
     return mesh;
 }
 
-SurfaceMesh icosphere(size_t n_subdivisions)
+SurfaceMesh SurfaceFactory::icosphere(size_t n_subdivisions)
 {
     auto mesh = icosahedron();
     SurfaceSubdivision subdiv(mesh);
@@ -140,7 +140,7 @@ SurfaceMesh icosphere(size_t n_subdivisions)
     return mesh;
 }
 
-SurfaceMesh quad_sphere(size_t n_subdivisions)
+SurfaceMesh SurfaceFactory::quad_sphere(size_t n_subdivisions)
 {
     auto mesh = hexahedron();
     SurfaceSubdivision subdiv(mesh);
@@ -152,8 +152,8 @@ SurfaceMesh quad_sphere(size_t n_subdivisions)
     return mesh;
 }
 
-SurfaceMesh uv_sphere(const Point& center, Scalar radius, size_t n_slices,
-                      size_t n_stacks)
+SurfaceMesh SurfaceFactory::uv_sphere(const Point& center, Scalar radius,
+                                      size_t n_slices, size_t n_stacks)
 {
     SurfaceMesh mesh;
 

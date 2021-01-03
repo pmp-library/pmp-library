@@ -11,7 +11,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 ### Added
 
 - Add support to read non-manifold meshes by duplicating vertices
-- Add SurfacePrimitives class to generate basic shapes.
+- Add SurfaceFactory class to generate basic shapes.
 - Add support to render colors per face
 - Add support to render colors per vertex, thanks to Xiewei Zhong
 - Add function to compute volume of a mesh, thanks to Xiewei Zhong

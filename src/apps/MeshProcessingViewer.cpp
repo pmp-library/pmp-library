@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "MeshProcessingViewer.h"
@@ -11,7 +11,7 @@
 #include <pmp/algorithms/SurfaceCurvature.h>
 #include <pmp/algorithms/SurfaceGeodesic.h>
 #include <pmp/algorithms/SurfaceHoleFilling.h>
-#include <pmp/algorithms/SurfacePrimitives.h>
+#include <pmp/algorithms/SurfaceFactory.h>
 
 #include <imgui.h>
 
@@ -92,28 +92,28 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             switch (key)
             {
                 case GLFW_KEY_1:
-                    mesh_.assign(tetrahedron());
+                    mesh_.assign(SurfaceFactory::tetrahedron());
                     break;
                 case GLFW_KEY_2:
-                    mesh_.assign(octahedron());
+                    mesh_.assign(SurfaceFactory::octahedron());
                     break;
                 case GLFW_KEY_3:
-                    mesh_.assign(hexahedron());
+                    mesh_.assign(SurfaceFactory::hexahedron());
                     break;
                 case GLFW_KEY_4:
-                    mesh_.assign(icosahedron());
+                    mesh_.assign(SurfaceFactory::icosahedron());
                     break;
                 case GLFW_KEY_5:
-                    mesh_.assign(dodecahedron());
+                    mesh_.assign(SurfaceFactory::dodecahedron());
                     break;
                 case GLFW_KEY_6:
-                    mesh_.assign(icosphere(3));
+                    mesh_.assign(SurfaceFactory::icosphere(3));
                     break;
                 case GLFW_KEY_7:
-                    mesh_.assign(quad_sphere(3));
+                    mesh_.assign(SurfaceFactory::quad_sphere(3));
                     break;
                 case GLFW_KEY_8:
-                    mesh_.assign(uv_sphere());
+                    mesh_.assign(SurfaceFactory::uv_sphere());
                     break;
             }
 
