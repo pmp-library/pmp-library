@@ -82,14 +82,9 @@ SurfaceMesh SurfaceFactory::icosahedron()
 {
     SurfaceMesh mesh;
 
-    // adapted from http://paulbourke.net/geometry/platonic/
-    float radius = 1.0;
-    float sqrt5 = sqrt(5.0f);
-    float phi = (1.0f + sqrt5) * 0.5f; // golden ratio
-    // ratio of edge length to radius
-    float ratio = sqrt(10.0f + (2.0f * sqrt5)) / (4.0f * phi);
-    float a = (radius / ratio) * 0.5;
-    float b = (radius / ratio) / (2.0f * phi);
+    float phi = (1.0f + sqrt(5.0f)) * 0.5f; // golden ratio
+    float a = 1.0f;
+    float b = 1.0f / phi;
 
     auto v1 = mesh.add_vertex(Point(0, b, -a));
     auto v2 = mesh.add_vertex(Point(b, a, 0));
@@ -103,6 +98,8 @@ SurfaceMesh SurfaceFactory::icosahedron()
     auto v10 = mesh.add_vertex(Point(-a, 0, -b));
     auto v11 = mesh.add_vertex(Point(b, -a, 0));
     auto v12 = mesh.add_vertex(Point(-b, -a, 0));
+
+    project_to_unit_sphere(mesh);
 
     mesh.add_triangle(v3, v2, v1);
     mesh.add_triangle(v2, v3, v4);
