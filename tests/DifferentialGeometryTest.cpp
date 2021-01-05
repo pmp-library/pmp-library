@@ -6,6 +6,8 @@
 
 #include <pmp/SurfaceMesh.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
+#include <pmp/algorithms/SurfaceFactory.h>
+
 #include <vector>
 
 using namespace pmp;
@@ -14,6 +16,8 @@ class DifferentialGeometryTest : public ::testing::Test
 {
 public:
     SurfaceMesh mesh;
+    static SurfaceMesh sphere;
+
     Vertex v0, v1, v2, v3;
     Face f0;
 
@@ -34,14 +38,9 @@ public:
         auto points = mesh.get_vertex_property<Point>("v:point");
         points[v0][2] = 0.1; // lift central vertex
     }
-
-    void unit_sphere()
-    {
-        ASSERT_TRUE(mesh.read("pmp-data/off/sphere.off"));
-        EXPECT_EQ(mesh.n_vertices(), size_t(16070));
-        EXPECT_EQ(mesh.n_faces(), size_t(32136));
-    }
 };
+
+SurfaceMesh DifferentialGeometryTest::sphere = SurfaceFactory::icosphere(5);
 
 TEST_F(DifferentialGeometryTest, triangle_areaPoints)
 {
@@ -84,31 +83,18 @@ TEST_F(DifferentialGeometryTest, vertex_curvature)
 
 TEST_F(DifferentialGeometryTest, surface_area)
 {
-    unit_sphere();
-    auto area = surface_area(mesh);
-
-#ifdef PMP_SCALAR_TYPE_64
-    EXPECT_FLOAT_EQ(area, 12.563956);
-#else
-    EXPECT_FLOAT_EQ(area, 12.564044);
-#endif
+    auto area = surface_area(sphere);
+    EXPECT_NEAR(area, 12.57, 1.0e-2);
 }
 
 TEST_F(DifferentialGeometryTest, volume)
 {
-    unit_sphere();
-    auto v = volume(mesh);
-
-#ifdef PMP_SCALAR_TYPE_64
-    EXPECT_FLOAT_EQ(v, 4.18733706);
-#else
-    EXPECT_FLOAT_EQ(v, 4.18731928);
-#endif
+    auto v = volume(sphere);
+    EXPECT_NEAR(v, 4.18, 1.0e-2);
 }
 
 TEST_F(DifferentialGeometryTest, centroid)
 {
-    unit_sphere();
-    auto center = centroid(mesh);
+    auto center = centroid(sphere);
     EXPECT_LT(norm(center), 1e-5);
 }
