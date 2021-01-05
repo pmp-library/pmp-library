@@ -7,6 +7,8 @@
 #include <pmp/algorithms/DifferentialGeometry.h>
 #include <pmp/algorithms/SurfaceFactory.h>
 
+#include "Helpers.h"
+
 #include <vector>
 
 using namespace pmp;
@@ -20,6 +22,8 @@ public:
     Vertex v0, v1, v2, v3;
     Face f0;
 
+    Vertex central_vertex;
+
     void add_triangle()
     {
         v0 = mesh.add_vertex(Point(0, 0, 0));
@@ -30,12 +34,11 @@ public:
 
     void one_ring()
     {
-        ASSERT_TRUE(mesh.read("pmp-data/off/vertex_onering.off"));
+        mesh = vertex_onering();
         EXPECT_EQ(mesh.n_vertices(), size_t(7));
         EXPECT_EQ(mesh.n_faces(), size_t(6));
-        v0 = Vertex(3); // the central vertex
-        auto points = mesh.get_vertex_property<Point>("v:point");
-        points[v0][2] = 0.1; // lift central vertex
+        central_vertex = Vertex(3);             // the central vertex
+        mesh.position(central_vertex)[2] = 0.1; // lift central vertex
     }
 };
 
@@ -59,21 +62,21 @@ TEST_F(DifferentialGeometryTest, triangle_areaFace)
 TEST_F(DifferentialGeometryTest, voronoi_area_barycentric)
 {
     one_ring();
-    Scalar area = voronoi_area_barycentric(mesh, v0);
+    Scalar area = voronoi_area_barycentric(mesh, central_vertex);
     EXPECT_FLOAT_EQ(area, 0.024590395);
 }
 
 TEST_F(DifferentialGeometryTest, laplace)
 {
     one_ring();
-    auto lv = laplace(mesh, v0);
+    auto lv = laplace(mesh, central_vertex);
     EXPECT_GT(norm(lv), 0);
 }
 
 TEST_F(DifferentialGeometryTest, vertex_curvature)
 {
     one_ring();
-    auto vcurv = vertex_curvature(mesh, v0);
+    auto vcurv = vertex_curvature(mesh, central_vertex);
     EXPECT_FLOAT_EQ(vcurv.mean, 6.1538467);
     EXPECT_FLOAT_EQ(vcurv.gauss, 50.860939);
     EXPECT_FLOAT_EQ(vcurv.max, 6.1538467);
