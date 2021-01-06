@@ -35,8 +35,6 @@ public:
     void one_ring()
     {
         mesh = vertex_onering();
-        EXPECT_EQ(mesh.n_vertices(), size_t(7));
-        EXPECT_EQ(mesh.n_faces(), size_t(6));
         central_vertex = Vertex(3);             // the central vertex
         mesh.position(central_vertex)[2] = 0.1; // lift central vertex
     }
