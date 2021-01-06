@@ -3,6 +3,8 @@
 
 #include "gtest/gtest.h"
 
+#include "Helpers.h"
+
 #include <pmp/algorithms/SurfaceFeatures.h>
 
 using namespace pmp;
@@ -47,8 +49,7 @@ TEST_F(SurfaceFeaturesTest, detect_feature_angle)
 // boundary edges
 TEST_F(SurfaceFeaturesTest, detect_boundary)
 {
-    mesh.clear();
-    mesh.read("pmp-data/off/vertex_onering.off");
+    mesh = vertex_onering();
     SurfaceFeatures sf(mesh);
     auto nb = sf.detect_boundary();
     EXPECT_EQ(nb, 6u);

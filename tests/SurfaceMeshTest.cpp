@@ -2,6 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "SurfaceMeshTest.h"
+#include "Helpers.h"
 
 #include <pmp/algorithms/SurfaceNormals.h>
 #include <vector>
@@ -78,7 +79,7 @@ TEST_F(SurfaceMeshTest, insert_remove_single_polygonal_face)
 
 TEST_F(SurfaceMeshTest, delete_center_vertex)
 {
-    ASSERT_TRUE(mesh.read("pmp-data/off/vertex_onering.off"));
+    mesh = vertex_onering();
     EXPECT_EQ(mesh.n_vertices(), size_t(7));
     EXPECT_EQ(mesh.n_faces(), size_t(6));
     Vertex v0(3); // the central vertex
@@ -360,7 +361,7 @@ TEST_F(SurfaceMeshTest, edge_flip)
 
 TEST_F(SurfaceMeshTest, is_manifold)
 {
-    mesh.read("pmp-data/off/vertex_onering.off");
+    mesh = vertex_onering();
     for (auto v : mesh.vertices())
         EXPECT_TRUE(mesh.is_manifold(v));
 }
