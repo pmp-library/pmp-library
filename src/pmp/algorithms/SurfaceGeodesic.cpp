@@ -127,9 +127,6 @@ void SurfaceGeodesic::find_virtual_edges()
             }
         }
     }
-
-    std::clog << "[Geodesic] Found " << virtual_edges_.size()
-              << " virtual edges\n";
 }
 
 unsigned int SurfaceGeodesic::compute(const std::vector<Vertex>& seed,
