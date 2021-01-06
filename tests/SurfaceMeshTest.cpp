@@ -375,9 +375,7 @@ TEST_F(SurfaceMeshTest, edge_length)
         sum += mesh.edge_length(e);
     }
     sum /= (Scalar)mesh.n_edges();
-    //EXPECT_FLOAT_EQ(sum,0.52385628);
-
-    std::cerr << "sum: " << sum << std::endl;
+    EXPECT_FLOAT_EQ(sum, 1.0);
 }
 
 TEST_F(SurfaceMeshTest, property_stats)
