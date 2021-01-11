@@ -42,7 +42,7 @@ public:
 
 SurfaceMesh DifferentialGeometryTest::sphere = SurfaceFactory::icosphere(5);
 
-TEST_F(DifferentialGeometryTest, triangle_areaPoints)
+TEST_F(DifferentialGeometryTest, triangle_area_points)
 {
     add_triangle();
     Scalar area =
@@ -50,7 +50,7 @@ TEST_F(DifferentialGeometryTest, triangle_areaPoints)
     EXPECT_EQ(area, 0.5);
 }
 
-TEST_F(DifferentialGeometryTest, triangle_areaFace)
+TEST_F(DifferentialGeometryTest, triangle_area_face)
 {
     add_triangle();
     Scalar area = triangle_area(mesh, f0);
