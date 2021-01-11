@@ -10,7 +10,7 @@ using namespace pmp;
 
 TEST(SurfaceGeodesicTest, geodesic)
 {
-    // read mesh for unit sphere
+    // generate unit sphere mesh
     SurfaceMesh mesh = SurfaceFactory::icosphere(5);
 
     // compute geodesic distance from first vertex
@@ -65,8 +65,8 @@ TEST(SurfaceGeodesicTest, geodesic_symmetry)
 
 TEST(SurfaceGeodesicTest, geodesic_maxnum)
 {
-    // read mesh for unit sphere
-    SurfaceMesh mesh = SurfaceFactory::icosphere(5);
+    // generate unit sphere mesh
+    SurfaceMesh mesh = SurfaceFactory::icosphere(3);
 
     // compute geodesic distance from first vertex
     unsigned int maxnum = 42;
@@ -75,13 +75,6 @@ TEST(SurfaceGeodesicTest, geodesic_maxnum)
     std::vector<Vertex> neighbors;
     num =
         geodist.compute(std::vector<Vertex>{Vertex(0)},
-                        std::numeric_limits<Scalar>::max(), maxnum, &neighbors);
-    EXPECT_TRUE(num == maxnum);
-    EXPECT_TRUE(neighbors.size() == maxnum);
-
-    // test for another seed
-    num =
-        geodist.compute(std::vector<Vertex>{Vertex(12345)},
                         std::numeric_limits<Scalar>::max(), maxnum, &neighbors);
     EXPECT_TRUE(num == maxnum);
     EXPECT_TRUE(neighbors.size() == maxnum);
