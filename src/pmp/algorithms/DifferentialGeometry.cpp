@@ -44,7 +44,7 @@ Scalar volume(const SurfaceMesh& mesh)
     }
 
     Scalar volume(0);
-    for (const auto& f : mesh.faces())
+    for (const auto f : mesh.faces())
     {
         auto fv = mesh.vertices(f);
         const auto& p0 = mesh.position(*fv);
