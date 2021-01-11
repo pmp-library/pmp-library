@@ -3,11 +3,10 @@
 
 #include "Helpers.h"
 
-pmp::SurfaceMesh vertex_onering()
-{
-    using pmp::Point;
-    using pmp::SurfaceMesh;
+namespace pmp {
 
+SurfaceMesh vertex_onering()
+{
     SurfaceMesh mesh;
 
     auto v0 = mesh.add_vertex(Point(0.4499998093, 0.5196152329, 0.0000000000));
@@ -26,4 +25,6 @@ pmp::SurfaceMesh vertex_onering()
     mesh.add_triangle(v6, v3, v4);
 
     return mesh;
+}
+
 }
