@@ -10,4 +10,7 @@ namespace pmp {
 // generate triangle fan of six triangles around center vertex
 SurfaceMesh vertex_onering();
 
+// generate hemisphere mesh; cuts lower half of unit sphere
+SurfaceMesh hemisphere();
+
 } // namespace pmp

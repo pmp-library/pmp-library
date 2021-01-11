@@ -3,6 +3,9 @@
 
 #include "Helpers.h"
 
+#include "pmp/algorithms/SurfaceFactory.h"
+#include "pmp/algorithms/SurfaceRemeshing.h"
+
 namespace pmp {
 
 SurfaceMesh vertex_onering()
@@ -27,4 +30,22 @@ SurfaceMesh vertex_onering()
     return mesh;
 }
 
+SurfaceMesh hemisphere()
+{
+    // generate quad sphere mesh and triangulate it
+    auto mesh = SurfaceFactory::quad_sphere(5);
+    mesh.triangulate();
+
+    // delete lower half
+    for (auto v : mesh.vertices())
+        if (mesh.position(v)[1] < -0.01)
+            mesh.delete_vertex(v);
+    mesh.garbage_collection();
+
+    // remesh to get nice but irregular triangulation
+    SurfaceRemeshing(mesh).uniform_remeshing(0.05);
+
+    return mesh;
 }
+
+} // namespace pmp
