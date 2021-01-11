@@ -1,17 +1,17 @@
-// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2017-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "gtest/gtest.h"
 
 #include <pmp/algorithms/SurfaceGeodesic.h>
+#include <pmp/algorithms/SurfaceFactory.h>
 
 using namespace pmp;
 
 TEST(SurfaceGeodesicTest, geodesic)
 {
     // read mesh for unit sphere
-    SurfaceMesh mesh;
-    EXPECT_TRUE(mesh.read("pmp-data/off/sphere.off"));
+    SurfaceMesh mesh = SurfaceFactory::icosphere(5);
 
     // compute geodesic distance from first vertex
     SurfaceGeodesic geodist(mesh);
@@ -21,7 +21,7 @@ TEST(SurfaceGeodesicTest, geodesic)
     Scalar d(0);
     for (auto v : mesh.vertices())
         d = std::max(d, geodist(v));
-    EXPECT_FLOAT_EQ(d, 3.1348989);
+    EXPECT_FLOAT_EQ(d, 3.1355045);
 
     // map distances to texture coordinates
     geodist.distance_to_texture_coordinates();
@@ -66,8 +66,7 @@ TEST(SurfaceGeodesicTest, geodesic_symmetry)
 TEST(SurfaceGeodesicTest, geodesic_maxnum)
 {
     // read mesh for unit sphere
-    SurfaceMesh mesh;
-    EXPECT_TRUE(mesh.read("pmp-data/off/sphere.off"));
+    SurfaceMesh mesh = SurfaceFactory::icosphere(5);
 
     // compute geodesic distance from first vertex
     unsigned int maxnum = 42;
