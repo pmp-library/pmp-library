@@ -1,27 +1,18 @@
-// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2017-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/SurfaceRemeshing.h>
-#include <pmp/algorithms/SurfaceFeatures.h>
+#include "pmp/algorithms/SurfaceRemeshing.h"
+#include "pmp/algorithms/SurfaceFeatures.h"
+#include "Helpers.h"
 
 using namespace pmp;
 
-class SurfaceRemeshingTest : public ::testing::Test
-{
-public:
-    SurfaceRemeshingTest()
-    {
-        EXPECT_TRUE(mesh.read("pmp-data/off/icosahedron_subdiv.off"));
-    }
-    SurfaceMesh mesh;
-};
-
 // adaptive remeshing
-TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_features)
+TEST(SurfaceRemeshingTest, adaptive_remeshing_with_features)
 {
-    mesh.clear();
+    SurfaceMesh mesh;
     mesh.read("pmp-data/off/fandisk.off");
 
     SurfaceFeatures sf(mesh);
@@ -36,23 +27,22 @@ TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_features)
     EXPECT_EQ(mesh.n_vertices(), size_t(845));
 }
 
-TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_boundary)
+TEST(SurfaceRemeshingTest, adaptive_remeshing_with_boundary)
 {
     // mesh with boundary
-    mesh.clear();
-    mesh.read("pmp-data/off/hemisphere.off");
+    auto mesh = hemisphere();
+
     auto bb = mesh.bounds().size();
     SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
                                               1.0 * bb,    // max length
                                               0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.n_vertices(), size_t(463));
+    EXPECT_EQ(mesh.n_vertices(), size_t(740));
 }
 
-TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
+TEST(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
 {
     // mesh with boundary
-    mesh.clear();
-    mesh.read("pmp-data/off/hemisphere.off");
+    auto mesh = hemisphere();
 
     // select half of the hemisphere
     auto selected = mesh.add_vertex_property<bool>("v:selected");
@@ -65,11 +55,13 @@ TEST_F(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
     SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
                                               1.0 * bb,    // max length
                                               0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.n_vertices(), size_t(1184));
+    EXPECT_EQ(mesh.n_vertices(), size_t(826));
 }
 
-TEST_F(SurfaceRemeshingTest, uniform_remeshing)
+TEST(SurfaceRemeshingTest, uniform_remeshing)
 {
+    SurfaceMesh mesh;
+    mesh.read("pmp-data/off/icosahedron_subdiv.off");
     Scalar l(0);
     for (auto eit : mesh.edges())
         l += distance(mesh.position(mesh.vertex(eit, 0)),
