@@ -8,6 +8,8 @@
 
 namespace pmp {
 
+static SurfaceMesh hemisphere_mesh;
+
 SurfaceMesh vertex_onering()
 {
     SurfaceMesh mesh;
@@ -32,20 +34,25 @@ SurfaceMesh vertex_onering()
 
 SurfaceMesh hemisphere()
 {
-    // generate quad sphere mesh and triangulate it
-    auto mesh = SurfaceFactory::quad_sphere(5);
-    mesh.triangulate();
+    if (hemisphere_mesh.is_empty())
+    {
+        // use ref for brevity
+        auto& mesh = hemisphere_mesh;
 
-    // delete lower half
-    for (auto v : mesh.vertices())
-        if (mesh.position(v)[1] < -0.01)
-            mesh.delete_vertex(v);
-    mesh.garbage_collection();
+        // generate quad sphere mesh and triangulate it
+        mesh = SurfaceFactory::quad_sphere(3);
+        mesh.triangulate();
 
-    // remesh to get nice but irregular triangulation
-    SurfaceRemeshing(mesh).uniform_remeshing(0.05);
+        // delete lower half
+        for (auto v : mesh.vertices())
+            if (mesh.position(v)[1] < -0.01)
+                mesh.delete_vertex(v);
+        mesh.garbage_collection();
 
-    return mesh;
+        // remesh to get nice but irregular triangulation
+        SurfaceRemeshing(mesh).uniform_remeshing(0.1);
+    }
+    return hemisphere_mesh;
 }
 
 } // namespace pmp
