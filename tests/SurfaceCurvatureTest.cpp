@@ -3,7 +3,8 @@
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/SurfaceCurvature.h>
+#include "pmp/algorithms/SurfaceCurvature.h"
+#include "pmp/algorithms/SurfaceFactory.h"
 
 using namespace pmp;
 
@@ -12,7 +13,7 @@ class SurfaceCurvatureTest : public ::testing::Test
 public:
     SurfaceCurvatureTest()
     {
-        EXPECT_TRUE(mesh.read("pmp-data/off/hemisphere.off"));
+        mesh = SurfaceFactory::icosphere(5);
         curvature = new SurfaceCurvature(mesh);
         curvature->analyze(1);
     }
@@ -42,21 +43,12 @@ TEST_F(SurfaceCurvatureTest, curvature)
         gmax = std::max(gmax, curvature->gauss_curvature(v));
     }
 
-#ifdef PMP_SCALAR_TYPE_64
-    EXPECT_FLOAT_EQ(kmin, 0.50240165);
-    EXPECT_FLOAT_EQ(kmax, 1.0002906);
-    EXPECT_FLOAT_EQ(mmin, 0.50240165);
-    EXPECT_FLOAT_EQ(mmax, 1.0002906);
-    EXPECT_FLOAT_EQ(gmin, 0.2524074);
-    EXPECT_FLOAT_EQ(gmax, 1.0005813);
-#else
-    EXPECT_FLOAT_EQ(kmin, 0.50240648);
-    EXPECT_FLOAT_EQ(kmax, 1.0003014);
-    EXPECT_FLOAT_EQ(mmin, 0.50240648);
-    EXPECT_FLOAT_EQ(mmax, 1.0003014);
-    EXPECT_FLOAT_EQ(gmin, 0.25241226);
-    EXPECT_FLOAT_EQ(gmax, 1.0006028);
-#endif
+    EXPECT_NEAR(kmin, 1.0, 0.02);
+    EXPECT_NEAR(kmax, 1.0, 0.02);
+    EXPECT_NEAR(mmin, 1.0, 0.02);
+    EXPECT_NEAR(mmax, 1.0, 0.02);
+    EXPECT_NEAR(gmin, 1.0, 0.02);
+    EXPECT_NEAR(gmax, 1.0, 0.02);
 }
 
 TEST_F(SurfaceCurvatureTest, mean_curvature_to_texture_coordinates)
