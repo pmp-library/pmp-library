@@ -1,55 +1,34 @@
-// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2017-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/SurfaceFairing.h>
+#include "pmp/algorithms/SurfaceFairing.h"
+#include "Helpers.h"
 
 using namespace pmp;
 
-class SurfaceFairingTest : public ::testing::Test
+TEST(SurfaceFairingTest, fairing)
 {
-public:
-    SurfaceFairingTest()
-    {
-        EXPECT_TRUE(mesh.read("pmp-data/off/icosahedron_subdiv.off"));
-    }
-    SurfaceMesh mesh;
-};
-
-TEST_F(SurfaceFairingTest, fairing)
-{
-    mesh.read("pmp-data/off/hemisphere.off");
-    auto bbz = mesh.bounds().max()[2];
+    auto mesh = hemisphere();
+    auto bbz = mesh.bounds().max()[1];
     SurfaceFairing sf(mesh);
     sf.fair();
-    auto bbs = mesh.bounds().max()[2];
+    auto bbs = mesh.bounds().max()[1];
     EXPECT_LT(bbs, bbz);
 }
 
-TEST_F(SurfaceFairingTest, fairing_selected)
+TEST(SurfaceFairingTest, fairing_selected)
 {
-    mesh.read("pmp-data/off/sphere_low.off");
+    SurfaceMesh mesh = hemisphere();
     auto bb = mesh.bounds();
-    Scalar yrange = bb.max()[1] - bb.min()[1];
-    auto vselected = mesh.vertex_property<bool>("v:selected", false);
+
+    // select top vertices for fairing
+    auto selected = mesh.vertex_property<bool>("v:selected");
     for (auto v : mesh.vertices())
-    {
-        auto p = mesh.position(v);
-        if (p[1] >= (bb.max()[1] - 0.2 * yrange))
-        {
-            vselected[v] = false;
-        }
-        else if (p[1] < (bb.max()[1] - 0.2 * yrange) &&
-                 p[1] > (bb.max()[1] - 0.8 * yrange))
-        {
-            vselected[v] = true;
-        }
-        else
-        {
-            vselected[v] = false;
-        }
-    }
+        if (mesh.position(v)[1] > 0.5)
+            selected[v] = true;
+
     SurfaceFairing sf(mesh);
     sf.fair();
     auto bb2 = mesh.bounds();
