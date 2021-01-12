@@ -1,24 +1,16 @@
-// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2017-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/SurfaceParameterization.h>
+#include "pmp/algorithms/SurfaceParameterization.h"
+#include "Helpers.h"
 
 using namespace pmp;
 
-class SurfaceParameterizationTest : public ::testing::Test
+TEST(SurfaceParameterizationTest, parameterization)
 {
-public:
-    SurfaceParameterizationTest()
-    {
-        EXPECT_TRUE(mesh.read("pmp-data/off/hemisphere.off"));
-    }
-    SurfaceMesh mesh;
-};
-
-TEST_F(SurfaceParameterizationTest, parameterization)
-{
+    auto mesh = hemisphere();
     SurfaceParameterization param(mesh);
     param.harmonic(false);
     param.harmonic(true);
@@ -26,8 +18,9 @@ TEST_F(SurfaceParameterizationTest, parameterization)
     EXPECT_TRUE(tex);
 }
 
-TEST_F(SurfaceParameterizationTest, lscm)
+TEST(SurfaceParameterizationTest, lscm)
 {
+    auto mesh = hemisphere();
     SurfaceParameterization param(mesh);
     param.lscm();
     auto tex = mesh.vertex_property<TexCoord>("v:tex");
