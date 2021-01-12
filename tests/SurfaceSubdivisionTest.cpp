@@ -1,10 +1,11 @@
-// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2017-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/SurfaceSubdivision.h>
-#include <pmp/algorithms/SurfaceFeatures.h>
+#include "pmp/algorithms/SurfaceSubdivision.h"
+#include "pmp/algorithms/SurfaceFeatures.h"
+#include "Helpers.h"
 
 using namespace pmp;
 
@@ -38,11 +39,9 @@ TEST_F(SurfaceSubdivisionTest, loop_with_features)
 // loop subdivision with features
 TEST_F(SurfaceSubdivisionTest, loop_with_boundary)
 {
-    mesh.clear();
-    mesh.read("pmp-data/off/hemisphere.off");
-
+    mesh = hemisphere();
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.n_vertices(), size_t(7321));
+    EXPECT_EQ(mesh.n_vertices(), size_t(3629));
 }
 
 // Catmull-Clark subdivision on suzanne quad mesh
