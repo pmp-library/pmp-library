@@ -22,7 +22,6 @@ TEST(SurfaceSimplificationTest, simplification)
     ss.simplify(mesh.n_vertices() * 0.1);
     EXPECT_EQ(mesh.n_vertices(), size_t(178));
     EXPECT_EQ(mesh.n_faces(), size_t(329));
-    mesh.write("simple.off");
 }
 
 // simplify with feature edge preservation enabled
