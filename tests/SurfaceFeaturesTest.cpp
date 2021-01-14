@@ -1,27 +1,18 @@
-// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2017-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "gtest/gtest.h"
 
+#include "pmp/algorithms/SurfaceFeatures.h"
 #include "Helpers.h"
-
-#include <pmp/algorithms/SurfaceFeatures.h>
 
 using namespace pmp;
 
-class SurfaceFeaturesTest : public ::testing::Test
-{
-public:
-    SurfaceFeaturesTest()
-    {
-        EXPECT_TRUE(mesh.read("pmp-data/off/icosahedron_subdiv.off"));
-    }
-    SurfaceMesh mesh;
-};
-
 // feature angle
-TEST_F(SurfaceFeaturesTest, detect_feature_angle)
+TEST(SurfaceFeaturesTest, detect_feature_angle)
 {
+    auto mesh = subdivided_icosahedron();
+
     SurfaceFeatures sf(mesh);
     auto nf = sf.detect_angle(25);
     EXPECT_EQ(nf, 240u);
@@ -47,9 +38,9 @@ TEST_F(SurfaceFeaturesTest, detect_feature_angle)
 }
 
 // boundary edges
-TEST_F(SurfaceFeaturesTest, detect_boundary)
+TEST(SurfaceFeaturesTest, detect_boundary)
 {
-    mesh = vertex_onering();
+    auto mesh = vertex_onering();
     SurfaceFeatures sf(mesh);
     auto nb = sf.detect_boundary();
     EXPECT_EQ(nb, 6u);
