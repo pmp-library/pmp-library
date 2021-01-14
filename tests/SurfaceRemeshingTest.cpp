@@ -70,6 +70,5 @@ TEST(SurfaceRemeshingTest, uniform_remeshing)
     l /= (Scalar)mesh.n_edges();
 
     SurfaceRemeshing(mesh).uniform_remeshing(l);
-    mesh.write("remesh.off");
     EXPECT_EQ(mesh.n_vertices(), size_t(940));
 }
