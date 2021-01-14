@@ -9,26 +9,20 @@
 
 using namespace pmp;
 
-class SurfaceSubdivisionTest : public ::testing::Test
-{
-public:
-    SurfaceSubdivisionTest()
-    {
-        EXPECT_TRUE(mesh.read("pmp-data/off/icosahedron_subdiv.off"));
-    }
-    SurfaceMesh mesh;
-};
-
 // plain loop subdivision
-TEST_F(SurfaceSubdivisionTest, loop_subdivision)
+TEST(SurfaceSubdivisionTest, loop_subdivision)
 {
+    auto mesh = subdivided_icosahedron();
+    SurfaceFeatures(mesh).clear();
     SurfaceSubdivision(mesh).loop();
     EXPECT_EQ(mesh.n_vertices(), size_t(2562));
 }
 
 // loop subdivision with features
-TEST_F(SurfaceSubdivisionTest, loop_with_features)
+TEST(SurfaceSubdivisionTest, loop_with_features)
 {
+    auto mesh = subdivided_icosahedron();
+
     SurfaceFeatures sf(mesh);
     sf.detect_angle(25);
 
@@ -37,26 +31,26 @@ TEST_F(SurfaceSubdivisionTest, loop_with_features)
 }
 
 // loop subdivision with features
-TEST_F(SurfaceSubdivisionTest, loop_with_boundary)
+TEST(SurfaceSubdivisionTest, loop_with_boundary)
 {
-    mesh = hemisphere();
+    auto mesh = hemisphere();
     SurfaceSubdivision(mesh).loop();
     EXPECT_EQ(mesh.n_vertices(), size_t(3629));
 }
 
 // Catmull-Clark subdivision on suzanne quad mesh
-TEST_F(SurfaceSubdivisionTest, catmull_clark_subdivision)
+TEST(SurfaceSubdivisionTest, catmull_clark_subdivision)
 {
-    mesh.clear();
+    SurfaceMesh mesh;
     mesh.read("pmp-data/obj/suzanne.obj");
     SurfaceSubdivision(mesh).catmull_clark();
     EXPECT_EQ(mesh.n_vertices(), size_t(2012));
 }
 
 // Catmull-Clark subdivision on fandisk quad mesh
-TEST_F(SurfaceSubdivisionTest, catmull_clark_with_features)
+TEST(SurfaceSubdivisionTest, catmull_clark_with_features)
 {
-    mesh.clear();
+    SurfaceMesh mesh;
     mesh.read("pmp-data/off/fandisk_quads.off");
 
     SurfaceFeatures sf(mesh);
@@ -67,8 +61,10 @@ TEST_F(SurfaceSubdivisionTest, catmull_clark_with_features)
 }
 
 // plain sqrt3 subdivision
-TEST_F(SurfaceSubdivisionTest, sqrt3Subdivision)
+TEST(SurfaceSubdivisionTest, sqrt3Subdivision)
 {
+    auto mesh = subdivided_icosahedron();
+    SurfaceFeatures(mesh).clear();
     SurfaceSubdivision(mesh).sqrt3();
     EXPECT_EQ(mesh.n_vertices(), size_t(1922));
 }
