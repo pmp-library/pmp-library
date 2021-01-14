@@ -13,4 +13,9 @@ SurfaceMesh vertex_onering();
 // generate hemisphere mesh; cuts lower half of unit sphere
 SurfaceMesh hemisphere();
 
+// generate subdivided icosahedron
+// based on Loop subdivision
+// original icosahedron edges are marked as feature edges
+SurfaceMesh subdivided_icosahedron();
+
 } // namespace pmp

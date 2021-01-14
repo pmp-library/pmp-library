@@ -5,10 +5,13 @@
 
 #include "pmp/algorithms/SurfaceFactory.h"
 #include "pmp/algorithms/SurfaceRemeshing.h"
+#include "pmp/algorithms/SurfaceFeatures.h"
+#include "pmp/algorithms/SurfaceSubdivision.h"
 
 namespace pmp {
 
 static SurfaceMesh hemisphere_mesh;
+static SurfaceMesh icosahedron_mesh;
 
 SurfaceMesh vertex_onering()
 {
@@ -53,6 +56,27 @@ SurfaceMesh hemisphere()
         SurfaceRemeshing(mesh).uniform_remeshing(0.1);
     }
     return hemisphere_mesh;
+}
+
+SurfaceMesh subdivided_icosahedron()
+{
+    if (icosahedron_mesh.is_empty())
+    {
+        // use ref for brevity
+        auto& mesh = icosahedron_mesh;
+        mesh = SurfaceFactory::icosahedron();
+
+        // select all edges as features
+        SurfaceFeatures sf(mesh);
+        sf.detect_angle(25);
+
+        // feature-preserving subdivision
+        SurfaceSubdivision subdiv(mesh);
+        subdiv.loop();
+        subdiv.loop();
+        subdiv.loop();
+    }
+    return icosahedron_mesh;
 }
 
 } // namespace pmp
