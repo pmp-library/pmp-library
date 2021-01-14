@@ -48,9 +48,8 @@ TEST(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
     auto selected = mesh.add_vertex_property<bool>("v:selected");
     for (auto v : mesh.vertices())
         if (mesh.position(v)[0] > 0.0)
-        {
             selected[v] = true;
-        }
+
     auto bb = mesh.bounds().size();
     SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
                                               1.0 * bb,    // max length
@@ -60,13 +59,17 @@ TEST(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
 
 TEST(SurfaceRemeshingTest, uniform_remeshing)
 {
-    SurfaceMesh mesh;
-    mesh.read("pmp-data/off/icosahedron_subdiv.off");
+    // mesh with boundary
+    auto mesh = hemisphere();
+
+    // compute mean edge length
     Scalar l(0);
     for (auto eit : mesh.edges())
         l += distance(mesh.position(mesh.vertex(eit, 0)),
                       mesh.position(mesh.vertex(eit, 1)));
     l /= (Scalar)mesh.n_edges();
+
     SurfaceRemeshing(mesh).uniform_remeshing(l);
-    EXPECT_EQ(mesh.n_vertices(), size_t(642));
+    mesh.write("remesh.off");
+    EXPECT_EQ(mesh.n_vertices(), size_t(940));
 }
