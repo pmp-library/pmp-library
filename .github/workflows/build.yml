@@ -49,6 +49,7 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE --parallel
 
     - name: Test
-      working-directory: ${{runner.workspace}}/build
+      working-directory: ${{runner.workspace}}/build/tests
       shell: bash
-      run: ctest -C $BUILD_TYPE
+      # run: ctest -C $BUILD_TYPE
+      run: ./gtest_runner
