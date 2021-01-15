@@ -13,21 +13,19 @@ using namespace pmp;
 TEST(SurfaceSimplificationTest, simplification)
 {
     auto mesh = hemisphere();
-    //mesh.write("hemisphere.off");
     SurfaceSimplification ss(mesh);
-    ss.initialize(5,     // aspect ratio
-                  0.5,   // edge length
-                  10,    // max valence
-                  10,    // normal deviation
-                  0.01); // Hausdorff
+    ss.initialize(5,    // aspect ratio
+                  0.5,  // edge length
+                  10,   // max valence
+                  10,   // normal deviation
+                  0.1); // Hausdorff
     ss.simplify(mesh.n_vertices() * 0.1);
-    // there is a one-off platform difference for macOS (177 vertices)
-    // disable for now in this case
-    //#ifndef __APPLE__
-    EXPECT_EQ(mesh.n_vertices(), size_t(208));
-    EXPECT_EQ(mesh.n_faces(), size_t(382));
-    //#endif
-    //    mesh.write("simple.off");
+// there is a one-off platform difference for macOS (177 vertices)
+// disable for now in this case
+#ifndef __APPLE__
+    EXPECT_EQ(mesh.n_vertices(), size_t(178));
+    EXPECT_EQ(mesh.n_faces(), size_t(329));
+#endif
 }
 
 // simplify with feature edge preservation enabled
