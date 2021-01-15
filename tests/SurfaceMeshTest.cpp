@@ -91,7 +91,7 @@ TEST_F(SurfaceMeshTest, delete_center_vertex)
 
 TEST_F(SurfaceMeshTest, delete_center_edge)
 {
-    ASSERT_TRUE(mesh.read("pmp-data/off/edge_onering.off"));
+    mesh = edge_onering();
     EXPECT_EQ(mesh.n_vertices(), size_t(10));
     EXPECT_EQ(mesh.n_faces(), size_t(10));
     // the two vertices of the center edge
@@ -345,7 +345,7 @@ TEST_F(SurfaceMeshTest, edge_split)
 
 TEST_F(SurfaceMeshTest, edge_flip)
 {
-    mesh.read("pmp-data/off/edge_onering.off");
+    mesh = edge_onering();
     EXPECT_EQ(mesh.n_vertices(), size_t(10));
     EXPECT_EQ(mesh.n_faces(), size_t(10));
 
