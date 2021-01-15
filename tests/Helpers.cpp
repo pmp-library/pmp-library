@@ -60,7 +60,7 @@ SurfaceMesh edge_onering()
     mesh.add_triangle(v8, v4, v5);
     mesh.add_triangle(v9, v8, v5);
     mesh.add_triangle(v9, v5, v6);
-    mesh.write("onering.off");
+
     return mesh;
 }
 
