@@ -35,6 +35,35 @@ SurfaceMesh vertex_onering()
     return mesh;
 }
 
+SurfaceMesh edge_onering()
+{
+    SurfaceMesh mesh;
+
+    auto v0 = mesh.add_vertex(Point(0.5999997854, 0.5196152329, 0.0000000000));
+    auto v1 = mesh.add_vertex(Point(0.4499998093, 0.5196152329, 0.0000000000));
+    auto v2 = mesh.add_vertex(Point(0.2999998033, 0.5196152329, 0.0000000000));
+    auto v3 = mesh.add_vertex(Point(0.6749998331, 0.3897114396, 0.0000000000));
+    auto v4 = mesh.add_vertex(Point(0.5249998569, 0.3897114396, 0.0000000000));
+    auto v5 = mesh.add_vertex(Point(0.3749998510, 0.3897114396, 0.0000000000));
+    auto v6 = mesh.add_vertex(Point(0.2249998450, 0.3897114396, 0.0000000000));
+    auto v7 = mesh.add_vertex(Point(0.5999999046, 0.2598076165, 0.0000000000));
+    auto v8 = mesh.add_vertex(Point(0.4499999285, 0.2598076165, 0.0000000000));
+    auto v9 = mesh.add_vertex(Point(0.2999999225, 0.2598076165, 0.0000000000));
+
+    mesh.add_triangle(v4, v0, v1);
+    mesh.add_triangle(v4, v3, v0);
+    mesh.add_triangle(v5, v1, v2);
+    mesh.add_triangle(v5, v4, v1);
+    mesh.add_triangle(v6, v5, v2);
+    mesh.add_triangle(v7, v3, v4);
+    mesh.add_triangle(v8, v7, v4);
+    mesh.add_triangle(v8, v4, v5);
+    mesh.add_triangle(v9, v8, v5);
+    mesh.add_triangle(v9, v5, v6);
+    mesh.write("onering.off");
+    return mesh;
+}
+
 SurfaceMesh hemisphere()
 {
     if (hemisphere_mesh.is_empty())
