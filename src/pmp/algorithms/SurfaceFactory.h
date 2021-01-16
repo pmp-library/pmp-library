@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <pmp/SurfaceMesh.h>
+#include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
