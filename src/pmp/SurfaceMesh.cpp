@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
@@ -113,16 +113,16 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
     return *this;
 }
 
-bool SurfaceMesh::read(const std::string& filename, const IOFlags& flags)
+void SurfaceMesh::read(const std::string& filename, const IOFlags& flags)
 {
     SurfaceMeshIO reader(filename, flags);
-    return reader.read(*this);
+    reader.read(*this);
 }
 
-bool SurfaceMesh::write(const std::string& filename, const IOFlags& flags) const
+void SurfaceMesh::write(const std::string& filename, const IOFlags& flags) const
 {
     SurfaceMeshIO writer(filename, flags);
-    return writer.write(*this);
+    writer.write(*this);
 }
 
 void SurfaceMesh::clear()

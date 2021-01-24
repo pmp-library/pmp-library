@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/visualization/MeshViewer.h"
@@ -33,35 +33,38 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
 
 MeshViewer::~MeshViewer() = default;
 
-bool MeshViewer::load_mesh(const char* filename)
+void MeshViewer::load_mesh(const char* filename)
 {
     // load mesh
-    if (mesh_.read(filename))
+    try
     {
-        // update scene center and bounds
-        BoundingBox bb = mesh_.bounds();
-        set_scene((vec3)bb.center(), 0.5 * bb.size());
-
-        // compute face & vertex normals, update face indices
-        update_mesh();
-
-        // set draw mode
-        if (mesh_.n_faces() == 0)
-        {
-            set_draw_mode("Points");
-        }
-
-        // print mesh statistic
-        std::cout << "Load " << filename << ": " << mesh_.n_vertices()
-                  << " vertices, " << mesh_.n_faces() << " faces\n";
-
-        filename_ = filename;
-        mesh_.set_crease_angle(crease_angle_);
-        return true;
+        mesh_.read(filename);
+    }
+    catch (const IOException& e)
+    {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return;
     }
 
-    std::cerr << "Failed to read mesh from " << filename << " !" << std::endl;
-    return false;
+    // update scene center and bounds
+    BoundingBox bb = mesh_.bounds();
+    set_scene((vec3)bb.center(), 0.5 * bb.size());
+
+    // compute face & vertex normals, update face indices
+    update_mesh();
+
+    // set draw mode
+    if (mesh_.n_faces() == 0)
+    {
+        set_draw_mode("Points");
+    }
+
+    // print mesh statistic
+    std::cout << "Loaded " << filename << ": " << mesh_.n_vertices()
+              << " vertices, " << mesh_.n_faces() << " faces\n";
+
+    filename_ = filename;
+    mesh_.set_crease_angle(crease_angle_);
 }
 
 bool MeshViewer::load_matcap(const char* filename)
