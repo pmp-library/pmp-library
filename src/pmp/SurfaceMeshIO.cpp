@@ -610,7 +610,10 @@ void SurfaceMeshIO::read_off(SurfaceMesh& mesh)
 void SurfaceMeshIO::write_off(const SurfaceMesh& mesh)
 {
     if (flags_.use_binary)
-        return write_off_binary(mesh);
+    {
+        write_off_binary(mesh);
+        return;
+    }
 
     FILE* out = fopen(filename_.c_str(), "w");
     if (!out)
