@@ -23,10 +23,10 @@ public:
     virtual void load_mesh(const char* filename);
 
     //! load a matcap texture from file \p filename
-    bool load_matcap(const char* filename);
+    void load_matcap(const char* filename);
 
     //! load a texture from file \p filename
-    bool load_texture(const char* filename, GLint format = GL_RGB,
+    void load_texture(const char* filename, GLint format = GL_RGB,
                       GLint min_filter = GL_LINEAR_MIPMAP_LINEAR,
                       GLint mag_filter = GL_LINEAR,
                       GLint wrap = GL_CLAMP_TO_EDGE);

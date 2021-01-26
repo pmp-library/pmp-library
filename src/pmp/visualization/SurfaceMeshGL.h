@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
@@ -91,7 +91,8 @@ public:
     //! \param min_filter interpolation filter for minification
     //! \param mag_filter interpolation filter for magnification
     //! \param wrap texture coordinates wrap preference
-    bool load_texture(const char* filename, GLint format = GL_RGB,
+    //! \throw IOException in case of failure to load texture from file
+    void load_texture(const char* filename, GLint format = GL_RGB,
                       GLint min_filter = GL_LINEAR_MIPMAP_LINEAR,
                       GLint mag_filter = GL_LINEAR,
                       GLint wrap = GL_CLAMP_TO_EDGE);
@@ -101,7 +102,8 @@ public:
     //! that you cannot have texture and mat-cap at the same time.
     //! \param filename the location and name of the texture
     //! \sa See src/apps/mview.cpp for an example usage.
-    bool load_matcap(const char* filename);
+    //! \throw IOException in case of failure to load texture from file
+    void load_matcap(const char* filename);
 
 private: // helpers for computing triangulation of a polygon
     struct Triangulation

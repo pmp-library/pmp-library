@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/visualization/SurfaceMeshGL.h"
@@ -61,7 +61,7 @@ SurfaceMeshGL::~SurfaceMeshGL()
     glDeleteTextures(1, &texture_);
 }
 
-bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
+void SurfaceMeshGL::load_texture(const char* filename, GLint format,
                                  GLint min_filter, GLint mag_filter, GLint wrap)
 {
 #ifdef __EMSCRIPTEN__
@@ -102,7 +102,8 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     unsigned char* img =
         stbi_load(filename, &width, &height, &n, loadComponents);
     if (!img)
-        return false;
+        throw IOException("Failed to load texture file: " +
+                          std::string(filename));
 
     // delete old texture
     glDeleteTextures(1, &texture_);
@@ -136,17 +137,19 @@ bool SurfaceMeshGL::load_texture(const char* filename, GLint format,
     stbi_image_free(img);
 
     texture_mode_ = OtherTexture;
-    return true;
 }
 
-bool SurfaceMeshGL::load_matcap(const char* filename)
+void SurfaceMeshGL::load_matcap(const char* filename)
 {
-    if (!load_texture(filename, GL_RGBA, GL_LINEAR, GL_LINEAR,
-                      GL_CLAMP_TO_EDGE))
-        return false;
-
+    try
+    {
+        load_texture(filename, GL_RGBA, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE);
+    }
+    catch (const IOException& e)
+    {
+        throw;
+    }
     texture_mode_ = MatCapTexture;
-    return true;
 }
 
 void SurfaceMeshGL::use_cold_warm_texture()

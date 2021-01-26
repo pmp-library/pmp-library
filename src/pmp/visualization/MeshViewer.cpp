@@ -67,20 +67,33 @@ void MeshViewer::load_mesh(const char* filename)
     mesh_.set_crease_angle(crease_angle_);
 }
 
-bool MeshViewer::load_matcap(const char* filename)
+void MeshViewer::load_matcap(const char* filename)
 {
-    if (!mesh_.load_matcap(filename))
-        return false;
+    try
+    {
+        mesh_.load_matcap(filename);
+    }
+    catch (const IOException& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
     set_draw_mode("Texture");
-    return true;
 }
 
-bool MeshViewer::load_texture(const char* filename, GLint format,
+void MeshViewer::load_texture(const char* filename, GLint format,
                               GLint min_filter, GLint mag_filter, GLint wrap)
 {
     // load texture from file
-    if (!mesh_.load_texture(filename, format, min_filter, mag_filter, wrap))
-        return false;
+    try
+    {
+        mesh_.load_texture(filename, format, min_filter, mag_filter, wrap);
+    }
+    catch (const IOException& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
 
     set_draw_mode("Texture");
 
@@ -89,8 +102,6 @@ bool MeshViewer::load_texture(const char* filename, GLint format,
     mesh_.set_diffuse(0.9);
     mesh_.set_specular(0.0);
     mesh_.set_shininess(1.0);
-
-    return true;
 }
 
 void MeshViewer::update_mesh()
