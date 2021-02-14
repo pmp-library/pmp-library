@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
@@ -19,26 +19,26 @@ public:
     {
     }
 
-    bool read(SurfaceMesh& mesh);
+    void read(SurfaceMesh& mesh);
 
-    bool write(const SurfaceMesh& mesh);
+    void write(const SurfaceMesh& mesh);
 
 private:
-    bool read_off(SurfaceMesh& mesh);
-    bool read_obj(SurfaceMesh& mesh);
-    bool read_stl(SurfaceMesh& mesh);
-    bool read_ply(SurfaceMesh& mesh);
-    bool read_pmp(SurfaceMesh& mesh);
-    bool read_xyz(SurfaceMesh& mesh);
-    bool read_agi(SurfaceMesh& mesh);
+    void read_off(SurfaceMesh& mesh);
+    void read_obj(SurfaceMesh& mesh);
+    void read_stl(SurfaceMesh& mesh);
+    void read_ply(SurfaceMesh& mesh);
+    void read_pmp(SurfaceMesh& mesh);
+    void read_xyz(SurfaceMesh& mesh);
+    void read_agi(SurfaceMesh& mesh);
 
-    bool write_off(const SurfaceMesh& mesh);
-    bool write_off_binary(const SurfaceMesh& mesh);
-    bool write_obj(const SurfaceMesh& mesh);
-    bool write_stl(const SurfaceMesh& mesh);
-    bool write_ply(const SurfaceMesh& mesh);
-    bool write_pmp(const SurfaceMesh& mesh);
-    bool write_xyz(const SurfaceMesh& mesh);
+    void write_off(const SurfaceMesh& mesh);
+    void write_off_binary(const SurfaceMesh& mesh);
+    void write_obj(const SurfaceMesh& mesh);
+    void write_stl(const SurfaceMesh& mesh);
+    void write_ply(const SurfaceMesh& mesh);
+    void write_pmp(const SurfaceMesh& mesh);
+    void write_xyz(const SurfaceMesh& mesh);
 
     //! \brief Wrapper around add_face() to catch any topology errors.
     //! \details Failed faces are stored so they can be added later.
@@ -56,10 +56,10 @@ private:
     std::vector<Vertex> duplicate_vertices(
         SurfaceMesh& mesh, const std::vector<Vertex>& vertices) const;
 
-    bool read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
+    void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                         const bool has_texcoords, const bool has_colors);
 
-    bool read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
+    void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                          const bool has_texcoords, const bool has_colors);
 
 private:

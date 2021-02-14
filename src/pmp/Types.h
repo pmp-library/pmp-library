@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
@@ -108,6 +108,13 @@ class TopologyException : public std::logic_error
 {
 public:
     TopologyException(const std::string& what) : std::logic_error(what) {}
+};
+
+//! \brief Exception indicating an error occurred while performing IO.
+class IOException : public std::runtime_error
+{
+public:
+    IOException(const std::string& what) : std::runtime_error(what) {}
 };
 
 //! @}

@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
@@ -966,7 +966,7 @@ public:
     //!
     //! In addition, the OBJ and PMP formats support reading per-halfedge
     //! texture coordinates.
-    bool read(const std::string& filename, const IOFlags& flags = IOFlags());
+    void read(const std::string& filename, const IOFlags& flags = IOFlags());
 
     //! \brief Write mesh to file \p filename controlled by \p flags
     //! \details File extension determines file type. Supported formats and
@@ -983,7 +983,7 @@ public:
     //!
     //! In addition, the OBJ and PMP formats support writing per-halfedge
     //! texture coordinates.
-    bool write(const std::string& filename,
+    void write(const std::string& filename,
                const IOFlags& flags = IOFlags()) const;
 
     //!@}

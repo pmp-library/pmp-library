@@ -1,4 +1,4 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "SurfaceMeshTest.h"
@@ -23,7 +23,7 @@ TEST_F(SurfaceMeshIOTest, poly_io)
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 
     // check malformed file names
-    EXPECT_FALSE(mesh.write("testpolyly"));
+    EXPECT_THROW(mesh.write("testpolyly"), IOException);
 }
 
 TEST_F(SurfaceMeshIOTest, obj_io)
@@ -92,7 +92,7 @@ TEST_F(SurfaceMeshIOTest, stl_io)
 
     // the same with normals computed
     SurfaceNormals::compute_face_normals(mesh);
-    EXPECT_TRUE(mesh.write("test.stl"));
+    EXPECT_NO_THROW(mesh.write("test.stl"));
 
     // try to write non-triangle mesh
     mesh.clear();

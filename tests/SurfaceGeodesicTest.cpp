@@ -33,7 +33,7 @@ TEST(SurfaceGeodesicTest, geodesic_symmetry)
 {
     // read irregular mesh (to have virtual edges)
     SurfaceMesh mesh;
-    EXPECT_TRUE(mesh.read("pmp-data/off/bunny_adaptive.off"));
+    mesh.read("pmp-data/off/bunny_adaptive.off");
 
     SurfaceGeodesic geodist(mesh);
     Vertex v0, v1;
