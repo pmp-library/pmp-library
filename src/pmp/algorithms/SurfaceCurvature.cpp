@@ -163,7 +163,7 @@ void SurfaceCurvature::analyze_tensor(unsigned int post_smoothing_steps,
             ev -= (dvec3)mesh_.position(mesh_.to_vertex(h1));
             l = norm(ev);
             ev /= l;
-            l *= 0.5; // only consider half of the edge (matchig Voronoi area)
+            l *= 0.5; // only consider half of the edge (matching Voronoi area)
             angle[e] = atan2(dot(cross(n0, n1), ev), dot(n0, n1));
             evec[e] = sqrt(l) * ev;
         }
@@ -374,7 +374,7 @@ void SurfaceCurvature::curvature_to_texture_coordinates() const
     Scalar kmin = values[i];
     Scalar kmax = values[n - 1 - i];
 
-    // generate 1D texture coordiantes
+    // generate 1D texture coordinates
     auto tex = mesh_.vertex_property<TexCoord>("v:tex");
     if (kmin < 0.0) // signed
     {
