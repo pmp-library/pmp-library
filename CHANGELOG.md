@@ -28,7 +28,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 - Improve API by reporting errors using exceptions (see #16).
 - SurfaceFeatures now returns the number of boundary / feature edges detected.
-- Update Eigen to version 3.3.9
+- Update Eigen to version 3.4.0-rc1
 - Update googletest to version 1.10.0
 - Update stb_image to version 2.26 and stb_image_writer to version 1.15.
 - Update GLFW to branch 3.3-stable to fix keyboard input on Linux.
