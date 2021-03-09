@@ -172,9 +172,6 @@ endif()
 # setup clang-tidy if program found
 include(clang-tidy)
 
-add_definitions(-DEIGEN_MP2_ONLY)
-
-
 # which directories to process
 if(EMSCRIPTEN)
     add_subdirectory(src/pmp)
