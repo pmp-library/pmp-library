@@ -32,6 +32,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Update googletest to version 1.10.0
 - Update stb_image to version 2.26 and stb_image_writer to version 1.15.
 - Update GLFW to branch 3.3-stable to fix keyboard input on Linux.
+- Change CMake policy CMP0072 to "NEW" behavior preferring GLVND
 
 ### Fixed
 

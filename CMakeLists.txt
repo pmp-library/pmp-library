@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.0.2)
 
 cmake_policy(SET CMP0048 NEW)
 if(${CMAKE_VERSION} VERSION_GREATER "3.11.0")
-cmake_policy(SET CMP0072 OLD)
+cmake_policy(SET CMP0072 NEW)
 endif()
 
 set(PMP_MAJOR_VERSION 1)
@@ -171,6 +171,8 @@ endif()
 
 # setup clang-tidy if program found
 include(clang-tidy)
+
+add_definitions(-DEIGEN_MP2_ONLY)
 
 
 # which directories to process
