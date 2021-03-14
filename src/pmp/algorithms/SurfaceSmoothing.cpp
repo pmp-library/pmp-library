@@ -136,7 +136,7 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     compute_vertex_weights(use_uniform_laplace);
 
     // store center and area
-    Point center_before(0,0,0);
+    Point center_before(0, 0, 0);
     Scalar area_before(0);
     if (rescale)
     {
