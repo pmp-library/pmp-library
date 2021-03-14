@@ -1,5 +1,5 @@
 
-// Copyright 2017-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2017-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "gtest/gtest.h"
@@ -10,12 +10,7 @@
 
 using namespace pmp;
 
-class EigenTest : public ::testing::Test
-{
-public:
-};
-
-TEST_F(EigenTest, construct_from_eigen)
+TEST(EigenTest, construct_from_eigen)
 {
     {
         Eigen::Vector2f eigenVec(1.0f, 2.0f);
@@ -47,7 +42,7 @@ TEST_F(EigenTest, construct_from_eigen)
     }
 }
 
-TEST_F(EigenTest, assignment_from_eigen)
+TEST(EigenTest, assignment_from_eigen)
 {
     {
         Eigen::Vector2f eigenVec(1.0f, 2.0f);
@@ -83,7 +78,7 @@ TEST_F(EigenTest, assignment_from_eigen)
     }
 }
 
-TEST_F(EigenTest, cast_to_eigen)
+TEST(EigenTest, cast_to_eigen)
 {
     {
         vec2 pmpVec(1.0f, 2.0f);
