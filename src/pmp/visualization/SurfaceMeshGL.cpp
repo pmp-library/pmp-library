@@ -145,7 +145,7 @@ void SurfaceMeshGL::load_matcap(const char* filename)
     {
         load_texture(filename, GL_RGBA, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE);
     }
-    catch (const IOException& e)
+    catch (const IOException&)
     {
         throw;
     }
