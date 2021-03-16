@@ -12,16 +12,13 @@ if(WITH_EXAMPLES)
   add_executable(SurfaceMeshBarycenter SurfaceMeshBarycenter.cpp)
   target_link_libraries(SurfaceMeshBarycenter pmp)
 
-  add_custom_target(examples
+  add_custom_target(
+    examples
     COMMAND
     WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
     COMMENT "")
 
-  add_dependencies(examples
-    SurfaceMeshBasics
-    SurfaceMeshIO
-    SurfaceMeshIterators
-    SurfaceMeshBarycenter
-    )
+  add_dependencies(examples SurfaceMeshBasics SurfaceMeshIO
+                   SurfaceMeshIterators SurfaceMeshBarycenter)
 
 endif(WITH_EXAMPLES)

@@ -1,14 +1,13 @@
-set(GOOGLE_TEST_ROOT external/googletest/googletest CACHE STRING "Google Test root")
+set(GOOGLE_TEST_ROOT
+    external/googletest/googletest
+    CACHE STRING "Google Test root")
 
-include_directories(
-  ${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}
-  ${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}/include
-  )
+include_directories(${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}
+                    ${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}/include)
 
 set(GOOGLE_TEST_SOURCES
-  ${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}/src/gtest-all.cc
-  ${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}/src/gtest_main.cc
-  )
+    ${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}/src/gtest-all.cc
+    ${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}/src/gtest_main.cc)
 
 add_library(googletest ${GOOGLE_TEST_SOURCES})
 
@@ -16,7 +15,8 @@ add_library(googletest ${GOOGLE_TEST_SOURCES})
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 # copy test data
-file(COPY ${PROJECT_SOURCE_DIR}/external/pmp-data DESTINATION  ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${PROJECT_SOURCE_DIR}/external/pmp-data
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # source files
 file(GLOB SOURCES ./*.cpp)

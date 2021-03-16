@@ -3,8 +3,8 @@
 file(GLOB HEADERS ./algorithms/*.h)
 file(GLOB SOURCES ./algorithms/*.cpp)
 
-if (PMP_INSTALL)
-    install(FILES ${HEADERS} DESTINATION include/pmp/algorithms)
+if(PMP_INSTALL)
+  install(FILES ${HEADERS} DESTINATION include/pmp/algorithms)
 endif()
 
 target_sources(pmp PRIVATE "${SOURCES}" "${HEADERS}")
