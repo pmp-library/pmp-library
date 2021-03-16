@@ -527,7 +527,7 @@ void SurfaceMeshGL::update_opengl_buffers()
     else
         n_features_ = 0;
 
-    // unbind vertex arry
+    // unbind vertex array
     glBindVertexArray(0);
 
     // remove vertex index property again
