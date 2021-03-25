@@ -1,4 +1,4 @@
-// Copyright 2013-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2013-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
@@ -7,22 +7,22 @@
 
 namespace pmp {
 
-//! Simple class for representing a bounding box
+//! Simple class for representing a bounding box.
 //! \ingroup core
 class BoundingBox
 {
 public:
-    //! construct infinite/invalid bounding box
+    //! Construct infinite/invalid bounding box.
     BoundingBox()
         : min_(std::numeric_limits<Scalar>::max()),
           max_(-std::numeric_limits<Scalar>::max())
     {
     }
 
-    //! construct from min and max points
+    //! Construct from min and max points.
     BoundingBox(const Point& min, const Point& max) : min_(min), max_(max) {}
 
-    //! add point to bbox
+    //! Add point to the bounding box.
     BoundingBox& operator+=(const Point& p)
     {
         for (int i = 0; i < 3; ++i)
@@ -35,7 +35,7 @@ public:
         return *this;
     }
 
-    //! add two bboxes
+    //! Add two bounding boxes.
     BoundingBox& operator+=(const BoundingBox& bb)
     {
         for (int i = 0; i < 3; ++i)
@@ -48,22 +48,22 @@ public:
         return *this;
     }
 
-    //! get min point
+    //! Get min point.
     Point& min() { return min_; }
 
-    //! get max point
+    //! Get max point.
     Point& max() { return max_; }
 
-    //! get center point
+    //! Get center point.
     Point center() const { return 0.5f * (min_ + max_); }
 
-    //! indicate if bbox is empty
+    //! Indicate if the bounding box is empty.
     bool is_empty() const
     {
         return (max_[0] < min_[0] || max_[1] < min_[1] || max_[2] < min_[2]);
     }
 
-    //! get size of the bbox
+    //! Get the size of the bounding box.
     Scalar size() const { return is_empty() ? 0.0 : distance(max_, min_); }
 
 private:
