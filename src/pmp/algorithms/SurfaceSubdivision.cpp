@@ -2,6 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/SurfaceSubdivision.h"
+#include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
 
@@ -28,15 +29,7 @@ void SurfaceSubdivision::catmull_clark()
     // compute face vertices
     for (auto f : mesh_.faces())
     {
-        Point p(0, 0, 0);
-        Scalar c(0);
-        for (auto v : mesh_.vertices(f))
-        {
-            p += points_[v];
-            ++c;
-        }
-        p /= c;
-        fpoint[f] = p;
+        fpoint[f] = centroid(mesh_, f);
     }
 
     // compute edge vertices
@@ -271,7 +264,7 @@ void SurfaceSubdivision::loop()
             p /= k;
 
             Scalar beta =
-                (0.625 - pow(0.375 + 0.25 * cos(2.0 * M_PI / k), 2.0));
+                (0.625 - pow(0.375 + 0.25 * std::cos(2.0 * M_PI / k), 2.0));
 
             vpoint[v] = points_[v] * (Scalar)(1.0 - beta) + beta * p;
         }
@@ -376,7 +369,7 @@ void SurfaceSubdivision::sqrt3()
         if (!mesh_.is_boundary(v))
         {
             Scalar n = mesh_.valence(v);
-            Scalar alpha = (4.0 - 2.0 * cos(2.0 * M_PI / n)) / 9.0;
+            Scalar alpha = (4.0 - 2.0 * std::cos(2.0 * M_PI / n)) / 9.0;
             Point p(0, 0, 0);
 
             for (auto vv : mesh_.vertices(v))
