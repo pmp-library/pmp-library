@@ -5,6 +5,9 @@
 #include "SurfaceSubdivision.h"
 #include "DifferentialGeometry.h"
 
+#include <cmath>
+#include <algorithm>
+
 namespace pmp {
 
 void project_to_unit_sphere(SurfaceMesh& mesh)
@@ -199,6 +202,164 @@ SurfaceMesh SurfaceFactory::uv_sphere(const Point& center, Scalar radius,
             i1 = idx0 + (i + 1) % n_slices;
             i2 = idx1 + (i + 1) % n_slices;
             i3 = idx1 + i;
+            mesh.add_quad(Vertex(i0), Vertex(i1), Vertex(i2), Vertex(i3));
+        }
+    }
+
+    return mesh;
+}
+
+SurfaceMesh SurfaceFactory::plane(size_t resolution)
+{
+    assert(resolution >= 1);
+
+    SurfaceMesh mesh;
+
+    // generate vertices
+    Point p(0, 0, 0);
+    for (size_t i = 0; i < resolution + 1; i++)
+    {
+        for (size_t j = 0; j < resolution + 1; j++)
+        {
+            mesh.add_vertex(p);
+            p[1] += 1.0 / resolution;
+        }
+        p[1] = 0;
+        p[0] += 1.0 / resolution;
+    }
+
+    // generate faces
+    for (size_t i = 0; i < resolution; i++)
+    {
+        for (size_t j = 0; j < resolution; j++)
+        {
+            auto v0 = Vertex(j + i * (resolution + 1));
+            auto v1 = Vertex(v0.idx() + resolution + 1);
+            auto v2 = Vertex(v0.idx() + resolution + 2);
+            auto v3 = Vertex(v0.idx() + 1);
+            mesh.add_quad(v0, v1, v2, v3);
+        }
+    }
+
+    return mesh;
+}
+
+SurfaceMesh SurfaceFactory::cone(size_t n_subdivisions, Scalar radius,
+                                 Scalar height)
+{
+    assert(n_subdivisions >= 3);
+
+    SurfaceMesh mesh;
+
+    // add vertices subdividing a circle
+    std::vector<Vertex> base_vertices;
+    for (size_t i = 0; i < n_subdivisions; i++)
+    {
+        Scalar ratio = static_cast<Scalar>(i) / (n_subdivisions);
+        Scalar r = ratio * (M_PI * 2.0);
+        Scalar x = std::cos(r) * radius;
+        Scalar y = std::sin(r) * radius;
+        auto v = mesh.add_vertex(Point(x, y, 0.0));
+        base_vertices.push_back(v);
+    }
+
+    // add the tip of the cone
+    auto v0 = mesh.add_vertex(Point(0.0, 0.0, height));
+
+    // generate triangular faces
+    for (size_t i = 0; i < n_subdivisions; i++)
+    {
+        auto ii = (i + 1) % n_subdivisions;
+        mesh.add_triangle(v0, Vertex(i), Vertex(ii));
+    }
+
+    // reverse order for consistent face orientation
+    std::reverse(base_vertices.begin(), base_vertices.end());
+
+    // add polygonal base face
+    mesh.add_face(base_vertices);
+
+    return mesh;
+}
+
+SurfaceMesh SurfaceFactory::cylinder(size_t n_subdivisions, Scalar radius,
+                                     Scalar height)
+{
+    assert(n_subdivisions >= 3);
+
+    SurfaceMesh mesh;
+
+    // generate vertices
+    std::vector<Vertex> bottom_vertices;
+    std::vector<Vertex> top_vertices;
+    for (size_t i = 0; i < n_subdivisions; i++)
+    {
+        Scalar ratio = static_cast<Scalar>(i) / (n_subdivisions);
+        Scalar r = ratio * (M_PI * 2.0);
+        Scalar x = std::cos(r) * radius;
+        Scalar y = std::sin(r) * radius;
+        Vertex v = mesh.add_vertex(Point(x, y, 0.0));
+        bottom_vertices.push_back(v);
+        v = mesh.add_vertex(Point(x, y, height));
+        top_vertices.push_back(v);
+    }
+
+    // add faces around the cylinder
+    for (size_t i = 0; i < n_subdivisions; i++)
+    {
+        auto ii = i * 2;
+        auto jj = (ii + 2) % (n_subdivisions * 2);
+        auto kk = (ii + 3) % (n_subdivisions * 2);
+        auto ll = ii + 1;
+        mesh.add_quad(Vertex(ii), Vertex(jj), Vertex(kk), Vertex(ll));
+    }
+
+    // add top polygon
+    mesh.add_face(top_vertices);
+
+    // reverse order for consistent face orientation
+    std::reverse(bottom_vertices.begin(), bottom_vertices.end());
+
+    // add bottom polygon
+    mesh.add_face(bottom_vertices);
+
+    return mesh;
+}
+
+SurfaceMesh SurfaceFactory::torus(size_t radial_resolution,
+                                  size_t tubular_resolution, Scalar radius,
+                                  Scalar thickness)
+{
+    assert(radial_resolution >= 3);
+    assert(tubular_resolution >= 3);
+
+    SurfaceMesh mesh;
+
+    // generate vertices
+    for (size_t i = 0; i < radial_resolution; i++)
+    {
+        for (size_t j = 0; j < tubular_resolution; j++)
+        {
+            Scalar u = static_cast<Scalar>(j) / tubular_resolution * M_PI * 2.0;
+            Scalar v = static_cast<Scalar>(i) / radial_resolution * M_PI * 2.0;
+            Scalar x = (radius + thickness * std::cos(v)) * std::cos(u);
+            Scalar y = (radius + thickness * std::cos(v)) * std::sin(u);
+            Scalar z = thickness * std::sin(v);
+            mesh.add_vertex(Point(x, y, z));
+        }
+    }
+
+    // add quad faces
+    for (size_t i = 0; i < radial_resolution; i++)
+    {
+        auto i_next = (i + 1) % radial_resolution;
+        for (size_t j = 0; j < tubular_resolution; j++)
+        {
+            auto j_next = (j + 1) % tubular_resolution;
+            auto i0 = i * tubular_resolution + j;
+            auto i1 = i * tubular_resolution + j_next;
+            auto i2 = i_next * tubular_resolution + j_next;
+            auto i3 = i_next * tubular_resolution + j;
             mesh.add_quad(Vertex(i0), Vertex(i1), Vertex(i2), Vertex(i3));
         }
     }

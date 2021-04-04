@@ -101,3 +101,54 @@ TEST(SurfaceFactoryTest, uv_sphere)
     EXPECT_FALSE(mesh.is_quad_mesh());
     EXPECT_TRUE(vertices_on_sphere(mesh));
 }
+
+TEST(SurfaceFactoryTest, plane_minimal)
+{
+    auto mesh = SurfaceFactory::plane(1);
+    EXPECT_EQ(mesh.n_vertices(), 4u);
+    EXPECT_EQ(mesh.n_edges(), 4u);
+    EXPECT_EQ(mesh.n_faces(), 1u);
+    EXPECT_TRUE(mesh.is_quad_mesh());
+}
+
+TEST(SurfaceFactoryTest, plane_planar)
+{
+    auto mesh = SurfaceFactory::plane();
+    Scalar z_sum = 0;
+    for (auto v : mesh.vertices())
+        z_sum += mesh.position(v)[2];
+    EXPECT_EQ(z_sum, 0);
+}
+
+TEST(SurfaceFactoryTest, plane_default)
+{
+    auto mesh = SurfaceFactory::plane();
+    EXPECT_EQ(mesh.n_vertices(), 25u);
+    EXPECT_EQ(mesh.n_edges(), 40u);
+    EXPECT_EQ(mesh.n_faces(), 16u);
+}
+
+TEST(SurfaceFactoryTest, cone)
+{
+    auto mesh = SurfaceFactory::cone(5);
+    EXPECT_EQ(mesh.n_vertices(), 6u);
+    EXPECT_EQ(mesh.n_edges(), 10u);
+    EXPECT_EQ(mesh.n_faces(), 6u);
+}
+
+TEST(SurfaceFactoryTest, cylinder)
+{
+    auto mesh = SurfaceFactory::cylinder(3);
+    EXPECT_EQ(mesh.n_vertices(), 6u);
+    EXPECT_EQ(mesh.n_edges(), 9u);
+    EXPECT_EQ(mesh.n_faces(), 5u);
+}
+
+TEST(SurfaceFactoryTest, torus)
+{
+    auto mesh = SurfaceFactory::torus();
+    EXPECT_EQ(mesh.n_vertices(), 800u);
+    EXPECT_EQ(mesh.n_edges(), 1600u);
+    EXPECT_EQ(mesh.n_faces(), 800u);
+    EXPECT_TRUE(mesh.is_quad_mesh());
+}
