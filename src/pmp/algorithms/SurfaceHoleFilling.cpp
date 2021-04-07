@@ -397,28 +397,12 @@ void SurfaceHoleFilling::relaxation()
     }
     const int n = vertices.size();
 
-    // collect constraints
-    std::vector<Vertex> constraints;
-    constraints.reserve(mesh_.n_vertices());
-    for (auto v : mesh_.vertices())
-    {
-        if (!vlocked_[v])
-        {
-            constraints.push_back(v);
-        }
-    }
-    for (auto h : hole_)
-    {
-        constraints.push_back(mesh_.to_vertex(h));
-    }
-    const int m = constraints.size();
-
     // setup matrix & rhs
-    Eigen::MatrixXd B(m, 3);
+    Eigen::MatrixXd B(n, 3);
     std::vector<Triplet> triplets;
-    for (int i = 0; i < m; ++i)
+    for (int i = 0; i < n; ++i)
     {
-        Vertex v = constraints[i];
+        Vertex v = vertices[i];
         Point b(0, 0, 0);
         Scalar c(0);
 
@@ -440,12 +424,11 @@ void SurfaceHoleFilling::relaxation()
     }
 
     // solve least squares system
-    SparseMatrix A(m, n);
+    SparseMatrix A(n, n);
     A.setFromTriplets(triplets.begin(), triplets.end());
-    SparseMatrix AtA = A.transpose() * A;
-    Eigen::MatrixXd AtB = A.transpose() * B;
-    Eigen::SimplicialLDLT<SparseMatrix> solver(AtA);
-    Eigen::MatrixXd X = solver.solve(AtB);
+    Eigen::SimplicialLDLT<SparseMatrix> solver(A);
+    Eigen::MatrixXd X = solver.solve(B);
+
     if (solver.info() != Eigen::Success)
     {
         // clean up
