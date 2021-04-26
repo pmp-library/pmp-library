@@ -11,7 +11,7 @@ class Viewer : public MeshViewer
 {
 public:
     Viewer(const char* title, int width, int height);
-    virtual void load_mesh(const char* filename) override;
+    virtual bool load_mesh(const char* filename) override;
 
 protected:
     virtual void process_imgui() override;
@@ -23,13 +23,15 @@ Viewer::Viewer(const char* title, int width, int height)
 {
 }
 
-void Viewer::load_mesh(const char* filename)
+bool Viewer::load_mesh(const char* filename)
 {
-    MeshViewer::load_mesh(filename);
+    bool ok = MeshViewer::load_mesh(filename);
 
     // alloc tex coordinates
     mesh_.vertex_property<TexCoord>("v:tex", TexCoord(0, 0));
     update_mesh();
+
+    return ok;
 }
 
 void Viewer::process_imgui()

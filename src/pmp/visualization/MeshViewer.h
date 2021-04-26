@@ -20,7 +20,7 @@ public:
     virtual ~MeshViewer();
 
     //! load a mesh from file \p filename
-    virtual void load_mesh(const char* filename);
+    virtual bool load_mesh(const char* filename);
 
     //! load a matcap texture from file \p filename
     void load_matcap(const char* filename);
