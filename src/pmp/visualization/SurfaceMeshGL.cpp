@@ -64,7 +64,6 @@ void SurfaceMeshGL::deleteBuffers()
     glDeleteBuffers(1, &edge_buffer_);
     glDeleteBuffers(1, &feature_buffer_);
     glDeleteVertexArrays(1, &vertex_array_object_);
-    glDeleteTextures(1, &texture_);
 
     // initialize GL buffers to zero
     vertex_array_object_ = 0;
