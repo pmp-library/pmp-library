@@ -39,6 +39,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 - Fix bug in hole filling leading to artifacts in the filled surface patch. See #64.
 - Change sign of vec2::perp() to correctly model CCW rotation by 90 degrees.
+- Fix bug in OpenGL buffer clean-up in SurfaceMeshGL.
 
 ## [1.2.1] 2020-05-10
 

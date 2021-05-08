@@ -23,6 +23,9 @@ public:
     //! default destructor
     ~SurfaceMeshGL();
 
+    //! clear mesh: remove all vertices, edges, faces, free OpenGL buffers
+    virtual void clear() override;
+
     //! get front color
     const vec3& front_color() const { return front_color_; }
     //! set front color
@@ -62,6 +65,11 @@ public:
     Scalar crease_angle() const { return crease_angle_; }
     //! set crease angle (in degrees) for visualization of sharp edges
     void set_crease_angle(Scalar ca);
+
+    //! get point size for visualization of points
+    float point_size() const { return point_size_; }
+    //! set point size for visualization of points
+    void set_point_size(float ps){point_size_ = ps;}
 
     //! \brief Control usage of color information
     //! \details Either per-vertex or per-face colors can be used. Vertex colors
@@ -104,6 +112,11 @@ public:
     //! \sa See src/apps/mview.cpp for an example usage.
     //! \throw IOException in case of failure to load texture from file
     void load_matcap(const char* filename);
+
+private: // init/clear buffers and properties
+
+    // delete OpenGL buffers (called from destructor and clear())
+    void deleteBuffers();
 
 private: // helpers for computing triangulation of a polygon
     struct Triangulation
@@ -175,6 +188,7 @@ private:
     bool srgb_;
     bool use_colors_;
     float crease_angle_;
+    int point_size_;
 
     //! 1D texture for scalar field rendering
     GLuint texture_;

@@ -934,7 +934,7 @@ public:
     SurfaceMesh();
 
     //! destructor
-    ~SurfaceMesh();
+    virtual ~SurfaceMesh();
 
     //! copy constructor: copies \p rhs to \p *this. performs a deep copy of all
     //! properties.
@@ -1038,7 +1038,7 @@ public:
     bool is_empty() const { return n_vertices() == 0; }
 
     //! clear mesh: remove all vertices, edges, faces
-    void clear();
+    virtual void clear();
 
     //! remove unused memory from vectors
     void free_memory();
