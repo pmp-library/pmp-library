@@ -56,8 +56,8 @@ public:
     //! \param n_subdivisions Number of subdivisions of the base circle. Needs to be >= 3. Default: 30.
     //! \param radius Radius of the base circle. Default: 1.
     //! \param height Height of the the cone. Default: 2.5.
-    static SurfaceMesh cone(size_t n_subdivisions = 30, float radius = 1.0,
-                            float height = 2.5);
+    static SurfaceMesh cone(size_t n_subdivisions = 30, Scalar radius = 1.0,
+                            Scalar height = 2.5);
 
     //! \brief Generate a cylinder mesh.
     //! \details Generates a polygonal mesh of a cylinder. The cylinder is

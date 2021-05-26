@@ -1,9 +1,9 @@
 // Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "SurfaceFactory.h"
-#include "SurfaceSubdivision.h"
-#include "DifferentialGeometry.h"
+#include "pmp/algorithms/SurfaceFactory.h"
+#include "pmp/algorithms/SurfaceSubdivision.h"
+#include "pmp/algorithms/DifferentialGeometry.h"
 
 #include <cmath>
 #include <algorithm>
