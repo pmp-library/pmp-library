@@ -101,6 +101,39 @@ void Viewer::process_imgui()
             }
             update_mesh();
         }
+
+
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+
+        static float laplace_smoothness = 0.01;
+        ImGui::PushItemWidth(100);
+        ImGui::SliderFloat("LOS:smoothness", &laplace_smoothness, 0.01, 1);
+        ImGui::PopItemWidth();
+        if (ImGui::Button("Laplacian Optimization Smoothing"))
+        {
+            smoother_.laplace_optimized_smoothing(laplace_smoothness);
+            update_mesh();
+        }
+
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+        if (ImGui::Button("Bilateral Smoothing")){
+            smoother_.bilateral_smoothing(1);
+            update_mesh();
+        }
+
+        static float bns_smoothness = 0.1, bns_sigma_s = 0.3;
+        ImGui::PushItemWidth(100);
+        ImGui::SliderFloat("BNS:smoothness", &bns_smoothness, 0.01, 1);
+        ImGui::SliderFloat("BNS::sigma_s", &bns_sigma_s, 0.01, 1);
+        ImGui::PopItemWidth();
+        if (ImGui::Button("Bilateral Normal Smoothing")){
+            smoother_.bilateral_normal_smoothing( bns_sigma_s, bns_smoothness);
+            update_mesh();
+        }
     }
 }
 

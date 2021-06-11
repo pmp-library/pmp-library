@@ -33,6 +33,23 @@ public:
                             bool use_uniform_laplace = false,
                             bool rescale = true);
 
+    //! Laplacian Mesh Optimization with \p smoothness
+    //! \details See \cite nealen2006laplacian
+    void laplace_optimized_smoothing(double smoothness = 0.01);
+
+
+    //! Perform \p iters iterations of Bilateral Mesh Denoising
+    //! \details See \cite fleishman2003bilateral
+    void bilateral_smoothing(unsigned int iters,
+                             bool rescale = true);
+
+
+    //! Bilateral Normal Mesh Denoising
+    //! \details See \cite zheng2010bilateral
+    void bilateral_normal_smoothing(double sigma_s, 
+                                    double smoothness);
+
+
     //! Initialize edge and vertex weights.
     void initialize(bool use_uniform_laplace = false)
     {
