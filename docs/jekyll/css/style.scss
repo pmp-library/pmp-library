@@ -1,14 +1,15 @@
 ---
 ---
+
 /* modify Bootstrap variables here */
 
 $primary: #09a8ff;
 
-@import 'bootstrap/bootstrap';
+@import "bootstrap/bootstrap";
 
 /* add additional CSS rules below */
 
-@import url('https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i');
+@import url("https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i");
 
 body {
   font-family: Lato, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -19,11 +20,11 @@ body {
 }
 
 .navbar-dark .navbar-nav .nav-link {
-  color: rgba(255,255,255,1.0);
+  color: rgba(255, 255, 255, 1);
 }
 
 .navbar-dark .navbar-nav .nav-link:hover {
-  color: rgba(255,255,255,1.0);
+  color: rgba(255, 255, 255, 1);
 }
 
 .features {
@@ -36,8 +37,12 @@ body {
   letter-spacing: 0.1px;
 }
 
-h1, h2, h3, h4, h5, h6
-{
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
 }
 
@@ -57,9 +62,9 @@ pre {
 }
 
 pre code {
-    overflow-wrap: normal;
-    white-space: pre;
-    background-color: #efefef;
+  overflow-wrap: normal;
+  white-space: pre;
+  background-color: #efefef;
 }
 
 .page {
@@ -70,7 +75,6 @@ pre code {
 }
 
 .content {
-
   .container {
     background: #fff;
     padding-top: 2em;
@@ -79,18 +83,17 @@ pre code {
 
   h1 {
     font-size: 2rem;
-    margin-bottom: .5em;
+    margin-bottom: 0.5em;
   }
 
   h2 {
     font-size: 1.5rem;
   }
-
 }
 
 .post-date {
   display: block;
-  margin-top: -.5rem;
+  margin-top: -0.5rem;
   margin-bottom: 1rem;
   color: #595959;
 }
