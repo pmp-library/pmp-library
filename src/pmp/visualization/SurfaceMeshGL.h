@@ -69,7 +69,7 @@ public:
     //! get point size for visualization of points
     float point_size() const { return point_size_; }
     //! set point size for visualization of points
-    void set_point_size(float ps){point_size_ = ps;}
+    void set_point_size(float ps) { point_size_ = ps; }
 
     //! \brief Control usage of color information
     //! \details Either per-vertex or per-face colors can be used. Vertex colors
@@ -114,7 +114,6 @@ public:
     void load_matcap(const char* filename);
 
 private: // init/clear buffers and properties
-
     // delete OpenGL buffers (called from destructor and clear())
     void deleteBuffers();
 

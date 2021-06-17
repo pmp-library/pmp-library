@@ -636,7 +636,8 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     phong_shader_.set_uniform("use_texture", false);
     phong_shader_.set_uniform("use_srgb", false);
     phong_shader_.set_uniform("show_texture_layout", false);
-    phong_shader_.set_uniform("use_vertex_color", has_vertex_colors_ && use_colors_);
+    phong_shader_.set_uniform("use_vertex_color",
+                              has_vertex_colors_ && use_colors_);
 
     glBindVertexArray(vertex_array_object_);
 
