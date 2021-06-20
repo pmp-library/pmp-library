@@ -1,0 +1,56 @@
+name: build
+
+on:
+  push:
+    paths-ignore:
+      - "docs/**"
+      - ".github/workflows/docs.yml"
+      - "/*.md"
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - ".github/workflows/docs.yml"
+      - "/*.md"
+
+env:
+  BUILD_TYPE: Debug
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+
+      - name: Modify apt sources
+        if: runner.os == 'Linux'
+        run: sudo sed -i 's/azure\.//' /etc/apt/sources.list && sudo apt-get update
+
+      - name: Install dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -o Acquire::Retries=3 xorg-dev libglfw3-dev libglu1-mesa-dev
+
+      - name: Create build directory
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DENABLE_COVERAGE=true
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build . --config $BUILD_TYPE --parallel
+
+      - name: Test
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: ctest -C $BUILD_TYPE
+
+      - name: Coverage
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: make coverage
