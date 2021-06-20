@@ -30,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         if: runner.os == 'Linux'
-        run: sudo apt-get install -o Acquire::Retries=3 xorg-dev libglfw3-dev libglu1-mesa-dev
+        run: sudo apt-get install -o Acquire::Retries=3 xorg-dev libglfw3-dev libglu1-mesa-dev lcov
 
       - name: Create build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
