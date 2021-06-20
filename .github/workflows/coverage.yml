@@ -54,3 +54,9 @@ jobs:
         working-directory: ${{runner.workspace}}/build
         shell: bash
         run: make coverage
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          path-to-lcov: coverage.info
+          github-token: ${{ secrets.GITHUB_TOKEN }}
