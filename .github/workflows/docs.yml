@@ -2,42 +2,45 @@ name: docs
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   docs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
 
-    - name: Modify apt sources
-      if: runner.os == 'Linux'
-      run: sudo sed -i 's/azure\.//' /etc/apt/sources.list && sudo apt-get update
+      - name: Modify apt sources
+        if: runner.os == 'Linux'
+        run: sudo sed -i 's/azure\.//' /etc/apt/sources.list && sudo apt-get update
 
-    - name: Install dependencies
-      run: sudo apt-get install -o Acquire::Retries=3 doxygen jekyll ruby-jekyll-seo-tag ruby-jekyll-feed xorg-dev texlive-base
+      - name: Install dependencies
+        run: sudo apt-get install -o Acquire::Retries=3 doxygen jekyll ruby-jekyll-seo-tag ruby-jekyll-feed xorg-dev texlive-base
 
-    - name: Create build directory
-      run: cmake -E make_directory ${{runner.workspace}}/build
+      - name: Fetch doxygen
+        run: export DOXYGEN_URL="http://doxygen.nl/files/doxygen-1.9.1.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && export PATH=`pwd`/doxygen/bin:${PATH} && doxygen --version
 
-    - name: Configure CMake
-      shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE
+      - name: Create build directory
+        run: cmake -E make_directory ${{runner.workspace}}/build
 
-    - name: Build docs
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: cmake --build . --target docs
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake $GITHUB_WORKSPACE
 
-    - name: GH Pages Deployment
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{runner.workspace}}/build/docs/html
-        force_orphan: true
-        publish_branch: gh-pages
-        cname: www.pmp-library.org
+      - name: Build docs
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build . --target docs
+
+      - name: GH Pages Deployment
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{runner.workspace}}/build/docs/html
+          force_orphan: true
+          publish_branch: gh-pages
+          cname: www.pmp-library.org

@@ -9,7 +9,6 @@ This User Guide is organized into the following sections
 - [Contributing](contributing.html) -- guidelines for contributions
 - [Coding Style](codingstyle.html) -- contains our coding guidelines
 
-
 <span style="display: none;"> @subpage quickstart </span>
 <span style="display: none;"> @subpage installation </span>
 <span style="display: none;"> @subpage overview </span>
