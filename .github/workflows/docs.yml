@@ -21,7 +21,7 @@ jobs:
         run: sudo apt-get install -o Acquire::Retries=3 doxygen jekyll ruby-jekyll-seo-tag ruby-jekyll-feed xorg-dev texlive-base libclang-9-dev libclang-cpp9
 
       - name: Fetch doxygen
-        run: export DOXYGEN_URL="http://doxygen.nl/files/doxygen-1.9.1.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && export PATH=`pwd`/doxygen/bin:${PATH} && doxygen --version
+        run: export DOXYGEN_URL="http://doxygen.nl/files/doxygen-1.9.1.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && echo `pwd`/doxygen/bin >> $GITHUB_PATH
 
       - name: Create build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
