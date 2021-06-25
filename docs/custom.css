@@ -74,3 +74,7 @@ dl.citelist dt {
 div.toc {
   margin: 0 0 var(--spacing-large) var(--spacing-large);
 }
+
+a.el {
+  font-weight: normal;
+}

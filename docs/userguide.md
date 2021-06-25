@@ -1,17 +1,16 @@
 # User Guide {#userguide}
 
-This User Guide is organized into the following sections
+Welcome to the PMP library user guide. This guide covers all the basics like
+[installation](@ref installation) and [getting started](@ref tutorial) with the
+library. It also contains guidelines for contributions and development. See the
+[API Reference](usergroup0.html) for detailed information on the classes and
+functions provided by the library.
 
-- [Quickstart](quickstart.html) -- how to quickly start using pmp-library
-- [Installation](installation.html) -- detailed installation instructions
-- [Overview](overview.html) -- an overview of the library and its capabilities
-- [Tutorial](tutorial.html) -- how to perform basic tasks
-- [Contributing](contributing.html) -- guidelines for contributions
-- [Coding Style](codingstyle.html) -- contains our coding guidelines
+## Contents
 
-<span style="display: none;"> @subpage quickstart </span>
-<span style="display: none;"> @subpage installation </span>
-<span style="display: none;"> @subpage overview </span>
-<span style="display: none;"> @subpage tutorial </span>
-<span style="display: none;"> @subpage contributing </span>
-<span style="display: none;"> @subpage codingstyle </span>
+- @subpage quickstart -- how to quickly start using pmp-library
+- @subpage installation -- detailed installation instructions
+- @subpage overview -- an overview of the library and its capabilities
+- @subpage tutorial -- how to perform basic tasks
+- @subpage contributing -- guidelines for contributions
+- @subpage codingstyle -- contains our coding guidelines
