@@ -1300,6 +1300,7 @@ HTML_EXTRA_STYLESHEET  = ${CMAKE_CURRENT_SOURCE_DIR}/doxygen-awesome.css \
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
 HTML_EXTRA_FILES       = ${CMAKE_CURRENT_SOURCE_DIR}/images/favicon.ico \
+                         ${CMAKE_CURRENT_SOURCE_DIR}/images/github-corner-right.svg \
                          ${CMAKE_CURRENT_SOURCE_DIR}/mpview.html \
                          ${CMAKE_CURRENT_SOURCE_DIR}/mpview.wasm \
                          ${CMAKE_CURRENT_SOURCE_DIR}/mpview.js \

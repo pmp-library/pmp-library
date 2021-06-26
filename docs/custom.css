@@ -78,3 +78,9 @@ div.toc {
 a.el {
   font-weight: normal;
 }
+
+.github-corner {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
