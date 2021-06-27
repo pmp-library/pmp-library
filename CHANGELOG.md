@@ -26,7 +26,6 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
-- MeshViewer::load_mesh() again returns boolean success value.
 - Improve API by reporting errors using exceptions (see #16).
 - SurfaceFeatures now returns the number of boundary / feature edges detected.
 - Update Eigen to version 3.4.0-rc1

@@ -33,7 +33,7 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
 
 MeshViewer::~MeshViewer() = default;
 
-bool MeshViewer::load_mesh(const char* filename)
+void MeshViewer::load_mesh(const char* filename)
 {
     // load mesh
     try
@@ -43,7 +43,7 @@ bool MeshViewer::load_mesh(const char* filename)
     catch (const IOException& e)
     {
         std::cerr << "Error: " << e.what() << std::endl;
-        return false;
+        throw;
     }
 
     // update scene center and bounds
@@ -65,8 +65,6 @@ bool MeshViewer::load_mesh(const char* filename)
 
     filename_ = filename;
     mesh_.set_crease_angle(crease_angle_);
-
-    return true;
 }
 
 void MeshViewer::load_matcap(const char* filename)
@@ -78,7 +76,7 @@ void MeshViewer::load_matcap(const char* filename)
     catch (const IOException& e)
     {
         std::cerr << e.what() << std::endl;
-        return;
+        throw;
     }
     set_draw_mode("Texture");
 }
@@ -94,7 +92,7 @@ void MeshViewer::load_texture(const char* filename, GLint format,
     catch (const IOException& e)
     {
         std::cerr << e.what() << std::endl;
-        return;
+        throw;
     }
 
     set_draw_mode("Texture");
