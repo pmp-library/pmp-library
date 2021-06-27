@@ -26,6 +26,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Make SurfaceTriangulation::Objective a scoped enum
 - Remove SurfaceMesh::triangulate() functions to avoid redundancy with SurfaceTriangulation
 - Improve API by reporting errors using exceptions (see #16).
 - SurfaceFeatures now returns the number of boundary / feature edges detected.

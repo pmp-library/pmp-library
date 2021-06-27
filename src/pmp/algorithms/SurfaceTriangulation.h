@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
@@ -10,44 +10,43 @@
 namespace pmp {
 
 //! \brief Triangulate polygons to get a pure triangle mesh.
-//! \details Tringulate n-gons into n-2 triangles. Find the triangulation that
-//! minimizes the sum of squared triangle areas.
+//! \details Triangulate n-gons into n-2 triangles. Finds the triangulation that
+//! minimizes the sum of squared triangle areas, or the one that maximizes the
+//! minimum angle.
 //! See \cite liepa_2003_filling for details.
 //! \ingroup algorithms
 class SurfaceTriangulation
 {
 public:
-    //! triangulation objective: find the triangulation that minimizes the
-    //! sum of squared triangle areas, or the one that maximizes the minimum
-    //! angle.
-    enum Objective
+    //! Triangulation objective
+    enum class Objective
     {
-        MIN_AREA,
-        MAX_ANGLE
+        MIN_AREA, //!< minimize the sum of squared areas
+        MAX_ANGLE //!< maximize the minimum angle
     } objective_;
 
-    //! construct with mesh
+    //! Construct with mesh
     SurfaceTriangulation(SurfaceMesh& mesh);
 
-    //! triangulate all faces
-    void triangulate(Objective o = MIN_AREA);
+    //! Triangulate all faces
+    void triangulate(Objective o = Objective::MIN_AREA);
 
-    //! triangulate a particular face f
+    //! Triangulate the Face \p f
     //! \pre The input face is manifold
     //! \throw InvalidInputException in case the input precondition is violated
-    void triangulate(Face f, Objective o = MIN_AREA);
+    void triangulate(Face f, Objective o = Objective::MIN_AREA);
 
 private:
-    // compute the weight of the triangle (i,j,k).
+    // Compute the weight of the triangle (i,j,k).
     Scalar compute_weight(int i, int j, int k) const;
 
-    // does edge (a,b) exist?
+    // Does edge (a,b) exist?
     bool is_edge(Vertex a, Vertex b) const;
 
-    // does edge (a,b) exist and is non-boundary?
+    // Does edge (a,b) exist and is non-boundary?
     bool is_interior_edge(Vertex a, Vertex b) const;
 
-    // add edges from vertex i to j
+    // Add edge from vertex i to j.
     bool insert_edge(int i, int j);
 
     // mesh and properties

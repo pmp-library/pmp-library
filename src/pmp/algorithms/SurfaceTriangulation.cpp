@@ -10,8 +10,6 @@ namespace pmp {
 SurfaceTriangulation::SurfaceTriangulation(SurfaceMesh& mesh) : mesh_(mesh)
 {
     points_ = mesh_.vertex_property<Point>("v:point");
-    objective_ = MIN_AREA;
-    objective_ = MAX_ANGLE;
 }
 
 void SurfaceTriangulation::triangulate(Objective o)
@@ -79,11 +77,11 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
             {
                 switch (objective_)
                 {
-                    case MIN_AREA:
+                    case Objective::MIN_AREA:
                         w = weight_[i][m] + compute_weight(i, m, k) +
                             weight_[m][k];
                         break;
-                    case MAX_ANGLE:
+                    case Objective::MAX_ANGLE:
                         w = std::max(
                             weight_[i][m],
                             std::max(compute_weight(i, m, k), weight_[m][k]));
@@ -159,14 +157,14 @@ Scalar SurfaceTriangulation::compute_weight(int i, int j, int k) const
     switch (objective_)
     {
         // compute squared triangle area
-        case MIN_AREA:
+        case Objective::MIN_AREA:
             w = sqrnorm(cross(pb - pa, pc - pa));
             break;
 
         // compute one over minimum angle
         // or cosine of minimum angle
         // maximum cosine (which should then be minimized)
-        case MAX_ANGLE:
+        case Objective::MAX_ANGLE:
             Scalar cosa = dot(normalize(pb - pa), normalize(pc - pa));
             Scalar cosb = dot(normalize(pa - pb), normalize(pc - pb));
             Scalar cosc = dot(normalize(pa - pc), normalize(pb - pc));
