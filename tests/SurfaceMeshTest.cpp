@@ -4,7 +4,6 @@
 #include "SurfaceMeshTest.h"
 #include "Helpers.h"
 
-#include <pmp/algorithms/SurfaceNormals.h>
 #include <vector>
 
 using namespace pmp;
