@@ -7,6 +7,7 @@
 #include "pmp/algorithms/SurfaceRemeshing.h"
 #include "pmp/algorithms/SurfaceFeatures.h"
 #include "pmp/algorithms/SurfaceSubdivision.h"
+#include "pmp/algorithms/SurfaceTriangulation.h"
 
 namespace pmp {
 
@@ -73,7 +74,8 @@ SurfaceMesh hemisphere()
 
         // generate quad sphere mesh and triangulate it
         mesh = SurfaceFactory::quad_sphere(3);
-        mesh.triangulate();
+        SurfaceTriangulation tr(mesh);
+        tr.triangulate();
 
         // delete lower half
         for (auto v : mesh.vertices())

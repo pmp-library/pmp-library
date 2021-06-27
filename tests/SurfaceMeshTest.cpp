@@ -1,4 +1,4 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "SurfaceMeshTest.h"
@@ -279,9 +279,6 @@ TEST_F(SurfaceMeshTest, is_quad_mesh)
     auto v3 = mesh.add_vertex(Point(0, 1, 0));
     mesh.add_quad(v0, v1, v2, v3);
     EXPECT_TRUE(mesh.is_quad_mesh());
-    EXPECT_FALSE(mesh.is_triangle_mesh());
-    mesh.triangulate();
-    EXPECT_TRUE(mesh.is_triangle_mesh());
 }
 
 TEST_F(SurfaceMeshTest, poly_mesh)
@@ -293,10 +290,7 @@ TEST_F(SurfaceMeshTest, poly_mesh)
     vertices[3] = mesh.add_vertex(Point(0.5, 1, 0));
     vertices[4] = mesh.add_vertex(Point(0, 1, 0));
     mesh.add_face(vertices);
-    EXPECT_FALSE(mesh.is_triangle_mesh());
-    EXPECT_FALSE(mesh.is_quad_mesh());
-    mesh.triangulate();
-    EXPECT_TRUE(mesh.is_triangle_mesh());
+    EXPECT_FALSE(mesh.is_triangle_mesh() || mesh.is_quad_mesh());
 }
 
 TEST_F(SurfaceMeshTest, valence)
@@ -312,8 +306,7 @@ TEST_F(SurfaceMeshTest, valence)
 
 TEST_F(SurfaceMeshTest, collapse)
 {
-    add_quad();
-    mesh.triangulate();
+    add_triangles();
     EXPECT_EQ(mesh.n_faces(), size_t(2));
     auto h0 = mesh.find_halfedge(v3, v2);
     if (mesh.is_collapse_ok(h0))

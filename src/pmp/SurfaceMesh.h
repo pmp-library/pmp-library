@@ -1660,14 +1660,6 @@ public:
     //! each face, and therefore is not very efficient.
     bool is_quad_mesh() const;
 
-    //! triangulate the entire mesh, by calling triangulate(Face) for each face.
-    //! \sa triangulate(Face)
-    void triangulate();
-
-    //! triangulate the face \p f.
-    //! \sa triangulate()
-    void triangulate(Face f);
-
     //! returns whether collapsing the halfedge \p v0v1 is topologically legal.
     //! \attention This function is only valid for triangle meshes.
     bool is_collapse_ok(Halfedge v0v1);

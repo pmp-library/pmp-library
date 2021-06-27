@@ -35,7 +35,7 @@ TEST(SurfaceSubdivisionTest, loop_with_boundary)
 {
     auto mesh = hemisphere();
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.n_vertices(), size_t(3629));
+    EXPECT_EQ(mesh.n_vertices(), size_t(3597));
 }
 
 // Catmull-Clark subdivision on suzanne quad mesh

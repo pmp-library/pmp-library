@@ -31,12 +31,11 @@ TEST(SurfaceRemeshingTest, adaptive_remeshing_with_boundary)
 {
     // mesh with boundary
     auto mesh = hemisphere();
-
     auto bb = mesh.bounds().size();
     SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
                                               1.0 * bb,    // max length
                                               0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.n_vertices(), size_t(740));
+    EXPECT_EQ(mesh.n_vertices(), size_t(769));
 }
 
 TEST(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
@@ -51,10 +50,13 @@ TEST(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
             selected[v] = true;
 
     auto bb = mesh.bounds().size();
-    SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
-                                              1.0 * bb,    // max length
-                                              0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.n_vertices(), size_t(826));
+
+    // adaptive remeshing with large approx error and max length to obtain a
+    // clear difference in selected region
+    SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb, // min length
+                                              5.0 * bb,   // max length
+                                              0.01 * bb); // approx. error
+    EXPECT_EQ(mesh.n_vertices(), size_t(500));
 }
 
 TEST(SurfaceRemeshingTest, uniform_remeshing)
@@ -70,5 +72,5 @@ TEST(SurfaceRemeshingTest, uniform_remeshing)
     l /= (Scalar)mesh.n_edges();
 
     SurfaceRemeshing(mesh).uniform_remeshing(l);
-    EXPECT_EQ(mesh.n_vertices(), size_t(940));
+    EXPECT_EQ(mesh.n_vertices(), size_t(925));
 }

@@ -494,54 +494,6 @@ bool SurfaceMesh::is_quad_mesh() const
     return true;
 }
 
-void SurfaceMesh::triangulate()
-{
-    // The iterators will stay valid, even though new faces are added, because
-    // they are now implemented index-based instead of pointer-based.
-    auto fend = faces_end();
-    for (auto fit = faces_begin(); fit != fend; ++fit)
-        triangulate(*fit);
-}
-
-void SurfaceMesh::triangulate(Face f)
-{
-    // Split an arbitrary face into triangles by connecting each vertex of face
-    // f after its second to vertex v. Face f will remain valid (it will become
-    // one of the triangles). The halfedge handles of the new triangles will
-    // point to the old halfedges.
-
-    Halfedge baseH = halfedge(f);
-    Vertex startV = from_vertex(baseH);
-    Halfedge nextH = next_halfedge(baseH);
-
-    while (to_vertex(next_halfedge(nextH)) != startV)
-    {
-        Halfedge nextNextH(next_halfedge(nextH));
-
-        Face newF = new_face();
-        set_halfedge(newF, baseH);
-
-        Halfedge newH = new_edge(to_vertex(nextH), startV);
-
-        set_next_halfedge(baseH, nextH);
-        set_next_halfedge(nextH, newH);
-        set_next_halfedge(newH, baseH);
-
-        set_face(baseH, newF);
-        set_face(nextH, newF);
-        set_face(newH, newF);
-
-        baseH = opposite_halfedge(newH);
-        nextH = nextNextH;
-    }
-    set_halfedge(f, baseH); //the last face takes the handle baseH
-
-    set_next_halfedge(baseH, nextH);
-    set_next_halfedge(next_halfedge(nextH), baseH);
-
-    set_face(baseH, f);
-}
-
 void SurfaceMesh::split(Face f, Vertex v)
 {
     // Split an arbitrary face into triangles by connecting each vertex of face

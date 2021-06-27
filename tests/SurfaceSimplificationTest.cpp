@@ -20,12 +20,8 @@ TEST(SurfaceSimplificationTest, simplification)
                   10,   // normal deviation
                   0.1); // Hausdorff
     ss.simplify(mesh.n_vertices() * 0.1);
-// there is a one-off platform difference for macOS (177 vertices)
-// disable for now in this case
-#ifndef __APPLE__
-    EXPECT_EQ(mesh.n_vertices(), size_t(178));
-    EXPECT_EQ(mesh.n_faces(), size_t(329));
-#endif
+    EXPECT_EQ(mesh.n_vertices(), size_t(188));
+    EXPECT_EQ(mesh.n_faces(), size_t(351));
 }
 
 // simplify with feature edge preservation enabled
