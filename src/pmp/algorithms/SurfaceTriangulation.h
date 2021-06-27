@@ -43,9 +43,6 @@ private:
     // Does edge (a,b) exist?
     bool is_edge(Vertex a, Vertex b) const;
 
-    // Does edge (a,b) exist and is non-boundary?
-    bool is_interior_edge(Vertex a, Vertex b) const;
-
     // Add edge from vertex i to j.
     bool insert_edge(int i, int j);
 
