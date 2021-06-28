@@ -21,4 +21,7 @@ SurfaceMesh hemisphere();
 // original icosahedron edges are marked as feature edges
 SurfaceMesh subdivided_icosahedron();
 
+// generate 2d non-convex L shape
+SurfaceMesh l_shape();
+
 } // namespace pmp
