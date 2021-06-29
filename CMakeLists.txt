@@ -1,11 +1,9 @@
 project(pmp-library)
 
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.16.3)
 
 cmake_policy(SET CMP0048 NEW)
-if(${CMAKE_VERSION} VERSION_GREATER "3.11.0")
-  cmake_policy(SET CMP0072 NEW)
-endif()
+cmake_policy(SET CMP0072 NEW)
 
 set(PMP_MAJOR_VERSION 1)
 set(PMP_MINOR_VERSION 2)

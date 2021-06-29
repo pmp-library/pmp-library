@@ -6,28 +6,28 @@ pmp-library in detail.
 ## System Requirements
 
 The pmp-library uses [CMake](http://www.cmake.org) as its build configuration
-system. Version 3.0.2 or greater is required. The pmp-library requires a
+system. Version 3.16.3 or greater is required. The pmp-library requires a
 C++11-compliant compiler. We continuously build and test the pmp-library
 with the following compilers and operating systems:
 
-| Operating System | Compiler                 |
-| ---------------- | ------------------------ |
-| Linux            | gcc 4.8.4, clang 3.9.0   |
-| Mac OS-X         | AppleClang 8.1.0         |
-| Windows          | Visual Studio 2015, 2017 |
+| Operating System | Compiler           |
+| ---------------- | ------------------ |
+| Linux            | gcc 9.3.0          |
+| Mac OS-X         | AppleClang 12.0.0  |
+| Windows          | Visual Studio 2019 |
 
 ## Dependencies
 
 Some parts of the pmp-library depends on the following third-party libraries:
 
-| Library                                             | Description                       | Version    |
-| --------------------------------------------------- | --------------------------------- | ---------- |
-| [Eigen](http://eigen.tuxfamily.org)                 | C++ linear algebra library        | &ge; 3.3.7 |
-| [OpenGL](http://opengl.org)                         | Open Graphics Library             | &ge; 3.3   |
-| [GLEW](http://glew.sourceforge.net)                 | OpenGL Extension Wrangler Library | &ge; 2.1.0 |
-| [GLFW](http://glfw.org)                             | Graphics Library Framework        | &ge; 3.3   |
-| [ImGui](https://github.com/ocornut/imgui)           | Immediate Mode GUI                | &ge; 1.70  |
-| [Google Test](https://github.com/google/googletest) | C++ Test Framework                | &ge; 1.8.0 |
+| Library                                             | Description                       | Version        |
+| --------------------------------------------------- | --------------------------------- | -------------- |
+| [Eigen](http://eigen.tuxfamily.org)                 | C++ linear algebra library        | &ge; 3.4.0-rc1 |
+| [OpenGL](http://opengl.org)                         | Open Graphics Library             | &ge; 3.3       |
+| [GLEW](http://glew.sourceforge.net)                 | OpenGL Extension Wrangler Library | &ge; 2.1.0     |
+| [GLFW](http://glfw.org)                             | Graphics Library Framework        | &ge; 3.3       |
+| [ImGui](https://github.com/ocornut/imgui)           | Immediate Mode GUI                | &ge; 1.70      |
+| [Google Test](https://github.com/google/googletest) | C++ Test Framework                | &ge; 1.11.0    |
 
 By default, we include the corresponding libraries using git submodules. Note
 that OpenGL and related dependencies are optional. They are only needed if you
@@ -185,5 +185,5 @@ Finally, start a local webserver and open the HTML apps:
     python3 -m http.server
     <your-browser> localhost:8000
 
-You can also run HTML/WASM apps using `emrun mpview.html`, but you might have to adjust 
+You can also run HTML/WASM apps using `emrun mpview.html`, but you might have to adjust
 some [browser settings](https://emscripten.org/docs/compiling/Running-html-files-with-emrun.html) first.
