@@ -2,6 +2,12 @@
   --side-nav-background: #fafafa;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --side-nav-background: #252628;
+  }
+}
+
 .github-corner svg {
   fill: var(--primary-light-color);
   color: var(--page-background-color);
