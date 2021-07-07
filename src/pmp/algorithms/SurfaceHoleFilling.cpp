@@ -459,7 +459,7 @@ void SurfaceHoleFilling::fairing()
         return;
 
     // convert non-locked into selection
-    auto vsel = mesh_.add_vertex_property<bool>("v:selected");
+    auto vsel = mesh_.vertex_property<bool>("v:selected");
     for (auto v : mesh_.vertices())
         vsel[v] = !vlocked_[v];
 

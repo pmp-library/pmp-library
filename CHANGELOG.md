@@ -39,7 +39,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Fixed
 
-- Fix bug in hole filling leading to artifacts in the filled surface patch. See #64.
+- Fix crash in SurfaceHoleFilling when a vertex selection already exists.
+- Fix bug in SurfaceHoleFilling leading to artifacts in the filled surface patch. See #64.
 - Change sign of vec2::perp() to correctly model CCW rotation by 90 degrees.
 - Fix bug in OpenGL buffer clean-up in SurfaceMeshGL.
 
