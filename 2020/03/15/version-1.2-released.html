@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    
+      Version 1.2 Released! - The Polygon Mesh Processing Library
+    
+  </title>
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+
+  <!-- Begin Jekyll SEO tag v2.6.1 -->
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="Version 1.2 Released!" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="We are proud to announce the release of version 1.2 of the Polygon Mesh Processing Library! This minor release includes a couple of new features, enhancements, bug fixes, and updates to third-party libraries. Highlights include:" />
+<meta property="og:description" content="We are proud to announce the release of version 1.2 of the Polygon Mesh Processing Library! This minor release includes a couple of new features, enhancements, bug fixes, and updates to third-party libraries. Highlights include:" />
+<link rel="canonical" href="https://www.pmp-library.org/2020/03/15/version-1.2-released.html" />
+<meta property="og:url" content="https://www.pmp-library.org/2020/03/15/version-1.2-released.html" />
+<meta property="og:site_name" content="The Polygon Mesh Processing Library" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-15T00:00:00+00:00" />
+<script type="application/ld+json">
+{"url":"https://www.pmp-library.org/2020/03/15/version-1.2-released.html","@type":"BlogPosting","headline":"Version 1.2 Released!","dateModified":"2020-03-15T00:00:00+00:00","datePublished":"2020-03-15T00:00:00+00:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.pmp-library.org/2020/03/15/version-1.2-released.html"},"description":"We are proud to announce the release of version 1.2 of the Polygon Mesh Processing Library! This minor release includes a couple of new features, enhancements, bug fixes, and updates to third-party libraries. Highlights include:","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #09a8ff;">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <img src="/images/pmp-logo-white.png" width=41 height=32 alt="two white triangles logo"/>
+      &nbsp;PMP
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="userguide.html">
+            <i aria-hidden="true" class="fas fa-book" title=""></i>
+            User Guide</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="usergroup0.html">
+            <i aria-hidden="true" class="fas fa-align-left" title=""></i>
+            API Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <div class="content">
+  <div class="container">
+    <div class="page">
+      <h1 class="mt-4 post-title">Version 1.2 Released!</h1>
+      <span class="post-date">15 Mar 2020</span>
+      <p>We are proud to announce the release of version 1.2 of the Polygon Mesh
+Processing Library! This minor release includes a couple of new features,
+enhancements, bug fixes, and updates to third-party libraries. Highlights
+include:</p>
+
+<ul>
+  <li>Improved rendering of general polygons, avoiding erroneous tessellation into
+overlapping/flipped triangles in case of non-convex polygons.</li>
+  <li>Added support for rendering using matcaps.</li>
+  <li>Eigen interoperability: Matrix and vector classes can now be assigned and cast
+from Eigen matrices and vectors.</li>
+  <li>Matrix and vector classes can now be constructed using initializer lists.</li>
+</ul>
+
+<p>You can find a full summary of changes in the
+<a href="https://github.com/pmp-library/pmp-library/blob/master/CHANGELOG.md">changelog</a>.</p>
+
+<h2 id="matcap-rendering">Matcap Rendering</h2>
+
+<p>The new matcap rendering is demonstrated in our mesh viewer application. <code class="highlighter-rouge">mview</code>
+now takes an optional <code class="highlighter-rouge">-m</code> argument specifying the matcap to be used. We
+included several example files in the
+<a href="https://github.com/pmp-library/pmp-data/">pmp-data</a> repository. See below for
+an example using the following command line:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mview -m ../external/pmp-data/matcap/metal_shiny.jpg ../external/pmp-data/off/bunny.off
+</code></pre></div></div>
+
+<p><img src="/images/matcap.png" alt="matcap" /></p>
+
+<h2 id="improved-polygon-rendering">Improved Polygon Rendering</h2>
+
+<p>The improved polygon rendering is demonstrated best by an example. Before the
+improvements the rendering of a mesh containing non-convex polygons could lead
+to undesirable overlapping/flipped triangles:</p>
+
+<p><img src="/images/mview-before-poly-fix.png" alt="before" /></p>
+
+<p>The improved version now renders the same mesh correctly:</p>
+
+<p><img src="/images/mview-after-poly-fix.png" alt="before" /></p>
+
+<h2 id="eigen-interoperability">Eigen Interoperability</h2>
+
+<p>This release also improves interoperability with the Eigen library. We added support to construct/assign pmp::Matrix and pmp::Vector classes from Eigen as well as support to cast the pmp::Matrix and pmp::Vector class to Eigen. Example for construction:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// construction from Eigen
+Eigen::Vector3d eigenVec(1.0, 2.0, 3.0);
+pmp::dvec3 pmpVec = eigenVec;
+</code></pre></div></div>
+
+<p>Example for assignment:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// assignment from Eigen
+Eigen::Vector3d eigenVec(1.0, 2.0, 3.0);
+pmp::dvec3 pmpVec;
+pmpVec = eigenVec;
+</code></pre></div></div>
+
+<p>Example for cast:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// cast to Eigen
+pmp::vec3 pmpVec(1.0, 2.0, 3.0);
+Eigen::Vector3f eigenVec = static_cast&lt;Eigen::Vector3f&gt;(pmpVec);
+</code></pre></div></div>
+
+<h2 id="obtaining-the-pmp-library">Obtaining the pmp-library</h2>
+
+<p>Get your own copy by cloning:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone --recursive https://github.com/pmp-library/pmp-library.git
+</code></pre></div></div>
+
+<p>Checkout the 1.2 release tag:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd pmp-library &amp;&amp; git checkout 1.2.0
+</code></pre></div></div>
+
+<p>Configure and build:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir build &amp;&amp; cd build &amp;&amp; cmake .. &amp;&amp; make
+</code></pre></div></div>
+
+<p>Run the mesh processing app</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mpview ../external/pmp-data/off/bunny.off
+</code></pre></div></div>
+
+<h2 id="reporting-bugs-or-problems">Reporting Bugs or Problems</h2>
+
+<p>If you encounter any glitches or problems
+please <a href="https://github.com/pmp-library/pmp-library/issues">report the issue</a> on
+our GitHub issue tracker.</p>
+
+    </div>
+  </div>
+</div>
+
+  <footer class="py-2 bg-light">
+  <div class="container">
+    <p class="m-0 text-center text-dark">
+      Copyright 2011-2021 the Polygon Mesh Processing Library developers.
+    </p>
+  </div>
+</footer>
+  <script src="/js/jquery-3.3.1.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+</body>
+
+</html>

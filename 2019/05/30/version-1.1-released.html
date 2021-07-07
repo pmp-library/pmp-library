@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    
+      Version 1.1 Released! - The Polygon Mesh Processing Library
+    
+  </title>
+
+  <link rel="stylesheet" href="/css/style.css">
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico"/>
+
+  <!-- Begin Jekyll SEO tag v2.6.1 -->
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="Version 1.1 Released!" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="We are proud to announce the release of version 1.1 of the Polygon Mesh Processing Library! This minor release includes a couple new features, enhancements, bug fixes, and updates to third-party libraries. Highlights include:" />
+<meta property="og:description" content="We are proud to announce the release of version 1.1 of the Polygon Mesh Processing Library! This minor release includes a couple new features, enhancements, bug fixes, and updates to third-party libraries. Highlights include:" />
+<link rel="canonical" href="https://www.pmp-library.org/2019/05/30/version-1.1-released.html" />
+<meta property="og:url" content="https://www.pmp-library.org/2019/05/30/version-1.1-released.html" />
+<meta property="og:site_name" content="The Polygon Mesh Processing Library" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-30T00:00:00+00:00" />
+<script type="application/ld+json">
+{"url":"https://www.pmp-library.org/2019/05/30/version-1.1-released.html","@type":"BlogPosting","headline":"Version 1.1 Released!","dateModified":"2019-05-30T00:00:00+00:00","datePublished":"2019-05-30T00:00:00+00:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.pmp-library.org/2019/05/30/version-1.1-released.html"},"description":"We are proud to announce the release of version 1.1 of the Polygon Mesh Processing Library! This minor release includes a couple new features, enhancements, bug fixes, and updates to third-party libraries. Highlights include:","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #09a8ff;">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <img src="/images/pmp-logo-white.png" width=41 height=32 alt="two white triangles logo"/>
+      &nbsp;PMP
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="userguide.html">
+            <i aria-hidden="true" class="fas fa-book" title=""></i>
+            User Guide</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="usergroup0.html">
+            <i aria-hidden="true" class="fas fa-align-left" title=""></i>
+            API Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+  <div class="content">
+  <div class="container">
+    <div class="page">
+      <h1 class="mt-4 post-title">Version 1.1 Released!</h1>
+      <span class="post-date">30 May 2019</span>
+      <p>We are proud to announce the release of version 1.1 of the Polygon Mesh
+Processing Library! This minor release includes a couple new features,
+enhancements, bug fixes, and updates to third-party libraries. Highlights
+include:</p>
+
+<ul>
+  <li>An implementation of the hole filling algorithm by Liepa<sup id="fnref:1"><a href="#fn:1" class="footnote">1</a></sup></li>
+  <li>An improved <code class="highlighter-rouge">SurfaceSmoothing</code> algorithm avoiding model shrinking<sup id="fnref:2"><a href="#fn:2" class="footnote">2</a></sup></li>
+  <li>A new compile-time switch to choose between <code class="highlighter-rouge">float</code> or <code class="highlighter-rouge">double</code> as default
+<code class="highlighter-rouge">Scalar</code> type</li>
+  <li>Native support for high-DPI displays on all supported operating systems and
+browsers</li>
+</ul>
+
+<p>This release also includes one breaking change encapsulating some public members
+of the <code class="highlighter-rouge">Window</code> and <code class="highlighter-rouge">TrackballViewer</code> classes. While this change effectively
+modifies the public API of the library, we felt that the change is too minor to
+justify a bump of the major version number. See
+this
+<a href="https://github.com/pmp-library/pmp-library/commit/10d93fcf939869ea4732dff19d671831e78a5264">commit</a> for
+details and to check if you might be affected by it.</p>
+
+<p>For this release, we also slightly changed the license terms to include an
+explicit disclaimer excluding all present and previous employers from any
+warranty and liability, see the
+updated
+<a href="https://github.com/pmp-library/pmp-library/blob/master/LICENSE.txt">license</a>
+text for details. The disclaimer does not change anything about what you can do
+with the library. The license terms are still equivalent to those of the
+original MIT license.</p>
+
+<p>You can find a full summary of changes in the
+<a href="https://github.com/pmp-library/pmp-library/blob/master/CHANGELOG.md">changelog</a>.</p>
+
+<h2 id="obtaining-the-pmp-library">Obtaining the pmp-library</h2>
+
+<p>Get your own copy by cloning:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git clone --recursive https://github.com/pmp-library/pmp-library.git
+</code></pre></div></div>
+
+<p>Checkout the 1.1 release tag:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd pmp-library &amp;&amp; git checkout 1.1.0
+</code></pre></div></div>
+
+<p>Configure and build:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir build &amp;&amp; cd build &amp;&amp; cmake .. &amp;&amp; make
+</code></pre></div></div>
+
+<p>Run the mesh processing app</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./mpview ../external/pmp-data/off/bunny.off
+</code></pre></div></div>
+
+<h2 id="reporting-bugs-or-problems">Reporting Bugs or Problems</h2>
+
+<p>If you encounter any glitches or problems
+please <a href="https://github.com/pmp-library/pmp-library/issues">report the issue</a> on
+our GitHub issue tracker.</p>
+
+<h2 id="references">References</h2>
+
+<div class="footnotes">
+  <ol>
+    <li id="fn:1">
+      <p>Peter Liepa. Filling holes in meshes. In <em>Proceedings of Eurographics Symposium on Geometry Processing</em>, pages 200–205, 2003. <a href="#fnref:1" class="reversefootnote">&#8617;</a></p>
+    </li>
+    <li id="fn:2">
+      <p>Misha Kazhdan, Justin Solomon, and Mirela Ben-Chen. <em>Can mean‐curvature flow be modified to be non‐singular?</em> Computer Graphics Forum, 31(5), 2012. <a href="#fnref:2" class="reversefootnote">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
+
+    </div>
+  </div>
+</div>
+
+  <footer class="py-2 bg-light">
+  <div class="container">
+    <p class="m-0 text-center text-dark">
+      Copyright 2011-2021 the Polygon Mesh Processing Library developers.
+    </p>
+  </div>
+</footer>
+  <script src="/js/jquery-3.3.1.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+:root {
+  --side-nav-background: #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --side-nav-background: #252628;
+  }
+}
+
+.github-corner svg {
+  fill: var(--primary-light-color);
+  color: var(--page-background-color);
+  width: 72px;
+  height: 72px;
+}
+
+#projectnumber {
+  margin-right: 25px;
+}
+
+@media screen and (max-width: 767px) {
+  .github-corner svg {
+    width: 55px;
+    height: 55px;
+  }
+}
+
+#nav-sync {
+  visibility: hidden;
+}
+
+div.header {
+  border: none;
+}
+
+div.header .title {
+  font-weight: 700;
+  font-size: 2.5em;
+}
+
+#nav-tree .arrow {
+  margin-left: 10px;
+  opacity: 1;
+}
+
+.arrow {
+  color: var(--primary-dark-color);
+  font-family: var(--font-family);
+  text-align: left;
+}
+
+#nav-tree a:focus {
+  outline-style: none;
+}
+
+#nav-tree a:hover {
+  text-decoration: underline;
+}
+
+#nav-path address {
+  border-top: 1px solid var(--separator-color);
+  border-bottom: 1px solid var(--separator-color);
+  background-color: var(--page-background-color);
+  color: var(--page-secondary-foreground-color);
+  padding-top: 0.75em;
+  padding-bottom: 0.75em;
+  font-size: small;
+  text-align: center;
+}
+
+dl.citelist dt {
+  font-weight: normal;
+  font-size: var(--page-font-size);
+  line-height: var(--content-line-height);
+  color: var(--page-foreground-color);
+  padding-top: 0.4em;
+}
+
+div.toc {
+  margin: 0 0 var(--spacing-large) var(--spacing-large);
+}
+
+a.el {
+  font-weight: normal;
+}
+
+.github-corner {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
