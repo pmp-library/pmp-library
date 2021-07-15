@@ -1638,11 +1638,12 @@ public:
         return insert_vertex(halfedge(e, 0), v);
     }
 
-    //! Subdivide the edge \p e = (v0,v1) by splitting it into the two edge
-    //! (v0,v) and (v,v1). Note that this function does not introduce any
-    //! other edge or faces. It simply splits the edge. Returns halfedge
-    //! that points to \p p.  \sa insert_vertex(Edge, Point) \sa
-    //! insert_vertex(Edge, Vertex)
+    //! Subdivide the halfedge \p h = (v0,v1) by splitting it into the two halfedges 
+    //! (v0,v) and (v,v1). Note that this function does not introduce any 
+    //! other edge or faces. It simply splits the edge. Returns the halfedge 
+    //! that points from v1 to \p v.
+    //! \sa insert_vertex(Edge, Point)
+    //! \sa insert_vertex(Edge, Vertex)
     Halfedge insert_vertex(Halfedge h0, Vertex v);
 
     //! find the halfedge from start to end
@@ -1717,9 +1718,9 @@ public:
     //! \sa split(Edge, Point)
     Halfedge split(Edge e, Vertex v);
 
-    //! insert edge between the to-vertices v0 of h0 and v1 of h1.
+    //! insert edge between the to-vertices v0 of \p h0 and v1 of \p h1.
     //! returns the new halfedge from v0 to v1.
-    //! \attention h0 and h1 have to belong to the same face
+    //! \attention \p h0 and \p h1 have to belong to the same face
     Halfedge insert_edge(Halfedge h0, Halfedge h1);
 
     //! Check whether flipping edge \p e is topologically
