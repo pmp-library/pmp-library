@@ -51,7 +51,7 @@
       }
       
       function getFile(name) {
-          var base = (window.location != window.parent.location) ? document.referrer : document.location.href;
+          var base = (window.location != window.parent.location) ? window.parent.location.href : window.location.href;
           var url  = new URL(name, base);
           var path = url.pathname;
           var file = path.split('/').pop();
