@@ -67,6 +67,7 @@ if(PMP_BUILD_VIS)
     add_definitions(-DGLEW_STATIC)
     add_library(glew STATIC ${GLEW_SOURCE_DIR}/src/glew.c
                             ${GLEW_SOURCE_DIR}/include)
+    set_property(TARGET glew PROPERTY POSITION_INDEPENDENT_CODE ON)
     target_link_libraries(glew ${GLFW_LIBRARIES})
   else()
     # GLEW and GLFW are built-in
@@ -107,7 +108,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug"
   add_custom_target(
     coverage
     # gather data
-    COMMAND ${LCOV} --directory . --capture --exclude '*/external/*' --exclude '*/tests/*' --exclude '/usr/*' --output-file coverage.info
+    COMMAND ${LCOV} --directory . --capture --exclude '*/external/*' --exclude
+            '*/tests/*' --exclude '/usr/*' --output-file coverage.info
     # generate report
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
