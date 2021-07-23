@@ -64,10 +64,10 @@ if(PMP_BUILD_VIS)
     include_directories(${GLFW_SOURCE_DIR}/include ${GLFW_SOURCE_DIR}/deps
                         ${GLEW_SOURCE_DIR}/include)
 
-    add_definitions(-DGLEW_STATIC)
-    add_library(glew STATIC ${GLEW_SOURCE_DIR}/src/glew.c
+    add_library(glew SHARED ${GLEW_SOURCE_DIR}/src/glew.c
                             ${GLEW_SOURCE_DIR}/include)
     target_link_libraries(glew ${GLFW_LIBRARIES})
+    set_property(TARGET glew PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
   else()
     # GLEW and GLFW are built-in
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_GLFW=3")
@@ -107,7 +107,8 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug"
   add_custom_target(
     coverage
     # gather data
-    COMMAND ${LCOV} --directory . --capture --exclude '*/external/*' --exclude '*/tests/*' --exclude '/usr/*' --output-file coverage.info
+    COMMAND ${LCOV} --directory . --capture --exclude '*/external/*' --exclude
+            '*/tests/*' --exclude '/usr/*' --output-file coverage.info
     # generate report
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
