@@ -34,3 +34,12 @@ add_dependencies(gtest_runner googletest)
 
 # add runner as test
 add_test(gtest_runner ${CMAKE_CURRENT_BINARY_DIR}/gtest_runner)
+
+# copy dlls on windows
+if(WIN32)
+  add_custom_command(
+    TARGET gtest_runner
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:pmp>
+            $<TARGET_FILE_DIR:gtest_runner>)
+endif()
