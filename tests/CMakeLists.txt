@@ -32,9 +32,8 @@ endif()
 
 add_dependencies(gtest_runner googletest)
 
-# add tests from gtest_runner
-include(GoogleTest)
-gtest_discover_tests(gtest_runner)
+# add runner as test
+add_test(gtest_runner ${CMAKE_CURRENT_BINARY_DIR}/gtest_runner)
 
 # copy dlls on windows
 if(WIN32)
