@@ -226,7 +226,7 @@ void SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
             Face f = add_face(mesh, vertices);
 
             // add texture coordinates
-            if (with_tex_coord)
+            if (with_tex_coord && f.is_valid())
             {
                 SurfaceMesh::HalfedgeAroundFaceCirculator h_fit =
                     mesh.halfedges(f);
