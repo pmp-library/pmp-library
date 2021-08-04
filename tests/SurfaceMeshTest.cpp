@@ -314,6 +314,26 @@ TEST_F(SurfaceMeshTest, collapse)
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
 
+TEST_F(SurfaceMeshTest, remove_center_vertex)
+{
+    Vertex v0 = mesh.add_vertex(Point(0, 0, 0));
+    Vertex v1 = mesh.add_vertex(Point(1, 0, 0));
+    Vertex v2 = mesh.add_vertex(Point(0, 1, 0));
+    Vertex v3 = mesh.add_vertex(Point(-1, 0, 0));
+    Vertex v4 = mesh.add_vertex(Point(0, -1, 0));
+    EXPECT_EQ(mesh.n_vertices(), 5);
+
+    mesh.add_triangle(v0, v1, v2);
+    mesh.add_triangle(v0, v2, v3);
+    mesh.add_triangle(v0, v3, v4);
+    mesh.add_triangle(v0, v4, v1);
+    EXPECT_EQ(mesh.n_faces(), 4);
+
+    mesh.remove_center_vertex(v0);
+    EXPECT_EQ(mesh.n_vertices(), 4);
+    EXPECT_EQ(mesh.n_faces(), 1);
+}
+
 TEST_F(SurfaceMeshTest, face_split)
 {
     add_quad();
