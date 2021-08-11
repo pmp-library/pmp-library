@@ -1766,11 +1766,11 @@ public:
     std::vector<Point>& positions() { return vpoint_.vector(); }
 
     //! compute the bounding box of the object
-    BoundingBox bounds()
+    BoundingBox bounds() const
     {
         BoundingBox bb;
-        for (auto p : positions())
-            bb += p;
+        for (auto v : vertices())
+            bb += position(v);
         return bb;
     }
 
