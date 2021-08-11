@@ -637,6 +637,39 @@ Halfedge SurfaceMesh::split(Edge e, Vertex v)
     return t1;
 }
 
+Halfedge SurfaceMesh::split_vertex(Halfedge h0, Halfedge h1, Vertex v)
+{
+    PMP_ASSERT(h0 != h1);
+    PMP_ASSERT(to_vertex(h0) == to_vertex(h1));
+
+    Vertex v2 = to_vertex(h0);
+    Halfedge h_new = new_edge(v, v2);
+    Halfedge h_new_opp = opposite_halfedge(h_new);
+
+    set_next_halfedge(h_new, next_halfedge(h1));
+    set_next_halfedge(h1, h_new);
+    set_face(h_new, face(h1));
+
+    set_next_halfedge(h_new_opp, next_halfedge(h0));
+    set_next_halfedge(h0, h_new_opp);
+    set_face(h_new_opp, face(h0));
+
+    Halfedge end = h_new_opp;
+    do
+    {
+        set_vertex(h_new_opp, v);
+        h_new_opp = opposite_halfedge(next_halfedge(h_new_opp));
+    } while (h_new_opp != end);
+
+    set_halfedge(v, h_new);
+    set_halfedge(v2, h_new_opp);
+
+    adjust_outgoing_halfedge(v);
+    adjust_outgoing_halfedge(v2);
+
+    return h_new;
+}
+
 Halfedge SurfaceMesh::insert_vertex(Halfedge h0, Vertex v)
 {
     // before:

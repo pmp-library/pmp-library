@@ -1718,6 +1718,17 @@ public:
     //! \sa split(Edge, Point)
     Halfedge split(Edge e, Vertex v);
 
+    //! Split the vertex that is the target of both halfedges \p h0 and \p h1 
+    //! by creating a halfedge pointing to \p v and rearranging the patch around 
+    //! the old vertex so its halfedges point to the correct vertices. Returns the 
+    //! halfedge created from that split that points to the vertex pointed by both 
+    //! \p h0 and \p h1 .
+    //! \pre \p h0 and \p h1 must point to the same vertex
+    //! \pre \p v must be an isolated vertex (e.g. a new vertex)
+    //! \post The returned halfedge points from \p v to the common target of 
+    //! \p h0 and \p h1 . \p h0 now points to \p v .
+    Halfedge split_vertex(Halfedge h0, Halfedge h1, Vertex v);
+
     //! insert edge between the to-vertices v0 of \p h0 and v1 of \p h1.
     //! returns the new halfedge from v0 to v1.
     //! \attention \p h0 and \p h1 have to belong to the same face
