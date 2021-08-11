@@ -72,7 +72,7 @@ public: // virtual interface of BasePropertyArray
 
     virtual void push_back() { data_.push_back(value_); }
 
-    virtual void free_memory() { VectorType(data_).swap(data_); }
+    virtual void free_memory() { data_.shrink_to_fit(); }
 
     virtual void swap(size_t i0, size_t i1)
     {
