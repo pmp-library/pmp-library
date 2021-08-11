@@ -1684,6 +1684,9 @@ public:
     //! and that these two are not equal.
     bool remove_edge(Edge e);
 
+    //! Remove vertex and its incident halfedges by merging all incident faces.
+    void remove_center_vertex(Vertex v);
+
     //! Split the face \p f by first adding point \p p to the mesh and then
     //! inserting edges between \p p and the vertices of \p f. For a triangle
     //! this is a standard one-to-three split.
