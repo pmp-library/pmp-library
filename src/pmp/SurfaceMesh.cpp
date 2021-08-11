@@ -1182,6 +1182,9 @@ void SurfaceMesh::delete_face(Face f)
 
 void SurfaceMesh::garbage_collection()
 {
+    if (!has_garbage_)
+        return;
+
     int i, i0, i1, nV(vertices_size()), nE(edges_size()), nH(halfedges_size()),
         nF(faces_size());
 
