@@ -80,8 +80,13 @@ if(PMP_BUILD_VIS)
 endif(PMP_BUILD_VIS)
 
 # setup Eigen
-set(EIGEN_SOURCE_DIR "external/eigen")
-include_directories(${EIGEN_SOURCE_DIR})
+find_package(Eigen3 3.1.0)
+if (EIGEN3_FOUND)
+  include_directories(${EIGEN3_INCLUDE_DIR})
+else()
+  set(EIGEN_SOURCE_DIR "external/eigen")
+  include_directories(${EIGEN_SOURCE_DIR})
+endif()
 
 # setup PLY
 set(RPLY_SOURCE_DIR "external/rply")
