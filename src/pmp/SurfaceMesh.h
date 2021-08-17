@@ -1638,9 +1638,9 @@ public:
         return insert_vertex(halfedge(e, 0), v);
     }
 
-    //! Subdivide the halfedge \p h = (v0,v1) by splitting it into the two halfedges 
-    //! (v0,v) and (v,v1). Note that this function does not introduce any 
-    //! other edge or faces. It simply splits the edge. Returns the halfedge 
+    //! Subdivide the halfedge \p h = (v0,v1) by splitting it into the two halfedges
+    //! (v0,v) and (v,v1). Note that this function does not introduce any
+    //! other edge or faces. It simply splits the edge. Returns the halfedge
     //! that points from v1 to \p v.
     //! \sa insert_vertex(Edge, Point)
     //! \sa insert_vertex(Edge, Vertex)
@@ -1762,7 +1762,7 @@ public:
     //! position of a vertex
     Point& position(Vertex v) { return vpoint_[v]; }
 
-    //! vector of point positions, re-implemented from \p GeometryObject
+    //! \return vector of point positions
     std::vector<Point>& positions() { return vpoint_.vector(); }
 
     //! compute the bounding box of the object
