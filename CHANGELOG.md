@@ -41,6 +41,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Fixed
 
+- `SurfaceMesh::bounds()` no longer includes deleted vertices. Thanks to Paul Du.
 - Fix crash in SurfaceHoleFilling when a vertex selection already exists.
 - Fix bug in SurfaceHoleFilling leading to artifacts in the filled surface patch. See #64.
 - Change sign of vec2::perp() to correctly model CCW rotation by 90 degrees.
