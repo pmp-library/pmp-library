@@ -23,7 +23,6 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Add PMP_INSTALL option to CMake.
 - Add PMP_BUILD_VIS CMake option to enable / disable building the pmp_vis
   library and its dependencies.
-- Bump Eigen zu 3.4-rc1 to silence warnings on MacOS
 
 ### Changed
 
