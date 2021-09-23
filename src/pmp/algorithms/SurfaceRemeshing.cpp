@@ -819,7 +819,7 @@ Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
 
     // compute minimizer
     Eigen::Vector3d x = H.lu().solve(-J);
-    if (isnan(x[0]) || isnan(x[1]) || isnan(x[2]))
+    if (!x.allFinite())
     {
         return mesh_.position(v);
     }
