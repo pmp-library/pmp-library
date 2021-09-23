@@ -59,8 +59,10 @@ private:
 
     bool is_too_long(Vertex v0, Vertex v1) const
     {
-        return distance(points_[v0], points_[v1]) >
-               4.0 / 3.0 * std::min(vsizing_[v0], vsizing_[v1]);
+        auto point_distance = distance(points_[v0], points_[v1]);
+        Scalar min_vsizing = 4.0 / 3.0 * std::min(vsizing_[v0], vsizing_[v1]);
+        auto min_dist = std::max(min_vsizing, min_edge_length_);
+        return point_distance > min_dist;
     }
     bool is_too_short(Vertex v0, Vertex v1) const
     {
