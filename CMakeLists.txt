@@ -69,9 +69,6 @@ if(PMP_BUILD_VIS)
                             ${GLEW_SOURCE_DIR}/include)
     set_property(TARGET glew PROPERTY POSITION_INDEPENDENT_CODE ON)
     target_link_libraries(glew ${GLFW_LIBRARIES})
-  else()
-    # GLEW and GLFW are built-in
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s USE_GLFW=3")
   endif()
 
   # setup IMGUI
@@ -142,9 +139,8 @@ if(WIN32)
 endif()
 
 if(EMSCRIPTEN)
-  set(CMAKE_CXX_FLAGS
-      "${CMAKE_CXX_FLAGS} -std=c++11 -s WASM=1 --no-heap-copy -s USE_WEBGL2=1 -s ALLOW_MEMORY_GROWTH=1 -s MINIFY_HTML=0 -s DISABLE_EXCEPTION_CATCHING=0"
-  )
+  add_compile_options(--no-heap-copy)
+  add_link_options("SHELL:-s WASM=1 -s USE_WEBGL2=1 -s USE_GLFW=3 -s ALLOW_MEMORY_GROWTH=1 -s MINIFY_HTML=0 -s DISABLE_EXCEPTION_CATCHING=0")
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
