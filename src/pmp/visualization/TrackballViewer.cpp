@@ -235,10 +235,6 @@ bool TrackballViewer::pick(int x, int y, vec3& result)
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
 
-    // take into accout highDPI scaling
-    x *= high_dpi_scaling();
-    y *= high_dpi_scaling();
-
     // in OpenGL y=0 is at the 'bottom'
     y = viewport[3] - y;
 
