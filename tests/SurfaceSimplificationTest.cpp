@@ -7,6 +7,10 @@
 #include "pmp/algorithms/SurfaceFeatures.h"
 #include "Helpers.h"
 
+#if __APPLE__
+#include <Availability.h>
+#endif
+
 using namespace pmp;
 
 // plain simplification test
@@ -20,8 +24,13 @@ TEST(SurfaceSimplificationTest, simplification)
                   10,   // normal deviation
                   0.1); // Hausdorff
     ss.simplify(mesh.n_vertices() * 0.1);
+#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 120000
+    EXPECT_EQ(mesh.n_vertices(), size_t(189));
+    EXPECT_EQ(mesh.n_faces(), size_t(352));
+#else
     EXPECT_EQ(mesh.n_vertices(), size_t(188));
     EXPECT_EQ(mesh.n_faces(), size_t(351));
+#endif
 }
 
 // simplify with feature edge preservation enabled
