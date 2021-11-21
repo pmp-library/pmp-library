@@ -12,8 +12,7 @@ else()
   find_package(OpenGL REQUIRED)
 
   if(OpenGL_FOUND)
-    add_library(pmp_vis SHARED ${SRCS} ${HDRS})
-    set_property(TARGET pmp_vis PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    add_library(pmp_vis STATIC ${SRCS} ${HDRS})
     target_link_libraries(
       pmp_vis
       pmp

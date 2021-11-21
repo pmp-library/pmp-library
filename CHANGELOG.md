@@ -26,7 +26,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
-- Build shared libraries on all platforms by default
+- Build shared libraries on all platforms by default (except pmp_vis , see #87)
 - Bump CMake minimum required version to 3.16.3
 - Make SurfaceTriangulation::Objective a scoped enum
 - Remove SurfaceMesh::triangulate() functions to avoid redundancy with SurfaceTriangulation
