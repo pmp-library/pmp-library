@@ -198,7 +198,10 @@ void SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
                     {
                         case 0: // vertex
                         {
-                            vertices.emplace_back(atoi(p0) - 1);
+                            int idx = atoi(p0);
+                            if (idx < 0)
+                                idx = mesh.n_vertices() + idx + 1;
+                            vertices.emplace_back(idx - 1);
                             break;
                         }
                         case 1: // texture coord
