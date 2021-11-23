@@ -5,7 +5,6 @@
 #include "gtest/gtest.h"
 
 #include <pmp/MatVec.h>
-#include <vector>
 
 using namespace pmp;
 
