@@ -54,6 +54,7 @@ private:
     void remove_caps();
 
     Point minimize_squared_areas(Vertex v);
+    Point weighted_centroid(Vertex v);
 
     void project_to_reference(Vertex v);
 
