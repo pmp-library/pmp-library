@@ -677,7 +677,15 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
                 }
                 else
                 {
-                    Point p = minimize_squared_areas(v);
+                    Point p(0);
+                    try
+                    {
+                        p = minimize_squared_areas(v);
+                    }
+                    catch (SolverException& e)
+                    {
+                        p = weighted_centroid(v);
+                    }
                     u = p - mesh_.position(v);
 
                     n = vnormal_[v];
@@ -818,9 +826,51 @@ Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
     }
 
     // compute minimizer
-    Eigen::Vector3d x = H.lu().solve(-J);
+    Eigen::FullPivLU<Eigen::Matrix3d> solver(H);
+    if (!solver.isInvertible())
+    {
+        auto what = "SurfaceRemeshing: Matrix not invertible.";
+        throw SolverException(what);
+    }
+    Eigen::Vector3d x = solver.solve(-J);
 
     return Point(x);
+}
+
+Point SurfaceRemeshing::weighted_centroid(Vertex v)
+{
+    auto p = Point(0);
+    double ww = 0;
+
+    for (auto h : mesh_.halfedges(v))
+    {
+        auto v1 = v;
+        auto v2 = mesh_.to_vertex(h);
+        auto v3 = mesh_.to_vertex(mesh_.next_halfedge(h));
+
+        auto b = points_[v1];
+        b += points_[v2];
+        b += points_[v3];
+        b *= (1.0 / 3.0);
+
+        double area =
+            norm(cross(points_[v2] - points_[v1], points_[v3] - points_[v1]));
+
+        // take care of degenerate faces to avoid all zero weights and division
+        // by zero later on
+        if (area == 0)
+            area = 1.0;
+
+        double w =
+            area / pow((vsizing_[v1] + vsizing_[v2] + vsizing_[v3]) / 3.0, 2.0);
+
+        p += w * b;
+        ww += w;
+    }
+
+    p /= ww;
+
+    return p;
 }
 
 } // namespace pmp
