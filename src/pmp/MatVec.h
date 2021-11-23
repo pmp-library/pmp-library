@@ -310,7 +310,7 @@ public:
     bool allFinite() const
     {
         for (int i = 0; i < size(); ++i)
-            if (std::isfinite(data_[i]))
+            if (!std::isfinite(data_[i]))
                 return false;
         return true;
     }
