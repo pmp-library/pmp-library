@@ -825,14 +825,16 @@ Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
                      d(0) * p(0) * q(2) - d(1) * p(1) * q(2));
     }
 
-    // compute minimizer
-    Eigen::FullPivLU<Eigen::Matrix3d> solver(H);
-    if (!solver.isInvertible())
+    // check if matrix is invertible
+    auto det = H.determinant();
+    if (det < 1.0e-10 || std::isnan(det))
     {
         auto what = "SurfaceRemeshing: Matrix not invertible.";
         throw SolverException(what);
     }
-    Eigen::Vector3d x = solver.solve(-J);
+
+    // compute minimizer
+    Eigen::Vector3d x = H.lu().solve(-J);
 
     return Point(x);
 }
