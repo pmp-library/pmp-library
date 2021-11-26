@@ -1,3 +1,9 @@
+/* variable overrides */
+html {
+  --side-nav-arrow-opacity: 1;
+  --side-nav-arrow-hover-opacity: 1;
+}
+
 /* github corner icon styles */
 .github-corner {
   position: absolute;
@@ -10,10 +16,9 @@
   height: 55px;
 }
 
-/* nav-tree arrow customization */
+/* nav-tree arrows */
 #nav-tree .arrow {
   margin-left: 10px;
-  opacity: 1;
 }
 
 .arrow {
@@ -21,11 +26,6 @@
   font-size: 80%;
   font-family: var(--font-family);
   text-align: left;
-}
-
-/* underline nav-tree links on hover */
-#nav-tree a:hover {
-  text-decoration: underline;
 }
 
 /* hide nav-sync icon */
