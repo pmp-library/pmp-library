@@ -20,19 +20,27 @@ for a high-level summary of changes.
 
 Get your own copy by cloning:
 
-    $ git clone --recursive https://github.com/pmp-library/pmp-library.git
+```sh
+git clone --recursive https://github.com/pmp-library/pmp-library.git
+```
 
 Checkout the release tag:
 
-    $ cd pmp-library && git checkout 1.0.0
+```sh
+cd pmp-library && git checkout 1.0.0
+```
 
 Configure and build:
 
-    $ mkdir build && cd build && cmake .. && make
+```sh
+mkdir build && cd build && cmake .. && make
+```
 
 Run the mesh processing app
 
-    $ ./mpview ../external/pmp-data/off/bunny.off
+```sh
+./mpview ../external/pmp-data/off/bunny.off
+```
 
 If you encounter any glitches or problems
 please [report the issue](https://github.com/pmp-library/pmp-library/issues) on
