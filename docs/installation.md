@@ -135,9 +135,7 @@ This way, you can simply link your own target against pmp-library
 @ref algorithms modules of the pmp-library. If you want to use the @ref
 visualization module you need to link your target against `pmp_vis` and its
 dependencies: `stb_image`, `imgui`, `glfw`, `glew`, as well as your platform
-OpenGL library. In this case, however, we recommend to use the [project
-template](https://github.com/pmp-library/pmp-template). See also
-[Quickstart](quickstart.html).
+OpenGL library.
 
 ## Build Options
 
