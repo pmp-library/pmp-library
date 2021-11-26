@@ -8,7 +8,6 @@ functions provided by the library.
 
 ## Contents
 
-- @subpage quickstart -- how to quickly start using pmp-library
 - @subpage installation -- detailed installation instructions
 - @subpage overview -- an overview of the library and its capabilities
 - @subpage tutorial -- how to perform basic tasks
