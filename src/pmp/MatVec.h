@@ -10,6 +10,7 @@
 #include <iostream>
 #include <limits>
 #include <initializer_list>
+#include <stdexcept>
 
 #include <Eigen/Dense>
 
@@ -968,24 +969,35 @@ Mat4<Scalar> inverse(const Mat4<Scalar>& m)
     return Inverse;
 }
 
+//! return determinant of 3x3 matrix
+template <typename Scalar>
+Scalar determinant(const Mat3<Scalar>& m)
+{
+    return m(0, 0) * m(1, 1) * m(2, 2) - m(0, 0) * m(1, 2) * m(2, 1) +
+           m(1, 0) * m(0, 2) * m(2, 1) - m(1, 0) * m(0, 1) * m(2, 2) +
+           m(2, 0) * m(0, 1) * m(1, 2) - m(2, 0) * m(0, 2) * m(1, 1);
+}
+
 //! return the inverse of a 3x3 matrix
 template <typename Scalar>
 Mat3<Scalar> inverse(const Mat3<Scalar>& m)
 {
-    Scalar det = (-m(0, 0) * m(1, 1) * m(2, 2) + m(0, 0) * m(1, 2) * m(2, 1) +
-                  m(1, 0) * m(0, 1) * m(2, 2) - m(1, 0) * m(0, 2) * m(2, 1) -
-                  m(2, 0) * m(0, 1) * m(1, 2) + m(2, 0) * m(0, 2) * m(1, 1));
+    const Scalar det = determinant(m);
+    if (det < 1.0e-10 || std::isnan(det))
+    {
+        throw std::runtime_error("3x3 matrix not invertible");
+    }
 
     Mat3<Scalar> inv;
-    inv(0, 0) = (m(1, 2) * m(2, 1) - m(1, 1) * m(2, 2)) / det;
-    inv(0, 1) = (m(0, 1) * m(2, 2) - m(0, 2) * m(2, 1)) / det;
-    inv(0, 2) = (m(0, 2) * m(1, 1) - m(0, 1) * m(1, 2)) / det;
-    inv(1, 0) = (m(1, 0) * m(2, 2) - m(1, 2) * m(2, 0)) / det;
-    inv(1, 1) = (m(0, 2) * m(2, 0) - m(0, 0) * m(2, 2)) / det;
-    inv(1, 2) = (m(0, 0) * m(1, 2) - m(0, 2) * m(1, 0)) / det;
-    inv(2, 0) = (m(1, 1) * m(2, 0) - m(1, 0) * m(2, 1)) / det;
-    inv(2, 1) = (m(0, 0) * m(2, 1) - m(0, 1) * m(2, 0)) / det;
-    inv(2, 2) = (m(0, 1) * m(1, 0) - m(0, 0) * m(1, 1)) / det;
+    inv(0, 0) = (m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1)) / det;
+    inv(0, 1) = (m(0, 2) * m(2, 1) - m(0, 1) * m(2, 2)) / det;
+    inv(0, 2) = (m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1)) / det;
+    inv(1, 0) = (m(1, 2) * m(2, 0) - m(1, 0) * m(2, 2)) / det;
+    inv(1, 1) = (m(0, 0) * m(2, 2) - m(0, 2) * m(2, 0)) / det;
+    inv(1, 2) = (m(0, 2) * m(1, 0) - m(0, 0) * m(1, 2)) / det;
+    inv(2, 0) = (m(1, 0) * m(2, 1) - m(1, 1) * m(2, 0)) / det;
+    inv(2, 1) = (m(0, 1) * m(2, 0) - m(0, 0) * m(2, 1)) / det;
+    inv(2, 2) = (m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0)) / det;
 
     return inv;
 }
