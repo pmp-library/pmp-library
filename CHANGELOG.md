@@ -40,6 +40,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Fixed
 
+- Fixed a rare bug regarding ImGui scaling on Linux.
+  Thanks to Jan Erik Swiadek for reporting and fixing this!
 - Fix crash in SurfaceRemeshing when dealing with low quality meshes (#90, #89)
 - `SurfaceMesh::bounds()` no longer includes deleted vertices. Thanks to Paul Du.
 - Fix crash in SurfaceHoleFilling when a vertex selection already exists.

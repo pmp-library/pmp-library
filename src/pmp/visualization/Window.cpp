@@ -123,8 +123,8 @@ Window::Window(const char* title, int width, int height, bool showgui)
 #ifndef __APPLE__ // not needed for MacOS retina
     float sx, sy;
     glfwGetWindowContentScale(window_, &sx, &sy);
-    imgui_scale_ = int(0.5 * (sx + sy));
-    if (imgui_scale_ != 1)
+    imgui_scale_ = std::max(1.0f, 0.5f * (sx + sy));
+    if (imgui_scale_ != 1.0f)
         std::cout << "UI scaling: " << imgui_scale_ << std::endl;
 #endif
 
