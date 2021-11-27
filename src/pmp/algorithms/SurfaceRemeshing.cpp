@@ -13,6 +13,7 @@
 #include "pmp/algorithms/SurfaceNormals.h"
 #include "pmp/algorithms/BarycentricCoordinates.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
+#include "pmp/Timer.h"
 
 namespace pmp {
 
@@ -783,58 +784,45 @@ void SurfaceRemeshing::remove_caps()
 
 Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
 {
-    // setup matrix of one-ring neighbors' positions
-    const unsigned int n = mesh_.valence(v);
-    Eigen::MatrixXd poly(n, 3);
-    int i = 0;
-    for (auto vv : mesh_.vertices(v))
+    dmat3 A(0), D;
+    dvec3 b(0), d, p, q, x;
+    double w;
+
+    for (auto h : mesh_.halfedges(v))
     {
-        poly.row(i++) = (Eigen::Vector3d)points_[vv];
+        assert(!mesh_.is_boundary(h));
+
+        // get edge opposite to vertex v
+        Vertex v0 = mesh_.to_vertex(h);
+        Vertex v1 = mesh_.to_vertex(mesh_.next_halfedge(h));
+        p = (dvec3)points_[v0];
+        q = (dvec3)points_[v1];
+        d = q - p;
+        w = 1.0 / norm(d);
+
+        // build squared cross-product-with-d matrix
+        D(0, 0) = d[1] * d[1] + d[2] * d[2];
+        D(1, 1) = d[0] * d[0] + d[2] * d[2];
+        D(2, 2) = d[0] * d[0] + d[1] * d[1];
+        D(1, 0) = D(0, 1) = -d[0] * d[1];
+        D(2, 0) = D(0, 2) = -d[0] * d[2];
+        D(1, 2) = D(2, 1) = -d[1] * d[2];
+        A += w * D;
+
+        // build right-hand side
+        b += w * D * p;
     }
 
-    // build Hessian and Jacobian
-    Eigen::Matrix3d H;
-    H.setZero();
-    Eigen::Vector3d J;
-    J.setZero();
-    for (unsigned int i = 0; i < n; ++i)
+    // compute minimizer
+    try 
     {
-        Eigen::Vector3d p = poly.row(i);
-        Eigen::Vector3d q = poly.row((i + 1) % n);
-        Eigen::Vector3d d = p - q;
-
-        double w = 1.0 / d.norm();
-
-        H(0, 0) += w * (d(1) * d(1) + d(2) * d(2));
-        H(1, 0) += w * (-d(0) * d(1));
-        H(2, 0) += w * (-d(0) * d(2));
-
-        H(0, 1) += w * (-d(0) * d(1));
-        H(1, 1) += w * (d(0) * d(0) + d(2) * d(2));
-        H(2, 1) += w * (-d(1) * d(2));
-
-        H(0, 2) += w * (-d(0) * d(2));
-        H(1, 2) += w * (-d(1) * d(2));
-        H(2, 2) += w * (d(0) * d(0) + d(1) * d(1));
-
-        J(0) += w * (-d(1) * p(1) * q(0) - d(2) * p(2) * q(0) +
-                     d(1) * p(0) * q(1) + d(2) * p(0) * q(2));
-        J(1) += w * (d(0) * p(1) * q(0) - d(0) * p(0) * q(1) -
-                     d(2) * p(2) * q(1) + d(2) * p(1) * q(2));
-        J(2) += w * (d(0) * p(2) * q(0) + d(1) * p(2) * q(1) -
-                     d(0) * p(0) * q(2) - d(1) * p(1) * q(2));
+        x = inverse(A) * b;
     }
-
-    // check if matrix is invertible
-    auto det = H.determinant();
-    if (det < 1.0e-10 || std::isnan(det))
+    catch (...)
     {
         auto what = "SurfaceRemeshing: Matrix not invertible.";
         throw SolverException(what);
     }
-
-    // compute minimizer
-    Eigen::Vector3d x = H.lu().solve(-J);
 
     return Point(x);
 }
