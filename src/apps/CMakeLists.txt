@@ -117,6 +117,10 @@ else()
     add_executable(mpview mpview.cpp MeshProcessingViewer.cpp
                           MeshProcessingViewer.h)
     target_link_libraries(mpview pmp_vis)
+
+    add_executable(deftrans deftrans.cpp)
+    target_link_libraries(deftrans pmp_vis)
+
   endif()
 
 endif()
