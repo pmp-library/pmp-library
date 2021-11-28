@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
@@ -10,9 +10,10 @@
 #include <iostream>
 #include <limits>
 #include <initializer_list>
-#include <stdexcept>
 
 #include <Eigen/Dense>
+
+#include "pmp/Exceptions.h"
 
 namespace pmp {
 
@@ -985,7 +986,7 @@ Mat3<Scalar> inverse(const Mat3<Scalar>& m)
     const Scalar det = determinant(m);
     if (det < 1.0e-10 || std::isnan(det))
     {
-        throw std::runtime_error("3x3 matrix not invertible");
+        throw SolverException("3x3 matrix not invertible");
     }
 
     Mat3<Scalar> inv;
