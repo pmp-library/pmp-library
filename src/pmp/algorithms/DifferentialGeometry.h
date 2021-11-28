@@ -44,9 +44,14 @@ inline Scalar cos(const Point& v0, const Point& v1)
 }
 
 //! compute cotangent of angle between two (un-normalized) vectors
-inline Scalar cotan(const Point& v0, const Point& v1)
+//! if clamp is true, angles smaller than 3 degrees are clamped to 3 degrees
+//! \see clamp_cot
+inline Scalar cotan(const Point& v0, const Point& v1, bool clamp=true)
 {
-    return clamp_cot(dot(v0, v1) / norm(cross(v0, v1)));
+    return 
+        clamp ? 
+        clamp_cot(dot(v0, v1) / norm(cross(v0, v1))) :
+        dot(v0, v1) / norm(cross(v0, v1));
 }
 
 //! compute area of a triangle given by three points
@@ -75,8 +80,10 @@ Point centroid(const SurfaceMesh& mesh);
 //! \warning Changes the mesh in place. All properties are cleared.
 void dual(SurfaceMesh& mesh);
 
-//! compute the cotangent weight for edge e
-double cotan_weight(const SurfaceMesh& mesh, Edge e);
+//! compute the cotangent weight for edge e.
+//! if clamp is true, angles smaller than 3 degrees are clamped to 3 degrees
+//! \see clamp_cot
+double cotan_weight(const SurfaceMesh& mesh, Edge e, bool clamp=true);
 
 //! compute (mixed) Voronoi area of vertex v
 double voronoi_area(const SurfaceMesh& mesh, Vertex v);

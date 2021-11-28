@@ -111,7 +111,7 @@ void dual(SurfaceMesh& mesh)
     mesh.assign(tmp);
 }
 
-double cotan_weight(const SurfaceMesh& mesh, Edge e)
+double cotan_weight(const SurfaceMesh& mesh, Edge e, bool clamp)
 {
     double weight = 0.0;
 
@@ -131,7 +131,7 @@ double cotan_weight(const SurfaceMesh& mesh, Edge e)
         if (area > std::numeric_limits<double>::min())
         {
             const double cot = dot(d0, d1) / area;
-            weight += clamp_cot(cot);
+            weight += clamp ? clamp_cot(cot) : cot;
         }
     }
 
@@ -145,7 +145,7 @@ double cotan_weight(const SurfaceMesh& mesh, Edge e)
         if (area > std::numeric_limits<double>::min())
         {
             const double cot = dot(d0, d1) / area;
-            weight += clamp_cot(cot);
+            weight += clamp ? clamp_cot(cot) : cot;
         }
     }
 
