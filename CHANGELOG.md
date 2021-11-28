@@ -10,6 +10,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Added
 
+- Add point set registration with L2 and L1 metric
 - Add support to read non-manifold meshes by duplicating vertices
 - Add SurfaceFactory class to generate basic shapes. Thanks to
   [u/lycium](https://www.reddit.com/user/lycium/) on Reddit for suggesting a
