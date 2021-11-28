@@ -1,19 +1,7 @@
-project(pmp-library)
-
-cmake_minimum_required(VERSION 3.16.3)
-
 cmake_policy(SET CMP0048 NEW)
+project(pmp-library VERSION 1.2.1)
+cmake_minimum_required(VERSION 3.16.3)
 cmake_policy(SET CMP0072 NEW)
-
-set(PMP_MAJOR_VERSION 1)
-set(PMP_MINOR_VERSION 2)
-set(PMP_PATCH_VERSION 1)
-set(PMP_VERSION ${PMP_MAJOR_VERSION}.${PMP_MINOR_VERSION}.${PMP_PATCH_VERSION})
-
-set(CMAKE_PROJECT_VERSION ${PMP_VERSION})
-set(CMAKE_PROJECT_VERSION_MAJOR ${PMP_MAJOR_VERSION})
-set(CMAKE_PROJECT_VERSION_MINOR ${PMP_MINOR_VERSION})
-set(CMAKE_PROJECT_VERSION_PATCH ${PMP_PATCH_VERSION})
 
 option(PMP_BUILD_APPS "Build the PMP applications" ON)
 option(PMP_BUILD_EXAMPLES "Build the PMP examples" ON)
@@ -140,7 +128,9 @@ endif()
 
 if(EMSCRIPTEN)
   add_compile_options(--no-heap-copy)
-  add_link_options("SHELL:-s WASM=1 -s USE_WEBGL2=1 -s USE_GLFW=3 -s ALLOW_MEMORY_GROWTH=1 -s MINIFY_HTML=0 -s DISABLE_EXCEPTION_CATCHING=0")
+  add_link_options(
+    "SHELL:-s WASM=1 -s USE_WEBGL2=1 -s USE_GLFW=3 -s ALLOW_MEMORY_GROWTH=1 -s MINIFY_HTML=0 -s DISABLE_EXCEPTION_CATCHING=0"
+  )
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
