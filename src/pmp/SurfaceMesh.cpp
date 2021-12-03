@@ -494,6 +494,54 @@ bool SurfaceMesh::is_quad_mesh() const
     return true;
 }
 
+void SurfaceMesh::remove_center_vertex(Vertex v)
+{
+    // h points to the vertex to remove
+    Halfedge h = opposite_halfedge(halfedge(v));
+    Face f = face(prev_halfedge(h));
+
+    Halfedge g = opposite_halfedge(next_halfedge(h));
+
+    while (g != h)
+    {
+        Halfedge g_prev = prev_halfedge(g);
+        Halfedge g_next = next_halfedge(opposite_halfedge(g));
+
+        if (halfedge(from_vertex(g)) == g)
+            set_halfedge(from_vertex(g), g_next);
+
+        set_next_halfedge(g_prev, g_next);
+        set_face(g_prev, f);
+
+        Halfedge g_next_removal = opposite_halfedge(next_halfedge(g));
+
+        // delete face and edge
+        fdeleted_[face(g)] = true;
+        ++deleted_faces_;
+        edeleted_[edge(g)] = true;
+        ++deleted_edges_;
+        has_garbage_ = true;
+
+        g = g_next_removal;
+    }
+
+    Halfedge h_prev{prev_halfedge(h)};
+    Halfedge h_next{next_halfedge(opposite_halfedge(h))};
+    if (halfedge(from_vertex(h)) == h)
+        set_halfedge(from_vertex(h), h_next);
+
+    set_next_halfedge(h_prev, h_next);
+
+    // delete vertex and last edge
+    vdeleted_[v] = true;
+    ++deleted_vertices_;
+    edeleted_[edge(h)] = true;
+    ++deleted_edges_;
+    has_garbage_ = true;
+
+    set_halfedge(f, h_prev);
+}
+
 void SurfaceMesh::split(Face f, Vertex v)
 {
     // Split an arbitrary face into triangles by connecting each vertex of face
