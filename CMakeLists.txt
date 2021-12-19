@@ -78,23 +78,25 @@ include_directories(${PROJECT_SOURCE_DIR}/src/)
 
 # setup for code coverage testing
 if(CMAKE_BUILD_TYPE STREQUAL "Debug"
-   AND CMAKE_COMPILER_IS_GNUCXX
-   AND ENABLE_COVERAGE)
+   AND ENABLE_COVERAGE
+   AND NOT WIN32)
   enable_testing()
 
   # set compiler flags
   set(CMAKE_CXX_FLAGS "-g -O0 --coverage")
 
   # find required tools
-  find_program(LCOV lcov)
-  find_program(GENHTML genhtml)
+  find_program(LCOV lcov REQUIRED)
+  find_program(GENHTML genhtml REQUIRED)
 
   # add coverage target
   add_custom_target(
     coverage
     # gather data
-    COMMAND ${LCOV} --directory . --capture --exclude '*/external/*' --exclude
-            '*/tests/*' --exclude '/usr/*' --output-file coverage.info
+    COMMAND
+      ${LCOV} --directory . --capture --exclude '*/external/*' --exclude
+      '*/tests/*' --exclude '/usr/*' --exclude '/Applications/*' --exclude
+      'v1/*' --output-file coverage.info
     # generate report
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
