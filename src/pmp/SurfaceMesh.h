@@ -1682,6 +1682,7 @@ public:
     //! Remove edge and merge its two incident faces into one.
     //! This operation requires that the edge has two incident faces
     //! and that these two are not equal.
+    //! \sa is_removal_ok(Edge)
     bool remove_edge(Edge e);
 
     //! Split the face \p f by first adding point \p p to the mesh and then

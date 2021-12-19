@@ -314,6 +314,29 @@ TEST_F(SurfaceMeshTest, collapse)
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
 
+TEST_F(SurfaceMeshTest, edge_removal_ok)
+{
+    add_triangles();
+    Edge e(1); // diagonal of triangulated quad
+    EXPECT_TRUE(mesh.is_removal_ok(e));
+}
+
+TEST_F(SurfaceMeshTest, edge_removal_not_ok)
+{
+    add_triangle();
+    Edge e(0); // boundary edge
+    EXPECT_FALSE(mesh.is_removal_ok(e));
+}
+
+TEST_F(SurfaceMeshTest, remove_edge)
+{
+    add_triangles();
+    Edge e(1); // diagonal of triangulated quad
+    mesh.remove_edge(e);
+    EXPECT_TRUE(mesh.is_quad_mesh());
+    mesh.write("output.off");
+}
+
 TEST_F(SurfaceMeshTest, face_split)
 {
     add_quad();
