@@ -52,3 +52,5 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       shell: bash
       run: ctest -C $BUILD_TYPE
+      env:
+        CTEST_OUTPUT_ON_FAILURE: 1
