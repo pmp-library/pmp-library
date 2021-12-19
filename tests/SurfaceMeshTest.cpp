@@ -334,7 +334,6 @@ TEST_F(SurfaceMeshTest, remove_edge)
     Edge e(1); // diagonal of triangulated quad
     mesh.remove_edge(e);
     EXPECT_TRUE(mesh.is_quad_mesh());
-    mesh.write("output.off");
 }
 
 TEST_F(SurfaceMeshTest, face_split)
