@@ -87,6 +87,12 @@ void Viewer::process_imgui()
             SurfaceSubdivision(mesh_).catmull_clark();
             update_mesh();
         }
+
+        if (ImGui::Button("Quad/Tri Subdivision"))
+        {
+            SurfaceSubdivision(mesh_).quad_tri();
+            update_mesh();
+        }
     }
 }
 

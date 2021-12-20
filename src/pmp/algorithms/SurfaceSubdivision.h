@@ -25,6 +25,10 @@ public:
     //! \throw InvalidInputException in case the input violates the precondition.
     void loop();
 
+    //! \brief Perform one step of quad-tri subdivision.
+    //! \details See \cite stam_2003_subdiv for details.
+    void quad_tri();
+
     //! Perform one step of sqrt3 subdivision.
     //! See \cite kobbelt_2000_sqrt for details.
     //! \pre Requires a pure triangle mesh as input.

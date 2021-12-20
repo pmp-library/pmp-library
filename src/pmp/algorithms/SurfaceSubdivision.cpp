@@ -418,4 +418,130 @@ void SurfaceSubdivision::sqrt3()
     }
 }
 
+void SurfaceSubdivision::quad_tri()
+{
+    // split each edge evenly into two parts
+    for (Edge e : mesh_.edges())
+    {
+        mesh_.insert_vertex(e, 0.5f * (points_[mesh_.vertex(e, 0)] + points_[mesh_.vertex(e, 1)]));
+    }
+
+    // subdivide faces without repositioning
+    for (Face f : mesh_.faces())
+    {
+        size_t f_val = mesh_.valence(f) / 2;
+        if (f_val == 3)
+        {
+            // face was a triangle
+            Halfedge h0 = mesh_.halfedge(f);
+            Halfedge h1 = mesh_.next_halfedge(mesh_.next_halfedge(h0));
+            mesh_.insert_edge(h0, h1);
+
+            h0 = mesh_.next_halfedge(h0);
+            h1 = mesh_.next_halfedge(mesh_.next_halfedge(h0));
+            mesh_.insert_edge(h0, h1);
+
+            h0 = mesh_.next_halfedge(h0);
+            h1 = mesh_.next_halfedge(mesh_.next_halfedge(h0));
+            mesh_.insert_edge(h0, h1);
+        }
+        else
+        {
+            // quadrangulate the rest
+            Halfedge h0 = mesh_.halfedge(f);
+            Halfedge h1 = mesh_.next_halfedge(mesh_.next_halfedge(h0));
+            h1 = mesh_.insert_edge(h0, h1);
+            mesh_.insert_vertex(mesh_.edge(h1), centroid(mesh_, f));
+
+            auto h = mesh_.next_halfedge(mesh_.next_halfedge(mesh_.next_halfedge(h1)));
+            while (h != h0)
+            {
+                mesh_.insert_edge(h1, h);
+                h = mesh_.next_halfedge(mesh_.next_halfedge(mesh_.next_halfedge(h1)));
+            }
+        }
+    }
+
+    auto new_pos = mesh_.add_vertex_property<Point>("quad_tri:new_position", Point(0));
+
+    for (Vertex v : mesh_.vertices())
+    {
+        if (mesh_.is_boundary(v))
+        {
+            new_pos[v] = 0.5 * points_[v];
+
+            // add neighbouring vertices on boundary
+            for (Vertex vv : mesh_.vertices(v))
+            {
+                if (mesh_.is_boundary(vv))
+                {
+                    new_pos[v] += 0.25 * points_[vv];
+                }
+            }
+        }
+        else
+        {
+            // count the number of faces and quads surrounding the vertex
+            int n_faces = 0, n_quads = 0;
+            for (Face f : mesh_.faces(v))
+            {
+                n_faces++;
+                n_quads += mesh_.valence(f) == 4;
+            }
+
+            if (n_quads == 0)
+            {
+                // vertex is surrounded only by triangles
+                double a = 2.0 * pow(3.0 / 8.0 + (std::cos(2.0 * M_PI / n_faces) - 1.0) / 4.0, 2.0);
+                double b = (1.0 - a) / n_faces;
+
+                new_pos[v] = a * points_[v];
+                for (Vertex vv : mesh_.vertices(v))
+                {
+                    new_pos[v] += b * points_[vv];
+                }
+            }
+            else if (n_quads == n_faces)
+            {
+                // vertex is surrounded only by quads
+                double c = (n_faces - 3.0) / n_faces;
+                double d = 2.0 / pow(n_faces, 2.0);
+                double e = 1.0 / pow(n_faces, 2.0);
+
+                new_pos[v] = c * points_[v];
+                for (Halfedge h : mesh_.halfedges(v))
+                {
+                    new_pos[v] += d * points_[mesh_.to_vertex(h)];
+                    new_pos[v] += e * points_[mesh_.to_vertex(mesh_.next_halfedge(h))];
+                }
+            }
+            else
+            {
+                // vertex is surrounded by triangles and quads
+                double alpha = 1.0 / (1.0 + 0.5 * n_faces + 0.25 * n_quads);
+                double beta = 0.5 * alpha;
+                double gamma = 0.25 * alpha;
+
+                new_pos[v] = alpha * points_[v];
+                for (Halfedge h : mesh_.halfedges(v))
+                {
+                    new_pos[v] += beta * points_[mesh_.to_vertex(h)];
+                    if (mesh_.valence(mesh_.face(h)) == 4)
+                    {
+                        new_pos[v] += gamma * points_[mesh_.to_vertex(mesh_.next_halfedge(h))];
+                    }
+                }
+            }
+        }
+    }
+
+    // apply new positions to the mesh
+    for (Vertex v : mesh_.vertices())
+    {
+        points_[v] = new_pos[v];
+    }
+
+    mesh_.remove_vertex_property(new_pos);
+}
+
 } // namespace pmp
