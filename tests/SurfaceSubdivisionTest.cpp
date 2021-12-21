@@ -5,6 +5,7 @@
 
 #include "pmp/algorithms/SurfaceSubdivision.h"
 #include "pmp/algorithms/SurfaceFeatures.h"
+#include "pmp/algorithms/SurfaceFactory.h"
 #include "Helpers.h"
 
 using namespace pmp;
@@ -61,10 +62,24 @@ TEST(SurfaceSubdivisionTest, catmull_clark_with_features)
 }
 
 // plain sqrt3 subdivision
-TEST(SurfaceSubdivisionTest, sqrt3Subdivision)
+TEST(SurfaceSubdivisionTest, sqrt3_subdivision)
 {
     auto mesh = subdivided_icosahedron();
     SurfaceFeatures(mesh).clear();
     SurfaceSubdivision(mesh).sqrt3();
     EXPECT_EQ(mesh.n_vertices(), size_t(1922));
+}
+
+TEST(SurfaceSubdivisionTest, quad_tri_on_quads)
+{
+    auto mesh = SurfaceFactory::hexahedron();
+    SurfaceSubdivision(mesh).quad_tri();
+    EXPECT_EQ(mesh.n_faces(), size_t(24));
+}
+
+TEST(SurfaceSubdivisionTest, quad_tri_on_triangles)
+{
+    auto mesh = SurfaceFactory::tetrahedron();
+    SurfaceSubdivision(mesh).quad_tri();
+    EXPECT_EQ(mesh.n_faces(), size_t(16));
 }
