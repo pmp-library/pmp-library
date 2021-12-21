@@ -27,6 +27,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Remove PMP_SHOW macro
 - Remove pmp::Version class, major/minor/patch still defined in Version.h
 - Build shared libraries on all platforms by default (except pmp_vis , see #87)
 - Bump CMake minimum required version to 3.16.3

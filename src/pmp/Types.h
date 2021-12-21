@@ -22,10 +22,6 @@
 #define PMP_ASSERT(x) assert(x)
 #endif
 
-//! \def PMP_SHOW(x)
-//! A simple pretty-printing debug macro. Prints the expression and its value.
-#define PMP_SHOW(x) std::cerr << #x " = '" << x << "'" << std::endl;
-
 //! The pmp-library namespace
 namespace pmp {
 
