@@ -32,6 +32,13 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 
     switch (key)
     {
+        case GLFW_KEY_A:
+        {
+            auto features = SurfaceFeatures(mesh_);
+            features.detect_angle(25);
+            update_mesh();
+            break;
+        }
         case GLFW_KEY_D: // dualize mesh
         {
             dual(mesh_);
