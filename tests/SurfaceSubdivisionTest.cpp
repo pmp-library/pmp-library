@@ -10,64 +10,49 @@
 
 using namespace pmp;
 
-// plain loop subdivision
 TEST(SurfaceSubdivisionTest, loop_subdivision)
 {
-    auto mesh = subdivided_icosahedron();
-    SurfaceFeatures(mesh).clear();
+    auto mesh = SurfaceFactory::icosahedron();
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.n_vertices(), size_t(2562));
+    EXPECT_EQ(mesh.n_faces(), size_t(80));
 }
 
-// loop subdivision with features
 TEST(SurfaceSubdivisionTest, loop_with_features)
 {
-    auto mesh = subdivided_icosahedron();
-
-    SurfaceFeatures sf(mesh);
-    sf.detect_angle(25);
-
+    auto mesh = SurfaceFactory::icosahedron();
+    SurfaceFeatures(mesh).detect_angle(25);
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.n_vertices(), size_t(2562));
+    EXPECT_EQ(mesh.n_faces(), size_t(80));
 }
 
-// loop subdivision with features
 TEST(SurfaceSubdivisionTest, loop_with_boundary)
 {
-    auto mesh = hemisphere();
+    auto mesh = vertex_onering();
     SurfaceSubdivision(mesh).loop();
-    EXPECT_EQ(mesh.n_vertices(), size_t(3597));
+    EXPECT_EQ(mesh.n_faces(), size_t(24));
 }
 
-// Catmull-Clark subdivision on suzanne quad mesh
 TEST(SurfaceSubdivisionTest, catmull_clark_subdivision)
 {
-    SurfaceMesh mesh;
-    mesh.read("pmp-data/obj/suzanne.obj");
+    auto mesh = SurfaceFactory::hexahedron();
     SurfaceSubdivision(mesh).catmull_clark();
-    EXPECT_EQ(mesh.n_vertices(), size_t(2012));
+    EXPECT_EQ(mesh.n_faces(), size_t(24));
 }
 
-// Catmull-Clark subdivision on fandisk quad mesh
 TEST(SurfaceSubdivisionTest, catmull_clark_with_features)
 {
-    SurfaceMesh mesh;
-    mesh.read("pmp-data/off/fandisk_quads.off");
-
-    SurfaceFeatures sf(mesh);
-    sf.detect_angle(25);
-
+    auto mesh = SurfaceFactory::hexahedron();
+    SurfaceFeatures(mesh).detect_angle(25);
     SurfaceSubdivision(mesh).catmull_clark();
-    EXPECT_EQ(mesh.n_vertices(), size_t(3058));
+    EXPECT_EQ(mesh.n_faces(), size_t(24));
 }
 
 // plain sqrt3 subdivision
 TEST(SurfaceSubdivisionTest, sqrt3_subdivision)
 {
-    auto mesh = subdivided_icosahedron();
-    SurfaceFeatures(mesh).clear();
+    auto mesh = SurfaceFactory::icosahedron();
     SurfaceSubdivision(mesh).sqrt3();
-    EXPECT_EQ(mesh.n_vertices(), size_t(1922));
+    EXPECT_EQ(mesh.n_faces(), size_t(60));
 }
 
 TEST(SurfaceSubdivisionTest, quad_tri_on_quads)
