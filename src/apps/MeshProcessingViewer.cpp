@@ -34,8 +34,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
     {
         case GLFW_KEY_A:
         {
-            auto features = SurfaceFeatures(mesh_);
-            features.detect_angle(25);
+            SurfaceFeatures(mesh_).detect_angle(25);
             update_mesh();
             break;
         }
