@@ -8,6 +8,8 @@
 #include <cstring>
 #include <cctype>
 
+#include <algorithm>
+#include <map>
 #include <fstream>
 #include <limits>
 

@@ -4,10 +4,7 @@
 
 #pragma once
 
-#include <map>
 #include <vector>
-#include <limits>
-#include <numeric>
 
 #include "pmp/Types.h"
 #include "pmp/Properties.h"

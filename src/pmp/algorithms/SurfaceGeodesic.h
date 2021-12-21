@@ -6,6 +6,7 @@
 #include <limits>
 #include <set>
 #include <vector>
+#include <map>
 
 #include "pmp/SurfaceMesh.h"
 
