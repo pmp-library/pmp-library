@@ -861,7 +861,7 @@ public:
     class HalfedgeAroundFaceCirculator
     {
     public:
-        //! default constructur
+        //! default constructor
         HalfedgeAroundFaceCirculator(const SurfaceMesh* m = nullptr,
                                      Face f = Face())
             : mesh_(m), is_active_(true)
@@ -1183,7 +1183,7 @@ public:
     //! halfedges.
     inline Edge edge(Halfedge h) const { return Edge(h.idx() >> 1); }
 
-    //! returns whether h is a boundary halfege, i.e., if its face does not exist.
+    //! returns whether h is a boundary halfedge, i.e., if its face does not exist.
     inline bool is_boundary(Halfedge h) const { return !face(h).is_valid(); }
 
     //! returns the \p i'th halfedge of edge \p e. \p i has to be 0 or 1.
