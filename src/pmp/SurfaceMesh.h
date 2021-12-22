@@ -277,6 +277,14 @@ public:
             return *this;
         }
 
+        //! post-decrement iterator
+        VertexIterator operator--(int)
+        {
+            VertexIterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
     private:
         Vertex handle_;
         const SurfaceMesh* mesh_;
@@ -341,6 +349,14 @@ public:
                    mesh_->is_deleted(handle_))
                 --handle_.idx_;
             return *this;
+        }
+
+        //! post-decrement iterator
+        HalfedgeIterator operator--(int)
+        {
+            HalfedgeIterator tmp = *this;
+            --(*this);
+            return tmp;
         }
 
     private:
@@ -408,6 +424,14 @@ public:
             return *this;
         }
 
+        //! post-decrement iterator
+        EdgeIterator operator--(int)
+        {
+            EdgeIterator tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
     private:
         Edge handle_;
         const SurfaceMesh* mesh_;
@@ -471,6 +495,14 @@ public:
                    mesh_->is_deleted(handle_))
                 --handle_.idx_;
             return *this;
+        }
+
+        //! post-decrement iterator
+        FaceIterator operator--(int)
+        {
+            FaceIterator tmp = *this;
+            --(*this);
+            return tmp;
         }
 
     private:
