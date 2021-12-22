@@ -579,7 +579,7 @@ public:
             return !operator==(rhs);
         }
 
-        //! pre-increment (rotate couter-clockwise)
+        //! pre-increment (rotate counter-clockwise)
         VertexAroundVertexCirculator& operator++()
         {
             assert(mesh_);
@@ -657,7 +657,7 @@ public:
             return !operator==(rhs);
         }
 
-        //! pre-increment (rotate couter-clockwise)
+        //! pre-increment (rotate counter-clockwise)
         HalfedgeAroundVertexCirculator& operator++()
         {
             assert(mesh_);
