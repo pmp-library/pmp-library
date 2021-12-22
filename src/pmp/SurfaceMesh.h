@@ -612,6 +612,12 @@ public:
     class VertexAroundVertexCirculator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Vertex;
+        using reference = Vertex&;
+        using pointer = Vertex*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! default constructor
         VertexAroundVertexCirculator(const SurfaceMesh* mesh = nullptr,
                                      Vertex v = Vertex())
@@ -644,12 +650,28 @@ public:
             return *this;
         }
 
+        //! post-increment (rotate counter-clockwise)
+        VertexAroundVertexCirculator operator++(int)
+        {
+            auto tmp = (*this);
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement (rotate clockwise)
         VertexAroundVertexCirculator& operator--()
         {
             assert(mesh_);
             halfedge_ = mesh_->cw_rotated_halfedge(halfedge_);
             return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        VertexAroundVertexCirculator operator--(int)
+        {
+            auto tmp = (*this);
+            --(*this);
+            return tmp;
         }
 
         //! get the vertex the circulator refers to
@@ -690,6 +712,12 @@ public:
     class HalfedgeAroundVertexCirculator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Halfedge;
+        using reference = Halfedge&;
+        using pointer = Halfedge*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! default constructor
         HalfedgeAroundVertexCirculator(const SurfaceMesh* mesh = nullptr,
                                        Vertex v = Vertex())
@@ -722,12 +750,28 @@ public:
             return *this;
         }
 
+        //! post-increment (rotate counter-clockwise)
+        HalfedgeAroundVertexCirculator operator++(int)
+        {
+            auto tmp = (*this);
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement (rotate clockwise)
         HalfedgeAroundVertexCirculator& operator--()
         {
             assert(mesh_);
             halfedge_ = mesh_->cw_rotated_halfedge(halfedge_);
             return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        HalfedgeAroundVertexCirculator operator--(int)
+        {
+            auto tmp = (*this);
+            --(*this);
+            return tmp;
         }
 
         //! get the halfedge the circulator refers to
@@ -761,6 +805,12 @@ public:
     class FaceAroundVertexCirculator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Face;
+        using reference = Face&;
+        using pointer = Face*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! construct with mesh and vertex (vertex should not be isolated!)
         FaceAroundVertexCirculator(const SurfaceMesh* m = nullptr,
                                    Vertex v = Vertex())
@@ -800,6 +850,14 @@ public:
             return *this;
         }
 
+        //! post-increment (rotate counter-clockwise)
+        FaceAroundVertexCirculator operator++(int)
+        {
+            auto tmp = (*this);
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement (rotate clockwise)
         FaceAroundVertexCirculator& operator--()
         {
@@ -808,6 +866,14 @@ public:
                 halfedge_ = mesh_->cw_rotated_halfedge(halfedge_);
             while (mesh_->is_boundary(halfedge_));
             return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        FaceAroundVertexCirculator operator--(int)
+        {
+            auto tmp = (*this);
+            --(*this);
+            return tmp;
         }
 
         //! get the face the circulator refers to
@@ -845,6 +911,12 @@ public:
     class VertexAroundFaceCirculator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Vertex;
+        using reference = Vertex&;
+        using pointer = Vertex*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! default constructor
         VertexAroundFaceCirculator(const SurfaceMesh* m = nullptr,
                                    Face f = Face())
@@ -877,12 +949,28 @@ public:
             return *this;
         }
 
+        //! post-increment (rotate counter-clockwise)
+        VertexAroundFaceCirculator operator++(int)
+        {
+            auto tmp = (*this);
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement (rotates clockwise)
         VertexAroundFaceCirculator& operator--()
         {
             assert(mesh_ && halfedge_.is_valid());
             halfedge_ = mesh_->prev_halfedge(halfedge_);
             return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        VertexAroundFaceCirculator operator--(int)
+        {
+            auto tmp = (*this);
+            --(*this);
+            return tmp;
         }
 
         //! get the vertex the circulator refers to
@@ -917,6 +1005,12 @@ public:
     class HalfedgeAroundFaceCirculator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Halfedge;
+        using reference = Halfedge&;
+        using pointer = Halfedge*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! default constructor
         HalfedgeAroundFaceCirculator(const SurfaceMesh* m = nullptr,
                                      Face f = Face())
@@ -949,12 +1043,28 @@ public:
             return *this;
         }
 
+        //! post-increment (rotate counter-clockwise)
+        HalfedgeAroundFaceCirculator operator++(int)
+        {
+            auto tmp = (*this);
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement (rotates clockwise)
         HalfedgeAroundFaceCirculator& operator--()
         {
             assert(mesh_ && halfedge_.is_valid());
             halfedge_ = mesh_->prev_halfedge(halfedge_);
             return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        HalfedgeAroundFaceCirculator operator--(int)
+        {
+            auto tmp = (*this);
+            --(*this);
+            return tmp;
         }
 
         //! get the halfedge the circulator refers to
