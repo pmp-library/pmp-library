@@ -223,6 +223,12 @@ public:
     class VertexIterator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Vertex;
+        using reference = Vertex&;
+        using pointer = Vertex*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! Default constructor
         VertexIterator(Vertex v = Vertex(), const SurfaceMesh* m = nullptr)
             : handle_(v), mesh_(m)
@@ -296,6 +302,12 @@ public:
     class HalfedgeIterator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Halfedge;
+        using reference = Halfedge&;
+        using pointer = Halfedge*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! Default constructor
         HalfedgeIterator(Halfedge h = Halfedge(),
                          const SurfaceMesh* mesh = nullptr)
@@ -370,6 +382,12 @@ public:
     class EdgeIterator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Edge;
+        using reference = Edge&;
+        using pointer = Edge*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! Default constructor
         EdgeIterator(Edge e = Edge(), const SurfaceMesh* mesh = nullptr)
             : handle_(e), mesh_(mesh)
@@ -443,6 +461,12 @@ public:
     class FaceIterator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Face;
+        using reference = Face&;
+        using pointer = Face*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! Default constructor
         FaceIterator(Face f = Face(), const SurfaceMesh* m = nullptr)
             : handle_(f), mesh_(m)
