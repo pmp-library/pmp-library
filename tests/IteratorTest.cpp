@@ -9,6 +9,9 @@
 using namespace pmp;
 using It = SurfaceMesh::VertexIterator;
 
+// Note: These are partial tests only used for development. They are not meant
+// to fully cover iterators and their functionality,
+
 TEST(VertexIteratorTest, default_constructible)
 {
     It a;
@@ -29,32 +32,19 @@ TEST(VertexIteratorTest, assignable)
     EXPECT_FALSE((*b).is_valid());
 }
 
-TEST(VertexIteratorTest, misc)
+TEST(VertexIteratorTest, insert)
 {
     auto mesh = SurfaceMesh{};
-    mesh.add_vertex(Point());
-    mesh.add_vertex(Point());
-    auto vit = mesh.vertices_begin();
-    std::cout << (*vit).idx() << std::endl;
-    std::cout << (*++vit).idx() << std::endl;
-    std::cout << (*--vit).idx() << std::endl;
-    vit--;
-    std::cout << (*vit).idx() << std::endl;
-
-    std::vector<Vertex> vertices;
-    vertices.emplace_back(Vertex(3));
-
+    auto vertices = std::vector<Vertex>{};
+    mesh.add_vertex(Point{0});
     vertices.insert(vertices.end(), mesh.vertices_begin(), mesh.vertices_end());
-
-    for (auto v : vertices)
-        std::cout << v.idx() << std::endl;
+    EXPECT_EQ(vertices.size(), 1u);
 }
 
-// test with std::distance to check if iterator types are well defined
 TEST(VertexCirculatorTest, std_distance)
 {
     auto mesh = vertex_onering();
-    auto v = Vertex(3);
+    auto v = Vertex(3); // center vertex
     auto vv = mesh.vertices(v);
     auto d = std::distance(vv.begin(), vv.end());
     EXPECT_EQ(d, 6);
@@ -63,7 +53,7 @@ TEST(VertexCirculatorTest, std_distance)
 TEST(VertexCirculatorTest, post_increment)
 {
     auto mesh = vertex_onering();
-    auto v = Vertex(3);
+    auto v = Vertex(3); // center vertex
     auto vv = mesh.vertices(v);
     EXPECT_EQ((*vv++).idx(), 4u);
     EXPECT_EQ((*vv).idx(), 6u);
@@ -72,7 +62,7 @@ TEST(VertexCirculatorTest, post_increment)
 TEST(VertexCirculatorTest, post_decrement)
 {
     auto mesh = vertex_onering();
-    auto v = Vertex(3);
+    auto v = Vertex(3); // center vertex
     auto vv = mesh.vertices(v);
     EXPECT_EQ((*vv--).idx(), 4u);
     EXPECT_EQ((*vv).idx(), 1u);
