@@ -683,7 +683,7 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
                     {
                         p = minimize_squared_areas(v);
                     }
-                    catch (SolverException& e)
+                    catch (SolverException&)
                     {
                         p = weighted_centroid(v);
                     }
@@ -814,7 +814,7 @@ Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
     }
 
     // compute minimizer
-    try 
+    try
     {
         x = inverse(A) * b;
     }
