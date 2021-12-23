@@ -452,28 +452,14 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
 
 size_t SurfaceMesh::valence(Vertex v) const
 {
-    size_t count(0);
-
-    for (auto vv : vertices(v))
-    {
-        PMP_ASSERT(vv.is_valid());
-        ++count;
-    }
-
-    return count;
+    auto vv = vertices(v);
+    return std::distance(vv.begin(), vv.end());
 }
 
 size_t SurfaceMesh::valence(Face f) const
 {
-    size_t count(0);
-
-    for (auto v : vertices(f))
-    {
-        PMP_ASSERT(v.is_valid());
-        ++count;
-    }
-
-    return count;
+    auto vv = vertices(f);
+    return std::distance(vv.begin(), vv.end());
 }
 
 bool SurfaceMesh::is_triangle_mesh() const

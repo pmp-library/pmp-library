@@ -292,15 +292,18 @@ TEST_F(SurfaceMeshTest, poly_mesh)
     EXPECT_FALSE(mesh.is_triangle_mesh() || mesh.is_quad_mesh());
 }
 
-TEST_F(SurfaceMeshTest, valence)
+TEST_F(SurfaceMeshTest, vertex_valence)
 {
     add_triangle();
-    size_t sumValence(0);
-    for (auto v : mesh.vertices())
-    {
-        sumValence += mesh.valence(v);
-    }
-    EXPECT_EQ(sumValence, size_t(6));
+    auto val = mesh.valence(*mesh.vertices_begin());
+    EXPECT_EQ(val, 2u);
+}
+
+TEST_F(SurfaceMeshTest, face_valence)
+{
+    add_triangle();
+    auto val = mesh.valence(*mesh.faces_begin());
+    EXPECT_EQ(val, 3u);
 }
 
 TEST_F(SurfaceMeshTest, collapse)
