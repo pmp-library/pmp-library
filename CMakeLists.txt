@@ -115,8 +115,7 @@ if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT EMSCRIPTEN)
-  set(CMAKE_CXX_FLAGS
-      "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -Wno-unused-parameter")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra")
 endif()
 
 if(WIN32)
