@@ -36,7 +36,7 @@ TEST(VertexIteratorTest, insert)
 {
     auto mesh = SurfaceMesh{};
     auto vertices = std::vector<Vertex>{};
-    mesh.add_vertex(Point{0});
+    mesh.add_vertex(Point(0));
     vertices.insert(vertices.end(), mesh.vertices_begin(), mesh.vertices_end());
     EXPECT_EQ(vertices.size(), 1u);
 }
