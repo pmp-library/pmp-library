@@ -4,6 +4,8 @@
 #include "gtest/gtest.h"
 
 #include "pmp/algorithms/SurfaceHoleFilling.h"
+#include "pmp/algorithms/SurfaceFactory.h"
+
 #include "Helpers.h"
 
 using namespace pmp;
@@ -16,10 +18,10 @@ Halfedge find_boundary(const SurfaceMesh& mesh)
     return Halfedge();
 }
 
-TEST(SurfaceHoleFillingTest, hemisphere)
+TEST(SurfaceHoleFillingTest, open_cone)
 {
     // generate test mesh
-    auto mesh = hemisphere();
+    auto mesh = open_cone();
 
     // find boundary halfedge
     Halfedge h = find_boundary(mesh);

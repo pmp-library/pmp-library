@@ -4,54 +4,33 @@
 #include "gtest/gtest.h"
 
 #include "pmp/algorithms/SurfaceFeatures.h"
+#include "pmp/algorithms/SurfaceFactory.h"
 #include "Helpers.h"
 
 using namespace pmp;
 
-// feature angle
-TEST(SurfaceFeaturesTest, detect_feature_angle)
+TEST(SurfaceFeaturesTest, detect_angle)
 {
-    auto mesh = subdivided_icosahedron();
-
-    SurfaceFeatures sf(mesh);
-    auto nf = sf.detect_angle(25);
-    EXPECT_EQ(nf, 240u);
-
-    auto efeature = mesh.get_edge_property<bool>("e:feature");
-    bool found = false;
-    for (auto e : mesh.edges())
-        if (efeature[e])
-        {
-            found = true;
-            break;
-        }
-    EXPECT_TRUE(found);
-    sf.clear();
-    found = false;
-    for (auto e : mesh.edges())
-        if (efeature[e])
-        {
-            found = true;
-            break;
-        }
-    EXPECT_FALSE(found);
+    auto mesh = SurfaceFactory::hexahedron();
+    auto nf = SurfaceFeatures(mesh).detect_angle(25);
+    EXPECT_EQ(nf, 12u);
 }
 
-// boundary edges
 TEST(SurfaceFeaturesTest, detect_boundary)
 {
     auto mesh = vertex_onering();
-    SurfaceFeatures sf(mesh);
-    auto nb = sf.detect_boundary();
+    auto features = SurfaceFeatures(mesh);
+    auto nb = features.detect_boundary();
     EXPECT_EQ(nb, 6u);
+}
 
-    auto efeature = mesh.get_edge_property<bool>("e:feature");
-    bool found = false;
+TEST(SurfaceFeaturesTest, clear)
+{
+    auto mesh = vertex_onering();
+    auto features = SurfaceFeatures(mesh);
+    features.detect_boundary();
+    features.clear();
+    auto is_feature = mesh.get_edge_property<bool>("e:feature");
     for (auto e : mesh.edges())
-        if (efeature[e])
-        {
-            found = true;
-            break;
-        }
-    EXPECT_TRUE(found);
+        EXPECT_FALSE(is_feature[e]);
 }

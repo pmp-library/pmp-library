@@ -10,7 +10,7 @@ using namespace pmp;
 
 TEST(SurfaceParameterizationTest, parameterization)
 {
-    auto mesh = hemisphere();
+    auto mesh = open_cone();
     SurfaceParameterization param(mesh);
     param.harmonic(false);
     param.harmonic(true);
@@ -20,7 +20,7 @@ TEST(SurfaceParameterizationTest, parameterization)
 
 TEST(SurfaceParameterizationTest, lscm)
 {
-    auto mesh = hemisphere();
+    auto mesh = open_cone();
     SurfaceParameterization param(mesh);
     param.lscm();
     auto tex = mesh.vertex_property<TexCoord>("v:tex");

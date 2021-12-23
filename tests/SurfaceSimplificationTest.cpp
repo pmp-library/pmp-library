@@ -11,21 +11,19 @@ using namespace pmp;
 
 // plain simplification test
 // disabled on macOS due to flakiness of results across OS versions
-#ifndef __APPLE__
 TEST(SurfaceSimplificationTest, simplification)
 {
-    auto mesh = hemisphere();
+    auto mesh = subdivided_icosahedron();
+    SurfaceFeatures(mesh).clear();
     SurfaceSimplification ss(mesh);
     ss.initialize(5,    // aspect ratio
                   0.5,  // edge length
                   10,   // max valence
                   10,   // normal deviation
                   0.1); // Hausdorff
-    ss.simplify(mesh.n_vertices() * 0.1);
-    EXPECT_EQ(mesh.n_vertices(), size_t(188));
-    EXPECT_EQ(mesh.n_faces(), size_t(351));
+    ss.simplify(mesh.n_vertices() * 0.01);
+    EXPECT_EQ(mesh.n_vertices(), size_t(101));
 }
-#endif
 
 // simplify with feature edge preservation enabled
 TEST(SurfaceSimplificationTest, simplification_with_features)
@@ -33,6 +31,6 @@ TEST(SurfaceSimplificationTest, simplification_with_features)
     auto mesh = subdivided_icosahedron();
     SurfaceSimplification ss(mesh);
     ss.initialize(5); // aspect ratio
-    ss.simplify(mesh.n_vertices() * 0.1);
-    EXPECT_EQ(mesh.n_vertices(), size_t(64));
+    ss.simplify(mesh.n_vertices() * 0.01);
+    EXPECT_EQ(mesh.n_vertices(), size_t(12));
 }

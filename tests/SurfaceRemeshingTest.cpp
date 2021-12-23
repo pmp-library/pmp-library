@@ -5,6 +5,9 @@
 
 #include "pmp/algorithms/SurfaceRemeshing.h"
 #include "pmp/algorithms/SurfaceFeatures.h"
+#include "pmp/algorithms/SurfaceFactory.h"
+#include "pmp/algorithms/SurfaceTriangulation.h"
+
 #include "Helpers.h"
 
 using namespace pmp;
@@ -12,65 +15,47 @@ using namespace pmp;
 // adaptive remeshing
 TEST(SurfaceRemeshingTest, adaptive_remeshing_with_features)
 {
-    SurfaceMesh mesh;
-    mesh.read("pmp-data/off/fandisk.off");
-
-    SurfaceFeatures sf(mesh);
-    sf.detect_angle(25);
-
+    auto mesh = SurfaceFactory::cylinder();
+    SurfaceTriangulation(mesh).triangulate();
+    SurfaceFeatures(mesh).detect_angle(25);
     auto bb = mesh.bounds().size();
-    SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb, // min length
-                                              1.0 * bb,   // max length
-                                              0.001 * bb, // approx. error
-                                              1,          // iterations
-                                              false);     // no projection
-    EXPECT_EQ(mesh.n_vertices(), size_t(845));
+    SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
+                                              1.0 * bb,    // max length
+                                              0.001 * bb); // approx. error
+    EXPECT_EQ(mesh.n_vertices(), 6u);
 }
 
 TEST(SurfaceRemeshingTest, adaptive_remeshing_with_boundary)
 {
     // mesh with boundary
-    auto mesh = hemisphere();
+    auto mesh = open_cone();
     auto bb = mesh.bounds().size();
-    SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
-                                              1.0 * bb,    // max length
-                                              0.001 * bb); // approx. error
-    EXPECT_EQ(mesh.n_vertices(), size_t(769));
+    SurfaceRemeshing(mesh).adaptive_remeshing(0.01 * bb,  // min length
+                                              1.0 * bb,   // max length
+                                              0.01 * bb); // approx. error
+    EXPECT_EQ(mesh.n_vertices(), size_t(65));
 }
 
 TEST(SurfaceRemeshingTest, adaptive_remeshing_with_selection)
 {
-    // mesh with boundary
-    auto mesh = hemisphere();
+    auto mesh = SurfaceFactory::icosphere(1);
 
-    // select half of the hemisphere
+    // select half the vertices
     auto selected = mesh.add_vertex_property<bool>("v:selected");
     for (auto v : mesh.vertices())
-        if (mesh.position(v)[0] > 0.0)
+        if (mesh.position(v)[1] > 0)
             selected[v] = true;
 
     auto bb = mesh.bounds().size();
-
-    // adaptive remeshing with large approx error and max length to obtain a
-    // clear difference in selected region
-    SurfaceRemeshing(mesh).adaptive_remeshing(0.001 * bb, // min length
-                                              5.0 * bb,   // max length
+    SurfaceRemeshing(mesh).adaptive_remeshing(0.01 * bb,  // min length
+                                              1.0 * bb,   // max length
                                               0.01 * bb); // approx. error
-    EXPECT_EQ(mesh.n_vertices(), size_t(500));
+    EXPECT_EQ(mesh.n_vertices(), size_t(62));
 }
 
 TEST(SurfaceRemeshingTest, uniform_remeshing)
 {
-    // mesh with boundary
-    auto mesh = hemisphere();
-
-    // compute mean edge length
-    Scalar l(0);
-    for (auto eit : mesh.edges())
-        l += distance(mesh.position(mesh.vertex(eit, 0)),
-                      mesh.position(mesh.vertex(eit, 1)));
-    l /= (Scalar)mesh.n_edges();
-
-    SurfaceRemeshing(mesh).uniform_remeshing(l);
-    EXPECT_EQ(mesh.n_vertices(), size_t(925));
+    auto mesh = open_cone();
+    SurfaceRemeshing(mesh).uniform_remeshing(0.5);
+    EXPECT_EQ(mesh.n_vertices(), size_t(41));
 }

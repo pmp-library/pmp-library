@@ -11,7 +11,6 @@
 
 namespace pmp {
 
-static SurfaceMesh hemisphere_mesh;
 static SurfaceMesh icosahedron_mesh;
 
 SurfaceMesh vertex_onering()
@@ -65,30 +64,6 @@ SurfaceMesh edge_onering()
     return mesh;
 }
 
-SurfaceMesh hemisphere()
-{
-    if (hemisphere_mesh.is_empty())
-    {
-        // use ref for brevity
-        auto& mesh = hemisphere_mesh;
-
-        // generate quad sphere mesh and triangulate it
-        mesh = SurfaceFactory::quad_sphere(3);
-        SurfaceTriangulation tr(mesh);
-        tr.triangulate();
-
-        // delete lower half
-        for (auto v : mesh.vertices())
-            if (mesh.position(v)[1] < -0.01)
-                mesh.delete_vertex(v);
-        mesh.garbage_collection();
-
-        // remesh to get nice but irregular triangulation
-        SurfaceRemeshing(mesh).uniform_remeshing(0.1);
-    }
-    return hemisphere_mesh;
-}
-
 SurfaceMesh subdivided_icosahedron()
 {
     if (icosahedron_mesh.is_empty())
@@ -131,6 +106,19 @@ SurfaceMesh l_shape()
 
     mesh.add_face(vertices);
 
+    return mesh;
+}
+
+SurfaceMesh open_cone()
+{
+    auto mesh = SurfaceFactory::cone(8, 1, 1.5);
+    for (auto f : mesh.faces())
+        if (mesh.valence(f) > 3)
+        {
+            mesh.delete_face(f);
+            mesh.garbage_collection();
+            break;
+        }
     return mesh;
 }
 

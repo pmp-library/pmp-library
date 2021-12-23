@@ -11,7 +11,7 @@ using namespace pmp;
 
 TEST(SurfaceSmoothingTest, implicit_smoothing)
 {
-    auto mesh = hemisphere();
+    auto mesh = open_cone();
     auto area_before = surface_area(mesh);
     SurfaceSmoothing ss(mesh);
     ss.implicit_smoothing(0.01, false, false);
@@ -21,7 +21,7 @@ TEST(SurfaceSmoothingTest, implicit_smoothing)
 
 TEST(SurfaceSmoothingTest, explicit_smoothing)
 {
-    auto mesh = hemisphere();
+    auto mesh = open_cone();
     auto area_before = surface_area(mesh);
     SurfaceSmoothing ss(mesh);
     ss.explicit_smoothing(10, true);
