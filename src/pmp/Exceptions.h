@@ -54,4 +54,4 @@ public:
 
 //! @}
 
-}; // namespace pmp
+} // namespace pmp
