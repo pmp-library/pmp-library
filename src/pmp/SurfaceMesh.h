@@ -267,7 +267,7 @@ public:
         //! post-increment iterator
         VertexIterator operator++(int)
         {
-            VertexIterator tmp = *this;
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -286,7 +286,7 @@ public:
         //! post-decrement iterator
         VertexIterator operator--(int)
         {
-            VertexIterator tmp = *this;
+            auto tmp = *this;
             --(*this);
             return tmp;
         }
@@ -347,7 +347,7 @@ public:
         //! post-increment iterator
         HalfedgeIterator operator++(int)
         {
-            HalfedgeIterator tmp = *this;
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -366,7 +366,7 @@ public:
         //! post-decrement iterator
         HalfedgeIterator operator--(int)
         {
-            HalfedgeIterator tmp = *this;
+            auto tmp = *this;
             --(*this);
             return tmp;
         }
@@ -426,7 +426,7 @@ public:
         //! post-increment iterator
         EdgeIterator operator++(int)
         {
-            EdgeIterator tmp = *this;
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -445,7 +445,7 @@ public:
         //! post-decrement iterator
         EdgeIterator operator--(int)
         {
-            EdgeIterator tmp = *this;
+            auto tmp = *this;
             --(*this);
             return tmp;
         }
@@ -505,7 +505,7 @@ public:
         //! post-increment iterator
         FaceIterator operator++(int)
         {
-            FaceIterator tmp = *this;
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -524,7 +524,7 @@ public:
         //! post-decrement iterator
         FaceIterator operator--(int)
         {
-            FaceIterator tmp = *this;
+            auto tmp = *this;
             --(*this);
             return tmp;
         }
