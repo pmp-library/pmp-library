@@ -294,7 +294,7 @@ void Window::add_help_item(std::string key, std::string description, int pos)
 {
     if (pos == -1)
     {
-        help_items_.push_back(std::make_pair(key, description));
+        help_items_.emplace_back(std::make_pair(key, description));
     }
     else
     {
@@ -317,7 +317,7 @@ void Window::show_help()
     ImGui::OpenPopup("Key Bindings");
 
     ImGui::SetNextWindowFocus();
-    if (ImGui::BeginPopupModal("Key Bindings", NULL,
+    if (ImGui::BeginPopupModal("Key Bindings", nullptr,
                                ImGuiWindowFlags_AlwaysAutoResize))
     {
         ImGui::Columns(2, "help items");
@@ -676,7 +676,7 @@ void Window::screenshot()
     std::cout << "Save screenshot to " << filename << std::endl;
 
     // allocate buffer
-    unsigned char* data = new unsigned char[3 * width_ * height_];
+    auto data = new unsigned char[3 * width_ * height_];
 
     // read framebuffer
     glfwMakeContextCurrent(window_);

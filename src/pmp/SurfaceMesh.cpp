@@ -214,7 +214,7 @@ Halfedge SurfaceMesh::find_halfedge(Vertex start, Vertex end) const
         } while (h != hh);
     }
 
-    return Halfedge();
+    return {};
 }
 
 Edge SurfaceMesh::find_edge(Vertex a, Vertex b) const
@@ -1197,7 +1197,7 @@ void SurfaceMesh::garbage_collection()
         i0 = 0;
         i1 = nV - 1;
 
-        while (1)
+        while (true)
         {
             // find first deleted and last un-deleted
             while (!vdeleted_[Vertex(i0)] && i0 < i1)
@@ -1221,7 +1221,7 @@ void SurfaceMesh::garbage_collection()
         i0 = 0;
         i1 = nE - 1;
 
-        while (1)
+        while (true)
         {
             // find first deleted and last un-deleted
             while (!edeleted_[Edge(i0)] && i0 < i1)
@@ -1248,7 +1248,7 @@ void SurfaceMesh::garbage_collection()
         i0 = 0;
         i1 = nF - 1;
 
-        while (1)
+        while (true)
         {
             // find 1st deleted and last un-deleted
             while (!fdeleted_[Face(i0)] && i0 < i1)

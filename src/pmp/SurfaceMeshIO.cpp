@@ -505,9 +505,9 @@ void SurfaceMeshIO::write_off_binary(const SurfaceMesh& mesh)
 
     fprintf(out, "OFF BINARY\n");
     fclose(out);
-    IndexType nv = (IndexType)mesh.n_vertices();
-    IndexType nf = (IndexType)mesh.n_faces();
-    IndexType ne = 0;
+    auto nv = (IndexType)mesh.n_vertices();
+    auto nf = (IndexType)mesh.n_faces();
+    auto ne = IndexType{};
 
     out = fopen(filename_.c_str(), "ab");
     tfwrite(out, nv);
@@ -898,7 +898,7 @@ static int faceCallback(p_ply_argument argument)
     if (value_index == 0)
         vertices[0].clear();
 
-    pmp::IndexType idx = (pmp::IndexType)ply_get_argument_value(argument);
+    auto idx = (IndexType)ply_get_argument_value(argument);
     vertices[0].push_back(pmp::Vertex(idx));
 
     if (value_index == length - 1)

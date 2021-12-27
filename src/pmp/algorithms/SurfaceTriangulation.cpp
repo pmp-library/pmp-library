@@ -36,8 +36,8 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
             throw InvalidInputException(what);
         }
 
-        halfedges_.push_back(h);
-        vertices_.push_back(mesh_.to_vertex(h));
+        halfedges_.emplace_back(h);
+        vertices_.emplace_back(mesh_.to_vertex(h));
     } while ((h = mesh_.next_halfedge(h)) != h0);
 
     // do we have at least four vertices?
@@ -107,7 +107,7 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
     // now add triangles to mesh
     std::vector<ivec2> todo;
     todo.reserve(n);
-    todo.push_back(ivec2(0, n - 1));
+    todo.emplace_back(ivec2(0, n - 1));
     while (!todo.empty())
     {
         ivec2 tri = todo.back();
@@ -121,8 +121,8 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
         insert_edge(start, split);
         insert_edge(split, end);
 
-        todo.push_back(ivec2(start, split));
-        todo.push_back(ivec2(split, end));
+        todo.emplace_back(ivec2(start, split));
+        todo.emplace_back(ivec2(split, end));
     }
 
     // clean up

@@ -104,7 +104,7 @@ void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
             throw InvalidInputException(what);
         }
 
-        hole_.push_back(h);
+        hole_.emplace_back(h);
     } while ((h = mesh_.next_halfedge(h)) != _h);
     const int n = hole_.size();
 
@@ -153,7 +153,7 @@ void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
     // now add triangles to mesh
     std::vector<ivec2> todo;
     todo.reserve(n);
-    todo.push_back(ivec2(0, n - 1));
+    todo.emplace_back(ivec2(0, n - 1));
     while (!todo.empty())
     {
         ivec2 tri = todo.back();
@@ -167,8 +167,8 @@ void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
         mesh_.add_triangle(hole_vertex(start), hole_vertex(split),
                            hole_vertex(end));
 
-        todo.push_back(ivec2(start, split));
-        todo.push_back(ivec2(split, end));
+        todo.emplace_back(ivec2(start, split));
+        todo.emplace_back(ivec2(split, end));
     }
 
     // clean up
@@ -189,7 +189,7 @@ SurfaceHoleFilling::Weight SurfaceHoleFilling::compute_weight(int _i, int _j,
     if (is_interior_edge(a, b) || is_interior_edge(b, c) ||
         is_interior_edge(c, a))
     {
-        return Weight();
+        return {};
     }
 
     // compute area
@@ -214,7 +214,7 @@ SurfaceHoleFilling::Weight SurfaceHoleFilling::compute_weight(int _i, int _j,
         angle = std::max(angle, compute_angle(n, compute_normal(c, d, a)));
     }
 
-    return Weight(angle, area);
+    return {angle, area};
 }
 
 void SurfaceHoleFilling::refine()
@@ -392,7 +392,7 @@ void SurfaceHoleFilling::relaxation()
         if (!vlocked_[v])
         {
             idx[v] = vertices.size();
-            vertices.push_back(v);
+            vertices.emplace_back(v);
         }
     }
     const int n = vertices.size();

@@ -764,7 +764,7 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
     // triangle? nothing to do
     if (n == 3)
     {
-        triangles.push_back(ivec3(0, 1, 2));
+        triangles.emplace_back(ivec3(0, 1, 2));
         return;
     }
 
@@ -776,13 +776,13 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
             area(points[0], points[1], points[3]) +
                 area(points[1], points[2], points[3]))
         {
-            triangles.push_back(ivec3(0, 1, 2));
-            triangles.push_back(ivec3(0, 2, 3));
+            triangles.emplace_back(ivec3(0, 1, 2));
+            triangles.emplace_back(ivec3(0, 2, 3));
         }
         else
         {
-            triangles.push_back(ivec3(0, 1, 3));
-            triangles.push_back(ivec3(1, 2, 3));
+            triangles.emplace_back(ivec3(0, 1, 3));
+            triangles.emplace_back(ivec3(1, 2, 3));
         }
         return;
     }
@@ -830,7 +830,7 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
     // build triangles from triangulation table
     std::vector<ivec2> todo;
     todo.reserve(n);
-    todo.push_back(ivec2(0, n - 1));
+    todo.emplace_back(ivec2(0, n - 1));
     while (!todo.empty())
     {
         ivec2 tri = todo.back();
@@ -841,10 +841,10 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
             continue;
         int split = triangulation(start, end).split;
 
-        triangles.push_back(ivec3(start, split, end));
+        triangles.emplace_back(ivec3(start, split, end));
 
-        todo.push_back(ivec2(start, split));
-        todo.push_back(ivec2(split, end));
+        todo.emplace_back(ivec2(start, split));
+        todo.emplace_back(ivec2(split, end));
     }
 }
 
