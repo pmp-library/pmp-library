@@ -27,7 +27,7 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: cmake $GITHUB_WORKSPACE
+        run: cmake -DPMP_BUILD_VIS=OFF $GITHUB_WORKSPACE
 
       - name: Build docs
         working-directory: ${{runner.workspace}}/build
