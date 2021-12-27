@@ -10,8 +10,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          submodules: true
 
       - name: Modify apt sources
         if: runner.os == 'Linux'
