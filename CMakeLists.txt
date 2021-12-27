@@ -164,6 +164,7 @@ if(PMP_INDEX_TYPE EQUAL 64)
 endif()
 
 # setup clang-tidy if program found
+option(WITH_CLANG_TIDY "Run clang-tidy checks" OFF)
 include(clang-tidy)
 
 # which directories to process

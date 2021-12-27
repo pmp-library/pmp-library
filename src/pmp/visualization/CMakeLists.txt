@@ -25,6 +25,11 @@ else()
       install(TARGETS pmp_vis DESTINATION lib)
       install(FILES ${HDRS} DESTINATION include/pmp/visualization)
     endif()
+
+    if(WITH_CLANG_TIDY)
+      set_target_properties(pmp_vis PROPERTIES CXX_CLANG_TIDY
+                                               "${CLANG_TIDY_COMMAND}")
+    endif()
   endif()
 
 endif()

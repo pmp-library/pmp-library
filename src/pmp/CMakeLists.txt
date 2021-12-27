@@ -15,7 +15,7 @@ endif()
 
 set_target_properties(pmp PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
 
-if(CLANG_TIDY_EXE AND FALSE) # disabled by default
+if(WITH_CLANG_TIDY)
   set_target_properties(pmp PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
 endif()
 
