@@ -184,13 +184,13 @@ struct Triple
     unsigned int degree_;
 };
 
-void SurfaceFairing::setup_matrix_row(const Vertex v,
+void SurfaceFairing::setup_matrix_row(const Vertex vertex,
                                       VertexProperty<double> vweight,
                                       EdgeProperty<double> eweight,
                                       unsigned int laplace_degree,
                                       std::map<Vertex, double>& row)
 {
-    Triple t(v, 1.0, laplace_degree);
+    Triple t(vertex, 1.0, laplace_degree);
 
     // init
     static std::vector<Triple> todo;

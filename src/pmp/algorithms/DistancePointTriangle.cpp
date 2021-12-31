@@ -41,27 +41,27 @@ Scalar dist_point_triangle(const Point& p, const Point& v0, const Point& v1,
     // Check if the triangle is degenerated -> measure dist to line segments
     if (fabs(d) < std::numeric_limits<Scalar>::min())
     {
-        Point q, qq;
-        Scalar d, dd(std::numeric_limits<Scalar>::max());
+        Point query;
+        Point nearest;
 
-        dd = dist_point_line_segment(p, v0, v1, qq);
+        auto distance = dist_point_line_segment(p, v0, v1, nearest);
 
-        d = dist_point_line_segment(p, v1, v2, q);
-        if (d < dd)
+        auto other = dist_point_line_segment(p, v1, v2, query);
+        if (other < distance)
         {
-            dd = d;
-            qq = q;
+            distance = other;
+            nearest = query;
         }
 
-        d = dist_point_line_segment(p, v2, v0, q);
-        if (d < dd)
+        other = dist_point_line_segment(p, v2, v0, query);
+        if (other < distance)
         {
-            dd = d;
-            qq = q;
+            distance = other;
+            nearest = query;
         }
 
-        nearest_point = qq;
-        return dd;
+        nearest_point = nearest;
+        return distance;
     }
 
     Scalar inv_d = 1.0 / d;

@@ -137,12 +137,8 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
     if (!initialized_)
         initialize();
 
-    unsigned int nv(mesh_.n_vertices());
-
     std::vector<Vertex> one_ring;
     std::vector<Vertex>::iterator or_it, or_end;
-    Halfedge h;
-    Vertex v;
 
     // add properties for priority queue
     vpriority_ = mesh_.add_vertex_property<float>("v:prio");
@@ -159,12 +155,13 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
         enqueue_vertex(v);
     }
 
+    auto nv = mesh_.n_vertices();
     while (nv > n_vertices && !queue_->empty())
     {
         // get 1st element
-        v = queue_->front();
+        auto v = queue_->front();
         queue_->pop_front();
-        h = vtarget_[v];
+        auto h = vtarget_[v];
         CollapseData cd(mesh_, h);
 
         // check this (again)

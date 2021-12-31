@@ -32,9 +32,10 @@ Normal SurfaceNormals::compute_face_normal(const SurfaceMesh& mesh, Face f)
         // The point c cancels out, leading to
         //   sum_i (p_{i} x p_{i+1}
         // This vector then has to be normalized.
-        for (auto h : mesh.halfedges(f))
+        for (auto fh : mesh.halfedges(f))
         {
-            n += cross(vpoint[mesh.from_vertex(h)], vpoint[mesh.to_vertex(h)]);
+            n +=
+                cross(vpoint[mesh.from_vertex(fh)], vpoint[mesh.to_vertex(fh)]);
         }
 
         return normalize(n);

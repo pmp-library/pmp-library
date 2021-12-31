@@ -522,8 +522,8 @@ void SurfaceMeshIO::write_off_binary(const SurfaceMesh& mesh)
 
     for (auto f : mesh.faces())
     {
-        IndexType nv = mesh.valence(f);
-        tfwrite(out, nv);
+        IndexType valence = mesh.valence(f);
+        tfwrite(out, valence);
         for (auto fv : mesh.vertices(f))
             tfwrite(out, (IndexType)fv.idx());
     }

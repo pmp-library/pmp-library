@@ -151,15 +151,15 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     auto idx = mesh_.add_vertex_property<int>("v:idx", -1);
 
     // collect free (non-boundary) vertices in array free_vertices[]
-    // assign indices such that idx[ free_vertices[i] ] == i
-    unsigned i = 0;
+    // assign indices such that idx[ free_vertices[j] ] == j
+    unsigned j = 0;
     std::vector<Vertex> free_vertices;
     free_vertices.reserve(mesh_.n_vertices());
     for (auto v : mesh_.vertices())
     {
         if (!mesh_.is_boundary(v))
         {
-            idx[v] = i++;
+            idx[v] = j++;
             free_vertices.push_back(v);
         }
     }
@@ -173,23 +173,19 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
     std::vector<Triplet> triplets;
 
     // setup matrix A and rhs B
-    dvec3 b;
-    double ww;
-    Vertex v, vv;
-    Edge e;
     for (unsigned int i = 0; i < n; ++i)
     {
-        v = free_vertices[i];
+        auto v = free_vertices[i];
 
         // rhs row
-        b = static_cast<dvec3>(points[v]) / vweight[v];
+        auto b = static_cast<dvec3>(points[v]) / vweight[v];
 
         // lhs row
-        ww = 0.0;
+        auto ww = 0.0;
         for (auto h : mesh_.halfedges(v))
         {
-            vv = mesh_.to_vertex(h);
-            e = mesh_.edge(h);
+            auto vv = mesh_.to_vertex(h);
+            auto e = mesh_.edge(h);
             ww += eweight[e];
 
             // fixed boundary vertex -> right hand side

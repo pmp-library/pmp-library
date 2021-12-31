@@ -292,15 +292,15 @@ void SurfaceParameterization::lscm()
     }
 
     // collect free (non-boundary) vertices in array free_vertices[]
-    // assign indices such that idx[ free_vertices[i] ] == i
-    unsigned i = 0;
+    // assign indices such that idx[ free_vertices[j] ] == j
+    unsigned int j = 0;
     std::vector<Vertex> free_vertices;
     free_vertices.reserve(mesh_.n_vertices());
     for (auto v : mesh_.vertices())
     {
         if (!locked[v])
         {
-            idx[v] = i++;
+            idx[v] = j++;
             free_vertices.push_back(v);
         }
     }
@@ -401,13 +401,13 @@ void SurfaceParameterization::lscm()
     else
     {
         // copy solution
-        for (i = 0; i < n; ++i)
+        for (unsigned int i = 0; i < n; ++i)
         {
             tex[free_vertices[i]] = TexCoord(x[i], x[i + n]);
         }
     }
 
-    // scale tex coordiantes to unit square
+    // scale tex coordinates to unit square
     TexCoord bbmin(1, 1), bbmax(0, 0);
     for (auto v : mesh_.vertices())
     {
