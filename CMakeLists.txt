@@ -107,7 +107,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # set default compiler flags for both gcc and clang
-set(COMMON_CXX_FLAGS "-pedantic -Wall -Wextra -Wshadow")
+set(COMMON_CXX_FLAGS "-pedantic -Wall -Wextra -Wshadow -Werror")
 
 if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS
