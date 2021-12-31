@@ -106,17 +106,19 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# set default compiler flags
+# set default compiler flags for both gcc and clang
+set(COMMON_CXX_FLAGS "-pedantic -Wall -Wextra -Wshadow")
+
 if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS
-      "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra -Wno-deprecated-copy")
+      "${CMAKE_CXX_FLAGS} ${COMMON_CXX_FLAGS} -Wno-deprecated-copy")
   if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "7.0.0")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-int-in-bool-context")
   endif()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT EMSCRIPTEN)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -Wextra")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_CXX_FLAGS}")
 endif()
 
 if(WIN32)
