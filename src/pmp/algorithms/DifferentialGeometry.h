@@ -55,7 +55,8 @@ Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2);
 //! compute area of triangle f
 Scalar triangle_area(const SurfaceMesh& mesh, Face f);
 
-//! surface area of the mesh (assumes triangular faces)
+//! Compute the surface area of \p mesh
+//! \pre Input \p mesh needs to be a pure triangle mesh.
 Scalar surface_area(const SurfaceMesh& mesh);
 
 //! \brief Compute the volume of a mesh

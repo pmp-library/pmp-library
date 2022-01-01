@@ -28,6 +28,10 @@ Scalar triangle_area(const SurfaceMesh& mesh, Face f)
 
 Scalar surface_area(const SurfaceMesh& mesh)
 {
+    if (!mesh.is_triangle_mesh())
+    {
+        throw InvalidInputException("Input is not a pure triangle mesh!");
+    }
     Scalar area(0);
     for (auto f : mesh.faces())
     {
