@@ -138,7 +138,6 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
         initialize();
 
     std::vector<Vertex> one_ring;
-    std::vector<Vertex>::iterator or_it, or_end;
 
     // add properties for priority queue
     vpriority_ = mesh_.add_vertex_property<float>("v:prio");
@@ -183,9 +182,8 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
         postprocess_collapse(cd);
 
         // update queue
-        for (or_it = one_ring.begin(), or_end = one_ring.end(); or_it != or_end;
-             ++or_it)
-            enqueue_vertex(*or_it);
+        for (auto vv : one_ring)
+            enqueue_vertex(vv);
     }
 
     // clean up
@@ -277,9 +275,9 @@ bool SurfaceSimplification::is_collapse_legal(const CollapseData& cd)
     // check maximal valence
     if (max_valence_ > 0)
     {
-        unsigned int val0 = mesh_.valence(cd.v0);
-        unsigned int val1 = mesh_.valence(cd.v1);
-        unsigned int val = val0 + val1 - 1;
+        auto val0 = mesh_.valence(cd.v0);
+        auto val1 = mesh_.valence(cd.v1);
+        auto val = val0 + val1 - 1;
         if (cd.fl.is_valid())
             --val;
         if (cd.fr.is_valid())
@@ -527,7 +525,7 @@ Scalar SurfaceSimplification::aspect_ratio(Face f) const
     // aspect ratio = length / height
     //              = length * length / area
 
-    SurfaceMesh::VertexAroundFaceCirculator fvit = mesh_.vertices(f);
+    auto fvit = mesh_.vertices(f);
 
     const Point p0 = vpoint_[*fvit];
     const Point p1 = vpoint_[*(++fvit)];
@@ -552,7 +550,7 @@ Scalar SurfaceSimplification::aspect_ratio(Face f) const
 
 Scalar SurfaceSimplification::distance(Face f, const Point& p) const
 {
-    SurfaceMesh::VertexAroundFaceCirculator fvit = mesh_.vertices(f);
+    auto fvit = mesh_.vertices(f);
 
     const Point p0 = vpoint_[*fvit];
     const Point p1 = vpoint_[*(++fvit)];
