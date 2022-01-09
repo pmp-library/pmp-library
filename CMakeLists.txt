@@ -125,6 +125,9 @@ if(WIN32)
   set(CMAKE_CXX_FLAGS
       "${CMAKE_CXX_FLAGS} -D_USE_MATH_DEFINES -DNOMINMAX -D_CRT_SECURE_NO_WARNINGS"
   )
+endif()
+
+if(MSVC)
   add_compile_options(/wd4267) # conversion from size_t
   add_compile_options(/wd4244) # conversion from double to float
   add_compile_options(/wd4305) # truncation from double to float
