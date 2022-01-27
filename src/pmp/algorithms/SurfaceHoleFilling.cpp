@@ -153,7 +153,7 @@ void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
     // now add triangles to mesh
     std::vector<ivec2> todo;
     todo.reserve(n);
-    todo.emplace_back(ivec2(0, n - 1));
+    todo.emplace_back(0, n - 1);
     while (!todo.empty())
     {
         ivec2 tri = todo.back();
@@ -167,8 +167,8 @@ void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
         mesh_.add_triangle(hole_vertex(start), hole_vertex(split),
                            hole_vertex(end));
 
-        todo.emplace_back(ivec2(start, split));
-        todo.emplace_back(ivec2(split, end));
+        todo.emplace_back(start, split);
+        todo.emplace_back(split, end);
     }
 
     // clean up

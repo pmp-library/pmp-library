@@ -107,7 +107,7 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
     // now add triangles to mesh
     std::vector<ivec2> todo;
     todo.reserve(n);
-    todo.emplace_back(ivec2(0, n - 1));
+    todo.emplace_back(0, n - 1);
     while (!todo.empty())
     {
         ivec2 tri = todo.back();
@@ -121,8 +121,8 @@ void SurfaceTriangulation::triangulate(Face f, Objective o)
         insert_edge(start, split);
         insert_edge(split, end);
 
-        todo.emplace_back(ivec2(start, split));
-        todo.emplace_back(ivec2(split, end));
+        todo.emplace_back(start, split);
+        todo.emplace_back(split, end);
     }
 
     // clean up
