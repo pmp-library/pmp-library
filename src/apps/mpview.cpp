@@ -3,7 +3,7 @@
 
 #include "MeshProcessingViewer.h"
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     MeshProcessingViewer window("MeshProcessingViewer", 800, 600);
 
