@@ -3,14 +3,16 @@ name: build
 on:
   push:
     paths-ignore:
-    - 'docs/**'
-    - '.github/workflows/docs.yml'
-    - '/*.md'
+      - "docs/**"
+      - ".github/workflows/docs.yml"
+      - "/*.md"
   pull_request:
     paths-ignore:
-    - 'docs/**'
-    - '.github/workflows/docs.yml'
-    - '/*.md'
+      - "docs/**"
+      - ".github/workflows/docs.yml"
+      - "/*.md"
+  schedule:
+    - cron: "0 2 * * *" # run at 2 A.M.
 
 env:
   BUILD_TYPE: Release
@@ -23,34 +25,34 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: true
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
 
-    - name: Modify apt sources
-      if: runner.os == 'Linux'
-      run: sudo sed -i 's/azure\.//' /etc/apt/sources.list && sudo apt-get update
+      - name: Modify apt sources
+        if: runner.os == 'Linux'
+        run: sudo sed -i 's/azure\.//' /etc/apt/sources.list && sudo apt-get update
 
-    - name: Install dependencies
-      if: runner.os == 'Linux'
-      run: sudo apt-get install -o Acquire::Retries=3 xorg-dev libglfw3-dev libglu1-mesa-dev
+      - name: Install dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -o Acquire::Retries=3 xorg-dev libglfw3-dev libglu1-mesa-dev
 
-    - name: Create build directory
-      run: cmake -E make_directory ${{runner.workspace}}/build
+      - name: Create build directory
+        run: cmake -E make_directory ${{runner.workspace}}/build
 
-    - name: Configure CMake
-      shell: bash
-      working-directory: ${{runner.workspace}}/build
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
-    - name: Build
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: cmake --build . --config $BUILD_TYPE --parallel
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: cmake --build . --config $BUILD_TYPE --parallel
 
-    - name: Test
-      working-directory: ${{runner.workspace}}/build
-      shell: bash
-      run: ctest -C $BUILD_TYPE
-      env:
-        CTEST_OUTPUT_ON_FAILURE: 1
+      - name: Test
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: ctest -C $BUILD_TYPE
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1
