@@ -11,7 +11,6 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 ### Added
 
 - Add quad/tri subdivision, thanks to Hendrik Meyer.
-- Add support to read non-manifold meshes by duplicating vertices
 - Add SurfaceFactory class to generate basic shapes. Thanks to
   [u/lycium](https://www.reddit.com/user/lycium/) on Reddit for suggesting a
   simplification of the `icosahedron()` function.
