@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
@@ -28,12 +28,6 @@ public:
     //! \brief Perform one step of quad-tri subdivision.
     //! \details See \cite stam_2003_subdiv for details.
     void quad_tri();
-
-    //! Perform one step of sqrt3 subdivision.
-    //! See \cite kobbelt_2000_sqrt for details.
-    //! \pre Requires a pure triangle mesh as input.
-    //! \throw InvalidInputException in case the input violates the precondition.
-    void sqrt3();
 
 private:
     SurfaceMesh& mesh_;

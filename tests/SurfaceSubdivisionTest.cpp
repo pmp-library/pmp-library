@@ -1,4 +1,4 @@
-// Copyright 2017-2021 the Polygon Mesh Processing Library developers.
+// Copyright 2017-2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "gtest/gtest.h"
@@ -45,14 +45,6 @@ TEST(SurfaceSubdivisionTest, catmull_clark_with_features)
     SurfaceFeatures(mesh).detect_angle(25);
     SurfaceSubdivision(mesh).catmull_clark();
     EXPECT_EQ(mesh.n_faces(), size_t(24));
-}
-
-// plain sqrt3 subdivision
-TEST(SurfaceSubdivisionTest, sqrt3_subdivision)
-{
-    auto mesh = SurfaceFactory::icosahedron();
-    SurfaceSubdivision(mesh).sqrt3();
-    EXPECT_EQ(mesh.n_faces(), size_t(60));
 }
 
 TEST(SurfaceSubdivisionTest, quad_tri_on_quads)

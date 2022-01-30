@@ -1,4 +1,4 @@
-// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "MeshProcessingViewer.h"
@@ -293,17 +293,9 @@ void MeshProcessingViewer::process_imgui()
             update_mesh();
         }
 
-        if (ImGui::Button("Sqrt(3) Subdivision"))
+        if (ImGui::Button("Quad-Tri Subdivision"))
         {
-            try
-            {
-                SurfaceSubdivision(mesh_).sqrt3();
-            }
-            catch (const InvalidInputException& e)
-            {
-                std::cerr << e.what() << std::endl;
-                return;
-            }
+            SurfaceSubdivision(mesh_).quad_tri();
             update_mesh();
         }
 

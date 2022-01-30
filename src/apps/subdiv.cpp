@@ -1,4 +1,4 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
@@ -34,19 +34,6 @@ void Viewer::process_imgui()
 
     if (ImGui::CollapsingHeader("Subdivision", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        //static int featureAngle = 70;
-        //ImGui::PushItemWidth(80);
-        //ImGui::SliderInt("", &featureAngle, 1, 180);
-        //ImGui::PopItemWidth();
-        //ImGui::SameLine();
-        //if (ImGui::Button("Detect Features"))
-        //{
-        //SurfaceFeatures sf(mesh_);
-        //sf.clear();
-        //sf.detect_angle(featureAngle);
-        //update_mesh();
-        //}
-
         if (ImGui::Button("Triangulate Mesh"))
         {
             SurfaceTriangulation tesselator(mesh_);
@@ -68,17 +55,9 @@ void Viewer::process_imgui()
             update_mesh();
         }
 
-        if (ImGui::Button("Sqrt(3) Subdivision"))
+        if (ImGui::Button("Quad-Tri Subdivision"))
         {
-            try
-            {
-                SurfaceSubdivision(mesh_).sqrt3();
-            }
-            catch (const InvalidInputException& e)
-            {
-                std::cerr << e.what() << std::endl;
-                return;
-            }
+            SurfaceSubdivision(mesh_).quad_tri();
             update_mesh();
         }
 
