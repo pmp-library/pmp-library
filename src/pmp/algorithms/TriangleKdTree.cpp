@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/TriangleKdTree.h"
@@ -16,21 +16,20 @@ TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces,
     // init
     root_ = new Node();
     root_->faces = new Triangles();
-    VertexProperty<Point> points = mesh.get_vertex_property<Point>("v:point");
+    auto points = mesh.get_vertex_property<Point>("v:point");
 
     // collect triangles
     Triangle tri;
     root_->faces->reserve(mesh.n_faces());
-    for (SurfaceMesh::FaceIterator fit = mesh.faces_begin();
-         fit != mesh.faces_end(); ++fit)
+    for (auto f : mesh.faces())
     {
-        SurfaceMesh::VertexAroundFaceCirculator vfit = mesh.vertices(*fit);
-        tri.x[0] = points[*vfit];
-        ++vfit;
-        tri.x[1] = points[*vfit];
-        ++vfit;
-        tri.x[2] = points[*vfit];
-        tri.f = *fit;
+        auto v = mesh.vertices(f);
+        tri.x[0] = points[*v];
+        ++v;
+        tri.x[1] = points[*v];
+        ++v;
+        tri.x[2] = points[*v];
+        tri.f = f;
         root_->faces->push_back(tri);
     }
 
@@ -45,16 +44,13 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
     if ((depth == 0) || (node->faces->size() <= max_faces))
         return depth;
 
-    std::vector<Triangle>::const_iterator fit, fend = node->faces->end();
-    unsigned int i;
-
     // compute bounding box
     BoundingBox bbox;
-    for (fit = node->faces->begin(); fit != fend; ++fit)
+    for (auto f : *node->faces)
     {
-        for (i = 0; i < 3; ++i)
+        for (int i = 0; i < 3; ++i)
         {
-            bbox += fit->x[i];
+            bbox += f.x[i];
         }
     }
 
@@ -79,32 +75,31 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
     right->faces->reserve(node->faces->size() / 2);
 
     // partition for left and right child
-    for (fit = node->faces->begin(); fit != fend; ++fit)
+    for (auto f : *node->faces)
     {
         bool l = false, r = false;
 
-        const Triangle& t = *fit;
-        if (t.x[0][axis] <= split)
+        if (f.x[0][axis] <= split)
             l = true;
         else
             r = true;
-        if (t.x[1][axis] <= split)
+        if (f.x[1][axis] <= split)
             l = true;
         else
             r = true;
-        if (t.x[2][axis] <= split)
+        if (f.x[2][axis] <= split)
             l = true;
         else
             r = true;
 
         if (l)
         {
-            left->faces->push_back(t);
+            left->faces->push_back(f);
         }
 
         if (r)
         {
-            right->faces->push_back(t);
+            right->faces->push_back(f);
         }
     }
 
@@ -159,18 +154,15 @@ void TriangleKdTree::nearest_recurse(Node* node, const Point& point,
     // terminal node?
     if (!node->left_child)
     {
-        Scalar d;
-        Point n;
-
-        auto fit = node->faces->begin(), fend = node->faces->end();
-        for (; fit != fend; ++fit)
+        for (auto f : *node->faces)
         {
-            d = dist_point_triangle(point, fit->x[0], fit->x[1], fit->x[2], n);
+            Point n;
+            auto d = dist_point_triangle(point, f.x[0], f.x[1], f.x[2], n);
             ++data.tests;
             if (d < data.dist)
             {
                 data.dist = d;
-                data.face = fit->f;
+                data.face = f.f;
                 data.nearest = n;
             }
         }
