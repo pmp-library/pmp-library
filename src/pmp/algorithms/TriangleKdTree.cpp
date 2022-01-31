@@ -67,19 +67,8 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
     if (bb[2] > length)
         length = bb[(axis = 2)];
 
-#if 1
     // split in the middle
     Scalar split = bbox.center()[axis];
-#else
-    // find split position as median
-    std::vector<Scalar> v;
-    v.reserve(node->faces->size() * 3);
-    for (fit = node->faces->begin(); fit != fend; ++fit)
-        for (i = 0; i < 3; ++i)
-            v.push_back(fit->x[i][axis]]);
-    std::sort(v.begin(), v.end());
-    split = v[v.size() / 2];
-#endif
 
     // create children
     auto* left = new Node();
