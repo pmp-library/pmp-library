@@ -21,7 +21,7 @@ TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces,
     // collect triangles
     Triangle tri;
     root_->faces->reserve(mesh.n_faces());
-    for (auto f : mesh.faces())
+    for (const auto& f : mesh.faces())
     {
         auto v = mesh.vertices(f);
         tri.x[0] = points[*v];
@@ -46,11 +46,11 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
 
     // compute bounding box
     BoundingBox bbox;
-    for (auto f : *node->faces)
+    for (const auto& f : *node->faces)
     {
-        for (int i = 0; i < 3; ++i)
+        for (const auto& p : f.x)
         {
-            bbox += f.x[i];
+            bbox += p;
         }
     }
 
@@ -75,7 +75,7 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
     right->faces->reserve(node->faces->size() / 2);
 
     // partition for left and right child
-    for (auto f : *node->faces)
+    for (const auto& f : *node->faces)
     {
         bool l = false, r = false;
 
@@ -154,7 +154,7 @@ void TriangleKdTree::nearest_recurse(Node* node, const Point& point,
     // terminal node?
     if (!node->left_child)
     {
-        for (auto f : *node->faces)
+        for (const auto& f : *node->faces)
         {
             Point n;
             auto d = dist_point_triangle(point, f.x[0], f.x[1], f.x[2], n);
