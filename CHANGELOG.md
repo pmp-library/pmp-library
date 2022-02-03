@@ -26,6 +26,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Bump C++ standard to C++14
 - TriangleKdTree: no longer record number of tests, remove NearestNeighbor::test member
 - Remove SurfaceSubdivision::sqrt3()
 - Remove PMP_SHOW macro

@@ -7,7 +7,7 @@ pmp-library in detail.
 
 The pmp-library uses [CMake](http://www.cmake.org) as its build configuration
 system. Version 3.16.3 or greater is required. The pmp-library requires a
-C++11-compliant compiler. We continuously build and test the pmp-library
+C++14-compliant compiler. We continuously build and test the pmp-library
 with the following compilers and operating systems:
 
 | Operating System | Compiler           |
