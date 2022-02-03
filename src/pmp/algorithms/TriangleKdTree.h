@@ -27,7 +27,6 @@ public:
         Scalar dist;
         Face face;
         Point nearest;
-        int tests;
     };
 
     //! Return handle of the nearest neighbor

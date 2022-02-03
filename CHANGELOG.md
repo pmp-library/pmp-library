@@ -26,6 +26,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- TriangleKdTree: no longer record number of tests, remove NearestNeighbor::test member
 - Remove SurfaceSubdivision::sqrt3()
 - Remove PMP_SHOW macro
 - Remove pmp::Version class, major/minor/patch still defined in Version.h

@@ -141,7 +141,6 @@ TriangleKdTree::NearestNeighbor TriangleKdTree::nearest(const Point& p) const
 {
     NearestNeighbor data;
     data.dist = std::numeric_limits<Scalar>::max();
-    data.tests = 0;
     nearest_recurse(root_, p, data);
     return data;
 }
@@ -156,7 +155,6 @@ void TriangleKdTree::nearest_recurse(Node* node, const Point& point,
         {
             Point n;
             auto d = dist_point_triangle(point, f.x[0], f.x[1], f.x[2], n);
-            ++data.tests;
             if (d < data.dist)
             {
                 data.dist = d;
