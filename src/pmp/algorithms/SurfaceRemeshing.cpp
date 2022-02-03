@@ -29,8 +29,6 @@ SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
     vnormal_ = mesh_.vertex_property<Point>("v:normal");
 }
 
-// SurfaceRemeshing::~SurfaceRemeshing() = default;
-
 void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
                                          unsigned int iterations,
                                          bool use_projection)
