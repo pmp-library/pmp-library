@@ -29,7 +29,7 @@ SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
     vnormal_ = mesh_.vertex_property<Point>("v:normal");
 }
 
-SurfaceRemeshing::~SurfaceRemeshing() = default;
+// SurfaceRemeshing::~SurfaceRemeshing() = default;
 
 void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
                                          unsigned int iterations,
@@ -239,7 +239,7 @@ void SurfaceRemeshing::preprocessing()
     if (use_projection_)
     {
         // build reference mesh
-        refmesh_ = new SurfaceMesh();
+        refmesh_ = std::make_shared<SurfaceMesh>();
         refmesh_->assign(mesh_);
         SurfaceNormals::compute_vertex_normals(*refmesh_);
         refpoints_ = refmesh_->vertex_property<Point>("v:point");
@@ -253,19 +253,12 @@ void SurfaceRemeshing::preprocessing()
         }
 
         // build kd-tree
-        kd_tree_ = new TriangleKdTree(*refmesh_, 0);
+        kd_tree_ = std::make_unique<TriangleKdTree>(refmesh_, 0);
     }
 }
 
 void SurfaceRemeshing::postprocessing()
 {
-    // delete kd-tree and reference mesh
-    if (use_projection_)
-    {
-        delete kd_tree_;
-        delete refmesh_;
-    }
-
     // remove properties
     mesh_.remove_vertex_property(vlocked_);
     mesh_.remove_edge_property(elocked_);

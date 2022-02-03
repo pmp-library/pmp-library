@@ -10,20 +10,20 @@
 
 namespace pmp {
 
-TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces,
-                               unsigned int max_depth)
+TriangleKdTree::TriangleKdTree(std::shared_ptr<const SurfaceMesh> mesh,
+                               unsigned int max_faces, unsigned int max_depth)
 {
     // init
     root_ = new Node();
     root_->faces = new Triangles();
-    auto points = mesh.get_vertex_property<Point>("v:point");
+    auto points = mesh->get_vertex_property<Point>("v:point");
 
     // collect triangles
     Triangle tri;
-    root_->faces->reserve(mesh.n_faces());
-    for (const auto& f : mesh.faces())
+    root_->faces->reserve(mesh->n_faces());
+    for (const auto& f : mesh->faces())
     {
-        auto v = mesh.vertices(f);
+        auto v = mesh->vertices(f);
         tri.x[0] = points[*v];
         ++v;
         tri.x[1] = points[*v];

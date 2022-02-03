@@ -4,6 +4,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "pmp/SurfaceMesh.h"
 
@@ -15,8 +16,8 @@ class TriangleKdTree
 {
 public:
     //! Construct with mesh.
-    TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces = 10,
-                   unsigned int max_depth = 30);
+    TriangleKdTree(std::shared_ptr<const SurfaceMesh> mesh,
+                   unsigned int max_faces = 10, unsigned int max_depth = 30);
 
     //! destructor
     ~TriangleKdTree() { delete root_; }
