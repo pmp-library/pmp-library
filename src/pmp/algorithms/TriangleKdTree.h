@@ -73,8 +73,8 @@ private:
     };
 
     // Recursive part of build()
-    unsigned int build_recurse(Node* node, unsigned int max_handles,
-                               unsigned int depth);
+    void build_recurse(Node* node, unsigned int max_handles,
+                       unsigned int depth);
 
     // Recursive part of nearest()
     void nearest_recurse(Node* node, const Point& point,

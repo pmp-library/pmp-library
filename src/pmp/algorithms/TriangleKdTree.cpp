@@ -37,12 +37,12 @@ TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces,
     build_recurse(root_, max_faces, max_depth);
 }
 
-unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
-                                           unsigned int depth)
+void TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
+                                   unsigned int depth)
 {
     // should we stop at this level ?
     if ((depth == 0) || (node->faces->size() <= max_faces))
-        return depth;
+        return;
 
     // compute bounding box
     BoundingBox bbox;
@@ -114,8 +114,8 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
         delete left;
         delete right;
 
-        // return tree depth
-        return depth;
+        // stop recursion
+        return;
     }
 
     // or recurse further?
@@ -132,10 +132,8 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
         node->right_child = right;
 
         // recurse to childen
-        int depthLeft = build_recurse(node->left_child, max_faces, depth - 1);
-        int depthRight = build_recurse(node->right_child, max_faces, depth - 1);
-
-        return std::min(depthLeft, depthRight);
+        build_recurse(node->left_child, max_faces, depth - 1);
+        build_recurse(node->right_child, max_faces, depth - 1);
     }
 }
 
