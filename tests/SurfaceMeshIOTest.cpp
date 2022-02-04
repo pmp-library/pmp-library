@@ -5,6 +5,7 @@
 
 #include <pmp/algorithms/SurfaceNormals.h>
 #include <vector>
+#include <fstream>
 
 using namespace pmp;
 
@@ -134,4 +135,19 @@ TEST_F(SurfaceMeshIOTest, xyz_io)
     EXPECT_TRUE(mesh.is_empty());
     mesh.read("test.xyz");
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
+}
+
+TEST_F(SurfaceMeshIOTest, agi_io)
+{
+    // generate example data
+    std::ofstream ofs("test.agi");
+    ofs << "0 0 0 0 0 0 0 0 0" << std::endl;
+    ofs << "1 0 0 1 0 0 1 0 0" << std::endl;
+    ofs << "1 1 0 1 1 0 1 1 0" << std::endl;
+    ofs << "1 1 1 1 1 1 1 1 1" << std::endl;
+    ofs.close();
+    mesh.read("test.agi");
+    EXPECT_EQ(mesh.n_vertices(), 4u);
+    EXPECT_TRUE(mesh.has_vertex_property("v:color"));
+    EXPECT_TRUE(mesh.has_vertex_property("v:normal"));
 }
