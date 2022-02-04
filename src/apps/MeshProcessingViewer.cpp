@@ -3,23 +3,26 @@
 
 #include "MeshProcessingViewer.h"
 
-#include <pmp/algorithms/SurfaceSubdivision.h>
-#include <pmp/algorithms/SurfaceFeatures.h>
-#include <pmp/algorithms/SurfaceSimplification.h>
-#include <pmp/algorithms/SurfaceFairing.h>
-#include <pmp/algorithms/SurfaceRemeshing.h>
+#include <pmp/algorithms/DifferentialGeometry.h>
 #include <pmp/algorithms/SurfaceCurvature.h>
+#include <pmp/algorithms/SurfaceFactory.h>
+#include <pmp/algorithms/SurfaceFairing.h>
+#include <pmp/algorithms/SurfaceFeatures.h>
 #include <pmp/algorithms/SurfaceGeodesic.h>
 #include <pmp/algorithms/SurfaceHoleFilling.h>
-#include <pmp/algorithms/SurfaceFactory.h>
+#include <pmp/algorithms/SurfaceRemeshing.h>
+#include <pmp/algorithms/SurfaceSimplification.h>
+#include <pmp/algorithms/SurfaceSmoothing.h>
+#include <pmp/algorithms/SurfaceSubdivision.h>
 #include <pmp/algorithms/SurfaceTriangulation.h>
-#include <pmp/algorithms/DifferentialGeometry.h>
 
 #include <imgui.h>
 
+using namespace pmp;
+
 MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
                                            int height)
-    : MeshViewer(title, width, height), smoother_(mesh_)
+    : MeshViewer(title, width, height)
 {
     // add help items
     add_help_item("O", "Flip mesh orientation", 5);
@@ -208,7 +211,7 @@ void MeshProcessingViewer::process_imgui()
 
         if (ImGui::Button("Explicit Smoothing"))
         {
-            smoother_.explicit_smoothing(iterations);
+            SurfaceSmoothing(mesh_).explicit_smoothing(iterations);
             update_mesh();
         }
 
@@ -226,7 +229,7 @@ void MeshProcessingViewer::process_imgui()
             Scalar dt = timestep * radius_ * radius_;
             try
             {
-                smoother_.implicit_smoothing(dt);
+                SurfaceSmoothing(mesh_).implicit_smoothing(dt);
             }
             catch (const SolverException& e)
             {
