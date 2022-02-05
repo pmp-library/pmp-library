@@ -271,12 +271,12 @@ void SurfaceRemeshing::project_to_reference(Vertex v)
     }
 
     // find closest triangle of reference mesh
-    TriangleKdTree::NearestNeighbor nn = kd_tree_->nearest(points_[v]);
+    auto nn = kd_tree_->nearest(points_[v]);
     const Point p = nn.nearest;
     const Face f = nn.face;
 
     // get face data
-    SurfaceMesh::VertexAroundFaceCirculator fvIt = refmesh_->vertices(f);
+    auto fvIt = refmesh_->vertices(f);
     const Point p0 = refpoints_[*fvIt];
     const Point n0 = refnormals_[*fvIt];
     const Scalar s0 = refsizing_[*fvIt];
@@ -514,7 +514,7 @@ void SurfaceRemeshing::flip_edges()
     int i;
 
     // precompute valences
-    VertexProperty<int> valence = mesh_.add_vertex_property<int>("valence");
+    auto valence = mesh_.add_vertex_property<int>("valence");
     for (auto v : mesh_.vertices())
     {
         valence[v] = mesh_.valence(v);
@@ -602,7 +602,7 @@ void SurfaceRemeshing::tangential_smoothing(unsigned int iterations)
     Point u, n, t, b;
 
     // add property
-    VertexProperty<Point> update = mesh_.add_vertex_property<Point>("v:update");
+    auto update = mesh_.add_vertex_property<Point>("v:update");
 
     // project at the beginning to get valid sizing values and normal vectors
     // for vertices introduced by splitting
@@ -775,23 +775,23 @@ void SurfaceRemeshing::remove_caps()
 
 Point SurfaceRemeshing::minimize_squared_areas(Vertex v)
 {
-    dmat3 A(0), D;
-    dvec3 b(0), d, p, q, x;
-    double w;
+    dmat3 A(0);
+    dvec3 b(0), x;
 
     for (auto h : mesh_.halfedges(v))
     {
         assert(!mesh_.is_boundary(h));
 
         // get edge opposite to vertex v
-        Vertex v0 = mesh_.to_vertex(h);
-        Vertex v1 = mesh_.to_vertex(mesh_.next_halfedge(h));
-        p = (dvec3)points_[v0];
-        q = (dvec3)points_[v1];
-        d = q - p;
-        w = 1.0 / norm(d);
+        auto v0 = mesh_.to_vertex(h);
+        auto v1 = mesh_.to_vertex(mesh_.next_halfedge(h));
+        auto p = (dvec3)points_[v0];
+        auto q = (dvec3)points_[v1];
+        auto d = q - p;
+        auto w = 1.0 / norm(d);
 
         // build squared cross-product-with-d matrix
+        dmat3 D;
         D(0, 0) = d[1] * d[1] + d[2] * d[2];
         D(1, 1) = d[0] * d[0] + d[2] * d[2];
         D(2, 2) = d[0] * d[0] + d[1] * d[1];
