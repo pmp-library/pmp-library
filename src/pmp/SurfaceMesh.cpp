@@ -11,6 +11,10 @@
 namespace pmp {
 
 SurfaceMesh::SurfaceMesh()
+    : deleted_vertices_{0},
+      deleted_edges_{0},
+      deleted_faces_{0},
+      has_garbage_{false}
 {
     oprops_.push_back();
 
@@ -24,11 +28,6 @@ SurfaceMesh::SurfaceMesh()
     vdeleted_ = add_vertex_property<bool>("v:deleted", false);
     edeleted_ = add_edge_property<bool>("e:deleted", false);
     fdeleted_ = add_face_property<bool>("f:deleted", false);
-
-    deleted_vertices_ = 0;
-    deleted_edges_ = 0;
-    deleted_faces_ = 0;
-    has_garbage_ = false;
 }
 
 SurfaceMesh::~SurfaceMesh() = default;
