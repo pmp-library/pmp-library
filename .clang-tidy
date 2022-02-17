@@ -1,0 +1,2 @@
+Checks: '-*,modernize-*,-modernize-use-trailing-return-type,-modernize-avoid-c-arrays'
+WarningsAsErrors: '*'
