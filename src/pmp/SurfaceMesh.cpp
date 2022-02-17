@@ -784,7 +784,7 @@ bool SurfaceMesh::is_collapse_ok(Halfedge v0v1)
     Halfedge v1v0(opposite_halfedge(v0v1));
     Vertex v0(to_vertex(v1v0));
     Vertex v1(to_vertex(v0v1));
-    Vertex vv, vl, vr;
+    Vertex vl, vr;
     Halfedge h1, h2;
 
     // the edges v1-vl and vl-v0 must not be both boundary edges
@@ -819,15 +819,12 @@ bool SurfaceMesh::is_collapse_ok(Halfedge v0v1)
         return false;
 
     // test intersection of the one-rings of v0 and v1
-    VertexAroundVertexCirculator vvit, vvend;
-    vvit = vvend = vertices(v0);
-    do
+    for (auto vv : vertices(v0))
     {
-        vv = *vvit;
         if (vv != v1 && vv != vl && vv != vr)
             if (find_halfedge(vv, v1).is_valid())
                 return false;
-    } while (++vvit != vvend);
+    }
 
     // passed all tests
     return true;
