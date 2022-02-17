@@ -937,12 +937,10 @@ void SurfaceMesh::remove_edge_helper(Halfedge h)
     Vertex vo = to_vertex(o);
 
     // halfedge -> vertex
-    HalfedgeAroundVertexCirculator vhit, vhend;
-    vhit = vhend = halfedges(vo);
-    do
+    for (const auto hc : halfedges(vo))
     {
-        set_vertex(opposite_halfedge(*vhit), vh);
-    } while (++vhit != vhend);
+        set_vertex(opposite_halfedge(hc), vh);
+    }
 
     // halfedge -> halfedge
     set_next_halfedge(hp, hn);
