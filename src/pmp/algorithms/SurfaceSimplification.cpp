@@ -24,8 +24,12 @@ SurfaceSimplification::SurfaceSimplification(SurfaceMesh& mesh)
     normal_deviation_ = 0;
     hausdorff_error_ = 0;
 
+    seam_threshold_ = 1e-2;
+    seam_angle_deviation_ = 0.99;
+
     // add properties
     vquadric_ = mesh_.add_vertex_property<Quadric>("v:quadric");
+    texture_seams_ = mesh_.edge_property<bool>("e:seam", false);
 
     // get properties
     vpoint_ = mesh_.vertex_property<Point>("v:point");
@@ -41,12 +45,15 @@ SurfaceSimplification::~SurfaceSimplification()
     mesh_.remove_vertex_property(vquadric_);
     mesh_.remove_face_property(normal_cone_);
     mesh_.remove_face_property(face_points_);
+    mesh_.remove_edge_property(texture_seams_);
 }
 
 void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
                                        unsigned int max_valence,
                                        Scalar normal_deviation,
-                                       Scalar hausdorff_error)
+                                       Scalar hausdorff_error,
+                                       Scalar seam_threshold,
+                                       Scalar seam_angle_deviation)
 {
     // store parameters
     aspect_ratio_ = aspect_ratio;
@@ -54,6 +61,8 @@ void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
     edge_length_ = edge_length;
     normal_deviation_ = normal_deviation / 180.0 * M_PI;
     hausdorff_error_ = hausdorff_error;
+    seam_threshold_ = seam_threshold; 
+    seam_angle_deviation_ = (180.0 - seam_angle_deviation) / 180.0;
 
     // properties
     if (normal_deviation_ > 0.0)
@@ -128,6 +137,34 @@ void SurfaceSimplification::initialize(Scalar aspect_ratio, Scalar edge_length,
         }
     }
 
+    //TODO QUESTION New method in SurfaceMesh?
+    //TODO QUESTION Complete texcoord handling in class SurfaceMesh
+    // detect texture seams 
+    auto texcoords = mesh_.get_halfedge_property<TexCoord>("h:tex");
+    if(texcoords)
+    {
+        for (auto e : mesh_.edges())
+        {
+            // texcoords are stored in halfedge pointing towards a vertex
+            Halfedge h0 = mesh_.halfedge(e, 0);
+            Halfedge h1 = mesh_.halfedge(e, 1); //opposite halfedge
+            Halfedge h0p = mesh_.prev_halfedge(h0); // start point edge 0
+            Halfedge h1p = mesh_.prev_halfedge(h1); // start point edge 1
+
+            // if start or end points differ more than seam_threshold
+            // the corresponding edge is a texture seam
+            if (norm(texcoords[h1] - texcoords[h0p]) > seam_threshold_ 
+                || norm(texcoords[h0] - texcoords[h1p]) > seam_threshold_)
+            {
+                texture_seams_[e] = true;
+            }
+            else
+            {
+                texture_seams_[e] = false;
+            }
+        }
+    }
+
     initialized_ = true;
 }
 
@@ -164,7 +201,7 @@ void SurfaceSimplification::simplify(unsigned int n_vertices)
         CollapseData cd(mesh_, h);
 
         // check this (again)
-        if (!mesh_.is_collapse_ok(h))
+        if (!mesh_.is_collapse_ok(h, seam_angle_deviation_))
             continue;
 
         // store one-ring
@@ -199,7 +236,7 @@ void SurfaceSimplification::enqueue_vertex(Vertex v)
     float prio, min_prio(std::numeric_limits<float>::max());
     Halfedge min_h;
 
-    // find best out-going halfedge
+
     for (auto h : mesh_.halfedges(v))
     {
         CollapseData cd(mesh_, h);
@@ -269,7 +306,7 @@ bool SurfaceSimplification::is_collapse_legal(const CollapseData& cd)
         return false;
 
     // topological check
-    if (!mesh_.is_collapse_ok(cd.v0v1))
+    if (!mesh_.is_collapse_ok(cd.v0v1, seam_angle_deviation_))
         return false;
 
     // check maximal valence

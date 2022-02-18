@@ -292,7 +292,7 @@ TEST_F(SurfaceMeshTest, collapse)
     add_triangles();
     EXPECT_EQ(mesh.n_faces(), size_t(2));
     auto h0 = mesh.find_halfedge(v3, v2);
-    if (mesh.is_collapse_ok(h0))
+    if (mesh.is_collapse_ok(h0, -1)) // TODO is_collapse_ok -> -1 no texture support?
         mesh.collapse(h0);
     mesh.garbage_collection();
     EXPECT_EQ(mesh.n_faces(), size_t(1));

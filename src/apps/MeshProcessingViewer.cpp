@@ -260,12 +260,17 @@ void MeshProcessingViewer::process_imgui()
         ImGui::SliderInt("Aspect Ratio", &aspect_ratio, 1, 10);
         ImGui::PopItemWidth();
 
+        static int seam_angle_deviation = 1;
+        ImGui::PushItemWidth(100);
+        ImGui::SliderInt("Seam Angle Deviation", &seam_angle_deviation, 0, 15);
+        ImGui::PopItemWidth();
+
         if (ImGui::Button("Decimate it!"))
         {
             try
             {
                 SurfaceSimplification ss(mesh_);
-                ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0);
+                ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0, 0.01, seam_angle_deviation);
                 ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
             }
             catch (const InvalidInputException& e)
