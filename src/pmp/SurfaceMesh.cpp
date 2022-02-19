@@ -1074,19 +1074,15 @@ void SurfaceMesh::delete_face(Face f)
     //   1) invalidate face handle.
     //   2) collect all boundary halfedges, set them deleted
     //   3) store vertex handles
-    HalfedgeAroundFaceCirculator hc, hcend;
-    hc = hcend = halfedges(f);
-
-    do
+    for (auto hc : halfedges(f))
     {
-        set_face(*hc, Face());
+        set_face(hc, Face());
 
-        if (is_boundary(opposite_halfedge(*hc)))
-            deletedEdges.push_back(edge(*hc));
+        if (is_boundary(opposite_halfedge(hc)))
+            deletedEdges.push_back(edge(hc));
 
-        vertices.push_back(to_vertex(*hc));
-
-    } while (++hc != hcend);
+        vertices.push_back(to_vertex(hc));
+    }
 
     // delete all collected (half)edges
     // delete isolated vertices
