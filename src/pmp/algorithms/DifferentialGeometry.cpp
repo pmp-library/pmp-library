@@ -239,7 +239,7 @@ double voronoi_area_barycentric(const SurfaceMesh& mesh, Vertex v)
     {
         const Point p = mesh.position(v);
         Halfedge h0, h1;
-        Point q, r, pq, pr;
+        Point pq, pr;
 
         for (auto h : mesh.halfedges(v))
         {
