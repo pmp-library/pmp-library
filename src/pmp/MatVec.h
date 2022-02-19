@@ -35,8 +35,8 @@ public:
     //! returns the dimension of the vector (or size of the matrix, rows*cols)
     static constexpr int size() { return M * N; }
 
-    //! empty default constructor
-    Matrix() {}
+    //! default constructor
+    Matrix() = default;
 
     //! construct with all entries being a given scalar (matrix and vector)
     explicit Matrix(Scalar s)
