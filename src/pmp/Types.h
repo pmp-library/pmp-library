@@ -59,7 +59,6 @@ using IndexType = std::uint_least32_t;
 //! Common IO flags for reading and writing
 struct IOFlags
 {
-    IOFlags() {}
     bool use_binary = false;             //!< read / write binary format
     bool use_vertex_normals = false;     //!< read / write vertex normals
     bool use_vertex_colors = false;      //!< read / write vertex colors
