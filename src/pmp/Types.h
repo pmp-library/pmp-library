@@ -30,29 +30,29 @@ namespace pmp {
 
 //! Scalar type
 #ifdef PMP_SCALAR_TYPE_64
-typedef double Scalar;
+using Scalar = double;
 #else
-typedef float Scalar;
+using Scalar = float;
 #endif
 
 //! Point type
-typedef Vector<Scalar, 3> Point;
+using Point = Vector<Scalar, 3>;
 
 //! Normal type
-typedef Vector<Scalar, 3> Normal;
+using Normal = Vector<Scalar, 3>;
 
 //! Color type
-typedef Vector<Scalar, 3> Color;
+using Color = Vector<Scalar, 3>;
 
 //! Texture coordinate type
-typedef Vector<Scalar, 2> TexCoord;
+using TexCoord = Vector<Scalar, 2>;
 
 // define index type to be used
 #ifdef PMP_INDEX_TYPE_64
 typedef std::uint_least64_t IndexType;
 #define PMP_MAX_INDEX UINT_LEAST64_MAX
 #else
-typedef std::uint_least32_t IndexType;
+using IndexType = std::uint_least32_t;
 #define PMP_MAX_INDEX UINT_LEAST32_MAX
 #endif
 

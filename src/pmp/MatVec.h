@@ -26,7 +26,7 @@ class Matrix
 {
 public:
     //! the scalar type of the vector
-    typedef Scalar value_type;
+    using value_type = Scalar;
 
     //! returns number of rows of the matrix
     static constexpr int rows() { return M; }
@@ -338,61 +338,61 @@ template <typename Scalar>
 using Mat2 = Matrix<Scalar, 2, 2>;
 
 //! template specialization for a vector of two float values
-typedef Vector<float, 2> vec2;
+using vec2 = Vector<float, 2>;
 //! template specialization for a vector of two double values
-typedef Vector<double, 2> dvec2;
+using dvec2 = Vector<double, 2>;
 //! template specialization for a vector of two bool values
-typedef Vector<bool, 2> bvec2;
+using bvec2 = Vector<bool, 2>;
 //! template specialization for a vector of two int values
-typedef Vector<int, 2> ivec2;
+using ivec2 = Vector<int, 2>;
 //! template specialization for a vector of two unsigned int values
-typedef Vector<unsigned int, 2> uvec2;
+using uvec2 = Vector<unsigned int, 2>;
 
 //! template specialization for a vector of three float values
-typedef Vector<float, 3> vec3;
+using vec3 = Vector<float, 3>;
 //! template specialization for a vector of three double values
-typedef Vector<double, 3> dvec3;
+using dvec3 = Vector<double, 3>;
 //! template specialization for a vector of three bool values
-typedef Vector<bool, 3> bvec3;
+using bvec3 = Vector<bool, 3>;
 //! template specialization for a vector of three int values
-typedef Vector<int, 3> ivec3;
+using ivec3 = Vector<int, 3>;
 //! template specialization for a vector of three unsigned int values
-typedef Vector<unsigned int, 3> uvec3;
+using uvec3 = Vector<unsigned int, 3>;
 
 //! template specialization for a vector of four float values
-typedef Vector<float, 4> vec4;
+using vec4 = Vector<float, 4>;
 //! template specialization for a vector of four double values
-typedef Vector<double, 4> dvec4;
+using dvec4 = Vector<double, 4>;
 //! template specialization for a vector of four bool values
-typedef Vector<bool, 4> bvec4;
+using bvec4 = Vector<bool, 4>;
 //! template specialization for a vector of four int values
-typedef Vector<int, 4> ivec4;
+using ivec4 = Vector<int, 4>;
 //! template specialization for a vector of four unsigned int values
-typedef Vector<unsigned int, 4> uvec4;
+using uvec4 = Vector<unsigned int, 4>;
 
 //! template specialization for a vector of four float values
-typedef Vector<float, 8> vec8;
+using vec8 = Vector<float, 8>;
 //! template specialization for a vector of four double values
-typedef Vector<double, 8> dvec8;
+using dvec8 = Vector<double, 8>;
 //! template specialization for a vector of four bool values
-typedef Vector<bool, 8> bvec8;
+using bvec8 = Vector<bool, 8>;
 //! template specialization for a vector of four int values
-typedef Vector<int, 8> ivec8;
+using ivec8 = Vector<int, 8>;
 //! template specialization for a vector of four unsigned int values
-typedef Vector<unsigned int, 8> uvec8;
+using uvec8 = Vector<unsigned int, 8>;
 
 //! template specialization for a 2x2 matrix of float values
-typedef Mat2<float> mat2;
+using mat2 = Mat2<float>;
 //! template specialization for a 2x2 matrix of double values
-typedef Mat2<double> dmat2;
+using dmat2 = Mat2<double>;
 //! template specialization for a 3x3 matrix of float values
-typedef Mat3<float> mat3;
+using mat3 = Mat3<float>;
 //! template specialization for a 3x3 matrix of double values
-typedef Mat3<double> dmat3;
+using dmat3 = Mat3<double>;
 //! template specialization for a 4x4 matrix of float values
-typedef Mat4<float> mat4;
+using mat4 = Mat4<float>;
 //! template specialization for a 4x4 matrix of double values
-typedef Mat4<double> dmat4;
+using dmat4 = Mat4<double>;
 
 //! output a matrix by printing its space-separated compontens
 template <typename Scalar, int M, int N>
