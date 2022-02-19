@@ -5,6 +5,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 #include "pmp/Types.h"
 #include "pmp/SurfaceMesh.h"
@@ -14,8 +15,8 @@ namespace pmp {
 class SurfaceMeshIO
 {
 public:
-    SurfaceMeshIO(const std::string& filename, const IOFlags& flags)
-        : filename_(filename), flags_(flags)
+    SurfaceMeshIO(std::string filename, IOFlags flags)
+        : filename_(std::move(filename)), flags_(std::move(flags))
     {
     }
 
