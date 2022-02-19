@@ -237,22 +237,20 @@ double voronoi_area_barycentric(const SurfaceMesh& mesh, Vertex v)
 
     if (!mesh.is_isolated(v))
     {
-        const Point p = mesh.position(v);
-        Halfedge h0, h1;
-        Point pq, pr;
+        const auto p = mesh.position(v);
 
         for (auto h : mesh.halfedges(v))
         {
             if (mesh.is_boundary(h))
                 continue;
 
-            h0 = h;
-            h1 = mesh.next_halfedge(h0);
+            auto h0 = h;
+            auto h1 = mesh.next_halfedge(h0);
 
-            pq = mesh.position(mesh.to_vertex(h0));
+            auto pq = mesh.position(mesh.to_vertex(h0));
             pq -= p;
 
-            pr = mesh.position(mesh.to_vertex(h1));
+            auto pr = mesh.position(mesh.to_vertex(h1));
             pr -= p;
 
             area += norm(cross(pq, pr)) / 6.0;
