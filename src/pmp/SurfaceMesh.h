@@ -2101,12 +2101,12 @@ private:
     FaceProperty<bool> fdeleted_;
 
     // numbers of deleted entities
-    IndexType deleted_vertices_;
-    IndexType deleted_edges_;
-    IndexType deleted_faces_;
+    IndexType deleted_vertices_{0};
+    IndexType deleted_edges_{0};
+    IndexType deleted_faces_{0};
 
     // indicate garbage present
-    bool has_garbage_;
+    bool has_garbage_{0};
 
     // helper data for add_face()
     typedef std::pair<Halfedge, Halfedge> NextCacheEntry;

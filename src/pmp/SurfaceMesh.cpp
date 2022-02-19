@@ -11,10 +11,6 @@
 namespace pmp {
 
 SurfaceMesh::SurfaceMesh()
-    : deleted_vertices_{0},
-      deleted_edges_{0},
-      deleted_faces_{0},
-      has_garbage_{false}
 {
     oprops_.push_back();
 
