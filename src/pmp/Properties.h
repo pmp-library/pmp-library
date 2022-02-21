@@ -83,7 +83,7 @@ public: // virtual interface of BasePropertyArray
 
     virtual BasePropertyArray* clone() const
     {
-        PropertyArray<T>* p = new PropertyArray<T>(name_, value_);
+        auto* p = new PropertyArray<T>(name_, value_);
         p->data_ = data_;
         return p;
     }
@@ -240,7 +240,7 @@ public:
         }
 
         // otherwise add the property
-        PropertyArray<T>* p = new PropertyArray<T>(name, t);
+        auto* p = new PropertyArray<T>(name, t);
         p->resize(size_);
         parrays_.push_back(p);
         return Property<T>(p);
@@ -288,7 +288,7 @@ public:
     template <class T>
     void remove(Property<T>& h)
     {
-        std::vector<BasePropertyArray*>::iterator it = parrays_.begin(),
+        auto it = parrays_.begin(),
                                                   end = parrays_.end();
         for (; it != end; ++it)
         {
