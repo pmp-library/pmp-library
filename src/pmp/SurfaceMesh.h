@@ -1826,7 +1826,7 @@ public:
 
     //! returns whether collapsing the halfedge \p v0v1 is topologically legal.
     //! \attention This function is only valid for triangle meshes.
-    bool is_collapse_ok(Halfedge v0v1, Scalar seam_angle_deviation);
+    bool is_collapse_ok(Halfedge v0v1);
 
     //! Collapse the halfedge \p h by moving its start vertex into its target
     //! vertex. For non-boundary halfedges this function removes one vertex, three

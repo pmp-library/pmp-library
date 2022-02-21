@@ -301,7 +301,7 @@ void SurfaceHoleFilling::collapse_short_edges(const Scalar _lmin)
                     else if (!vlocked_[v1])
                         h = h10;
 
-                    if (h.is_valid() && mesh_.is_collapse_ok(h, -1)) // TODO is_collapse_ok -> -1 no texture support?
+                    if (h.is_valid() && mesh_.is_collapse_ok(h))
                     {
                         mesh_.collapse(h);
                         ok = false;

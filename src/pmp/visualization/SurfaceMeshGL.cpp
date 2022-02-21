@@ -545,12 +545,15 @@ void SurfaceMeshGL::update_opengl_buffers()
 
             // if start or end points differs more than seam_threshold
             // the corresponding edge is a texture seam
-            if (norm(texcoords[h1] - texcoords[h0p]) > 1e-2 || norm(texcoords[h0] - texcoords[h1p]) > 1e-2) // if texcoords for vertex saved in incoming halfedge
+            if (norm(texcoords[h1] - texcoords[h0p]) > 1e-2 
+                || norm(texcoords[h0] - texcoords[h1p]) > 1e-2)
             {
                 texture_seams[e] = true;
             }
             else 
+            {
                 texture_seams[e] = false;
+            }
         }
         for(auto e: edges())
             if(texture_seams && texture_seams[e]) 
@@ -579,7 +582,9 @@ void SurfaceMeshGL::update_opengl_buffers()
         if(texture_seams)
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, seamArray.size() * sizeof(unsigned int), seamArray.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+                         seamArray.size() * sizeof(unsigned int), 
+                         seamArray.data(), GL_STATIC_DRAW);
             n_seams_ = seamArray.size();
         }
         else
@@ -777,7 +782,8 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                     glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, lineWidthRange);
                     glLineWidth(lineWidthRange[1]);
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-                    glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT, nullptr);
+                    glDrawElements(GL_LINES, n_seams_, 
+                                    GL_UNSIGNED_INT, nullptr);
                     glDepthFunc(GL_LESS);
                 }
             }

@@ -780,7 +780,7 @@ void SurfaceMesh::flip(Edge e)
         set_halfedge(vb0, b1);
 }
 
-bool SurfaceMesh::is_collapse_ok(Halfedge v0v1, Scalar seam_angle_deviation)
+bool SurfaceMesh::is_collapse_ok(Halfedge v0v1)
 {
     Halfedge v1v0(opposite_halfedge(v0v1));
     Vertex v0(to_vertex(v1v0));
@@ -829,73 +829,6 @@ bool SurfaceMesh::is_collapse_ok(Halfedge v0v1, Scalar seam_angle_deviation)
             if (find_halfedge(vv, v1).is_valid())
                 return false;
     } while (++vvit != vvend);
-
-    auto texcoords = get_halfedge_property<TexCoord>("h:tex");
-    if(!texcoords)
-    {
-        // no texture coordinates -> skip texture seam tests
-        return true;
-    }
-
-    auto texture_seams = get_edge_property<bool>("e:seam");
-    if(!texture_seams)
-    {
-        // no seams found -> skip seam tests
-        return true; //TODO Correct?
-    }
-    if(!texture_seams[edge(v0v1)])
-    {
-        // v0v1 is not a texture seam
-        for (auto he : halfedges(v0))
-        {
-            if (he == v0v1)
-                continue;
-            // Check if v0 is part of a texture seam
-            // If yes, v0 must not be moved 
-            if (texture_seams[edge(he)]) 
-            {
-                return false;			 
-            }
-        }
-
-        return true;
-    }
-
-    int count = 0;
-    for(auto he: halfedges(v0))
-    {
-        if(texture_seams[edge(he)])
-        {
-            count++;
-        }
-    }
-
-    // if more than 2 seam edges at point v0
-    // -> v0 must not be moved
-    if(count > 2)
-    {
-        return false;
-    }
-
-    Halfedge seam1 = v0v1, seam2 = prev_halfedge(v0v1);
-    while(seam2.idx() != v1v0.idx())
-    {
-        if(texture_seams[edge(seam2)])
-        {
-            vec2 s1 = texcoords[seam1] - texcoords[prev_halfedge(seam1)];
-            vec2 s2 = texcoords[seam2] - texcoords[prev_halfedge(seam2)];
-            s1.normalize();
-            s2.normalize();
-
-            // check if the angle between the seam edge to be collapsed and the 
-            // seam edge prolonged is smaller than the allowed deviation
-            if (dot(s1, s2) < seam_angle_deviation)
-            {
-                return false;
-            }
-        }
-        seam2 = prev_halfedge(opposite_halfedge(seam2));
-    }
 
     // passed all tests
     return true;
@@ -985,25 +918,15 @@ void SurfaceMesh::collapse(Halfedge h)
     // remove edge
     remove_edge_helper(h0);
 
-    auto seam = edge_property<bool>("e:seam");
-
     // remove loops
     if (next_halfedge(next_halfedge(h1)) == h1)
     {
-        // make sure not to remove a texture seam
-        if(seam[edge(h1)])
-            remove_loop_helper(prev_halfedge(h1));
-        else
-            remove_loop_helper(h1);
+        remove_loop_helper(h1);
     }
     
     if (next_halfedge(next_halfedge(o1)) == o1)
     {
-        // make sure not to remove a texture seam
-        if(seam[edge(o1)])
-            remove_loop_helper(prev_halfedge(o1));
-        else
-            remove_loop_helper(o1);
+        remove_loop_helper(o1);
     }
 }
 
@@ -1021,29 +944,6 @@ void SurfaceMesh::remove_edge_helper(Halfedge h)
 
     Vertex vh = to_vertex(h);
     Vertex vo = to_vertex(o);
-
-    // move texcoords in correct halfedge before collapsing an edge
-    auto texcoords = get_halfedge_property<TexCoord>("h:tex");
-    if(texcoords)
-    {
-        auto texture_seams = edge_property<bool>("e:seam", false);
-        Halfedge hit = h;
-        bool is_first_side = true;
-
-        // which texcoord must be saved depends 
-        // on the side of the texture seam
-        for(size_t i = 0; i < valence(vo) - 1; ++i)
-        {
-            hit = prev_halfedge(hit);
-            if(is_first_side)
-                texcoords[hit] = texcoords[h];
-            else if(!is_first_side)
-                texcoords[hit] = texcoords[prev_halfedge(o)];
-            if(texture_seams[edge(hit)])
-                is_first_side = false;
-            hit = opposite_halfedge(hit);
-        }
-    }
 
     // halfedge -> vertex
     HalfedgeAroundVertexCirculator vhit, vhend;

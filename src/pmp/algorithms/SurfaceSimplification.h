@@ -34,7 +34,7 @@ public:
     void initialize(Scalar aspect_ratio = 0.0, Scalar edge_length = 0.0,
                     unsigned int max_valence = 0, Scalar normal_deviation = 0.0,
                     Scalar hausdorff_error = 0.0, Scalar seam_threshold = 1e-2,
-                    Scalar seam_angle_deviation = 1);//TODO NAMING
+                    Scalar seam_angle_deviation = 1);
 
     //! Simplify mesh to \p n_vertices.
     void simplify(unsigned int n_vertices);
@@ -99,8 +99,14 @@ private:
     // is collapsing the halfedge h allowed?
     bool is_collapse_legal(const CollapseData& cd);
 
+    // are texture seams preserved if h is collapsed?
+    bool texcoord_check(Halfedge h);
+
     // what is the priority of collapsing the halfedge h
     float priority(const CollapseData& cd);
+
+    // preprocess halfedge collapse
+    void preprocess_collapse(const CollapseData& cd);
 
     // postprocess halfedge collapse
     void postprocess_collapse(const CollapseData& cd);
@@ -137,8 +143,8 @@ private:
     Scalar hausdorff_error_;
     Scalar aspect_ratio_;
     Scalar edge_length_;
-    Scalar seam_threshold_; //TODO NAMING
-    Scalar seam_angle_deviation_; //TODO NAMING
+    Scalar seam_threshold_; 
+    Scalar seam_angle_deviation_; 
     unsigned int max_valence_;
 };
 

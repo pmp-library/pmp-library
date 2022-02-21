@@ -440,7 +440,7 @@ void SurfaceRemeshing::collapse_short_edges()
                         hcol10 = false;
 
                     // topological rules
-                    bool collapse_ok = mesh_.is_collapse_ok(h01, -1); // TODO is_collapse_ok -> -1 no texture support?
+                    bool collapse_ok = mesh_.is_collapse_ok(h01);
 
                     if (hcol01)
                         hcol01 = collapse_ok;
