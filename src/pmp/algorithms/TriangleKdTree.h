@@ -56,7 +56,7 @@ private:
     // Node of the tree: contains parent, children and splitting plane
     struct Node
     {
-        Node() : faces(nullptr), left_child(nullptr), right_child(nullptr){};
+        Node(){};
 
         ~Node()
         {
@@ -67,9 +67,9 @@ private:
 
         unsigned char axis;
         Scalar split;
-        Triangles* faces;
-        Node* left_child;
-        Node* right_child;
+        Triangles* faces{nullptr};
+        Node* left_child{nullptr};
+        Node* right_child{nullptr};
     };
 
     // Recursive part of build()

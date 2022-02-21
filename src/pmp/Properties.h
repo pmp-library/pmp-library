@@ -186,7 +186,7 @@ class PropertyContainer
 {
 public:
     // default constructor
-    PropertyContainer() : size_(0) {}
+    PropertyContainer() {}
 
     // destructor (deletes all property arrays)
     virtual ~PropertyContainer() { clear(); }
@@ -351,7 +351,7 @@ public:
 
 private:
     std::vector<BasePropertyArray*> parrays_;
-    size_t size_;
+    size_t size_{0};
 };
 
 } // namespace pmp

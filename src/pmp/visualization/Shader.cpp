@@ -10,7 +10,7 @@
 
 namespace pmp {
 
-Shader::Shader() : pid_(0) {}
+Shader::Shader() {}
 
 Shader::~Shader()
 {

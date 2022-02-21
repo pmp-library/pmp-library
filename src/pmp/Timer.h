@@ -14,7 +14,7 @@ class Timer
 {
 public:
     //! Constructor
-    Timer() : elapsed_(0.0), is_running_(false) {}
+    Timer() {}
 
     //! Start time measurement
     void start()
@@ -57,8 +57,8 @@ private:
     typedef std::chrono::duration<double> duration;
 
     time_point start_time_, end_time_;
-    double elapsed_;
-    bool is_running_;
+    double elapsed_{0.0};
+    bool is_running_{false};
 };
 
 //! output a timer to a stream

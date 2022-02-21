@@ -621,7 +621,7 @@ public:
         //! default constructor
         VertexAroundVertexCirculator(const SurfaceMesh* mesh = nullptr,
                                      Vertex v = Vertex())
-            : mesh_(mesh), is_active_(true)
+            : mesh_(mesh)
         {
             if (mesh_)
                 halfedge_ = mesh_->halfedge(v);
@@ -703,7 +703,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        bool is_active_; // helper for C++11 range-based for-loops
+        bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through all outgoing halfedges of a vertex.
@@ -721,7 +721,7 @@ public:
         //! default constructor
         HalfedgeAroundVertexCirculator(const SurfaceMesh* mesh = nullptr,
                                        Vertex v = Vertex())
-            : mesh_(mesh), is_active_(true)
+            : mesh_(mesh)
         {
             if (mesh_)
                 halfedge_ = mesh_->halfedge(v);
@@ -796,7 +796,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        bool is_active_; // helper for C++11 range-based for-loops
+        bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through all incident faces of a vertex.
@@ -814,7 +814,7 @@ public:
         //! construct with mesh and vertex (vertex should not be isolated!)
         FaceAroundVertexCirculator(const SurfaceMesh* m = nullptr,
                                    Vertex v = Vertex())
-            : mesh_(m), is_active_(true)
+            : mesh_(m)
         {
             if (mesh_)
             {
@@ -902,7 +902,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        bool is_active_; // helper for C++11 range-based for-loops
+        bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through the vertices of a face.
@@ -920,7 +920,7 @@ public:
         //! default constructor
         VertexAroundFaceCirculator(const SurfaceMesh* m = nullptr,
                                    Face f = Face())
-            : mesh_(m), is_active_(true)
+            : mesh_(m)
         {
             if (mesh_)
                 halfedge_ = mesh_->halfedge(f);
@@ -996,7 +996,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        bool is_active_; // helper for C++11 range-based for-loops
+        bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through all halfedges of a face.
@@ -1014,7 +1014,7 @@ public:
         //! default constructor
         HalfedgeAroundFaceCirculator(const SurfaceMesh* m = nullptr,
                                      Face f = Face())
-            : mesh_(m), is_active_(true)
+            : mesh_(m)
         {
             if (mesh_)
                 halfedge_ = mesh_->halfedge(f);
@@ -1086,7 +1086,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        bool is_active_; // helper for C++11 range-based for-loops
+        bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
     //!@}
@@ -2106,7 +2106,7 @@ private:
     IndexType deleted_faces_{0};
 
     // indicate garbage present
-    bool has_garbage_{0};
+    bool has_garbage_{false};
 
     // helper data for add_face()
     typedef std::pair<Halfedge, Halfedge> NextCacheEntry;
