@@ -49,7 +49,7 @@ using TexCoord = Vector<Scalar, 2>;
 
 // define index type to be used
 #ifdef PMP_INDEX_TYPE_64
-typedef std::uint_least64_t IndexType;
+using IndexType = std::uint_least64_t;
 #define PMP_MAX_INDEX UINT_LEAST64_MAX
 #else
 using IndexType = std::uint_least32_t;

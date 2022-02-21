@@ -51,7 +51,7 @@ private:
     };
 
     // vector of Triangle
-    typedef std::vector<Triangle> Triangles;
+    using Triangles = std::vector<Triangle>;
 
     // Node of the tree: contains parent, children and splitting plane
     struct Node

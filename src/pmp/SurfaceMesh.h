@@ -2109,8 +2109,8 @@ private:
     bool has_garbage_{false};
 
     // helper data for add_face()
-    typedef std::pair<Halfedge, Halfedge> NextCacheEntry;
-    typedef std::vector<NextCacheEntry> NextCache;
+    using NextCacheEntry = std::pair<Halfedge, Halfedge>;
+    using NextCache = std::vector<NextCacheEntry>;
     std::vector<Vertex> add_face_vertices_;
     std::vector<Halfedge> add_face_halfedges_;
     std::vector<bool> add_face_is_new_;

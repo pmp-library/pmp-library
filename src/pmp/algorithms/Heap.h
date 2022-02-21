@@ -13,7 +13,7 @@ template <class HeapEntry, class HeapInterface>
 class Heap : private std::vector<HeapEntry>
 {
 public:
-    typedef Heap<HeapEntry, HeapInterface> This;
+    using This = Heap<HeapEntry, HeapInterface>;
 
     //! Constructor
     Heap() : HeapVector() {}
@@ -134,7 +134,7 @@ public:
 
 private:
     // typedef
-    typedef std::vector<HeapEntry> HeapVector;
+    using HeapVector = std::vector<HeapEntry>;
 
     //! Upheap. Establish heap property.
     void upheap(unsigned int idx)

@@ -55,10 +55,10 @@ template <class T>
 class PropertyArray : public BasePropertyArray
 {
 public:
-    typedef T ValueType;
-    typedef std::vector<ValueType> VectorType;
-    typedef typename VectorType::reference reference;
-    typedef typename VectorType::const_reference const_reference;
+    using ValueType = T;
+    using VectorType = std::vector<ValueType>;
+    using reference = typename VectorType::reference;
+    using const_reference = typename VectorType::const_reference;
 
     PropertyArray(const std::string& name, T t = T())
         : BasePropertyArray(name), value_(t)
@@ -128,8 +128,8 @@ template <class T>
 class Property
 {
 public:
-    typedef typename PropertyArray<T>::reference reference;
-    typedef typename PropertyArray<T>::const_reference const_reference;
+    using reference = typename PropertyArray<T>::reference;
+    using const_reference = typename PropertyArray<T>::const_reference;
 
     friend class PropertyContainer;
     friend class SurfaceMesh;

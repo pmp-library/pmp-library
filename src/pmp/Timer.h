@@ -52,9 +52,9 @@ public:
     }
 
 private:
-    typedef std::chrono::high_resolution_clock hclock;
-    typedef std::chrono::time_point<hclock> time_point;
-    typedef std::chrono::duration<double> duration;
+    using hclock = std::chrono::high_resolution_clock;
+    using time_point = std::chrono::time_point<hclock>;
+    using duration = std::chrono::duration<double>;
 
     time_point start_time_, end_time_;
     double elapsed_{0.0};
