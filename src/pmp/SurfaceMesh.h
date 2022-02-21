@@ -108,7 +108,7 @@ class VertexProperty : public Property<T>
 {
 public:
     //! default constructor
-    explicit VertexProperty() {}
+    explicit VertexProperty() = default;
     explicit VertexProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for vertex \p v
@@ -130,7 +130,7 @@ class HalfedgeProperty : public Property<T>
 {
 public:
     //! default constructor
-    explicit HalfedgeProperty() {}
+    explicit HalfedgeProperty() = default;
     explicit HalfedgeProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for halfedge \p h
@@ -152,7 +152,7 @@ class EdgeProperty : public Property<T>
 {
 public:
     //! default constructor
-    explicit EdgeProperty() {}
+    explicit EdgeProperty() = default;
     explicit EdgeProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for edge \p e
@@ -174,7 +174,7 @@ class FaceProperty : public Property<T>
 {
 public:
     //! default constructor
-    explicit FaceProperty() {}
+    explicit FaceProperty() = default;
     explicit FaceProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for face \p f
@@ -196,7 +196,7 @@ class ObjectProperty : public Property<T>
 {
 public:
     //! default constructor
-    explicit ObjectProperty() {}
+    explicit ObjectProperty() = default;
     explicit ObjectProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for the object

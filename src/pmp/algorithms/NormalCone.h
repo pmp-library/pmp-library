@@ -15,7 +15,7 @@ class NormalCone
 {
 public:
     //! default constructor (not initialized)
-    NormalCone() {}
+    NormalCone() = default;
 
     //! Initialize cone with center (unit vector) and angle (radius in radians)
     NormalCone(const Normal& normal, Scalar angle = 0.0)

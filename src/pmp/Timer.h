@@ -14,7 +14,7 @@ class Timer
 {
 public:
     //! Constructor
-    Timer() {}
+    Timer() = default;
 
     //! Start time measurement
     void start()

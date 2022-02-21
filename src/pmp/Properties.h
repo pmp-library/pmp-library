@@ -21,7 +21,7 @@ public:
     BasePropertyArray(const std::string& name) : name_(name) {}
 
     //! Destructor.
-    virtual ~BasePropertyArray() {}
+    virtual ~BasePropertyArray() = default;
 
     //! Reserve memory for n elements.
     virtual void reserve(size_t n) = 0;
@@ -186,7 +186,7 @@ class PropertyContainer
 {
 public:
     // default constructor
-    PropertyContainer() {}
+    PropertyContainer() = default;
 
     // destructor (deletes all property arrays)
     virtual ~PropertyContainer() { clear(); }
@@ -288,8 +288,7 @@ public:
     template <class T>
     void remove(Property<T>& h)
     {
-        auto it = parrays_.begin(),
-                                                  end = parrays_.end();
+        auto it = parrays_.begin(), end = parrays_.end();
         for (; it != end; ++it)
         {
             if (*it == h.parray_)

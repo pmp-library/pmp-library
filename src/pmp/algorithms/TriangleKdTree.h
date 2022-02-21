@@ -37,7 +37,7 @@ private:
     // triangle stores corners and face handle
     struct Triangle
     {
-        Triangle() {}
+        Triangle() = default;
         Triangle(const Point& x0, const Point& x1, const Point& x2, Face ff)
         {
             x[0] = x0;
@@ -56,7 +56,7 @@ private:
     // Node of the tree: contains parent, children and splitting plane
     struct Node
     {
-        Node(){};
+        Node() = default;
 
         ~Node()
         {

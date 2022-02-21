@@ -22,7 +22,7 @@ public:
     Heap(const HeapInterface& i) : HeapVector(), interface_(i) {}
 
     //! Destructor.
-    ~Heap(){};
+    ~Heap() = default;
 
     //! clear the heap
     void clear() { HeapVector::clear(); }

@@ -10,7 +10,7 @@
 
 namespace pmp {
 
-Shader::Shader() {}
+Shader::Shader() = default;
 
 Shader::~Shader()
 {
