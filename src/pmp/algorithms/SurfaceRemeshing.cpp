@@ -27,6 +27,9 @@ SurfaceRemeshing::SurfaceRemeshing(SurfaceMesh& mesh)
 
     SurfaceNormals::compute_vertex_normals(mesh_);
     vnormal_ = mesh_.vertex_property<Point>("v:normal");
+
+    has_feature_vertices_ = mesh_.has_vertex_property("v:feature");
+    has_feature_edges_ = mesh_.has_edge_property("e:feature");
 }
 
 void SurfaceRemeshing::uniform_remeshing(Scalar edge_length,
@@ -261,6 +264,15 @@ void SurfaceRemeshing::postprocessing()
     mesh_.remove_vertex_property(vlocked_);
     mesh_.remove_edge_property(elocked_);
     mesh_.remove_vertex_property(vsizing_);
+
+    if (!has_feature_vertices_)
+    {
+        mesh_.remove_vertex_property(vfeature_);
+    }
+    if (!has_feature_edges_)
+    {
+        mesh_.remove_edge_property(efeature_);
+    }
 }
 
 void SurfaceRemeshing::project_to_reference(Vertex v)

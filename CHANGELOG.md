@@ -45,6 +45,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Fixed
 
+- SurfaceRemeshing: Don't leak feature properties. Spotted by Pierre Buyssens.
 - Fixed a rare bug regarding ImGui scaling on Linux.
   Thanks to Jan Erik Swiadek for reporting and fixing this!
 - Fix crash in SurfaceRemeshing when dealing with low quality meshes (#90, #89)
