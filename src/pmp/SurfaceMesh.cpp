@@ -912,9 +912,14 @@ void SurfaceMesh::collapse(Halfedge h)
 
     // remove loops
     if (next_halfedge(next_halfedge(h1)) == h1)
+    {
         remove_loop_helper(h1);
+    }
+
     if (next_halfedge(next_halfedge(o1)) == o1)
+    {
         remove_loop_helper(o1);
+    }
 }
 
 void SurfaceMesh::remove_edge_helper(Halfedge h)
