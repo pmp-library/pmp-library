@@ -143,8 +143,8 @@ private:
     Scalar hausdorff_error_;
     Scalar aspect_ratio_;
     Scalar edge_length_;
-    Scalar seam_threshold_; 
-    Scalar seam_angle_deviation_; 
+    Scalar seam_threshold_;
+    Scalar seam_angle_deviation_;
     unsigned int max_valence_;
 };
 

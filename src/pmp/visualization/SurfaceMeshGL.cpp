@@ -532,31 +532,31 @@ void SurfaceMeshGL::update_opengl_buffers()
     size_t seam_count = 0;
     auto texcoords = get_halfedge_property<TexCoord>("h:tex");
     EdgeProperty<bool> texture_seams;
-    if(texcoords)
+    if (texcoords)
     {
         texture_seams = edge_property<bool>("e:seam");
         for (auto e : edges())
         {
             // texcoords are stored in halfedge pointing towards a vertex
             Halfedge h0 = halfedge(e, 0);
-            Halfedge h1 = halfedge(e, 1); //opposite halfedge
+            Halfedge h1 = halfedge(e, 1);     //opposite halfedge
             Halfedge h0p = prev_halfedge(h0); // start point edge 0
             Halfedge h1p = prev_halfedge(h1); // start point edge 1
 
             // if start or end points differs more than seam_threshold
             // the corresponding edge is a texture seam
-            if (norm(texcoords[h1] - texcoords[h0p]) > 1e-2 
-                || norm(texcoords[h0] - texcoords[h1p]) > 1e-2)
+            if (norm(texcoords[h1] - texcoords[h0p]) > 1e-2 ||
+                norm(texcoords[h0] - texcoords[h1p]) > 1e-2)
             {
                 texture_seams[e] = true;
             }
-            else 
+            else
             {
                 texture_seams[e] = false;
             }
         }
-        for(auto e: edges())
-            if(texture_seams && texture_seams[e]) 
+        for (auto e : edges())
+            if (texture_seams && texture_seams[e])
                 seam_count++;
     }
 
@@ -573,23 +573,23 @@ void SurfaceMeshGL::update_opengl_buffers()
         {
             edgeArray.push_back(vertex_indices[vertex(e, 0)]);
             edgeArray.push_back(vertex_indices[vertex(e, 1)]);
-            if(texture_seams && texture_seams[e])
+            if (texture_seams && texture_seams[e])
             {
                 seamArray.push_back(vertex_indices[vertex(e, 0)]);
                 seamArray.push_back(vertex_indices[vertex(e, 1)]);
             }
         }
-        if(texture_seams)
+        if (texture_seams)
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-                         seamArray.size() * sizeof(unsigned int), 
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                         seamArray.size() * sizeof(unsigned int),
                          seamArray.data(), GL_STATIC_DRAW);
             n_seams_ = seamArray.size();
         }
         else
             n_seams_ = 0;
-    
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                      edgeArray.size() * sizeof(unsigned int), edgeArray.data(),
@@ -598,7 +598,7 @@ void SurfaceMeshGL::update_opengl_buffers()
     }
     else
         n_edges_ = 0;
-    
+
     // feature edges
     auto efeature = get_edge_property<bool>("e:feature");
     if (efeature)
@@ -726,16 +726,16 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             glDepthFunc(GL_LESS);
 
             // overlay edges
-                glDepthRange(0.0, 1.0);
-                glDepthFunc(GL_LEQUAL);
-                phong_shader_.set_uniform("front_color", vec3(1, 0, 0.));
-                phong_shader_.set_uniform("back_color", vec3(0.1, 0, 0));
-                GLfloat lineWidthRange[2];
-                glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, lineWidthRange);
-                glLineWidth(lineWidthRange[1]);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-                glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT, nullptr);
-                glDepthFunc(GL_LESS);
+            glDepthRange(0.0, 1.0);
+            glDepthFunc(GL_LEQUAL);
+            phong_shader_.set_uniform("front_color", vec3(1, 0, 0.));
+            phong_shader_.set_uniform("back_color", vec3(0.1, 0, 0));
+            GLfloat lineWidthRange[2];
+            glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, lineWidthRange);
+            glLineWidth(lineWidthRange[1]);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
+            glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT, nullptr);
+            glDepthFunc(GL_LESS);
         }
     }
 
@@ -770,9 +770,9 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                 phong_shader_.set_uniform("use_srgb", srgb_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
                 glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
-                
+
                 // overlay seam edges
-                if(n_seams_ > 0)
+                if (n_seams_ > 0)
                 {
                     glDepthRange(0.0, 1.0);
                     glDepthFunc(GL_LEQUAL);
@@ -782,8 +782,8 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                     glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, lineWidthRange);
                     glLineWidth(lineWidthRange[1]);
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-                    glDrawElements(GL_LINES, n_seams_, 
-                                    GL_UNSIGNED_INT, nullptr);
+                    glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT,
+                                   nullptr);
                     glDepthFunc(GL_LESS);
                 }
             }

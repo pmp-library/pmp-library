@@ -270,8 +270,8 @@ void MeshProcessingViewer::process_imgui()
             try
             {
                 SurfaceSimplification ss(mesh_);
-                ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0, 
-                                0.01, seam_angle_deviation);
+                ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0,
+                              0.01, seam_angle_deviation);
                 ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
             }
             catch (const InvalidInputException& e)
