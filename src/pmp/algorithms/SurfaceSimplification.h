@@ -89,9 +89,9 @@ private:
         VertexProperty<int> pos_;
     };
 
-    typedef Heap<Vertex, HeapInterface> PriorityQueue;
+    using PriorityQueue = Heap<Vertex, HeapInterface>;
 
-    typedef std::vector<Point> Points;
+    using Points = std::vector<Point>;
 
     // put the vertex v in the priority queue
     void enqueue_vertex(Vertex v);

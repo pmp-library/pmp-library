@@ -30,7 +30,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - TriangleKdTree: no longer record number of tests, remove NearestNeighbor::test member
 - Remove SurfaceSubdivision::sqrt3()
 - Remove PMP_SHOW macro
-- Remove pmp::Version class, major/minor/patch still defined in Version.h
+- Remove pmp::Version class and Version.h
 - Build shared libraries on all platforms by default (except pmp_vis , see #87)
 - Bump CMake minimum required version to 3.16.3
 - Make SurfaceTriangulation::Objective a scoped enum
@@ -45,6 +45,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Fixed
 
+- SurfaceRemeshing: Don't leak feature properties. Spotted by Pierre Buyssens.
 - Fixed a rare bug regarding ImGui scaling on Linux.
   Thanks to Jan Erik Swiadek for reporting and fixing this!
 - Fix crash in SurfaceRemeshing when dealing with low quality meshes (#90, #89)

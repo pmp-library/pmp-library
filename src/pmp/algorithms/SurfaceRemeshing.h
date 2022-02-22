@@ -80,6 +80,8 @@ private:
     Scalar max_edge_length_;
     Scalar approx_error_;
 
+    bool has_feature_vertices_{false};
+    bool has_feature_edges_{false};
     VertexProperty<Point> points_;
     VertexProperty<Point> vnormal_;
     VertexProperty<bool> vfeature_;

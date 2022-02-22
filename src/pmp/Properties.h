@@ -21,7 +21,7 @@ public:
     BasePropertyArray(const std::string& name) : name_(name) {}
 
     //! Destructor.
-    virtual ~BasePropertyArray() {}
+    virtual ~BasePropertyArray() = default;
 
     //! Reserve memory for n elements.
     virtual void reserve(size_t n) = 0;
@@ -55,10 +55,10 @@ template <class T>
 class PropertyArray : public BasePropertyArray
 {
 public:
-    typedef T ValueType;
-    typedef std::vector<ValueType> VectorType;
-    typedef typename VectorType::reference reference;
-    typedef typename VectorType::const_reference const_reference;
+    using ValueType = T;
+    using VectorType = std::vector<ValueType>;
+    using reference = typename VectorType::reference;
+    using const_reference = typename VectorType::const_reference;
 
     PropertyArray(const std::string& name, T t = T())
         : BasePropertyArray(name), value_(t)
@@ -83,7 +83,7 @@ public: // virtual interface of BasePropertyArray
 
     virtual BasePropertyArray* clone() const
     {
-        PropertyArray<T>* p = new PropertyArray<T>(name_, value_);
+        auto* p = new PropertyArray<T>(name_, value_);
         p->data_ = data_;
         return p;
     }
@@ -128,8 +128,8 @@ template <class T>
 class Property
 {
 public:
-    typedef typename PropertyArray<T>::reference reference;
-    typedef typename PropertyArray<T>::const_reference const_reference;
+    using reference = typename PropertyArray<T>::reference;
+    using const_reference = typename PropertyArray<T>::const_reference;
 
     friend class PropertyContainer;
     friend class SurfaceMesh;
@@ -186,7 +186,7 @@ class PropertyContainer
 {
 public:
     // default constructor
-    PropertyContainer() : size_(0) {}
+    PropertyContainer() = default;
 
     // destructor (deletes all property arrays)
     virtual ~PropertyContainer() { clear(); }
@@ -218,8 +218,8 @@ public:
     std::vector<std::string> properties() const
     {
         std::vector<std::string> names;
-        for (size_t i = 0; i < parrays_.size(); ++i)
-            names.push_back(parrays_[i]->name());
+        for (auto parray : parrays_)
+            names.push_back(parray->name());
         return names;
     }
 
@@ -228,9 +228,9 @@ public:
     Property<T> add(const std::string& name, const T t = T())
     {
         // if a property with this name already exists, return an invalid property
-        for (size_t i = 0; i < parrays_.size(); ++i)
+        for (auto& parray : parrays_)
         {
-            if (parrays_[i]->name() == name)
+            if (parray->name() == name)
             {
                 std::cerr << "[PropertyContainer] A property with name \""
                           << name
@@ -240,7 +240,7 @@ public:
         }
 
         // otherwise add the property
-        PropertyArray<T>* p = new PropertyArray<T>(name, t);
+        auto* p = new PropertyArray<T>(name, t);
         p->resize(size_);
         parrays_.push_back(p);
         return Property<T>(p);
@@ -249,8 +249,8 @@ public:
     // do we have a property with a given name?
     bool exists(const std::string& name) const
     {
-        for (size_t i = 0; i < parrays_.size(); ++i)
-            if (parrays_[i]->name() == name)
+        for (auto parray : parrays_)
+            if (parray->name() == name)
                 return true;
         return false;
     }
@@ -259,10 +259,9 @@ public:
     template <class T>
     Property<T> get(const std::string& name) const
     {
-        for (size_t i = 0; i < parrays_.size(); ++i)
-            if (parrays_[i]->name() == name)
-                return Property<T>(
-                    dynamic_cast<PropertyArray<T>*>(parrays_[i]));
+        for (auto parray : parrays_)
+            if (parray->name() == name)
+                return Property<T>(dynamic_cast<PropertyArray<T>*>(parray));
         return Property<T>();
     }
 
@@ -279,9 +278,9 @@ public:
     // get the type of property by its name. returns typeid(void) if it does not exist.
     const std::type_info& get_type(const std::string& name)
     {
-        for (size_t i = 0; i < parrays_.size(); ++i)
-            if (parrays_[i]->name() == name)
-                return parrays_[i]->type();
+        for (auto& parray : parrays_)
+            if (parray->name() == name)
+                return parray->type();
         return typeid(void);
     }
 
@@ -289,8 +288,7 @@ public:
     template <class T>
     void remove(Property<T>& h)
     {
-        std::vector<BasePropertyArray*>::iterator it = parrays_.begin(),
-                                                  end = parrays_.end();
+        auto it = parrays_.begin(), end = parrays_.end();
         for (; it != end; ++it)
         {
             if (*it == h.parray_)
@@ -306,8 +304,8 @@ public:
     // delete all properties
     void clear()
     {
-        for (size_t i = 0; i < parrays_.size(); ++i)
-            delete parrays_[i];
+        for (auto& parray : parrays_)
+            delete parray;
         parrays_.clear();
         size_ = 0;
     }
@@ -315,43 +313,43 @@ public:
     // reserve memory for n entries in all arrays
     void reserve(size_t n) const
     {
-        for (size_t i = 0; i < parrays_.size(); ++i)
-            parrays_[i]->reserve(n);
+        for (auto parray : parrays_)
+            parray->reserve(n);
     }
 
     // resize all arrays to size n
     void resize(size_t n)
     {
-        for (size_t i = 0; i < parrays_.size(); ++i)
-            parrays_[i]->resize(n);
+        for (auto& parray : parrays_)
+            parray->resize(n);
         size_ = n;
     }
 
     // free unused space in all arrays
     void free_memory() const
     {
-        for (size_t i = 0; i < parrays_.size(); ++i)
-            parrays_[i]->free_memory();
+        for (auto parray : parrays_)
+            parray->free_memory();
     }
 
     // add a new element to each vector
     void push_back()
     {
-        for (size_t i = 0; i < parrays_.size(); ++i)
-            parrays_[i]->push_back();
+        for (auto& parray : parrays_)
+            parray->push_back();
         ++size_;
     }
 
     // swap elements i0 and i1 in all arrays
     void swap(size_t i0, size_t i1) const
     {
-        for (size_t i = 0; i < parrays_.size(); ++i)
-            parrays_[i]->swap(i0, i1);
+        for (auto parray : parrays_)
+            parray->swap(i0, i1);
     }
 
 private:
     std::vector<BasePropertyArray*> parrays_;
-    size_t size_;
+    size_t size_{0};
 };
 
 } // namespace pmp

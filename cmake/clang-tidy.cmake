@@ -11,7 +11,4 @@ else()
 endif()
 
 # and assemble command to be run through CXX_CLANG_TIDY target property
-set(CLANG_TIDY_COMMAND
-    "${CLANG_TIDY_EXE}"
-    "-checks=-*,modernize-*,-modernize-use-trailing-return-type,-modernize-avoid-c-arrays"
-)
+set(CLANG_TIDY_COMMAND "${CLANG_TIDY_EXE}")

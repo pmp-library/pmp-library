@@ -126,7 +126,7 @@ void SurfaceCurvature::analyze_tensor(unsigned int post_smoothing_steps,
     auto evec = mesh_.add_edge_property<dvec3>("curv:evec", dvec3(0, 0, 0));
     auto angle = mesh_.add_edge_property<double>("curv:angle", 0.0);
 
-    dvec3 p0, p1, n0, n1, ev;
+    dvec3 n0, n1, ev;
     double l, A, beta, a1, a2, a3;
     dmat3 tensor;
 

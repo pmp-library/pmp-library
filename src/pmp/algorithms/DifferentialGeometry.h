@@ -94,12 +94,12 @@ Scalar angle_sum(const SurfaceMesh& mesh, Vertex v);
 //! discrete curvature information for a vertex. used for vertex_curvature()
 struct VertexCurvature
 {
-    VertexCurvature() : mean(0.0), gauss(0.0), max(0.0), min(0.0) {}
+    VertexCurvature() = default;
 
-    Scalar mean;
-    Scalar gauss;
-    Scalar max;
-    Scalar min;
+    Scalar mean{0.0};
+    Scalar gauss{0.0};
+    Scalar max{0.0};
+    Scalar min{0.0};
 };
 
 //! compute min, max, mean, and Gaussian curvature for vertex v. this will not

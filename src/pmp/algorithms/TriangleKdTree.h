@@ -37,7 +37,7 @@ private:
     // triangle stores corners and face handle
     struct Triangle
     {
-        Triangle() {}
+        Triangle() = default;
         Triangle(const Point& x0, const Point& x1, const Point& x2, Face ff)
         {
             x[0] = x0;
@@ -51,12 +51,12 @@ private:
     };
 
     // vector of Triangle
-    typedef std::vector<Triangle> Triangles;
+    using Triangles = std::vector<Triangle>;
 
     // Node of the tree: contains parent, children and splitting plane
     struct Node
     {
-        Node() : faces(nullptr), left_child(nullptr), right_child(nullptr){};
+        Node() = default;
 
         ~Node()
         {
@@ -67,9 +67,9 @@ private:
 
         unsigned char axis;
         Scalar split;
-        Triangles* faces;
-        Node* left_child;
-        Node* right_child;
+        Triangles* faces{nullptr};
+        Node* left_child{nullptr};
+        Node* right_child{nullptr};
     };
 
     // Recursive part of build()

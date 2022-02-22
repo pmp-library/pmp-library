@@ -100,7 +100,7 @@ private:
     bool link();
 
     //! id of the linked shader program
-    GLint pid_;
+    GLint pid_{0};
 
     //! id of the vertex shader
     std::vector<GLint> shaders_;

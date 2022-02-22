@@ -75,7 +75,7 @@ private:
     };
 
     // priority queue using geodesic distance as sorting criterion
-    typedef std::set<Vertex, VertexCmp> PriorityQueue;
+    using PriorityQueue = std::set<Vertex, VertexCmp>;
 
     // virtual edges for walking through obtuse triangles
     struct VirtualEdge
@@ -86,7 +86,7 @@ private:
     };
 
     // set for storing virtual edges
-    typedef std::map<Halfedge, VirtualEdge> VirtualEdges;
+    using VirtualEdges = std::map<Halfedge, VirtualEdge>;
 
     void find_virtual_edges();
     unsigned int init_front(const std::vector<Vertex>& seed,

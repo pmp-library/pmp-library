@@ -13,7 +13,7 @@ template <class HeapEntry, class HeapInterface>
 class Heap : private std::vector<HeapEntry>
 {
 public:
-    typedef Heap<HeapEntry, HeapInterface> This;
+    using This = Heap<HeapEntry, HeapInterface>;
 
     //! Constructor
     Heap() : HeapVector() {}
@@ -22,7 +22,7 @@ public:
     Heap(const HeapInterface& i) : HeapVector(), interface_(i) {}
 
     //! Destructor.
-    ~Heap(){};
+    ~Heap() = default;
 
     //! clear the heap
     void clear() { HeapVector::clear(); }
@@ -133,10 +133,9 @@ public:
     }
 
 private:
-    // typedef
-    typedef std::vector<HeapEntry> HeapVector;
+    using HeapVector = std::vector<HeapEntry>;
 
-    //! Upheap. Establish heap property.
+    // Upheap. Establish heap property.
     void upheap(unsigned int idx)
     {
         HeapEntry h = entry(idx);
@@ -151,7 +150,7 @@ private:
         entry(idx, h);
     }
 
-    //! Downheap. Establish heap property.
+    // Downheap. Establish heap property.
     void downheap(unsigned int idx)
     {
         HeapEntry h = entry(idx);
@@ -178,14 +177,14 @@ private:
         entry(idx, h);
     }
 
-    //! Get the entry at index idx
+    // Get the entry at index idx
     inline HeapEntry entry(unsigned int idx)
     {
         assert(idx < size());
         return (This::operator[](idx));
     }
 
-    //! Set entry H to index idx and update H's heap position.
+    // Set entry H to index idx and update H's heap position.
     inline void entry(unsigned int idx, HeapEntry h)
     {
         assert(idx < size());
@@ -193,16 +192,16 @@ private:
         interface_.set_heap_position(h, idx);
     }
 
-    //! Get parent's index
+    // Get parent's index
     inline unsigned int parent(unsigned int i) { return (i - 1) >> 1; }
 
-    //! Get left child's index
+    // Get left child's index
     inline unsigned int left(unsigned int i) { return (i << 1) + 1; }
 
-    //! Get right child's index
+    // Get right child's index
     inline unsigned int right(unsigned int i) { return (i << 1) + 2; }
 
-    //! Instance of HeapInterface
+    // Instance of HeapInterface
     HeapInterface interface_;
 };
 

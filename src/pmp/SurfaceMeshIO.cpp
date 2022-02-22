@@ -431,7 +431,7 @@ void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
 {
     IndexType i, j, idx(0);
     IndexType nv(0), nf(0), ne(0);
-    Point p, n, c;
+    Point p, n;
     vec2 t;
     Vertex v;
 
