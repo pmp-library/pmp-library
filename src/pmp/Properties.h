@@ -7,6 +7,7 @@
 #include <cassert>
 
 #include <string>
+#include <utility>
 #include <vector>
 #include <algorithm>
 #include <typeinfo>
@@ -18,7 +19,7 @@ class BasePropertyArray
 {
 public:
     //! Default constructor
-    BasePropertyArray(const std::string& name) : name_(name) {}
+    BasePropertyArray(std::string name) : name_(std::move(name)) {}
 
     //! Destructor.
     virtual ~BasePropertyArray() = default;
@@ -60,8 +61,8 @@ public:
     using reference = typename VectorType::reference;
     using const_reference = typename VectorType::const_reference;
 
-    PropertyArray(const std::string& name, T t = T())
-        : BasePropertyArray(name), value_(t)
+    PropertyArray(std::string name, T t = T())
+        : BasePropertyArray(std::move(name)), value_(std::move(t))
     {
     }
 
