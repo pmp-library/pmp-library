@@ -10,6 +10,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Added
 
+- Add support for texture seams in SurfaceSimplification, thanks to Timo Menzel.
 - Add quad/tri subdivision, thanks to Hendrik Meyer.
 - Add SurfaceFactory class to generate basic shapes. Thanks to
   [u/lycium](https://www.reddit.com/user/lycium/) on Reddit for suggesting a
@@ -19,7 +20,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Add function to compute volume of a mesh, thanks to Xiewei Zhong
 - Add post-increment iterators and make low level functions to add elements
   public. This makes it possible to use CGAL algorithms on a PMP SurfaceMesh.
-  Thanks to @afabri for contributing the changes!
+  Thanks to Andreas Fabri for contributing the changes!
 - Add PMP_INSTALL option to CMake.
 - Add PMP_BUILD_VIS CMake option to enable / disable building the pmp_vis
   library and its dependencies.
