@@ -21,10 +21,10 @@ public:
     SurfaceMeshGL();
 
     //! default destructor
-    ~SurfaceMeshGL();
+    ~SurfaceMeshGL() override;
 
     //! clear mesh: remove all vertices, edges, faces, free OpenGL buffers
-    virtual void clear() override;
+    void clear() override;
 
     //! get front color
     const vec3& front_color() const { return front_color_; }

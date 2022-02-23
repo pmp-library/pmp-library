@@ -67,29 +67,29 @@ public:
     }
 
 public: // virtual interface of BasePropertyArray
-    virtual void reserve(size_t n) { data_.reserve(n); }
+    void reserve(size_t n) override { data_.reserve(n); }
 
-    virtual void resize(size_t n) { data_.resize(n, value_); }
+    void resize(size_t n) override { data_.resize(n, value_); }
 
-    virtual void push_back() { data_.push_back(value_); }
+    void push_back() override { data_.push_back(value_); }
 
-    virtual void free_memory() { data_.shrink_to_fit(); }
+    void free_memory() override { data_.shrink_to_fit(); }
 
-    virtual void swap(size_t i0, size_t i1)
+    void swap(size_t i0, size_t i1) override
     {
         T d(data_[i0]);
         data_[i0] = data_[i1];
         data_[i1] = d;
     }
 
-    virtual BasePropertyArray* clone() const
+    BasePropertyArray* clone() const override
     {
         auto* p = new PropertyArray<T>(name_, value_);
         p->data_ = data_;
         return p;
     }
 
-    virtual const std::type_info& type() { return typeid(T); }
+    const std::type_info& type() override { return typeid(T); }
 
 public:
     //! Get pointer to array (does not work for T==bool)
