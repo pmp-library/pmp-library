@@ -33,7 +33,7 @@ public:
 protected:
     //! this function is called when the scene has to be rendered. it
     //! clears the buffers, calls the draw() method, and performs buffer swap
-    void display(void) override;
+    void display() override;
 
     //! this function handles keyboard events
     void keyboard(int key, int code, int action, int mods) override;

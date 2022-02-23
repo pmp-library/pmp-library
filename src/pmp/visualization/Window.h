@@ -44,7 +44,7 @@ private:
 protected:
     //! this function is called when the scene has to be rendered. it
     //! clears the buffers, calls the draw() method, and performs buffer swap
-    virtual void display(void) = 0;
+    virtual void display() = 0;
 
     //! this function handles keyboard events
     virtual void keyboard(int /*key*/, int /*code*/, int /*action*/,
