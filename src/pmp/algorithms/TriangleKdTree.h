@@ -46,7 +46,7 @@ private:
             f = ff;
         }
 
-        Point x[3];
+        std::array<Point, 3> x;
         Face f;
     };
 

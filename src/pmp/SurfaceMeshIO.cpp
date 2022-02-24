@@ -94,7 +94,7 @@ void SurfaceMeshIO::write(const SurfaceMesh& mesh)
 
 void SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
 {
-    char s[200];
+    std::array<char, 200> s;
     float x, y, z;
     std::vector<Vertex> vertices;
     std::vector<TexCoord> all_tex_coords; //individual texture coordinates
@@ -110,28 +110,28 @@ void SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
         throw IOException("Failed to open file: " + filename_);
 
     // clear line once
-    memset(&s, 0, 200);
+    memset(s.data(), 0, 200);
 
     // parse line by line (currently only supports vertex positions & faces
-    while (in && !feof(in) && fgets(s, 200, in))
+    while (in && !feof(in) && fgets(s.data(), 200, in))
     {
         // comment
         if (s[0] == '#' || isspace(s[0]))
             continue;
 
         // vertex
-        else if (strncmp(s, "v ", 2) == 0)
+        else if (strncmp(s.data(), "v ", 2) == 0)
         {
-            if (sscanf(s, "v %f %f %f", &x, &y, &z))
+            if (sscanf(s.data(), "v %f %f %f", &x, &y, &z))
             {
                 mesh.add_vertex(Point(x, y, z));
             }
         }
 
         // normal
-        else if (strncmp(s, "vn ", 3) == 0)
+        else if (strncmp(s.data(), "vn ", 3) == 0)
         {
-            if (sscanf(s, "vn %f %f %f", &x, &y, &z))
+            if (sscanf(s.data(), "vn %f %f %f", &x, &y, &z))
             {
                 // problematic as it can be either a vertex property when interpolated
                 // or a halfedge property for hard edges
@@ -139,20 +139,20 @@ void SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
         }
 
         // texture coordinate
-        else if (strncmp(s, "vt ", 3) == 0)
+        else if (strncmp(s.data(), "vt ", 3) == 0)
         {
-            if (sscanf(s, "vt %f %f", &x, &y))
+            if (sscanf(s.data(), "vt %f %f", &x, &y))
             {
                 all_tex_coords.emplace_back(x, y);
             }
         }
 
         // face
-        else if (strncmp(s, "f ", 2) == 0)
+        else if (strncmp(s.data(), "f ", 2) == 0)
         {
             int component(0), nv(0);
             bool end_of_vertex(false);
-            char *p0, *p1(s + 1);
+            char *p0, *p1(s.data() + 1);
 
             vertices.clear();
             halfedge_tex_idx.clear();
@@ -245,7 +245,7 @@ void SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
             }
         }
         // clear line
-        memset(&s, 0, 200);
+        memset(s.data(), 0, 200);
     }
 
     // if there are no textures, delete texture property!
@@ -326,7 +326,7 @@ void SurfaceMeshIO::write_obj(const SurfaceMesh& mesh)
 void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                     const bool has_texcoords, const bool has_colors)
 {
-    char line[1000], *lp;
+    std::array<char, 1000> line;
     int nc;
     unsigned int i, j, items, idx;
     unsigned int nv, nf, ne;
@@ -354,8 +354,8 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     for (i = 0; i < nv && !feof(in); ++i)
     {
         // read line
-        lp = fgets(line, 1000, in);
-        lp = line;
+        auto lp = fgets(line.data(), 1000, in);
+        lp = line.data();
 
         // position
         items = sscanf(lp, "%f %f %f%n", &x, &y, &z, &nc);
@@ -405,8 +405,8 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     for (i = 0; i < nf; ++i)
     {
         // read line
-        lp = fgets(line, 1000, in);
-        lp = line;
+        auto lp = fgets(line.data(), 1000, in);
+        lp = line.data();
 
         // #vertices
         items = sscanf(lp, "%d%n", (int*)&nv, &nc);
@@ -526,7 +526,7 @@ void SurfaceMeshIO::write_off_binary(const SurfaceMesh& mesh)
 
 void SurfaceMeshIO::read_off(SurfaceMesh& mesh)
 {
-    char line[200];
+    std::array<char, 200> line;
     bool has_texcoords = false;
     bool has_normals = false;
     bool has_colors = false;
@@ -540,9 +540,9 @@ void SurfaceMeshIO::read_off(SurfaceMesh& mesh)
         throw IOException("Failed to open file: " + filename_);
 
     // read header: [ST][C][N][4][n]OFF BINARY
-    char* c = fgets(line, 200, in);
+    auto c = fgets(line.data(), 200, in);
     assert(c != nullptr);
-    c = line;
+    c = line.data();
     if (c[0] == 'S' && c[1] == 'T')
     {
         has_texcoords = true;
@@ -592,7 +592,7 @@ void SurfaceMeshIO::read_off(SurfaceMesh& mesh)
     {
         fclose(in);
         in = fopen(filename_.c_str(), "rb");
-        c = fgets(line, 200, in);
+        c = fgets(line.data(), 200, in);
         assert(c != nullptr);
     }
 
@@ -756,16 +756,16 @@ void SurfaceMeshIO::read_xyz(SurfaceMesh& mesh)
     // \todo this adds property even if no normals present. change it.
     auto vnormal = mesh.vertex_property<Normal>("v:normal");
 
-    char line[200];
+    std::array<char, 200> line;
     float x, y, z;
     float nx, ny, nz;
     int n;
     Vertex v;
 
     // read data
-    while (in && !feof(in) && fgets(line, 200, in))
+    while (in && !feof(in) && fgets(line.data(), 200, in))
     {
-        n = sscanf(line, "%f %f %f %f %f %f", &x, &y, &z, &nx, &ny, &nz);
+        n = sscanf(line.data(), "%f %f %f %f %f %f", &x, &y, &z, &nx, &ny, &nz);
         if (n >= 3)
         {
             v = mesh.add_vertex(Point(x, y, z));
@@ -791,7 +791,7 @@ void SurfaceMeshIO::read_agi(SurfaceMesh& mesh)
     auto normal = mesh.vertex_property<Normal>("v:normal");
     auto color = mesh.vertex_property<Color>("v:color");
 
-    char line[200];
+    std::array<char, 200> line;
     float x, y, z;
     float nx, ny, nz;
     float r, g, b;
@@ -799,10 +799,10 @@ void SurfaceMeshIO::read_agi(SurfaceMesh& mesh)
     Vertex v;
 
     // read data
-    while (in && !feof(in) && fgets(line, 200, in))
+    while (in && !feof(in) && fgets(line.data(), 200, in))
     {
-        n = sscanf(line, "%f %f %f %f %f %f %f %f %f", &x, &y, &z, &r, &g, &b,
-                   &nx, &ny, &nz);
+        n = sscanf(line.data(), "%f %f %f %f %f %f %f %f %f", &x, &y, &z, &r,
+                   &g, &b, &nx, &ny, &nz);
         if (n == 9)
         {
             v = mesh.add_vertex(Point(x, y, z));
@@ -995,7 +995,7 @@ private:
 
 void SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
 {
-    char line[100], *c;
+    std::array<char, 100> line;
     unsigned int i, nT(0);
     vec3 p;
     Vertex v;
@@ -1012,10 +1012,10 @@ void SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
         throw IOException("Failed to open file: " + filename_);
 
     // ASCII or binary STL?
-    c = fgets(line, 6, in);
+    auto c = fgets(line.data(), 6, in);
     PMP_ASSERT(c != nullptr);
-    const bool binary =
-        ((strncmp(line, "SOLID", 5) != 0) && (strncmp(line, "solid", 5) != 0));
+    const bool binary = ((strncmp(line.data(), "SOLID", 5) != 0) &&
+                         (strncmp(line.data(), "solid", 5) != 0));
 
     // parse binary STL
     if (binary)
@@ -1027,7 +1027,7 @@ void SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
             throw IOException("Failed to open file: " + filename_);
 
         // skip dummy header
-        n_items = fread(line, 1, 80, in);
+        n_items = fread(line.data(), 1, 80, in);
         PMP_ASSERT(n_items > 0);
 
         // read number of triangles
@@ -1037,7 +1037,7 @@ void SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
         while (nT)
         {
             // skip triangle normal
-            n_items = fread(line, 1, 12, in);
+            n_items = fread(line.data(), 1, 12, in);
             PMP_ASSERT(n_items > 0);
             // triangle's vertices
             for (i = 0; i < 3; ++i)
@@ -1064,7 +1064,7 @@ void SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
                 (vertices[1] != vertices[2]))
                 mesh.add_face(vertices);
 
-            n_items = fread(line, 1, 2, in);
+            n_items = fread(line.data(), 1, 2, in);
             PMP_ASSERT(n_items > 0);
             --nT;
         }
@@ -1074,10 +1074,10 @@ void SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
     else
     {
         // parse line by line
-        while (in && !feof(in) && fgets(line, 100, in))
+        while (in && !feof(in) && fgets(line.data(), 100, in))
         {
             // skip white-space
-            for (c = line; isspace(*c) && *c != '\0'; ++c)
+            for (c = line.data(); isspace(*c) && *c != '\0'; ++c)
             {
             };
 
@@ -1088,11 +1088,11 @@ void SurfaceMeshIO::read_stl(SurfaceMesh& mesh)
                 for (i = 0; i < 3; ++i)
                 {
                     // read line
-                    c = fgets(line, 100, in);
+                    c = fgets(line.data(), 100, in);
                     PMP_ASSERT(c != nullptr);
 
                     // skip white-space
-                    for (c = line; isspace(*c) && *c != '\0'; ++c)
+                    for (c = line.data(); isspace(*c) && *c != '\0'; ++c)
                     {
                     };
 

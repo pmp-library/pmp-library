@@ -245,10 +245,10 @@ public:
     }
 
     //! const-access as scalar array
-    const Scalar* data() const { return data_; }
+    const Scalar* data() const { return data_.data(); }
 
     //! access as scalar array
-    Scalar* data() { return data_; }
+    Scalar* data() { return data_.data(); }
 
     //! normalize matrix/vector by dividing through Frobenius/Euclidean norm
     void normalize()
@@ -318,7 +318,7 @@ public:
     }
 
 protected:
-    Scalar data_[N * M];
+    std::array<Scalar, N * M> data_;
 };
 
 //! template specialization for Vector as Nx1 matrix
@@ -1070,8 +1070,8 @@ bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
     if (iterations > 0)
     {
         // sort and return
-        int sorted[3];
-        Scalar d[3] = {A(0, 0), A(1, 1), A(2, 2)};
+        std::array<int, 3> sorted;
+        std::array<Scalar, 3> d = {A(0, 0), A(1, 1), A(2, 2)};
 
         if (d[0] > d[1])
         {
