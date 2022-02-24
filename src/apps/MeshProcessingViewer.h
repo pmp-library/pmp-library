@@ -19,5 +19,5 @@ protected:
     void keyboard(int key, int code, int action, int mod) override;
 
     //! draw the scene in different draw modes
-    virtual void process_imgui() override;
+    void process_imgui() override;
 };

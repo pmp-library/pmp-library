@@ -14,7 +14,7 @@ public:
     Viewer(const char* title, int width, int height);
 
 protected:
-    virtual void process_imgui();
+    void process_imgui() override;
 
 private:
     SurfaceSmoothing smoother_;
