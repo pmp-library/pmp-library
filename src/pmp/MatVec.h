@@ -63,10 +63,10 @@ public:
     explicit Matrix(const std::initializer_list<Matrix<Scalar, M, 1>>&& columns)
     {
         assert(columns.size() == N);
-        int j = 0, i;
+        int j{};
         for (const Matrix<Scalar, M, 1>& v : columns)
         {
-            for (i = 0; i < M; ++i)
+            for (int i = 0; i < M; ++i)
                 data_[M * j + i] = v[i];
             ++j;
         }
@@ -413,14 +413,13 @@ Matrix<Scalar, M, N> operator*(const Matrix<Scalar, M, K>& m1,
                                const Matrix<Scalar, K, N>& m2)
 {
     Matrix<Scalar, M, N> m;
-    int i, j, k;
 
-    for (i = 0; i < M; ++i)
+    for (int i = 0; i < M; ++i)
     {
-        for (j = 0; j < N; ++j)
+        for (int j = 0; j < N; ++j)
         {
             m(i, j) = Scalar(0);
-            for (k = 0; k < K; ++k)
+            for (int k = 0; k < K; ++k)
                 m(i, j) += m1(i, k) * m2(k, j);
         }
     }
@@ -434,10 +433,9 @@ Matrix<Scalar, M, N> cmult(const Matrix<Scalar, M, N>& m1,
                            const Matrix<Scalar, M, N>& m2)
 {
     Matrix<Scalar, M, N> m;
-    int i, j;
 
-    for (i = 0; i < M; ++i)
-        for (j = 0; j < N; ++j)
+    for (int i = 0; i < M; ++i)
+        for (int j = 0; j < N; ++j)
             m(i, j) = m1(i, j) * m2(i, j);
 
     return m;
@@ -1011,7 +1009,7 @@ bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
                                   Vector<Scalar, 3>& evec2,
                                   Vector<Scalar, 3>& evec3)
 {
-    unsigned int i, j;
+    unsigned int i{}, j{};
     Scalar theta, t, c, s;
     Mat3<Scalar> V = Mat3<Scalar>::identity();
     Mat3<Scalar> R;
