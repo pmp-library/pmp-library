@@ -345,14 +345,14 @@ void SurfaceSubdivision::loop()
 void SurfaceSubdivision::quad_tri()
 {
     // split each edge evenly into two parts
-    for (Edge e : mesh_.edges())
+    for (auto e : mesh_.edges())
     {
         mesh_.insert_vertex(e, 0.5f * (points_[mesh_.vertex(e, 0)] +
                                        points_[mesh_.vertex(e, 1)]));
     }
 
     // subdivide faces without repositioning
-    for (Face f : mesh_.faces())
+    for (auto f : mesh_.faces())
     {
         size_t f_val = mesh_.valence(f) / 2;
         if (f_val == 3)
@@ -392,14 +392,14 @@ void SurfaceSubdivision::quad_tri()
     auto new_pos =
         mesh_.add_vertex_property<Point>("quad_tri:new_position", Point(0));
 
-    for (Vertex v : mesh_.vertices())
+    for (auto v : mesh_.vertices())
     {
         if (mesh_.is_boundary(v))
         {
             new_pos[v] = 0.5 * points_[v];
 
             // add neighbouring vertices on boundary
-            for (Vertex vv : mesh_.vertices(v))
+            for (auto vv : mesh_.vertices(v))
             {
                 if (mesh_.is_boundary(vv))
                 {
@@ -411,7 +411,7 @@ void SurfaceSubdivision::quad_tri()
         {
             // count the number of faces and quads surrounding the vertex
             int n_faces = 0, n_quads = 0;
-            for (Face f : mesh_.faces(v))
+            for (auto f : mesh_.faces(v))
             {
                 n_faces++;
                 n_quads += mesh_.valence(f) == 4;
@@ -427,7 +427,7 @@ void SurfaceSubdivision::quad_tri()
                 double b = (1.0 - a) / n_faces;
 
                 new_pos[v] = a * points_[v];
-                for (Vertex vv : mesh_.vertices(v))
+                for (auto vv : mesh_.vertices(v))
                 {
                     new_pos[v] += b * points_[vv];
                 }
@@ -440,7 +440,7 @@ void SurfaceSubdivision::quad_tri()
                 double e = 1.0 / pow(n_faces, 2.0);
 
                 new_pos[v] = c * points_[v];
-                for (Halfedge h : mesh_.halfedges(v))
+                for (auto h : mesh_.halfedges(v))
                 {
                     new_pos[v] += d * points_[mesh_.to_vertex(h)];
                     new_pos[v] +=
@@ -455,7 +455,7 @@ void SurfaceSubdivision::quad_tri()
                 double gamma = 0.25 * alpha;
 
                 new_pos[v] = alpha * points_[v];
-                for (Halfedge h : mesh_.halfedges(v))
+                for (auto h : mesh_.halfedges(v))
                 {
                     new_pos[v] += beta * points_[mesh_.to_vertex(h)];
                     if (mesh_.valence(mesh_.face(h)) == 4)
@@ -470,7 +470,7 @@ void SurfaceSubdivision::quad_tri()
     }
 
     // apply new positions to the mesh
-    for (Vertex v : mesh_.vertices())
+    for (auto v : mesh_.vertices())
     {
         points_[v] = new_pos[v];
     }
