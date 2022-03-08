@@ -948,43 +948,47 @@ void SurfaceMeshGL::drawTriangles() const
     // draw triangles in batch sizes < 2^16
     const unsigned int nv = n_vertices_;
     const unsigned int count = 65535;
-    for (int start=0; start < nv; start += count) 
+    for (int start = 0; start < nv; start += count)
     {
         glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(3 * start * sizeof(GLfloat)));
-        if (use_normals) 
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0,
+                              (GLvoid*)(3 * start * sizeof(GLfloat)));
+        if (use_normals)
         {
             glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(3 * start * sizeof(GLfloat)));
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,
+                                  (GLvoid*)(3 * start * sizeof(GLfloat)));
         }
-        if (use_texcoords) 
+        if (use_texcoords)
         {
             glBindBuffer(GL_ARRAY_BUFFER, tex_coord_buffer_);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(2 * start * sizeof(GLfloat)));
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0,
+                                  (GLvoid*)(2 * start * sizeof(GLfloat)));
         }
-        if (use_colors) 
+        if (use_colors)
         {
             glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
-            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(3 * start * sizeof(GLfloat)));
+            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0,
+                                  (GLvoid*)(3 * start * sizeof(GLfloat)));
         }
 
-        glDrawArrays(GL_TRIANGLES, 0, std::min(nv-start, count));
+        glDrawArrays(GL_TRIANGLES, 0, std::min(nv - start, count));
     }
 
     // reset buffers
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    if (use_normals) 
+    if (use_normals)
     {
         glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
     }
-    if (use_texcoords) 
+    if (use_texcoords)
     {
         glBindBuffer(GL_ARRAY_BUFFER, tex_coord_buffer_);
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
     }
-    if (use_colors) 
+    if (use_colors)
     {
         glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
