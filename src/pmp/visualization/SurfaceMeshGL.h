@@ -159,6 +159,9 @@ private: // helpers for computing triangulation of a polygon
     void tesselate(const std::vector<vec3>& points,
                    std::vector<ivec3>& triangles);
 
+    // circumvent WebGL bug in Chrome 99
+    void drawTriangles() const;
+
 private:
     //! OpenGL buffers
     GLuint vertex_array_object_;
