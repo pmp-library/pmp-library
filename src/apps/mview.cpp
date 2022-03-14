@@ -63,7 +63,16 @@ int main(int argc, char** argv)
 
     // open window, start application
     MeshViewer viewer("MeshViewer", 800, 600, gui);
-    viewer.load_mesh(input);
+    try
+    {
+        viewer.load_mesh(input);
+    }
+    catch (...)
+    {
+        std::cerr << "Could not load mesh\n";
+        exit(1);
+    }
+
     if (texture)
     {
         viewer.load_texture(texture, GL_SRGB8);
