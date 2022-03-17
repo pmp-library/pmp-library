@@ -606,7 +606,7 @@ void SurfaceSimplification::preprocess_collapse(const CollapseData& cd)
                 }
 
                 // loop case 2
-                if (mesh_.to_vertex(mesh_.prev_halfedge(o)) ==
+                if (mesh_.to_vertex(mesh_.next_halfedge(o)) ==
                     mesh_.from_vertex(hit))
                 {
                     v2v1 = mesh_.prev_halfedge(o);
