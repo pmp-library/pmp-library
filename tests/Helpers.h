@@ -24,4 +24,7 @@ SurfaceMesh l_shape();
 // generate cone with bottom polygon removed
 SurfaceMesh open_cone();
 
+// a mesh with texcoords and texture seams
+SurfaceMesh texture_seams_mesh();
+
 } // namespace pmp
