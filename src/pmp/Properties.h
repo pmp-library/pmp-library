@@ -66,7 +66,6 @@ public:
     {
     }
 
-public: // virtual interface of BasePropertyArray
     void reserve(size_t n) override { data_.reserve(n); }
 
     void resize(size_t n) override { data_.resize(n, value_); }
@@ -91,7 +90,6 @@ public: // virtual interface of BasePropertyArray
 
     const std::type_info& type() override { return typeid(T); }
 
-public:
     //! Get pointer to array (does not work for T==bool)
     const T* data() const { return &data_[0]; }
 
@@ -135,7 +133,6 @@ public:
     friend class PropertyContainer;
     friend class SurfaceMesh;
 
-public:
     Property(PropertyArray<T>* p = nullptr) : parray_(p) {}
 
     void reset() { parray_ = nullptr; }
@@ -179,7 +176,6 @@ private:
         return *parray_;
     }
 
-private:
     PropertyArray<T>* parray_;
 };
 
