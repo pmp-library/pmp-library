@@ -41,7 +41,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Update Eigen to version 3.4.0
 - Update googletest to version 1.11.0
 - Update stb_image to version 2.26 and stb_image_writer to version 1.15.
-- Update GLFW to version 3.3.6
+- Update GLFW to version 3.3.7
 - Change CMake policy CMP0072 to "NEW" behavior preferring GLVND
 
 ### Fixed
