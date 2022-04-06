@@ -34,24 +34,8 @@ public:
     NearestNeighbor nearest(const Point& p) const;
 
 private:
-    // triangle stores corners and face handle
-    struct Triangle
-    {
-        Triangle() = default;
-        Triangle(const Point& x0, const Point& x1, const Point& x2, Face ff)
-        {
-            x[0] = x0;
-            x[1] = x1;
-            x[2] = x2;
-            f = ff;
-        }
-
-        std::array<Point, 3> x;
-        Face f;
-    };
-
-    // vector of Triangle
-    using Triangles = std::vector<Triangle>;
+    // vector of Faces
+    using Faces = std::vector<Face>;
 
     // Node of the tree: contains parent, children and splitting plane
     struct Node
@@ -67,7 +51,7 @@ private:
 
         unsigned char axis;
         Scalar split;
-        Triangles* faces{nullptr};
+        Faces* faces{nullptr};
         Node* left_child{nullptr};
         Node* right_child{nullptr};
     };
@@ -81,6 +65,8 @@ private:
                          NearestNeighbor& data) const;
 
     Node* root_;
+
+    std::vector<std::array<Point, 3>> face_points_;
 };
 
 } // namespace pmp

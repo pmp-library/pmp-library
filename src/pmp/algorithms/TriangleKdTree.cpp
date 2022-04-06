@@ -15,22 +15,24 @@ TriangleKdTree::TriangleKdTree(std::shared_ptr<const SurfaceMesh> mesh,
 {
     // init
     root_ = new Node();
-    root_->faces = new Triangles();
+    root_->faces = new Faces();
+
+    // collect faces and points
+    root_->faces->reserve(mesh->n_faces());
+    face_points_.reserve(mesh->n_faces());
     auto points = mesh->get_vertex_property<Point>("v:point");
 
-    // collect triangles
-    Triangle tri;
-    root_->faces->reserve(mesh->n_faces());
     for (const auto& f : mesh->faces())
     {
+        root_->faces->push_back(f);
+
         auto v = mesh->vertices(f);
-        tri.x[0] = points[*v];
+        const auto& p0 = points[*v];
         ++v;
-        tri.x[1] = points[*v];
+        const auto& p1 = points[*v];
         ++v;
-        tri.x[2] = points[*v];
-        tri.f = f;
-        root_->faces->push_back(tri);
+        const auto& p2 = points[*v];
+        face_points_.push_back({p0, p1, p2});
     }
 
     // call recursive helper
@@ -48,10 +50,10 @@ void TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
     BoundingBox bbox;
     for (const auto& f : *node->faces)
     {
-        for (const auto& p : f.x)
-        {
-            bbox += p;
-        }
+        const auto idx = f.idx();
+        bbox += face_points_[idx][0];
+        bbox += face_points_[idx][1];
+        bbox += face_points_[idx][2];
     }
 
     // split longest side of bounding box
@@ -68,10 +70,10 @@ void TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
 
     // create children
     auto* left = new Node();
-    left->faces = new Triangles();
+    left->faces = new Faces();
     left->faces->reserve(node->faces->size() / 2);
     auto* right = new Node();
-    right->faces = new Triangles;
+    right->faces = new Faces;
     right->faces->reserve(node->faces->size() / 2);
 
     // partition for left and right child
@@ -79,15 +81,17 @@ void TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
     {
         bool l = false, r = false;
 
-        if (f.x[0][axis] <= split)
+        const auto& pos = face_points_[f.idx()];
+
+        if (pos[0][axis] <= split)
             l = true;
         else
             r = true;
-        if (f.x[1][axis] <= split)
+        if (pos[1][axis] <= split)
             l = true;
         else
             r = true;
-        if (f.x[2][axis] <= split)
+        if (pos[2][axis] <= split)
             l = true;
         else
             r = true;
@@ -154,11 +158,12 @@ void TriangleKdTree::nearest_recurse(Node* node, const Point& point,
         for (const auto& f : *node->faces)
         {
             Point n;
-            auto d = dist_point_triangle(point, f.x[0], f.x[1], f.x[2], n);
+            const auto& pos = face_points_[f.idx()];
+            auto d = dist_point_triangle(point, pos[0], pos[1], pos[2], n);
             if (d < data.dist)
             {
                 data.dist = d;
-                data.face = f.f;
+                data.face = f;
                 data.nearest = n;
             }
         }
