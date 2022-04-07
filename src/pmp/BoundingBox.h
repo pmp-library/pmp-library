@@ -64,7 +64,7 @@ public:
     }
 
     //! Get the size of the bounding box.
-    Scalar size() const { return is_empty() ? 0.0 : distance(max_, min_); }
+    Scalar size() const { return is_empty() ? Scalar(0.0) : distance(max_, min_); }
 
 private:
     Point min_, max_;

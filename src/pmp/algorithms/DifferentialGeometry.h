@@ -12,16 +12,16 @@ namespace pmp {
 //! @{
 
 //! clamp cotangent values as if angles are in [3, 177]
-inline double clamp_cot(const double v)
+inline Scalar clamp_cot(const Scalar v)
 {
-    const double bound = 19.1; // 3 degrees
+    const Scalar bound = Scalar(19.1); // 3 degrees
     return (v < -bound ? -bound : (v > bound ? bound : v));
 }
 
 //! clamp cosine values as if angles are in [3, 177]
-inline double clamp_cos(const double v)
+inline Scalar clamp_cos(const Scalar v)
 {
-    const double bound = 0.9986; // 3 degrees
+    const Scalar bound = Scalar(0.9986); // 3 degrees
     return (v < -bound ? -bound : (v > bound ? bound : v));
 }
 

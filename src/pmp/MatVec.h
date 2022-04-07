@@ -190,14 +190,14 @@ public:
         {
             assert(m.size() == size());
             for (int i = 0; i < size(); ++i)
-                (*this)[i] = m(i);
+                (*this)[i] = static_cast<Scalar>(m(i));
         }
         else
         {
             assert(m.rows() == rows() && m.cols() == cols());
             for (int i = 0; i < rows(); ++i)
                 for (int j = 0; j < cols(); ++j)
-                    (*this)(i, j) = m(i, j);
+                    (*this)(i, j) = static_cast<Scalar>(m(i, j));
         }
         return *this;
     }
@@ -254,7 +254,7 @@ public:
     void normalize()
     {
         Scalar n = norm(*this);
-        n = (n > std::numeric_limits<Scalar>::min()) ? 1.0 / n : 0.0;
+        n = (n > std::numeric_limits<Scalar>::min()) ? Scalar(1.0) / n : Scalar(0.0);
         *this *= n;
     }
 
@@ -503,7 +503,7 @@ template <typename Scalar, typename Scalar2, int M, int N>
 inline Matrix<Scalar, M, N> operator*(const Scalar2 s,
                                       const Matrix<Scalar, M, N>& m)
 {
-    return Matrix<Scalar, M, N>(m) *= s;
+    return Matrix<Scalar, M, N>(m) *= static_cast<Scalar>(s);
 }
 
 //! scalar multiplication of matrix: m*s
@@ -511,7 +511,7 @@ template <typename Scalar, typename Scalar2, int M, int N>
 inline Matrix<Scalar, M, N> operator*(const Matrix<Scalar, M, N>& m,
                                       const Scalar2 s)
 {
-    return Matrix<Scalar, M, N>(m) *= s;
+    return Matrix<Scalar, M, N>(m) *= static_cast<Scalar>(s);
 }
 
 //! divide matrix by scalar: m/s
@@ -544,7 +544,7 @@ template <typename Scalar, int M, int N>
 inline Matrix<Scalar, M, N> normalize(const Matrix<Scalar, M, N>& m)
 {
     Scalar n = norm(m);
-    n = (n > std::numeric_limits<Scalar>::min()) ? 1.0 / n : 0.0;
+    n = (n > std::numeric_limits<Scalar>::min()) ? Scalar(1.0) / n : Scalar(0.0);
     return m * n;
 }
 
@@ -650,7 +650,7 @@ template <typename Scalar>
 Mat4<Scalar> perspective_matrix(Scalar fovy, Scalar aspect, Scalar zNear,
                                 Scalar zFar)
 {
-    Scalar t = Scalar(zNear) * tan(fovy * M_PI / 360.0);
+    Scalar t = Scalar(zNear) * tan(fovy * Scalar(M_PI / 360.0));
     Scalar b = -t;
     Scalar l = b * aspect;
     Scalar r = t * aspect;
@@ -664,7 +664,7 @@ template <typename Scalar>
 Mat4<Scalar> inverse_perspective_matrix(Scalar fovy, Scalar aspect,
                                         Scalar zNear, Scalar zFar)
 {
-    Scalar t = zNear * tan(fovy * M_PI / 360.0);
+    Scalar t = zNear * tan(fovy * Scalar(M_PI / 360.0));
     Scalar b = -t;
     Scalar l = b * aspect;
     Scalar r = t * aspect;
@@ -753,8 +753,8 @@ Mat4<Scalar> scaling_matrix(const Vector<Scalar, 3>& s)
 template <typename Scalar>
 Mat4<Scalar> rotation_matrix_x(Scalar angle)
 {
-    Scalar ca = cos(angle * (M_PI / 180.0));
-    Scalar sa = sin(angle * (M_PI / 180.0));
+    Scalar ca = cos(angle * Scalar(M_PI / 180.0));
+    Scalar sa = sin(angle * Scalar(M_PI / 180.0));
 
     Mat4<Scalar> m(0.0);
     m(0, 0) = 1.0;
@@ -771,8 +771,8 @@ Mat4<Scalar> rotation_matrix_x(Scalar angle)
 template <typename Scalar>
 Mat4<Scalar> rotation_matrix_y(Scalar angle)
 {
-    Scalar ca = cos(angle * (M_PI / 180.0));
-    Scalar sa = sin(angle * (M_PI / 180.0));
+    Scalar ca = cos(angle * Scalar(M_PI / 180.0));
+    Scalar sa = sin(angle * Scalar(M_PI / 180.0));
 
     Mat4<Scalar> m(0.0);
     m(0, 0) = ca;
@@ -789,8 +789,8 @@ Mat4<Scalar> rotation_matrix_y(Scalar angle)
 template <typename Scalar>
 Mat4<Scalar> rotation_matrix_z(Scalar angle)
 {
-    Scalar ca = cos(angle * (M_PI / 180.0));
-    Scalar sa = sin(angle * (M_PI / 180.0));
+    Scalar ca = cos(angle * Scalar(M_PI / 180.0));
+    Scalar sa = sin(angle * Scalar(M_PI / 180.0));
 
     Mat4<Scalar> m(0.0);
     m(0, 0) = ca;
@@ -808,7 +808,7 @@ template <typename Scalar>
 Mat4<Scalar> rotation_matrix(const Vector<Scalar, 3>& axis, Scalar angle)
 {
     Mat4<Scalar> m(Scalar(0));
-    Scalar a = angle * (M_PI / 180.0f);
+    Scalar a = angle * Scalar(M_PI / 180.0f);
     Scalar c = cosf(a);
     Scalar s = sinf(a);
     Scalar one_m_c = Scalar(1) - c;
