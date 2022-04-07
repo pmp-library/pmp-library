@@ -34,7 +34,7 @@ public:
     //! return mean curvature
     Scalar mean_curvature(Vertex v) const
     {
-        return 0.5 * (min_curvature_[v] + max_curvature_[v]);
+        return Scalar(0.5) * (min_curvature_[v] + max_curvature_[v]);
     }
 
     //! return Gaussian curvature

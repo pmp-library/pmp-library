@@ -46,7 +46,7 @@ public:
         // axes point in opposite directions
         else if (dp < -0.99999)
         {
-            angle_ = 2 * M_PI;
+            angle_ = Scalar(2 * M_PI);
         }
 
         else
@@ -55,10 +55,10 @@ public:
             Scalar center_angle = std::acos(dp);
             Scalar min_angle = std::min(-angle_, center_angle - nc.angle_);
             Scalar max_angle = std::max(angle_, center_angle + nc.angle_);
-            angle_ = 0.5 * (max_angle - min_angle);
+            angle_ = Scalar(0.5) * (max_angle - min_angle);
 
             // axis by SLERP
-            Scalar axis_angle = 0.5 * (min_angle + max_angle);
+            Scalar axis_angle = Scalar(0.5) * (min_angle + max_angle);
             center_normal_ =
                 ((center_normal_ * std::sin(center_angle - axis_angle) +
                   nc.center_normal_ * std::sin(axis_angle)) /
