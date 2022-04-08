@@ -17,10 +17,10 @@ int main(int argc, char** argv)
     float mean_valence = 0.0f;
 
     // loop over all vertices
-    for (auto vit : mesh.vertices())
+    for (auto v : mesh.vertices())
     {
         // sum up vertex valences
-        mean_valence += mesh.valence(vit);
+        mean_valence += mesh.valence(v);
     }
 
     mean_valence /= mesh.n_vertices();

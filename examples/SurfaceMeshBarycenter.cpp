@@ -19,10 +19,10 @@ int main(int argc, char** argv)
 
     Point p(0, 0, 0);
 
-    for (auto vit : mesh.vertices())
+    for (auto v : mesh.vertices())
     {
         // access point property like an array
-        p += points[vit];
+        p += points[v];
     }
 
     p /= mesh.n_vertices();
