@@ -55,7 +55,7 @@ private:
     };
 
     // compute optimal triangulation of hole
-    //! \throw InvalidInputException in case of a non-manifold hole.
+    // throws InvalidInputException in case of a non-manifold hole.
     void triangulate_hole(Halfedge h);
 
     // compute the weight of the triangle (i,j,k).

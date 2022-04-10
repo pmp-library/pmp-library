@@ -38,7 +38,6 @@ public:
 
 private:
     SurfaceMesh& mesh_;
-
     VertexProperty<bool> vfeature_;
     EdgeProperty<bool> efeature_;
 };
