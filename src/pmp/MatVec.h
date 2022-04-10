@@ -254,7 +254,8 @@ public:
     void normalize()
     {
         Scalar n = norm(*this);
-        n = (n > std::numeric_limits<Scalar>::min()) ? Scalar(1.0) / n : Scalar(0.0);
+        n = (n > std::numeric_limits<Scalar>::min()) ? Scalar(1.0) / n
+                                                     : Scalar(0.0);
         *this *= n;
     }
 
@@ -544,7 +545,8 @@ template <typename Scalar, int M, int N>
 inline Matrix<Scalar, M, N> normalize(const Matrix<Scalar, M, N>& m)
 {
     Scalar n = norm(m);
-    n = (n > std::numeric_limits<Scalar>::min()) ? Scalar(1.0) / n : Scalar(0.0);
+    n = (n > std::numeric_limits<Scalar>::min()) ? Scalar(1.0) / n
+                                                 : Scalar(0.0);
     return m * n;
 }
 
