@@ -113,11 +113,11 @@ public:
     //! \throw IOException in case of failure to load texture from file
     void load_matcap(const char* filename);
 
-private: // init/clear buffers and properties
+private:
     // delete OpenGL buffers (called from destructor and clear())
     void deleteBuffers();
 
-private: // helpers for computing triangulation of a polygon
+    // helpers for computing triangulation of a polygon
     struct Triangulation
     {
         Triangulation(Scalar a = std::numeric_limits<Scalar>::max(), int s = -1)
@@ -162,8 +162,7 @@ private: // helpers for computing triangulation of a polygon
     // circumvent WebGL bug in Chrome 99
     void drawTriangles() const;
 
-private:
-    //! OpenGL buffers
+    // OpenGL buffers
     GLuint vertex_array_object_;
     GLuint vertex_buffer_;
     GLuint color_buffer_;
@@ -173,7 +172,7 @@ private:
     GLuint feature_buffer_;
     GLuint seam_buffer_;
 
-    //! buffer sizes
+    // buffer sizes
     GLsizei n_vertices_;
     GLsizei n_edges_;
     GLsizei n_seams_;
@@ -182,11 +181,11 @@ private:
     bool has_texcoords_;
     bool has_vertex_colors_;
 
-    //! shaders
+    // shaders
     Shader phong_shader_;
     Shader matcap_shader_;
 
-    //! material properties
+    // material properties
     vec3 front_color_, back_color_;
     float ambient_, diffuse_, specular_, shininess_, alpha_;
     bool srgb_;
@@ -194,7 +193,7 @@ private:
     float crease_angle_;
     int point_size_;
 
-    //! 1D texture for scalar field rendering
+    // 1D texture for scalar field rendering
     GLuint texture_;
     enum TextureMode
     {

@@ -65,13 +65,12 @@ public:
     void max_curvature_to_texture_coordinates() const;
 
 private:
-    //! smooth curvature values
+    // smooth curvature values
     void smooth_curvatures(unsigned int iterations);
 
-    //! convert curvature values ("v:curv") to 1D texture coordinates
+    // convert curvature values ("v:curv") to 1D texture coordinates
     void curvature_to_texture_coordinates() const;
 
-private:
     SurfaceMesh& mesh_;
     VertexProperty<Scalar> min_curvature_;
     VertexProperty<Scalar> max_curvature_;

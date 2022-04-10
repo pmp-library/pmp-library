@@ -43,14 +43,12 @@ public:
     }
 
 private:
-    //! Initialize cotan/uniform Laplace weights.
+    // Initialize cotan/uniform Laplace weights.
     void compute_edge_weights(bool use_uniform_laplace);
 
-    //! Initialize cotan/uniform Laplace weights.
+    // Initialize cotan/uniform Laplace weights.
     void compute_vertex_weights(bool use_uniform_laplace);
 
-private:
-    //! the mesh
     SurfaceMesh& mesh_;
 
     // remember for how many vertices/edges we computed weights

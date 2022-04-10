@@ -38,8 +38,7 @@ private:
                           unsigned int laplace_degree,
                           std::map<Vertex, double>& row);
 
-private:
-    SurfaceMesh& mesh_; //!< the mesh
+    SurfaceMesh& mesh_;
 
     // property handles
     VertexProperty<Point> points_;

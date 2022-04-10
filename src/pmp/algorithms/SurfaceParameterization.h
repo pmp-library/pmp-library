@@ -28,14 +28,12 @@ public:
     void lscm();
 
 private:
-    //! setup boundary constraints: map surface boundary to unit circle
+    // setup boundary constraints: map surface boundary to unit circle
     void setup_boundary_constraints();
 
-    //! setup boundary: pin the two farthest boundary vertices
+    // setup boundary: pin the two farthest boundary vertices
     void setup_lscm_boundary();
 
-private:
-    //! the mesh
     SurfaceMesh& mesh_;
 };
 

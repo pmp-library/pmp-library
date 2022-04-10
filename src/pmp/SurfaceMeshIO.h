@@ -41,7 +41,6 @@ private:
     void write_pmp(const SurfaceMesh& mesh);
     void write_xyz(const SurfaceMesh& mesh);
 
-private:
     std::string filename_;
     IOFlags flags_;
 };

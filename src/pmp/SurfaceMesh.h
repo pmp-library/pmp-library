@@ -1689,7 +1689,8 @@ public:
     //! returns end iterator for vertices
     VertexIterator vertices_end() const
     {
-        return VertexIterator(Vertex(static_cast<IndexType>(vertices_size())), this);
+        return VertexIterator(Vertex(static_cast<IndexType>(vertices_size())),
+                              this);
     }
 
     //! returns vertex container for C++11 range-based for-loops
@@ -1707,7 +1708,8 @@ public:
     //! returns end iterator for halfedges
     HalfedgeIterator halfedges_end() const
     {
-        return HalfedgeIterator(Halfedge(static_cast<IndexType>(halfedges_size())), this);
+        return HalfedgeIterator(
+            Halfedge(static_cast<IndexType>(halfedges_size())), this);
     }
 
     //! returns halfedge container for C++11 range-based for-loops
@@ -1946,36 +1948,6 @@ public:
 
     //!@}
 
-private:
-    //! \name Connectivity Types
-    //!@{
-
-    //! This type stores the vertex connectivity
-    struct VertexConnectivity
-    {
-        //! an outgoing halfedge per vertex (it will be a boundary halfedge
-        //! for boundary vertices)
-        Halfedge halfedge_;
-    };
-
-    //! This type stores the halfedge connectivity
-    struct HalfedgeConnectivity
-    {
-        Face face_;              //!< face incident to halfedge
-        Vertex vertex_;          //!< vertex the halfedge points to
-        Halfedge next_halfedge_; //!< next halfedge
-        Halfedge prev_halfedge_; //!< previous halfedge
-    };
-
-    //! This type stores the face connectivity
-    //! \sa VertexConnectivity, HalfedgeConnectivity
-    struct FaceConnectivity
-    {
-        Halfedge halfedge_; //!< a halfedge that is part of the face
-    };
-
-    //!@}
-
 public:
     //! \name Allocate new elements
     //!@{
@@ -2058,27 +2030,40 @@ public:
     //!@}
 
 private:
-    //! \name Helper functions
-    //!@{
+    struct VertexConnectivity
+    {
+        // an outgoing halfedge per vertex (it will be a boundary halfedge
+        // for boundary vertices)
+        Halfedge halfedge_;
+    };
 
-    //! make sure that the outgoing halfedge of vertex \p v is a boundary
-    //! halfedge if \p v is a boundary vertex.
+    struct HalfedgeConnectivity
+    {
+        Face face_;              // face incident to halfedge
+        Vertex vertex_;          // vertex the halfedge points to
+        Halfedge next_halfedge_; // next halfedge
+        Halfedge prev_halfedge_; // previous halfedge
+    };
+
+    struct FaceConnectivity
+    {
+        Halfedge halfedge_; // a halfedge that is part of the face
+    };
+
+    // make sure that the outgoing halfedge of vertex \p v is a boundary
+    // halfedge if \p v is a boundary vertex.
     void adjust_outgoing_halfedge(Vertex v);
 
-    //! Helper for halfedge collapse
+    // Helper for halfedge collapse
     void remove_edge_helper(Halfedge h);
 
-    //! Helper for halfedge collapse
+    // Helper for halfedge collapse
     void remove_loop_helper(Halfedge h);
 
-    //! are there any deleted entities?
+    // are there any deleted entities?
     inline bool has_garbage() const { return has_garbage_; }
 
-    //!@}
-    //! \name Private members
-    //!@{
-
-    friend SurfaceMeshIO;
+    friend SurfaceMeshIO; // code smell
 
     // property containers for each entity type and object
     PropertyContainer oprops_;
@@ -2116,8 +2101,6 @@ private:
     std::vector<bool> add_face_is_new_;
     std::vector<bool> add_face_needs_adjust_;
     NextCache add_face_next_cache_;
-
-    //!@}
 };
 
 //!@}

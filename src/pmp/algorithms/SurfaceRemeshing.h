@@ -67,7 +67,6 @@ private:
                4.0 / 5.0 * std::min(vsizing_[v0], vsizing_[v1]);
     }
 
-private:
     SurfaceMesh& mesh_;
     std::shared_ptr<SurfaceMesh> refmesh_;
 
