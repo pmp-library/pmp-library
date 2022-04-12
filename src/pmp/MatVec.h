@@ -371,17 +371,6 @@ using ivec4 = Vector<int, 4>;
 //! template specialization for a vector of four unsigned int values
 using uvec4 = Vector<unsigned int, 4>;
 
-//! template specialization for a vector of eight float values
-using vec8 = Vector<float, 8>;
-//! template specialization for a vector of eight double values
-using dvec8 = Vector<double, 8>;
-//! template specialization for a vector of eight bool values
-using bvec8 = Vector<bool, 8>;
-//! template specialization for a vector of eight int values
-using ivec8 = Vector<int, 8>;
-//! template specialization for a vector of eight unsigned int values
-using uvec8 = Vector<unsigned int, 8>;
-
 //! template specialization for a 2x2 matrix of float values
 using mat2 = Mat2<float>;
 //! template specialization for a 2x2 matrix of double values
