@@ -259,7 +259,7 @@ function or code block.
 Give preference to C++ and STL constructs over C-style ones. Example: Use
 `std::numeric_limits<float>\:\:max()` instead of `FLT_MAX`.
 
-## Using clang-format
+## Using clang-format {#using-clang-format}
 
 Please use the [clang-format](https://clang.llvm.org/docs/ClangFormat.html) tool
 and the corresponding `.clang-format` configuration file from the repository to
