@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cassert>
 
+#include <array>
 #include <iostream>
 #include <limits>
 #include <initializer_list>
