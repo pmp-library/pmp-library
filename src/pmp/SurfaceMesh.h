@@ -1819,7 +1819,6 @@ public:
 
     //! returns whether the mesh a triangle mesh. this function simply tests
     //! each face, and therefore is not very efficient.
-    //! \sa trianglate(), triangulate(Face)
     bool is_triangle_mesh() const;
 
     //! returns whether the mesh a quad mesh. this function simply tests
