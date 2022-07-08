@@ -531,17 +531,17 @@ bool SurfaceSimplification::texcoord_check(Halfedge h)
     {
         if (texture_seams[mesh_.edge(seam2)])
         {
-            vec2 s1 = normalize(texcoords[seam1] -
+            auto s1 = normalize(texcoords[seam1] -
                                 texcoords[mesh_.prev_halfedge(seam1)]);
-            vec2 s2 = normalize(texcoords[seam2] -
+            auto s2 = normalize(texcoords[seam2] -
                                 texcoords[mesh_.prev_halfedge(seam2)]);
 
-            // oppposite uvs
+            // opposite uvs
             Halfedge o_seam1 = mesh_.opposite_halfedge(seam1);
             Halfedge o_seam2 = mesh_.opposite_halfedge(seam2);
-            vec2 o1 = normalize(texcoords[o_seam1] -
+            auto o1 = normalize(texcoords[o_seam1] -
                                 texcoords[mesh_.prev_halfedge(o_seam1)]);
-            vec2 o2 = normalize(texcoords[o_seam2] -
+            auto o2 = normalize(texcoords[o_seam2] -
                                 texcoords[mesh_.prev_halfedge(o_seam2)]);
 
             // check if the angle between the seam edge to be collapsed and the
