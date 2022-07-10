@@ -4,6 +4,10 @@ html {
   --side-nav-arrow-hover-opacity: 1;
 }
 
+#projectname {
+  white-space: revert;
+}
+
 /* github corner icon styles */
 .github-corner {
   position: absolute;
