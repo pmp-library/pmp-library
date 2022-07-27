@@ -657,7 +657,6 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     // we need some texture, otherwise WebGL complains
     if (!texture_)
     {
-        //use_cold_warm_texture();
         use_checkerboard_texture();
     }
 
