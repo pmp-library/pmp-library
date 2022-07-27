@@ -653,7 +653,7 @@ public:
         //! post-increment (rotate counter-clockwise)
         VertexAroundVertexCirculator operator++(int)
         {
-            auto tmp = (*this);
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -669,7 +669,7 @@ public:
         //! post-decrement (rotate clockwise)
         VertexAroundVertexCirculator operator--(int)
         {
-            auto tmp = (*this);
+            auto tmp = *this;
             --(*this);
             return tmp;
         }
@@ -753,7 +753,7 @@ public:
         //! post-increment (rotate counter-clockwise)
         HalfedgeAroundVertexCirculator operator++(int)
         {
-            auto tmp = (*this);
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -769,7 +769,7 @@ public:
         //! post-decrement (rotate clockwise)
         HalfedgeAroundVertexCirculator operator--(int)
         {
-            auto tmp = (*this);
+            auto tmp = *this;
             --(*this);
             return tmp;
         }
@@ -853,7 +853,7 @@ public:
         //! post-increment (rotate counter-clockwise)
         FaceAroundVertexCirculator operator++(int)
         {
-            auto tmp = (*this);
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -871,7 +871,7 @@ public:
         //! post-decrement (rotate clockwise)
         FaceAroundVertexCirculator operator--(int)
         {
-            auto tmp = (*this);
+            auto tmp = *this;
             --(*this);
             return tmp;
         }
@@ -952,7 +952,7 @@ public:
         //! post-increment (rotate counter-clockwise)
         VertexAroundFaceCirculator operator++(int)
         {
-            auto tmp = (*this);
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -968,7 +968,7 @@ public:
         //! post-decrement (rotate clockwise)
         VertexAroundFaceCirculator operator--(int)
         {
-            auto tmp = (*this);
+            auto tmp = *this;
             --(*this);
             return tmp;
         }
@@ -1046,7 +1046,7 @@ public:
         //! post-increment (rotate counter-clockwise)
         HalfedgeAroundFaceCirculator operator++(int)
         {
-            auto tmp = (*this);
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -1062,7 +1062,7 @@ public:
         //! post-decrement (rotate clockwise)
         HalfedgeAroundFaceCirculator operator--(int)
         {
-            auto tmp = (*this);
+            auto tmp = *this;
             --(*this);
             return tmp;
         }
