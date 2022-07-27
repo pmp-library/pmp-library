@@ -191,7 +191,7 @@ private:
     bool srgb_;
     bool use_colors_;
     float crease_angle_;
-    int point_size_;
+    float point_size_;
 
     // 1D texture for scalar field rendering
     GLuint texture_;

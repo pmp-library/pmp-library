@@ -678,7 +678,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     phong_shader_.set_uniform("modelview_projection_matrix", mvp_matrix);
     phong_shader_.set_uniform("modelview_matrix", mv_matrix);
     phong_shader_.set_uniform("normal_matrix", n_matrix);
-    phong_shader_.set_uniform("point_size", (float)point_size_);
+    phong_shader_.set_uniform("point_size", point_size_);
     phong_shader_.set_uniform("light1", vec3(1.0, 1.0, 1.0));
     phong_shader_.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
     phong_shader_.set_uniform("front_color", front_color_);
