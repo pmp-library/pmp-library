@@ -19,7 +19,7 @@ class BasePropertyArray
 {
 public:
     //! Default constructor
-    BasePropertyArray(std::string name) : name_(std::move(name)) {}
+    explicit BasePropertyArray(std::string name) : name_(std::move(name)) {}
 
     //! Destructor.
     virtual ~BasePropertyArray() = default;
@@ -133,11 +133,11 @@ public:
     friend class PropertyContainer;
     friend class SurfaceMesh;
 
-    Property(PropertyArray<T>* p = nullptr) : parray_(p) {}
+    explicit Property(PropertyArray<T>* p = nullptr) : parray_(p) {}
 
     void reset() { parray_ = nullptr; }
 
-    operator bool() const { return parray_ != nullptr; }
+    explicit operator bool() const { return parray_ != nullptr; }
 
     reference operator[](size_t i)
     {

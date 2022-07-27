@@ -39,11 +39,11 @@ TEST(SurfaceSimplificationTest, simplification_with_features)
 TEST(SurfaceSimplificationTest, simplification_texture_mesh)
 {
     SurfaceMesh mesh = texture_seams_mesh();
-    
+
     // if the test mesh does not have texcoords,
     // this test won't work
-    ASSERT_EQ(mesh.get_halfedge_property<TexCoord>("h:tex"), 1);
-    
+    ASSERT_TRUE(mesh.has_halfedge_property("h:tex"));
+
     SurfaceSimplification ss(mesh);
     ss.initialize(10.0,  // aspect ratio
                   0.0,   // edge length
@@ -57,8 +57,8 @@ TEST(SurfaceSimplificationTest, simplification_texture_mesh)
 
     size_t seam_edges = 0;
     auto seams = mesh.get_edge_property<bool>("e:seam");
-    for(auto e : mesh.edges())
-        if(seams[e])
+    for (auto e : mesh.edges())
+        if (seams[e])
             seam_edges++;
 
     // test loop case 2
