@@ -1947,7 +1947,6 @@ public:
 
     //!@}
 
-public:
     //! \name Allocate new elements
     //!@{
 
