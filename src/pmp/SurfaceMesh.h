@@ -1228,15 +1228,13 @@ public:
     //! \sa garbage_collection()
     bool is_deleted(Face f) const { return fdeleted_[f]; }
 
-    //! \return whether vertex \p v is valid, i.e. the index is stores
-    //! it within the array bounds.
+    //! \return whether vertex \p v is valid.
     bool is_valid(Vertex v) const { return v.idx() < vertices_size(); }
 
-    //! \return whether halfedge \p h is valid, i.e. the index is stores it
-    //! within the array bounds.
+    //! \return whether halfedge \p h is valid.
     bool is_valid(Halfedge h) const { return h.idx() < halfedges_size(); }
 
-    //! \return whether edge \p e is valid, i.e. the index is stores it within the array bounds.
+    //! \return whether edge \p e is valid.
     bool is_valid(Edge e) const { return e.idx() < edges_size(); }
 
     //! \return whether the face \p f is valid.
