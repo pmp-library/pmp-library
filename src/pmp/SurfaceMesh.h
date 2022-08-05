@@ -1271,7 +1271,8 @@ public:
         // The vertex is non-manifold if more than one gap exists, i.e.
         // more than one outgoing boundary halfedge.
         int n(0);
-        HalfedgeAroundVertexCirculator hit = halfedges(v), hend = hit;
+        auto hit = halfedges(v);
+        auto hend = hit;
         if (hit)
             do
             {
