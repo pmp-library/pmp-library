@@ -1441,7 +1441,7 @@ public:
     //! get the type_info \p T of object property named \p name. returns an
     //! typeid(void) if the property does not exist or if the type does not
     //! match.
-    const std::type_info& get_object_propertyType(const std::string& name)
+    const std::type_info& get_object_property_type(const std::string& name)
     {
         return oprops_.get_type(name);
     }

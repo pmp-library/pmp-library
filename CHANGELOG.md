@@ -46,6 +46,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Fixed
 
+- Fix `SurfaceMesh::get_object_propertyType()` to `get_object_property_type()`
 - SurfaceRemeshing: Don't leak feature properties. Spotted by Pierre Buyssens.
 - Fixed a rare bug regarding ImGui scaling on Linux.
   Thanks to Jan Erik Swiadek for reporting and fixing this!
