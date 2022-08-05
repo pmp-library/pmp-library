@@ -1198,7 +1198,7 @@ void SurfaceMesh::garbage_collection()
 
             // swap
             vprops_.swap(i0, i1);
-        };
+        }
 
         // remember new size
         nV = vdeleted_[Vertex(i0)] ? i0 : i0 + 1;
@@ -1224,7 +1224,7 @@ void SurfaceMesh::garbage_collection()
             eprops_.swap(i0, i1);
             hprops_.swap(2 * i0, 2 * i1);
             hprops_.swap(2 * i0 + 1, 2 * i1 + 1);
-        };
+        }
 
         // remember new size
         nE = edeleted_[Edge(i0)] ? i0 : i0 + 1;
@@ -1249,7 +1249,7 @@ void SurfaceMesh::garbage_collection()
 
             // swap
             fprops_.swap(i0, i1);
-        };
+        }
 
         // remember new size
         nF = fdeleted_[Face(i0)] ? i0 : i0 + 1;
