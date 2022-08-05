@@ -551,7 +551,8 @@ public:
         VertexIterator end() const { return end_; }
 
     private:
-        VertexIterator begin_, end_;
+        VertexIterator begin_;
+        VertexIterator end_;
     };
 
     //! helper class for iterating through all halfedges using range-based
@@ -567,7 +568,8 @@ public:
         HalfedgeIterator end() const { return end_; }
 
     private:
-        HalfedgeIterator begin_, end_;
+        HalfedgeIterator begin_;
+        HalfedgeIterator end_;
     };
 
     //! helper class for iterating through all edges using range-based
@@ -583,7 +585,8 @@ public:
         EdgeIterator end() const { return end_; }
 
     private:
-        EdgeIterator begin_, end_;
+        EdgeIterator begin_;
+        EdgeIterator end_;
     };
 
     //! helper class for iterating through all faces using range-based
@@ -599,7 +602,8 @@ public:
         FaceIterator end() const { return end_; }
 
     private:
-        FaceIterator begin_, end_;
+        FaceIterator begin_;
+        FaceIterator end_;
     };
 
     //!@}
