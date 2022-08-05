@@ -1438,7 +1438,7 @@ public:
         oprops_.remove(p);
     }
 
-    //! get the type_info \p T of face property named \p name. returns an
+    //! get the type_info \p T of object property named \p name. returns an
     //! typeid(void) if the property does not exist or if the type does not
     //! match.
     const std::type_info& get_object_propertyType(const std::string& name)
@@ -1446,7 +1446,7 @@ public:
         return oprops_.get_type(name);
     }
 
-    //! \return the names of all face properties
+    //! \return the names of all object properties
     std::vector<std::string> object_properties() const
     {
         return oprops_.properties();
