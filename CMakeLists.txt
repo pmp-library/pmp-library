@@ -1,5 +1,9 @@
 cmake_policy(SET CMP0048 NEW)
-project(pmp-library VERSION 1.2.1)
+project(
+  pmp-library
+  VERSION 1.2.1
+  DESCRIPTION "The Polygon Mesh Processing Library"
+  HOMEPAGE_URL "https://www.pmp-library.org")
 cmake_minimum_required(VERSION 3.16.3)
 cmake_policy(SET CMP0072 NEW)
 
