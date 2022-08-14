@@ -20,14 +20,14 @@ with the following compilers and operating systems:
 
 Some parts of the pmp-library depend on the following third-party libraries:
 
-| Library                                             | Description                       | Version        |
-| --------------------------------------------------- | --------------------------------- | -------------- |
-| [Eigen](http://eigen.tuxfamily.org)                 | C++ linear algebra library        | &ge; 3.4.0     |
-| [OpenGL](http://opengl.org)                         | Open Graphics Library             | &ge; 3.3       |
-| [GLEW](http://glew.sourceforge.net)                 | OpenGL Extension Wrangler Library | &ge; 2.1.0     |
-| [GLFW](http://glfw.org)                             | Graphics Library Framework        | &ge; 3.3       |
-| [ImGui](https://github.com/ocornut/imgui)           | Immediate Mode GUI                | &ge; 1.70      |
-| [Google Test](https://github.com/google/googletest) | C++ Test Framework                | &ge; 1.11.0    |
+| Library                                             | Description                       | Version     |
+| --------------------------------------------------- | --------------------------------- | ----------- |
+| [Eigen](http://eigen.tuxfamily.org)                 | C++ linear algebra library        | &ge; 3.4.0  |
+| [OpenGL](http://opengl.org)                         | Open Graphics Library             | &ge; 3.3    |
+| [GLEW](http://glew.sourceforge.net)                 | OpenGL Extension Wrangler Library | &ge; 2.1.0  |
+| [GLFW](http://glfw.org)                             | Graphics Library Framework        | &ge; 3.3.8  |
+| [ImGui](https://github.com/ocornut/imgui)           | Immediate Mode GUI                | &ge; 1.70   |
+| [Google Test](https://github.com/google/googletest) | C++ Test Framework                | &ge; 1.12.1 |
 
 By default, we include the corresponding libraries using git submodules. Note
 that OpenGL and related dependencies are optional. They are only needed if you
