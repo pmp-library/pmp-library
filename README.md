@@ -2,6 +2,7 @@
 
 [![build](https://github.com/pmp-library/pmp-library/workflows/build/badge.svg)](https://github.com/pmp-library/pmp-library/actions?query=workflow%3Abuild)
 [![Coverage Status](https://coveralls.io/repos/github/pmp-library/pmp-library/badge.svg?branch=master)](https://coveralls.io/github/pmp-library/pmp-library?branch=master)
+[![Latest Release](https://img.shields.io/github/v/release/pmp-library/pmp-library?sort=semver)](https://github.com/pmp-library/pmp-library/releases/latest)
 
 The Polygon Mesh Processing Library is a modern C++ open-source library for processing and visualizing polygon surface meshes. Its main features are:
 
@@ -10,7 +11,7 @@ The Polygon Mesh Processing Library is a modern C++ open-source library for proc
 - Ready-to-use visualization tools
 - Seamless cross-compilation to JavaScript ([demo](https://www.pmp-library.org/mpview.html))
 
-## Getting Started
+## Get Started
 
 Clone the repository:
 
@@ -44,13 +45,13 @@ int main(void)
 }
 ```
 
-## Contributing
+## Contribute
 
-Contributions to the pmp-library are welcome. See the [contributing](https://www.pmp-library.org/contributing.html) section of the [user guide](https://www.pmp-library.org/userguide.html).
+Contributions to PMP are welcome. See the [contributing](https://www.pmp-library.org/contributing.html) section of the [user guide](https://www.pmp-library.org/userguide.html).
 
-## Acknowledgment
+## Acknowledge
 
-If you are using the pmp-library for research projects, please acknowledge its use by referencing
+If you are using PMP for research projects, please acknowledge its use by referencing
 
 ```tex
 @misc{pmp-library,
@@ -61,6 +62,8 @@ year   = {2019},
 }
 ```
 
+We acknowledge that PMP evolved from our previous work on Surface_mesh \cite sieger_2011_design and OpenMesh \cite botsch_2002_openmesh.
+
 ## License
 
-The pmp-library is provided under a simple and flexible MIT-style [license](https://github.com/pmp-library/pmp-library/blob/master/LICENSE.txt) allowing for both open-source and commercial usage.
+PMP is provided under a simple and flexible MIT-style [license](https://github.com/pmp-library/pmp-library/blob/master/LICENSE.txt) allowing for both open-source and commercial usage.
