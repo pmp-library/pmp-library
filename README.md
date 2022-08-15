@@ -62,7 +62,7 @@ year   = {2019},
 }
 ```
 
-We acknowledge that PMP evolved from our previous work on Surface_mesh \cite sieger_2011_design and OpenMesh \cite botsch_2002_openmesh.
+We acknowledge that PMP evolved from our previous work on [Surface_mesh](http://dx.doi.org/10.1007/978-3-642-24734-7_29) and [OpenMesh](https://pub.uni-bielefeld.de/record/1961694).
 
 ## License
 
