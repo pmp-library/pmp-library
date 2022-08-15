@@ -10,34 +10,29 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Added
 
-- Add support for texture seams in SurfaceSimplification, thanks to Timo Menzel.
+- Add support for texture seams in `SurfaceSimplification`, thanks to Timo Menzel.
 - Add quad/tri subdivision, thanks to Hendrik Meyer.
-- Add SurfaceFactory class to generate basic shapes. Thanks to
-  [u/lycium](https://www.reddit.com/user/lycium/) on Reddit for suggesting a
-  simplification of the `icosahedron()` function.
+- Add `SurfaceFactory` class to generate basic shapes. Thanks to [u/lycium](https://www.reddit.com/user/lycium/) on Reddit for suggesting a simplification of the `icosahedron()` function.
 - Add support to render colors per face
 - Add support to render colors per vertex, thanks to Xiewei Zhong
 - Add function to compute volume of a mesh, thanks to Xiewei Zhong
-- Add post-increment iterators and make low level functions to add elements
-  public. This makes it possible to use CGAL algorithms on a PMP SurfaceMesh.
-  Thanks to Andreas Fabri for contributing the changes!
+- Add post-increment iterators and make low level functions to add elements public. This makes it possible to use CGAL algorithms on a PMP `SurfaceMesh`. Thanks to Andreas Fabri for contributing the changes!
 - Add PMP_INSTALL option to CMake.
-- Add PMP_BUILD_VIS CMake option to enable / disable building the pmp_vis
-  library and its dependencies.
+- Add PMP_BUILD_VIS CMake option to enable / disable building the pmp_vis library and its dependencies.
 
 ### Changed
 
 - Bump C++ standard to C++14
-- TriangleKdTree: no longer record number of tests, remove NearestNeighbor::test member
-- Remove SurfaceSubdivision::sqrt3()
-- Remove PMP_SHOW macro
-- Remove pmp::Version class and Version.h
+- `TriangleKdTree`: no longer record number of tests, remove `NearestNeighbor::tests` member
+- Remove `SurfaceSubdivision::sqrt3()`
+- Remove `PMP_SHOW` macro
+- Remove `pmp::Version` class and `Version.h`
 - Build shared libraries on all platforms by default (except pmp_vis , see #87)
 - Bump CMake minimum required version to 3.16.3
-- Make SurfaceTriangulation::Objective a scoped enum
-- Remove SurfaceMesh::triangulate() functions to avoid redundancy with SurfaceTriangulation
+- Make `SurfaceTriangulation::Objective` a scoped enum
+- Remove `SurfaceMesh::triangulate()` functions to avoid redundancy with `SurfaceTriangulation`
 - Improve API by reporting errors using exceptions (see #16).
-- SurfaceFeatures now returns the number of boundary / feature edges detected.
+- `SurfaceFeatures` now returns the number of boundary / feature edges detected.
 - Update Eigen to version 3.4.0
 - Update GoogleTest to version 1.12.1
 - Update stb_image to version 2.26 and stb_image_writer to version 1.15.
@@ -47,15 +42,14 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 ### Fixed
 
 - Fix `SurfaceMesh::get_object_propertyType()` to `get_object_property_type()`
-- SurfaceRemeshing: Don't leak feature properties. Spotted by Pierre Buyssens.
-- Fixed a rare bug regarding ImGui scaling on Linux.
-  Thanks to Jan Erik Swiadek for reporting and fixing this!
-- Fix crash in SurfaceRemeshing when dealing with low quality meshes (#90, #89)
+- `SurfaceRemeshing`: Don't leak feature properties. Spotted by Pierre Buyssens.
+- Fixed a rare bug regarding ImGui scaling on Linux. Thanks to Jan Erik Swiadek for reporting and fixing this!
+- Fix crash in `SurfaceRemeshing` when dealing with low quality meshes (#90, #89)
 - `SurfaceMesh::bounds()` no longer includes deleted vertices. Thanks to Paul Du.
-- Fix crash in SurfaceHoleFilling when a vertex selection already exists.
-- Fix bug in SurfaceHoleFilling leading to artifacts in the filled surface patch. See #64.
-- Change sign of vec2::perp() to correctly model CCW rotation by 90 degrees.
-- Fix bug in OpenGL buffer clean-up in SurfaceMeshGL.
+- Fix crash in `SurfaceHoleFilling` when a vertex selection already exists.
+- Fix bug in `SurfaceHoleFilling` leading to artifacts in the filled surface patch. See #64.
+- Change sign of `vec2::perp()` to correctly model CCW rotation by 90 degrees.
+- Fix bug in OpenGL buffer clean-up in `SurfaceMeshGL`.
 
 ## [1.2.1] 2020-05-10
 
