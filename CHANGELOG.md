@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### External libraries
+
+- Upgrade ImGui to version 1.88
+
 ## [2.0.0] 2022-08-14
 
 ### Added
