@@ -8,10 +8,33 @@
 
 #include "pmp/algorithms/SurfaceFairing.h"
 
+#include <unordered_map>
+
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;
 
 namespace pmp {
+
+HolePatchMesh::HolePatchMesh(const pmp::SurfaceMesh& origin_mesh, size_t n_prev_faces) {
+    for(size_t i = n_prev_faces; i < origin_mesh.n_faces(); i++) {
+        std::vector<pmp::Vertex> face_vertices;
+        for(auto v: origin_mesh.vertices(pmp::Face(i))) {
+            if(new_v_index.find(v.idx()) == new_v_index.end()) {
+                new_v_index[v.idx()] = pmp::Vertex(new_v_index.size());
+                patch2origin[mesh_.n_vertices()] = v;
+                mesh_.add_vertex(origin_mesh.position(v));
+            }
+            face_vertices.push_back(new_v_index[v.idx()]);
+        }
+        mesh_.add_face(face_vertices);
+    }
+}
+
+HolePatchMesh::~HolePatchMesh() {
+    if(mesh_.n_vertices() == 0) return;
+    mesh_.remove_vertex_property(vlocked_);
+    mesh_.remove_edge_property(elocked_);
+}
 
 SurfaceHoleFilling::SurfaceHoleFilling(SurfaceMesh& _mesh) : mesh_(_mesh)
 {
@@ -60,34 +83,37 @@ void SurfaceHoleFilling::fill_hole(Halfedge h)
 
     // lock vertices/edge that already exist, to be later able to
     // identify the filled-in vertices/edges
-    vlocked_ =
-        mesh_.add_vertex_property<bool>("SurfaceHoleFilling:vlocked", false);
-    elocked_ =
-        mesh_.add_edge_property<bool>("SurfaceHoleFilling:elocked", false);
-    for (auto v : mesh_.vertices())
-        vlocked_[v] = true;
-    for (auto e : mesh_.edges())
-        elocked_[e] = true;
 
     try
     {
+        size_t n_pre_faces = mesh_.n_faces();
         triangulate_hole(h); // do minimal triangulation
-        refine();            // refine filled-in edges
+        filled_patch_ = std::move(HolePatchMesh(mesh_, n_pre_faces));
+        filled_patch_.refine();            // refine filled-in edges
+        for(auto f: mesh_.faces())
+            if(f.idx() >= n_pre_faces) mesh_.delete_face(f);
+        for(auto f: filled_patch_.mesh_.faces()) {
+            std::vector<pmp::Vertex> new_face;
+            for(auto v: filled_patch_.mesh_.vertices(f)) {
+                if(filled_patch_.patch2origin.find(v.idx()) == filled_patch_.patch2origin.end()) {
+                    auto new_v = mesh_.add_vertex(filled_patch_.mesh_.position(v));
+                    filled_patch_.patch2origin[v.idx()] = new_v;
+                }
+                new_face.push_back(filled_patch_.patch2origin[v.idx()]);
+            }
+            mesh_.add_face(new_face);
+        }
+        mesh_.garbage_collection();
     }
     catch (InvalidInputException& e)
     {
         // clean up
         hole_.clear();
-        mesh_.remove_vertex_property(vlocked_);
-        mesh_.remove_edge_property(elocked_);
-
         throw e;
     }
 
     // clean up
     hole_.clear();
-    mesh_.remove_vertex_property(vlocked_);
-    mesh_.remove_edge_property(elocked_);
 }
 
 void SurfaceHoleFilling::triangulate_hole(Halfedge _h)
@@ -217,22 +243,27 @@ SurfaceHoleFilling::Weight SurfaceHoleFilling::compute_weight(int _i, int _j,
     return {angle, area};
 }
 
-void SurfaceHoleFilling::refine()
+void HolePatchMesh::refine()
 {
-    const int n = hole_.size();
-    Scalar l, lmin, lmax;
+    Scalar l, lmin, lmax, n_bnd_edges;
 
     // compute target edge length
-    l = 0.0;
-    for (int i = 0; i < n; ++i)
+    l = 0.0, n_bnd_edges = 0;
+    for (auto e: mesh_.edges())
     {
-        l += distance(points_[hole_vertex(i)],
-                      points_[hole_vertex((i + 1) % n)]);
+        if(mesh_.is_boundary(e)) {
+            n_bnd_edges++;
+            l += mesh_.edge_length(e);
+        }
     }
-    l /= (Scalar)n;
+    l /= (Scalar)n_bnd_edges;
     lmin = 0.7 * l;
     lmax = 1.5 * l;
-
+    points_ = mesh_.vertex_property<pmp::Point>("v:point");
+    vlocked_ = mesh_.vertex_property<bool>("v:vlocked", false);
+    elocked_ = mesh_.edge_property<bool>("e:elocked", false);
+    for (auto v : mesh_.vertices()) vlocked_[v] = true;
+    for (auto e : mesh_.edges()) elocked_[e] = mesh_.is_boundary(e);
     // do some iterations
     for (int iter = 0; iter < 10; ++iter)
     {
@@ -244,7 +275,7 @@ void SurfaceHoleFilling::refine()
     fairing();
 }
 
-void SurfaceHoleFilling::split_long_edges(const Scalar _lmax)
+void HolePatchMesh::split_long_edges(const Scalar _lmax)
 {
     bool ok;
     int i;
@@ -257,14 +288,9 @@ void SurfaceHoleFilling::split_long_edges(const Scalar _lmax)
         {
             if (!elocked_[e])
             {
-                Halfedge h10 = mesh_.halfedge(e, 0);
-                Halfedge h01 = mesh_.halfedge(e, 1);
-                const Point& p0 = points_[mesh_.to_vertex(h10)];
-                const Point& p1 = points_[mesh_.to_vertex(h01)];
-
-                if (distance(p0, p1) > _lmax)
+                if (mesh_.edge_length(e) > _lmax)
                 {
-                    mesh_.split(e, 0.5 * (p0 + p1));
+                    mesh_.split(e, 0.5 * (mesh_.position(mesh_.vertex(e, 0)) + mesh_.position(mesh_.vertex(e, 1))));
                     ok = false;
                 }
             }
@@ -272,7 +298,7 @@ void SurfaceHoleFilling::split_long_edges(const Scalar _lmax)
     }
 }
 
-void SurfaceHoleFilling::collapse_short_edges(const Scalar _lmin)
+void HolePatchMesh::collapse_short_edges(const Scalar _lmin)
 {
     bool ok;
     int i;
@@ -285,21 +311,14 @@ void SurfaceHoleFilling::collapse_short_edges(const Scalar _lmin)
         {
             if (!mesh_.is_deleted(e) && !elocked_[e])
             {
-                Halfedge h10 = mesh_.halfedge(e, 0);
-                Halfedge h01 = mesh_.halfedge(e, 1);
-                Vertex v0 = mesh_.to_vertex(h10);
-                Vertex v1 = mesh_.to_vertex(h01);
-                const Point& p0 = points_[v0];
-                const Point& p1 = points_[v1];
-
                 // edge too short?
-                if (distance(p0, p1) < _lmin)
+                if (mesh_.edge_length(e) < _lmin)
                 {
                     Halfedge h;
-                    if (!vlocked_[v0])
-                        h = h01;
-                    else if (!vlocked_[v1])
-                        h = h10;
+                    if (!vlocked_[mesh_.vertex(e, 0)])
+                        h = mesh_.halfedge(e, 1);
+                    else if (!vlocked_[mesh_.vertex(e, 1)])
+                        h = mesh_.halfedge(e, 0);
 
                     if (h.is_valid() && mesh_.is_collapse_ok(h))
                     {
@@ -314,7 +333,7 @@ void SurfaceHoleFilling::collapse_short_edges(const Scalar _lmin)
     mesh_.garbage_collection();
 }
 
-void SurfaceHoleFilling::flip_edges()
+void HolePatchMesh::flip_edges()
 {
     Vertex v0, v1, v2, v3;
     Halfedge h;
@@ -378,7 +397,7 @@ void SurfaceHoleFilling::flip_edges()
     }
 }
 
-void SurfaceHoleFilling::relaxation()
+void HolePatchMesh::relaxation()
 {
     // properties
     VertexProperty<int> idx =
@@ -447,7 +466,7 @@ void SurfaceHoleFilling::relaxation()
     mesh_.remove_vertex_property(idx);
 }
 
-void SurfaceHoleFilling::fairing()
+void HolePatchMesh::fairing()
 {
     // did the refinement insert new vertices?
     // if yes, then trigger fairing; otherwise don't.

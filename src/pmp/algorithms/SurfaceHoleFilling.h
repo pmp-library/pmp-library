@@ -5,10 +5,36 @@
 
 #include <limits>
 #include <vector>
-
+#include <unordered_map>
 #include "pmp/SurfaceMesh.h"
 
 namespace pmp {
+
+
+class HolePatchMesh {
+public:
+    HolePatchMesh(){}
+    HolePatchMesh(const pmp::SurfaceMesh& mesh, size_t n_prev_faces);
+
+    ~HolePatchMesh();
+
+    // refine triangulation (isotropic remeshing)
+    void refine();
+    void split_long_edges(const Scalar lmax);
+    void collapse_short_edges(const Scalar lmin);
+    void flip_edges();
+    void relaxation();
+    void fairing();
+
+    VertexProperty<pmp::Point> points_;
+    VertexProperty<bool> vlocked_;
+    EdgeProperty<bool> elocked_;
+    //reference to origin mesh
+    pmp::SurfaceMesh    mesh_;
+
+    std::unordered_map<pmp::IndexType, pmp::Vertex> new_v_index;
+    std::unordered_map<pmp::IndexType, pmp::Vertex> patch2origin;
+};
 
 //! \brief Close simple holes
 //! \details Close simple holes (boundary loops of manifold vertices) by first
@@ -61,14 +87,6 @@ private:
     // compute the weight of the triangle (i,j,k).
     Weight compute_weight(int i, int j, int k) const;
 
-    // refine triangulation (isotropic remeshing)
-    void refine();
-    void split_long_edges(const Scalar lmax);
-    void collapse_short_edges(const Scalar lmin);
-    void flip_edges();
-    void relaxation();
-    void fairing();
-
     // return i'th vertex of hole
     Vertex hole_vertex(unsigned int i) const
     {
@@ -99,10 +117,9 @@ private:
     // mesh and properties
     SurfaceMesh& mesh_;
     VertexProperty<Point> points_;
-    VertexProperty<bool> vlocked_;
-    EdgeProperty<bool> elocked_;
 
     std::vector<Halfedge> hole_;
+    HolePatchMesh filled_patch_;
 
     // data for computing optimal triangulation
     std::vector<std::vector<Weight>> weight_;
