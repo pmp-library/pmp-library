@@ -17,6 +17,8 @@
 
 #include <imgui.h>
 
+using namespace pmp;
+
 MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
                                            int height)
     : MeshViewer(title, width, height), smoother_(mesh_)
