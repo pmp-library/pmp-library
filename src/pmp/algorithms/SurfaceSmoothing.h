@@ -14,8 +14,6 @@ class SurfaceSmoothing
 {
 public:
     //! Construct with mesh to be smoothed.
-    //! \pre \p mesh is not empty
-    //! \throw InvalidInputException if \p mesh is empty
     SurfaceSmoothing(SurfaceMesh& mesh);
 
     // destructor

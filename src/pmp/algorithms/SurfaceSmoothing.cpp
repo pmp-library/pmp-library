@@ -15,9 +15,6 @@ using Triplet = Eigen::Triplet<double>;
 
 SurfaceSmoothing::SurfaceSmoothing(SurfaceMesh& mesh) : mesh_(mesh)
 {
-    if (mesh_.is_empty())
-        throw InvalidInputException("SurfaceSmoothing: Empty mesh!");
-
     how_many_edge_weights_ = 0;
     how_many_vertex_weights_ = 0;
 }
@@ -72,6 +69,9 @@ void SurfaceSmoothing::compute_vertex_weights(bool use_uniform_laplace)
 void SurfaceSmoothing::explicit_smoothing(unsigned int iters,
                                           bool use_uniform_laplace)
 {
+    if (!mesh_.n_vertices())
+        return;
+
     // TODO: this is calling for trouble: `use_uniform_laplace` might not be respected at all!
     // compute Laplace weight per edge: cotan or uniform
     if (!mesh_.has_edge_property("e:cotan") ||
@@ -125,6 +125,9 @@ void SurfaceSmoothing::implicit_smoothing(Scalar timestep,
                                           bool use_uniform_laplace,
                                           bool rescale)
 {
+    if (!mesh_.n_vertices())
+        return;
+
     // TODO: this is calling for trouble: `use_uniform_laplace` might not be respected at all!
     // compute edge weights if they don't exist or if the mesh changed
     if (!mesh_.has_edge_property("e:cotan") ||
