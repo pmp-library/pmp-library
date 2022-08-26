@@ -10,7 +10,9 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Fixed
 
+- Fix compilation with PMP_SCALAR_TYPE=64
 - Use correct C++ standard (C++14) in public target compile options
+- Fix crash in smoothing demo app
 
 ### External libraries
 
