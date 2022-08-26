@@ -8,6 +8,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+## [2.0.1] 2022-08-26
+
 ### Fixed
 
 - Fix shared library version
