@@ -163,7 +163,7 @@ SurfaceMesh texture_seams_mesh()
     mesh.add_triangle(v2, v4, v15);
 
     // add test texcoords
-    auto texcoords = mesh.halfedge_property<vec2>("h:tex");
+    auto texcoords = mesh.halfedge_property<Vector<Scalar, 2>>("h:tex");
 
     for (auto v : mesh.vertices())
     {
