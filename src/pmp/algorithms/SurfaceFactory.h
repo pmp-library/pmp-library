@@ -7,10 +7,8 @@
 
 namespace pmp {
 
-//! \addtogroup algorithms
-//! @{
-
-//! Factory class to generate different types of basic shapes.
+//! Class to generate basic shapes.
+//! \ingroup algorithms
 class SurfaceFactory
 {
 public:
@@ -78,7 +76,5 @@ public:
                              size_t tubular_resolution = 40,
                              Scalar radius = 1.0, Scalar thickness = 0.4);
 };
-
-//! @}
 
 } // namespace pmp
