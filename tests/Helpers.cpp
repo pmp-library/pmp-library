@@ -122,7 +122,6 @@ SurfaceMesh open_cone()
     return mesh;
 }
 
-
 SurfaceMesh texture_seams_mesh()
 {
     SurfaceMesh mesh;
@@ -162,30 +161,29 @@ SurfaceMesh texture_seams_mesh()
     mesh.add_triangle(v0, v14, v1);
     mesh.add_triangle(v1, v14, v15);
     mesh.add_triangle(v2, v4, v15);
-    
 
-     // add test texcoords
+    // add test texcoords
     auto texcoords = mesh.halfedge_property<vec2>("h:tex");
-    
-    for(auto v: mesh.vertices())
+
+    for (auto v : mesh.vertices())
     {
         Point p = mesh.position(v);
-        for(auto h: mesh.halfedges(v))
+        for (auto h : mesh.halfedges(v))
         {
-            if(mesh.is_boundary(mesh.opposite_halfedge(h)))
+            if (mesh.is_boundary(mesh.opposite_halfedge(h)))
             {
-               continue;
+                continue;
             }
             texcoords[mesh.opposite_halfedge(h)] = TexCoord(p[0], p[1]);
         }
     }
 
     // change texcoords to create a texture seam
-    std::vector<Face> faces = {Face(0), Face(1), Face(12), Face(13), 
+    std::vector<Face> faces = {Face(0),  Face(1),  Face(12), Face(13),
                                Face(14), Face(15), Face(16), Face(17)};
-    for(auto f : faces)
+    for (auto f : faces)
     {
-        for(auto h : mesh.halfedges(f))
+        for (auto h : mesh.halfedges(f))
         {
             texcoords[h] += TexCoord(0.1, 0.1);
         }
