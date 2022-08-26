@@ -25,8 +25,8 @@ if(NOT EMSCRIPTEN AND PMP_INSTALL)
     pmp PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
                $<INSTALL_INTERFACE:include/>)
 
-  if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
-    target_compile_options(pmp PUBLIC "-std=c++11")
+  if(UNIX OR APPLE)
+    target_compile_options(pmp PUBLIC "-std=c++14")
   endif()
 
   install(

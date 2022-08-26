@@ -8,6 +8,10 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+### Fixed
+
+- Use correct C++ standard (C++14) in public target compile options
+
 ### External libraries
 
 - Upgrade ImGui to version 1.88
