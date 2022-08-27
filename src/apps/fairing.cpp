@@ -95,12 +95,12 @@ void Viewer::process_imgui()
 int main(int argc, char** argv)
 {
 #ifndef __EMSCRIPTEN__
-    Viewer window("Decimation", 800, 600);
+    Viewer window("Fairing", 800, 600);
     if (argc == 2)
         window.load_mesh(argv[1]);
     return window.run();
 #else
-    Viewer window("Decimation", 800, 600);
+    Viewer window("Fairing", 800, 600);
     window.load_mesh(argc == 2 ? argv[1] : "input.off");
     return window.run();
 #endif
