@@ -2,8 +2,8 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/SurfaceCurvature.h>
-#include <pmp/algorithms/SurfaceSmoothing.h>
+#include <pmp/algorithms/Curvature.h>
+#include <pmp/algorithms/Smoothing.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -17,7 +17,7 @@ protected:
     void process_imgui() override;
 
 private:
-    SurfaceSmoothing smoother_;
+    Smoothing smoother_;
 };
 
 Viewer::Viewer(const char* title, int width, int height)
@@ -37,7 +37,7 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            SurfaceCurvature analyzer(mesh_);
+            Curvature analyzer(mesh_);
             analyzer.analyze_tensor(1, true);
             analyzer.mean_curvature_to_texture_coordinates();
             update_mesh();

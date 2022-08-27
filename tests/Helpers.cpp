@@ -3,11 +3,11 @@
 
 #include "Helpers.h"
 
-#include "pmp/algorithms/SurfaceFactory.h"
-#include "pmp/algorithms/SurfaceRemeshing.h"
-#include "pmp/algorithms/SurfaceFeatures.h"
-#include "pmp/algorithms/SurfaceSubdivision.h"
-#include "pmp/algorithms/SurfaceTriangulation.h"
+#include "pmp/algorithms/Shapes.h"
+#include "pmp/algorithms/Remeshing.h"
+#include "pmp/algorithms/Features.h"
+#include "pmp/algorithms/Subdivision.h"
+#include "pmp/algorithms/Triangulation.h"
 
 namespace pmp {
 
@@ -70,14 +70,14 @@ SurfaceMesh subdivided_icosahedron()
     {
         // use ref for brevity
         auto& mesh = icosahedron_mesh;
-        mesh = SurfaceFactory::icosahedron();
+        mesh = Shapes::icosahedron();
 
         // select all edges as features
-        SurfaceFeatures sf(mesh);
+        Features sf(mesh);
         sf.detect_angle(25);
 
         // feature-preserving subdivision
-        SurfaceSubdivision subdiv(mesh);
+        Subdivision subdiv(mesh);
         subdiv.loop();
         subdiv.loop();
         subdiv.loop();
@@ -111,7 +111,7 @@ SurfaceMesh l_shape()
 
 SurfaceMesh open_cone()
 {
-    auto mesh = SurfaceFactory::cone(8, 1, 1.5);
+    auto mesh = Shapes::cone(8, 1, 1.5);
     for (auto f : mesh.faces())
         if (mesh.valence(f) > 3)
         {

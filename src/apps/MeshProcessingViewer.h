@@ -4,7 +4,7 @@
 #pragma once
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/SurfaceSmoothing.h>
+#include <pmp/algorithms/Smoothing.h>
 
 class MeshProcessingViewer : public pmp::MeshViewer
 {
@@ -24,5 +24,5 @@ protected:
 
 private:
     // smoother has to remember cotan weights, make it a class member
-    pmp::SurfaceSmoothing smoother_;
+    pmp::Smoothing smoother_;
 };

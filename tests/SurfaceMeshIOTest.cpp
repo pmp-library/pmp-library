@@ -3,7 +3,7 @@
 
 #include "SurfaceMeshTest.h"
 
-#include <pmp/algorithms/SurfaceNormals.h>
+#include <pmp/algorithms/Normals.h>
 #include <vector>
 #include <fstream>
 
@@ -30,7 +30,7 @@ TEST_F(SurfaceMeshIOTest, poly_io)
 TEST_F(SurfaceMeshIOTest, obj_io)
 {
     add_triangle();
-    SurfaceNormals::compute_vertex_normals(mesh);
+    Normals::compute_vertex_normals(mesh);
     mesh.add_halfedge_property<TexCoord>("h:texcoord", TexCoord(0, 0));
     mesh.write("test.obj");
     mesh.clear();
@@ -43,7 +43,7 @@ TEST_F(SurfaceMeshIOTest, obj_io)
 TEST_F(SurfaceMeshIOTest, off_io)
 {
     add_triangle();
-    SurfaceNormals::compute_vertex_normals(mesh);
+    Normals::compute_vertex_normals(mesh);
     mesh.add_vertex_property<TexCoord>("v:texcoord", TexCoord(0, 0));
     mesh.add_vertex_property<Color>("v:color", Color(0, 0, 0));
 
@@ -92,7 +92,7 @@ TEST_F(SurfaceMeshIOTest, stl_io)
     ASSERT_THROW(mesh.write("test.stl"), InvalidInputException);
 
     // the same with normals computed
-    SurfaceNormals::compute_face_normals(mesh);
+    Normals::compute_face_normals(mesh);
     EXPECT_NO_THROW(mesh.write("test.stl"));
 
     // try to write non-triangle mesh

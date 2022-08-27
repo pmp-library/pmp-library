@@ -2,8 +2,8 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/SurfaceCurvature.h>
-#include <pmp/algorithms/SurfaceFairing.h>
+#include <pmp/algorithms/Curvature.h>
+#include <pmp/algorithms/Fairing.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -33,7 +33,7 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            SurfaceCurvature analyzer(mesh_);
+            Curvature analyzer(mesh_);
             analyzer.analyze_tensor(1, true);
             analyzer.mean_curvature_to_texture_coordinates();
             update_mesh();
@@ -49,7 +49,7 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Minimize Area"))
         {
-            SurfaceFairing fair(mesh_);
+            Fairing fair(mesh_);
             try
             {
                 fair.minimize_area();
@@ -63,7 +63,7 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Minimize Curvature"))
         {
-            SurfaceFairing fair(mesh_);
+            Fairing fair(mesh_);
             try
             {
                 fair.minimize_curvature();
@@ -77,7 +77,7 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Minimize Curvature Variation"))
         {
-            SurfaceFairing fair(mesh_);
+            Fairing fair(mesh_);
             try
             {
                 fair.fair(3);

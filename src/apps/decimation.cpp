@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/SurfaceSimplification.h>
+#include <pmp/algorithms/Simplification.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -51,7 +51,7 @@ void Viewer::process_imgui()
         {
             try
             {
-                SurfaceSimplification ss(mesh_);
+                Simplification ss(mesh_);
                 ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0);
                 ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
             }
