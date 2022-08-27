@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/Simplification.h>
+#include <pmp/algorithms/Decimation.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -47,13 +47,15 @@ void Viewer::process_imgui()
         ImGui::SliderInt("Aspect Ratio", &aspect_ratio, 1, 10);
         ImGui::PopItemWidth();
 
-        if (ImGui::Button("Decimate it!"))
+        if (ImGui::Button("Decimate"))
         {
             try
             {
-                Simplification ss(mesh_);
-                ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0);
-                ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
+                Decimation decimater(mesh_);
+                decimater.initialize(aspect_ratio, 0.0, 0.0, normal_deviation,
+                                     0.0);
+                decimater.decimate(mesh_.n_vertices() * 0.01 *
+                                   target_percentage);
             }
             catch (const InvalidInputException& e)
             {

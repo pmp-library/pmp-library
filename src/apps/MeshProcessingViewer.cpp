@@ -5,7 +5,7 @@
 
 #include <pmp/algorithms/Subdivision.h>
 #include <pmp/algorithms/Features.h>
-#include <pmp/algorithms/Simplification.h>
+#include <pmp/algorithms/Decimation.h>
 #include <pmp/algorithms/Fairing.h>
 #include <pmp/algorithms/Remeshing.h>
 #include <pmp/algorithms/Curvature.h>
@@ -264,14 +264,15 @@ void MeshProcessingViewer::process_imgui()
         ImGui::SliderInt("Seam Angle Deviation", &seam_angle_deviation, 0, 15);
         ImGui::PopItemWidth();
 
-        if (ImGui::Button("Decimate it!"))
+        if (ImGui::Button("Decimate"))
         {
             try
             {
-                Simplification ss(mesh_);
-                ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0,
-                              0.01, seam_angle_deviation);
-                ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
+                Decimation decimater(mesh_);
+                decimater.initialize(aspect_ratio, 0.0, 0.0, normal_deviation,
+                                     0.0, 0.01, seam_angle_deviation);
+                decimater.decimate(mesh_.n_vertices() * 0.01 *
+                                   target_percentage);
             }
             catch (const InvalidInputException& e)
             {

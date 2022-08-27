@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-#include "pmp/algorithms/Simplification.h"
+#include "pmp/algorithms/Decimation.h"
 #include "pmp/algorithms/Features.h"
 #include "Helpers.h"
 
@@ -11,32 +11,32 @@ using namespace pmp;
 
 // plain simplification test
 // disabled on macOS due to flakiness of results across OS versions
-TEST(SimplificationTest, simplification)
+TEST(DecimationTest, simplification)
 {
     auto mesh = subdivided_icosahedron();
     Features(mesh).clear();
-    Simplification ss(mesh);
-    ss.initialize(5,    // aspect ratio
-                  0.5,  // edge length
-                  10,   // max valence
-                  10,   // normal deviation
-                  0.1); // Hausdorff
-    ss.simplify(mesh.n_vertices() * 0.01);
+    Decimation decimater(mesh);
+    decimater.initialize(5,    // aspect ratio
+                         0.5,  // edge length
+                         10,   // max valence
+                         10,   // normal deviation
+                         0.1); // Hausdorff
+    decimater.decimate(mesh.n_vertices() * 0.01);
     EXPECT_EQ(mesh.n_vertices(), size_t(101));
 }
 
 // simplify with feature edge preservation enabled
-TEST(SimplificationTest, simplification_with_features)
+TEST(DecimationTest, simplification_with_features)
 {
     auto mesh = subdivided_icosahedron();
-    Simplification ss(mesh);
-    ss.initialize(5); // aspect ratio
-    ss.simplify(mesh.n_vertices() * 0.01);
+    Decimation decimater(mesh);
+    decimater.initialize(5); // aspect ratio
+    decimater.decimate(mesh.n_vertices() * 0.01);
     EXPECT_EQ(mesh.n_vertices(), size_t(12));
 }
 
 // simplify with respect to texture coordinates and seams
-TEST(SimplificationTest, simplification_texture_mesh)
+TEST(DecimationTest, simplification_texture_mesh)
 {
     SurfaceMesh mesh = texture_seams_mesh();
 
@@ -44,16 +44,16 @@ TEST(SimplificationTest, simplification_texture_mesh)
     // this test won't work
     ASSERT_TRUE(mesh.has_halfedge_property("h:tex"));
 
-    Simplification ss(mesh);
-    ss.initialize(10.0,  // aspect ratio
-                  0.0,   // edge length
-                  0.0,   // max valence
-                  135.0, // normal deviation
-                  0.0,   // Hausdorff
-                  1e-2,  // seam threshold
-                  1);    // seam angle deviation
+    Decimation decimater(mesh);
+    decimater.initialize(10.0,  // aspect ratio
+                         0.0,   // edge length
+                         0.0,   // max valence
+                         135.0, // normal deviation
+                         0.0,   // Hausdorff
+                         1e-2,  // seam threshold
+                         1);    // seam angle deviation
 
-    ss.simplify(mesh.n_vertices() - 4);
+    decimater.decimate(mesh.n_vertices() - 4);
 
     size_t seam_edges = 0;
     auto seams = mesh.get_edge_property<bool>("e:seam");

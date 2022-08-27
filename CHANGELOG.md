@@ -8,10 +8,11 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
-### Breaking Changes
+### Changed
 
+- Rename `Simplification` to `Decimation`
+- Rename `Factory` to `Shapes`
 - Drop `Surface` prefix from algorithms
-- Rename `SurfaceFactory` to `Shapes`
 
 ## [2.0.1] 2022-08-26
 
@@ -22,7 +23,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Use correct C++ standard (C++14) in public target compile options
 - Fix crash in smoothing demo app
 
-### External libraries
+### Changed
 
 - Upgrade ImGui to version 1.88
 

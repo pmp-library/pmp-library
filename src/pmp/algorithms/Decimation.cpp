@@ -1,7 +1,7 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/algorithms/Simplification.h"
+#include "pmp/algorithms/Decimation.h"
 
 #include <iterator>
 #include <limits>
@@ -11,7 +11,7 @@
 
 namespace pmp {
 
-Simplification::Simplification(SurfaceMesh& mesh)
+Decimation::Decimation(SurfaceMesh& mesh)
     : mesh_(mesh), initialized_(false), queue_(nullptr)
 
 {
@@ -39,7 +39,7 @@ Simplification::Simplification(SurfaceMesh& mesh)
     fnormal_ = mesh_.face_property<Normal>("f:normal");
 }
 
-Simplification::~Simplification()
+Decimation::~Decimation()
 {
     // remove added properties
     mesh_.remove_vertex_property(vquadric_);
@@ -48,11 +48,10 @@ Simplification::~Simplification()
     mesh_.remove_edge_property(texture_seams_);
 }
 
-void Simplification::initialize(Scalar aspect_ratio, Scalar edge_length,
-                                unsigned int max_valence,
-                                Scalar normal_deviation, Scalar hausdorff_error,
-                                Scalar seam_threshold,
-                                Scalar seam_angle_deviation)
+void Decimation::initialize(Scalar aspect_ratio, Scalar edge_length,
+                            unsigned int max_valence, Scalar normal_deviation,
+                            Scalar hausdorff_error, Scalar seam_threshold,
+                            Scalar seam_angle_deviation)
 {
     // store parameters
     aspect_ratio_ = aspect_ratio;
@@ -165,7 +164,7 @@ void Simplification::initialize(Scalar aspect_ratio, Scalar edge_length,
     initialized_ = true;
 }
 
-void Simplification::simplify(unsigned int n_vertices)
+void Decimation::decimate(unsigned int n_vertices)
 {
     // make sure the decimater is initialized
     if (!initialized_)
@@ -235,7 +234,7 @@ void Simplification::simplify(unsigned int n_vertices)
     mesh_.remove_vertex_property(vtarget_);
 }
 
-void Simplification::enqueue_vertex(Vertex v)
+void Decimation::enqueue_vertex(Vertex v)
 {
     float prio, min_prio(std::numeric_limits<float>::max());
     Halfedge min_h;
@@ -277,7 +276,7 @@ void Simplification::enqueue_vertex(Vertex v)
     }
 }
 
-bool Simplification::is_collapse_legal(const CollapseData& cd)
+bool Decimation::is_collapse_legal(const CollapseData& cd)
 {
     // test selected vertices
     if (has_selection_)
@@ -471,7 +470,7 @@ bool Simplification::is_collapse_legal(const CollapseData& cd)
     return true;
 }
 
-bool Simplification::texcoord_check(Halfedge h)
+bool Decimation::texcoord_check(Halfedge h)
 {
     auto texcoords = mesh_.get_halfedge_property<TexCoord>("h:tex");
     if (!texcoords)
@@ -559,7 +558,7 @@ bool Simplification::texcoord_check(Halfedge h)
     return true;
 }
 
-float Simplification::priority(const CollapseData& cd)
+float Decimation::priority(const CollapseData& cd)
 {
     // computer quadric error metric
     Quadric Q = vquadric_[cd.v0];
@@ -567,7 +566,7 @@ float Simplification::priority(const CollapseData& cd)
     return Q(vpoint_[cd.v1]);
 }
 
-void Simplification::preprocess_collapse(const CollapseData& cd)
+void Decimation::preprocess_collapse(const CollapseData& cd)
 {
     Halfedge h = cd.v0v1;
     Halfedge o = mesh_.opposite_halfedge(h);
@@ -620,7 +619,7 @@ void Simplification::preprocess_collapse(const CollapseData& cd)
     }
 }
 
-void Simplification::postprocess_collapse(const CollapseData& cd)
+void Decimation::postprocess_collapse(const CollapseData& cd)
 {
     // update error quadrics
     vquadric_[cd.v1] += vquadric_[cd.v0];
@@ -703,7 +702,7 @@ void Simplification::postprocess_collapse(const CollapseData& cd)
     }
 }
 
-Scalar Simplification::aspect_ratio(Face f) const
+Scalar Decimation::aspect_ratio(Face f) const
 {
     // min height is area/maxLength
     // aspect ratio = length / height
@@ -732,7 +731,7 @@ Scalar Simplification::aspect_ratio(Face f) const
     return l / a;
 }
 
-Scalar Simplification::distance(Face f, const Point& p) const
+Scalar Decimation::distance(Face f, const Point& p) const
 {
     auto fvit = mesh_.vertices(f);
 
@@ -745,8 +744,7 @@ Scalar Simplification::distance(Face f, const Point& p) const
     return dist_point_triangle(p, p0, p1, p2, n);
 }
 
-Simplification::CollapseData::CollapseData(SurfaceMesh& sm, Halfedge h)
-    : mesh(sm)
+Decimation::CollapseData::CollapseData(SurfaceMesh& sm, Halfedge h) : mesh(sm)
 {
     v0v1 = h;
     v1v0 = mesh.opposite_halfedge(v0v1);

@@ -13,22 +13,22 @@
 
 namespace pmp {
 
-//! \brief Surface mesh simplification based on approximation error and fairness
+//! \brief Surface mesh decimation based on approximation error and fairness
 //! criteria.
-//! \details Performs incremental greedy mesh simplification based on halfedge
+//! \details Performs incremental greedy mesh decimation based on halfedge
 //! collapses.
 //! See \cite kobbelt_1998_general and \cite garland_1997_surface for details.
 //! \ingroup algorithms
-class Simplification
+class Decimation
 {
 public:
-    //! \brief Construct with mesh to be simplified.
+    //! \brief Construct with mesh to be decimated.
     //! \pre Input mesh needs to be a pure triangle mesh.
     //! \throw InvalidInputException if the input precondition is violated.
-    Simplification(SurfaceMesh& mesh);
+    Decimation(SurfaceMesh& mesh);
 
     //! Destructor.
-    ~Simplification();
+    ~Decimation();
 
     //! Initialize with given parameters.
     void initialize(Scalar aspect_ratio = 0.0, Scalar edge_length = 0.0,
@@ -36,8 +36,8 @@ public:
                     Scalar hausdorff_error = 0.0, Scalar seam_threshold = 1e-2,
                     Scalar seam_angle_deviation = 1);
 
-    //! Simplify mesh to \p n_vertices.
-    void simplify(unsigned int n_vertices);
+    //! Decimate mesh to \p n_vertices.
+    void decimate(unsigned int n_vertices);
 
 private:
     // Store data for an halfedge collapse
