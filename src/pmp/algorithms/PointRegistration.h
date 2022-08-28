@@ -13,10 +13,10 @@ namespace pmp {
 
 //! The two registration methods: Rigid registration optimizes for
 //! rotation and translation, similarity registration additionally for scaling.
-enum Registration_method
+enum class RegistrationMethod
 {
-    RIGID_REGISTRATION,
-    SIMILARITY_REGISTRATION
+    RIGID,
+    SIMILARITY
 };
 
 //! Compute the rigid or similarity transform that best maps
@@ -26,7 +26,7 @@ enum Registration_method
 //! \details See \cite sumner_2004_deftrans and \cite botsch_2006_deftrans for details.
 mat4 registration(const std::vector<Point>& _src,
                   const std::vector<Point>& _dst,
-                  Registration_method _mapping = RIGID_REGISTRATION,
+                  RegistrationMethod _mapping = RegistrationMethod::RIGID,
                   const std::vector<Scalar>* _weights = nullptr);
 
 //! Compute the rigid or similarity transform that best maps
@@ -35,7 +35,7 @@ mat4 registration(const std::vector<Point>& _src,
 //! \details See \cite bouaziz_2013_sparse for details. This implementation uses iteratively reweighted least squares.
 mat4 registration_l1(const std::vector<Point>& _src,
                      const std::vector<Point>& _dst,
-                     Registration_method _mapping = RIGID_REGISTRATION);
+                     RegistrationMethod _mapping = RegistrationMethod::RIGID);
 
 //! @}
 

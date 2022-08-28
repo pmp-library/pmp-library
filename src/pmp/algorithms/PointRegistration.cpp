@@ -6,8 +6,7 @@
 namespace pmp {
 
 mat4 registration(const std::vector<Point>& _src,
-                  const std::vector<Point>& _dst,
-                  Registration_method _mapping,
+                  const std::vector<Point>& _dst, RegistrationMethod _mapping,
                   const std::vector<Scalar>* _weights)
 {
     assert(_src.size() == _dst.size());
@@ -157,11 +156,11 @@ mat4 registration(const std::vector<Point>& _src,
     {
         int imax = 0;
         double ss = M(imax, imax);
-        for (int i=1; i<4; ++i)
+        for (int i = 1; i < 4; ++i)
         {
-            if (M(i,i) > ss)
+            if (M(i, i) > ss)
             {
-                ss = M(i,i);
+                ss = M(i, i);
                 imax = i;
             }
         }
@@ -188,7 +187,7 @@ mat4 registration(const std::vector<Point>& _src,
     T(3, 2) = 0.0;
 
     // scaling
-    if (_mapping == SIMILARITY_REGISTRATION)
+    if (_mapping == RegistrationMethod::SIMILARITY)
     {
         Point sp, dp;
         Scalar nom(0), denom(0);
@@ -229,7 +228,7 @@ mat4 registration(const std::vector<Point>& _src,
 
 mat4 registration_l1(const std::vector<Point>& _src,
                      const std::vector<Point>& _dst,
-                     Registration_method _mapping)
+                     RegistrationMethod _mapping)
 {
     mat4 result;
 
@@ -265,7 +264,7 @@ mat4 registration_l1(const std::vector<Point>& _src,
 
         for (int i = 0; i < n; ++i)
         {
-            weights[i] = std::min( Scalar(10000), max_l2_error / l2_errors[i] );
+            weights[i] = std::min(Scalar(10000), max_l2_error / l2_errors[i]);
         }
     }
 
