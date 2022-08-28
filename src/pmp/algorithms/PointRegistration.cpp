@@ -259,7 +259,6 @@ mat4 registration_l1(const std::vector<Point>& source,
             max_l2_error = std::max(max_l2_error, l2_errors[i]);
         }
 
-        // std::cerr << l1_error << std::endl;
         if (l1_error > prev_l1_error)
             break;
         result = trafo;
