@@ -5,12 +5,13 @@
 
 namespace pmp {
 
-mat4 registration(const std::vector<Point>& _src,
-                  const std::vector<Point>& _dst, RegistrationMethod _mapping,
-                  const std::vector<Scalar>* _weights)
+mat4 registration(const std::vector<Point>& source,
+                  const std::vector<Point>& destination,
+                  RegistrationMethod mapping,
+                  const std::vector<Scalar>* weights)
 {
-    assert(_src.size() == _dst.size());
-    const int n = _src.size();
+    assert(source.size() == destination.size());
+    const int n = source.size();
     assert(n > 2);
 
     // compute (weighted) barycenters
@@ -19,9 +20,9 @@ mat4 registration(const std::vector<Point>& _src,
         Scalar ww(0.0);
         for (int i = 0; i < n; ++i)
         {
-            const double w = _weights ? (*_weights)[i] : 1.0;
-            scog += w * _src[i];
-            dcog += w * _dst[i];
+            const double w = weights ? (*weights)[i] : 1.0;
+            scog += w * source[i];
+            dcog += w * destination[i];
             ww += w;
         }
         scog /= ww;
@@ -36,9 +37,9 @@ mat4 registration(const std::vector<Point>& _src,
 
         for (int i = 0; i < n; ++i)
         {
-            const dvec3 sp(_src[i] - scog);
-            const dvec3 dp(_dst[i] - dcog);
-            const double w = _weights ? (*_weights)[i] : 1.0;
+            const dvec3 sp(source[i] - scog);
+            const dvec3 dp(destination[i] - dcog);
+            const double w = weights ? (*weights)[i] : 1.0;
 
             xx += w * sp[0] * dp[0];
             xy += w * sp[0] * dp[1];
@@ -187,16 +188,16 @@ mat4 registration(const std::vector<Point>& _src,
     T(3, 2) = 0.0;
 
     // scaling
-    if (_mapping == RegistrationMethod::SIMILARITY)
+    if (mapping == RegistrationMethod::SIMILARITY)
     {
         Point sp, dp;
         Scalar nom(0), denom(0);
 
         for (int i = 0; i < n; ++i)
         {
-            sp = _src[i];
+            sp = source[i];
             sp -= scog;
-            dp = _dst[i];
+            dp = destination[i];
             dp -= dcog;
             sp = linear_transform(T, sp);
             nom += dot(sp, dp);
@@ -226,14 +227,14 @@ mat4 registration(const std::vector<Point>& _src,
     return T;
 }
 
-mat4 registration_l1(const std::vector<Point>& _src,
-                     const std::vector<Point>& _dst,
-                     RegistrationMethod _mapping)
+mat4 registration_l1(const std::vector<Point>& source,
+                     const std::vector<Point>& destination,
+                     RegistrationMethod mapping)
 {
     mat4 result;
 
-    assert(_src.size() == _dst.size());
-    const int n = _src.size();
+    assert(source.size() == destination.size());
+    const int n = source.size();
     assert(n > 2);
 
     std::vector<Scalar> weights(n, 1.0);
@@ -244,14 +245,15 @@ mat4 registration_l1(const std::vector<Point>& _src,
 
     for (int iter = 0; iter < 100; ++iter)
     {
-        const mat4 trafo = registration(_src, _dst, _mapping, &weights);
+        const mat4 trafo = registration(source, destination, mapping, &weights);
 
         max_l2_error = 0.0;
         l1_error = 0.0;
 
         for (int i = 0; i < n; ++i)
         {
-            Scalar dist = distance(affine_transform(trafo, _src[i]), _dst[i]);
+            Scalar dist =
+                distance(affine_transform(trafo, source[i]), destination[i]);
             l1_error += dist;
             l2_errors[i] = dist * dist;
             max_l2_error = std::max(max_l2_error, l2_errors[i]);
