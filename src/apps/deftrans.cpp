@@ -21,7 +21,7 @@ protected:
     virtual void draw(const std::string& draw_mode) override;
 
 private:
-    SurfaceMeshGL &source_;
+    SurfaceMeshGL& source_;
     SurfaceMeshGL target_;
     SurfaceMeshGL source_deformed_;
     SurfaceMeshGL target_deformed_;
@@ -53,7 +53,7 @@ bool Viewer::load_meshes(const std::string& source,
         source_deformed_.read(source_deformed);
         target_.read(target);
     }
-    catch (...) 
+    catch (...)
     {
         return false;
     }
@@ -82,11 +82,11 @@ void Viewer::process_imgui()
                            (int)TARGET_UNDEFORMED);
         ImGui::RadioButton("Target deformed", (int*)(&to_draw),
                            (int)TARGET_DEFORMED);
-        ImGui::RadioButton("All meshes", (int*)(&to_draw),
-                           (int)ALL);
+        ImGui::RadioButton("All meshes", (int*)(&to_draw), (int)ALL);
     }
 
-    if (ImGui::CollapsingHeader("Deformation Transfer", ImGuiTreeNodeFlags_DefaultOpen))
+    if (ImGui::CollapsingHeader("Deformation Transfer",
+                                ImGuiTreeNodeFlags_DefaultOpen))
     {
         if (ImGui::Button("L1 alignment of source meshes"))
         {
@@ -124,7 +124,8 @@ void Viewer::draw(const std::string& draw_mode)
         }
         case SOURCE_DEFORMED:
         {
-            source_deformed_.draw(projection_matrix_, modelview_matrix_, draw_mode);
+            source_deformed_.draw(projection_matrix_, modelview_matrix_,
+                                  draw_mode);
             break;
         }
         case TARGET_UNDEFORMED:
@@ -134,7 +135,8 @@ void Viewer::draw(const std::string& draw_mode)
         }
         case TARGET_DEFORMED:
         {
-            target_deformed_.draw(projection_matrix_, modelview_matrix_, draw_mode);
+            target_deformed_.draw(projection_matrix_, modelview_matrix_,
+                                  draw_mode);
             break;
         }
         case ALL:
@@ -146,13 +148,15 @@ void Viewer::draw(const std::string& draw_mode)
             source_.draw(projection_matrix_, modelview_matrix_, draw_mode);
 
             glViewport(w, h, w, h);
-            source_deformed_.draw(projection_matrix_, modelview_matrix_, draw_mode);
+            source_deformed_.draw(projection_matrix_, modelview_matrix_,
+                                  draw_mode);
 
             glViewport(0, 0, w, h);
             target_.draw(projection_matrix_, modelview_matrix_, draw_mode);
 
             glViewport(w, 0, w, h);
-            target_deformed_.draw(projection_matrix_, modelview_matrix_, draw_mode);
+            target_deformed_.draw(projection_matrix_, modelview_matrix_,
+                                  draw_mode);
 
             glViewport(0, 0, width(), height());
             break;
@@ -160,12 +164,12 @@ void Viewer::draw(const std::string& draw_mode)
     }
 }
 
-
 int main(int argc, char** argv)
 {
     if (argc != 4)
     {
-        std::cerr << "Usage: " << argv[0] << " <source> <source_deformed> <target>\n";
+        std::cerr << "Usage: " << argv[0]
+                  << " <source> <source_deformed> <target>\n";
         exit(1);
     }
 
