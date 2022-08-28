@@ -17,8 +17,8 @@ public:
                      const std::string& source_deformed);
 
 protected:
-    virtual void process_imgui() override;
-    virtual void draw(const std::string& draw_mode) override;
+    void process_imgui() override;
+    void draw(const std::string& draw_mode) override;
 
 private:
     SurfaceMeshGL& source_;
