@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/SurfaceCurvature.h>
+#include <pmp/algorithms/Curvature.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -13,7 +13,7 @@ public:
     Viewer(const char* title, int width, int height, bool showgui);
 
 protected:
-    virtual void process_imgui();
+    void process_imgui() override;
 };
 
 Viewer::Viewer(const char* title, int width, int height, bool showgui)
@@ -30,7 +30,7 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            SurfaceCurvature analyzer(mesh_);
+            Curvature analyzer(mesh_);
             analyzer.analyze_tensor(1, true);
             analyzer.mean_curvature_to_texture_coordinates();
             mesh_.use_cold_warm_texture();
@@ -39,7 +39,7 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Gauss Curvature"))
         {
-            SurfaceCurvature analyzer(mesh_);
+            Curvature analyzer(mesh_);
             analyzer.analyze_tensor(1, true);
             analyzer.gauss_curvature_to_texture_coordinates();
             mesh_.use_cold_warm_texture();
@@ -48,7 +48,7 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Abs. Max. Curvature"))
         {
-            SurfaceCurvature analyzer(mesh_);
+            Curvature analyzer(mesh_);
             analyzer.analyze_tensor(1, true);
             analyzer.max_curvature_to_texture_coordinates();
             mesh_.use_cold_warm_texture();

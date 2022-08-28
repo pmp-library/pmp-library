@@ -232,8 +232,8 @@ bool TrackballViewer::pick(int x, int y, vec3& result)
 #ifndef __EMSCRIPTEN__ // WebGL cannot read depth buffer
 
     // get viewport data
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
+    std::array<GLint, 4> viewport;
+    glGetIntegerv(GL_VIEWPORT, viewport.data());
 
     // in OpenGL y=0 is at the 'bottom'
     y = viewport[3] - y;

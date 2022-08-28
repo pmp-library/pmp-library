@@ -18,7 +18,17 @@ start by [forking](https://help.github.com/articles/fork-a-repo) and creating
 a [pull request](https://help.github.com/articles/creating-a-pull-request). Make
 sure that your code follows the [Coding Style](codingstyle.html) guidelines. In
 case you want to contribute a new algorithm make sure the code is properly
-documented using Doxygen and is accompanied by a unit test, see below.
+documented using Doxygen and is accompanied by a unit test.
+
+Before filing a PR make sure to perform the following checks:
+
+1. Unit tests are passing
+2. Static analysis is passing
+3. Code coverage does not decrease
+4. Code is properly formatted (see @ref using-clang-format)
+5. Your commits are signed (see below)
+
+That's quite a list! But don't get discouraged. This helps to make everyone's life easier in the long run.
 
 ## Developer Certificate of Origin
 
@@ -95,10 +105,20 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=true ..
 Rebuild and run the `coverage` target:
 
 ```sh
-make && make coverage
+make -j test && make coverage
 ```
 
 This will run the test suite and collect the coverage data. A HTML report of the
 results will be generated to `coverage/index.html`. We generally try to maintain
 a high coverage rate of above 90%. Any code that you would like to contribute
 should not decrease the coverage rate.
+
+## Static Analysis
+
+We perform basic static analysis using [clang-tidy](https://clang.llvm.org/extra/clang-tidy/). Run `cmake` as follows to make sure all checks are passing:
+
+```sh
+cmake -DWITH_CLANG_TIDY=ON .. && make
+```
+
+All warnings are treated as errors by default.

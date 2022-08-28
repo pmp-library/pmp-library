@@ -40,7 +40,7 @@ void MeshViewer::load_mesh(const char* filename)
     {
         mesh_.read(filename);
     }
-    catch (const IOException& e)
+    catch (const std::exception& e)
     {
         std::cerr << "Error: " << e.what() << std::endl;
         throw;

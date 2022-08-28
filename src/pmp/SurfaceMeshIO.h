@@ -5,6 +5,7 @@
 #pragma once
 
 #include <string>
+#include <utility>
 
 #include "pmp/Types.h"
 #include "pmp/SurfaceMesh.h"
@@ -14,8 +15,8 @@ namespace pmp {
 class SurfaceMeshIO
 {
 public:
-    SurfaceMeshIO(const std::string& filename, const IOFlags& flags)
-        : filename_(filename), flags_(flags)
+    SurfaceMeshIO(std::string filename, IOFlags flags)
+        : filename_(std::move(filename)), flags_(std::move(flags))
     {
     }
 
@@ -40,32 +41,8 @@ private:
     void write_pmp(const SurfaceMesh& mesh);
     void write_xyz(const SurfaceMesh& mesh);
 
-    //! \brief Wrapper around add_face() to catch any topology errors.
-    //! \details Failed faces are stored so they can be added later.
-    //! \return A valid Face *if* it could be added, invalid Face otherwise.
-    Face add_face(SurfaceMesh& mesh, const std::vector<Vertex>& vertices);
-
-    //! \brief Add failed faces after duplicating their vertices.
-    //! \pre failed_faces_ contains only valid vertex indices.
-    //! \post failed faces are added to the mesh and the vector is cleared.
-    void add_failed_faces(SurfaceMesh& mesh);
-
-    //! \brief Duplicate the given set of vertices by adding their points to the mesh again.
-    //! \pre All input vertices are valid and already added to the mesh.
-    //! \return A vector of duplicated vertices.
-    std::vector<Vertex> duplicate_vertices(
-        SurfaceMesh& mesh, const std::vector<Vertex>& vertices) const;
-
-    void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                        const bool has_texcoords, const bool has_colors);
-
-    void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                         const bool has_texcoords, const bool has_colors);
-
-private:
     std::string filename_;
     IOFlags flags_;
-    std::vector<std::vector<Vertex>> failed_faces_;
 };
 
 } // namespace pmp

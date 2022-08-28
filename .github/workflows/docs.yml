@@ -2,7 +2,7 @@ name: docs
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   docs:
@@ -18,7 +18,7 @@ jobs:
         run: sudo sed -i 's/azure\.//' /etc/apt/sources.list && sudo apt-get update
 
       - name: Install dependencies
-        run: sudo apt-get install -o Acquire::Retries=3 doxygen jekyll ruby-jekyll-seo-tag ruby-jekyll-feed xorg-dev texlive-base libclang-9-dev libclang-cpp9
+        run: sudo apt-get install -o Acquire::Retries=3 doxygen xorg-dev texlive-base libclang-9-dev libclang-cpp9
 
       - name: Fetch doxygen
         run: export DOXYGEN_URL="http://doxygen.nl/files/doxygen-1.9.2.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && echo `pwd`/doxygen/bin >> $GITHUB_PATH

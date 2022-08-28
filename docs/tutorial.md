@@ -247,26 +247,26 @@ pmp::Vector classes to Eigen.
 Example for construction:
 
 ```cpp
-    // construction from Eigen
-    Eigen::Vector3d eigenVec(1.0, 2.0, 3.0);
-    pmp::dvec3 pmpVec = eigenVec;
+// construction from Eigen
+Eigen::Vector3d eigenVec(1.0, 2.0, 3.0);
+pmp::dvec3 pmpVec = eigenVec;
 ```
 
 Example for assignment:
 
 ```cpp
-    // assignment from Eigen
-    Eigen::Vector3d eigenVec(1.0, 2.0, 3.0);
-    pmp::dvec3 pmpVec;
-    pmpVec = eigenVec;
+// assignment from Eigen
+Eigen::Vector3d eigenVec(1.0, 2.0, 3.0);
+pmp::dvec3 pmpVec;
+pmpVec = eigenVec;
 ```
 
 Example for cast:
 
 ```cpp
-    // cast to Eigen
-    pmp::vec3 pmpVec(1.0, 2.0, 3.0);
-    Eigen::Vector3f eigenVec = static_cast<Eigen::Vector3f>(pmpVec);
+// cast to Eigen
+pmp::vec3 pmpVec(1.0, 2.0, 3.0);
+Eigen::Vector3f eigenVec = static_cast<Eigen::Vector3f>(pmpVec);
 ```
 
 See the reference documentation for pmp::Matrix and pmp::Vector for more details.

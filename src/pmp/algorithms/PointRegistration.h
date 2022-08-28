@@ -11,7 +11,7 @@ namespace pmp {
 //! \addtogroup algorithms
 //! @{
 
-//! The two registration methods: Rigid registration optimizes for 
+//! The two registration methods: Rigid registration optimizes for
 //! rotation and translation, similarity registration additionally for scaling.
 enum Registration_method
 {
@@ -23,7 +23,7 @@ enum Registration_method
 //! all points in _src to _dst by minimizing the sum of squared
 //! distances of point pairs (L2 metric). Through _weights one
 //! can add a per-point weighting.
-//! \details See \cite horn_2004_deftrans and \cite botsch_2006_deftrans for details.
+//! \details See \cite sumner_2004_deftrans and \cite botsch_2006_deftrans for details.
 mat4 registration(const std::vector<Point>& _src,
                   const std::vector<Point>& _dst,
                   Registration_method _mapping = RIGID_REGISTRATION,

@@ -12,16 +12,16 @@ namespace pmp {
 //! @{
 
 //! clamp cotangent values as if angles are in [3, 177]
-inline double clamp_cot(const double v)
+inline Scalar clamp_cot(const Scalar v)
 {
-    const double bound = 19.1; // 3 degrees
+    const auto bound = Scalar(19.1); // 3 degrees
     return (v < -bound ? -bound : (v > bound ? bound : v));
 }
 
 //! clamp cosine values as if angles are in [3, 177]
-inline double clamp_cos(const double v)
+inline Scalar clamp_cos(const Scalar v)
 {
-    const double bound = 0.9986; // 3 degrees
+    const auto bound = Scalar(0.9986); // 3 degrees
     return (v < -bound ? -bound : (v > bound ? bound : v));
 }
 
@@ -60,7 +60,8 @@ Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2);
 //! compute area of triangle f
 Scalar triangle_area(const SurfaceMesh& mesh, Face f);
 
-//! surface area of the mesh (assumes triangular faces)
+//! Compute the surface area of \p mesh
+//! \pre Input \p mesh needs to be a pure triangle mesh.
 Scalar surface_area(const SurfaceMesh& mesh);
 
 //! \brief Compute the volume of a mesh
@@ -100,12 +101,12 @@ Scalar angle_sum(const SurfaceMesh& mesh, Vertex v);
 //! discrete curvature information for a vertex. used for vertex_curvature()
 struct VertexCurvature
 {
-    VertexCurvature() : mean(0.0), gauss(0.0), max(0.0), min(0.0) {}
+    VertexCurvature() = default;
 
-    Scalar mean;
-    Scalar gauss;
-    Scalar max;
-    Scalar min;
+    Scalar mean{0.0};
+    Scalar gauss{0.0};
+    Scalar max{0.0};
+    Scalar min{0.0};
 };
 
 //! compute min, max, mean, and Gaussian curvature for vertex v. this will not

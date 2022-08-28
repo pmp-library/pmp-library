@@ -8,7 +8,7 @@
 #include "pmp/visualization/PhongShader.h"
 #include "pmp/visualization/MatCapShader.h"
 #include "pmp/visualization/ColdWarmTexture.h"
-#include "pmp/algorithms/SurfaceNormals.h"
+#include "pmp/algorithms/Normals.h"
 
 namespace pmp {
 
@@ -22,6 +22,7 @@ SurfaceMeshGL::SurfaceMeshGL()
     tex_coord_buffer_ = 0;
     edge_buffer_ = 0;
     feature_buffer_ = 0;
+    seam_buffer_ = 0;
 
     // initialize buffer sizes
     n_vertices_ = 0;
@@ -63,6 +64,7 @@ void SurfaceMeshGL::deleteBuffers()
     glDeleteBuffers(1, &tex_coord_buffer_);
     glDeleteBuffers(1, &edge_buffer_);
     glDeleteBuffers(1, &feature_buffer_);
+    glDeleteBuffers(1, &seam_buffer_);
     glDeleteVertexArrays(1, &vertex_array_object_);
 
     // initialize GL buffers to zero
@@ -73,6 +75,7 @@ void SurfaceMeshGL::deleteBuffers()
     tex_coord_buffer_ = 0;
     edge_buffer_ = 0;
     feature_buffer_ = 0;
+    seam_buffer_ = 0;
 
     // initialize buffer sizes
     n_vertices_ = 0;
@@ -191,7 +194,7 @@ void SurfaceMeshGL::use_cold_warm_texture()
         glGenTextures(1, &texture_);
         glBindTexture(GL_TEXTURE_2D, texture_);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 1, 0, GL_RGB,
-                     GL_UNSIGNED_BYTE, cold_warm_texture);
+                     GL_UNSIGNED_BYTE, cold_warm_texture.data());
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -274,6 +277,7 @@ void SurfaceMeshGL::update_opengl_buffers()
         glGenBuffers(1, &tex_coord_buffer_);
         glGenBuffers(1, &edge_buffer_);
         glGenBuffers(1, &feature_buffer_);
+        glGenBuffers(1, &seam_buffer_);
     }
 
     // activate VAO
@@ -316,13 +320,13 @@ void SurfaceMeshGL::update_opengl_buffers()
         {
             fnormals = add_face_property<Normal>("gl:fnormal");
             for (auto f : faces())
-                fnormals[f] = SurfaceNormals::compute_face_normal(*this, f);
+                fnormals[f] = Normals::compute_face_normal(*this, f);
         }
         else if (crease_angle_ > 170)
         {
             vnormals = add_vertex_property<Normal>("gl:vnormal");
             for (auto v : vertices())
-                vnormals[v] = SurfaceNormals::compute_vertex_normal(*this, v);
+                vnormals[v] = Normals::compute_vertex_normal(*this, v);
         }
 
         // data per face (for all corners)
@@ -368,8 +372,8 @@ void SurfaceMeshGL::update_opengl_buffers()
                 }
                 else
                 {
-                    n = SurfaceNormals::compute_corner_normal(
-                        *this, h, crease_angle_radians);
+                    n = Normals::compute_corner_normal(*this, h,
+                                                       crease_angle_radians);
                 }
                 corner_normals.push_back((vec3)n);
 
@@ -525,16 +529,67 @@ void SurfaceMeshGL::update_opengl_buffers()
         has_vertex_colors_ = false;
     }
 
-    // edge indices
+    size_t seam_count = 0;
+    auto texcoords = get_halfedge_property<TexCoord>("h:tex");
+    EdgeProperty<bool> texture_seams;
+    if (texcoords)
+    {
+        texture_seams = edge_property<bool>("e:seam");
+        for (auto e : edges())
+        {
+            // texcoords are stored in halfedge pointing towards a vertex
+            Halfedge h0 = halfedge(e, 0);
+            Halfedge h1 = halfedge(e, 1);     //opposite halfedge
+            Halfedge h0p = prev_halfedge(h0); // start point edge 0
+            Halfedge h1p = prev_halfedge(h1); // start point edge 1
+
+            // if start or end points differs more than seam_threshold
+            // the corresponding edge is a texture seam
+            if (norm(texcoords[h1] - texcoords[h0p]) > 1e-2 ||
+                norm(texcoords[h0] - texcoords[h1p]) > 1e-2)
+            {
+                texture_seams[e] = true;
+            }
+            else
+            {
+                texture_seams[e] = false;
+            }
+        }
+        for (auto e : edges())
+            if (texture_seams && texture_seams[e])
+                seam_count++;
+    }
+
+    // edge indices & if available seam indices
     if (n_edges())
     {
         std::vector<unsigned int> edgeArray;
         edgeArray.reserve(n_edges());
+
+        std::vector<unsigned int> seamArray;
+        seamArray.reserve(seam_count);
+
         for (auto e : edges())
         {
             edgeArray.push_back(vertex_indices[vertex(e, 0)]);
             edgeArray.push_back(vertex_indices[vertex(e, 1)]);
+            if (texture_seams && texture_seams[e])
+            {
+                seamArray.push_back(vertex_indices[vertex(e, 0)]);
+                seamArray.push_back(vertex_indices[vertex(e, 1)]);
+            }
         }
+        if (texture_seams)
+        {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                         seamArray.size() * sizeof(unsigned int),
+                         seamArray.data(), GL_STATIC_DRAW);
+            n_seams_ = seamArray.size();
+        }
+        else
+            n_seams_ = 0;
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                      edgeArray.size() * sizeof(unsigned int), edgeArray.data(),
@@ -602,7 +657,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     // we need some texture, otherwise WebGL complains
     if (!texture_)
     {
-        use_cold_warm_texture();
+        use_checkerboard_texture();
     }
 
     // empty mesh?
@@ -622,7 +677,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     phong_shader_.set_uniform("modelview_projection_matrix", mvp_matrix);
     phong_shader_.set_uniform("modelview_matrix", mv_matrix);
     phong_shader_.set_uniform("normal_matrix", n_matrix);
-    phong_shader_.set_uniform("point_size", (float)point_size_);
+    phong_shader_.set_uniform("point_size", point_size_);
     phong_shader_.set_uniform("light1", vec3(1.0, 1.0, 1.0));
     phong_shader_.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
     phong_shader_.set_uniform("front_color", front_color_);
@@ -655,7 +710,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
         {
             // draw faces
             glDepthRange(0.01, 1.0);
-            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            drawTriangles();
             glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
             // overlay edges
@@ -668,6 +723,18 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
             glDrawElements(GL_LINES, n_edges_, GL_UNSIGNED_INT, nullptr);
             glDepthFunc(GL_LESS);
+
+            // overlay edges
+            glDepthRange(0.0, 1.0);
+            glDepthFunc(GL_LEQUAL);
+            phong_shader_.set_uniform("front_color", vec3(1, 0, 0.));
+            phong_shader_.set_uniform("back_color", vec3(0.1, 0, 0));
+            std::array<GLfloat, 2> line_width_range;
+            glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, line_width_range.data());
+            glLineWidth(line_width_range[1]);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
+            glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT, nullptr);
+            glDepthFunc(GL_LESS);
         }
     }
 
@@ -675,7 +742,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     {
         if (n_faces())
         {
-            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            drawTriangles();
         }
     }
 
@@ -691,7 +758,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                 matcap_shader_.set_uniform("normal_matrix", n_matrix);
                 matcap_shader_.set_uniform("alpha", alpha_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
-                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+                drawTriangles();
             }
             else
             {
@@ -701,7 +768,24 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                 phong_shader_.set_uniform("use_vertex_color", false);
                 phong_shader_.set_uniform("use_srgb", srgb_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
-                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+                drawTriangles();
+
+                // overlay seam edges
+                if (n_seams_ > 0)
+                {
+                    glDepthRange(0.0, 1.0);
+                    glDepthFunc(GL_LEQUAL);
+                    phong_shader_.set_uniform("front_color", vec3(1, 0, 0.));
+                    phong_shader_.set_uniform("back_color", vec3(0.1, 0, 0));
+                    std::array<GLfloat, 2> line_width_range;
+                    glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE,
+                                line_width_range.data());
+                    glLineWidth(line_width_range[1]);
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
+                    glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT,
+                                   nullptr);
+                    glDepthFunc(GL_LESS);
+                }
             }
         }
     }
@@ -718,7 +802,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             phong_shader_.set_uniform("front_color", vec3(0.8, 0.8, 0.8));
             phong_shader_.set_uniform("back_color", vec3(0.9, 0.0, 0.0));
             glDepthRange(0.01, 1.0);
-            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+            drawTriangles();
 
             // overlay edges
             glDepthRange(0.0, 1.0);
@@ -764,7 +848,7 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
     // triangle? nothing to do
     if (n == 3)
     {
-        triangles.push_back(ivec3(0, 1, 2));
+        triangles.emplace_back(0, 1, 2);
         return;
     }
 
@@ -776,13 +860,13 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
             area(points[0], points[1], points[3]) +
                 area(points[1], points[2], points[3]))
         {
-            triangles.push_back(ivec3(0, 1, 2));
-            triangles.push_back(ivec3(0, 2, 3));
+            triangles.emplace_back(0, 1, 2);
+            triangles.emplace_back(0, 2, 3);
         }
         else
         {
-            triangles.push_back(ivec3(0, 1, 3));
-            triangles.push_back(ivec3(1, 2, 3));
+            triangles.emplace_back(0, 1, 3);
+            triangles.emplace_back(1, 2, 3);
         }
         return;
     }
@@ -830,7 +914,7 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
     // build triangles from triangulation table
     std::vector<ivec2> todo;
     todo.reserve(n);
-    todo.push_back(ivec2(0, n - 1));
+    todo.emplace_back(0, n - 1);
     while (!todo.empty())
     {
         ivec2 tri = todo.back();
@@ -841,11 +925,74 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
             continue;
         int split = triangulation(start, end).split;
 
-        triangles.push_back(ivec3(start, split, end));
+        triangles.emplace_back(start, split, end);
 
-        todo.push_back(ivec2(start, split));
-        todo.push_back(ivec2(split, end));
+        todo.emplace_back(start, split);
+        todo.emplace_back(split, end);
     }
+}
+
+void SurfaceMeshGL::drawTriangles() const
+{
+#ifndef __EMSCRIPTEN__
+    glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
+#else
+
+    // which arrays are active?
+    GLint use_normals, use_texcoords, use_colors;
+    glGetVertexAttribiv(1, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &use_normals);
+    glGetVertexAttribiv(2, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &use_texcoords);
+    glGetVertexAttribiv(3, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &use_colors);
+
+    // draw triangles in batch sizes < 2^16
+    const unsigned int nv = n_vertices_;
+    const unsigned int count = 65535;
+    for (int start = 0; start < nv; start += count)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0,
+                              (GLvoid*)(3 * start * sizeof(GLfloat)));
+        if (use_normals)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,
+                                  (GLvoid*)(3 * start * sizeof(GLfloat)));
+        }
+        if (use_texcoords)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, tex_coord_buffer_);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0,
+                                  (GLvoid*)(2 * start * sizeof(GLfloat)));
+        }
+        if (use_colors)
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
+            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0,
+                                  (GLvoid*)(3 * start * sizeof(GLfloat)));
+        }
+
+        glDrawArrays(GL_TRIANGLES, 0, std::min(nv - start, count));
+    }
+
+    // reset buffers
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    if (use_normals)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    }
+    if (use_texcoords)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, tex_coord_buffer_);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+    }
+    if (use_colors)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    }
+#endif
 }
 
 } // namespace pmp

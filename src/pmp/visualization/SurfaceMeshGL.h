@@ -21,10 +21,10 @@ public:
     SurfaceMeshGL();
 
     //! default destructor
-    ~SurfaceMeshGL();
+    ~SurfaceMeshGL() override;
 
     //! clear mesh: remove all vertices, edges, faces, free OpenGL buffers
-    virtual void clear() override;
+    void clear() override;
 
     //! get front color
     const vec3& front_color() const { return front_color_; }
@@ -113,11 +113,11 @@ public:
     //! \throw IOException in case of failure to load texture from file
     void load_matcap(const char* filename);
 
-private: // init/clear buffers and properties
+private:
     // delete OpenGL buffers (called from destructor and clear())
     void deleteBuffers();
 
-private: // helpers for computing triangulation of a polygon
+    // helpers for computing triangulation of a polygon
     struct Triangulation
     {
         Triangulation(Scalar a = std::numeric_limits<Scalar>::max(), int s = -1)
@@ -159,8 +159,10 @@ private: // helpers for computing triangulation of a polygon
     void tesselate(const std::vector<vec3>& points,
                    std::vector<ivec3>& triangles);
 
-private:
-    //! OpenGL buffers
+    // circumvent WebGL bug in Chrome 99
+    void drawTriangles() const;
+
+    // OpenGL buffers
     GLuint vertex_array_object_;
     GLuint vertex_buffer_;
     GLuint color_buffer_;
@@ -168,28 +170,30 @@ private:
     GLuint tex_coord_buffer_;
     GLuint edge_buffer_;
     GLuint feature_buffer_;
+    GLuint seam_buffer_;
 
-    //! buffer sizes
+    // buffer sizes
     GLsizei n_vertices_;
     GLsizei n_edges_;
+    GLsizei n_seams_;
     GLsizei n_triangles_;
     GLsizei n_features_;
     bool has_texcoords_;
     bool has_vertex_colors_;
 
-    //! shaders
+    // shaders
     Shader phong_shader_;
     Shader matcap_shader_;
 
-    //! material properties
+    // material properties
     vec3 front_color_, back_color_;
     float ambient_, diffuse_, specular_, shininess_, alpha_;
     bool srgb_;
     bool use_colors_;
     float crease_angle_;
-    int point_size_;
+    float point_size_;
 
-    //! 1D texture for scalar field rendering
+    // 1D texture for scalar field rendering
     GLuint texture_;
     enum TextureMode
     {

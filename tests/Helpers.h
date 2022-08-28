@@ -13,9 +13,6 @@ SurfaceMesh vertex_onering();
 // generate onering around an edge
 SurfaceMesh edge_onering();
 
-// generate hemisphere mesh; cuts lower half of unit sphere
-SurfaceMesh hemisphere();
-
 // generate subdivided icosahedron
 // based on Loop subdivision
 // original icosahedron edges are marked as feature edges
@@ -23,5 +20,11 @@ SurfaceMesh subdivided_icosahedron();
 
 // generate 2d non-convex L shape
 SurfaceMesh l_shape();
+
+// generate cone with bottom polygon removed
+SurfaceMesh open_cone();
+
+// a mesh with texcoords and texture seams
+SurfaceMesh texture_seams_mesh();
 
 } // namespace pmp

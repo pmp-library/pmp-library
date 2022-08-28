@@ -3,6 +3,7 @@
 
 #include "Window.h"
 #include <algorithm>
+#include <sstream>
 
 #define IMGUI_DISABLE_OBSOLETE_FUNCTIONS
 #include <imgui.h>
@@ -294,7 +295,7 @@ void Window::add_help_item(std::string key, std::string description, int pos)
 {
     if (pos == -1)
     {
-        help_items_.push_back(std::make_pair(key, description));
+        help_items_.emplace_back(std::make_pair(key, description));
     }
     else
     {
@@ -317,7 +318,7 @@ void Window::show_help()
     ImGui::OpenPopup("Key Bindings");
 
     ImGui::SetNextWindowFocus();
-    if (ImGui::BeginPopupModal("Key Bindings", NULL,
+    if (ImGui::BeginPopupModal("Key Bindings", nullptr,
                                ImGuiWindowFlags_AlwaysAutoResize))
     {
         ImGui::Columns(2, "help items");
@@ -671,12 +672,12 @@ void Window::cursor_pos(double& x, double& y) const
 
 void Window::screenshot()
 {
-    char filename[100];
-    sprintf(filename, "%s-%d.png", title_.c_str(), screenshot_number_++);
-    std::cout << "Save screenshot to " << filename << std::endl;
+    std::stringstream filename{""};
+    filename << title_ << std::to_string(screenshot_number_++);
+    std::cout << "Save screenshot to " << filename.str() << std::endl;
 
     // allocate buffer
-    unsigned char* data = new unsigned char[3 * width_ * height_];
+    auto data = new unsigned char[3 * width_ * height_];
 
     // read framebuffer
     glfwMakeContextCurrent(window_);
@@ -685,7 +686,8 @@ void Window::screenshot()
 
     // write to file
     stbi_flip_vertically_on_write(true);
-    stbi_write_png(filename, width_, height_, 3, data, 3 * width_);
+    stbi_write_png(filename.str().c_str(), width_, height_, 3, data,
+                   3 * width_);
 
     // clean up
     delete[] data;

@@ -28,6 +28,10 @@ Scalar triangle_area(const SurfaceMesh& mesh, Face f)
 
 Scalar surface_area(const SurfaceMesh& mesh)
 {
+    if (!mesh.is_triangle_mesh())
+    {
+        throw InvalidInputException("Input is not a pure triangle mesh!");
+    }
     Scalar area(0);
     for (auto f : mesh.faces())
     {
@@ -233,22 +237,20 @@ double voronoi_area_barycentric(const SurfaceMesh& mesh, Vertex v)
 
     if (!mesh.is_isolated(v))
     {
-        const Point p = mesh.position(v);
-        Halfedge h0, h1;
-        Point q, r, pq, pr;
+        const auto p = mesh.position(v);
 
         for (auto h : mesh.halfedges(v))
         {
             if (mesh.is_boundary(h))
                 continue;
 
-            h0 = h;
-            h1 = mesh.next_halfedge(h0);
+            auto h0 = h;
+            auto h1 = mesh.next_halfedge(h0);
 
-            pq = mesh.position(mesh.to_vertex(h0));
+            auto pq = mesh.position(mesh.to_vertex(h0));
             pq -= p;
 
-            pr = mesh.position(mesh.to_vertex(h1));
+            auto pr = mesh.position(mesh.to_vertex(h1));
             pr -= p;
 
             area += norm(cross(pq, pr)) / 6.0;

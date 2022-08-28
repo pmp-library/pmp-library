@@ -6,7 +6,7 @@
 namespace pmp {
 
 // clang-format off
-const GLubyte cold_warm_texture[768] = {
+const std::array<GLubyte, 768> cold_warm_texture = {{
 59,76,192,
 60,78,194,
 61,80,195,
@@ -264,7 +264,7 @@ const GLubyte cold_warm_texture[768] = {
 183,17,40,
 181,11,39,
 // 180,4,38,
-};
+}};
 // clang-format on
 
 } // namespace pmp

@@ -1,4 +1,4 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/TriangleKdTree.h"
@@ -10,52 +10,50 @@
 
 namespace pmp {
 
-TriangleKdTree::TriangleKdTree(const SurfaceMesh& mesh, unsigned int max_faces,
-                               unsigned int max_depth)
+TriangleKdTree::TriangleKdTree(std::shared_ptr<const SurfaceMesh> mesh,
+                               unsigned int max_faces, unsigned int max_depth)
 {
     // init
     root_ = new Node();
-    root_->faces = new Triangles();
-    VertexProperty<Point> points = mesh.get_vertex_property<Point>("v:point");
+    root_->faces = new Faces();
 
-    // collect triangles
-    Triangle tri;
-    root_->faces->reserve(mesh.n_faces());
-    for (SurfaceMesh::FaceIterator fit = mesh.faces_begin();
-         fit != mesh.faces_end(); ++fit)
+    // collect faces and points
+    root_->faces->reserve(mesh->n_faces());
+    face_points_.reserve(mesh->n_faces());
+    auto points = mesh->get_vertex_property<Point>("v:point");
+
+    for (const auto& f : mesh->faces())
     {
-        SurfaceMesh::VertexAroundFaceCirculator vfit = mesh.vertices(*fit);
-        tri.x[0] = points[*vfit];
-        ++vfit;
-        tri.x[1] = points[*vfit];
-        ++vfit;
-        tri.x[2] = points[*vfit];
-        tri.f = *fit;
-        root_->faces->push_back(tri);
+        root_->faces->push_back(f);
+
+        auto v = mesh->vertices(f);
+        const auto& p0 = points[*v];
+        ++v;
+        const auto& p1 = points[*v];
+        ++v;
+        const auto& p2 = points[*v];
+        face_points_.push_back({p0, p1, p2});
     }
 
     // call recursive helper
     build_recurse(root_, max_faces, max_depth);
 }
 
-unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
-                                           unsigned int depth)
+void TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
+                                   unsigned int depth)
 {
     // should we stop at this level ?
     if ((depth == 0) || (node->faces->size() <= max_faces))
-        return depth;
-
-    std::vector<Triangle>::const_iterator fit, fend = node->faces->end();
-    unsigned int i;
+        return;
 
     // compute bounding box
     BoundingBox bbox;
-    for (fit = node->faces->begin(); fit != fend; ++fit)
+    for (const auto& f : *node->faces)
     {
-        for (i = 0; i < 3; ++i)
-        {
-            bbox += fit->x[i];
-        }
+        const auto idx = f.idx();
+        bbox += face_points_[idx][0];
+        bbox += face_points_[idx][1];
+        bbox += face_points_[idx][2];
     }
 
     // split longest side of bounding box
@@ -67,55 +65,45 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
     if (bb[2] > length)
         length = bb[(axis = 2)];
 
-#if 1
     // split in the middle
     Scalar split = bbox.center()[axis];
-#else
-    // find split position as median
-    std::vector<Scalar> v;
-    v.reserve(node->faces->size() * 3);
-    for (fit = node->faces->begin(); fit != fend; ++fit)
-        for (i = 0; i < 3; ++i)
-            v.push_back(fit->x[i][axis]]);
-    std::sort(v.begin(), v.end());
-    split = v[v.size() / 2];
-#endif
 
     // create children
     auto* left = new Node();
-    left->faces = new Triangles();
+    left->faces = new Faces();
     left->faces->reserve(node->faces->size() / 2);
     auto* right = new Node();
-    right->faces = new Triangles;
+    right->faces = new Faces;
     right->faces->reserve(node->faces->size() / 2);
 
     // partition for left and right child
-    for (fit = node->faces->begin(); fit != fend; ++fit)
+    for (const auto& f : *node->faces)
     {
         bool l = false, r = false;
 
-        const Triangle& t = *fit;
-        if (t.x[0][axis] <= split)
+        const auto& pos = face_points_[f.idx()];
+
+        if (pos[0][axis] <= split)
             l = true;
         else
             r = true;
-        if (t.x[1][axis] <= split)
+        if (pos[1][axis] <= split)
             l = true;
         else
             r = true;
-        if (t.x[2][axis] <= split)
+        if (pos[2][axis] <= split)
             l = true;
         else
             r = true;
 
         if (l)
         {
-            left->faces->push_back(t);
+            left->faces->push_back(f);
         }
 
         if (r)
         {
-            right->faces->push_back(t);
+            right->faces->push_back(f);
         }
     }
 
@@ -130,8 +118,8 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
         delete left;
         delete right;
 
-        // return tree depth
-        return depth;
+        // stop recursion
+        return;
     }
 
     // or recurse further?
@@ -148,10 +136,8 @@ unsigned int TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
         node->right_child = right;
 
         // recurse to childen
-        int depthLeft = build_recurse(node->left_child, max_faces, depth - 1);
-        int depthRight = build_recurse(node->right_child, max_faces, depth - 1);
-
-        return std::min(depthLeft, depthRight);
+        build_recurse(node->left_child, max_faces, depth - 1);
+        build_recurse(node->right_child, max_faces, depth - 1);
     }
 }
 
@@ -159,7 +145,6 @@ TriangleKdTree::NearestNeighbor TriangleKdTree::nearest(const Point& p) const
 {
     NearestNeighbor data;
     data.dist = std::numeric_limits<Scalar>::max();
-    data.tests = 0;
     nearest_recurse(root_, p, data);
     return data;
 }
@@ -170,18 +155,15 @@ void TriangleKdTree::nearest_recurse(Node* node, const Point& point,
     // terminal node?
     if (!node->left_child)
     {
-        Scalar d;
-        Point n;
-
-        auto fit = node->faces->begin(), fend = node->faces->end();
-        for (; fit != fend; ++fit)
+        for (const auto& f : *node->faces)
         {
-            d = dist_point_triangle(point, fit->x[0], fit->x[1], fit->x[2], n);
-            ++data.tests;
+            Point n;
+            const auto& pos = face_points_[f.idx()];
+            auto d = dist_point_triangle(point, pos[0], pos[1], pos[2], n);
             if (d < data.dist)
             {
                 data.dist = d;
-                data.face = fit->f;
+                data.face = f;
                 data.nearest = n;
             }
         }

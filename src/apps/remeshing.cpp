@@ -2,8 +2,8 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/SurfaceFeatures.h>
-#include <pmp/algorithms/SurfaceRemeshing.h>
+#include <pmp/algorithms/Features.h>
+#include <pmp/algorithms/Remeshing.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -14,7 +14,7 @@ public:
     Viewer(const char* title, int width, int height);
 
 protected:
-    virtual void process_imgui();
+    void process_imgui() override;
 };
 
 Viewer::Viewer(const char* title, int width, int height)
@@ -40,7 +40,7 @@ void Viewer::process_imgui()
         ImGui::SameLine();
         if (ImGui::Button("Detect Features"))
         {
-            SurfaceFeatures sf(mesh_);
+            Features sf(mesh_);
             sf.clear();
             sf.detect_angle(feature_angle);
             update_mesh();
@@ -58,7 +58,7 @@ void Viewer::process_imgui()
             l /= (Scalar)mesh_.n_edges();
             try
             {
-                SurfaceRemeshing(mesh_).uniform_remeshing(l);
+                Remeshing(mesh_).uniform_remeshing(l);
             }
             catch (const InvalidInputException& e)
             {
@@ -75,7 +75,7 @@ void Viewer::process_imgui()
             auto bb = mesh_.bounds().size();
             try
             {
-                SurfaceRemeshing(mesh_).adaptive_remeshing(
+                Remeshing(mesh_).adaptive_remeshing(
                     0.0010 * bb,  // min length
                     0.0500 * bb,  // max length
                     0.0005 * bb); // approx. error

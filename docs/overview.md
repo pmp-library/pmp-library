@@ -5,7 +5,7 @@ design as well as the capabilities provided by the library. The pmp-library is
 organized into different modules. At the core of the library is the @ref core
 module providing a data structure for polygonal surface meshes. On top of the
 @ref core module the @ref algorithms module provides implementations of
-canonical geometry processing algorithms such as remeshing, simplification,
+canonical geometry processing algorithms such as remeshing, decimation,
 subdivision, and smoothing. The optional @ref visualization module
 provides OpenGL&reg;-based viewers and visualization tools.
 
@@ -19,7 +19,7 @@ timing and memory profiling.
 ## Algorithms
 
 The @ref algorithms module provides implementations of canonical geometry
-processing algorithms such as remeshing or mesh simplification. The class
+processing algorithms such as remeshing or mesh decimation. The class
 structure and naming follows a simple and straightforward scheme: Provide one
 class for one type of tasks and name it accordingly. Example: the
 pmp::SurfaceRemeshing class provides remeshing algorithms operating on surface

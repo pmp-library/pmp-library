@@ -17,7 +17,7 @@ public:
     MeshViewer(const char* title, int width, int height, bool showgui = true);
 
     //! destructor
-    virtual ~MeshViewer();
+    ~MeshViewer() override;
 
     //! load a mesh from file \p filename
     virtual void load_mesh(const char* filename);
@@ -37,13 +37,13 @@ public:
     virtual void update_mesh();
 
     //! draw the scene in different draw modes
-    virtual void draw(const std::string& draw_mode) override;
+    void draw(const std::string& draw_mode) override;
 
     //! handle ImGUI interface
-    virtual void process_imgui() override;
+    void process_imgui() override;
 
     //! this function handles keyboard events
-    virtual void keyboard(int key, int code, int action, int mod) override;
+    void keyboard(int key, int code, int action, int mod) override;
 
     //! get vertex closest to 3D position Distributed under the mouse cursor
     Vertex pick_vertex(int x, int y);

@@ -21,7 +21,7 @@ public:
                     bool showgui = true);
 
     //! destructor
-    virtual ~TrackballViewer();
+    ~TrackballViewer() override;
 
     //! define the center and radius of the scene/
     //! used for trackball rotation
@@ -33,22 +33,22 @@ public:
 protected:
     //! this function is called when the scene has to be rendered. it
     //! clears the buffers, calls the draw() method, and performs buffer swap
-    virtual void display(void) override;
+    void display() override;
 
     //! this function handles keyboard events
-    virtual void keyboard(int key, int code, int action, int mods) override;
+    void keyboard(int key, int code, int action, int mods) override;
 
     //! this function handles mouse button events
-    virtual void mouse(int button, int action, int mods) override;
+    void mouse(int button, int action, int mods) override;
 
     //! this function handles mouse motion (passive/active position)
-    virtual void motion(double xpos, double ypos) override;
+    void motion(double xpos, double ypos) override;
 
     //! this function handles mouse scroll events
-    virtual void scroll(double xoffset, double yoffset) override;
+    void scroll(double xoffset, double yoffset) override;
 
     //! this function is called if the window is resized
-    virtual void resize(int width, int height) override;
+    void resize(int width, int height) override;
 
 protected:
     //! reset the list of draw modes

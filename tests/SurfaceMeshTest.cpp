@@ -17,19 +17,16 @@ TEST_F(SurfaceMeshTest, emptyMesh)
 
 TEST_F(SurfaceMeshTest, insert_remove_single_vertex)
 {
-    auto v0 = mesh.add_vertex(Point(0, 0, 0));
+    auto v = mesh.add_vertex(Point(0, 0, 0));
     EXPECT_EQ(mesh.n_vertices(), size_t(1));
-    mesh.delete_vertex(v0);
+    mesh.delete_vertex(v);
     mesh.garbage_collection();
     EXPECT_EQ(mesh.n_vertices(), size_t(0));
 }
 
 TEST_F(SurfaceMeshTest, insert_remove_single_triangle)
 {
-    auto v0 = mesh.add_vertex(Point(0, 0, 0));
-    auto v1 = mesh.add_vertex(Point(1, 0, 0));
-    auto v2 = mesh.add_vertex(Point(0, 1, 0));
-    auto f0 = mesh.add_triangle(v0, v1, v2);
+    add_triangle();
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_edges(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
@@ -42,11 +39,7 @@ TEST_F(SurfaceMeshTest, insert_remove_single_triangle)
 
 TEST_F(SurfaceMeshTest, insert_remove_single_quad)
 {
-    auto v0 = mesh.add_vertex(Point(0, 0, 0));
-    auto v1 = mesh.add_vertex(Point(1, 0, 0));
-    auto v2 = mesh.add_vertex(Point(1, 1, 0));
-    auto v3 = mesh.add_vertex(Point(0, 1, 0));
-    auto f0 = mesh.add_quad(v0, v1, v2, v3);
+    add_quad();
     EXPECT_EQ(mesh.n_vertices(), size_t(4));
     EXPECT_EQ(mesh.n_edges(), size_t(4));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
@@ -65,11 +58,11 @@ TEST_F(SurfaceMeshTest, insert_remove_single_polygonal_face)
     vertices[2] = mesh.add_vertex(Point(1, 1, 0));
     vertices[3] = mesh.add_vertex(Point(0, 1, 0));
 
-    auto f0 = mesh.add_face(vertices);
+    auto f = mesh.add_face(vertices);
     EXPECT_EQ(mesh.n_vertices(), size_t(4));
     EXPECT_EQ(mesh.n_edges(), size_t(4));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
-    mesh.delete_face(f0);
+    mesh.delete_face(f);
     mesh.garbage_collection();
     EXPECT_EQ(mesh.n_vertices(), size_t(0));
     EXPECT_EQ(mesh.n_edges(), size_t(0));
@@ -81,8 +74,8 @@ TEST_F(SurfaceMeshTest, delete_center_vertex)
     mesh = vertex_onering();
     EXPECT_EQ(mesh.n_vertices(), size_t(7));
     EXPECT_EQ(mesh.n_faces(), size_t(6));
-    Vertex v0(3); // the central vertex
-    mesh.delete_vertex(v0);
+    Vertex v(3); // the central vertex
+    mesh.delete_vertex(v);
     mesh.garbage_collection();
     EXPECT_EQ(mesh.n_vertices(), size_t(0));
     EXPECT_EQ(mesh.n_faces(), size_t(0));
@@ -94,8 +87,8 @@ TEST_F(SurfaceMeshTest, delete_center_edge)
     EXPECT_EQ(mesh.n_vertices(), size_t(10));
     EXPECT_EQ(mesh.n_faces(), size_t(10));
     // the two vertices of the center edge
-    Vertex v0(4);
-    Vertex v1(5);
+    v0 = Vertex(4);
+    v1 = Vertex(5);
 
     auto e = mesh.find_edge(v0, v1);
     mesh.delete_edge(e);
@@ -106,11 +99,7 @@ TEST_F(SurfaceMeshTest, delete_center_edge)
 
 TEST_F(SurfaceMeshTest, copy)
 {
-    auto v0 = mesh.add_vertex(Point(0, 0, 0));
-    auto v1 = mesh.add_vertex(Point(1, 0, 0));
-    auto v2 = mesh.add_vertex(Point(0, 1, 0));
-    mesh.add_triangle(v0, v1, v2);
-
+    add_triangle();
     SurfaceMesh m2 = mesh;
     EXPECT_EQ(m2.n_vertices(), size_t(3));
     EXPECT_EQ(m2.n_edges(), size_t(3));
@@ -119,11 +108,7 @@ TEST_F(SurfaceMeshTest, copy)
 
 TEST_F(SurfaceMeshTest, assignment)
 {
-    auto v0 = mesh.add_vertex(Point(0, 0, 0));
-    auto v1 = mesh.add_vertex(Point(1, 0, 0));
-    auto v2 = mesh.add_vertex(Point(0, 1, 0));
-    mesh.add_triangle(v0, v1, v2);
-
+    add_triangle();
     SurfaceMesh m2;
     m2.assign(mesh);
     EXPECT_EQ(m2.n_vertices(), size_t(3));
@@ -272,11 +257,7 @@ TEST_F(SurfaceMeshTest, is_triangle_mesh)
 
 TEST_F(SurfaceMeshTest, is_quad_mesh)
 {
-    auto v0 = mesh.add_vertex(Point(0, 0, 0));
-    auto v1 = mesh.add_vertex(Point(1, 0, 0));
-    auto v2 = mesh.add_vertex(Point(1, 1, 0));
-    auto v3 = mesh.add_vertex(Point(0, 1, 0));
-    mesh.add_quad(v0, v1, v2, v3);
+    add_quad();
     EXPECT_TRUE(mesh.is_quad_mesh());
 }
 
@@ -292,15 +273,18 @@ TEST_F(SurfaceMeshTest, poly_mesh)
     EXPECT_FALSE(mesh.is_triangle_mesh() || mesh.is_quad_mesh());
 }
 
-TEST_F(SurfaceMeshTest, valence)
+TEST_F(SurfaceMeshTest, vertex_valence)
 {
     add_triangle();
-    size_t sumValence(0);
-    for (auto v : mesh.vertices())
-    {
-        sumValence += mesh.valence(v);
-    }
-    EXPECT_EQ(sumValence, size_t(6));
+    auto val = mesh.valence(*mesh.vertices_begin());
+    EXPECT_EQ(val, 2u);
+}
+
+TEST_F(SurfaceMeshTest, face_valence)
+{
+    add_triangle();
+    auto val = mesh.valence(*mesh.faces_begin());
+    EXPECT_EQ(val, 3u);
 }
 
 TEST_F(SurfaceMeshTest, collapse)
@@ -312,6 +296,28 @@ TEST_F(SurfaceMeshTest, collapse)
         mesh.collapse(h0);
     mesh.garbage_collection();
     EXPECT_EQ(mesh.n_faces(), size_t(1));
+}
+
+TEST_F(SurfaceMeshTest, edge_removal_ok)
+{
+    add_triangles();
+    Edge e(1); // diagonal of triangulated quad
+    EXPECT_TRUE(mesh.is_removal_ok(e));
+}
+
+TEST_F(SurfaceMeshTest, edge_removal_not_ok)
+{
+    add_triangle();
+    Edge e(0); // boundary edge
+    EXPECT_FALSE(mesh.is_removal_ok(e));
+}
+
+TEST_F(SurfaceMeshTest, remove_edge)
+{
+    add_triangles();
+    Edge e(1); // diagonal of triangulated quad
+    mesh.remove_edge(e);
+    EXPECT_TRUE(mesh.is_quad_mesh());
 }
 
 TEST_F(SurfaceMeshTest, face_split)
@@ -342,8 +348,8 @@ TEST_F(SurfaceMeshTest, edge_flip)
     EXPECT_EQ(mesh.n_faces(), size_t(10));
 
     // the two vertices of the center edge
-    Vertex v0(4);
-    Vertex v1(5);
+    v0 = Vertex(4);
+    v1 = Vertex(5);
     auto e = mesh.find_edge(v0, v1);
     if (mesh.is_flip_ok(e))
         mesh.flip(e);

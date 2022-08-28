@@ -80,29 +80,25 @@ public:
     void set_uniform(const char* name, const mat4& mat);
 
 private:
-    //! deletes all shader and frees GPU shader capacities
+    // deletes all shader and frees GPU shader capacities
     void cleanup();
 
-    //! load shader from file, return as string
+    // load shader from file, return as string
     bool load(const char* filename, std::string& source);
 
-    //! compile a vertex/fragmend shader
-    //! \param shader source
-    //! \param type the type of the shader (vertex, fragment)
+    // compile a vertex/fragment shader
     GLint compile(const char* source, GLenum type);
 
-    //! loads a vertex/fragmend shader from a file and compiles it
-    //! \param filename the location and name of the shader
-    //! \param type the type of the shader (vertex, geometry, fragment)
+    // loads a vertex/fragmend shader from a file and compiles it
     GLint load_and_compile(const char* filename, GLenum type);
 
-    //! relink: use this after setting/changing attrib location
+    // relink: use this after setting/changing attrib location
     bool link();
 
-    //! id of the linked shader program
-    GLint pid_;
+    // id of the linked shader program
+    GLint pid_{0};
 
-    //! id of the vertex shader
+    // id of the vertex shader
     std::vector<GLint> shaders_;
 };
 

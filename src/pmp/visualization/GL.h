@@ -10,7 +10,7 @@
 
 #include <GL/glew.h>
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <iostream>
 
 //! Check for OpenGL errors.

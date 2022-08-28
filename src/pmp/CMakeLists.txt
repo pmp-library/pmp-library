@@ -13,9 +13,9 @@ if(OpenMP_CXX_FOUND)
   target_link_libraries(pmp PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
-set_target_properties(pmp PROPERTIES VERSION ${PMP_VERSION})
+set_target_properties(pmp PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
 
-if(CLANG_TIDY_EXE AND FALSE) # disabled by default
+if(WITH_CLANG_TIDY)
   set_target_properties(pmp PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
 endif()
 
@@ -25,8 +25,8 @@ if(NOT EMSCRIPTEN AND PMP_INSTALL)
     pmp PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
                $<INSTALL_INTERFACE:include/>)
 
-  if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
-    target_compile_options(pmp PUBLIC "-std=c++11")
+  if(UNIX OR APPLE)
+    target_compile_options(pmp PUBLIC "-std=c++14")
   endif()
 
   install(

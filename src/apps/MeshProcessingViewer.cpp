@@ -1,21 +1,23 @@
-// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "MeshProcessingViewer.h"
 
-#include <pmp/algorithms/SurfaceSubdivision.h>
-#include <pmp/algorithms/SurfaceFeatures.h>
-#include <pmp/algorithms/SurfaceSimplification.h>
-#include <pmp/algorithms/SurfaceFairing.h>
-#include <pmp/algorithms/SurfaceRemeshing.h>
-#include <pmp/algorithms/SurfaceCurvature.h>
-#include <pmp/algorithms/SurfaceGeodesic.h>
-#include <pmp/algorithms/SurfaceHoleFilling.h>
-#include <pmp/algorithms/SurfaceFactory.h>
-#include <pmp/algorithms/SurfaceTriangulation.h>
+#include <pmp/algorithms/Subdivision.h>
+#include <pmp/algorithms/Features.h>
+#include <pmp/algorithms/Decimation.h>
+#include <pmp/algorithms/Fairing.h>
+#include <pmp/algorithms/Remeshing.h>
+#include <pmp/algorithms/Curvature.h>
+#include <pmp/algorithms/Geodesics.h>
+#include <pmp/algorithms/HoleFilling.h>
+#include <pmp/algorithms/Shapes.h>
+#include <pmp/algorithms/Triangulation.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 
 #include <imgui.h>
+
+using namespace pmp;
 
 MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
                                            int height)
@@ -32,6 +34,12 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 
     switch (key)
     {
+        case GLFW_KEY_A:
+        {
+            Features(mesh_).detect_angle(25);
+            update_mesh();
+            break;
+        }
         case GLFW_KEY_D: // dualize mesh
         {
             dual(mesh_);
@@ -92,7 +100,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         }
         case GLFW_KEY_T:
         {
-            SurfaceTriangulation tr(mesh_);
+            Triangulation tr(mesh_);
             tr.triangulate();
             update_mesh();
             break;
@@ -110,31 +118,31 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             switch (key)
             {
                 case GLFW_KEY_1:
-                    mesh_.assign(SurfaceFactory::tetrahedron());
+                    mesh_.assign(Shapes::tetrahedron());
                     break;
                 case GLFW_KEY_2:
-                    mesh_.assign(SurfaceFactory::octahedron());
+                    mesh_.assign(Shapes::octahedron());
                     break;
                 case GLFW_KEY_3:
-                    mesh_.assign(SurfaceFactory::hexahedron());
+                    mesh_.assign(Shapes::hexahedron());
                     break;
                 case GLFW_KEY_4:
-                    mesh_.assign(SurfaceFactory::icosahedron());
+                    mesh_.assign(Shapes::icosahedron());
                     break;
                 case GLFW_KEY_5:
-                    mesh_.assign(SurfaceFactory::dodecahedron());
+                    mesh_.assign(Shapes::dodecahedron());
                     break;
                 case GLFW_KEY_6:
-                    mesh_.assign(SurfaceFactory::icosphere(3));
+                    mesh_.assign(Shapes::icosphere(3));
                     break;
                 case GLFW_KEY_7:
-                    mesh_.assign(SurfaceFactory::quad_sphere(3));
+                    mesh_.assign(Shapes::quad_sphere(3));
                     break;
                 case GLFW_KEY_8:
-                    mesh_.assign(SurfaceFactory::uv_sphere());
+                    mesh_.assign(Shapes::uv_sphere());
                     break;
                 case GLFW_KEY_9:
-                    mesh_.assign(SurfaceFactory::torus());
+                    mesh_.assign(Shapes::torus());
                     break;
             }
 
@@ -163,7 +171,7 @@ void MeshProcessingViewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            SurfaceCurvature analyzer(mesh_);
+            Curvature analyzer(mesh_);
             analyzer.analyze_tensor(1, true);
             analyzer.mean_curvature_to_texture_coordinates();
             mesh_.use_cold_warm_texture();
@@ -172,7 +180,7 @@ void MeshProcessingViewer::process_imgui()
         }
         if (ImGui::Button("Gauss Curvature"))
         {
-            SurfaceCurvature analyzer(mesh_);
+            Curvature analyzer(mesh_);
             analyzer.analyze_tensor(1, true);
             analyzer.gauss_curvature_to_texture_coordinates();
             mesh_.use_cold_warm_texture();
@@ -181,7 +189,7 @@ void MeshProcessingViewer::process_imgui()
         }
         if (ImGui::Button("Abs. Max. Curvature"))
         {
-            SurfaceCurvature analyzer(mesh_);
+            Curvature analyzer(mesh_);
             analyzer.analyze_tensor(1, true);
             analyzer.max_curvature_to_texture_coordinates();
             mesh_.use_cold_warm_texture();
@@ -251,13 +259,20 @@ void MeshProcessingViewer::process_imgui()
         ImGui::SliderInt("Aspect Ratio", &aspect_ratio, 1, 10);
         ImGui::PopItemWidth();
 
-        if (ImGui::Button("Decimate it!"))
+        static int seam_angle_deviation = 1;
+        ImGui::PushItemWidth(100);
+        ImGui::SliderInt("Seam Angle Deviation", &seam_angle_deviation, 0, 15);
+        ImGui::PopItemWidth();
+
+        if (ImGui::Button("Decimate"))
         {
             try
             {
-                SurfaceSimplification ss(mesh_);
-                ss.initialize(aspect_ratio, 0.0, 0.0, normal_deviation, 0.0);
-                ss.simplify(mesh_.n_vertices() * 0.01 * target_percentage);
+                Decimation decimater(mesh_);
+                decimater.initialize(aspect_ratio, 0.0, 0.0, normal_deviation,
+                                     0.0, 0.01, seam_angle_deviation);
+                decimater.decimate(mesh_.n_vertices() * 0.01 *
+                                   target_percentage);
             }
             catch (const InvalidInputException& e)
             {
@@ -277,7 +292,7 @@ void MeshProcessingViewer::process_imgui()
         {
             try
             {
-                SurfaceSubdivision(mesh_).loop();
+                Subdivision(mesh_).loop();
             }
             catch (const InvalidInputException& e)
             {
@@ -287,23 +302,15 @@ void MeshProcessingViewer::process_imgui()
             update_mesh();
         }
 
-        if (ImGui::Button("Sqrt(3) Subdivision"))
+        if (ImGui::Button("Quad-Tri Subdivision"))
         {
-            try
-            {
-                SurfaceSubdivision(mesh_).sqrt3();
-            }
-            catch (const InvalidInputException& e)
-            {
-                std::cerr << e.what() << std::endl;
-                return;
-            }
+            Subdivision(mesh_).quad_tri();
             update_mesh();
         }
 
         if (ImGui::Button("Catmull-Clark Subdivision"))
         {
-            SurfaceSubdivision(mesh_).catmull_clark();
+            Subdivision(mesh_).catmull_clark();
             update_mesh();
         }
     }
@@ -319,7 +326,7 @@ void MeshProcessingViewer::process_imgui()
 
             try
             {
-                SurfaceRemeshing(mesh_).adaptive_remeshing(
+                Remeshing(mesh_).adaptive_remeshing(
                     0.001 * bb,  // min length
                     1.0 * bb,    // max length
                     0.001 * bb); // approx. error
@@ -342,7 +349,7 @@ void MeshProcessingViewer::process_imgui()
 
             try
             {
-                SurfaceRemeshing(mesh_).uniform_remeshing(l);
+                Remeshing(mesh_).uniform_remeshing(l);
             }
             catch (const InvalidInputException& e)
             {
@@ -393,7 +400,7 @@ void MeshProcessingViewer::process_imgui()
             {
                 try
                 {
-                    SurfaceHoleFilling hf(mesh_);
+                    HoleFilling hf(mesh_);
                     hf.fill_hole(hmin);
                 }
                 catch (const InvalidInputException& e)
@@ -426,7 +433,7 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
             seed.push_back(v);
 
             // compute geodesic distance
-            SurfaceGeodesic geodist(mesh_);
+            Geodesics geodist(mesh_);
             geodist.compute(seed);
 
             // setup texture coordinates for visualization

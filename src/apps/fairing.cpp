@@ -2,8 +2,8 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/SurfaceCurvature.h>
-#include <pmp/algorithms/SurfaceFairing.h>
+#include <pmp/algorithms/Curvature.h>
+#include <pmp/algorithms/Fairing.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -14,7 +14,7 @@ public:
     Viewer(const char* title, int width, int height);
 
 protected:
-    virtual void process_imgui();
+    void process_imgui() override;
 };
 
 Viewer::Viewer(const char* title, int width, int height)
@@ -33,7 +33,7 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            SurfaceCurvature analyzer(mesh_);
+            Curvature analyzer(mesh_);
             analyzer.analyze_tensor(1, true);
             analyzer.mean_curvature_to_texture_coordinates();
             update_mesh();
@@ -49,7 +49,7 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Minimize Area"))
         {
-            SurfaceFairing fair(mesh_);
+            Fairing fair(mesh_);
             try
             {
                 fair.minimize_area();
@@ -63,7 +63,7 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Minimize Curvature"))
         {
-            SurfaceFairing fair(mesh_);
+            Fairing fair(mesh_);
             try
             {
                 fair.minimize_curvature();
@@ -77,7 +77,7 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Minimize Curvature Variation"))
         {
-            SurfaceFairing fair(mesh_);
+            Fairing fair(mesh_);
             try
             {
                 fair.fair(3);
@@ -95,12 +95,12 @@ void Viewer::process_imgui()
 int main(int argc, char** argv)
 {
 #ifndef __EMSCRIPTEN__
-    Viewer window("Decimation", 800, 600);
+    Viewer window("Fairing", 800, 600);
     if (argc == 2)
         window.load_mesh(argv[1]);
     return window.run();
 #else
-    Viewer window("Decimation", 800, 600);
+    Viewer window("Fairing", 800, 600);
     window.load_mesh(argc == 2 ? argv[1] : "input.off");
     return window.run();
 #endif

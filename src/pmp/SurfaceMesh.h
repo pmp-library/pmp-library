@@ -4,10 +4,7 @@
 
 #pragma once
 
-#include <map>
 #include <vector>
-#include <limits>
-#include <numeric>
 
 #include "pmp/Types.h"
 #include "pmp/Properties.h"
@@ -36,7 +33,7 @@ public:
     //! reset handle to be invalid (index=PMP_MAX_INDEX.)
     void reset() { idx_ = PMP_MAX_INDEX; }
 
-    //! return whether the handle is valid, i.e., the index is not equal to PMP_MAX_INDEX.
+    //! \return whether the handle is valid, i.e., the index is not equal to PMP_MAX_INDEX.
     bool is_valid() const { return idx_ != PMP_MAX_INDEX; }
 
     //! are two handles equal?
@@ -111,7 +108,7 @@ class VertexProperty : public Property<T>
 {
 public:
     //! default constructor
-    explicit VertexProperty() {}
+    explicit VertexProperty() = default;
     explicit VertexProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for vertex \p v
@@ -133,7 +130,7 @@ class HalfedgeProperty : public Property<T>
 {
 public:
     //! default constructor
-    explicit HalfedgeProperty() {}
+    explicit HalfedgeProperty() = default;
     explicit HalfedgeProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for halfedge \p h
@@ -155,7 +152,7 @@ class EdgeProperty : public Property<T>
 {
 public:
     //! default constructor
-    explicit EdgeProperty() {}
+    explicit EdgeProperty() = default;
     explicit EdgeProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for edge \p e
@@ -177,7 +174,7 @@ class FaceProperty : public Property<T>
 {
 public:
     //! default constructor
-    explicit FaceProperty() {}
+    explicit FaceProperty() = default;
     explicit FaceProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for face \p f
@@ -199,7 +196,7 @@ class ObjectProperty : public Property<T>
 {
 public:
     //! default constructor
-    explicit ObjectProperty() {}
+    explicit ObjectProperty() = default;
     explicit ObjectProperty(Property<T> p) : Property<T>(p) {}
 
     //! access the data stored for the object
@@ -226,6 +223,12 @@ public:
     class VertexIterator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Vertex;
+        using reference = Vertex&;
+        using pointer = Vertex*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! Default constructor
         VertexIterator(Vertex v = Vertex(), const SurfaceMesh* m = nullptr)
             : handle_(v), mesh_(m)
@@ -264,7 +267,7 @@ public:
         //! post-increment iterator
         VertexIterator operator++(int)
         {
-            VertexIterator tmp = *this;
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -280,6 +283,14 @@ public:
             return *this;
         }
 
+        //! post-decrement iterator
+        VertexIterator operator--(int)
+        {
+            auto tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
     private:
         Vertex handle_;
         const SurfaceMesh* mesh_;
@@ -291,6 +302,12 @@ public:
     class HalfedgeIterator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Halfedge;
+        using reference = Halfedge&;
+        using pointer = Halfedge*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! Default constructor
         HalfedgeIterator(Halfedge h = Halfedge(),
                          const SurfaceMesh* mesh = nullptr)
@@ -330,7 +347,7 @@ public:
         //! post-increment iterator
         HalfedgeIterator operator++(int)
         {
-            HalfedgeIterator tmp = *this;
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -346,6 +363,14 @@ public:
             return *this;
         }
 
+        //! post-decrement iterator
+        HalfedgeIterator operator--(int)
+        {
+            auto tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
     private:
         Halfedge handle_;
         const SurfaceMesh* mesh_;
@@ -357,6 +382,12 @@ public:
     class EdgeIterator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Edge;
+        using reference = Edge&;
+        using pointer = Edge*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! Default constructor
         EdgeIterator(Edge e = Edge(), const SurfaceMesh* mesh = nullptr)
             : handle_(e), mesh_(mesh)
@@ -395,7 +426,7 @@ public:
         //! post-increment iterator
         EdgeIterator operator++(int)
         {
-            EdgeIterator tmp = *this;
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -411,6 +442,14 @@ public:
             return *this;
         }
 
+        //! post-decrement iterator
+        EdgeIterator operator--(int)
+        {
+            auto tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
     private:
         Edge handle_;
         const SurfaceMesh* mesh_;
@@ -422,6 +461,12 @@ public:
     class FaceIterator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Face;
+        using reference = Face&;
+        using pointer = Face*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! Default constructor
         FaceIterator(Face f = Face(), const SurfaceMesh* m = nullptr)
             : handle_(f), mesh_(m)
@@ -460,7 +505,7 @@ public:
         //! post-increment iterator
         FaceIterator operator++(int)
         {
-            FaceIterator tmp = *this;
+            auto tmp = *this;
             ++(*this);
             return tmp;
         }
@@ -474,6 +519,14 @@ public:
                    mesh_->is_deleted(handle_))
                 --handle_.idx_;
             return *this;
+        }
+
+        //! post-decrement iterator
+        FaceIterator operator--(int)
+        {
+            auto tmp = *this;
+            --(*this);
+            return tmp;
         }
 
     private:
@@ -498,7 +551,8 @@ public:
         VertexIterator end() const { return end_; }
 
     private:
-        VertexIterator begin_, end_;
+        VertexIterator begin_;
+        VertexIterator end_;
     };
 
     //! helper class for iterating through all halfedges using range-based
@@ -514,7 +568,8 @@ public:
         HalfedgeIterator end() const { return end_; }
 
     private:
-        HalfedgeIterator begin_, end_;
+        HalfedgeIterator begin_;
+        HalfedgeIterator end_;
     };
 
     //! helper class for iterating through all edges using range-based
@@ -530,7 +585,8 @@ public:
         EdgeIterator end() const { return end_; }
 
     private:
-        EdgeIterator begin_, end_;
+        EdgeIterator begin_;
+        EdgeIterator end_;
     };
 
     //! helper class for iterating through all faces using range-based
@@ -546,7 +602,8 @@ public:
         FaceIterator end() const { return end_; }
 
     private:
-        FaceIterator begin_, end_;
+        FaceIterator begin_;
+        FaceIterator end_;
     };
 
     //!@}
@@ -559,10 +616,16 @@ public:
     class VertexAroundVertexCirculator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Vertex;
+        using reference = Vertex&;
+        using pointer = Vertex*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! default constructor
         VertexAroundVertexCirculator(const SurfaceMesh* mesh = nullptr,
                                      Vertex v = Vertex())
-            : mesh_(mesh), is_active_(true)
+            : mesh_(mesh)
         {
             if (mesh_)
                 halfedge_ = mesh_->halfedge(v);
@@ -582,7 +645,7 @@ public:
             return !operator==(rhs);
         }
 
-        //! pre-increment (rotate couter-clockwise)
+        //! pre-increment (rotate counter-clockwise)
         VertexAroundVertexCirculator& operator++()
         {
             assert(mesh_);
@@ -591,12 +654,28 @@ public:
             return *this;
         }
 
+        //! post-increment (rotate counter-clockwise)
+        VertexAroundVertexCirculator operator++(int)
+        {
+            auto tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement (rotate clockwise)
         VertexAroundVertexCirculator& operator--()
         {
             assert(mesh_);
             halfedge_ = mesh_->cw_rotated_halfedge(halfedge_);
             return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        VertexAroundVertexCirculator operator--(int)
+        {
+            auto tmp = *this;
+            --(*this);
+            return tmp;
         }
 
         //! get the vertex the circulator refers to
@@ -609,7 +688,7 @@ public:
         //! cast to bool: true if vertex is not isolated
         operator bool() const { return halfedge_.is_valid(); }
 
-        //! return current halfedge
+        //! \return the current halfedge
         Halfedge halfedge() const { return halfedge_; }
 
         // helper for C++11 range-based for-loops
@@ -628,7 +707,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        bool is_active_; // helper for C++11 range-based for-loops
+        bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through all outgoing halfedges of a vertex.
@@ -637,10 +716,16 @@ public:
     class HalfedgeAroundVertexCirculator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Halfedge;
+        using reference = Halfedge&;
+        using pointer = Halfedge*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! default constructor
         HalfedgeAroundVertexCirculator(const SurfaceMesh* mesh = nullptr,
                                        Vertex v = Vertex())
-            : mesh_(mesh), is_active_(true)
+            : mesh_(mesh)
         {
             if (mesh_)
                 halfedge_ = mesh_->halfedge(v);
@@ -660,7 +745,7 @@ public:
             return !operator==(rhs);
         }
 
-        //! pre-increment (rotate couter-clockwise)
+        //! pre-increment (rotate counter-clockwise)
         HalfedgeAroundVertexCirculator& operator++()
         {
             assert(mesh_);
@@ -669,12 +754,28 @@ public:
             return *this;
         }
 
+        //! post-increment (rotate counter-clockwise)
+        HalfedgeAroundVertexCirculator operator++(int)
+        {
+            auto tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement (rotate clockwise)
         HalfedgeAroundVertexCirculator& operator--()
         {
             assert(mesh_);
             halfedge_ = mesh_->cw_rotated_halfedge(halfedge_);
             return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        HalfedgeAroundVertexCirculator operator--(int)
+        {
+            auto tmp = *this;
+            --(*this);
+            return tmp;
         }
 
         //! get the halfedge the circulator refers to
@@ -699,7 +800,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        bool is_active_; // helper for C++11 range-based for-loops
+        bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through all incident faces of a vertex.
@@ -708,10 +809,16 @@ public:
     class FaceAroundVertexCirculator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Face;
+        using reference = Face&;
+        using pointer = Face*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! construct with mesh and vertex (vertex should not be isolated!)
         FaceAroundVertexCirculator(const SurfaceMesh* m = nullptr,
                                    Vertex v = Vertex())
-            : mesh_(m), is_active_(true)
+            : mesh_(m)
         {
             if (mesh_)
             {
@@ -747,6 +854,14 @@ public:
             return *this;
         }
 
+        //! post-increment (rotate counter-clockwise)
+        FaceAroundVertexCirculator operator++(int)
+        {
+            auto tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement (rotate clockwise)
         FaceAroundVertexCirculator& operator--()
         {
@@ -755,6 +870,14 @@ public:
                 halfedge_ = mesh_->cw_rotated_halfedge(halfedge_);
             while (mesh_->is_boundary(halfedge_));
             return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        FaceAroundVertexCirculator operator--(int)
+        {
+            auto tmp = *this;
+            --(*this);
+            return tmp;
         }
 
         //! get the face the circulator refers to
@@ -783,7 +906,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        bool is_active_; // helper for C++11 range-based for-loops
+        bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through the vertices of a face.
@@ -792,10 +915,16 @@ public:
     class VertexAroundFaceCirculator
     {
     public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Vertex;
+        using reference = Vertex&;
+        using pointer = Vertex*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
         //! default constructor
         VertexAroundFaceCirculator(const SurfaceMesh* m = nullptr,
                                    Face f = Face())
-            : mesh_(m), is_active_(true)
+            : mesh_(m)
         {
             if (mesh_)
                 halfedge_ = mesh_->halfedge(f);
@@ -824,12 +953,28 @@ public:
             return *this;
         }
 
+        //! post-increment (rotate counter-clockwise)
+        VertexAroundFaceCirculator operator++(int)
+        {
+            auto tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement (rotates clockwise)
         VertexAroundFaceCirculator& operator--()
         {
             assert(mesh_ && halfedge_.is_valid());
             halfedge_ = mesh_->prev_halfedge(halfedge_);
             return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        VertexAroundFaceCirculator operator--(int)
+        {
+            auto tmp = *this;
+            --(*this);
+            return tmp;
         }
 
         //! get the vertex the circulator refers to
@@ -855,7 +1000,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        bool is_active_; // helper for C++11 range-based for-loops
+        bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
     //! this class circulates through all halfedges of a face.
@@ -864,10 +1009,16 @@ public:
     class HalfedgeAroundFaceCirculator
     {
     public:
-        //! default constructur
+        using difference_type = std::ptrdiff_t;
+        using value_type = Halfedge;
+        using reference = Halfedge&;
+        using pointer = Halfedge*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
+        //! default constructor
         HalfedgeAroundFaceCirculator(const SurfaceMesh* m = nullptr,
                                      Face f = Face())
-            : mesh_(m), is_active_(true)
+            : mesh_(m)
         {
             if (mesh_)
                 halfedge_ = mesh_->halfedge(f);
@@ -896,12 +1047,28 @@ public:
             return *this;
         }
 
+        //! post-increment (rotate counter-clockwise)
+        HalfedgeAroundFaceCirculator operator++(int)
+        {
+            auto tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
         //! pre-decrement (rotates clockwise)
         HalfedgeAroundFaceCirculator& operator--()
         {
             assert(mesh_ && halfedge_.is_valid());
             halfedge_ = mesh_->prev_halfedge(halfedge_);
             return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        HalfedgeAroundFaceCirculator operator--(int)
+        {
+            auto tmp = *this;
+            --(*this);
+            return tmp;
         }
 
         //! get the halfedge the circulator refers to
@@ -923,7 +1090,7 @@ public:
     private:
         const SurfaceMesh* mesh_;
         Halfedge halfedge_;
-        bool is_active_; // helper for C++11 range-based for-loops
+        bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
     //!@}
@@ -1010,31 +1177,31 @@ public:
     //! \name Memory Management
     //!@{
 
-    //! returns number of (deleted and valid) vertices in the mesh
+    //! \return number of (deleted and valid) vertices in the mesh
     size_t vertices_size() const { return vprops_.size(); }
 
-    //! returns number of (deleted and valid) halfedges in the mesh
+    //! \return number of (deleted and valid) halfedges in the mesh
     size_t halfedges_size() const { return hprops_.size(); }
 
-    //! returns number of (deleted and valid) edges in the mesh
+    //! \return number of (deleted and valid) edges in the mesh
     size_t edges_size() const { return eprops_.size(); }
 
-    //! returns number of (deleted and valid) faces in the mesh
+    //! \return number of (deleted and valid) faces in the mesh
     size_t faces_size() const { return fprops_.size(); }
 
-    //! returns number of vertices in the mesh
+    //! \return number of vertices in the mesh
     size_t n_vertices() const { return vertices_size() - deleted_vertices_; }
 
-    //! returns number of halfedge in the mesh
+    //! \return number of halfedge in the mesh
     size_t n_halfedges() const { return halfedges_size() - 2 * deleted_edges_; }
 
-    //! returns number of edges in the mesh
+    //! \return number of edges in the mesh
     size_t n_edges() const { return edges_size() - deleted_edges_; }
 
-    //! returns number of faces in the mesh
+    //! \return number of faces in the mesh
     size_t n_faces() const { return faces_size() - deleted_faces_; }
 
-    //! returns true if the mesh is empty, i.e., has no vertices
+    //! \return true if the mesh is empty, i.e., has no vertices
     bool is_empty() const { return n_vertices() == 0; }
 
     //! clear mesh: remove all vertices, edges, faces
@@ -1049,64 +1216,63 @@ public:
     //! remove deleted elements
     void garbage_collection();
 
-    //! returns whether vertex \p v is deleted
+    //! \return whether vertex \p v is deleted
     //! \sa garbage_collection()
     bool is_deleted(Vertex v) const { return vdeleted_[v]; }
 
-    //! returns whether halfedge \p h is deleted
+    //! \return whether halfedge \p h is deleted
     //! \sa garbage_collection()
     bool is_deleted(Halfedge h) const { return edeleted_[edge(h)]; }
 
-    //! returns whether edge \p e is deleted
+    //! \return whether edge \p e is deleted
     //! \sa garbage_collection()
     bool is_deleted(Edge e) const { return edeleted_[e]; }
 
-    //! returns whether face \p f is deleted
+    //! \return whether face \p f is deleted
     //! \sa garbage_collection()
     bool is_deleted(Face f) const { return fdeleted_[f]; }
 
-    //! return whether vertex \p v is valid, i.e. the index is stores
-    //! it within the array bounds.
+    //! \return whether vertex \p v is valid.
     bool is_valid(Vertex v) const { return v.idx() < vertices_size(); }
 
-    //! return whether halfedge \p h is valid, i.e. the index is stores it
-    //! within the array bounds.
+    //! \return whether halfedge \p h is valid.
     bool is_valid(Halfedge h) const { return h.idx() < halfedges_size(); }
 
-    //! return whether edge \p e is valid, i.e. the index is stores it within the array bounds.
+    //! \return whether edge \p e is valid.
     bool is_valid(Edge e) const { return e.idx() < edges_size(); }
 
-    //! returns whether the face \p f is valid.
+    //! \return whether the face \p f is valid.
     bool is_valid(Face f) const { return f.idx() < faces_size(); }
 
     //!@}
     //! \name Low-level connectivity
     //!@{
 
-    //! returns an outgoing halfedge of vertex \p v.
+    //! \return an outgoing halfedge of vertex \p v.
     //! if \p v is a boundary vertex this will be a boundary halfedge.
     Halfedge halfedge(Vertex v) const { return vconn_[v].halfedge_; }
 
     //! set the outgoing halfedge of vertex \p v to \p h
     void set_halfedge(Vertex v, Halfedge h) { vconn_[v].halfedge_ = h; }
 
-    //! returns whether \p v is a boundary vertex
+    //! \return whether \p v is a boundary vertex
     bool is_boundary(Vertex v) const
     {
         Halfedge h(halfedge(v));
         return (!(h.is_valid() && face(h).is_valid()));
     }
 
-    //! returns whether \p v is isolated, i.e., not incident to any edge
+    //! \return whether \p v is isolated, i.e., not incident to any edge
     bool is_isolated(Vertex v) const { return !halfedge(v).is_valid(); }
 
-    //! returns whether \p v is a manifold vertex (not incident to several patches)
+    //! \return whether \p v is a manifold vertex (not incident to several patches)
     bool is_manifold(Vertex v) const
     {
         // The vertex is non-manifold if more than one gap exists, i.e.
         // more than one outgoing boundary halfedge.
         int n(0);
-        HalfedgeAroundVertexCirculator hit = halfedges(v), hend = hit;
+        auto hit = halfedges(v);
+        auto hend = hit;
         if (hit)
             do
             {
@@ -1116,10 +1282,10 @@ public:
         return n < 2;
     }
 
-    //! returns the vertex the halfedge \p h points to
+    //! \return the vertex the halfedge \p h points to
     inline Vertex to_vertex(Halfedge h) const { return hconn_[h].vertex_; }
 
-    //! returns the vertex the halfedge \p h emanates from
+    //! \return the vertex the halfedge \p h emanates from
     inline Vertex from_vertex(Halfedge h) const
     {
         return to_vertex(opposite_halfedge(h));
@@ -1128,13 +1294,13 @@ public:
     //! sets the vertex the halfedge \p h points to to \p v
     inline void set_vertex(Halfedge h, Vertex v) { hconn_[h].vertex_ = v; }
 
-    //! returns the face incident to halfedge \p h
+    //! \return the face incident to halfedge \p h
     Face face(Halfedge h) const { return hconn_[h].face_; }
 
     //! sets the incident face to halfedge \p h to \p f
     void set_face(Halfedge h, Face f) { hconn_[h].face_ = f; }
 
-    //! returns the next halfedge within the incident face
+    //! \return the next halfedge within the incident face
     inline Halfedge next_halfedge(Halfedge h) const
     {
         return hconn_[h].next_halfedge_;
@@ -1154,19 +1320,19 @@ public:
         hconn_[ph].next_halfedge_ = h;
     }
 
-    //! returns the previous halfedge within the incident face
+    //! \return the previous halfedge within the incident face
     inline Halfedge prev_halfedge(Halfedge h) const
     {
         return hconn_[h].prev_halfedge_;
     }
 
-    //! returns the opposite halfedge of \p h
+    //! \return the opposite halfedge of \p h
     inline Halfedge opposite_halfedge(Halfedge h) const
     {
         return Halfedge((h.idx() & 1) ? h.idx() - 1 : h.idx() + 1);
     }
 
-    //! returns the halfedge that is rotated counter-clockwise around the
+    //! \return the halfedge that is rotated counter-clockwise around the
     //! start vertex of \p h. it is the opposite halfedge of the previous
     //! halfedge of \p h.
     inline Halfedge ccw_rotated_halfedge(Halfedge h) const
@@ -1174,7 +1340,7 @@ public:
         return opposite_halfedge(prev_halfedge(h));
     }
 
-    //! returns the halfedge that is rotated clockwise around the start
+    //! \return the halfedge that is rotated clockwise around the start
     //! vertex of \p h. it is the next halfedge of the opposite halfedge of
     //! \p h.
     inline Halfedge cw_rotated_halfedge(Halfedge h) const
@@ -1182,48 +1348,48 @@ public:
         return next_halfedge(opposite_halfedge(h));
     }
 
-    //! return the edge that contains halfedge \p h as one of its two
+    //! \return the edge that contains halfedge \p h as one of its two
     //! halfedges.
     inline Edge edge(Halfedge h) const { return Edge(h.idx() >> 1); }
 
-    //! returns whether h is a boundary halfege, i.e., if its face does not exist.
+    //! \return whether h is a boundary halfedge, i.e., if its face does not exist.
     inline bool is_boundary(Halfedge h) const { return !face(h).is_valid(); }
 
-    //! returns the \p i'th halfedge of edge \p e. \p i has to be 0 or 1.
+    //! \return the \p i'th halfedge of edge \p e. \p i has to be 0 or 1.
     inline Halfedge halfedge(Edge e, unsigned int i) const
     {
         assert(i <= 1);
         return Halfedge((e.idx() << 1) + i);
     }
 
-    //! returns the \p i'th vertex of edge \p e. \p i has to be 0 or 1.
+    //! \return the \p i'th vertex of edge \p e. \p i has to be 0 or 1.
     inline Vertex vertex(Edge e, unsigned int i) const
     {
         assert(i <= 1);
         return to_vertex(halfedge(e, i));
     }
 
-    //! returns the face incident to the \p i'th halfedge of edge \p e. \p i has to be 0 or 1.
+    //! \return the face incident to the \p i'th halfedge of edge \p e. \p i has to be 0 or 1.
     Face face(Edge e, unsigned int i) const
     {
         assert(i <= 1);
         return face(halfedge(e, i));
     }
 
-    //! returns whether \p e is a boundary edge, i.e., if one of its
+    //! \return whether \p e is a boundary edge, i.e., if one of its
     //! halfedges is a boundary halfedge.
     bool is_boundary(Edge e) const
     {
         return (is_boundary(halfedge(e, 0)) || is_boundary(halfedge(e, 1)));
     }
 
-    //! returns a halfedge of face \p f
+    //! \return a halfedge of face \p f
     Halfedge halfedge(Face f) const { return fconn_[f].halfedge_; }
 
     //! sets the halfedge of face \p f to \p h
     void set_halfedge(Face f, Halfedge h) { fconn_[f].halfedge_ = h; }
 
-    //! returns whether \p f is a boundary face, i.e., it one of its edges is a boundary edge.
+    //! \return whether \p f is a boundary face, i.e., it one of its edges is a boundary edge.
     bool is_boundary(Face f) const
     {
         Halfedge h = halfedge(f);
@@ -1275,15 +1441,15 @@ public:
         oprops_.remove(p);
     }
 
-    //! get the type_info \p T of face property named \p name. returns an
+    //! get the type_info \p T of object property named \p name. returns an
     //! typeid(void) if the property does not exist or if the type does not
     //! match.
-    const std::type_info& get_object_propertyType(const std::string& name)
+    const std::type_info& get_object_property_type(const std::string& name)
     {
         return oprops_.get_type(name);
     }
 
-    //! returns the names of all face properties
+    //! \return the names of all object properties
     std::vector<std::string> object_properties() const
     {
         return oprops_.properties();
@@ -1439,19 +1605,19 @@ public:
         return eprops_.get_type(name);
     }
 
-    //! returns the names of all vertex properties
+    //! \return the names of all vertex properties
     std::vector<std::string> vertex_properties() const
     {
         return vprops_.properties();
     }
 
-    //! returns the names of all halfedge properties
+    //! \return the names of all halfedge properties
     std::vector<std::string> halfedge_properties() const
     {
         return hprops_.properties();
     }
 
-    //! returns the names of all edge properties
+    //! \return the names of all edge properties
     std::vector<std::string> edge_properties() const
     {
         return eprops_.properties();
@@ -1504,7 +1670,7 @@ public:
         return fprops_.get_type(name);
     }
 
-    //! returns the names of all face properties
+    //! \return the names of all face properties
     std::vector<std::string> face_properties() const
     {
         return fprops_.properties();
@@ -1517,97 +1683,99 @@ public:
     //! \name Iterators and circulators
     //!@{
 
-    //! returns start iterator for vertices
+    //! \return start iterator for vertices
     VertexIterator vertices_begin() const
     {
         return VertexIterator(Vertex(0), this);
     }
 
-    //! returns end iterator for vertices
+    //! \return end iterator for vertices
     VertexIterator vertices_end() const
     {
-        return VertexIterator(Vertex(vertices_size()), this);
+        return VertexIterator(Vertex(static_cast<IndexType>(vertices_size())),
+                              this);
     }
 
-    //! returns vertex container for C++11 range-based for-loops
+    //! \return vertex container for C++11 range-based for-loops
     VertexContainer vertices() const
     {
         return VertexContainer(vertices_begin(), vertices_end());
     }
 
-    //! returns start iterator for halfedges
+    //! \return start iterator for halfedges
     HalfedgeIterator halfedges_begin() const
     {
         return HalfedgeIterator(Halfedge(0), this);
     }
 
-    //! returns end iterator for halfedges
+    //! \return end iterator for halfedges
     HalfedgeIterator halfedges_end() const
     {
-        return HalfedgeIterator(Halfedge(halfedges_size()), this);
+        return HalfedgeIterator(
+            Halfedge(static_cast<IndexType>(halfedges_size())), this);
     }
 
-    //! returns halfedge container for C++11 range-based for-loops
+    //! \return halfedge container for C++11 range-based for-loops
     HalfedgeContainer halfedges() const
     {
         return HalfedgeContainer(halfedges_begin(), halfedges_end());
     }
 
-    //! returns start iterator for edges
+    //! \return start iterator for edges
     EdgeIterator edges_begin() const { return EdgeIterator(Edge(0), this); }
 
-    //! returns end iterator for edges
+    //! \return end iterator for edges
     EdgeIterator edges_end() const
     {
-        return EdgeIterator(Edge(edges_size()), this);
+        return EdgeIterator(Edge(static_cast<IndexType>(edges_size())), this);
     }
 
-    //! returns edge container for C++11 range-based for-loops
+    //! \return edge container for C++11 range-based for-loops
     EdgeContainer edges() const
     {
         return EdgeContainer(edges_begin(), edges_end());
     }
 
-    //! returns circulator for vertices around vertex \p v
+    //! \return circulator for vertices around vertex \p v
     VertexAroundVertexCirculator vertices(Vertex v) const
     {
         return VertexAroundVertexCirculator(this, v);
     }
 
-    //! returns circulator for outgoing halfedges around vertex \p v
+    //! \return circulator for outgoing halfedges around vertex \p v
     HalfedgeAroundVertexCirculator halfedges(Vertex v) const
     {
         return HalfedgeAroundVertexCirculator(this, v);
     }
 
-    //! returns start iterator for faces
+    //! \return start iterator for faces
     FaceIterator faces_begin() const { return FaceIterator(Face(0), this); }
 
-    //! returns end iterator for faces
+    //! \return end iterator for faces
     FaceIterator faces_end() const
     {
-        return FaceIterator(Face(faces_size()), this);
+        return FaceIterator(Face(static_cast<IndexType>(faces_size())), this);
     }
 
-    //! returns face container for C++11 range-based for-loops
+    //! \return face container for C++11 range-based for-loops
     FaceContainer faces() const
     {
         return FaceContainer(faces_begin(), faces_end());
     }
 
-    //! returns circulator for faces around vertex \p v
+    //! \return circulator for faces around vertex \p v
     FaceAroundVertexCirculator faces(Vertex v) const
     {
         return FaceAroundVertexCirculator(this, v);
     }
 
-    //! returns circulator for vertices of face \p f
+    //! \return circulator for vertices of face \p f
     VertexAroundFaceCirculator vertices(Face f) const
     {
         return VertexAroundFaceCirculator(this, f);
     }
 
-    //! returns circulator for halfedges of face \p f
+    //! \return circulator for halfedges of face \p f
     HalfedgeAroundFaceCirculator halfedges(Face f) const
     {
         return HalfedgeAroundFaceCirculator(this, f);
@@ -1652,16 +1820,15 @@ public:
     //! find the edge (a,b)
     Edge find_edge(Vertex a, Vertex b) const;
 
-    //! returns whether the mesh a triangle mesh. this function simply tests
+    //! \return whether the mesh a triangle mesh. this function simply tests
     //! each face, and therefore is not very efficient.
-    //! \sa trianglate(), triangulate(Face)
     bool is_triangle_mesh() const;
 
-    //! returns whether the mesh a quad mesh. this function simply tests
+    //! \return whether the mesh a quad mesh. this function simply tests
     //! each face, and therefore is not very efficient.
     bool is_quad_mesh() const;
 
-    //! returns whether collapsing the halfedge \p v0v1 is topologically legal.
+    //! \return whether collapsing the halfedge \p v0v1 is topologically legal.
     //! \attention This function is only valid for triangle meshes.
     bool is_collapse_ok(Halfedge v0v1);
 
@@ -1676,12 +1843,13 @@ public:
     //! to call garbage_collection() to finally remove them.
     void collapse(Halfedge h);
 
-    //! returns whether removing the edge \p e is topologically legal.
+    //! \return whether removing the edge \p e is topologically legal.
     bool is_removal_ok(Edge e);
 
     //! Remove edge and merge its two incident faces into one.
     //! This operation requires that the edge has two incident faces
     //! and that these two are not equal.
+    //! \sa is_removal_ok(Edge)
     bool remove_edge(Edge e);
 
     //! Split the face \p f by first adding point \p p to the mesh and then
@@ -1719,7 +1887,7 @@ public:
     Halfedge split(Edge e, Vertex v);
 
     //! insert edge between the to-vertices v0 of \p h0 and v1 of \p h1.
-    //! returns the new halfedge from v0 to v1.
+    //! \return the new halfedge from v0 to v1.
     //! \attention \p h0 and \p h1 have to belong to the same face
     Halfedge insert_edge(Halfedge h0, Halfedge h1);
 
@@ -1736,11 +1904,11 @@ public:
     //! \sa is_flip_ok()
     void flip(Edge e);
 
-    //! returns the valence (number of incident edges or neighboring
+    //! \return the valence (number of incident edges or neighboring
     //! vertices) of vertex \p v.
     size_t valence(Vertex v) const;
 
-    //! returns the valence of face \p f (its number of vertices)
+    //! \return the valence of face \p f (its number of vertices)
     size_t valence(Face f) const;
 
     //! deletes the vertex \p v from the mesh
@@ -1782,37 +1950,6 @@ public:
 
     //!@}
 
-private:
-    //! \name Connectivity Types
-    //!@{
-
-    //! This type stores the vertex connectivity
-    struct VertexConnectivity
-    {
-        //! an outgoing halfedge per vertex (it will be a boundary halfedge
-        //! for boundary vertices)
-        Halfedge halfedge_;
-    };
-
-    //! This type stores the halfedge connectivity
-    struct HalfedgeConnectivity
-    {
-        Face face_;              //!< face incident to halfedge
-        Vertex vertex_;          //!< vertex the halfedge points to
-        Halfedge next_halfedge_; //!< next halfedge
-        Halfedge prev_halfedge_; //!< previous halfedge
-    };
-
-    //! This type stores the face connectivity
-    //! \sa VertexConnectivity, HalfedgeConnectivity
-    struct FaceConnectivity
-    {
-        Halfedge halfedge_; //!< a halfedge that is part of the face
-    };
-
-    //!@}
-
-public:
     //! \name Allocate new elements
     //!@{
 
@@ -1827,7 +1964,7 @@ public:
             throw AllocationException(what);
         }
         vprops_.push_back();
-        return Vertex(vertices_size() - 1);
+        return Vertex(static_cast<IndexType>(vertices_size()) - 1);
     }
 
     //! \brief Allocate a new edge, resize edge and halfedge properties accordingly.
@@ -1844,8 +1981,8 @@ public:
         hprops_.push_back();
         hprops_.push_back();
 
-        Halfedge h0(halfedges_size() - 2);
-        Halfedge h1(halfedges_size() - 1);
+        Halfedge h0(static_cast<IndexType>(halfedges_size()) - 2);
+        Halfedge h1(static_cast<IndexType>(halfedges_size()) - 1);
 
         return h0;
     }
@@ -1868,8 +2005,8 @@ public:
         hprops_.push_back();
         hprops_.push_back();
 
-        Halfedge h0(halfedges_size() - 2);
-        Halfedge h1(halfedges_size() - 1);
+        Halfedge h0(static_cast<IndexType>(halfedges_size()) - 2);
+        Halfedge h1(static_cast<IndexType>(halfedges_size()) - 1);
 
         set_vertex(h0, end);
         set_vertex(h1, start);
@@ -1888,33 +2025,46 @@ public:
         }
 
         fprops_.push_back();
-        return Face(faces_size() - 1);
+        return Face(static_cast<IndexType>(faces_size()) - 1);
     }
 
     //!@}
 
 private:
-    //! \name Helper functions
-    //!@{
+    struct VertexConnectivity
+    {
+        // an outgoing halfedge per vertex (it will be a boundary halfedge
+        // for boundary vertices)
+        Halfedge halfedge_;
+    };
 
-    //! make sure that the outgoing halfedge of vertex \p v is a boundary
-    //! halfedge if \p v is a boundary vertex.
+    struct HalfedgeConnectivity
+    {
+        Face face_;              // face incident to halfedge
+        Vertex vertex_;          // vertex the halfedge points to
+        Halfedge next_halfedge_; // next halfedge
+        Halfedge prev_halfedge_; // previous halfedge
+    };
+
+    struct FaceConnectivity
+    {
+        Halfedge halfedge_; // a halfedge that is part of the face
+    };
+
+    // make sure that the outgoing halfedge of vertex \p v is a boundary
+    // halfedge if \p v is a boundary vertex.
     void adjust_outgoing_halfedge(Vertex v);
 
-    //! Helper for halfedge collapse
+    // Helper for halfedge collapse
     void remove_edge_helper(Halfedge h);
 
-    //! Helper for halfedge collapse
+    // Helper for halfedge collapse
     void remove_loop_helper(Halfedge h);
 
-    //! are there any deleted entities?
+    // are there any deleted entities?
     inline bool has_garbage() const { return has_garbage_; }
 
-    //!@}
-    //! \name Private members
-    //!@{
-
-    friend SurfaceMeshIO;
+    friend SurfaceMeshIO; // code smell
 
     // property containers for each entity type and object
     PropertyContainer oprops_;
@@ -1937,23 +2087,21 @@ private:
     FaceProperty<bool> fdeleted_;
 
     // numbers of deleted entities
-    IndexType deleted_vertices_;
-    IndexType deleted_edges_;
-    IndexType deleted_faces_;
+    IndexType deleted_vertices_{0};
+    IndexType deleted_edges_{0};
+    IndexType deleted_faces_{0};
 
     // indicate garbage present
-    bool has_garbage_;
+    bool has_garbage_{false};
 
     // helper data for add_face()
-    typedef std::pair<Halfedge, Halfedge> NextCacheEntry;
-    typedef std::vector<NextCacheEntry> NextCache;
+    using NextCacheEntry = std::pair<Halfedge, Halfedge>;
+    using NextCache = std::vector<NextCacheEntry>;
     std::vector<Vertex> add_face_vertices_;
     std::vector<Halfedge> add_face_halfedges_;
     std::vector<bool> add_face_is_new_;
     std::vector<bool> add_face_needs_adjust_;
     NextCache add_face_next_cache_;
-
-    //!@}
 };
 
 //!@}

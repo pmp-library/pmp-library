@@ -1,0 +1,3 @@
+Checks: '-*,modernize-*,-modernize-use-trailing-return-type, -modernize-return-braced-init-list'
+WarningsAsErrors: '*'
+HeaderFilterRegex: 'pmp/.*'

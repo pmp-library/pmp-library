@@ -13,7 +13,7 @@ const Vector<Scalar, 3> barycentric_coordinates(const Vector<Scalar, 3>& p,
                                                 const Vector<Scalar, 3>& v,
                                                 const Vector<Scalar, 3>& w)
 {
-    Vector<Scalar, 3> result(1.0 / 3.0); // default: barycenter
+    Vector<Scalar, 3> result(Scalar(1.0 / 3.0)); // default: barycenter
 
     Vector<Scalar, 3> vu = v - u, wu = w - u, pu = p - u;
 
@@ -55,9 +55,11 @@ const Vector<Scalar, 3> barycentric_coordinates(const Vector<Scalar, 3>& p,
         {
             if (1.0 + ax != 1.0)
             {
-                result[1] = 1.0 + (pu[1] * wu[2] - pu[2] * wu[1]) / nx - 1.0;
-                result[2] = 1.0 + (vu[1] * pu[2] - vu[2] * pu[1]) / nx - 1.0;
-                result[0] = 1.0 - result[1] - result[2];
+                result[1] = static_cast<Scalar>(
+                    1.0 + (pu[1] * wu[2] - pu[2] * wu[1]) / nx - 1.0);
+                result[2] = static_cast<Scalar>(
+                    1.0 + (vu[1] * pu[2] - vu[2] * pu[1]) / nx - 1.0);
+                result[0] = static_cast<Scalar>(1.0 - result[1] - result[2]);
             }
             break;
         }
@@ -66,9 +68,11 @@ const Vector<Scalar, 3> barycentric_coordinates(const Vector<Scalar, 3>& p,
         {
             if (1.0 + ay != 1.0)
             {
-                result[1] = 1.0 + (pu[2] * wu[0] - pu[0] * wu[2]) / ny - 1.0;
-                result[2] = 1.0 + (vu[2] * pu[0] - vu[0] * pu[2]) / ny - 1.0;
-                result[0] = 1.0 - result[1] - result[2];
+                result[1] = static_cast<Scalar>(
+                    1.0 + (pu[2] * wu[0] - pu[0] * wu[2]) / ny - 1.0);
+                result[2] = static_cast<Scalar>(
+                    1.0 + (vu[2] * pu[0] - vu[0] * pu[2]) / ny - 1.0);
+                result[0] = static_cast<Scalar>(1.0 - result[1] - result[2]);
             }
             break;
         }
@@ -77,9 +81,11 @@ const Vector<Scalar, 3> barycentric_coordinates(const Vector<Scalar, 3>& p,
         {
             if (1.0 + az != 1.0)
             {
-                result[1] = 1.0 + (pu[0] * wu[1] - pu[1] * wu[0]) / nz - 1.0;
-                result[2] = 1.0 + (vu[0] * pu[1] - vu[1] * pu[0]) / nz - 1.0;
-                result[0] = 1.0 - result[1] - result[2];
+                result[1] = static_cast<Scalar>(
+                    1.0 + (pu[0] * wu[1] - pu[1] * wu[0]) / nz - 1.0);
+                result[2] = static_cast<Scalar>(
+                    1.0 + (vu[0] * pu[1] - vu[1] * pu[0]) / nz - 1.0);
+                result[0] = static_cast<Scalar>(1.0 - result[1] - result[2]);
             }
             break;
         }

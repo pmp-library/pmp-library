@@ -1,10 +1,10 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/SurfaceSubdivision.h>
-#include <pmp/algorithms/SurfaceFeatures.h>
-#include <pmp/algorithms/SurfaceTriangulation.h>
+#include <pmp/algorithms/Subdivision.h>
+#include <pmp/algorithms/Features.h>
+#include <pmp/algorithms/Triangulation.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -15,7 +15,7 @@ public:
     Viewer(const char* title, int width, int height, bool showgui = true);
 
 protected:
-    virtual void process_imgui();
+    void process_imgui() override;
 };
 
 Viewer::Viewer(const char* title, int width, int height, bool showgui)
@@ -34,22 +34,9 @@ void Viewer::process_imgui()
 
     if (ImGui::CollapsingHeader("Subdivision", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        //static int featureAngle = 70;
-        //ImGui::PushItemWidth(80);
-        //ImGui::SliderInt("", &featureAngle, 1, 180);
-        //ImGui::PopItemWidth();
-        //ImGui::SameLine();
-        //if (ImGui::Button("Detect Features"))
-        //{
-        //SurfaceFeatures sf(mesh_);
-        //sf.clear();
-        //sf.detect_angle(featureAngle);
-        //update_mesh();
-        //}
-
         if (ImGui::Button("Triangulate Mesh"))
         {
-            SurfaceTriangulation tesselator(mesh_);
+            Triangulation tesselator(mesh_);
             tesselator.triangulate();
             update_mesh();
         }
@@ -58,7 +45,7 @@ void Viewer::process_imgui()
         {
             try
             {
-                SurfaceSubdivision(mesh_).loop();
+                Subdivision(mesh_).loop();
             }
             catch (const InvalidInputException& e)
             {
@@ -68,23 +55,21 @@ void Viewer::process_imgui()
             update_mesh();
         }
 
-        if (ImGui::Button("Sqrt(3) Subdivision"))
+        if (ImGui::Button("Quad-Tri Subdivision"))
         {
-            try
-            {
-                SurfaceSubdivision(mesh_).sqrt3();
-            }
-            catch (const InvalidInputException& e)
-            {
-                std::cerr << e.what() << std::endl;
-                return;
-            }
+            Subdivision(mesh_).quad_tri();
             update_mesh();
         }
 
         if (ImGui::Button("Catmull-Clark Subdivision"))
         {
-            SurfaceSubdivision(mesh_).catmull_clark();
+            Subdivision(mesh_).catmull_clark();
+            update_mesh();
+        }
+
+        if (ImGui::Button("Quad/Tri Subdivision"))
+        {
+            Subdivision(mesh_).quad_tri();
             update_mesh();
         }
     }

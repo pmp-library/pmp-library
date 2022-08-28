@@ -1,6 +1,6 @@
 build
 release
 debug
+.cache
 .vscode
-.jekyll-cache
 .DS_store

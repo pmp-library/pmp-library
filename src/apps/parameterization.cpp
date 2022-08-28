@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/SurfaceParameterization.h>
+#include <pmp/algorithms/Parameterization.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -11,11 +11,11 @@ class Viewer : public MeshViewer
 {
 public:
     Viewer(const char* title, int width, int height);
-    virtual void load_mesh(const char* filename) override;
+    void load_mesh(const char* filename) override;
 
 protected:
-    virtual void process_imgui() override;
-    virtual void draw(const std::string& _draw_mode) override;
+    void process_imgui() override;
+    void draw(const std::string& _draw_mode) override;
 };
 
 Viewer::Viewer(const char* title, int width, int height)
@@ -55,7 +55,7 @@ void Viewer::process_imgui()
         {
             try
             {
-                SurfaceParameterization param(mesh_);
+                Parameterization param(mesh_);
                 param.harmonic();
             }
             catch (const std::exception& e)
@@ -73,7 +73,7 @@ void Viewer::process_imgui()
         {
             try
             {
-                SurfaceParameterization param(mesh_);
+                Parameterization param(mesh_);
                 param.lscm();
             }
             catch (const std::exception& e)

@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <utility>
+#include <array>
 
 #include <GLFW/glfw3.h>
 
@@ -26,25 +27,10 @@ public:
     //! main window loop
     int run();
 
-private:
-    static void glfw_error(int error, const char* description);
-    static void glfw_keyboard(GLFWwindow* window, int key, int scancode,
-                              int action, int mods);
-    static void glfw_character(GLFWwindow* window, unsigned int c);
-    static void glfw_mouse(GLFWwindow* window, int button, int action,
-                           int mods);
-    static void glfw_motion(GLFWwindow* window, double xpos, double ypos);
-    static void glfw_scroll(GLFWwindow* window, double xoffset, double yoffset);
-    static void glfw_resize(GLFWwindow* window, int width, int height);
-
-    static void render_frame();
-
-    static Window* instance_;
-
 protected:
     //! this function is called when the scene has to be rendered. it
     //! clears the buffers, calls the draw() method, and performs buffer swap
-    virtual void display(void) = 0;
+    virtual void display() = 0;
 
     //! this function handles keyboard events
     virtual void keyboard(int /*key*/, int /*code*/, int /*action*/,
@@ -71,7 +57,6 @@ protected:
     //! this function is called just before rendering
     virtual void do_processing() {}
 
-protected:
     //! setup ImGUI user interface
     void init_imgui();
 
@@ -98,9 +83,9 @@ protected:
     //! and an incremented number `n`.
     void screenshot();
 
-protected:
     //! width of window
     int width() const { return width_; }
+
     //! height of window
     int height() const { return height_; }
 
@@ -134,16 +119,30 @@ protected:
     bool shift_pressed() const { return shift_pressed_; }
 
 private:
-    //! GLFW window pointer
+    static void glfw_error(int error, const char* description);
+    static void glfw_keyboard(GLFWwindow* window, int key, int scancode,
+                              int action, int mods);
+    static void glfw_character(GLFWwindow* window, unsigned int c);
+    static void glfw_mouse(GLFWwindow* window, int button, int action,
+                           int mods);
+    static void glfw_motion(GLFWwindow* window, double xpos, double ypos);
+    static void glfw_scroll(GLFWwindow* window, double xoffset, double yoffset);
+    static void glfw_resize(GLFWwindow* window, int width, int height);
+
+    static void render_frame();
+
+    static Window* instance_;
+
+    // GLFW window pointer
     GLFWwindow* window_;
 
-    //! window title
+    // window title
     std::string title_;
 
-    //! current viewport dimension
+    // current viewport dimension
     int width_, height_;
 
-    //! highDPI scaling
+    // highDPI scaling
     float scaling_;
 #if __EMSCRIPTEN__
     float pixel_ratio_;
@@ -159,7 +158,8 @@ private:
     std::vector<std::pair<std::string, std::string>> help_items_;
 
     // which mouse buttons and modifier keys are pressed down
-    bool button_[7], ctrl_pressed_, alt_pressed_, shift_pressed_;
+    std::array<bool, 7> button_;
+    bool ctrl_pressed_, alt_pressed_, shift_pressed_;
 
     // fullscreen-related backups
     int backup_xpos_, backup_ypos_, backup_width_, backup_height_;
