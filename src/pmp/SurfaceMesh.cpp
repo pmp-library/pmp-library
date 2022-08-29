@@ -826,7 +826,7 @@ bool SurfaceMesh::is_collapse_ok(Halfedge v0v1)
     return true;
 }
 
-bool SurfaceMesh::is_removal_ok(Edge e)
+bool SurfaceMesh::is_removal_ok(Edge e) const
 {
     Halfedge h0 = halfedge(e, 0);
     Halfedge h1 = halfedge(e, 1);

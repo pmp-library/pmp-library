@@ -1844,7 +1844,7 @@ public:
     void collapse(Halfedge h);
 
     //! \return whether removing the edge \p e is topologically legal.
-    bool is_removal_ok(Edge e);
+    bool is_removal_ok(Edge e) const;
 
     //! Remove edge and merge its two incident faces into one.
     //! This operation requires that the edge has two incident faces
