@@ -196,13 +196,6 @@ else()
   endif()
 endif()
 
-set(CPACK_PACKAGE_VERSION ${PMP_VERSION})
-set(CPACK_SOURCE_PACKAGE_FILE_NAME
-    "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}")
-set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
-set(CPACK_SOURCE_GENERATOR "ZIP")
-include(CPack)
-
 if(NOT EMSCRIPTEN AND PMP_INSTALL)
 
   # Generate package configuration files
