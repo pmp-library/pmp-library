@@ -64,10 +64,10 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
       "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off"
   )
 
-  add_executable(subdiv subdiv.cpp data/shell.html)
-  target_link_libraries(subdiv pmp_vis)
+  add_executable(subdivision subdivision.cpp data/shell.html)
+  target_link_libraries(subdivision pmp_vis)
   set_target_properties(
-    subdiv
+    subdivision
     PROPERTIES
       LINK_FLAGS
       "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/obj/suzanne.obj@input.obj"
@@ -117,8 +117,8 @@ else()
     add_executable(curview curview.cpp)
     target_link_libraries(curview pmp_vis)
 
-    add_executable(subdiv subdiv.cpp)
-    target_link_libraries(subdiv pmp_vis)
+    add_executable(subdivision subdivision.cpp)
+    target_link_libraries(subdivision pmp_vis)
 
     add_executable(smoothing smoothing.cpp)
     target_link_libraries(smoothing pmp_vis)
