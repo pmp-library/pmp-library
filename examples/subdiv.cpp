@@ -55,12 +55,6 @@ void Viewer::process_imgui()
             update_mesh();
         }
 
-        if (ImGui::Button("Quad-Tri Subdivision"))
-        {
-            Subdivision(mesh_).quad_tri();
-            update_mesh();
-        }
-
         if (ImGui::Button("Catmull-Clark Subdivision"))
         {
             Subdivision(mesh_).catmull_clark();
