@@ -167,7 +167,7 @@ double voronoi_area(const SurfaceMesh& mesh, Vertex v)
     {
         Halfedge h0, h1, h2;
         dvec3 p, q, r, pq, qr, pr;
-        double dotp, dotq, dotr, triArea;
+        double dotp, dotq, dotr;
         double cotq, cotr;
 
         for (auto h : mesh.halfedges(v))
@@ -190,8 +190,8 @@ double voronoi_area(const SurfaceMesh& mesh, Vertex v)
             (pr = r) -= p;
 
             // compute and check triangle area
-            triArea = norm(cross(pq, pr));
-            if (triArea <= std::numeric_limits<double>::min())
+            const auto triangle_area = norm(cross(pq, pr));
+            if (triangle_area <= std::numeric_limits<double>::min())
                 continue;
 
             // dot products for each corner (of its two emanating edge vectors)
@@ -202,21 +202,21 @@ double voronoi_area(const SurfaceMesh& mesh, Vertex v)
             // angle at p is obtuse
             if (dotp < 0.0)
             {
-                area += 0.25 * triArea;
+                area += 0.25 * triangle_area;
             }
 
             // angle at q or r obtuse
             else if (dotq < 0.0 || dotr < 0.0)
             {
-                area += 0.125 * triArea;
+                area += 0.125 * triangle_area;
             }
 
             // no obtuse angles
             else
             {
                 // cot(angle) = cos(angle)/sin(angle) = dot(A,B)/norm(cross(A,B))
-                cotq = dotq / triArea;
-                cotr = dotr / triArea;
+                cotq = dotq / triangle_area;
+                cotr = dotr / triangle_area;
 
                 // clamp cot(angle) by clamping angle to [3, 177]
                 area += 0.125 * (sqrnorm(pr) * clamp_cot(cotq) +
@@ -266,16 +266,16 @@ Point laplace(const SurfaceMesh& mesh, Vertex v)
 
     if (!mesh.is_isolated(v))
     {
-        Scalar weight, sumWeights(0.0);
+        Scalar sum_weights(0.0);
 
         for (auto h : mesh.halfedges(v))
         {
-            weight = cotan_weight(mesh, mesh.edge(h));
-            sumWeights += weight;
+            const auto weight = cotan_weight(mesh, mesh.edge(h));
+            sum_weights += weight;
             laplace += weight * mesh.position(mesh.to_vertex(h));
         }
 
-        laplace -= sumWeights * mesh.position(v);
+        laplace -= sum_weights * mesh.position(v);
         laplace /= Scalar(2.0) * voronoi_area(mesh, v);
     }
 
