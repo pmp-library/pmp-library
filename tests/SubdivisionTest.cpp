@@ -67,3 +67,10 @@ TEST(SubdivisionTest, quad_tri_on_triangles)
     Subdivision(mesh).quad_tri();
     EXPECT_EQ(mesh.n_faces(), size_t(16));
 }
+
+TEST(SubdivisionTest, quad_tri_on_mixed)
+{
+    auto mesh = Shapes::cone(4); // pyramid
+    Subdivision(mesh).quad_tri();
+    EXPECT_EQ(mesh.n_faces(), size_t(20));
+}
