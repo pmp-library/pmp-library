@@ -27,10 +27,10 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
     mview PROPERTIES LINK_FLAGS
                      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html")
 
-  add_executable(curview curview.cpp data/shell.html)
-  target_link_libraries(curview pmp_vis)
+  add_executable(curvature curvature.cpp data/shell.html)
+  target_link_libraries(curvature pmp_vis)
   set_target_properties(
-    curview
+    curvature
     PROPERTIES
       LINK_FLAGS
       "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off"
@@ -114,8 +114,8 @@ else()
     add_executable(mview mview.cpp)
     target_link_libraries(mview pmp_vis)
 
-    add_executable(curview curview.cpp)
-    target_link_libraries(curview pmp_vis)
+    add_executable(curvature curvature.cpp)
+    target_link_libraries(curvature pmp_vis)
 
     add_executable(subdivision subdivision.cpp)
     target_link_libraries(subdivision pmp_vis)
