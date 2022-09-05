@@ -1,5 +1,6 @@
 # News {#news}
 
+- @subpage version-2-0-1-released-2022-08-26 - Aug 26, 2022
 - @subpage version-2-0-released-2022-08-14 - Aug 14, 2022
 - @subpage version-1-2-1-released-2020-05-10 - May 10, 2020
 - @subpage version-1-2-released-2020-03-15 - March 15, 2020

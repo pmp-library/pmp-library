@@ -775,7 +775,7 @@ void SurfaceMesh::flip(Edge e)
         set_halfedge(vb0, b1);
 }
 
-bool SurfaceMesh::is_collapse_ok(Halfedge v0v1)
+bool SurfaceMesh::is_collapse_ok(Halfedge v0v1) const
 {
     Halfedge v1v0(opposite_halfedge(v0v1));
     Vertex v0(to_vertex(v1v0));
@@ -826,7 +826,7 @@ bool SurfaceMesh::is_collapse_ok(Halfedge v0v1)
     return true;
 }
 
-bool SurfaceMesh::is_removal_ok(Edge e)
+bool SurfaceMesh::is_removal_ok(Edge e) const
 {
     Halfedge h0 = halfedge(e, 0);
     Halfedge h1 = halfedge(e, 1);

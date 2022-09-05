@@ -12,7 +12,15 @@ if(CLANG_FORMAT_EXE)
   message(STATUS "clang-format found: ${CLANG_FORMAT_EXE}")
 
   # get all sources
-  file(GLOB_RECURSE ALL_SOURCES "src/*.cpp" "src/*.h" "tests/*.cpp" "tests/*.h")
+  file(
+    GLOB_RECURSE
+    ALL_SOURCES
+    "src/*.cpp"
+    "src/*.h"
+    "tests/*.cpp"
+    "tests/*.h"
+    "examples/*.cpp"
+    "examples/*.h")
 
   add_custom_target(clang-format COMMAND ${CLANG_FORMAT_EXE} -style=file -i
                                          ${ALL_SOURCES})

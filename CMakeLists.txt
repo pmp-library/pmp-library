@@ -7,7 +7,6 @@ project(
 cmake_minimum_required(VERSION 3.16.3)
 cmake_policy(SET CMP0072 NEW)
 
-option(PMP_BUILD_APPS "Build the PMP applications" ON)
 option(PMP_BUILD_EXAMPLES "Build the PMP examples" ON)
 option(PMP_BUILD_TESTS "Build the PMP test programs" ON)
 option(PMP_BUILD_DOCS "Build the PMP documentation" ON)
@@ -180,14 +179,11 @@ include(clang-tidy)
 # which directories to process
 if(EMSCRIPTEN)
   add_subdirectory(src/pmp)
-  if(PMP_BUILD_APPS)
-    add_subdirectory(src/apps)
+  if(PMP_BUILD_EXAMPLES)
+    add_subdirectory(examples)
   endif()
 else()
   add_subdirectory(src/pmp)
-  if(PMP_BUILD_APPS)
-    add_subdirectory(src/apps)
-  endif()
   if(PMP_BUILD_DOCS)
     add_subdirectory(docs)
   endif()
@@ -199,13 +195,6 @@ else()
     add_subdirectory(tests)
   endif()
 endif()
-
-set(CPACK_PACKAGE_VERSION ${PMP_VERSION})
-set(CPACK_SOURCE_PACKAGE_FILE_NAME
-    "${CMAKE_PROJECT_NAME}-${CPACK_PACKAGE_VERSION}")
-set(CPACK_SOURCE_IGNORE_FILES "/build/;/.git/;~$;${CPACK_SOURCE_IGNORE_FILES}")
-set(CPACK_SOURCE_GENERATOR "ZIP")
-include(CPack)
 
 if(NOT EMSCRIPTEN AND PMP_INSTALL)
 

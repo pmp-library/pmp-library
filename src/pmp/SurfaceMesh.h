@@ -1830,7 +1830,7 @@ public:
 
     //! \return whether collapsing the halfedge \p v0v1 is topologically legal.
     //! \attention This function is only valid for triangle meshes.
-    bool is_collapse_ok(Halfedge v0v1);
+    bool is_collapse_ok(Halfedge v0v1) const;
 
     //! Collapse the halfedge \p h by moving its start vertex into its target
     //! vertex. For non-boundary halfedges this function removes one vertex, three
@@ -1844,7 +1844,7 @@ public:
     void collapse(Halfedge h);
 
     //! \return whether removing the edge \p e is topologically legal.
-    bool is_removal_ok(Edge e);
+    bool is_removal_ok(Edge e) const;
 
     //! Remove edge and merge its two incident faces into one.
     //! This operation requires that the edge has two incident faces

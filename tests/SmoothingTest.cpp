@@ -19,6 +19,15 @@ TEST(SmoothingTest, implicit_smoothing)
     EXPECT_LT(area_after, area_before);
 }
 
+TEST(SmoothingTest, implicit_smoothing_with_rescale)
+{
+    auto mesh = open_cone();
+    auto area_before = surface_area(mesh);
+    Smoothing(mesh).implicit_smoothing(0.01, false, true);
+    auto area_after = surface_area(mesh);
+    EXPECT_FLOAT_EQ(area_after, area_before);
+}
+
 TEST(SmoothingTest, explicit_smoothing)
 {
     auto mesh = open_cone();

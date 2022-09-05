@@ -47,6 +47,13 @@ TEST(SubdivisionTest, catmull_clark_with_features)
     EXPECT_EQ(mesh.n_faces(), size_t(24));
 }
 
+TEST(SubdivisionTest, catmull_clark_with_boundary)
+{
+    auto mesh = Shapes::plane(1);
+    Subdivision(mesh).catmull_clark();
+    EXPECT_EQ(mesh.n_faces(), size_t(4));
+}
+
 TEST(SubdivisionTest, quad_tri_on_quads)
 {
     auto mesh = Shapes::hexahedron();
@@ -59,4 +66,11 @@ TEST(SubdivisionTest, quad_tri_on_triangles)
     auto mesh = Shapes::tetrahedron();
     Subdivision(mesh).quad_tri();
     EXPECT_EQ(mesh.n_faces(), size_t(16));
+}
+
+TEST(SubdivisionTest, quad_tri_on_mixed)
+{
+    auto mesh = Shapes::cone(4); // pyramid
+    Subdivision(mesh).quad_tri();
+    EXPECT_EQ(mesh.n_faces(), size_t(20));
 }

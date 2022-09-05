@@ -410,11 +410,13 @@ void Subdivision::quad_tri()
         else
         {
             // count the number of faces and quads surrounding the vertex
-            int n_faces = 0, n_quads = 0;
+            int n_faces = 0;
+            int n_quads = 0;
             for (auto f : mesh_.faces(v))
             {
                 n_faces++;
-                n_quads += mesh_.valence(f) == 4;
+                if (mesh_.valence(f) == 4)
+                    n_quads++;
             }
 
             if (n_quads == 0)

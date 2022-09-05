@@ -231,9 +231,8 @@ void SurfaceMeshIO::read_obj(SurfaceMesh& mesh)
             // add texture coordinates
             if (with_tex_coord && f.is_valid())
             {
-                SurfaceMesh::HalfedgeAroundFaceCirculator h_fit =
-                    mesh.halfedges(f);
-                SurfaceMesh::HalfedgeAroundFaceCirculator h_end = h_fit;
+                auto h_fit = mesh.halfedges(f);
+                auto h_end = h_fit;
                 unsigned v_idx = 0;
                 do
                 {
@@ -643,27 +642,26 @@ void SurfaceMeshIO::write_off(const SurfaceMesh& mesh)
 
     // vertices, and optionally normals and texture coordinates
     VertexProperty<Point> points = mesh.get_vertex_property<Point>("v:point");
-    for (SurfaceMesh::VertexIterator vit = mesh.vertices_begin();
-         vit != mesh.vertices_end(); ++vit)
+    for (auto v : mesh.vertices())
     {
-        const Point& p = points[*vit];
+        const Point& p = points[v];
         fprintf(out, "%.10f %.10f %.10f", p[0], p[1], p[2]);
 
         if (has_normals)
         {
-            const Normal& n = normals[*vit];
+            const Normal& n = normals[v];
             fprintf(out, " %.10f %.10f %.10f", n[0], n[1], n[2]);
         }
 
         if (has_colors)
         {
-            const Color& c = colors[*vit];
+            const Color& c = colors[v];
             fprintf(out, " %.10f %.10f %.10f", c[0], c[1], c[2]);
         }
 
         if (has_texcoords)
         {
-            const TexCoord& t = texcoords[*vit];
+            const TexCoord& t = texcoords[v];
             fprintf(out, " %.10f %.10f", t[0], t[1]);
         }
 
@@ -671,17 +669,16 @@ void SurfaceMeshIO::write_off(const SurfaceMesh& mesh)
     }
 
     // faces
-    for (SurfaceMesh::FaceIterator fit = mesh.faces_begin();
-         fit != mesh.faces_end(); ++fit)
+    for (auto f : mesh.faces())
     {
-        int nv = mesh.valence(*fit);
-        fprintf(out, "%d", nv);
-        SurfaceMesh::VertexAroundFaceCirculator fvit = mesh.vertices(*fit),
-                                                fvend = fvit;
+        auto nv = mesh.valence(f);
+        fprintf(out, "%zu", nv);
+        auto fv = mesh.vertices(f);
+        auto fvend = fv;
         do
         {
-            fprintf(out, " %d", (*fvit).idx());
-        } while (++fvit != fvend);
+            fprintf(out, " %d", (*fv).idx());
+        } while (++fv != fvend);
         fprintf(out, "\n");
     }
 
