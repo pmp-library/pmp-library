@@ -1883,7 +1883,7 @@ public:
     //! the existing edge \p e.
     //!
     //! \attention This function is only valid for triangle meshes.
-    //! \sa split(Edge, Point)
+    //! \sa split(Edge, const Point&)
     Halfedge split(Edge e, Vertex v);
 
     //! insert edge between the to-vertices v0 of \p h0 and v1 of \p h1.
