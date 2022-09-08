@@ -10,13 +10,16 @@ target_link_libraries(iterators pmp)
 add_executable(barycenter barycenter.cpp)
 target_link_libraries(barycenter pmp)
 
+add_executable(properties properties.cpp)
+target_link_libraries(properties pmp)
+
 add_custom_target(
   examples
   COMMAND
   WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}"
   COMMENT "")
 
-add_dependencies(examples basics io iterators barycenter)
+add_dependencies(examples basics io iterators barycenter properties)
 
 # example apps
 if(EMSCRIPTEN AND PMP_BUILD_VIS)

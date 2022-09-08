@@ -32,26 +32,7 @@ handles. These handles, as well as the handles for the other mesh entities
 mesh, as well as four triangular faces composing a tetrahedron. Finally, the
 number of vertices, edges, and faces is printed to standard output.
 
-```cpp
-// instantiate a SurfaceMesh object
-SurfaceMesh mesh;
-
-// add 4 vertices
-const auto v0 = mesh.add_vertex(Point(0,0,0));
-const auto v1 = mesh.add_vertex(Point(1,0,0));
-const auto v2 = mesh.add_vertex(Point(0,1,0));
-const auto v3 = mesh.add_vertex(Point(0,0,1));
-
-// add 4 triangular faces
-mesh.add_triangle(v0,v1,v3);
-mesh.add_triangle(v1,v2,v3);
-mesh.add_triangle(v2,v0,v3);
-mesh.add_triangle(v0,v2,v1);
-
-std::cout << "vertices: " << mesh.n_vertices() << std::endl;
-std::cout << "edges: "    << mesh.n_edges()    << std::endl;
-std::cout << "faces: "    << mesh.n_faces()    << std::endl;
-```
+\snippet basics.cpp basics
 
 ## Iterators and Circulators
 
@@ -64,25 +45,7 @@ halfedges, or faces around a given face or vertex. The example below
 demonstrates the use of iterators and circulators for computing the mean valence
 of a mesh.
 
-```cpp
-SurfaceMesh mesh;
-
-if (argc > 1)
-    mesh.read(argv[1]);
-
-float mean_valence = 0.0f;
-
-// loop over all vertices
-for (auto v : mesh.vertices())
-{
-    // sum up vertex valences
-    mean_valence += mesh.valence(v);
-}
-
-mean_valence /= mesh.n_vertices();
-
-std::cout << "mean valence: " << mean_valence << std::endl;
-```
+\snippet iterators.cpp iterators
 
 ## Dynamic Properties
 
@@ -92,27 +55,7 @@ that can be (de-)allocated dynamically at run-time. Property arrays are also
 used internally, e.g., to store vertex coordinates. The example program below
 shows how to access vertex coordinates through the (pre-defined) point property.
 
-```cpp
-SurfaceMesh mesh;
-
-if (argc > 1)
-    mesh.read(argv[1]);
-
-// get (pre-defined) property storing vertex positions
-auto points = mesh.get_vertex_property<Point>("v:point");
-
-Point p(0,0,0);
-
-for (auto v : mesh.vertices())
-{
-    // access point property like an array
-    p += points[v];
-}
-
-p /= mesh.n_vertices();
-
-std::cout << "barycenter: " << p << std::endl;
-```
+\snippet barycenter.cpp barycenter
 
 The dynamic (de-)allocation of properties at run-time is managed by a set
 of four different functions:
@@ -132,30 +75,14 @@ Functions that allocate a new property take a default value for the property as
 an optional second argument. The code excerpt below demonstrates how to
 allocate, use and remove a custom edge property.
 
-```cpp
-SurfaceMesh mesh;
-
-// allocate property storing a point per edge
-auto edge_points = mesh.add_edge_property<Point>("propertyName");
-
-// access the edge property like an array
-Edge e;
-edge_points[e] = Point(x,y,z);
-
-// remove property and free memory
-mesh.remove_edge_property(edge_points);
-```
+\snippet properties.cpp edge-properties
 
 In addition to the per-entity properties described above it is also possible to
 attach global per-object properties to a mesh. This can be used, e.g., for
 storing minimum or maximum values of a scalar field or for storing a set of
 region markers present in the mesh:
 
-```cpp
-auto markers = mesh.object_property<std::vector<int>>("o:regions");
-markers[0].push_back(0);
-markers[0].push_back(1);
-```
+\snippet properties.cpp global-properties
 
 Note in the above that access to the object property simply uses a zero index
 since there is no concept of an object handle.
@@ -217,22 +144,7 @@ details on which format supports reading / writing which type of data.
 
 A simple example reading and writing a mesh is shown below.
 
-```cpp
-// instantiate a SurfaceMesh object
-SurfaceMesh mesh;
-
-// read a mesh specified as the first command line argument
-if (argc > 1)
-    mesh.read(argv[1]);
-
-// ...
-// do fancy stuff with the mesh
-// ...
-
-// write the mesh to the file specified as second argument
-if (argc > 2)
-    mesh.write(argv[2]);
-```
+\snippet io.cpp io
 
 ## Eigen Interoperability
 
@@ -245,25 +157,25 @@ Example for construction:
 
 ```cpp
 // construction from Eigen
-Eigen::Vector3d eigenVec(1.0, 2.0, 3.0);
-pmp::dvec3 pmpVec = eigenVec;
+Eigen::Vector3d eigen_vector(1.0, 2.0, 3.0);
+pmp::dvec3 pmp_vector = eigen_vector;
 ```
 
 Example for assignment:
 
 ```cpp
 // assignment from Eigen
-Eigen::Vector3d eigenVec(1.0, 2.0, 3.0);
-pmp::dvec3 pmpVec;
-pmpVec = eigenVec;
+Eigen::Vector3d eigen_vector(1.0, 2.0, 3.0);
+pmp::dvec3 pmp_vector;
+pmp_vector = eigen_vector;
 ```
 
 Example for cast:
 
 ```cpp
 // cast to Eigen
-pmp::vec3 pmpVec(1.0, 2.0, 3.0);
-Eigen::Vector3f eigenVec = static_cast<Eigen::Vector3f>(pmpVec);
+pmp::vec3 pmp_vector(1.0, 2.0, 3.0);
+Eigen::Vector3f eigen_vector = static_cast<Eigen::Vector3f>(pmp_vector);
 ```
 
 See the reference documentation for pmp::Matrix and pmp::Vector for more details.

@@ -5,25 +5,26 @@
 
 using namespace pmp;
 
+// clang-format off
 int main(int argc, char** argv)
 {
-    //! [io]
+//! [io]
+// instantiate a SurfaceMesh object
+SurfaceMesh mesh;
 
-    // instantiate a SurfaceMesh object
-    SurfaceMesh mesh;
+// read a mesh specified as the first command line argument
+if (argc > 1)
+    mesh.read(argv[1]);
 
-    // read a mesh specified as the first command line argument
-    if (argc > 1)
-        mesh.read(argv[1]);
+// ...
+// do fancy stuff with the mesh
+// ...
 
-    // ...
-    // do fancy stuff with the mesh
-    // ...
+// write the mesh to the file specified as second argument
+if (argc > 2)
+    mesh.write(argv[2]);
+//! [io]
 
-    // write the mesh to the file specified as second argument
-    if (argc > 2)
-        mesh.write(argv[2]);
-
-    //! [io]
-    return 0;
+return 0;
 }
+// clang-format on

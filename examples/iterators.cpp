@@ -5,27 +5,27 @@
 
 using namespace pmp;
 
+// clang-format off
 int main(int argc, char** argv)
 {
-    //! [iterators]
+SurfaceMesh mesh;
 
-    SurfaceMesh mesh;
+if (argc > 1)
+    mesh.read(argv[1]);
 
-    if (argc > 1)
-        mesh.read(argv[1]);
+//! [iterators]
+float mean_valence = 0.0f;
 
-    float mean_valence = 0.0f;
-
-    // loop over all vertices
-    for (auto v : mesh.vertices())
-    {
-        // sum up vertex valences
-        mean_valence += mesh.valence(v);
-    }
-
-    mean_valence /= mesh.n_vertices();
-
-    std::cout << "mean valence: " << mean_valence << std::endl;
-
-    //! [iterators]
+// loop over all vertices
+for (auto v : mesh.vertices())
+{
+    // sum up vertex valences
+    mean_valence += mesh.valence(v);
 }
+
+mean_valence /= mesh.n_vertices();
+
+std::cout << "mean valence: " << mean_valence << std::endl;
+//! [iterators]
+}
+// clang-format on
