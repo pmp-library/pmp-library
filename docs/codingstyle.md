@@ -257,7 +257,7 @@ function or code block.
 ### Prefer C++ over C
 
 Give preference to C++ and STL constructs over C-style ones. Example: Use
-`std::numeric_limits<float>\:\:max()` instead of `FLT_MAX`.
+`std::numeric_limits<float>::max()` instead of `FLT_MAX`.
 
 ## Using clang-format {#using-clang-format}
 
@@ -277,9 +277,7 @@ configuration. The exact path to the executable can be specified using
     cmake -DCLANG_FORMAT_EXE=<path/to/executable> ..
 ```
 
-In case you want to preserve the special formatting of a particular code block
-such as a matrix intialization add the `// clang-format off` and `//
-clang-format on` directives around this block:
+In case you want to preserve the special formatting of a particular code block such as a matrix intialization add the `// clang-format off` and `// clang-format on` directives around this block:
 
 ```cpp
 // clang-format off
@@ -329,16 +327,10 @@ The above coding standard is necessarily incomplete. Therefore, we list some
 additional references and pointers to useful resources regarding C++ coding
 standards and best practices:
 
-* The [Effective C++ series](https://www.aristeia.com/books.html) of Scott Meyer
-  contains a whealth of guidelines \cite meyers_2005_effective
-  \cite meyers_2014_effective .
-* [C++ Coding Standards](http://www.gotw.ca/publications/c++cs.htm) written by
-  Herb Sutter and Andrei Alexandrescu describes concrete guidelines and best
-  practices \cite sutter_2004_c++ .
-* The [C++ Core Guidelines](https://github.com/isocpp/cppcoreguidelines) are an
-  ongoing effort led by Bjarne Stroustrup to develop guidelines for effecitve
-  modern C++ usage.
-* Other coding standards:
-  * [LLVM Coding Standards](https://llvm.org/docs/CodingStandards.html)
-  * [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
-  * [High Integrity C++ Coding Standard](http://www.codingstandard.com/section/index/)
+- The [Effective C++ series](https://www.aristeia.com/books.html) of Scott Meyer contains a whealth of guidelines \cite meyers_2005_effective \cite meyers_2014_effective .
+- [C++ Coding Standards](http://www.gotw.ca/publications/c++cs.htm) written by Herb Sutter and Andrei Alexandrescu describes concrete guidelines and best practices \cite sutter_2004_c++ .
+- The [C++ Core Guidelines](https://github.com/isocpp/cppcoreguidelines) are an ongoing effort led by Bjarne Stroustrup to develop guidelines for effecitve modern C++ usage.
+- Other coding standards:
+  - [LLVM Coding Standards](https://llvm.org/docs/CodingStandards.html)
+  - [Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
+  - [High Integrity C++ Coding Standard](http://www.codingstandard.com/section/index/)
