@@ -143,7 +143,7 @@ private:
     int width_, height_;
 
     // highDPI scaling
-    float scaling_;
+    float scaling_{1.0};
 #if __EMSCRIPTEN__
     float pixel_ratio_;
 #endif
@@ -151,24 +151,29 @@ private:
     // whether to show ImGUI menu
     bool show_imgui_;
     // scale ImGUI menu
-    float imgui_scale_;
+    float imgui_scale_{1.0};
     // show ImGUI help dialog
-    bool show_help_;
+    bool show_help_{false};
     // items for ImGUI help dialog
     std::vector<std::pair<std::string, std::string>> help_items_;
 
     // which mouse buttons and modifier keys are pressed down
     std::array<bool, 7> button_;
-    bool ctrl_pressed_, alt_pressed_, shift_pressed_;
+    bool ctrl_pressed_;
+    bool alt_pressed_;
+    bool shift_pressed_;
 
     // fullscreen-related backups
-    int backup_xpos_, backup_ypos_, backup_width_, backup_height_;
+    int backup_xpos_;
+    int backup_ypos_;
+    int backup_width_;
+    int backup_height_;
     bool is_fullscreen() const;
     void enter_fullscreen();
     void exit_fullscreen();
 
     // screenshot number
-    unsigned int screenshot_number_;
+    unsigned int screenshot_number_{0};
 };
 
 } // namespace pmp

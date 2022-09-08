@@ -22,14 +22,7 @@ namespace pmp {
 Window* Window::instance_ = nullptr;
 
 Window::Window(const char* title, int width, int height, bool showgui)
-    : title_(title),
-      width_(width),
-      height_(height),
-      scaling_(1),
-      show_imgui_(showgui),
-      imgui_scale_(1.0),
-      show_help_(false),
-      screenshot_number_(0)
+    : title_(title), width_(width), height_(height), show_imgui_(showgui)
 {
     // initialize glfw window
     if (!glfwInit())

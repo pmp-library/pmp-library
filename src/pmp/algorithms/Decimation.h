@@ -119,7 +119,7 @@ private:
 
     SurfaceMesh& mesh_;
 
-    bool initialized_;
+    bool initialized_{false};
 
     VertexProperty<float> vpriority_;
     VertexProperty<Halfedge> vtarget_;
@@ -135,7 +135,7 @@ private:
     EdgeProperty<bool> efeature_;
     EdgeProperty<bool> texture_seams_;
 
-    PriorityQueue* queue_;
+    PriorityQueue* queue_{nullptr};
 
     bool has_selection_;
     bool has_features_;
