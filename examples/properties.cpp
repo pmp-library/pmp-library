@@ -41,9 +41,11 @@ mesh.remove_edge_property(edge_points);
 auto markers = mesh.object_property<std::vector<int>>("o:regions");
 markers[0].push_back(0);
 markers[0].push_back(1);
+
 // ...
 // do something useful
 // ...
+
 mesh.remove_object_property(markers);
 //! [global-properties]
 }

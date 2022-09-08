@@ -1,8 +1,8 @@
 # Tutorial {#tutorial}
 
-This section provides a hands-on tutorial on the basic usage of the
-pmp-library. For a thorough introduction into polygon mesh processing we refer
-to the book of Botsch et al. \cite botsch_2010_polygon.
+This section provides a hands-on tutorial showing the basic usage of PMP. For a
+thorough introduction to polygon mesh processing we refer to the book of Botsch
+et al. \cite botsch_2010_polygon.
 
 ## Introduction
 

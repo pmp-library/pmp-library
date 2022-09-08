@@ -17,7 +17,7 @@ if (argc > 1)
     mesh.read(argv[1]);
 
 // ...
-// do fancy stuff with the mesh
+// do something with the mesh
 // ...
 
 // write the mesh to the file specified as second argument
