@@ -42,6 +42,7 @@ using Point = Vector<Scalar, 3>;
 using Normal = Vector<Scalar, 3>;
 
 //! Color type
+//! \details RGB values in the range of [0,1]
 using Color = Vector<Scalar, 3>;
 
 //! Texture coordinate type
