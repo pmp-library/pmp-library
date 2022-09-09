@@ -58,21 +58,43 @@ shows how to access vertex coordinates through the (pre-defined) point property.
 \snippet barycenter.cpp barycenter
 
 The dynamic (de-)allocation of properties at run-time is managed by a set
-of four different functions:
+of four different functions.
 
-- `add_EntityType_property<PropertyType>("PropertyName")` allocates a new property
-  for the given _EntityType_ of the type _PropertyType_ labeled by the
-  _PropertyName_ string.
-- `get_EntityType_property<PropertyType>("PropertyName")` returns a handle to an
-  existing property.
-- `_EntityType_property<PropertyType>("PropertyName")` returns a handle to an
-  existing property if the specified property already exists. If not, a new
-  property is allocated and its handle is returned.
-- `remove_EntityType_property(PropertyHandle)` removes and the property referenced
-  by `PropertyHandle`.
+- Add a new property of a specific type for a given entity. Example:
 
-Functions that allocate a new property take a default value for the property as
-an optional second argument. The code excerpt below demonstrates how to
+  ```cpp
+  auto vertex_weights = mesh.add_vertex_property<Scalar>("v:weight");
+  ```
+
+- Get a handle to an existing property. Example:
+
+  ```cpp
+  auto points = mesh.get_vertex_property<Point>("v:point");
+  ```
+
+- Get or add: Return a handle to an existing property if a property of the
+  same type and name exists. If there is no such property, a new one is
+  allocated and its handle is returned. Example:
+
+  ```cpp
+  auto edge_weights = mesh.edge_property<Scalar>("e:weight");
+  ```
+
+- Remove a property given its handle:
+
+  ```cpp
+  auto face_colors = mesh.face_property<Color>("f:color");
+  mesh.remove_face_property(face_colors);
+  ```
+
+Functions that allocate a new property take an optional default value for the
+property as a second argument. Example:
+
+```cpp
+mesh.face_property<Color>("f:color", Color(1.0, 0.0, 0.0));
+```
+
+The code excerpt below demonstrates how to
 allocate, use and remove a custom edge property.
 
 \snippet properties.cpp edge-properties
