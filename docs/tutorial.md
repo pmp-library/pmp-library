@@ -18,7 +18,7 @@ opposing direction. To be more precise:
 
 The halfedge connectivity is illustrated in the figure below:
 
-![Halfedge connectivity.](./images/halfedge-connectivity.png)
+![Halfedge connectivity.](./images/halfedge-connectivity.svg)
 
 In the following sections we describe the basic usage of pmp::SurfaceMesh by
 means of simple example programs and code excerpts.
