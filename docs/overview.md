@@ -21,8 +21,8 @@ timing and memory profiling.
 The @ref algorithms module provides implementations of canonical geometry
 processing algorithms such as remeshing or mesh decimation. The class
 structure and naming follows a simple and straightforward scheme: Provide one
-class for one type of tasks and name it accordingly. Example: the
-pmp::SurfaceRemeshing class provides remeshing algorithms operating on surface
+class for each type of tasks and name it accordingly. Example: the
+pmp::Remeshing class provides remeshing algorithms operating on surface
 meshes.
 
 ## Visualization
