@@ -5,6 +5,7 @@
 
 #include <iterator>
 #include <limits>
+#include <memory>
 
 #include "pmp/algorithms/DistancePointTriangle.h"
 #include "pmp/algorithms/Normals.h"
@@ -177,7 +178,7 @@ void Decimation::decimate(unsigned int n_vertices)
 
     // build priority queue
     HeapInterface hi(vpriority_, heap_pos_);
-    queue_ = new PriorityQueue(hi);
+    queue_ = std::make_unique<PriorityQueue>(hi);
     queue_->reserve(mesh_.n_vertices());
     for (auto v : mesh_.vertices())
     {
@@ -225,7 +226,6 @@ void Decimation::decimate(unsigned int n_vertices)
     }
 
     // clean up
-    delete queue_;
     mesh_.garbage_collection();
     mesh_.remove_vertex_property(vpriority_);
     mesh_.remove_vertex_property(heap_pos_);

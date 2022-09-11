@@ -135,7 +135,7 @@ private:
     EdgeProperty<bool> efeature_;
     EdgeProperty<bool> texture_seams_;
 
-    PriorityQueue* queue_{nullptr};
+    std::unique_ptr<PriorityQueue> queue_;
 
     bool has_selection_;
     bool has_features_;
