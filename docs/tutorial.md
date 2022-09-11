@@ -124,7 +124,7 @@ auto v0 = mesh.from_vertex(h);
 auto v1 = mesh.to_vertex(h);
 ```
 
-![Connectivity queries](./images/connectivity-queries.png)
+![Connectivity queries](./images/connectivity-queries.svg)
 
 ## Topological Operations
 
