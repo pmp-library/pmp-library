@@ -178,20 +178,20 @@ void Decimation::decimate(unsigned int n_vertices)
 
     // build priority queue
     HeapInterface hi(vpriority_, heap_pos_);
-    queue_ = std::make_unique<PriorityQueue>(hi);
-    queue_->reserve(mesh_.n_vertices());
+    PriorityQueue queue(hi);
+    queue.reserve(mesh_.n_vertices());
     for (auto v : mesh_.vertices())
     {
-        queue_->reset_heap_position(v);
-        enqueue_vertex(v);
+        queue.reset_heap_position(v);
+        enqueue_vertex(queue, v);
     }
 
     auto nv = mesh_.n_vertices();
-    while (nv > n_vertices && !queue_->empty())
+    while (nv > n_vertices && !queue.empty())
     {
         // get 1st element
-        auto v = queue_->front();
-        queue_->pop_front();
+        auto v = queue.front();
+        queue.pop_front();
         auto h = vtarget_[v];
         CollapseData cd(mesh_, h);
 
@@ -222,7 +222,7 @@ void Decimation::decimate(unsigned int n_vertices)
 
         // update queue
         for (auto vv : one_ring)
-            enqueue_vertex(vv);
+            enqueue_vertex(queue, vv);
     }
 
     // clean up
@@ -232,7 +232,7 @@ void Decimation::decimate(unsigned int n_vertices)
     mesh_.remove_vertex_property(vtarget_);
 }
 
-void Decimation::enqueue_vertex(Vertex v)
+void Decimation::enqueue_vertex(PriorityQueue& queue, Vertex v)
 {
     float prio, min_prio(std::numeric_limits<float>::max());
     Halfedge min_h;
@@ -257,17 +257,17 @@ void Decimation::enqueue_vertex(Vertex v)
         vpriority_[v] = min_prio;
         vtarget_[v] = min_h;
 
-        if (queue_->is_stored(v))
-            queue_->update(v);
+        if (queue.is_stored(v))
+            queue.update(v);
         else
-            queue_->insert(v);
+            queue.insert(v);
     }
 
     // not valid -> remove from heap
     else
     {
-        if (queue_->is_stored(v))
-            queue_->remove(v);
+        if (queue.is_stored(v))
+            queue.remove(v);
 
         vpriority_[v] = -1;
         vtarget_[v] = min_h;

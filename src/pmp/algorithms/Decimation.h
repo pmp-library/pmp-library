@@ -94,7 +94,7 @@ private:
     using Points = std::vector<Point>;
 
     // put the vertex v in the priority queue
-    void enqueue_vertex(Vertex v);
+    void enqueue_vertex(PriorityQueue& queue, Vertex v);
 
     // is collapsing the halfedge h allowed?
     bool is_collapse_legal(const CollapseData& cd);
@@ -134,8 +134,6 @@ private:
     VertexProperty<bool> vfeature_;
     EdgeProperty<bool> efeature_;
     EdgeProperty<bool> texture_seams_;
-
-    std::unique_ptr<PriorityQueue> queue_;
 
     bool has_selection_;
     bool has_features_;
