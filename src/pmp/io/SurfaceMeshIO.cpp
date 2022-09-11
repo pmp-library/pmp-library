@@ -2,7 +2,7 @@
 // Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/SurfaceMeshIO.h"
+#include "pmp/io/SurfaceMeshIO.h"
 
 #include <clocale>
 #include <cstring>

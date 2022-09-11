@@ -6,7 +6,7 @@
 
 #include <cmath>
 
-#include "pmp/SurfaceMeshIO.h"
+#include "pmp/io/SurfaceMeshIO.h"
 
 namespace pmp {
 

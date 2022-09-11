@@ -47,3 +47,4 @@ if(PMP_BUILD_VIS)
 endif()
 
 include(algorithms/CMakeLists.txt)
+include(io/CMakeLists.txt)
