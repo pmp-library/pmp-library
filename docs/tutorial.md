@@ -37,13 +37,17 @@ number of vertices, edges, and faces is printed to standard output.
 ## Iterators and Circulators
 
 In order to sequentially access mesh entities pmp::SurfaceMesh provides
-iterators for each entity type, namely pmp::SurfaceMesh::VertexIterator,
-pmp::SurfaceMesh::HalfedgeIterator, pmp::SurfaceMesh::EdgeIterator, and
-pmp::SurfaceMesh::FaceIterator. Similar to iterators, pmp::SurfaceMesh also
-provides circulators for the ordered enumeration of all incident vertices,
-halfedges, or faces around a given face or vertex. The example below
-demonstrates the use of iterators and circulators for computing the mean valence
-of a mesh.
+iterators for each entity type:
+
+1. pmp::SurfaceMesh::VertexIterator
+2. pmp::SurfaceMesh::HalfedgeIterator
+3. pmp::SurfaceMesh::EdgeIterator
+4. pmp::SurfaceMesh::FaceIterator
+
+Similar to iterators, pmp::SurfaceMesh also provides circulators for the ordered
+enumeration of all incident vertices, halfedges, or faces around a given face or
+vertex. The example below demonstrates the use of iterators and circulators for
+computing the mean valence of a mesh.
 
 \snippet iterators.cpp iterators
 
@@ -53,7 +57,7 @@ Attaching additional attributes to mesh entities is important for many
 applications. pmp::SurfaceMesh supports properties by means of synchronized arrays
 that can be (de-)allocated dynamically at run-time. Property arrays are also
 used internally, e.g., to store vertex coordinates. The example program below
-shows how to access vertex coordinates through the (pre-defined) point property.
+shows how to access vertex coordinates through the pre-defined point property.
 
 \snippet barycenter.cpp barycenter
 
