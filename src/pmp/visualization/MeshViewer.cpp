@@ -9,6 +9,8 @@
 
 #include <imgui.h>
 
+#include "pmp/io/SurfaceMeshIO.h"
+
 namespace pmp {
 
 MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
@@ -38,7 +40,7 @@ void MeshViewer::load_mesh(const char* filename)
     // load mesh
     try
     {
-        mesh_.read(filename);
+        read(mesh_, filename);
     }
     catch (const std::exception& e)
     {
@@ -157,7 +159,7 @@ void MeshViewer::keyboard(int key, int scancode, int action, int mods)
 
         case GLFW_KEY_W: // write mesh
         {
-            mesh_.write("output.off");
+            write(mesh_, "output.off");
             break;
         }
 

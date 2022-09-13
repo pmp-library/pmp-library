@@ -5,6 +5,7 @@
 
 #include <pmp/algorithms/Geodesics.h>
 #include <pmp/algorithms/Shapes.h>
+#include <pmp/io/SurfaceMeshIO.h>
 
 using namespace pmp;
 
@@ -33,7 +34,7 @@ TEST(GeodesicsTest, geodesic_symmetry)
 {
     // read irregular mesh (to have virtual edges)
     SurfaceMesh mesh;
-    mesh.read("pmp-data/off/bunny_adaptive.off");
+    read(mesh, "pmp-data/off/bunny_adaptive.off");
 
     Geodesics geodist(mesh);
     Vertex v0, v1;

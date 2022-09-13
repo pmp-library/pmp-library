@@ -4,6 +4,8 @@
 #include "SurfaceMeshTest.h"
 
 #include <pmp/algorithms/Normals.h>
+#include <pmp/io/SurfaceMeshIO.h>
+
 #include <vector>
 #include <fstream>
 
@@ -13,29 +15,15 @@ class SurfaceMeshIOTest : public SurfaceMeshTest
 {
 };
 
-TEST_F(SurfaceMeshIOTest, poly_io)
-{
-    add_triangle();
-    mesh.write("test.pmp");
-    mesh.clear();
-    EXPECT_TRUE(mesh.is_empty());
-    mesh.read("test.pmp");
-    EXPECT_EQ(mesh.n_vertices(), size_t(3));
-    EXPECT_EQ(mesh.n_faces(), size_t(1));
-
-    // check malformed file names
-    EXPECT_THROW(mesh.write("testpolyly"), IOException);
-}
-
 TEST_F(SurfaceMeshIOTest, obj_io)
 {
     add_triangle();
     Normals::compute_vertex_normals(mesh);
     mesh.add_halfedge_property<TexCoord>("h:texcoord", TexCoord(0, 0));
-    mesh.write("test.obj");
+    write(mesh, "test.obj");
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
-    mesh.read("test.obj");
+    read(mesh, "test.obj");
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
@@ -53,10 +41,10 @@ TEST_F(SurfaceMeshIOTest, off_io)
     flags.use_vertex_colors = true;
     flags.use_vertex_texcoords = true;
 
-    mesh.write("test.off", flags);
+    write(mesh, "test.off", flags);
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
-    mesh.read("test.off");
+    read(mesh, "test.off");
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
@@ -68,46 +56,46 @@ TEST_F(SurfaceMeshIOTest, off_io_binary)
     IOFlags flags;
     flags.use_binary = true;
 
-    mesh.write("binary.off", flags);
+    write(mesh, "binary.off", flags);
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
-    mesh.read("binary.off");
+    read(mesh, "binary.off");
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
 
 TEST_F(SurfaceMeshIOTest, stl_io)
 {
-    mesh.read("pmp-data/stl/icosahedron_ascii.stl");
+    read(mesh, "pmp-data/stl/icosahedron_ascii.stl");
     EXPECT_EQ(mesh.n_vertices(), size_t(12));
     EXPECT_EQ(mesh.n_faces(), size_t(20));
     EXPECT_EQ(mesh.n_edges(), size_t(30));
     mesh.clear();
-    mesh.read("pmp-data/stl/icosahedron_binary.stl");
+    read(mesh, "pmp-data/stl/icosahedron_binary.stl");
     EXPECT_EQ(mesh.n_vertices(), size_t(12));
     EXPECT_EQ(mesh.n_faces(), size_t(20));
     EXPECT_EQ(mesh.n_edges(), size_t(30));
 
     // try to write without normals being present
-    ASSERT_THROW(mesh.write("test.stl"), InvalidInputException);
+    ASSERT_THROW(write(mesh, "test.stl"), InvalidInputException);
 
     // the same with normals computed
     Normals::compute_face_normals(mesh);
-    EXPECT_NO_THROW(mesh.write("test.stl"));
+    EXPECT_NO_THROW(write(mesh, "test.stl"));
 
     // try to write non-triangle mesh
     mesh.clear();
     add_quad();
-    ASSERT_THROW(mesh.write("test.stl"), InvalidInputException);
+    ASSERT_THROW(write(mesh, "test.stl"), InvalidInputException);
 }
 
 TEST_F(SurfaceMeshIOTest, ply_io)
 {
     add_triangle();
-    mesh.write("test.ply");
+    write(mesh, "test.ply");
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
-    mesh.read("test.ply");
+    read(mesh, "test.ply");
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
@@ -119,10 +107,10 @@ TEST_F(SurfaceMeshIOTest, ply_io_binary)
     IOFlags flags;
     flags.use_binary = true;
 
-    mesh.write("binary.ply", flags);
+    write(mesh, "binary.ply", flags);
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
-    mesh.read("binary.ply");
+    read(mesh, "binary.ply");
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
@@ -130,10 +118,10 @@ TEST_F(SurfaceMeshIOTest, ply_io_binary)
 TEST_F(SurfaceMeshIOTest, xyz_io)
 {
     add_triangle();
-    mesh.write("test.xyz");
+    write(mesh, "test.xyz");
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
-    mesh.read("test.xyz");
+    read(mesh, "test.xyz");
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
 }
 
@@ -146,7 +134,7 @@ TEST_F(SurfaceMeshIOTest, agi_io)
     ofs << "1 1 0 1 1 0 1 1 0" << std::endl;
     ofs << "1 1 1 1 1 1 1 1 1" << std::endl;
     ofs.close();
-    mesh.read("test.agi");
+    read(mesh, "test.agi");
     EXPECT_EQ(mesh.n_vertices(), 4u);
     EXPECT_TRUE(mesh.has_vertex_property("v:color"));
     EXPECT_TRUE(mesh.has_vertex_property("v:normal"));

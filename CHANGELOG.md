@@ -10,6 +10,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Make `SurfaceMesh::read()` and `SurfaceMesh::write()` free functions `pmp::read()` and `pmp::write()`. Removes support for the non-standard PMP format.
 - Move IO functionality into its own module
 - Move example apps from `src/apps` to `examples`. Remove `PMP_BUILD_APPS` CMake option.
 - Rename `Simplification` to `Decimation`

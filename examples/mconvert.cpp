@@ -2,6 +2,8 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/SurfaceMesh.h>
+#include <pmp/io/SurfaceMeshIO.h>
+
 #include <unistd.h>
 
 using namespace pmp;
@@ -53,7 +55,7 @@ int main(int argc, char** argv)
     SurfaceMesh mesh;
     try
     {
-        mesh.read(input);
+        read(mesh, input);
     }
     catch (const IOException& e)
     {
@@ -66,7 +68,7 @@ int main(int argc, char** argv)
     flags.use_binary = binary;
     try
     {
-        mesh.write(output, flags);
+        write(mesh, output, flags);
     }
     catch (const IOException& e)
     {

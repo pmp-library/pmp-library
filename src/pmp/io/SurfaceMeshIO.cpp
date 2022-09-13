@@ -33,6 +33,19 @@ void tfwrite(FILE* out, const T& t)
 
 namespace pmp {
 
+void read(SurfaceMesh& mesh, const std::string& filename, const IOFlags& flags)
+{
+    SurfaceMeshIO reader(filename, flags);
+    reader.read(mesh);
+}
+
+void write(const SurfaceMesh& mesh, const std::string& filename,
+           const IOFlags& flags)
+{
+    SurfaceMeshIO writer(filename, flags);
+    writer.write(mesh);
+}
+
 void SurfaceMeshIO::read(SurfaceMesh& mesh)
 {
     std::setlocale(LC_NUMERIC, "C");
@@ -56,8 +69,6 @@ void SurfaceMeshIO::read(SurfaceMesh& mesh)
         read_stl(mesh);
     else if (ext == "ply")
         read_ply(mesh);
-    else if (ext == "pmp")
-        read_pmp(mesh);
     else if (ext == "xyz")
         read_xyz(mesh);
     else if (ext == "agi")
@@ -84,8 +95,6 @@ void SurfaceMeshIO::write(const SurfaceMesh& mesh)
         write_stl(mesh);
     else if (ext == "ply")
         write_ply(mesh);
-    else if (ext == "pmp")
-        write_pmp(mesh);
     else if (ext == "xyz")
         write_xyz(mesh);
     else
@@ -685,63 +694,6 @@ void SurfaceMeshIO::write_off(const SurfaceMesh& mesh)
     fclose(out);
 }
 
-void SurfaceMeshIO::read_pmp(SurfaceMesh& mesh)
-{
-    // open file (in binary mode)
-    FILE* in = fopen(filename_.c_str(), "rb");
-    if (!in)
-        throw IOException("Failed to open file: " + filename_);
-
-    // how many elements?
-    unsigned int nv(0), ne(0), nh(0), nf(0);
-    tfread(in, nv);
-    tfread(in, ne);
-    tfread(in, nf);
-    nh = 2 * ne;
-
-    // texture coordinates?
-    bool has_htex(false);
-    tfread(in, has_htex);
-
-    // resize containers
-    mesh.vprops_.resize(nv);
-    mesh.hprops_.resize(nh);
-    mesh.eprops_.resize(ne);
-    mesh.fprops_.resize(nf);
-
-    // get properties
-    auto vconn =
-        mesh.vertex_property<SurfaceMesh::VertexConnectivity>("v:connectivity");
-    auto hconn = mesh.halfedge_property<SurfaceMesh::HalfedgeConnectivity>(
-        "h:connectivity");
-    auto fconn =
-        mesh.face_property<SurfaceMesh::FaceConnectivity>("f:connectivity");
-    auto point = mesh.vertex_property<Point>("v:point");
-
-    // read properties from file
-    size_t nvc = fread((char*)vconn.data(),
-                       sizeof(SurfaceMesh::VertexConnectivity), nv, in);
-    size_t nhc = fread((char*)hconn.data(),
-                       sizeof(SurfaceMesh::HalfedgeConnectivity), nh, in);
-    size_t nfc = fread((char*)fconn.data(),
-                       sizeof(SurfaceMesh::FaceConnectivity), nf, in);
-    size_t np = fread((char*)point.data(), sizeof(Point), nv, in);
-    PMP_ASSERT(nvc == nv);
-    PMP_ASSERT(nhc == nh);
-    PMP_ASSERT(nfc == nf);
-    PMP_ASSERT(np == nv);
-
-    // read texture coordiantes
-    if (has_htex)
-    {
-        auto htex = mesh.halfedge_property<TexCoord>("h:tex");
-        size_t nhtc = fread((char*)htex.data(), sizeof(TexCoord), nh, in);
-        PMP_ASSERT(nhtc == nh);
-    }
-
-    fclose(in);
-}
-
 void SurfaceMeshIO::read_xyz(SurfaceMesh& mesh)
 {
     // open file (in ASCII mode)
@@ -809,51 +761,6 @@ void SurfaceMeshIO::read_agi(SurfaceMesh& mesh)
     }
 
     fclose(in);
-}
-
-void SurfaceMeshIO::write_pmp(const SurfaceMesh& mesh)
-{
-    // open file (in binary mode)
-    FILE* out = fopen(filename_.c_str(), "wb");
-    if (!out)
-        throw IOException("Failed to open file: " + filename_);
-
-    // get properties
-    auto vconn = mesh.get_vertex_property<SurfaceMesh::VertexConnectivity>(
-        "v:connectivity");
-    auto hconn = mesh.get_halfedge_property<SurfaceMesh::HalfedgeConnectivity>(
-        "h:connectivity");
-    auto fconn =
-        mesh.get_face_property<SurfaceMesh::FaceConnectivity>("f:connectivity");
-    auto point = mesh.get_vertex_property<Point>("v:point");
-    auto htex = mesh.get_halfedge_property<TexCoord>("h:tex");
-
-    // how many elements?
-    unsigned int nv, ne, nh, nf;
-    nv = mesh.n_vertices();
-    ne = mesh.n_edges();
-    nh = mesh.n_halfedges();
-    nf = mesh.n_faces();
-
-    // write header
-    tfwrite(out, nv);
-    tfwrite(out, ne);
-    tfwrite(out, nf);
-    tfwrite(out, (bool)htex);
-
-    // write properties to file
-    fwrite((char*)vconn.data(), sizeof(SurfaceMesh::VertexConnectivity), nv,
-           out);
-    fwrite((char*)hconn.data(), sizeof(SurfaceMesh::HalfedgeConnectivity), nh,
-           out);
-    fwrite((char*)fconn.data(), sizeof(SurfaceMesh::FaceConnectivity), nf, out);
-    fwrite((char*)point.data(), sizeof(Point), nv, out);
-
-    // texture coordinates
-    if (htex)
-        fwrite((char*)htex.data(), sizeof(TexCoord), nh, out);
-
-    fclose(out);
 }
 
 // helper to assemble vertex data
