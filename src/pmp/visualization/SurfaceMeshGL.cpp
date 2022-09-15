@@ -731,10 +731,6 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                 glDepthFunc(GL_LEQUAL);
                 phong_shader_.set_uniform("front_color", vec3(1, 0, 0.));
                 phong_shader_.set_uniform("back_color", vec3(0.1, 0, 0));
-                std::array<GLfloat, 2> line_width_range;
-                glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE,
-                            line_width_range.data());
-                glLineWidth(line_width_range[1]);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
                 glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT, nullptr);
                 glDepthFunc(GL_LESS);
@@ -781,10 +777,6 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                     glDepthFunc(GL_LEQUAL);
                     phong_shader_.set_uniform("front_color", vec3(1, 0, 0.));
                     phong_shader_.set_uniform("back_color", vec3(0.1, 0, 0));
-                    std::array<GLfloat, 2> line_width_range;
-                    glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE,
-                                line_width_range.data());
-                    glLineWidth(line_width_range[1]);
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
                     glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT,
                                    nullptr);
