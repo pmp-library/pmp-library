@@ -563,38 +563,38 @@ void SurfaceMeshGL::update_opengl_buffers()
     // edge indices & if available seam indices
     if (n_edges())
     {
-        std::vector<unsigned int> edgeArray;
-        edgeArray.reserve(n_edges());
+        std::vector<unsigned int> edge_indices;
+        edge_indices.reserve(n_edges());
 
-        std::vector<unsigned int> seamArray;
-        seamArray.reserve(seam_count);
+        std::vector<unsigned int> seam_indices;
+        seam_indices.reserve(seam_count);
 
         for (auto e : edges())
         {
-            edgeArray.push_back(vertex_indices[vertex(e, 0)]);
-            edgeArray.push_back(vertex_indices[vertex(e, 1)]);
+            edge_indices.push_back(vertex_indices[vertex(e, 0)]);
+            edge_indices.push_back(vertex_indices[vertex(e, 1)]);
             if (texture_seams && texture_seams[e])
             {
-                seamArray.push_back(vertex_indices[vertex(e, 0)]);
-                seamArray.push_back(vertex_indices[vertex(e, 1)]);
+                seam_indices.push_back(vertex_indices[vertex(e, 0)]);
+                seam_indices.push_back(vertex_indices[vertex(e, 1)]);
             }
         }
         if (texture_seams)
         {
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                         seamArray.size() * sizeof(unsigned int),
-                         seamArray.data(), GL_STATIC_DRAW);
-            n_seams_ = seamArray.size();
+                         seam_indices.size() * sizeof(unsigned int),
+                         seam_indices.data(), GL_STATIC_DRAW);
+            n_seams_ = seam_indices.size();
         }
         else
             n_seams_ = 0;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                     edgeArray.size() * sizeof(unsigned int), edgeArray.data(),
-                     GL_STATIC_DRAW);
-        n_edges_ = edgeArray.size();
+                     edge_indices.size() * sizeof(unsigned int),
+                     edge_indices.data(), GL_STATIC_DRAW);
+        n_edges_ = edge_indices.size();
     }
     else
         n_edges_ = 0;
