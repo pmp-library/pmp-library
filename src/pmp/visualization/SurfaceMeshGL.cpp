@@ -632,7 +632,7 @@ void SurfaceMeshGL::update_opengl_buffers()
 
 void SurfaceMeshGL::draw(const mat4& projection_matrix,
                          const mat4& modelview_matrix,
-                         const std::string draw_mode)
+                         const std::string& draw_mode)
 {
     // did we generate buffers already?
     if (!vertex_array_object_)

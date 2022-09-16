@@ -82,7 +82,7 @@ public:
 
     //! draw the mesh
     void draw(const mat4& projection_matrix, const mat4& modelview_matrix,
-              const std::string draw_mode);
+              const std::string& draw_mode);
 
     //! update all opengl buffers for efficient core profile rendering
     void update_opengl_buffers();
