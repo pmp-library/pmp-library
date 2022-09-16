@@ -710,7 +710,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
         {
             // draw faces
             glDepthRange(0.01, 1.0);
-            drawTriangles();
+            draw_triangles();
             glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
             // overlay edges
@@ -742,7 +742,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     {
         if (n_faces())
         {
-            drawTriangles();
+            draw_triangles();
         }
     }
 
@@ -758,7 +758,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                 matcap_shader_.set_uniform("normal_matrix", n_matrix);
                 matcap_shader_.set_uniform("alpha", alpha_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
-                drawTriangles();
+                draw_triangles();
             }
             else
             {
@@ -768,7 +768,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                 phong_shader_.set_uniform("use_vertex_color", false);
                 phong_shader_.set_uniform("use_srgb", srgb_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
-                drawTriangles();
+                draw_triangles();
 
                 // overlay seam edges
                 if (n_seams_ > 0)
@@ -798,7 +798,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             phong_shader_.set_uniform("front_color", vec3(0.8, 0.8, 0.8));
             phong_shader_.set_uniform("back_color", vec3(0.9, 0.0, 0.0));
             glDepthRange(0.01, 1.0);
-            drawTriangles();
+            draw_triangles();
 
             // overlay edges
             glDepthRange(0.0, 1.0);
@@ -928,7 +928,7 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
     }
 }
 
-void SurfaceMeshGL::drawTriangles() const
+void SurfaceMeshGL::draw_triangles() const
 {
 #ifndef __EMSCRIPTEN__
     glDrawArrays(GL_TRIANGLES, 0, n_vertices_);

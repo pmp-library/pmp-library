@@ -160,7 +160,7 @@ private:
                    std::vector<ivec3>& triangles);
 
     // circumvent WebGL bug in Chrome 99
-    void drawTriangles() const;
+    void draw_triangles() const;
 
     // OpenGL buffers
     GLuint vertex_array_object_;
