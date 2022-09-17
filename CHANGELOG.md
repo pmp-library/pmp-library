@@ -10,6 +10,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Remove support for PLY format.
 - Remove support for XYZ and AGI point set formats.
 - Remove support for the non-standard PMP format.
 - Move `SurfaceMesh::read()` and `SurfaceMesh::write()` to free functions `pmp::read()` and `pmp::write()`.

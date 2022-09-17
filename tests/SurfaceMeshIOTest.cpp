@@ -88,29 +88,3 @@ TEST_F(SurfaceMeshIOTest, stl_io)
     add_quad();
     ASSERT_THROW(write(mesh, "test.stl"), InvalidInputException);
 }
-
-TEST_F(SurfaceMeshIOTest, ply_io)
-{
-    add_triangle();
-    write(mesh, "test.ply");
-    mesh.clear();
-    EXPECT_TRUE(mesh.is_empty());
-    read(mesh, "test.ply");
-    EXPECT_EQ(mesh.n_vertices(), size_t(3));
-    EXPECT_EQ(mesh.n_faces(), size_t(1));
-}
-
-TEST_F(SurfaceMeshIOTest, ply_io_binary)
-{
-    add_triangle();
-
-    IOFlags flags;
-    flags.use_binary = true;
-
-    write(mesh, "binary.ply", flags);
-    mesh.clear();
-    EXPECT_TRUE(mesh.is_empty());
-    read(mesh, "binary.ply");
-    EXPECT_EQ(mesh.n_vertices(), size_t(3));
-    EXPECT_EQ(mesh.n_faces(), size_t(1));
-}

@@ -13,8 +13,6 @@
 #include <fstream>
 #include <limits>
 
-#include <rply.h>
-
 // helper function
 template <typename T>
 void tfread(FILE* in, const T& t)
@@ -67,8 +65,6 @@ void SurfaceMeshIO::read(SurfaceMesh& mesh)
         read_obj(mesh);
     else if (ext == "stl")
         read_stl(mesh);
-    else if (ext == "ply")
-        read_ply(mesh);
     else
         throw IOException("Could not find reader for " + filename_);
 }
@@ -89,8 +85,6 @@ void SurfaceMeshIO::write(const SurfaceMesh& mesh)
         write_obj(mesh);
     else if (ext == "stl")
         write_stl(mesh);
-    else if (ext == "ply")
-        write_ply(mesh);
     else
         throw IOException("Could not find writer for " + filename_);
 }
@@ -686,115 +680,6 @@ void SurfaceMeshIO::write_off(const SurfaceMesh& mesh)
     }
 
     fclose(out);
-}
-
-// helper to assemble vertex data
-static int vertexCallback(p_ply_argument argument)
-{
-    long idx;
-    void* pdata;
-    ply_get_argument_user_data(argument, &pdata, &idx);
-
-    auto* mesh = (pmp::SurfaceMesh*)pdata;
-    auto point = mesh->get_object_property<pmp::Point>("g:point");
-    point[0][idx] = ply_get_argument_value(argument);
-
-    if (idx == 2)
-        mesh->add_vertex(point[0]);
-
-    return 1;
-}
-
-// helper to assemble face data
-static int faceCallback(p_ply_argument argument)
-{
-    long length, value_index;
-    void* pdata;
-    long idata;
-    ply_get_argument_user_data(argument, &pdata, &idata);
-    ply_get_argument_property(argument, nullptr, &length, &value_index);
-
-    auto* mesh = (pmp::SurfaceMesh*)pdata;
-    auto vertices =
-        mesh->get_object_property<std::vector<pmp::Vertex>>("g:vertices");
-
-    if (value_index == 0)
-        vertices[0].clear();
-
-    auto idx = (IndexType)ply_get_argument_value(argument);
-    vertices[0].push_back(pmp::Vertex(idx));
-
-    if (value_index == length - 1)
-        mesh->add_face(vertices[0]);
-
-    return 1;
-}
-
-void SurfaceMeshIO::read_ply(SurfaceMesh& mesh)
-{
-    // add object properties to hold temporary data
-    auto point = mesh.add_object_property<Point>("g:point");
-    auto vertices = mesh.add_object_property<std::vector<Vertex>>("g:vertices");
-
-    // open file, read header
-    p_ply ply = ply_open(filename_.c_str(), nullptr, 0, nullptr);
-
-    if (!ply)
-        throw IOException("Failed to open file: " + filename_);
-
-    if (!ply_read_header(ply))
-        throw IOException("Failed to read PLY header!");
-
-    // setup callbacks for basic properties
-    ply_set_read_cb(ply, "vertex", "x", vertexCallback, &mesh, 0);
-    ply_set_read_cb(ply, "vertex", "y", vertexCallback, &mesh, 1);
-    ply_set_read_cb(ply, "vertex", "z", vertexCallback, &mesh, 2);
-
-    ply_set_read_cb(ply, "face", "vertex_indices", faceCallback, &mesh, 0);
-
-    // read the data
-    if (!ply_read(ply))
-        throw IOException("Failed to read PLY data!");
-
-    ply_close(ply);
-
-    // clean-up properties
-    mesh.remove_object_property(point);
-    mesh.remove_object_property(vertices);
-}
-
-void SurfaceMeshIO::write_ply(const SurfaceMesh& mesh)
-{
-    e_ply_storage_mode mode = flags_.use_binary ? PLY_LITTLE_ENDIAN : PLY_ASCII;
-    p_ply ply = ply_create(filename_.c_str(), mode, nullptr, 0, nullptr);
-
-    ply_add_comment(ply, "File written with pmp-library");
-    ply_add_element(ply, "vertex", mesh.n_vertices());
-    ply_add_scalar_property(ply, "x", PLY_FLOAT);
-    ply_add_scalar_property(ply, "y", PLY_FLOAT);
-    ply_add_scalar_property(ply, "z", PLY_FLOAT);
-    ply_add_element(ply, "face", mesh.n_faces());
-    ply_add_property(ply, "vertex_indices", PLY_LIST, PLY_UCHAR, PLY_INT);
-    ply_write_header(ply);
-
-    // write vertices
-    auto points = mesh.get_vertex_property<Point>("v:point");
-    for (auto v : mesh.vertices())
-    {
-        ply_write(ply, points[v][0]);
-        ply_write(ply, points[v][1]);
-        ply_write(ply, points[v][2]);
-    }
-
-    // write faces
-    for (auto f : mesh.faces())
-    {
-        ply_write(ply, mesh.valence(f));
-        for (auto fv : mesh.vertices(f))
-            ply_write(ply, fv.idx());
-    }
-
-    ply_close(ply);
 }
 
 // helper class for STL reader
