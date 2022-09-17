@@ -22,8 +22,6 @@ namespace pmp {
 //! OBJ    | yes   | no     | a       | no     | no
 //! STL    | yes   | yes    | no      | no     | no
 //! PLY    | yes   | yes    | no      | no     | no
-//! XYZ    | yes   | no     | a       | no     | no
-//! AGI    | yes   | no     | a       | a      | no
 //!
 //! In addition, the OBJ supports reading per-halfedge
 //! texture coordinates.
@@ -40,7 +38,6 @@ void read(SurfaceMesh& mesh, const std::string& filename,
 //! OBJ    | yes   | no     | a       | no     | no
 //! STL    | yes   | no     | no      | no     | no
 //! PLY    | yes   | yes    | no      | no     | no
-//! XYZ    | yes   | no     | a       | no     | no
 //!
 //! In addition, the OBJ format supports writing per-halfedge
 //! texture coordinates.
@@ -64,15 +61,12 @@ private:
     void read_obj(SurfaceMesh& mesh);
     void read_stl(SurfaceMesh& mesh);
     void read_ply(SurfaceMesh& mesh);
-    void read_xyz(SurfaceMesh& mesh);
-    void read_agi(SurfaceMesh& mesh);
 
     void write_off(const SurfaceMesh& mesh);
     void write_off_binary(const SurfaceMesh& mesh);
     void write_obj(const SurfaceMesh& mesh);
     void write_stl(const SurfaceMesh& mesh);
     void write_ply(const SurfaceMesh& mesh);
-    void write_xyz(const SurfaceMesh& mesh);
 
     std::string filename_;
     IOFlags flags_;

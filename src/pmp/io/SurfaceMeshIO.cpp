@@ -69,10 +69,6 @@ void SurfaceMeshIO::read(SurfaceMesh& mesh)
         read_stl(mesh);
     else if (ext == "ply")
         read_ply(mesh);
-    else if (ext == "xyz")
-        read_xyz(mesh);
-    else if (ext == "agi")
-        read_agi(mesh);
     else
         throw IOException("Could not find reader for " + filename_);
 }
@@ -95,8 +91,6 @@ void SurfaceMeshIO::write(const SurfaceMesh& mesh)
         write_stl(mesh);
     else if (ext == "ply")
         write_ply(mesh);
-    else if (ext == "xyz")
-        write_xyz(mesh);
     else
         throw IOException("Could not find writer for " + filename_);
 }
@@ -694,75 +688,6 @@ void SurfaceMeshIO::write_off(const SurfaceMesh& mesh)
     fclose(out);
 }
 
-void SurfaceMeshIO::read_xyz(SurfaceMesh& mesh)
-{
-    // open file (in ASCII mode)
-    FILE* in = fopen(filename_.c_str(), "r");
-    if (!in)
-        throw IOException("Failed to open file: " + filename_);
-
-    // add normal property
-    // \todo this adds property even if no normals present. change it.
-    auto vnormal = mesh.vertex_property<Normal>("v:normal");
-
-    std::array<char, 200> line;
-    float x, y, z;
-    float nx, ny, nz;
-    int n;
-    Vertex v;
-
-    // read data
-    while (in && !feof(in) && fgets(line.data(), 200, in))
-    {
-        n = sscanf(line.data(), "%f %f %f %f %f %f", &x, &y, &z, &nx, &ny, &nz);
-        if (n >= 3)
-        {
-            v = mesh.add_vertex(Point(x, y, z));
-            if (n >= 6)
-            {
-                vnormal[v] = Normal(nx, ny, nz);
-            }
-        }
-    }
-
-    fclose(in);
-}
-
-// \todo remove duplication with read_xyz
-void SurfaceMeshIO::read_agi(SurfaceMesh& mesh)
-{
-    // open file (in ASCII mode)
-    FILE* in = fopen(filename_.c_str(), "r");
-    if (!in)
-        throw IOException("Failed to open file: " + filename_);
-
-    // add normal property
-    auto normal = mesh.vertex_property<Normal>("v:normal");
-    auto color = mesh.vertex_property<Color>("v:color");
-
-    std::array<char, 200> line;
-    float x, y, z;
-    float nx, ny, nz;
-    float r, g, b;
-    int n;
-    Vertex v;
-
-    // read data
-    while (in && !feof(in) && fgets(line.data(), 200, in))
-    {
-        n = sscanf(line.data(), "%f %f %f %f %f %f %f %f %f", &x, &y, &z, &r,
-                   &g, &b, &nx, &ny, &nz);
-        if (n == 9)
-        {
-            v = mesh.add_vertex(Point(x, y, z));
-            normal[v] = Normal(nx, ny, nz);
-            color[v] = Color(r / 255.0, g / 255.0, b / 255.0);
-        }
-    }
-
-    fclose(in);
-}
-
 // helper to assemble vertex data
 static int vertexCallback(p_ply_argument argument)
 {
@@ -1068,27 +993,6 @@ void SurfaceMeshIO::write_stl(const SurfaceMesh& mesh)
         ofs << "  endfacet" << std::endl;
     }
     ofs << "endsolid" << std::endl;
-    ofs.close();
-}
-
-void SurfaceMeshIO::write_xyz(const SurfaceMesh& mesh)
-{
-    std::ofstream ofs(filename_);
-    if (!ofs)
-        throw IOException("Failed to open file: " + filename_);
-
-    auto vnormal = mesh.get_vertex_property<Normal>("v:normal");
-    for (auto v : mesh.vertices())
-    {
-        ofs << mesh.position(v);
-        ofs << " ";
-        if (vnormal)
-        {
-            ofs << vnormal[v];
-        }
-        ofs << std::endl;
-    }
-
     ofs.close();
 }
 

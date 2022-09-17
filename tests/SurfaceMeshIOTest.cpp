@@ -114,28 +114,3 @@ TEST_F(SurfaceMeshIOTest, ply_io_binary)
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
-
-TEST_F(SurfaceMeshIOTest, xyz_io)
-{
-    add_triangle();
-    write(mesh, "test.xyz");
-    mesh.clear();
-    EXPECT_TRUE(mesh.is_empty());
-    read(mesh, "test.xyz");
-    EXPECT_EQ(mesh.n_vertices(), size_t(3));
-}
-
-TEST_F(SurfaceMeshIOTest, agi_io)
-{
-    // generate example data
-    std::ofstream ofs("test.agi");
-    ofs << "0 0 0 0 0 0 0 0 0" << std::endl;
-    ofs << "1 0 0 1 0 0 1 0 0" << std::endl;
-    ofs << "1 1 0 1 1 0 1 1 0" << std::endl;
-    ofs << "1 1 1 1 1 1 1 1 1" << std::endl;
-    ofs.close();
-    read(mesh, "test.agi");
-    EXPECT_EQ(mesh.n_vertices(), 4u);
-    EXPECT_TRUE(mesh.has_vertex_property("v:color"));
-    EXPECT_TRUE(mesh.has_vertex_property("v:normal"));
-}
