@@ -25,7 +25,7 @@ namespace pmp {
 //! XYZ    | yes   | no     | a       | no     | no
 //! AGI    | yes   | no     | a       | a      | no
 //!
-//! In addition, the OBJ and PMP formats support reading per-halfedge
+//! In addition, the OBJ supports reading per-halfedge
 //! texture coordinates.
 void read(SurfaceMesh& mesh, const std::string& filename,
           const IOFlags& flags = IOFlags());
@@ -42,7 +42,7 @@ void read(SurfaceMesh& mesh, const std::string& filename,
 //! PLY    | yes   | yes    | no      | no     | no
 //! XYZ    | yes   | no     | a       | no     | no
 //!
-//! In addition, the OBJ and PMP formats support writing per-halfedge
+//! In addition, the OBJ format supports writing per-halfedge
 //! texture coordinates.
 void write(const SurfaceMesh& mesh, const std::string& filename,
            const IOFlags& flags = IOFlags());
