@@ -10,6 +10,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Remove `get_*_property_type()` functions from `SurfaceMesh`
 - Move example apps from `src/apps` to `examples`. Remove `PMP_BUILD_APPS` CMake option.
 - Rename `Simplification` to `Decimation`
 - Rename `Factory` to `Shapes`
