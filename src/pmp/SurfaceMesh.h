@@ -1399,14 +1399,6 @@ public:
         oprops_.remove(p);
     }
 
-    //! get the type_info \p T of object property named \p name. returns an
-    //! typeid(void) if the property does not exist or if the type does not
-    //! match.
-    const std::type_info& get_object_property_type(const std::string& name)
-    {
-        return oprops_.get_type(name);
-    }
-
     //! \return the names of all object properties
     std::vector<std::string> object_properties() const
     {
@@ -1539,30 +1531,6 @@ public:
         return eprops_.exists(name);
     }
 
-    //! get the type_info \p T of halfedge property named \p name. returns an
-    //! typeid(void) if the property does not exist or if the type does not
-    //! match.
-    const std::type_info& get_halfedge_property_type(const std::string& name)
-    {
-        return hprops_.get_type(name);
-    }
-
-    //! get the type_info \p T of vertex property named \p name. returns an
-    //! typeid(void) if the property does not exist or if the type does not
-    //! match.
-    const std::type_info& get_vertex_property_type(const std::string& name)
-    {
-        return vprops_.get_type(name);
-    }
-
-    //! get the type_info \p T of edge property named \p name. returns an
-    //! typeid(void) if the property does not exist or if the type does not
-    //! match.
-    const std::type_info& get_edge_property_type(const std::string& name)
-    {
-        return eprops_.get_type(name);
-    }
-
     //! \return the names of all vertex properties
     std::vector<std::string> vertex_properties() const
     {
@@ -1618,14 +1586,6 @@ public:
     bool has_face_property(const std::string& name) const
     {
         return fprops_.exists(name);
-    }
-
-    //! get the type_info \p T of face property named \p name . returns an
-    //! typeid(void) if the property does not exist or if the type does not
-    //! match.
-    const std::type_info& get_face_property_type(const std::string& name)
-    {
-        return fprops_.get_type(name);
     }
 
     //! \return the names of all face properties

@@ -4,14 +4,12 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cassert>
-
+#include <iostream>
 #include <string>
 #include <utility>
 #include <vector>
-#include <algorithm>
-#include <typeinfo>
-#include <iostream>
 
 namespace pmp {
 
@@ -41,9 +39,6 @@ public:
 
     //! Return a deep copy of self.
     virtual BasePropertyArray* clone() const = 0;
-
-    //! Return the type_info of the property
-    virtual const std::type_info& type() = 0;
 
     //! Return the name of the property
     const std::string& name() const { return name_; }
@@ -87,8 +82,6 @@ public:
         p->data_ = data_;
         return p;
     }
-
-    const std::type_info& type() override { return typeid(T); }
 
     //! Get pointer to array (does not work for T==bool)
     const T* data() const { return &data_[0]; }
@@ -270,15 +263,6 @@ public:
         if (!p)
             p = add<T>(name, t);
         return p;
-    }
-
-    // get the type of property by its name. returns typeid(void) if it does not exist.
-    const std::type_info& get_type(const std::string& name)
-    {
-        for (auto& parray : parrays_)
-            if (parray->name() == name)
-                return parray->type();
-        return typeid(void);
     }
 
     // delete a property
