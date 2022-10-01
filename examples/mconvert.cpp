@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/SurfaceMesh.h>
-#include <pmp/io/SurfaceMeshIO.h>
+#include <pmp/io/io.h>
 
 #include <unistd.h>
 

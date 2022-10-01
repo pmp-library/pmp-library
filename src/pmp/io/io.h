@@ -1,18 +1,16 @@
-// Copyright 2011-2021 the Polygon Mesh Processing Library developers.
-// Copyright 2001-2005 by Computer Graphics Group, RWTH Aachen
+// Copyright 2011-2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
 #include <string>
-#include <utility>
 
 #include "pmp/Types.h"
 #include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
-//! \brief Read into \p mesh from file \p filename controlled by \p flags
+//! \brief Read into \p mesh from file \p filename
 //! \details File extension determines file type. Supported formats and
 //! vertex attributes (a=ASCII, b=binary):
 //!
@@ -24,8 +22,7 @@ namespace pmp {
 //!
 //! In addition, the OBJ supports reading per-halfedge
 //! texture coordinates.
-void read(SurfaceMesh& mesh, const std::string& filename,
-          const IOFlags& flags = IOFlags());
+void read(SurfaceMesh& mesh, const std::string& filename);
 
 //! \brief Write \p mesh to file \p filename controlled by \p flags
 //! \details File extension determines file type. Supported formats and
@@ -41,22 +38,5 @@ void read(SurfaceMesh& mesh, const std::string& filename,
 //! texture coordinates.
 void write(const SurfaceMesh& mesh, const std::string& filename,
            const IOFlags& flags = IOFlags());
-
-class SurfaceMeshIO
-{
-public:
-    SurfaceMeshIO(std::string filename, IOFlags flags)
-        : filename_(std::move(filename)), flags_(std::move(flags))
-    {
-    }
-
-    void read(SurfaceMesh& mesh);
-
-    void write(const SurfaceMesh& mesh);
-
-private:
-    std::string filename_;
-    IOFlags flags_;
-};
 
 } // namespace pmp

@@ -5,7 +5,7 @@
 
 #include <pmp/algorithms/Geodesics.h>
 #include <pmp/algorithms/Shapes.h>
-#include <pmp/io/SurfaceMeshIO.h>
+#include <pmp/io/io.h>
 
 using namespace pmp;
 

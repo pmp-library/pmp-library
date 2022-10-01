@@ -9,7 +9,7 @@
 
 #include <imgui.h>
 
-#include "pmp/io/SurfaceMeshIO.h"
+#include "pmp/io/io.h"
 
 namespace pmp {
 

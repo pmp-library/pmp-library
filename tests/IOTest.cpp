@@ -4,18 +4,18 @@
 #include "SurfaceMeshTest.h"
 
 #include <pmp/algorithms/Normals.h>
-#include <pmp/io/SurfaceMeshIO.h>
+#include <pmp/io/io.h>
 
 #include <vector>
 #include <fstream>
 
 using namespace pmp;
 
-class SurfaceMeshIOTest : public SurfaceMeshTest
+class IOTest : public SurfaceMeshTest
 {
 };
 
-TEST_F(SurfaceMeshIOTest, obj_io)
+TEST_F(IOTest, obj_io)
 {
     add_triangle();
     Normals::compute_vertex_normals(mesh);
@@ -28,7 +28,7 @@ TEST_F(SurfaceMeshIOTest, obj_io)
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
 
-TEST_F(SurfaceMeshIOTest, off_io)
+TEST_F(IOTest, off_io)
 {
     add_triangle();
     Normals::compute_vertex_normals(mesh);
@@ -49,7 +49,7 @@ TEST_F(SurfaceMeshIOTest, off_io)
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
 
-TEST_F(SurfaceMeshIOTest, off_io_binary)
+TEST_F(IOTest, off_io_binary)
 {
     add_triangle();
 
@@ -64,7 +64,7 @@ TEST_F(SurfaceMeshIOTest, off_io_binary)
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
 
-TEST_F(SurfaceMeshIOTest, stl_io)
+TEST_F(IOTest, stl_io)
 {
     read(mesh, "pmp-data/stl/icosahedron_ascii.stl");
     EXPECT_EQ(mesh.n_vertices(), size_t(12));
