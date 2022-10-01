@@ -58,8 +58,6 @@ private:
     void read_obj(SurfaceMesh& mesh);
     void read_stl(SurfaceMesh& mesh);
 
-    void write_off(const SurfaceMesh& mesh);
-    void write_off_binary(const SurfaceMesh& mesh);
     void write_obj(const SurfaceMesh& mesh);
     void write_stl(const SurfaceMesh& mesh);
 
