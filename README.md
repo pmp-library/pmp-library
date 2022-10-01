@@ -39,9 +39,9 @@ Build your own tool:
 int main(void)
 {
     pmp::SurfaceMesh mesh;
-    mesh.read("input.obj");
+    pmp::read(mesh,"input.obj");
     // .. do awesome things with your mesh
-    mesh.write("output.obj");
+    pmp::write(mesh,"output.obj");
 }
 ```
 
