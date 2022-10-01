@@ -10,8 +10,6 @@
 #include "pmp/io/write_off.h"
 #include "pmp/io/write_stl.h"
 
-#include <clocale>
-
 namespace pmp {
 
 void read(SurfaceMesh& mesh, const std::string& filename)
