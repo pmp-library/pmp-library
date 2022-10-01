@@ -55,7 +55,6 @@ public:
     void write(const SurfaceMesh& mesh);
 
 private:
-    void read_obj(SurfaceMesh& mesh);
     void read_stl(SurfaceMesh& mesh);
 
     void write_obj(const SurfaceMesh& mesh);
