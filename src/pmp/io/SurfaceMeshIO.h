@@ -55,8 +55,6 @@ public:
     void write(const SurfaceMesh& mesh);
 
 private:
-    void write_stl(const SurfaceMesh& mesh);
-
     std::string filename_;
     IOFlags flags_;
 };
