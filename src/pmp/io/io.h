@@ -22,6 +22,7 @@ namespace pmp {
 //!
 //! In addition, the OBJ supports reading per-halfedge
 //! texture coordinates.
+//! \ingroup io
 void read(SurfaceMesh& mesh, const std::string& filename);
 
 //! \brief Write \p mesh to file \p filename controlled by \p flags
@@ -36,6 +37,7 @@ void read(SurfaceMesh& mesh, const std::string& filename);
 //!
 //! In addition, the OBJ format supports writing per-halfedge
 //! texture coordinates.
+//! \ingroup io
 void write(const SurfaceMesh& mesh, const std::string& filename,
            const IOFlags& flags = IOFlags());
 
