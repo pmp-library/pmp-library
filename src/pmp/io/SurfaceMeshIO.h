@@ -55,8 +55,6 @@ public:
     void write(const SurfaceMesh& mesh);
 
 private:
-    void read_stl(SurfaceMesh& mesh);
-
     void write_stl(const SurfaceMesh& mesh);
 
     std::string filename_;
