@@ -1,12 +1,14 @@
 // Copyright 2011-2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "read_off.h"
+#include "pmp/io/read_off.h"
 
 #include <fstream>
 #include <utility>
+
 #include "pmp/Exceptions.h"
 #include "pmp/Types.h"
+#include "pmp/io/helpers.h"
 
 namespace pmp {
 
@@ -14,14 +16,6 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                     const bool has_texcoords, const bool has_colors);
 void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                      const bool has_texcoords, const bool has_colors);
-
-// helper function
-template <typename T>
-void tfread(FILE* in, const T& t)
-{
-    size_t n_items = fread((char*)&t, 1, sizeof(t), in);
-    PMP_ASSERT(n_items > 0);
-}
 
 void read_off(SurfaceMesh& mesh, const std::string& filename)
 {

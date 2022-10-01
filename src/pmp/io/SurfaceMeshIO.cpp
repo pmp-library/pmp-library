@@ -5,6 +5,7 @@
 #include "pmp/io/SurfaceMeshIO.h"
 
 #include "pmp/io/read_off.h"
+#include "pmp/io/helpers.h"
 
 #include <clocale>
 #include <cstring>
@@ -14,22 +15,6 @@
 #include <map>
 #include <fstream>
 #include <limits>
-
-// helper function
-template <typename T>
-void tfread(FILE* in, const T& t)
-{
-    size_t n_items = fread((char*)&t, 1, sizeof(t), in);
-    PMP_ASSERT(n_items > 0);
-}
-
-// helper function
-template <typename T>
-void tfwrite(FILE* out, const T& t)
-{
-    size_t n_items = fwrite((char*)&t, 1, sizeof(t), out);
-    PMP_ASSERT(n_items > 0);
-}
 
 namespace pmp {
 
