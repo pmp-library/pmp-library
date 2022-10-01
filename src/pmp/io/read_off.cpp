@@ -3,12 +3,8 @@
 
 #include "pmp/io/read_off.h"
 
-#include <fstream>
-#include <utility>
-
-#include "pmp/Exceptions.h"
-#include "pmp/Types.h"
 #include "pmp/io/helpers.h"
+#include "pmp/Exceptions.h"
 
 namespace pmp {
 
