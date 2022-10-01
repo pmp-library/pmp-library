@@ -4,10 +4,11 @@
 
 #include "pmp/io/SurfaceMeshIO.h"
 
-#include "pmp/io/read_off.h"
-#include "pmp/io/write_off.h"
-#include "pmp/io/read_obj.h"
 #include "pmp/io/helpers.h"
+#include "pmp/io/read_obj.h"
+#include "pmp/io/read_off.h"
+#include "pmp/io/write_obj.h"
+#include "pmp/io/write_off.h"
 
 #include <clocale>
 #include <cstring>
@@ -71,77 +72,11 @@ void SurfaceMeshIO::write(const SurfaceMesh& mesh)
     if (ext == "off")
         write_off(mesh, filename_, flags_);
     else if (ext == "obj")
-        write_obj(mesh);
+        write_obj(mesh, filename_, flags_);
     else if (ext == "stl")
         write_stl(mesh);
     else
         throw IOException("Could not find writer for " + filename_);
-}
-
-void SurfaceMeshIO::write_obj(const SurfaceMesh& mesh)
-{
-    FILE* out = fopen(filename_.c_str(), "w");
-    if (!out)
-        throw IOException("Failed to open file: " + filename_);
-
-    // comment
-    fprintf(out, "# OBJ export from PMP\n");
-
-    // write vertices
-    auto points = mesh.get_vertex_property<Point>("v:point");
-    for (auto v : mesh.vertices())
-    {
-        const Point& p = points[v];
-        fprintf(out, "v %.10f %.10f %.10f\n", p[0], p[1], p[2]);
-    }
-
-    // write normals
-    auto normals = mesh.get_vertex_property<Normal>("v:normal");
-    if (normals)
-    {
-        for (auto v : mesh.vertices())
-        {
-            const Normal& n = normals[v];
-            fprintf(out, "vn %.10f %.10f %.10f\n", n[0], n[1], n[2]);
-        }
-    }
-
-    // write texture coordinates
-    auto tex_coords = mesh.get_halfedge_property<TexCoord>("h:tex");
-    if (tex_coords)
-    {
-        for (auto h : mesh.halfedges())
-        {
-            const TexCoord& pt = tex_coords[h];
-            fprintf(out, "vt %.10f %.10f\n", pt[0], pt[1]);
-        }
-    }
-
-    // write faces
-    for (auto f : mesh.faces())
-    {
-        fprintf(out, "f");
-
-        auto h = mesh.halfedges(f);
-        for (auto v : mesh.vertices(f))
-        {
-            auto idx = v.idx() + 1;
-            if (tex_coords)
-            {
-                // write vertex index, texCoord index and normal index
-                fprintf(out, " %d/%d/%d", idx, (*h).idx() + 1, idx);
-                ++h;
-            }
-            else
-            {
-                // write vertex index and normal index
-                fprintf(out, " %d//%d", idx, idx);
-            }
-        }
-        fprintf(out, "\n");
-    }
-
-    fclose(out);
 }
 
 // helper class for STL reader
