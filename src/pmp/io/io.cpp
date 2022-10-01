@@ -16,8 +16,6 @@ namespace pmp {
 
 void read(SurfaceMesh& mesh, const std::string& filename)
 {
-    std::setlocale(LC_NUMERIC, "C");
-
     // clear mesh before reading from file
     mesh.clear();
 
