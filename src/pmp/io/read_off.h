@@ -5,7 +5,6 @@
 
 #include <string>
 
-#include "pmp/Types.h"
 #include "pmp/SurfaceMesh.h"
 
 namespace pmp {
