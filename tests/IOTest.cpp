@@ -6,9 +6,6 @@
 #include <pmp/algorithms/Normals.h>
 #include <pmp/io/io.h>
 
-#include <vector>
-#include <fstream>
-
 using namespace pmp;
 
 class IOTest : public SurfaceMeshTest
