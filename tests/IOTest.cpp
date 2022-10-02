@@ -61,6 +61,20 @@ TEST_F(IOTest, off_io_binary)
     EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
 
+TEST_F(IOTest, pmp_io)
+{
+    add_triangle();
+    write(mesh, "test.pmp");
+    mesh.clear();
+    EXPECT_TRUE(mesh.is_empty());
+    read(mesh, "test.pmp");
+    EXPECT_EQ(mesh.n_vertices(), size_t(3));
+    EXPECT_EQ(mesh.n_faces(), size_t(1));
+
+    // check malformed file names
+    EXPECT_THROW(write(mesh, "testpolyly"), IOException);
+}
+
 TEST_F(IOTest, stl_io)
 {
     read(mesh, "pmp-data/stl/icosahedron_ascii.stl");

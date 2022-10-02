@@ -2022,6 +2022,11 @@ private:
     // are there any deleted entities?
     inline bool has_garbage() const { return has_garbage_; }
 
+    // io functions that need access to internal details
+    friend void read_pmp(SurfaceMesh&, const std::string&);
+    friend void write_pmp(const SurfaceMesh&, const std::string&,
+                          const IOFlags&);
+
     // property containers for each entity type and object
     PropertyContainer oprops_;
     PropertyContainer vprops_;

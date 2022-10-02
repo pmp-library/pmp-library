@@ -5,9 +5,11 @@
 
 #include "pmp/io/read_obj.h"
 #include "pmp/io/read_off.h"
+#include "pmp/io/read_pmp.h"
 #include "pmp/io/read_stl.h"
 #include "pmp/io/write_obj.h"
 #include "pmp/io/write_off.h"
+#include "pmp/io/write_pmp.h"
 #include "pmp/io/write_stl.h"
 
 namespace pmp {
@@ -25,10 +27,12 @@ void read(SurfaceMesh& mesh, const std::string& filename)
     std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
 
     // extension determines reader
-    if (ext == "off")
-        read_off(mesh, filename);
-    else if (ext == "obj")
+    if (ext == "obj")
         read_obj(mesh, filename);
+    else if (ext == "off")
+        read_off(mesh, filename);
+    else if (ext == "pmp")
+        read_pmp(mesh, filename);
     else if (ext == "stl")
         read_stl(mesh, filename);
     else
@@ -46,10 +50,12 @@ void write(const SurfaceMesh& mesh, const std::string& filename,
     std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
 
     // extension determines reader
-    if (ext == "off")
-        write_off(mesh, filename, flags);
-    else if (ext == "obj")
+    if (ext == "obj")
         write_obj(mesh, filename, flags);
+    else if (ext == "off")
+        write_off(mesh, filename, flags);
+    else if (ext == "pmp")
+        write_pmp(mesh, filename, flags);
     else if (ext == "stl")
         write_stl(mesh, filename, flags);
     else

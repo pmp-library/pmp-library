@@ -16,11 +16,12 @@ namespace pmp {
 //!
 //! Format | ASCII | Binary | Normals | Colors | Texcoords
 //! -------|-------|--------|---------|--------|----------
-//! OFF    | yes   | yes    | a / b   | a      | a / b
 //! OBJ    | yes   | no     | a       | no     | no
+//! OFF    | yes   | yes    | a / b   | a      | a / b
+//! PMP    | no    | yes    | no      | no     | no
 //! STL    | yes   | yes    | no      | no     | no
 //!
-//! In addition, the OBJ supports reading per-halfedge
+//! In addition, the OBJ and PMP formats support reading per-halfedge
 //! texture coordinates.
 //! \ingroup io
 void read(SurfaceMesh& mesh, const std::string& filename);
@@ -31,11 +32,12 @@ void read(SurfaceMesh& mesh, const std::string& filename);
 //!
 //! Format | ASCII | Binary | Normals | Colors | Texcoords
 //! -------|-------|--------|---------|--------|----------
-//! OFF    | yes   | yes    | a       | a      | a
 //! OBJ    | yes   | no     | a       | no     | no
+//! OFF    | yes   | yes    | a       | a      | a
+//! PMP    | no    | yes    | no      | no     | no
 //! STL    | yes   | no     | no      | no     | no
 //!
-//! In addition, the OBJ format supports writing per-halfedge
+//! In addition, the OBJ and PMP formats support writing per-halfedge
 //! texture coordinates.
 //! \ingroup io
 void write(const SurfaceMesh& mesh, const std::string& filename,
