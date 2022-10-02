@@ -16,13 +16,6 @@ void write_pmp(const SurfaceMesh& mesh, const std::string& filename,
         throw IOException("Failed to open file: " + filename);
 
     // get properties
-    auto vconn = mesh.get_vertex_property<SurfaceMesh::VertexConnectivity>(
-        "v:connectivity");
-    auto hconn = mesh.get_halfedge_property<SurfaceMesh::HalfedgeConnectivity>(
-        "h:connectivity");
-    auto fconn =
-        mesh.get_face_property<SurfaceMesh::FaceConnectivity>("f:connectivity");
-    auto point = mesh.get_vertex_property<Point>("v:point");
     auto htex = mesh.get_halfedge_property<TexCoord>("h:tex");
 
     // how many elements?
@@ -39,12 +32,12 @@ void write_pmp(const SurfaceMesh& mesh, const std::string& filename,
     tfwrite(out, (bool)htex);
 
     // write properties to file
-    fwrite((char*)vconn.data(), sizeof(SurfaceMesh::VertexConnectivity), nv,
-           out);
-    fwrite((char*)hconn.data(), sizeof(SurfaceMesh::HalfedgeConnectivity), nh,
-           out);
-    fwrite((char*)fconn.data(), sizeof(SurfaceMesh::FaceConnectivity), nf, out);
-    fwrite((char*)point.data(), sizeof(Point), nv, out);
+    // clang-format off
+    fwrite((char*)mesh.vconn_.data(), sizeof(SurfaceMesh::VertexConnectivity), nv, out);
+    fwrite((char*)mesh.hconn_.data(), sizeof(SurfaceMesh::HalfedgeConnectivity), nh, out);
+    fwrite((char*)mesh.fconn_.data(), sizeof(SurfaceMesh::FaceConnectivity), nf, out);
+    fwrite((char*)mesh.vpoint_.data(), sizeof(Point), nv, out);
+    // clang-format on
 
     // texture coordinates
     if (htex)

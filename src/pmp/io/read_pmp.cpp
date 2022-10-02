@@ -31,23 +31,14 @@ void read_pmp(SurfaceMesh& mesh, const std::string& filename)
     mesh.eprops_.resize(ne);
     mesh.fprops_.resize(nf);
 
-    // get properties
-    auto vconn =
-        mesh.vertex_property<SurfaceMesh::VertexConnectivity>("v:connectivity");
-    auto hconn = mesh.halfedge_property<SurfaceMesh::HalfedgeConnectivity>(
-        "h:connectivity");
-    auto fconn =
-        mesh.face_property<SurfaceMesh::FaceConnectivity>("f:connectivity");
-    auto point = mesh.vertex_property<Point>("v:point");
-
     // read properties from file
-    size_t nvc = fread((char*)vconn.data(),
-                       sizeof(SurfaceMesh::VertexConnectivity), nv, in);
-    size_t nhc = fread((char*)hconn.data(),
-                       sizeof(SurfaceMesh::HalfedgeConnectivity), nh, in);
-    size_t nfc = fread((char*)fconn.data(),
-                       sizeof(SurfaceMesh::FaceConnectivity), nf, in);
-    size_t np = fread((char*)point.data(), sizeof(Point), nv, in);
+    // clang-format off
+    size_t nvc = fread((char*)mesh.vconn_.data(), sizeof(SurfaceMesh::VertexConnectivity), nv, in);
+    size_t nhc = fread((char*)mesh.hconn_.data(), sizeof(SurfaceMesh::HalfedgeConnectivity), nh, in);
+    size_t nfc = fread((char*)mesh.fconn_.data(), sizeof(SurfaceMesh::FaceConnectivity), nf, in);
+    size_t np = fread((char*)mesh.vpoint_.data(), sizeof(Point), nv, in);
+    // clang-format on
+
     PMP_ASSERT(nvc == nv);
     PMP_ASSERT(nhc == nh);
     PMP_ASSERT(nfc == nf);
