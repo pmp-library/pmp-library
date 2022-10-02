@@ -15,14 +15,16 @@ void read_pmp(SurfaceMesh& mesh, const std::string& filename)
         throw IOException("Failed to open file: " + filename);
 
     // how many elements?
-    unsigned int nv(0), ne(0), nh(0), nf(0);
+    size_t nv{0};
+    size_t ne{0};
+    size_t nf{0};
     tfread(in, nv);
     tfread(in, ne);
     tfread(in, nf);
-    nh = 2 * ne;
+    auto nh = 2 * ne;
 
     // texture coordinates?
-    bool has_htex(false);
+    bool has_htex{false};
     tfread(in, has_htex);
 
     // resize containers

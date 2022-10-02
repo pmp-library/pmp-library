@@ -19,11 +19,10 @@ void write_pmp(const SurfaceMesh& mesh, const std::string& filename,
     auto htex = mesh.get_halfedge_property<TexCoord>("h:tex");
 
     // how many elements?
-    unsigned int nv, ne, nh, nf;
-    nv = mesh.n_vertices();
-    ne = mesh.n_edges();
-    nh = mesh.n_halfedges();
-    nf = mesh.n_faces();
+    auto nv = mesh.n_vertices();
+    auto ne = mesh.n_edges();
+    auto nh = mesh.n_halfedges();
+    auto nf = mesh.n_faces();
 
     // write header
     tfwrite(out, nv);
