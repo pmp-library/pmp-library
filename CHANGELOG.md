@@ -10,9 +10,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
-- Remove support for PLY format.
+- Remove support for PLY format, see 1ec912b for why.
 - Remove support for XYZ and AGI point set formats.
-- Remove support for the non-standard PMP format.
 - Move `SurfaceMesh::read()` and `SurfaceMesh::write()` to free functions `pmp::read()` and `pmp::write()`.
 - Move IO functionality into its own module
 - Move example apps from `src/apps` to `examples`. Remove `PMP_BUILD_APPS` CMake option.
