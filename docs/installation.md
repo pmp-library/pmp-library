@@ -7,14 +7,14 @@ pmp-library in detail.
 
 The pmp-library uses [CMake](http://www.cmake.org) as its build configuration
 system. Version 3.16.3 or greater is required. The pmp-library requires a
-C++14-compliant compiler. We continuously build and test the pmp-library
+C++17-compliant compiler. We continuously build and test the pmp-library
 with the following compilers and operating systems:
 
 | Operating System | Compiler           |
 | ---------------- | ------------------ |
-| Linux            | gcc 9.3.0          |
-| macOS            | AppleClang 12.0.0  |
-| Windows          | Visual Studio 2019 |
+| Linux            | gcc 9.4.0          |
+| macOS            | AppleClang 13.0.0  |
+| Windows          | Visual Studio 2022 |
 
 ## Dependencies
 
@@ -26,7 +26,7 @@ Some parts of the pmp-library depend on the following third-party libraries:
 | [OpenGL](http://opengl.org)                         | Open Graphics Library             | &ge; 3.3    |
 | [GLEW](http://glew.sourceforge.net)                 | OpenGL Extension Wrangler Library | &ge; 2.1.0  |
 | [GLFW](http://glfw.org)                             | Graphics Library Framework        | &ge; 3.3.8  |
-| [ImGui](https://github.com/ocornut/imgui)           | Immediate Mode GUI                | &ge; 1.70   |
+| [ImGui](https://github.com/ocornut/imgui)           | Immediate Mode GUI                | &ge; 1.88   |
 | [Google Test](https://github.com/google/googletest) | C++ Test Framework                | &ge; 1.12.1 |
 
 By default, we include the corresponding libraries using git submodules. Note
