@@ -41,8 +41,7 @@ void read_stl(SurfaceMesh& mesh, const std::string& filename)
     size_t n_items(0);
 
     CompareVec3 comp;
-    std::map<vec3, Vertex, CompareVec3> vMap(comp);
-    std::map<vec3, Vertex, CompareVec3>::iterator vMapIt;
+    std::map<vec3, Vertex, CompareVec3> vertex_map(comp);
 
     // open file (in ASCII mode)
     FILE* in = fopen(filename.c_str(), "r");
@@ -83,17 +82,18 @@ void read_stl(SurfaceMesh& mesh, const std::string& filename)
                 tfread(in, p);
 
                 // has vector been referenced before?
-                if ((vMapIt = vMap.find(p)) == vMap.end())
+                auto it = vertex_map.find(p);
+                if (it == vertex_map.end())
                 {
                     // No : add vertex and remember idx/vector mapping
                     v = mesh.add_vertex((Point)p);
                     vertices[i] = v;
-                    vMap[p] = v;
+                    vertex_map[p] = v;
                 }
                 else
                 {
                     // Yes : get index from map
-                    vertices[i] = vMapIt->second;
+                    vertices[i] = it->second;
                 }
             }
 
@@ -138,17 +138,18 @@ void read_stl(SurfaceMesh& mesh, const std::string& filename)
                     sscanf(c + 6, "%f %f %f", &p[0], &p[1], &p[2]);
 
                     // has vector been referenced before?
-                    if ((vMapIt = vMap.find(p)) == vMap.end())
+                    auto it = vertex_map.find(p);
+                    if (it == vertex_map.end())
                     {
                         // No : add vertex and remember idx/vector mapping
                         v = mesh.add_vertex((Point)p);
                         vertices[i] = v;
-                        vMap[p] = v;
+                        vertex_map[p] = v;
                     }
                     else
                     {
                         // Yes : get index from map
-                        vertices[i] = vMapIt->second;
+                        vertices[i] = it->second;
                     }
                 }
 
