@@ -11,11 +11,8 @@
 namespace pmp {
 
 // comparison operator for vec3
-class CmpVec
+struct CompareVec3
 {
-public:
-    CmpVec(Scalar eps = std::numeric_limits<Scalar>::min()) : eps_(eps) {}
-
     bool operator()(const vec3& v0, const vec3& v1) const
     {
         if (fabs(v0[0] - v1[0]) <= eps_)
@@ -31,8 +28,7 @@ public:
             return (v0[0] < v1[0] - eps_);
     }
 
-private:
-    Scalar eps_;
+    Scalar eps_{std::numeric_limits<Scalar>::min()};
 };
 
 void read_stl(SurfaceMesh& mesh, const std::string& filename)
@@ -44,9 +40,9 @@ void read_stl(SurfaceMesh& mesh, const std::string& filename)
     std::vector<Vertex> vertices(3);
     size_t n_items(0);
 
-    CmpVec comp(std::numeric_limits<Scalar>::min());
-    std::map<vec3, Vertex, CmpVec> vMap(comp);
-    std::map<vec3, Vertex, CmpVec>::iterator vMapIt;
+    CompareVec3 comp;
+    std::map<vec3, Vertex, CompareVec3> vMap(comp);
+    std::map<vec3, Vertex, CompareVec3>::iterator vMapIt;
 
     // open file (in ASCII mode)
     FILE* in = fopen(filename.c_str(), "r");
