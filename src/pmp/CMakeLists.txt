@@ -26,7 +26,7 @@ if(NOT EMSCRIPTEN AND PMP_INSTALL)
                $<INSTALL_INTERFACE:include/>)
 
   if(UNIX OR APPLE)
-    target_compile_options(pmp PUBLIC "-std=c++14")
+    target_compile_options(pmp PUBLIC "-std=c++17")
   endif()
 
   install(

@@ -10,6 +10,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Upgrade C++ standard to C++17
 - Remove `get_*_property_type()` functions from `SurfaceMesh`
 - Move example apps from `src/apps` to `examples`. Remove `PMP_BUILD_APPS` CMake option.
 - Rename `Simplification` to `Decimation`
