@@ -341,6 +341,40 @@ TEST_F(SurfaceMeshTest, edge_split)
     EXPECT_EQ(mesh.n_faces(), size_t(2));
 }
 
+TEST_F(SurfaceMeshTest, vertex_split)
+{
+    Vertex v0 = mesh.add_vertex(Point(0, 0, 0));
+    Vertex v1 = mesh.add_vertex(Point(1, 0, 0));
+    Vertex v2 = mesh.add_vertex(Point(0, 1, 0));
+    Vertex v3 = mesh.add_vertex(Point(-1, 0, 0));
+    Vertex v4 = mesh.add_vertex(Point(0, -1, 0));
+
+    Face f1 = mesh.add_triangle(v0, v1, v2);
+    Face f2 = mesh.add_triangle(v0, v2, v3);
+    Face f3 = mesh.add_triangle(v0, v3, v4);
+    Face f4 = mesh.add_triangle(v0, v4, v1);
+
+    Halfedge h1 = mesh.find_halfedge(v1, v0);
+    Halfedge h2 = mesh.find_halfedge(v2, v0);
+    Halfedge h3 = mesh.find_halfedge(v3, v0);
+    Halfedge h4 = mesh.find_halfedge(v4, v0);
+
+    Vertex v5 = mesh.add_vertex(Point(0, 0, 1));
+    Halfedge h = mesh.split_vertex(h1, h3, v5);
+    EXPECT_EQ(mesh.from_vertex(h), v5);
+    EXPECT_EQ(mesh.to_vertex(h), v0);
+
+    EXPECT_EQ(mesh.valence(f1), 3);
+    EXPECT_EQ(mesh.valence(f2), 4);
+    EXPECT_EQ(mesh.valence(f3), 3);
+    EXPECT_EQ(mesh.valence(f4), 4);
+
+    EXPECT_EQ(mesh.to_vertex(h1), v0);
+    EXPECT_EQ(mesh.to_vertex(h2), v0);
+    EXPECT_EQ(mesh.to_vertex(h3), v5);
+    EXPECT_EQ(mesh.to_vertex(h4), v5);
+}
+
 TEST_F(SurfaceMeshTest, edge_flip)
 {
     mesh = edge_onering();
