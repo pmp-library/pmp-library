@@ -9,6 +9,7 @@
 #include "pmp/Types.h"
 #include "pmp/Properties.h"
 #include "pmp/BoundingBox.h"
+#include "pmp/io/IOFlags.h"
 
 namespace pmp {
 

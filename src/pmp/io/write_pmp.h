@@ -5,8 +5,8 @@
 
 #include <string>
 
+#include "pmp/io/IOFlags.h"
 #include "pmp/SurfaceMesh.h"
-#include "pmp/Types.h"
 
 namespace pmp {
 

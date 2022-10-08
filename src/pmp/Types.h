@@ -71,17 +71,4 @@ using IndexType = std::uint_least32_t;
 //! \defgroup io io
 //! \brief Readers and writers for common mesh formats.
 
-//! Flags to control reading and writing options
-//! \ingroup io
-struct IOFlags
-{
-    bool use_binary = false;             //!< read / write binary format
-    bool use_vertex_normals = false;     //!< read / write vertex normals
-    bool use_vertex_colors = false;      //!< read / write vertex colors
-    bool use_vertex_texcoords = false;   //!< read / write vertex texcoords
-    bool use_face_normals = false;       //!< read / write face normals
-    bool use_face_colors = false;        //!< read / write face colors
-    bool use_halfedge_texcoords = false; //!< read / write halfedge texcoords
-};
-
 } // namespace pmp
