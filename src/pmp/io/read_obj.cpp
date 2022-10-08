@@ -5,7 +5,7 @@
 
 namespace pmp {
 
-void read_obj(SurfaceMesh& mesh, const std::string& filename)
+void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
 {
     std::array<char, 200> s;
     float x, y, z;
@@ -18,9 +18,9 @@ void read_obj(SurfaceMesh& mesh, const std::string& filename)
     bool with_tex_coord = false;
 
     // open file (in ASCII mode)
-    FILE* in = fopen(filename.c_str(), "r");
+    FILE* in = fopen(file.c_str(), "r");
     if (!in)
-        throw IOException("Failed to open file: " + filename);
+        throw IOException("Failed to open file: " + file.string());
 
     // clear line once
     memset(s.data(), 0, 200);

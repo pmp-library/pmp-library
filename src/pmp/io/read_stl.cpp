@@ -31,7 +31,7 @@ struct CompareVec3
     Scalar eps_{std::numeric_limits<Scalar>::min()};
 };
 
-void read_stl(SurfaceMesh& mesh, const std::string& filename)
+void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
 {
     std::array<char, 100> line;
     unsigned int i, nT(0);
@@ -44,9 +44,9 @@ void read_stl(SurfaceMesh& mesh, const std::string& filename)
     std::map<vec3, Vertex, CompareVec3> vertex_map(comp);
 
     // open file (in ASCII mode)
-    FILE* in = fopen(filename.c_str(), "r");
+    FILE* in = fopen(file.c_str(), "r");
     if (!in)
-        throw IOException("Failed to open file: " + filename);
+        throw IOException("Failed to open file: " + file.string());
 
     // ASCII or binary STL?
     auto c = fgets(line.data(), 6, in);
@@ -59,9 +59,9 @@ void read_stl(SurfaceMesh& mesh, const std::string& filename)
     {
         // re-open file in binary mode
         fclose(in);
-        in = fopen(filename.c_str(), "rb");
+        in = fopen(file.c_str(), "rb");
         if (!in)
-            throw IOException("Failed to open file: " + filename);
+            throw IOException("Failed to open file: " + file.string());
 
         // skip dummy header
         n_items = fread(line.data(), 1, 80, in);

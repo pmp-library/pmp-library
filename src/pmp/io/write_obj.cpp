@@ -5,12 +5,12 @@
 
 namespace pmp {
 
-void write_obj(const SurfaceMesh& mesh, const std::string& filename,
+void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
                const IOFlags& flags)
 {
-    FILE* out = fopen(filename.c_str(), "w");
+    FILE* out = fopen(file.c_str(), "w");
     if (!out)
-        throw IOException("Failed to open file: " + filename);
+        throw IOException("Failed to open file: " + file.string());
 
     // comment
     fprintf(out, "# OBJ export from PMP\n");

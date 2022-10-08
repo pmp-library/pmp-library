@@ -9,7 +9,7 @@
 
 namespace pmp {
 
-void write_stl(const SurfaceMesh& mesh, const std::string& filename,
+void write_stl(const SurfaceMesh& mesh, const std::filesystem::path& file,
                const IOFlags& flags)
 {
     if (!mesh.is_triangle_mesh())
@@ -31,7 +31,7 @@ void write_stl(const SurfaceMesh& mesh, const std::string& filename,
         throw InvalidInputException(what);
     }
 
-    std::ofstream ofs(filename.c_str());
+    std::ofstream ofs(file.c_str());
     auto points = mesh.get_vertex_property<Point>("v:point");
 
     ofs << "solid stl" << std::endl;

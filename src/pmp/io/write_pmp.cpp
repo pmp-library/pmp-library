@@ -7,13 +7,13 @@
 
 namespace pmp {
 
-void write_pmp(const SurfaceMesh& mesh, const std::string& filename,
+void write_pmp(const SurfaceMesh& mesh, const std::filesystem::path& file,
                const IOFlags&)
 {
     // open file (in binary mode)
-    FILE* out = fopen(filename.c_str(), "wb");
+    FILE* out = fopen(file.c_str(), "wb");
     if (!out)
-        throw IOException("Failed to open file: " + filename);
+        throw IOException("Failed to open file: " + file.string());
 
     // get properties
     auto htex = mesh.get_halfedge_property<TexCoord>("h:tex");

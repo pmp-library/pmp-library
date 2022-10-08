@@ -13,7 +13,7 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
 void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                      const bool has_texcoords, const bool has_colors);
 
-void read_off(SurfaceMesh& mesh, const std::string& filename)
+void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
 {
     std::array<char, 200> line;
     bool has_texcoords = false;
@@ -24,9 +24,9 @@ void read_off(SurfaceMesh& mesh, const std::string& filename)
     bool is_binary = false;
 
     // open file (in ASCII mode)
-    FILE* in = fopen(filename.c_str(), "r");
+    FILE* in = fopen(file.c_str(), "r");
     if (!in)
-        throw IOException("Failed to open file: " + filename);
+        throw IOException("Failed to open file: " + file.string());
 
     // read header: [ST][C][N][4][n]OFF BINARY
     auto c = fgets(line.data(), 200, in);
@@ -80,7 +80,7 @@ void read_off(SurfaceMesh& mesh, const std::string& filename)
     if (is_binary)
     {
         fclose(in);
-        in = fopen(filename.c_str(), "rb");
+        in = fopen(file.c_str(), "rb");
         c = fgets(line.data(), 200, in);
         assert(c != nullptr);
     }

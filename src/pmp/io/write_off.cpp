@@ -6,20 +6,21 @@
 
 namespace pmp {
 
-void write_off_binary(const SurfaceMesh& mesh, const std::string& filename);
+void write_off_binary(const SurfaceMesh& mesh,
+                      const std::filesystem::path& file);
 
-void write_off(const SurfaceMesh& mesh, const std::string& filename,
+void write_off(const SurfaceMesh& mesh, const std::filesystem::path& file,
                const IOFlags& flags)
 {
     if (flags.use_binary)
     {
-        write_off_binary(mesh, filename);
+        write_off_binary(mesh, file);
         return;
     }
 
-    FILE* out = fopen(filename.c_str(), "w");
+    FILE* out = fopen(file.c_str(), "w");
     if (!out)
-        throw IOException("Failed to open file: " + filename);
+        throw IOException("Failed to open file: " + file.string());
 
     bool has_normals = false;
     bool has_texcoords = false;
@@ -90,11 +91,12 @@ void write_off(const SurfaceMesh& mesh, const std::string& filename,
     fclose(out);
 }
 
-void write_off_binary(const SurfaceMesh& mesh, const std::string& filename)
+void write_off_binary(const SurfaceMesh& mesh,
+                      const std::filesystem::path& file)
 {
-    FILE* out = fopen(filename.c_str(), "w");
+    FILE* out = fopen(file.c_str(), "w");
     if (!out)
-        throw IOException("Failed to open file: " + filename);
+        throw IOException("Failed to open file: " + file.string());
 
     fprintf(out, "OFF BINARY\n");
     fclose(out);
@@ -102,7 +104,7 @@ void write_off_binary(const SurfaceMesh& mesh, const std::string& filename)
     auto nf = (IndexType)mesh.n_faces();
     auto ne = IndexType{};
 
-    out = fopen(filename.c_str(), "ab");
+    out = fopen(file.c_str(), "ab");
     tfwrite(out, nv);
     tfwrite(out, nf);
     tfwrite(out, ne);

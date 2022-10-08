@@ -3,12 +3,12 @@
 
 #pragma once
 
-#include <string>
+#include <filesystem>
 
 #include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
-void read_stl(SurfaceMesh& mesh, const std::string& filename);
+void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file);
 
 } // namespace pmp

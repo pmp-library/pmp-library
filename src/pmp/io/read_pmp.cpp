@@ -7,12 +7,12 @@
 
 namespace pmp {
 
-void read_pmp(SurfaceMesh& mesh, const std::string& filename)
+void read_pmp(SurfaceMesh& mesh, const std::filesystem::path& file)
 {
     // open file (in binary mode)
-    FILE* in = fopen(filename.c_str(), "rb");
+    FILE* in = fopen(file.c_str(), "rb");
     if (!in)
-        throw IOException("Failed to open file: " + filename);
+        throw IOException("Failed to open file: " + file.string());
 
     // how many elements?
     size_t nv{0};

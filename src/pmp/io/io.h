@@ -3,14 +3,14 @@
 
 #pragma once
 
-#include <string>
+#include <filesystem>
 
 #include "pmp/io/IOFlags.h"
 #include "pmp/SurfaceMesh.h"
 
 namespace pmp {
 
-//! \brief Read into \p mesh from file \p filename
+//! \brief Read into \p mesh from \p file
 //! \details File extension determines file type. Supported formats and
 //! vertex attributes (a=ASCII, b=binary):
 //!
@@ -24,9 +24,9 @@ namespace pmp {
 //! In addition, the OBJ and PMP formats support reading per-halfedge
 //! texture coordinates.
 //! \ingroup io
-void read(SurfaceMesh& mesh, const std::string& filename);
+void read(SurfaceMesh& mesh, const std::filesystem::path& file);
 
-//! \brief Write \p mesh to file \p filename controlled by \p flags
+//! \brief Write \p mesh to \p file controlled by \p flags
 //! \details File extension determines file type. Supported formats and
 //! vertex attributes (a=ASCII, b=binary):
 //!
@@ -40,7 +40,7 @@ void read(SurfaceMesh& mesh, const std::string& filename);
 //! In addition, the OBJ and PMP formats support writing per-halfedge
 //! texture coordinates.
 //! \ingroup io
-void write(const SurfaceMesh& mesh, const std::string& filename,
+void write(const SurfaceMesh& mesh, const std::filesystem::path& file,
            const IOFlags& flags = IOFlags());
 
 } // namespace pmp
