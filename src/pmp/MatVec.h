@@ -310,15 +310,6 @@ public:
         return false;
     }
 
-    //! \return true if all elements are finite, i.e. not NaN or +/- inf
-    bool allFinite() const
-    {
-        for (int i = 0; i < size(); ++i)
-            if (!std::isfinite(data_[i]))
-                return false;
-        return true;
-    }
-
 private:
     std::array<Scalar, N * M> data_;
 };
