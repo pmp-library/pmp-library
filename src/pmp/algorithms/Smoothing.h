@@ -14,9 +14,9 @@ class Smoothing
 {
 public:
     //! Construct with mesh to be smoothed.
-    Smoothing(SurfaceMesh& mesh);
+    explicit Smoothing(SurfaceMesh& mesh);
 
-    // destructor
+    // Destructor removing any properties allocated in the mesh.
     ~Smoothing();
 
     //! Perform \p iters iterations of explicit Laplacian smoothing.
@@ -49,8 +49,8 @@ private:
 
     SurfaceMesh& mesh_;
 
-    // remember for how many vertices/edges we computed weights
-    // recompute if numbers change (i.e. mesh has changed)
+    // Remember for how many vertices/edges we computed weights.
+    // Recompute if numbers change, i.e., the mesh has changed.
     size_t n_edge_weights_{0};
     size_t n_vertex_weights_{0};
 };
