@@ -1367,46 +1367,6 @@ public:
     //! \name Property handling
     //!@{
 
-    //! add a object property of type \p T with name \p name and default value \p t.
-    //! fails if a property named \p name exists already, since the name has to
-    //! be unique. in this case it returns an invalid property
-    template <class T>
-    ObjectProperty<T> add_object_property(const std::string& name,
-                                          const T t = T())
-    {
-        return ObjectProperty<T>(oprops_.add<T>(name, t));
-    }
-
-    //! get the object property named \p name of type \p T. returns an invalid
-    //! ObjectProperty if the property does not exist or if the type does not
-    //! match.
-    template <class T>
-    ObjectProperty<T> get_object_property(const std::string& name) const
-    {
-        return ObjectProperty<T>(oprops_.get<T>(name));
-    }
-
-    //! if a object property of type \p T with name \p name exists, it is
-    //! returned.  otherwise this property is added (with default value \p t)
-    template <class T>
-    ObjectProperty<T> object_property(const std::string& name, const T t = T())
-    {
-        return ObjectProperty<T>(oprops_.get_or_add<T>(name, t));
-    }
-
-    //! remove the object property \p p
-    template <class T>
-    void remove_object_property(ObjectProperty<T>& p)
-    {
-        oprops_.remove(p);
-    }
-
-    //! \return the names of all object properties
-    std::vector<std::string> object_properties() const
-    {
-        return oprops_.properties();
-    }
-
     //! add a vertex property of type \p T with name \p name and default
     //! value \p t. fails if a property named \p name exists already,
     //! since the name has to be unique. in this case it returns an
@@ -1989,7 +1949,6 @@ private:
                           const IOFlags&);
 
     // property containers for each entity type and object
-    PropertyContainer oprops_;
     PropertyContainer vprops_;
     PropertyContainer hprops_;
     PropertyContainer eprops_;

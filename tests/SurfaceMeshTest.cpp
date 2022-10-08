@@ -116,22 +116,6 @@ TEST_F(SurfaceMeshTest, assignment)
     EXPECT_EQ(m2.n_faces(), size_t(1));
 }
 
-TEST_F(SurfaceMeshTest, object_properties)
-{
-    // explicit add
-    auto midx = mesh.add_object_property<int>("m:idx");
-    midx[0] = 0;
-    EXPECT_EQ(mesh.object_properties().size(), size_t(1));
-    mesh.remove_object_property(midx);
-    EXPECT_EQ(mesh.object_properties().size(), size_t(0));
-
-    // implicit add
-    midx = mesh.object_property<int>("m:idx2");
-    EXPECT_EQ(mesh.object_properties().size(), size_t(1));
-    mesh.remove_object_property(midx);
-    EXPECT_EQ(mesh.object_properties().size(), size_t(0));
-}
-
 TEST_F(SurfaceMeshTest, vertex_properties)
 {
     add_triangle();

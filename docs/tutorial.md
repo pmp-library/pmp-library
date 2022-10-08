@@ -103,16 +103,6 @@ allocate, use and remove a custom edge property.
 
 \snippet properties.cpp edge-properties
 
-In addition to the per-entity properties described above it is also possible to
-attach global per-object properties to a mesh. This can be used, e.g., for
-storing minimum or maximum values of a scalar field or for storing a set of
-region markers present in the mesh:
-
-\snippet properties.cpp global-properties
-
-Note in the above that access to the object property simply uses a zero index
-since there is no concept of an object handle.
-
 ## Connectivity Queries
 
 Commonly used connectivity queries such as retrieving the next
@@ -160,7 +150,7 @@ ensure the consistency of the data structure.
 ## File I/O
 
 All I/O operations are handled by the pmp::read() and pmp::write() functions.
-They simply take a file name as well as optional pmp::IOFlags as an argument.
+They take a mesh, a file path, and optional pmp::IOFlags as an argument.
 
 We currently support reading and writing several standard file formats: OFF,
 OBJ, STL. See the reference documentation for the pmp::read() and pmp::write()
