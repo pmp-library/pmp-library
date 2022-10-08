@@ -44,7 +44,7 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
     std::map<vec3, Vertex, CompareVec3> vertex_map(comp);
 
     // open file (in ASCII mode)
-    FILE* in = fopen(file.c_str(), "r");
+    FILE* in = fopen(file.string().c_str(), "r");
     if (!in)
         throw IOException("Failed to open file: " + file.string());
 
@@ -59,7 +59,7 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
     {
         // re-open file in binary mode
         fclose(in);
-        in = fopen(file.c_str(), "rb");
+        in = fopen(file.string().c_str(), "rb");
         if (!in)
             throw IOException("Failed to open file: " + file.string());
 

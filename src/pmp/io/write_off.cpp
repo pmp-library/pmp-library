@@ -18,7 +18,7 @@ void write_off(const SurfaceMesh& mesh, const std::filesystem::path& file,
         return;
     }
 
-    FILE* out = fopen(file.c_str(), "w");
+    FILE* out = fopen(file.string().c_str(), "w");
     if (!out)
         throw IOException("Failed to open file: " + file.string());
 
@@ -94,7 +94,7 @@ void write_off(const SurfaceMesh& mesh, const std::filesystem::path& file,
 void write_off_binary(const SurfaceMesh& mesh,
                       const std::filesystem::path& file)
 {
-    FILE* out = fopen(file.c_str(), "w");
+    FILE* out = fopen(file.string().c_str(), "w");
     if (!out)
         throw IOException("Failed to open file: " + file.string());
 
@@ -104,7 +104,7 @@ void write_off_binary(const SurfaceMesh& mesh,
     auto nf = (IndexType)mesh.n_faces();
     auto ne = IndexType{};
 
-    out = fopen(file.c_str(), "ab");
+    out = fopen(file.string().c_str(), "ab");
     tfwrite(out, nv);
     tfwrite(out, nf);
     tfwrite(out, ne);

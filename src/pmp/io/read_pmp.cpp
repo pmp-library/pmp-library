@@ -10,7 +10,7 @@ namespace pmp {
 void read_pmp(SurfaceMesh& mesh, const std::filesystem::path& file)
 {
     // open file (in binary mode)
-    FILE* in = fopen(file.c_str(), "rb");
+    FILE* in = fopen(file.string().c_str(), "rb");
     if (!in)
         throw IOException("Failed to open file: " + file.string());
 

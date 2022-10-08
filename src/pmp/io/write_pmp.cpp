@@ -11,7 +11,7 @@ void write_pmp(const SurfaceMesh& mesh, const std::filesystem::path& file,
                const IOFlags&)
 {
     // open file (in binary mode)
-    FILE* out = fopen(file.c_str(), "wb");
+    FILE* out = fopen(file.string().c_str(), "wb");
     if (!out)
         throw IOException("Failed to open file: " + file.string());
 

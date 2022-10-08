@@ -24,7 +24,7 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
     bool is_binary = false;
 
     // open file (in ASCII mode)
-    FILE* in = fopen(file.c_str(), "r");
+    FILE* in = fopen(file.string().c_str(), "r");
     if (!in)
         throw IOException("Failed to open file: " + file.string());
 
@@ -80,7 +80,7 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
     if (is_binary)
     {
         fclose(in);
-        in = fopen(file.c_str(), "rb");
+        in = fopen(file.string().c_str(), "rb");
         c = fgets(line.data(), 200, in);
         assert(c != nullptr);
     }

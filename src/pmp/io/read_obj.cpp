@@ -18,7 +18,7 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
     bool with_tex_coord = false;
 
     // open file (in ASCII mode)
-    FILE* in = fopen(file.c_str(), "r");
+    FILE* in = fopen(file.string().c_str(), "r");
     if (!in)
         throw IOException("Failed to open file: " + file.string());
 

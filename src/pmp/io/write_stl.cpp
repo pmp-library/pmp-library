@@ -31,7 +31,7 @@ void write_stl(const SurfaceMesh& mesh, const std::filesystem::path& file,
         throw InvalidInputException(what);
     }
 
-    std::ofstream ofs(file.c_str());
+    std::ofstream ofs(file.string().c_str());
     auto points = mesh.get_vertex_property<Point>("v:point");
 
     ofs << "solid stl" << std::endl;

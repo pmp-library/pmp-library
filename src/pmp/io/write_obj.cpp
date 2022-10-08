@@ -8,7 +8,7 @@ namespace pmp {
 void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
                const IOFlags& flags)
 {
-    FILE* out = fopen(file.c_str(), "w");
+    FILE* out = fopen(file.string().c_str(), "w");
     if (!out)
         throw IOException("Failed to open file: " + file.string());
 
