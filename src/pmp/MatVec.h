@@ -319,7 +319,7 @@ public:
         return true;
     }
 
-protected:
+private:
     std::array<Scalar, N * M> data_;
 };
 
