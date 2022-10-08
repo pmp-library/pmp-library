@@ -51,8 +51,8 @@ private:
 
     // remember for how many vertices/edges we computed weights
     // recompute if numbers change (i.e. mesh has changed)
-    unsigned int how_many_edge_weights_;
-    unsigned int how_many_vertex_weights_;
+    size_t n_edge_weights_{0};
+    size_t n_vertex_weights_{0};
 };
 
 } // namespace pmp

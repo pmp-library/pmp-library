@@ -13,11 +13,7 @@ namespace pmp {
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;
 
-Smoothing::Smoothing(SurfaceMesh& mesh) : mesh_(mesh)
-{
-    how_many_edge_weights_ = 0;
-    how_many_vertex_weights_ = 0;
-}
+Smoothing::Smoothing(SurfaceMesh& mesh) : mesh_(mesh) {}
 
 Smoothing::~Smoothing()
 {
@@ -45,7 +41,7 @@ void Smoothing::compute_edge_weights(bool use_uniform_laplace)
             eweight[e] = std::max(0.0, cotan_weight(mesh_, e));
     }
 
-    how_many_edge_weights_ = mesh_.n_edges();
+    n_edge_weights_ = mesh_.n_edges();
 }
 
 void Smoothing::compute_vertex_weights(bool use_uniform_laplace)
@@ -63,7 +59,7 @@ void Smoothing::compute_vertex_weights(bool use_uniform_laplace)
             vweight[v] = 0.5 / voronoi_area(mesh_, v);
     }
 
-    how_many_vertex_weights_ = mesh_.n_vertices();
+    n_vertex_weights_ = mesh_.n_vertices();
 }
 
 void Smoothing::explicit_smoothing(unsigned int iters, bool use_uniform_laplace)
@@ -74,7 +70,7 @@ void Smoothing::explicit_smoothing(unsigned int iters, bool use_uniform_laplace)
     // TODO: this is calling for trouble: `use_uniform_laplace` might not be respected at all!
     // compute Laplace weight per edge: cotan or uniform
     if (!mesh_.has_edge_property("e:cotan") ||
-        how_many_edge_weights_ != mesh_.n_edges())
+        n_edge_weights_ != mesh_.n_edges())
         compute_edge_weights(use_uniform_laplace);
 
     auto points = mesh_.get_vertex_property<Point>("v:point");
@@ -129,7 +125,7 @@ void Smoothing::implicit_smoothing(Scalar timestep, bool use_uniform_laplace,
     // TODO: this is calling for trouble: `use_uniform_laplace` might not be respected at all!
     // compute edge weights if they don't exist or if the mesh changed
     if (!mesh_.has_edge_property("e:cotan") ||
-        how_many_edge_weights_ != mesh_.n_edges())
+        n_edge_weights_ != mesh_.n_edges())
         compute_edge_weights(use_uniform_laplace);
 
     // compute vertex weights
