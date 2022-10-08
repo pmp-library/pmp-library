@@ -1846,12 +1846,12 @@ public:
     //! \sa split(Edge, const Point&)
     Halfedge split(Edge e, Vertex v);
 
-    //! insert edge between the to-vertices v0 of \p h0 and v1 of \p h1.
-    //! \return the new halfedge from v0 to v1.
-    //! \attention \p h0 and \p h1 have to belong to the same face
+    //! Insert edge between the to-vertices of \p h0 and \p h1.
+    //! \return The new halfedge from v0 to v1.
+    //! \attention \p h0 and \p h1 have to belong to the same face.
     Halfedge insert_edge(Halfedge h0, Halfedge h1);
 
-    //! Check whether flipping edge \p e is topologically
+    //! Check whether flipping edge \p e is topologically OK.
     //! \attention This function is only valid for triangle meshes.
     //! \sa flip(Edge)
     bool is_flip_ok(Edge e) const;
@@ -1864,20 +1864,19 @@ public:
     //! \sa is_flip_ok()
     void flip(Edge e);
 
-    //! \return the valence (number of incident edges or neighboring
-    //! vertices) of vertex \p v.
+    //! Compute the valence of vertex \p v (number of incident edges).
     size_t valence(Vertex v) const;
 
-    //! \return the valence of face \p f (its number of vertices)
+    //! Compute the valence of face \p f (its number of vertices).
     size_t valence(Face f) const;
 
-    //! deletes the vertex \p v from the mesh
+    //! Delete vertex \p v from the mesh.
     void delete_vertex(Vertex v);
 
-    //! deletes the edge \p e from the mesh
+    //! Delete edge \p e from the mesh.
     void delete_edge(Edge e);
 
-    //! deletes the face \p f from the mesh
+    //! Deletes face \p f from the mesh.
     void delete_face(Face f);
 
     //!@}
