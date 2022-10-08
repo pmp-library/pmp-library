@@ -9,7 +9,6 @@
 
 #include "pmp/Types.h"
 #include "pmp/Properties.h"
-#include "pmp/BoundingBox.h"
 #include "pmp/io/IOFlags.h"
 
 namespace pmp {
@@ -1811,15 +1810,6 @@ public:
 
     //! \return vector of point positions
     std::vector<Point>& positions() { return vpoint_.vector(); }
-
-    //! compute the bounding box of the object
-    BoundingBox bounds() const
-    {
-        BoundingBox bb;
-        for (auto v : vertices())
-            bb += position(v);
-        return bb;
-    }
 
     //!@}
 

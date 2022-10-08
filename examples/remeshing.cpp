@@ -4,6 +4,8 @@
 #include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/Features.h>
 #include <pmp/algorithms/Remeshing.h>
+#include <pmp/utilities.h>
+
 #include <imgui.h>
 
 using namespace pmp;
@@ -72,7 +74,7 @@ void Viewer::process_imgui()
 
         if (ImGui::Button("Adaptive"))
         {
-            auto bb = mesh_.bounds().size();
+            auto bb = bounds(mesh_).size();
             try
             {
                 Remeshing(mesh_).adaptive_remeshing(

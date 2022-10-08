@@ -14,6 +14,7 @@
 #include <pmp/algorithms/Shapes.h>
 #include <pmp/algorithms/Triangulation.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
+#include <pmp/utilities.h>
 
 #include <imgui.h>
 
@@ -146,7 +147,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
                     break;
             }
 
-            BoundingBox bb = mesh_.bounds();
+            BoundingBox bb = bounds(mesh_);
             set_scene((vec3)bb.center(), 0.5 * bb.size());
             set_draw_mode("Hidden Line");
             update_mesh();
@@ -322,7 +323,7 @@ void MeshProcessingViewer::process_imgui()
     {
         if (ImGui::Button("Adaptive Remeshing"))
         {
-            auto bb = mesh_.bounds().size();
+            auto bb = bounds(mesh_).size();
 
             try
             {

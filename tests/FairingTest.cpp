@@ -5,6 +5,7 @@
 
 #include "pmp/algorithms/Fairing.h"
 #include "pmp/algorithms/Subdivision.h"
+#include "pmp/utilities.h"
 #include "Helpers.h"
 
 using namespace pmp;
@@ -13,10 +14,10 @@ TEST(FairingTest, fairing)
 {
     auto mesh = open_cone();
     Subdivision(mesh).loop();
-    auto bbz = mesh.bounds().max()[2];
+    auto bbz = bounds(mesh).max()[2];
     Fairing sf(mesh);
     sf.fair();
-    auto bbs = mesh.bounds().max()[2];
+    auto bbs = bounds(mesh).max()[2];
     EXPECT_LT(bbs, bbz);
 }
 
@@ -25,7 +26,7 @@ TEST(FairingTest, fairing_selected)
     auto mesh = open_cone();
     Subdivision(mesh).loop();
 
-    auto bb = mesh.bounds();
+    auto bb = bounds(mesh);
 
     // select top vertices for fairing
     auto selected = mesh.vertex_property<bool>("v:selected");
@@ -35,6 +36,6 @@ TEST(FairingTest, fairing_selected)
 
     Fairing sf(mesh);
     sf.fair();
-    auto bb2 = mesh.bounds();
+    auto bb2 = bounds(mesh);
     EXPECT_LT(bb2.size(), bb.size());
 }

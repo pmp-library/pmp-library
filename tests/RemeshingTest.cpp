@@ -7,6 +7,7 @@
 #include "pmp/algorithms/Features.h"
 #include "pmp/algorithms/Shapes.h"
 #include "pmp/algorithms/Triangulation.h"
+#include "pmp/utilities.h"
 
 #include "Helpers.h"
 
@@ -18,7 +19,7 @@ TEST(RemeshingTest, adaptive_remeshing_with_features)
     auto mesh = Shapes::cylinder();
     Triangulation(mesh).triangulate();
     Features(mesh).detect_angle(25);
-    auto bb = mesh.bounds().size();
+    auto bb = bounds(mesh).size();
     Remeshing(mesh).adaptive_remeshing(0.001 * bb,  // min length
                                        1.0 * bb,    // max length
                                        0.001 * bb); // approx. error
@@ -29,7 +30,7 @@ TEST(RemeshingTest, adaptive_remeshing_with_boundary)
 {
     // mesh with boundary
     auto mesh = open_cone();
-    auto bb = mesh.bounds().size();
+    auto bb = bounds(mesh).size();
     Remeshing(mesh).adaptive_remeshing(0.01 * bb,  // min length
                                        1.0 * bb,   // max length
                                        0.01 * bb); // approx. error
@@ -46,7 +47,7 @@ TEST(RemeshingTest, adaptive_remeshing_with_selection)
         if (mesh.position(v)[1] > 0)
             selected[v] = true;
 
-    auto bb = mesh.bounds().size();
+    auto bb = bounds(mesh).size();
     Remeshing(mesh).adaptive_remeshing(0.01 * bb,  // min length
                                        1.0 * bb,   // max length
                                        0.01 * bb); // approx. error

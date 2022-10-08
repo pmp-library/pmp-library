@@ -10,6 +10,7 @@
 #include <imgui.h>
 
 #include "pmp/io/io.h"
+#include "pmp/utilities.h"
 
 namespace pmp {
 
@@ -49,7 +50,7 @@ void MeshViewer::load_mesh(const char* filename)
     }
 
     // update scene center and bounds
-    BoundingBox bb = mesh_.bounds();
+    BoundingBox bb = bounds(mesh_);
     set_scene((vec3)bb.center(), 0.5 * bb.size());
 
     // compute face & vertex normals, update face indices
@@ -109,7 +110,7 @@ void MeshViewer::load_texture(const char* filename, GLint format,
 void MeshViewer::update_mesh()
 {
     // update scene center and radius, but don't update camera view
-    BoundingBox bb = mesh_.bounds();
+    BoundingBox bb = bounds(mesh_);
     center_ = (vec3)bb.center();
     radius_ = 0.5f * bb.size();
 
