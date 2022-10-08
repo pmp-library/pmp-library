@@ -1821,12 +1821,6 @@ public:
         return bb;
     }
 
-    //! compute the length of edge \p e.
-    Scalar edge_length(Edge e) const
-    {
-        return norm(vpoint_[vertex(e, 0)] - vpoint_[vertex(e, 1)]);
-    }
-
     //!@}
 
     //! \name Allocate new elements
