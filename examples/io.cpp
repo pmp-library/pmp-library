@@ -2,6 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/SurfaceMesh.h>
+#include <pmp/io/io.h>
 
 using namespace pmp;
 
@@ -14,7 +15,7 @@ SurfaceMesh mesh;
 
 // read a mesh specified as the first command line argument
 if (argc > 1)
-    mesh.read(argv[1]);
+    read(mesh, argv[1]);
 
 // ...
 // do something with the mesh
@@ -22,7 +23,7 @@ if (argc > 1)
 
 // write the mesh to the file specified as second argument
 if (argc > 2)
-    mesh.write(argv[2]);
+    write(mesh, argv[2]);
 //! [io]
 
 return 0;

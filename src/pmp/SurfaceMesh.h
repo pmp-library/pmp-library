@@ -9,10 +9,9 @@
 #include "pmp/Types.h"
 #include "pmp/Properties.h"
 #include "pmp/BoundingBox.h"
+#include "pmp/io/IOFlags.h"
 
 namespace pmp {
-
-class SurfaceMeshIO;
 
 //! \addtogroup core
 //!@{
@@ -1114,46 +1113,6 @@ public:
     SurfaceMesh& assign(const SurfaceMesh& rhs);
 
     //!@}
-    //! \name File IO
-    //!@{
-
-    //! \brief Read mesh from file \p filename controlled by \p flags
-    //! \details File extension determines file type. Supported formats and
-    //! vertex attributes (a=ASCII, b=binary):
-    //!
-    //! Format | ASCII | Binary | Normals | Colors | Texcoords
-    //! -------|-------|--------|---------|--------|----------
-    //! OFF    | yes   | yes    | a / b   | a      | a / b
-    //! OBJ    | yes   | no     | a       | no     | no
-    //! STL    | yes   | yes    | no      | no     | no
-    //! PLY    | yes   | yes    | no      | no     | no
-    //! PMP    | no    | yes    | no      | no     | no
-    //! XYZ    | yes   | no     | a       | no     | no
-    //! AGI    | yes   | no     | a       | a      | no
-    //!
-    //! In addition, the OBJ and PMP formats support reading per-halfedge
-    //! texture coordinates.
-    void read(const std::string& filename, const IOFlags& flags = IOFlags());
-
-    //! \brief Write mesh to file \p filename controlled by \p flags
-    //! \details File extension determines file type. Supported formats and
-    //! vertex attributes (a=ASCII, b=binary):
-    //!
-    //! Format | ASCII | Binary | Normals | Colors | Texcoords
-    //! -------|-------|--------|---------|--------|----------
-    //! OFF    | yes   | yes    | a       | a      | a
-    //! OBJ    | yes   | no     | a       | no     | no
-    //! STL    | yes   | no     | no      | no     | no
-    //! PLY    | yes   | yes    | no      | no     | no
-    //! PMP    | no    | yes    | no      | no     | no
-    //! XYZ    | yes   | no     | a       | no     | no
-    //!
-    //! In addition, the OBJ and PMP formats support writing per-halfedge
-    //! texture coordinates.
-    void write(const std::string& filename,
-               const IOFlags& flags = IOFlags()) const;
-
-    //!@}
     //! \name Add new elements by hand
     //!@{
 
@@ -2023,7 +1982,10 @@ private:
     // are there any deleted entities?
     inline bool has_garbage() const { return has_garbage_; }
 
-    friend SurfaceMeshIO; // code smell
+    // io functions that need access to internal details
+    friend void read_pmp(SurfaceMesh&, const std::string&);
+    friend void write_pmp(const SurfaceMesh&, const std::string&,
+                          const IOFlags&);
 
     // property containers for each entity type and object
     PropertyContainer oprops_;

@@ -6,8 +6,6 @@
 
 #include <cmath>
 
-#include "pmp/SurfaceMeshIO.h"
-
 namespace pmp {
 
 SurfaceMesh::SurfaceMesh()
@@ -106,18 +104,6 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
     }
 
     return *this;
-}
-
-void SurfaceMesh::read(const std::string& filename, const IOFlags& flags)
-{
-    SurfaceMeshIO reader(filename, flags);
-    reader.read(*this);
-}
-
-void SurfaceMesh::write(const std::string& filename, const IOFlags& flags) const
-{
-    SurfaceMeshIO writer(filename, flags);
-    writer.write(*this);
 }
 
 void SurfaceMesh::clear()

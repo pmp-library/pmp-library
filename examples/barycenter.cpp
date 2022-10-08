@@ -2,6 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/SurfaceMesh.h>
+#include <pmp/io/io.h>
 
 using namespace pmp;
 
@@ -11,7 +12,7 @@ int main(int argc, char** argv)
 SurfaceMesh mesh;
 
 if (argc > 1)
-    mesh.read(argv[1]);
+    read(mesh, argv[1]);
 
 //! [barycenter]
 // get pre-defined property storing vertex positions

@@ -159,14 +159,13 @@ ensure the consistency of the data structure.
 
 ## File I/O
 
-All I/O operations are handled by the pmp::SurfaceMesh::read() and
-pmp::SurfaceMesh::write() member functions. Those functions simply take a file
-name as well as optional pmp::IOFlags as an argument.
+All I/O operations are handled by the pmp::read() and pmp::write() functions.
+They simply take a file name as well as optional pmp::IOFlags as an argument.
 
-We currently support reading and writing several standard (and not so standard)
-file formats: OFF, OBJ, STL, PLY, PMP, XYZ, AGI. See the reference documentation
-for the pmp::SurfaceMesh::read() and pmp::SurfaceMesh::write() functions for
-details on which format supports reading / writing which type of data.
+We currently support reading and writing several standard file formats: OFF,
+OBJ, STL. See the reference documentation for the pmp::read() and pmp::write()
+functions for details on which format supports reading / writing which type of
+data.
 
 A simple example reading and writing a mesh is shown below.
 
