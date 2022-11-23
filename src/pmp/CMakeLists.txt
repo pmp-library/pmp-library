@@ -13,7 +13,7 @@ if(OpenMP_CXX_FOUND)
   target_link_libraries(pmp PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
-set_target_properties(pmp PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
+set_target_properties(pmp PROPERTIES VERSION ${PROJECT_VERSION})
 
 if(WITH_CLANG_TIDY)
   set_target_properties(pmp PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
