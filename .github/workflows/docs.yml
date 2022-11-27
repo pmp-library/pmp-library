@@ -21,7 +21,7 @@ jobs:
         run: sudo apt-get install -o Acquire::Retries=3 doxygen xorg-dev texlive-base libclang-9-dev libclang-cpp9
 
       - name: Fetch doxygen
-        run: export DOXYGEN_URL="http://doxygen.nl/files/doxygen-1.9.2.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && echo `pwd`/doxygen/bin >> $GITHUB_PATH
+        run: export DOXYGEN_URL="https://sourceforge.net/projects/doxygen/files/rel-1.9.2/doxygen-1.9.2.linux.bin.tar.gz/download" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && echo `pwd`/doxygen/bin >> $GITHUB_PATH
 
       - name: Create build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
