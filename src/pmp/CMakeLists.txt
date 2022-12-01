@@ -25,9 +25,7 @@ if(NOT EMSCRIPTEN AND PMP_INSTALL)
     pmp PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
                $<INSTALL_INTERFACE:include/>)
 
-  if(UNIX OR APPLE)
-    target_compile_options(pmp PUBLIC "-std=c++17")
-  endif()
+  target_compile_features(pmp PUBLIC cxx_std_17)
 
   install(
     TARGETS pmp
