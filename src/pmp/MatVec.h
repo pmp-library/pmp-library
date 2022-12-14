@@ -965,7 +965,7 @@ template <typename Scalar>
 Mat3<Scalar> inverse(const Mat3<Scalar>& m)
 {
     const Scalar det = determinant(m);
-    if (det < 1.0e-10 || std::isnan(det))
+    if (fabs(det) < 1.0e-10 || std::isnan(det))
     {
         throw SolverException("3x3 matrix not invertible");
     }
