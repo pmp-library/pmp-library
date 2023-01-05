@@ -25,6 +25,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Rename `Simplification` to `Decimation`
 - Rename `Factory` to `Shapes`
 - Drop `Surface` prefix from algorithms
+- Update stb_image to version 2.27 and stb_image_writer to version 1.16.
 
 ## [2.0.1] 2022-08-26
 
