@@ -1,10 +1,13 @@
 file(GLOB SOURCES ./*.cpp)
 file(GLOB HEADERS ./*.h)
+if(NOT TARGET rply::rply)
+  list(APPEND RPLY_OBJS $<TARGET_OBJECTS:rply>)
+endif()
 
 if(EMSCRIPTEN)
-  add_library(pmp STATIC ${SOURCES} ${HEADERS} $<TARGET_OBJECTS:rply>)
+  add_library(pmp STATIC ${SOURCES} ${HEADERS} ${RPLY_OBJS})
 else()
-  add_library(pmp SHARED ${SOURCES} ${HEADERS} $<TARGET_OBJECTS:rply>)
+  add_library(pmp SHARED ${SOURCES} ${HEADERS} ${RPLY_OBJS})
   set_property(TARGET pmp PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 

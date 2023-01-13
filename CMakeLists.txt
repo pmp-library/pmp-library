@@ -1,4 +1,5 @@
 cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0022 NEW)
 project(
   pmp-library
   VERSION 2.0.1
@@ -69,13 +70,23 @@ if(PMP_BUILD_VIS)
 endif(PMP_BUILD_VIS)
 
 # setup Eigen
-set(EIGEN_SOURCE_DIR "external/eigen")
-include_directories(${EIGEN_SOURCE_DIR})
+find_path(EIGEN3_INCLUDE_DIR "Eigen/Eigen")
+if(EIGEN3_INCLUDE_DIR)
+  include_directories(${EIGEN3_INCLUDE_DIR})
+else()
+  set(EIGEN_SOURCE_DIR "external/eigen")
+  include_directories(${EIGEN_SOURCE_DIR})
+endif()
 
 # setup PLY
-set(RPLY_SOURCE_DIR "external/rply")
-include_directories(${RPLY_SOURCE_DIR})
-add_subdirectory(${RPLY_SOURCE_DIR})
+find_package(rply REQUIRED)
+if(rply_FOUND)
+  link_libraries(rply::rply)
+else()
+  set(RPLY_SOURCE_DIR "external/rply")
+  include_directories(${RPLY_SOURCE_DIR})
+  add_subdirectory(${RPLY_SOURCE_DIR})
+endif()
 
 include(AddFileDependencies)
 include_directories(${PROJECT_SOURCE_DIR}/src/)
