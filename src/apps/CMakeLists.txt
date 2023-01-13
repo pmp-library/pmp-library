@@ -87,6 +87,11 @@ else()
   if(NOT WIN32)
     add_executable(mconvert mconvert.cpp)
     target_link_libraries(mconvert pmp)
+    if(PMP_INSTALL)
+      install(
+        TARGETS mconvert
+        DESTINATION bin)
+    endif()
   endif()
 
   if(OpenGL_FOUND AND PMP_BUILD_VIS)
@@ -117,6 +122,12 @@ else()
     add_executable(mpview mpview.cpp MeshProcessingViewer.cpp
                           MeshProcessingViewer.h)
     target_link_libraries(mpview pmp_vis)
+
+    if(PMP_INSTALL)
+      install(
+        TARGETS mview curview subdiv smoothing fairing parameterization decimation remeshing mpview
+        DESTINATION bin)
+    endif()
   endif()
 
 endif()
