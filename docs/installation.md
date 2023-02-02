@@ -12,9 +12,11 @@ with the following compilers and operating systems:
 
 | Operating System | Compiler           |
 | ---------------- | ------------------ |
-| Linux            | gcc 9.4.0          |
-| macOS            | AppleClang 13.0.0  |
+| Linux            | gcc 11.3.0         |
+| macOS            | AppleClang 14.0.0  |
 | Windows          | Visual Studio 2022 |
+
+We do not officially support older compiler versions.
 
 ## Dependencies
 
