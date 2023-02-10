@@ -253,9 +253,9 @@ void Parameterization::lscm()
         auto hc = *fh_it;
 
         // collect face vertices
-        dvec3 a = (dvec3)pos[mesh_.to_vertex(ha)];
-        dvec3 b = (dvec3)pos[mesh_.to_vertex(hb)];
-        dvec3 c = (dvec3)pos[mesh_.to_vertex(hc)];
+        auto a = (dvec3)pos[mesh_.to_vertex(ha)];
+        auto b = (dvec3)pos[mesh_.to_vertex(hb)];
+        auto c = (dvec3)pos[mesh_.to_vertex(hc)];
 
         // calculate local coordinate system
         dvec3 z = normalize(cross(normalize(c - b), normalize(a - b)));
