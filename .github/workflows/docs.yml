@@ -13,9 +13,9 @@ jobs:
         with:
           submodules: true
 
-      - name: Modify apt sources
-        if: runner.os == 'Linux'
-        run: sudo sed -i 's/azure\.//' /etc/apt/sources.list && sudo apt-get update
+      # - name: Modify apt sources
+      #   if: runner.os == 'Linux'
+      #   run: sudo sed -i 's/azure\.//' /etc/apt/sources.list && sudo apt-get update
 
       - name: Install dependencies
         run: sudo apt-get install -o Acquire::Retries=3 doxygen xorg-dev texlive-base libclang-9-dev libclang-cpp9
