@@ -63,7 +63,7 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
         // face
         else if (strncmp(s.data(), "f ", 2) == 0)
         {
-            int component(0), nv(0);
+            int component(0);
             bool end_of_vertex(false);
             char *p0, *p1(s.data() + 1);
 
@@ -134,7 +134,6 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
                 if (end_of_vertex)
                 {
                     component = 0;
-                    nv++;
                     end_of_vertex = false;
                 }
             }
