@@ -115,7 +115,7 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     if (has_colors)
         colors = mesh.vertex_property<Color>("v:color");
 
-    // #Vertice, #Faces, #Edges
+    // #Vertices, #Faces, #Edges
     items = fscanf(in, "%d %d %d\n", (int*)&nv, (int*)&nf, (int*)&ne);
     PMP_ASSERT(items);
 
@@ -218,7 +218,7 @@ void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     if (has_texcoords)
         texcoords = mesh.vertex_property<TexCoord>("v:tex");
 
-    // #Vertice, #Faces, #Edges
+    // #Vertices, #Faces, #Edges
     tfread(in, nv);
     tfread(in, nf);
     tfread(in, ne);
