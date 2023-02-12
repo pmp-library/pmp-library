@@ -141,7 +141,7 @@ Normal Normals::compute_corner_normal(const SurfaceMesh& mesh, Halfedge h,
                 n = is_triangle ? normalize(cross(p1, p2))
                                 : compute_face_normal(mesh, mesh.face(h));
 
-                // check whether normal is withing crease_angle bound
+                // check whether normal is within crease_angle bound
                 if (dot(n, nf) >= cos_crease_angle)
                 {
                     // check whether we can robustly compute angle
