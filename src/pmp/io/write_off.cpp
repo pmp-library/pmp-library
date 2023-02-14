@@ -120,7 +120,7 @@ void write_off_binary(const SurfaceMesh& mesh,
         IndexType valence = mesh.valence(f);
         tfwrite(out, valence);
         for (auto fv : mesh.vertices(f))
-            tfwrite(out, (IndexType)fv.idx());
+            tfwrite(out, fv.idx());
     }
     fclose(out);
 }
