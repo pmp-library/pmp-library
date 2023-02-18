@@ -3,7 +3,7 @@
 
 #include "MeshProcessingViewer.h"
 
-#include <pmp/algorithms/Subdivision.h>
+#include <pmp/algorithms/subdivision.h>
 #include <pmp/algorithms/Features.h>
 #include <pmp/algorithms/Decimation.h>
 #include <pmp/algorithms/Fairing.h>
@@ -293,7 +293,7 @@ void MeshProcessingViewer::process_imgui()
         {
             try
             {
-                Subdivision(mesh_).loop();
+                subdivision::loop(mesh_);
             }
             catch (const InvalidInputException& e)
             {
@@ -305,13 +305,13 @@ void MeshProcessingViewer::process_imgui()
 
         if (ImGui::Button("Quad-Tri Subdivision"))
         {
-            Subdivision(mesh_).quad_tri();
+            subdivision::quad_tri(mesh_);
             update_mesh();
         }
 
         if (ImGui::Button("Catmull-Clark Subdivision"))
         {
-            Subdivision(mesh_).catmull_clark();
+            subdivision::catmull_clark(mesh_);
             update_mesh();
         }
     }

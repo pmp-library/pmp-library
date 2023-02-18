@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/Shapes.h"
-#include "pmp/algorithms/Subdivision.h"
+#include "pmp/algorithms/subdivision.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 
 #include <cmath>
@@ -131,10 +131,9 @@ SurfaceMesh Shapes::icosahedron()
 SurfaceMesh Shapes::icosphere(size_t n_subdivisions)
 {
     auto mesh = icosahedron();
-    Subdivision subdiv(mesh);
     for (size_t i = 0; i < n_subdivisions; i++)
     {
-        subdiv.loop();
+        subdivision::loop(mesh);
         project_to_unit_sphere(mesh);
     }
     return mesh;
@@ -143,10 +142,10 @@ SurfaceMesh Shapes::icosphere(size_t n_subdivisions)
 SurfaceMesh Shapes::quad_sphere(size_t n_subdivisions)
 {
     auto mesh = hexahedron();
-    Subdivision subdiv(mesh);
+
     for (size_t i = 0; i < n_subdivisions; i++)
     {
-        subdiv.catmull_clark();
+        subdivision::catmull_clark(mesh);
         project_to_unit_sphere(mesh);
     }
     return mesh;

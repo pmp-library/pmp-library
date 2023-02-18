@@ -6,7 +6,7 @@
 #include "pmp/algorithms/Shapes.h"
 #include "pmp/algorithms/Remeshing.h"
 #include "pmp/algorithms/Features.h"
-#include "pmp/algorithms/Subdivision.h"
+#include "pmp/algorithms/subdivision.h"
 #include "pmp/algorithms/Triangulation.h"
 
 namespace pmp {
@@ -77,10 +77,9 @@ SurfaceMesh subdivided_icosahedron()
         sf.detect_angle(25);
 
         // feature-preserving subdivision
-        Subdivision subdiv(mesh);
-        subdiv.loop();
-        subdiv.loop();
-        subdiv.loop();
+        subdivision::loop(mesh);
+        subdivision::loop(mesh);
+        subdivision::loop(mesh);
     }
     return icosahedron_mesh;
 }

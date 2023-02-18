@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 
 #include "pmp/algorithms/Fairing.h"
-#include "pmp/algorithms/Subdivision.h"
+#include "pmp/algorithms/subdivision.h"
 #include "pmp/utilities.h"
 #include "Helpers.h"
 
@@ -13,7 +13,7 @@ using namespace pmp;
 TEST(FairingTest, fairing)
 {
     auto mesh = open_cone();
-    Subdivision(mesh).loop();
+    subdivision::loop(mesh);
     auto bbz = bounds(mesh).max()[2];
     Fairing sf(mesh);
     sf.fair();
@@ -24,7 +24,7 @@ TEST(FairingTest, fairing)
 TEST(FairingTest, fairing_selected)
 {
     auto mesh = open_cone();
-    Subdivision(mesh).loop();
+    subdivision::loop(mesh);
 
     auto bb = bounds(mesh);
 
