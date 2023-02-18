@@ -10,7 +10,7 @@
 
 #include "pmp/algorithms/TriangleKdTree.h"
 #include "pmp/algorithms/Curvature.h"
-#include "pmp/algorithms/Normals.h"
+#include "pmp/algorithms/normals.h"
 #include "pmp/algorithms/BarycentricCoordinates.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 #include "pmp/Timer.h"
@@ -25,7 +25,7 @@ Remeshing::Remeshing(SurfaceMesh& mesh)
 
     points_ = mesh_.vertex_property<Point>("v:point");
 
-    Normals::compute_vertex_normals(mesh_);
+    vertex_normals(mesh_);
     vnormal_ = mesh_.vertex_property<Point>("v:normal");
 
     has_feature_vertices_ = mesh_.has_vertex_property("v:feature");
@@ -45,7 +45,7 @@ void Remeshing::uniform_remeshing(Scalar edge_length, unsigned int iterations,
     {
         split_long_edges();
 
-        Normals::compute_vertex_normals(mesh_);
+        vertex_normals(mesh_);
 
         collapse_short_edges();
 
@@ -75,7 +75,7 @@ void Remeshing::adaptive_remeshing(Scalar min_edge_length,
     {
         split_long_edges();
 
-        Normals::compute_vertex_normals(mesh_);
+        vertex_normals(mesh_);
 
         collapse_short_edges();
 
@@ -239,7 +239,7 @@ void Remeshing::preprocessing()
         // build reference mesh
         refmesh_ = std::make_shared<SurfaceMesh>();
         refmesh_->assign(mesh_);
-        Normals::compute_vertex_normals(*refmesh_);
+        vertex_normals(*refmesh_);
         refpoints_ = refmesh_->vertex_property<Point>("v:point");
         refnormals_ = refmesh_->vertex_property<Point>("v:normal");
 
@@ -350,7 +350,7 @@ void Remeshing::split_long_edges()
                 mesh_.split(e, vnew);
 
                 // need normal or sizing for adaptive refinement
-                vnormal_[vnew] = Normals::compute_vertex_normal(mesh_, vnew);
+                vnormal_[vnew] = vertex_normal(mesh_, vnew);
                 vsizing_[vnew] = 0.5f * (vsizing_[v0] + vsizing_[v1]);
 
                 if (is_feature)
@@ -706,7 +706,7 @@ void Remeshing::tangential_smoothing(unsigned int iterations)
         }
 
         // update normal vectors (if not done so through projection)
-        Normals::compute_vertex_normals(mesh_);
+        vertex_normals(mesh_);
     }
 
     // project at the end

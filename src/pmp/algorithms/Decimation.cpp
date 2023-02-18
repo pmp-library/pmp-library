@@ -8,7 +8,7 @@
 #include <memory>
 
 #include "pmp/algorithms/DistancePointTriangle.h"
-#include "pmp/algorithms/Normals.h"
+#include "pmp/algorithms/normals.h"
 
 namespace pmp {
 
@@ -34,7 +34,7 @@ Decimation::Decimation(SurfaceMesh& mesh) : mesh_(mesh)
     vpoint_ = mesh_.vertex_property<Point>("v:point");
 
     // compute face normals
-    Normals::compute_face_normals(mesh_);
+    face_normals(mesh_);
     fnormal_ = mesh_.face_property<Normal>("f:normal");
 }
 
@@ -353,7 +353,7 @@ bool Decimation::is_collapse_legal(const CollapseData& cd)
             if (f != cd.fl && f != cd.fr)
             {
                 Normal n0 = fnormal_[f];
-                Normal n1 = Normals::compute_face_normal(mesh_, f);
+                Normal n1 = face_normal(mesh_, f);
                 if (dot(n0, n1) < 0.0)
                 {
                     vpoint_[cd.v0] = p0;
@@ -382,7 +382,7 @@ bool Decimation::is_collapse_legal(const CollapseData& cd)
             if (f != cd.fl && f != cd.fr)
             {
                 NormalCone nc = normal_cone_[f];
-                nc.merge(Normals::compute_face_normal(mesh_, f));
+                nc.merge(face_normal(mesh_, f));
 
                 if (f == fll)
                     nc.merge(normal_cone_[cd.fl]);
@@ -627,7 +627,7 @@ void Decimation::postprocess_collapse(const CollapseData& cd)
     {
         for (auto f : mesh_.faces(cd.v1))
         {
-            normal_cone_[f].merge(Normals::compute_face_normal(mesh_, f));
+            normal_cone_[f].merge(face_normal(mesh_, f));
         }
 
         if (cd.vl.is_valid())

@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/Curvature.h"
-#include "pmp/algorithms/Normals.h"
+#include "pmp/algorithms/normals.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
@@ -145,7 +145,7 @@ void Curvature::analyze_tensor(unsigned int post_smoothing_steps,
     // precompute face normals
     for (auto f : mesh_.faces())
     {
-        normal[f] = (dvec3)Normals::compute_face_normal(mesh_, f);
+        normal[f] = (dvec3)face_normal(mesh_, f);
     }
 
     // precompute dihedralAngle*edge_length*edge per edge

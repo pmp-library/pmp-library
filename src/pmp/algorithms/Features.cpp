@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/Features.h"
-#include "pmp/algorithms/Normals.h"
+#include "pmp/algorithms/normals.h"
 
 namespace pmp {
 
@@ -48,8 +48,8 @@ size_t Features::detect_angle(Scalar angle)
             const auto f0 = mesh_.face(mesh_.halfedge(e, 0));
             const auto f1 = mesh_.face(mesh_.halfedge(e, 1));
 
-            const Normal n0 = Normals::compute_face_normal(mesh_, f0);
-            const Normal n1 = Normals::compute_face_normal(mesh_, f1);
+            const Normal n0 = face_normal(mesh_, f0);
+            const Normal n1 = face_normal(mesh_, f1);
 
             if (dot(n0, n1) < feature_cosine)
             {
