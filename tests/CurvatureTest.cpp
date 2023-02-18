@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 
 #include "pmp/algorithms/Curvature.h"
-#include "pmp/algorithms/Shapes.h"
+#include "pmp/algorithms/shapes.h"
 
 using namespace pmp;
 
@@ -13,7 +13,7 @@ class CurvatureTest : public ::testing::Test
 public:
     CurvatureTest()
     {
-        mesh = Shapes::icosphere(5);
+        mesh = shapes::icosphere(5);
         curvature = new Curvature(mesh);
         curvature->analyze(1);
     }

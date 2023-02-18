@@ -3,7 +3,7 @@
 
 #include "Helpers.h"
 
-#include "pmp/algorithms/Shapes.h"
+#include "pmp/algorithms/shapes.h"
 #include "pmp/algorithms/Remeshing.h"
 #include "pmp/algorithms/Features.h"
 #include "pmp/algorithms/subdivision.h"
@@ -70,7 +70,7 @@ SurfaceMesh subdivided_icosahedron()
     {
         // use ref for brevity
         auto& mesh = icosahedron_mesh;
-        mesh = Shapes::icosahedron();
+        mesh = shapes::icosahedron();
 
         // select all edges as features
         Features sf(mesh);
@@ -110,7 +110,7 @@ SurfaceMesh l_shape()
 
 SurfaceMesh open_cone()
 {
-    auto mesh = Shapes::cone(8, 1, 1.5);
+    auto mesh = shapes::cone(8, 1, 1.5);
     for (auto f : mesh.faces())
         if (mesh.valence(f) > 3)
         {

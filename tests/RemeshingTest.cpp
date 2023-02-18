@@ -5,7 +5,7 @@
 
 #include "pmp/algorithms/Remeshing.h"
 #include "pmp/algorithms/Features.h"
-#include "pmp/algorithms/Shapes.h"
+#include "pmp/algorithms/shapes.h"
 #include "pmp/algorithms/Triangulation.h"
 #include "pmp/utilities.h"
 
@@ -16,7 +16,7 @@ using namespace pmp;
 // adaptive remeshing
 TEST(RemeshingTest, adaptive_remeshing_with_features)
 {
-    auto mesh = Shapes::cylinder();
+    auto mesh = shapes::cylinder();
     Triangulation(mesh).triangulate();
     Features(mesh).detect_angle(25);
     auto bb = bounds(mesh).size();
@@ -39,7 +39,7 @@ TEST(RemeshingTest, adaptive_remeshing_with_boundary)
 
 TEST(RemeshingTest, adaptive_remeshing_with_selection)
 {
-    auto mesh = Shapes::icosphere(1);
+    auto mesh = shapes::icosphere(1);
 
     // select half the vertices
     auto selected = mesh.add_vertex_property<bool>("v:selected");

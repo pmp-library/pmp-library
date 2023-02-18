@@ -1,14 +1,14 @@
 // Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/algorithms/Shapes.h"
+#include "pmp/algorithms/shapes.h"
 #include "pmp/algorithms/subdivision.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 
 #include <cmath>
 #include <algorithm>
 
-namespace pmp {
+namespace pmp::shapes {
 
 void project_to_unit_sphere(SurfaceMesh& mesh)
 {
@@ -20,7 +20,7 @@ void project_to_unit_sphere(SurfaceMesh& mesh)
     }
 }
 
-SurfaceMesh Shapes::tetrahedron()
+SurfaceMesh tetrahedron()
 {
     SurfaceMesh mesh;
     float a = 1.0f / 3.0f;
@@ -41,7 +41,7 @@ SurfaceMesh Shapes::tetrahedron()
     return mesh;
 }
 
-SurfaceMesh Shapes::hexahedron()
+SurfaceMesh hexahedron()
 {
     SurfaceMesh mesh;
 
@@ -65,7 +65,7 @@ SurfaceMesh Shapes::hexahedron()
     return mesh;
 }
 
-SurfaceMesh Shapes::octahedron()
+SurfaceMesh octahedron()
 {
     auto mesh = hexahedron();
     dual(mesh);
@@ -73,7 +73,7 @@ SurfaceMesh Shapes::octahedron()
     return mesh;
 }
 
-SurfaceMesh Shapes::dodecahedron()
+SurfaceMesh dodecahedron()
 {
     auto mesh = icosahedron();
     dual(mesh);
@@ -81,7 +81,7 @@ SurfaceMesh Shapes::dodecahedron()
     return mesh;
 }
 
-SurfaceMesh Shapes::icosahedron()
+SurfaceMesh icosahedron()
 {
     SurfaceMesh mesh;
 
@@ -128,7 +128,7 @@ SurfaceMesh Shapes::icosahedron()
     return mesh;
 }
 
-SurfaceMesh Shapes::icosphere(size_t n_subdivisions)
+SurfaceMesh icosphere(size_t n_subdivisions)
 {
     auto mesh = icosahedron();
     for (size_t i = 0; i < n_subdivisions; i++)
@@ -139,7 +139,7 @@ SurfaceMesh Shapes::icosphere(size_t n_subdivisions)
     return mesh;
 }
 
-SurfaceMesh Shapes::quad_sphere(size_t n_subdivisions)
+SurfaceMesh quad_sphere(size_t n_subdivisions)
 {
     auto mesh = hexahedron();
 
@@ -151,8 +151,8 @@ SurfaceMesh Shapes::quad_sphere(size_t n_subdivisions)
     return mesh;
 }
 
-SurfaceMesh Shapes::uv_sphere(const Point& center, Scalar radius,
-                              size_t n_slices, size_t n_stacks)
+SurfaceMesh uv_sphere(const Point& center, Scalar radius, size_t n_slices,
+                      size_t n_stacks)
 {
     SurfaceMesh mesh;
 
@@ -208,7 +208,7 @@ SurfaceMesh Shapes::uv_sphere(const Point& center, Scalar radius,
     return mesh;
 }
 
-SurfaceMesh Shapes::plane(size_t resolution)
+SurfaceMesh plane(size_t resolution)
 {
     assert(resolution >= 1);
 
@@ -243,7 +243,7 @@ SurfaceMesh Shapes::plane(size_t resolution)
     return mesh;
 }
 
-SurfaceMesh Shapes::cone(size_t n_subdivisions, Scalar radius, Scalar height)
+SurfaceMesh cone(size_t n_subdivisions, Scalar radius, Scalar height)
 {
     assert(n_subdivisions >= 3);
 
@@ -280,8 +280,7 @@ SurfaceMesh Shapes::cone(size_t n_subdivisions, Scalar radius, Scalar height)
     return mesh;
 }
 
-SurfaceMesh Shapes::cylinder(size_t n_subdivisions, Scalar radius,
-                             Scalar height)
+SurfaceMesh cylinder(size_t n_subdivisions, Scalar radius, Scalar height)
 {
     assert(n_subdivisions >= 3);
 
@@ -324,8 +323,8 @@ SurfaceMesh Shapes::cylinder(size_t n_subdivisions, Scalar radius,
     return mesh;
 }
 
-SurfaceMesh Shapes::torus(size_t radial_resolution, size_t tubular_resolution,
-                          Scalar radius, Scalar thickness)
+SurfaceMesh torus(size_t radial_resolution, size_t tubular_resolution,
+                  Scalar radius, Scalar thickness)
 {
     assert(radial_resolution >= 3);
     assert(tubular_resolution >= 3);
@@ -364,4 +363,4 @@ SurfaceMesh Shapes::torus(size_t radial_resolution, size_t tubular_resolution,
     return mesh;
 }
 
-} // namespace pmp
+} // namespace pmp::shapes

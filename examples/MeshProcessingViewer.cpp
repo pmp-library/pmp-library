@@ -11,7 +11,7 @@
 #include <pmp/algorithms/Curvature.h>
 #include <pmp/algorithms/Geodesics.h>
 #include <pmp/algorithms/HoleFilling.h>
-#include <pmp/algorithms/Shapes.h>
+#include <pmp/algorithms/shapes.h>
 #include <pmp/algorithms/Triangulation.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 #include <pmp/utilities.h>
@@ -119,31 +119,31 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             switch (key)
             {
                 case GLFW_KEY_1:
-                    mesh_.assign(Shapes::tetrahedron());
+                    mesh_.assign(shapes::tetrahedron());
                     break;
                 case GLFW_KEY_2:
-                    mesh_.assign(Shapes::octahedron());
+                    mesh_.assign(shapes::octahedron());
                     break;
                 case GLFW_KEY_3:
-                    mesh_.assign(Shapes::hexahedron());
+                    mesh_.assign(shapes::hexahedron());
                     break;
                 case GLFW_KEY_4:
-                    mesh_.assign(Shapes::icosahedron());
+                    mesh_.assign(shapes::icosahedron());
                     break;
                 case GLFW_KEY_5:
-                    mesh_.assign(Shapes::dodecahedron());
+                    mesh_.assign(shapes::dodecahedron());
                     break;
                 case GLFW_KEY_6:
-                    mesh_.assign(Shapes::icosphere(3));
+                    mesh_.assign(shapes::icosphere(3));
                     break;
                 case GLFW_KEY_7:
-                    mesh_.assign(Shapes::quad_sphere(3));
+                    mesh_.assign(shapes::quad_sphere(3));
                     break;
                 case GLFW_KEY_8:
-                    mesh_.assign(Shapes::uv_sphere());
+                    mesh_.assign(shapes::uv_sphere());
                     break;
                 case GLFW_KEY_9:
-                    mesh_.assign(Shapes::torus());
+                    mesh_.assign(shapes::torus());
                     break;
             }
 

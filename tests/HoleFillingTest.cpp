@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 
 #include "pmp/algorithms/HoleFilling.h"
-#include "pmp/algorithms/Shapes.h"
+#include "pmp/algorithms/shapes.h"
 
 #include "Helpers.h"
 

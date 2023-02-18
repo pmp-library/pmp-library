@@ -5,7 +5,7 @@
 
 #include <pmp/SurfaceMesh.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
-#include <pmp/algorithms/Shapes.h>
+#include <pmp/algorithms/shapes.h>
 
 #include "Helpers.h"
 
@@ -40,7 +40,7 @@ public:
     }
 };
 
-SurfaceMesh DifferentialGeometryTest::sphere = Shapes::icosphere(5);
+SurfaceMesh DifferentialGeometryTest::sphere = shapes::icosphere(5);
 
 TEST_F(DifferentialGeometryTest, triangle_area_points)
 {

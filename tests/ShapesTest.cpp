@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/Shapes.h>
+#include <pmp/algorithms/shapes.h>
 
 using namespace pmp;
 
@@ -22,7 +22,7 @@ bool vertices_on_sphere(const SurfaceMesh& mesh)
 
 TEST(ShapesTest, tetrahedron)
 {
-    auto mesh = Shapes::tetrahedron();
+    auto mesh = shapes::tetrahedron();
     EXPECT_EQ(mesh.n_vertices(), 4u);
     EXPECT_EQ(mesh.n_edges(), 6u);
     EXPECT_EQ(mesh.n_faces(), 4u);
@@ -32,7 +32,7 @@ TEST(ShapesTest, tetrahedron)
 
 TEST(ShapesTest, octahedron)
 {
-    auto mesh = Shapes::octahedron();
+    auto mesh = shapes::octahedron();
     EXPECT_EQ(mesh.n_vertices(), 6u);
     EXPECT_EQ(mesh.n_edges(), 12u);
     EXPECT_EQ(mesh.n_faces(), 8u);
@@ -42,7 +42,7 @@ TEST(ShapesTest, octahedron)
 
 TEST(ShapesTest, hexahedron)
 {
-    auto mesh = Shapes::hexahedron();
+    auto mesh = shapes::hexahedron();
     EXPECT_EQ(mesh.n_vertices(), 8u);
     EXPECT_EQ(mesh.n_edges(), 12u);
     EXPECT_EQ(mesh.n_faces(), 6u);
@@ -52,7 +52,7 @@ TEST(ShapesTest, hexahedron)
 
 TEST(ShapesTest, icosahedron)
 {
-    auto mesh = Shapes::icosahedron();
+    auto mesh = shapes::icosahedron();
     EXPECT_EQ(mesh.n_vertices(), 12u);
     EXPECT_EQ(mesh.n_edges(), 30u);
     EXPECT_EQ(mesh.n_faces(), 20u);
@@ -62,7 +62,7 @@ TEST(ShapesTest, icosahedron)
 
 TEST(ShapesTest, dodecahedron)
 {
-    auto mesh = Shapes::dodecahedron();
+    auto mesh = shapes::dodecahedron();
     EXPECT_EQ(mesh.n_vertices(), 20u);
     EXPECT_EQ(mesh.n_edges(), 30u);
     EXPECT_EQ(mesh.n_faces(), 12u);
@@ -73,7 +73,7 @@ TEST(ShapesTest, dodecahedron)
 
 TEST(ShapesTest, icosphere)
 {
-    auto mesh = Shapes::icosphere();
+    auto mesh = shapes::icosphere();
     EXPECT_EQ(mesh.n_vertices(), 642u);
     EXPECT_EQ(mesh.n_edges(), 1920u);
     EXPECT_EQ(mesh.n_faces(), 1280u);
@@ -83,7 +83,7 @@ TEST(ShapesTest, icosphere)
 
 TEST(ShapesTest, quad_sphere)
 {
-    auto mesh = Shapes::quad_sphere();
+    auto mesh = shapes::quad_sphere();
     EXPECT_EQ(mesh.n_vertices(), 386u);
     EXPECT_EQ(mesh.n_edges(), 768u);
     EXPECT_EQ(mesh.n_faces(), 384u);
@@ -93,7 +93,7 @@ TEST(ShapesTest, quad_sphere)
 
 TEST(ShapesTest, uv_sphere)
 {
-    auto mesh = Shapes::uv_sphere();
+    auto mesh = shapes::uv_sphere();
     EXPECT_EQ(mesh.n_vertices(), 212u);
     EXPECT_EQ(mesh.n_edges(), 435u);
     EXPECT_EQ(mesh.n_faces(), 225u);
@@ -104,7 +104,7 @@ TEST(ShapesTest, uv_sphere)
 
 TEST(ShapesTest, plane_minimal)
 {
-    auto mesh = Shapes::plane(1);
+    auto mesh = shapes::plane(1);
     EXPECT_EQ(mesh.n_vertices(), 4u);
     EXPECT_EQ(mesh.n_edges(), 4u);
     EXPECT_EQ(mesh.n_faces(), 1u);
@@ -113,7 +113,7 @@ TEST(ShapesTest, plane_minimal)
 
 TEST(ShapesTest, plane_planar)
 {
-    auto mesh = Shapes::plane();
+    auto mesh = shapes::plane();
     Scalar z_sum = 0;
     for (auto v : mesh.vertices())
         z_sum += mesh.position(v)[2];
@@ -122,7 +122,7 @@ TEST(ShapesTest, plane_planar)
 
 TEST(ShapesTest, plane_default)
 {
-    auto mesh = Shapes::plane();
+    auto mesh = shapes::plane();
     EXPECT_EQ(mesh.n_vertices(), 25u);
     EXPECT_EQ(mesh.n_edges(), 40u);
     EXPECT_EQ(mesh.n_faces(), 16u);
@@ -130,7 +130,7 @@ TEST(ShapesTest, plane_default)
 
 TEST(ShapesTest, cone)
 {
-    auto mesh = Shapes::cone(5);
+    auto mesh = shapes::cone(5);
     EXPECT_EQ(mesh.n_vertices(), 6u);
     EXPECT_EQ(mesh.n_edges(), 10u);
     EXPECT_EQ(mesh.n_faces(), 6u);
@@ -138,7 +138,7 @@ TEST(ShapesTest, cone)
 
 TEST(ShapesTest, cylinder)
 {
-    auto mesh = Shapes::cylinder(3);
+    auto mesh = shapes::cylinder(3);
     EXPECT_EQ(mesh.n_vertices(), 6u);
     EXPECT_EQ(mesh.n_edges(), 9u);
     EXPECT_EQ(mesh.n_faces(), 5u);
@@ -146,7 +146,7 @@ TEST(ShapesTest, cylinder)
 
 TEST(ShapesTest, torus)
 {
-    auto mesh = Shapes::torus();
+    auto mesh = shapes::torus();
     EXPECT_EQ(mesh.n_vertices(), 800u);
     EXPECT_EQ(mesh.n_edges(), 1600u);
     EXPECT_EQ(mesh.n_faces(), 800u);

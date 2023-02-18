@@ -4,14 +4,14 @@
 #include "gtest/gtest.h"
 
 #include "pmp/algorithms/Features.h"
-#include "pmp/algorithms/Shapes.h"
+#include "pmp/algorithms/shapes.h"
 #include "Helpers.h"
 
 using namespace pmp;
 
 TEST(FeaturesTest, detect_angle)
 {
-    auto mesh = Shapes::hexahedron();
+    auto mesh = shapes::hexahedron();
     auto nf = Features(mesh).detect_angle(25);
     EXPECT_EQ(nf, 12u);
 }
