@@ -293,7 +293,7 @@ void MeshProcessingViewer::process_imgui()
         {
             try
             {
-                subdivision::loop(mesh_);
+                loop_subdivision(mesh_);
             }
             catch (const InvalidInputException& e)
             {
@@ -305,13 +305,13 @@ void MeshProcessingViewer::process_imgui()
 
         if (ImGui::Button("Quad-Tri Subdivision"))
         {
-            subdivision::quad_tri(mesh_);
+            quad_tri_subdivision(mesh_);
             update_mesh();
         }
 
         if (ImGui::Button("Catmull-Clark Subdivision"))
         {
-            subdivision::catmull_clark(mesh_);
+            catmull_clark_subdivision(mesh_);
             update_mesh();
         }
     }

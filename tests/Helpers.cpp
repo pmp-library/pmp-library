@@ -77,9 +77,9 @@ SurfaceMesh subdivided_icosahedron()
         sf.detect_angle(25);
 
         // feature-preserving subdivision
-        subdivision::loop(mesh);
-        subdivision::loop(mesh);
-        subdivision::loop(mesh);
+        loop_subdivision(mesh);
+        loop_subdivision(mesh);
+        loop_subdivision(mesh);
     }
     return icosahedron_mesh;
 }

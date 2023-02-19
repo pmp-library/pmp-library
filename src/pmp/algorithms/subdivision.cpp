@@ -4,9 +4,9 @@
 #include "pmp/algorithms/subdivision.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 
-namespace pmp::subdivision {
+namespace pmp {
 
-void catmull_clark(SurfaceMesh& mesh)
+void catmull_clark_subdivision(SurfaceMesh& mesh)
 {
     auto points_ = mesh.vertex_property<Point>("v:point");
     auto vfeature_ = mesh.get_vertex_property<bool>("v:feature");
@@ -177,7 +177,7 @@ void catmull_clark(SurfaceMesh& mesh)
     mesh.remove_face_property(fpoint);
 }
 
-void loop(SurfaceMesh& mesh)
+void loop_subdivision(SurfaceMesh& mesh)
 {
     auto points_ = mesh.vertex_property<Point>("v:point");
     auto vfeature_ = mesh.get_vertex_property<bool>("v:feature");
@@ -341,7 +341,7 @@ void loop(SurfaceMesh& mesh)
     mesh.remove_edge_property(epoint);
 }
 
-void quad_tri(SurfaceMesh& mesh)
+void quad_tri_subdivision(SurfaceMesh& mesh)
 {
     auto points_ = mesh.vertex_property<Point>("v:point");
 
@@ -481,4 +481,4 @@ void quad_tri(SurfaceMesh& mesh)
     mesh.remove_vertex_property(new_pos);
 }
 
-} // namespace pmp::subdivision
+} // namespace pmp

@@ -133,7 +133,7 @@ SurfaceMesh icosphere(size_t n_subdivisions)
     auto mesh = icosahedron();
     for (size_t i = 0; i < n_subdivisions; i++)
     {
-        subdivision::loop(mesh);
+        loop_subdivision(mesh);
         project_to_unit_sphere(mesh);
     }
     return mesh;
@@ -145,7 +145,7 @@ SurfaceMesh quad_sphere(size_t n_subdivisions)
 
     for (size_t i = 0; i < n_subdivisions; i++)
     {
-        subdivision::catmull_clark(mesh);
+        catmull_clark_subdivision(mesh);
         project_to_unit_sphere(mesh);
     }
     return mesh;

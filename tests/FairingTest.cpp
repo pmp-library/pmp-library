@@ -13,7 +13,7 @@ using namespace pmp;
 TEST(FairingTest, fairing)
 {
     auto mesh = open_cone();
-    subdivision::loop(mesh);
+    loop_subdivision(mesh);
     auto bbz = bounds(mesh).max()[2];
     Fairing sf(mesh);
     sf.fair();
@@ -24,7 +24,7 @@ TEST(FairingTest, fairing)
 TEST(FairingTest, fairing_selected)
 {
     auto mesh = open_cone();
-    subdivision::loop(mesh);
+    loop_subdivision(mesh);
 
     auto bb = bounds(mesh);
 
