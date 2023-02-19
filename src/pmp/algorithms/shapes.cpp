@@ -8,7 +8,7 @@
 #include <cmath>
 #include <algorithm>
 
-namespace pmp::shapes {
+namespace pmp {
 
 void project_to_unit_sphere(SurfaceMesh& mesh)
 {
@@ -363,4 +363,4 @@ SurfaceMesh torus(size_t radial_resolution, size_t tubular_resolution,
     return mesh;
 }
 
-} // namespace pmp::shapes
+} // namespace pmp

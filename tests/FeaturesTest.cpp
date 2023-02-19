@@ -11,7 +11,7 @@ using namespace pmp;
 
 TEST(FeaturesTest, detect_angle)
 {
-    auto mesh = shapes::hexahedron();
+    auto mesh = hexahedron();
     auto nf = Features(mesh).detect_angle(25);
     EXPECT_EQ(nf, 12u);
 }

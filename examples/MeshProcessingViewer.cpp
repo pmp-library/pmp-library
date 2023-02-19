@@ -119,31 +119,31 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             switch (key)
             {
                 case GLFW_KEY_1:
-                    mesh_.assign(shapes::tetrahedron());
+                    mesh_.assign(tetrahedron());
                     break;
                 case GLFW_KEY_2:
-                    mesh_.assign(shapes::octahedron());
+                    mesh_.assign(octahedron());
                     break;
                 case GLFW_KEY_3:
-                    mesh_.assign(shapes::hexahedron());
+                    mesh_.assign(hexahedron());
                     break;
                 case GLFW_KEY_4:
-                    mesh_.assign(shapes::icosahedron());
+                    mesh_.assign(icosahedron());
                     break;
                 case GLFW_KEY_5:
-                    mesh_.assign(shapes::dodecahedron());
+                    mesh_.assign(dodecahedron());
                     break;
                 case GLFW_KEY_6:
-                    mesh_.assign(shapes::icosphere(3));
+                    mesh_.assign(icosphere(3));
                     break;
                 case GLFW_KEY_7:
-                    mesh_.assign(shapes::quad_sphere(3));
+                    mesh_.assign(quad_sphere(3));
                     break;
                 case GLFW_KEY_8:
-                    mesh_.assign(shapes::uv_sphere());
+                    mesh_.assign(uv_sphere());
                     break;
                 case GLFW_KEY_9:
-                    mesh_.assign(shapes::torus());
+                    mesh_.assign(torus());
                     break;
             }
 

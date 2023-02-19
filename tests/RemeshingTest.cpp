@@ -16,7 +16,7 @@ using namespace pmp;
 // adaptive remeshing
 TEST(RemeshingTest, adaptive_remeshing_with_features)
 {
-    auto mesh = shapes::cylinder();
+    auto mesh = cylinder();
     Triangulation(mesh).triangulate();
     Features(mesh).detect_angle(25);
     auto bb = bounds(mesh).size();
@@ -39,7 +39,7 @@ TEST(RemeshingTest, adaptive_remeshing_with_boundary)
 
 TEST(RemeshingTest, adaptive_remeshing_with_selection)
 {
-    auto mesh = shapes::icosphere(1);
+    auto mesh = icosphere(1);
 
     // select half the vertices
     auto selected = mesh.add_vertex_property<bool>("v:selected");

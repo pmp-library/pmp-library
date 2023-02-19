@@ -11,7 +11,7 @@ using namespace pmp;
 
 TEST(NormalsTest, vertex_normals)
 {
-    auto mesh = shapes::icosahedron();
+    auto mesh = icosahedron();
     vertex_normals(mesh);
     auto vnormals = mesh.get_vertex_property<Normal>("v:normal");
     auto vn0 = vnormals[Vertex(0)];
@@ -20,7 +20,7 @@ TEST(NormalsTest, vertex_normals)
 
 TEST(NormalsTest, face_normals)
 {
-    auto mesh = shapes::icosahedron();
+    auto mesh = icosahedron();
     face_normals(mesh);
     auto fnormals = mesh.get_face_property<Normal>("f:normal");
     auto fn0 = fnormals[Face(0)];
@@ -29,7 +29,7 @@ TEST(NormalsTest, face_normals)
 
 TEST(NormalsTest, corner_normal)
 {
-    auto mesh = shapes::icosahedron();
+    auto mesh = icosahedron();
     auto h = Halfedge(0);
     auto n = corner_normal(mesh, h, (Scalar)M_PI / 3.0);
     EXPECT_GT(norm(n), 0);

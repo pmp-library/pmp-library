@@ -5,7 +5,7 @@
 
 #include "pmp/SurfaceMesh.h"
 
-namespace pmp::shapes {
+namespace pmp {
 
 //! Generate tetrahedron.
 SurfaceMesh tetrahedron();
@@ -69,4 +69,4 @@ SurfaceMesh cylinder(size_t n_subdivisions = 30, Scalar radius = 1.0,
 SurfaceMesh torus(size_t radial_resolution = 20, size_t tubular_resolution = 40,
                   Scalar radius = 1.0, Scalar thickness = 0.4);
 
-} // namespace pmp::shapes
+} // namespace pmp

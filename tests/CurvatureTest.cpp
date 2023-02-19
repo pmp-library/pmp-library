@@ -13,7 +13,7 @@ class CurvatureTest : public ::testing::Test
 public:
     CurvatureTest()
     {
-        mesh = shapes::icosphere(5);
+        mesh = icosphere(5);
         curvature = new Curvature(mesh);
         curvature->analyze(1);
     }

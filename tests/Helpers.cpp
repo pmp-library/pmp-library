@@ -70,7 +70,7 @@ SurfaceMesh subdivided_icosahedron()
     {
         // use ref for brevity
         auto& mesh = icosahedron_mesh;
-        mesh = shapes::icosahedron();
+        mesh = icosahedron();
 
         // select all edges as features
         Features sf(mesh);
@@ -110,7 +110,7 @@ SurfaceMesh l_shape()
 
 SurfaceMesh open_cone()
 {
-    auto mesh = shapes::cone(8, 1, 1.5);
+    auto mesh = cone(8, 1, 1.5);
     for (auto f : mesh.faces())
         if (mesh.valence(f) > 3)
         {

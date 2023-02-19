@@ -40,7 +40,7 @@ public:
     }
 };
 
-SurfaceMesh DifferentialGeometryTest::sphere = shapes::icosphere(5);
+SurfaceMesh DifferentialGeometryTest::sphere = icosphere(5);
 
 TEST_F(DifferentialGeometryTest, triangle_area_points)
 {

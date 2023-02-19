@@ -12,7 +12,7 @@ using namespace pmp;
 TEST(GeodesicsTest, geodesic)
 {
     // generate unit sphere mesh
-    SurfaceMesh mesh = shapes::icosphere(5);
+    SurfaceMesh mesh = icosphere(5);
 
     // compute geodesic distance from first vertex
     Geodesics geodist(mesh);
@@ -67,7 +67,7 @@ TEST(GeodesicsTest, geodesic_symmetry)
 TEST(GeodesicsTest, geodesic_maxnum)
 {
     // generate unit sphere mesh
-    SurfaceMesh mesh = shapes::icosphere(3);
+    SurfaceMesh mesh = icosphere(3);
 
     // compute geodesic distance from first vertex
     unsigned int maxnum = 42;
