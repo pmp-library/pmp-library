@@ -4,7 +4,7 @@
 #include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/subdivision.h>
 #include <pmp/algorithms/Features.h>
-#include <pmp/algorithms/Triangulation.h>
+#include <pmp/algorithms/triangulation.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -36,8 +36,7 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Triangulate Mesh"))
         {
-            Triangulation tesselator(mesh_);
-            tesselator.triangulate();
+            triangulate(mesh_);
             update_mesh();
         }
 

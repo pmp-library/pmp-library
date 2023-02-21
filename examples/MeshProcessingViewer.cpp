@@ -12,7 +12,7 @@
 #include <pmp/algorithms/Geodesics.h>
 #include <pmp/algorithms/HoleFilling.h>
 #include <pmp/algorithms/shapes.h>
-#include <pmp/algorithms/Triangulation.h>
+#include <pmp/algorithms/triangulation.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 #include <pmp/utilities.h>
 
@@ -101,8 +101,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         }
         case GLFW_KEY_T:
         {
-            Triangulation tr(mesh_);
-            tr.triangulate();
+            triangulate(mesh_);
             update_mesh();
             break;
         }

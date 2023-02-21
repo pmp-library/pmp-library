@@ -1,26 +1,71 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/algorithms/Triangulation.h"
+#include "pmp/algorithms/triangulation.h"
 
 #include <limits>
 
 namespace pmp {
+
+//! \brief Triangulate polygons to get a pure triangle mesh.
+//! \details Triangulate n-gons into n-2 triangles. Finds the triangulation that
+//! minimizes the sum of squared triangle areas, or the one that maximizes the
+//! minimum angle.
+//! See \cite liepa_2003_filling for details.
+//! \ingroup algorithms
+class Triangulation
+{
+public:
+    //! Construct with mesh
+    Triangulation(SurfaceMesh& mesh);
+
+    //! Triangulate all faces
+    void triangulate(
+        TriangulationObjective o = TriangulationObjective::MIN_AREA);
+
+    //! Triangulate the Face \p f
+    //! \pre The input face is manifold
+    //! \throw InvalidInputException in case the input precondition is violated
+    void triangulate(
+        Face f, TriangulationObjective o = TriangulationObjective::MIN_AREA);
+
+private:
+    // Compute the weight of the triangle (i,j,k).
+    Scalar compute_weight(int i, int j, int k) const;
+
+    // Does edge (a,b) exist?
+    bool is_edge(Vertex a, Vertex b) const;
+
+    // Add edge from vertex i to j.
+    bool insert_edge(int i, int j);
+
+    // mesh and properties
+    SurfaceMesh& mesh_;
+    VertexProperty<Point> points_;
+    std::vector<Halfedge> halfedges_;
+    std::vector<Vertex> vertices_;
+
+    // data for computing optimal triangulation
+    std::vector<std::vector<Scalar>> weight_;
+    std::vector<std::vector<int>> index_;
+
+    TriangulationObjective objective_;
+};
 
 Triangulation::Triangulation(SurfaceMesh& mesh) : mesh_(mesh)
 {
     points_ = mesh_.vertex_property<Point>("v:point");
 }
 
-void Triangulation::triangulate(Objective o)
+void Triangulation::triangulate(TriangulationObjective o)
 {
     for (auto f : mesh_.faces())
         triangulate(f, o);
 }
 
-void Triangulation::triangulate(Face f, Objective o)
+void Triangulation::triangulate(Face f, TriangulationObjective o)
 {
-    // store objective
+    // store TriangulationObjective
     objective_ = o;
 
     // collect polygon halfedges
@@ -77,11 +122,11 @@ void Triangulation::triangulate(Face f, Objective o)
             {
                 switch (objective_)
                 {
-                    case Objective::MIN_AREA:
+                    case TriangulationObjective::MIN_AREA:
                         w = weight_[i][m] + compute_weight(i, m, k) +
                             weight_[m][k];
                         break;
-                    case Objective::MAX_ANGLE:
+                    case TriangulationObjective::MAX_ANGLE:
                         w = std::max(
                             weight_[i][m],
                             std::max(compute_weight(i, m, k), weight_[m][k]));
@@ -152,14 +197,14 @@ Scalar Triangulation::compute_weight(int i, int j, int k) const
     switch (objective_)
     {
         // compute squared triangle area
-        case Objective::MIN_AREA:
+        case TriangulationObjective::MIN_AREA:
             w = sqrnorm(cross(pb - pa, pc - pa));
             break;
 
         // compute one over minimum angle
         // or cosine of minimum angle
         // maximum cosine (which should then be minimized)
-        case Objective::MAX_ANGLE:
+        case TriangulationObjective::MAX_ANGLE:
             Scalar cosa = dot(normalize(pb - pa), normalize(pc - pa));
             Scalar cosb = dot(normalize(pa - pb), normalize(pc - pb));
             Scalar cosc = dot(normalize(pa - pc), normalize(pb - pc));
@@ -217,6 +262,16 @@ bool Triangulation::insert_edge(int i, int j)
     }
 
     return false;
+}
+
+void triangulate(SurfaceMesh& mesh, TriangulationObjective o)
+{
+    Triangulation(mesh).triangulate(o);
+}
+
+void triangulate(SurfaceMesh& mesh, Face f, TriangulationObjective o)
+{
+    Triangulation(mesh).triangulate(f, o);
 }
 
 } // namespace pmp
