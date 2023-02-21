@@ -7,25 +7,14 @@
 
 namespace pmp {
 
-//! \brief Triangulate polygons to get a pure triangle mesh.
-//! \details Triangulate n-gons into n-2 triangles. Finds the triangulation that
-//! minimizes the sum of squared triangle areas, or the one that maximizes the
-//! minimum angle.
-//! See \cite liepa_2003_filling for details.
-//! \ingroup algorithms
 class Triangulation
 {
 public:
-    //! Construct with mesh
     Triangulation(SurfaceMesh& mesh);
 
-    //! Triangulate all faces
     void triangulate(
         TriangulationObjective o = TriangulationObjective::min_area);
 
-    //! Triangulate the Face \p f
-    //! \pre The input face is manifold
-    //! \throw InvalidInputException in case the input precondition is violated
     void triangulate(
         Face f, TriangulationObjective o = TriangulationObjective::min_area);
 

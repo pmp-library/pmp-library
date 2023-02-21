@@ -16,7 +16,12 @@ enum class TriangulationObjective
     max_angle //!< maximize the minimum angle
 };
 
-//! Triangulate all faces
+//! \brief Triangulate polygons to get a pure triangle mesh.
+//! \details Triangulate n-gons into n-2 triangles. Finds the triangulation that
+//! minimizes the sum of squared triangle areas, or the one that maximizes the
+//! minimum angle.
+//! See \cite liepa_2003_filling for details.
+//! \ingroup algorithms
 void triangulate(SurfaceMesh& mesh,
                  TriangulationObjective o = TriangulationObjective::min_area);
 
