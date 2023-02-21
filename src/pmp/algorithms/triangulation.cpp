@@ -21,13 +21,13 @@ public:
 
     //! Triangulate all faces
     void triangulate(
-        TriangulationObjective o = TriangulationObjective::MIN_AREA);
+        TriangulationObjective o = TriangulationObjective::min_area);
 
     //! Triangulate the Face \p f
     //! \pre The input face is manifold
     //! \throw InvalidInputException in case the input precondition is violated
     void triangulate(
-        Face f, TriangulationObjective o = TriangulationObjective::MIN_AREA);
+        Face f, TriangulationObjective o = TriangulationObjective::min_area);
 
 private:
     // Compute the weight of the triangle (i,j,k).
@@ -122,11 +122,11 @@ void Triangulation::triangulate(Face f, TriangulationObjective o)
             {
                 switch (objective_)
                 {
-                    case TriangulationObjective::MIN_AREA:
+                    case TriangulationObjective::min_area:
                         w = weight_[i][m] + compute_weight(i, m, k) +
                             weight_[m][k];
                         break;
-                    case TriangulationObjective::MAX_ANGLE:
+                    case TriangulationObjective::max_angle:
                         w = std::max(
                             weight_[i][m],
                             std::max(compute_weight(i, m, k), weight_[m][k]));
@@ -197,14 +197,14 @@ Scalar Triangulation::compute_weight(int i, int j, int k) const
     switch (objective_)
     {
         // compute squared triangle area
-        case TriangulationObjective::MIN_AREA:
+        case TriangulationObjective::min_area:
             w = sqrnorm(cross(pb - pa, pc - pa));
             break;
 
         // compute one over minimum angle
         // or cosine of minimum angle
         // maximum cosine (which should then be minimized)
-        case TriangulationObjective::MAX_ANGLE:
+        case TriangulationObjective::max_angle:
             Scalar cosa = dot(normalize(pb - pa), normalize(pc - pa));
             Scalar cosb = dot(normalize(pa - pb), normalize(pc - pb));
             Scalar cosc = dot(normalize(pa - pc), normalize(pb - pc));
