@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/Parameterization.h>
+#include <pmp/algorithms/parameterization.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -55,8 +55,7 @@ void Viewer::process_imgui()
         {
             try
             {
-                Parameterization param(mesh_);
-                param.harmonic();
+                harmonic_parameterization(mesh_);
             }
             catch (const std::exception& e)
             {
@@ -73,8 +72,7 @@ void Viewer::process_imgui()
         {
             try
             {
-                Parameterization param(mesh_);
-                param.lscm();
+                lscm_parameterization(mesh_);
             }
             catch (const std::exception& e)
             {

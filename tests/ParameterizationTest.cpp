@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-#include "pmp/algorithms/Parameterization.h"
+#include "pmp/algorithms/parameterization.h"
 #include "Helpers.h"
 
 using namespace pmp;
@@ -11,9 +11,8 @@ using namespace pmp;
 TEST(ParameterizationTest, parameterization)
 {
     auto mesh = open_cone();
-    Parameterization param(mesh);
-    param.harmonic(false);
-    param.harmonic(true);
+    harmonic_parameterization(mesh, false);
+    harmonic_parameterization(mesh, true);
     auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);
 }
@@ -21,8 +20,7 @@ TEST(ParameterizationTest, parameterization)
 TEST(ParameterizationTest, lscm)
 {
     auto mesh = open_cone();
-    Parameterization param(mesh);
-    param.lscm();
+    lscm_parameterization(mesh);
     auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);
 }
