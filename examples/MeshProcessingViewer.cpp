@@ -54,22 +54,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         }
         case GLFW_KEY_O: // change face orientation
         {
-            SurfaceMeshGL new_mesh;
-            for (auto v : mesh_.vertices())
-            {
-                new_mesh.add_vertex(mesh_.position(v));
-            }
-            for (auto f : mesh_.faces())
-            {
-                std::vector<Vertex> vertices;
-                for (auto v : mesh_.vertices(f))
-                {
-                    vertices.push_back(v);
-                }
-                std::reverse(vertices.begin(), vertices.end());
-                new_mesh.add_face(vertices);
-            }
-            mesh_ = new_mesh;
+            flip_faces(mesh_);
             update_mesh();
             break;
         }

@@ -11,4 +11,7 @@ namespace pmp {
 //! Compute the bounding box of \p mesh .
 BoundingBox bounds(const SurfaceMesh& mesh);
 
+//! Flip the orientation of all faces in \p mesh .
+void flip_faces(SurfaceMesh& mesh);
+
 } // namespace pmp
