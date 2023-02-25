@@ -8,6 +8,10 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+### Added
+
+- Add function `flip_faces()` to reverse face orientation in a mesh (#123)
+
 ### Changed
 
 - Fix `Mat3::inverse()` to use `fabs()`
