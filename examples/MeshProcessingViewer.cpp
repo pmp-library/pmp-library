@@ -6,7 +6,6 @@
 #include <pmp/algorithms/subdivision.h>
 #include <pmp/algorithms/Features.h>
 #include <pmp/algorithms/Decimation.h>
-#include <pmp/algorithms/fairing.h>
 #include <pmp/algorithms/Remeshing.h>
 #include <pmp/algorithms/Curvature.h>
 #include <pmp/algorithms/Geodesics.h>
