@@ -1,7 +1,7 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/algorithms/Fairing.h"
+#include "pmp/algorithms/fairing.h"
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
@@ -13,45 +13,48 @@ namespace pmp {
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;
 
-Fairing::Fairing(SurfaceMesh& mesh) : mesh_(mesh)
+void setup_matrix_row(const SurfaceMesh& mesh, const Vertex v,
+                      VertexProperty<double> vweight,
+                      EdgeProperty<double> eweight, unsigned int laplace_degree,
+                      std::map<Vertex, double>& row);
+
+void minimize_area(SurfaceMesh& mesh)
+{
+    fair(mesh, 1);
+}
+
+void minimize_curvature(SurfaceMesh& mesh)
+{
+    fair(mesh, 2);
+}
+
+void fair(SurfaceMesh& mesh, unsigned int k)
 {
     // get & add properties
-    points_ = mesh_.vertex_property<Point>("v:point");
-    vselected_ = mesh_.get_vertex_property<bool>("v:selected");
-    vlocked_ = mesh_.add_vertex_property<bool>("fairing:locked");
-    vweight_ = mesh_.add_vertex_property<double>("fairing:vweight");
-    eweight_ = mesh_.add_edge_property<double>("fairing:eweight");
-    idx_ = mesh_.add_vertex_property<int>("fairing:idx", -1);
-}
+    auto points = mesh.vertex_property<Point>("v:point");
+    auto vselected = mesh.get_vertex_property<bool>("v:selected");
+    auto vlocked = mesh.add_vertex_property<bool>("fairing:locked");
+    auto vweight = mesh.add_vertex_property<double>("fairing:vweight");
+    auto eweight = mesh.add_edge_property<double>("fairing:eweight");
+    auto idx = mesh.add_vertex_property<int>("fairing:idx", -1);
 
-Fairing::~Fairing()
-{
-    // remove properties
-    mesh_.remove_vertex_property(vlocked_);
-    mesh_.remove_vertex_property(vweight_);
-    mesh_.remove_edge_property(eweight_);
-    mesh_.remove_vertex_property(idx_);
-}
-
-void Fairing::fair(unsigned int k)
-{
     // compute cotan weights
-    for (auto v : mesh_.vertices())
+    for (auto v : mesh.vertices())
     {
-        vweight_[v] = 0.5 / voronoi_area(mesh_, v);
+        vweight[v] = 0.5 / voronoi_area(mesh, v);
     }
-    for (auto e : mesh_.edges())
+    for (auto e : mesh.edges())
     {
-        eweight_[e] = std::max(0.0, cotan_weight(mesh_, e));
+        eweight[e] = std::max(0.0, cotan_weight(mesh, e));
     }
 
     // check whether some vertices are selected
     bool no_selection = true;
-    if (vselected_)
+    if (vselected)
     {
-        for (auto v : mesh_.vertices())
+        for (auto v : mesh.vertices())
         {
-            if (vselected_[v])
+            if (vselected[v])
             {
                 no_selection = false;
                 break;
@@ -60,26 +63,26 @@ void Fairing::fair(unsigned int k)
     }
 
     // lock k locked boundary rings
-    for (auto v : mesh_.vertices())
+    for (auto v : mesh.vertices())
     {
         // lock boundary
-        if (mesh_.is_boundary(v))
+        if (mesh.is_boundary(v))
         {
-            vlocked_[v] = true;
+            vlocked[v] = true;
 
             // lock one-ring of boundary
             if (k > 1)
             {
-                for (auto vv : mesh_.vertices(v))
+                for (auto vv : mesh.vertices(v))
                 {
-                    vlocked_[vv] = true;
+                    vlocked[vv] = true;
 
                     // lock two-ring of boundary
                     if (k > 2)
                     {
-                        for (auto vvv : mesh_.vertices(vv))
+                        for (auto vvv : mesh.vertices(vv))
                         {
-                            vlocked_[vvv] = true;
+                            vlocked[vvv] = true;
                         }
                     }
                 }
@@ -88,33 +91,33 @@ void Fairing::fair(unsigned int k)
     }
 
     // lock un-selected and isolated vertices
-    for (auto v : mesh_.vertices())
+    for (auto v : mesh.vertices())
     {
-        if (!no_selection && !vselected_[v])
+        if (!no_selection && !vselected[v])
         {
-            vlocked_[v] = true;
+            vlocked[v] = true;
         }
 
-        if (mesh_.is_isolated(v))
+        if (mesh.is_isolated(v))
         {
-            vlocked_[v] = true;
+            vlocked[v] = true;
         }
     }
 
     // collect free vertices
     std::vector<Vertex> vertices;
-    vertices.reserve(mesh_.n_vertices());
-    for (auto v : mesh_.vertices())
+    vertices.reserve(mesh.n_vertices());
+    for (auto v : mesh.vertices())
     {
-        if (!vlocked_[v])
+        if (!vlocked[v])
         {
-            idx_[v] = vertices.size();
+            idx[v] = vertices.size();
             vertices.push_back(v);
         }
     }
 
     // we need locked vertices as boundary constraints
-    if (vertices.size() == mesh_.n_vertices())
+    if (vertices.size() == mesh.n_vertices())
     {
         auto what = "Fairing: Missing boundary constraints.";
         throw InvalidInputException(what);
@@ -133,20 +136,20 @@ void Fairing::fair(unsigned int k)
     {
         b = dvec3(0.0);
 
-        setup_matrix_row(vertices[i], vweight_, eweight_, k, row);
+        setup_matrix_row(mesh, vertices[i], vweight, eweight, k, row);
 
         for (auto r : row)
         {
             auto v = r.first;
             auto w = r.second;
 
-            if (idx_[v] != -1)
+            if (idx[v] != -1)
             {
-                triplets.emplace_back(i, idx_[v], w);
+                triplets.emplace_back(i, idx[v], w);
             }
             else
             {
-                b -= w * static_cast<dvec3>(points_[v]);
+                b -= w * static_cast<dvec3>(points[v]);
             }
         }
 
@@ -166,8 +169,14 @@ void Fairing::fair(unsigned int k)
     else
     {
         for (unsigned int i = 0; i < n; ++i)
-            points_[vertices[i]] = X.row(i);
+            points[vertices[i]] = X.row(i);
     }
+
+    // remove properties
+    mesh.remove_vertex_property(vlocked);
+    mesh.remove_vertex_property(vweight);
+    mesh.remove_edge_property(eweight);
+    mesh.remove_vertex_property(idx);
 }
 
 struct Triple
@@ -184,11 +193,10 @@ struct Triple
     unsigned int degree_;
 };
 
-void Fairing::setup_matrix_row(const Vertex vertex,
-                               VertexProperty<double> vweight,
-                               EdgeProperty<double> eweight,
-                               unsigned int laplace_degree,
-                               std::map<Vertex, double>& row)
+void setup_matrix_row(const SurfaceMesh& mesh, const Vertex vertex,
+                      VertexProperty<double> vweight,
+                      EdgeProperty<double> eweight, unsigned int laplace_degree,
+                      std::map<Vertex, double>& row)
 {
     Triple t(vertex, 1.0, laplace_degree);
 
@@ -210,7 +218,7 @@ void Fairing::setup_matrix_row(const Vertex vertex,
             row[v] += t.weight_;
         }
 
-        // else if (d == 1 && mesh_.is_boundary(v))
+        // else if (d == 1 && mesh.is_boundary(v))
         // {
         //     // ignore?
         // }
@@ -219,10 +227,10 @@ void Fairing::setup_matrix_row(const Vertex vertex,
         {
             auto ww = 0.0;
 
-            for (auto h : mesh_.halfedges(v))
+            for (auto h : mesh.halfedges(v))
             {
-                auto e = mesh_.edge(h);
-                auto vv = mesh_.to_vertex(h);
+                auto e = mesh.edge(h);
+                auto vv = mesh.to_vertex(h);
                 auto w = eweight[e];
 
                 if (d < laplace_degree)

@@ -6,7 +6,7 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
-#include "pmp/algorithms/Fairing.h"
+#include "pmp/algorithms/fairing.h"
 
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;
@@ -462,8 +462,7 @@ void HoleFilling::fairing()
     try
     {
         // fair new vertices
-        Fairing fairing(mesh_);
-        fairing.minimize_curvature();
+        minimize_curvature(mesh_);
     }
     catch (SolverException& e)
     {

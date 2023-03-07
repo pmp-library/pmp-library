@@ -3,7 +3,7 @@
 
 #include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/Curvature.h>
-#include <pmp/algorithms/Fairing.h>
+#include <pmp/algorithms/fairing.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -49,10 +49,9 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Minimize Area"))
         {
-            Fairing fair(mesh_);
             try
             {
-                fair.minimize_area();
+                minimize_area(mesh_);
             }
             catch (const std::exception& e)
             {
@@ -63,10 +62,9 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Minimize Curvature"))
         {
-            Fairing fair(mesh_);
             try
             {
-                fair.minimize_curvature();
+                minimize_curvature(mesh_);
             }
             catch (const std::exception& e)
             {
@@ -77,10 +75,9 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Minimize Curvature Variation"))
         {
-            Fairing fair(mesh_);
             try
             {
-                fair.fair(3);
+                fair(mesh_, 3);
             }
             catch (const std::exception& e)
             {
