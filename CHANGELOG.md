@@ -14,6 +14,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Support CMake's `BUILD_SHARED_LIBS` option to control building shared libraries
 - Fix `Mat3::inverse()` to use `fabs()`
 - Remove `Matrix::allFinite()`.
 - Make `SurfaceMesh::bounds()` a free function `pmp::bounds()`.
