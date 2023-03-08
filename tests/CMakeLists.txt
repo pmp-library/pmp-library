@@ -9,7 +9,7 @@ set(GOOGLE_TEST_SOURCES
     ${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}/src/gtest-all.cc
     ${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}/src/gtest_main.cc)
 
-add_library(googletest ${GOOGLE_TEST_SOURCES})
+add_library(googletest STATIC ${GOOGLE_TEST_SOURCES})
 
 # set output path so that coverage testing works
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
