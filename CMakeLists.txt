@@ -12,6 +12,7 @@ option(PMP_BUILD_TESTS "Build the PMP test programs" ON)
 option(PMP_BUILD_DOCS "Build the PMP documentation" ON)
 option(PMP_BUILD_VIS "Build the PMP visualization tools" ON)
 option(PMP_INSTALL "Install the PMP library and headers" ON)
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 # set output paths
 set(PROJECT_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
