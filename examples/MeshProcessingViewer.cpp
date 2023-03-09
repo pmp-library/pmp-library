@@ -9,7 +9,7 @@
 #include <pmp/algorithms/Remeshing.h>
 #include <pmp/algorithms/Curvature.h>
 #include <pmp/algorithms/Geodesics.h>
-#include <pmp/algorithms/HoleFilling.h>
+#include <pmp/algorithms/hole_filling.h>
 #include <pmp/algorithms/shapes.h>
 #include <pmp/algorithms/triangulation.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
@@ -399,8 +399,7 @@ void MeshProcessingViewer::process_imgui()
             {
                 try
                 {
-                    HoleFilling hf(mesh_);
-                    hf.fill_hole(hmin);
+                    fill_hole(mesh_, hmin);
                 }
                 catch (const InvalidInputException& e)
                 {

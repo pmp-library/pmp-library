@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-#include "pmp/algorithms/HoleFilling.h"
+#include "pmp/algorithms/hole_filling.h"
 #include "pmp/algorithms/shapes.h"
 
 #include "Helpers.h"
@@ -28,8 +28,7 @@ TEST(HoleFillingTest, open_cone)
     EXPECT_TRUE(h.is_valid());
 
     // fill hole
-    HoleFilling hf(mesh);
-    hf.fill_hole(h);
+    fill_hole(mesh, h);
 
     // now we should not find a hole
     h = find_boundary(mesh);
