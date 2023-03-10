@@ -39,6 +39,9 @@ public:
     //! Let two elements swap their storage place.
     virtual void swap(size_t i0, size_t i1) = 0;
 
+    //! Copy source to destination.
+    virtual void copy(size_t isource, size_t idestination) = 0;
+
     //! Return a deep copy of self.
     virtual BasePropertyArray* clone() const = 0;
 
@@ -79,6 +82,11 @@ public:
         T d(data_[i0]);
         data_[i0] = data_[i1];
         data_[i1] = d;
+    }
+
+    void copy(size_t isource, size_t idestination) override
+    {
+        data_[idestination] = data_[isource];
     }
 
     BasePropertyArray* clone() const override
@@ -342,6 +350,13 @@ public:
     {
         for (auto parray : parrays_)
             parray->swap(i0, i1);
+    }
+
+    // copy elements isource to idestination in all arrays
+    void copy(size_t isource, size_t idestination)
+    {
+        for (auto parray : parrays_)
+            parray->copy(isource, idestination);
     }
 
 private:
