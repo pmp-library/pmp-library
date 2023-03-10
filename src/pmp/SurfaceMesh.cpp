@@ -496,7 +496,7 @@ void SurfaceMesh::split(Face f, Vertex v)
     {
         Halfedge hnext = next_halfedge(h);
 
-        Face fnew = new_face();
+        Face fnew = new_face(f);
         set_halfedge(fnew, h);
 
         Halfedge hnew = new_edge(to_vertex(h), v);
@@ -548,7 +548,7 @@ Halfedge SurfaceMesh::split(Edge e, Vertex v)
         Halfedge e0 = new_edge(v, v1);
         Halfedge t0 = opposite_halfedge(e0);
 
-        Face f1 = new_face();
+        Face f1 = new_face(f0);
         set_halfedge(f0, h0);
         set_halfedge(f1, h2);
 
@@ -585,7 +585,7 @@ Halfedge SurfaceMesh::split(Edge e, Vertex v)
         Halfedge e2 = new_edge(v, v3);
         Halfedge t2 = opposite_halfedge(e2);
 
-        Face f2 = new_face();
+        Face f2 = new_face(f3);
         set_halfedge(f2, o1);
         set_halfedge(f3, o0);
 
@@ -686,7 +686,7 @@ Halfedge SurfaceMesh::insert_edge(Halfedge h0, Halfedge h1)
     Halfedge h5 = opposite_halfedge(h4);
 
     Face f0 = face(h0);
-    Face f1 = new_face();
+    Face f1 = new_face(f0);
 
     set_halfedge(f0, h0);
     set_halfedge(f1, h1);
