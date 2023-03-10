@@ -2028,6 +2028,17 @@ public:
         return Face(static_cast<IndexType>(faces_size()) - 1);
     }
 
+    //! \brief Allocate a new face, resize face properties accordingly, propagate properties.
+    //! \throw AllocationException in case of failure to allocate a new face.
+    Face new_face(Face f_to_copy_properties)
+    {
+        Face thisface = new_face();
+
+        fprops_.copy( f_to_copy_properties.idx(), thisface.idx() );
+
+        return thisface;
+    }
+
     //!@}
 
 private:
