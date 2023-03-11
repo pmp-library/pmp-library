@@ -4,7 +4,6 @@
 #pragma once
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/Smoothing.h>
 
 class MeshProcessingViewer : public pmp::MeshViewer
 {
@@ -21,8 +20,4 @@ protected:
 
     //! draw the scene in different draw modes
     void process_imgui() override;
-
-private:
-    // smoother has to remember cotan weights, make it a class member
-    pmp::Smoothing smoother_;
 };

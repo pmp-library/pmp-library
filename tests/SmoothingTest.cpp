@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-#include "pmp/algorithms/Smoothing.h"
+#include "pmp/algorithms/smoothing.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 #include "Helpers.h"
 
@@ -13,8 +13,7 @@ TEST(SmoothingTest, implicit_smoothing)
 {
     auto mesh = open_cone();
     auto area_before = surface_area(mesh);
-    Smoothing ss(mesh);
-    ss.implicit_smoothing(0.01, false, false);
+    implicit_smoothing(mesh, 0.01, false, false);
     auto area_after = surface_area(mesh);
     EXPECT_LT(area_after, area_before);
 }
@@ -23,7 +22,7 @@ TEST(SmoothingTest, implicit_smoothing_with_rescale)
 {
     auto mesh = open_cone();
     auto area_before = surface_area(mesh);
-    Smoothing(mesh).implicit_smoothing(0.01, false, true);
+    implicit_smoothing(mesh, 0.01, false, true);
     auto area_after = surface_area(mesh);
     EXPECT_FLOAT_EQ(area_after, area_before);
 }
@@ -32,9 +31,8 @@ TEST(SmoothingTest, explicit_smoothing)
 {
     auto mesh = open_cone();
     auto area_before = surface_area(mesh);
-    Smoothing ss(mesh);
-    ss.explicit_smoothing(10, true);
-    ss.explicit_smoothing(10, false);
+    explicit_smoothing(mesh, 10, true);
+    explicit_smoothing(mesh, 10, false);
     auto area_after = surface_area(mesh);
     EXPECT_LT(area_after, area_before);
 }

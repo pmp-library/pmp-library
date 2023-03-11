@@ -11,6 +11,7 @@
 #include <pmp/algorithms/Geodesics.h>
 #include <pmp/algorithms/hole_filling.h>
 #include <pmp/algorithms/shapes.h>
+#include <pmp/algorithms/smoothing.h>
 #include <pmp/algorithms/triangulation.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 #include <pmp/utilities.h>
@@ -21,7 +22,7 @@ using namespace pmp;
 
 MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
                                            int height)
-    : MeshViewer(title, width, height), smoother_(mesh_)
+    : MeshViewer(title, width, height)
 {
     // add help items
     add_help_item("O", "Flip mesh orientation", 5);
@@ -209,7 +210,7 @@ void MeshProcessingViewer::process_imgui()
 
         if (ImGui::Button("Explicit Smoothing"))
         {
-            smoother_.explicit_smoothing(iterations);
+            explicit_smoothing(mesh_, iterations);
             update_mesh();
         }
 
@@ -227,7 +228,7 @@ void MeshProcessingViewer::process_imgui()
             Scalar dt = timestep * radius_ * radius_;
             try
             {
-                smoother_.implicit_smoothing(dt);
+                implicit_smoothing(mesh_, dt);
             }
             catch (const SolverException& e)
             {
