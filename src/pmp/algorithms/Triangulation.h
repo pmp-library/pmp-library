@@ -29,6 +29,7 @@ public:
     Triangulation(SurfaceMesh& mesh);
 
     //! Triangulate all faces
+    //! \warning Objective::MAX_ANGLE can lead to fold-overs in case of non-convex polygons. Use Objective::MIN_AREA` instead in this case.
     void triangulate(Objective o = Objective::MIN_AREA);
 
     //! Triangulate the Face \p f
