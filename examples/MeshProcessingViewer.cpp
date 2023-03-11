@@ -5,7 +5,7 @@
 
 #include <pmp/algorithms/subdivision.h>
 #include <pmp/algorithms/Features.h>
-#include <pmp/algorithms/Decimation.h>
+#include <pmp/algorithms/decimation.h>
 #include <pmp/algorithms/remeshing.h>
 #include <pmp/algorithms/Curvature.h>
 #include <pmp/algorithms/Geodesics.h>
@@ -268,11 +268,9 @@ void MeshProcessingViewer::process_imgui()
         {
             try
             {
-                Decimation decimater(mesh_);
-                decimater.initialize(aspect_ratio, 0.0, 0.0, normal_deviation,
-                                     0.0, 0.01, seam_angle_deviation);
-                decimater.decimate(mesh_.n_vertices() * 0.01 *
-                                   target_percentage);
+                auto nv = mesh_.n_vertices() * 0.01 * target_percentage;
+                decimate(mesh_, nv, aspect_ratio, 0.0, 0.0, normal_deviation,
+                         0.0, 0.01, seam_angle_deviation);
             }
             catch (const InvalidInputException& e)
             {

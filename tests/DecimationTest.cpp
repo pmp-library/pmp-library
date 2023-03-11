@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-#include "pmp/algorithms/Decimation.h"
+#include "pmp/algorithms/decimation.h"
 #include "pmp/algorithms/Features.h"
 #include "Helpers.h"
 
@@ -15,13 +15,12 @@ TEST(DecimationTest, simplification)
 {
     auto mesh = subdivided_icosahedron();
     Features(mesh).clear();
-    Decimation decimater(mesh);
-    decimater.initialize(5,    // aspect ratio
-                         0.5,  // edge length
-                         10,   // max valence
-                         10,   // normal deviation
-                         0.1); // Hausdorff
-    decimater.decimate(mesh.n_vertices() * 0.01);
+    decimate(mesh, mesh.n_vertices() * 0.01,
+             5,    // aspect ratio
+             0.5,  // edge length
+             10,   // max valence
+             10,   // normal deviation
+             0.1); // Hausdorff
     EXPECT_EQ(mesh.n_vertices(), size_t(101));
 }
 
@@ -29,9 +28,7 @@ TEST(DecimationTest, simplification)
 TEST(DecimationTest, simplification_with_features)
 {
     auto mesh = subdivided_icosahedron();
-    Decimation decimater(mesh);
-    decimater.initialize(5); // aspect ratio
-    decimater.decimate(mesh.n_vertices() * 0.01);
+    decimate(mesh, mesh.n_vertices() * 0.01, 5 /* aspect ratio */);
     EXPECT_EQ(mesh.n_vertices(), size_t(12));
 }
 
@@ -44,22 +41,39 @@ TEST(DecimationTest, simplification_texture_mesh)
     // this test won't work
     ASSERT_TRUE(mesh.has_halfedge_property("h:tex"));
 
-    Decimation decimater(mesh);
-    decimater.initialize(10.0,  // aspect ratio
-                         0.0,   // edge length
-                         0.0,   // max valence
-                         135.0, // normal deviation
-                         0.0,   // Hausdorff
-                         1e-2,  // seam threshold
-                         1);    // seam angle deviation
-
-    decimater.decimate(mesh.n_vertices() - 4);
+    auto seam_threshold = 1.0e-2;
+    decimate(mesh, mesh.n_vertices() - 4,
+             10.0,           // aspect ratio
+             0.0,            // edge length
+             0.0,            // max valence
+             135.0,          // normal deviation
+             0.0,            // Hausdorff
+             seam_threshold, // seam threshold
+             1);             // seam angle deviation
 
     size_t seam_edges = 0;
-    auto seams = mesh.get_edge_property<bool>("e:seam");
-    for (auto e : mesh.edges())
-        if (seams[e])
-            seam_edges++;
+    auto texcoords = mesh.get_halfedge_property<TexCoord>("h:tex");
+    auto seams = mesh.add_edge_property<bool>("e:seam");
+    if (texcoords)
+    {
+        for (auto e : mesh.edges())
+        {
+            // texcoords are stored in halfedge pointing towards a vertex
+            Halfedge h0 = mesh.halfedge(e, 0);
+            Halfedge h1 = mesh.halfedge(e, 1);     //opposite halfedge
+            Halfedge h0p = mesh.prev_halfedge(h0); // start point edge 0
+            Halfedge h1p = mesh.prev_halfedge(h1); // start point edge 1
+
+            // if start or end points differ more than seam_threshold
+            // the corresponding edge is a texture seam
+            if (norm(texcoords[h1] - texcoords[h0p]) > seam_threshold ||
+                norm(texcoords[h0] - texcoords[h1p]) > seam_threshold)
+            {
+                seam_edges++;
+                seams[e] = true;
+            }
+        }
+    }
 
     // test loop case 2
     auto se = mesh.find_edge(Vertex(4), Vertex(11));

@@ -1,7 +1,7 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/algorithms/Decimation.h"
+#include "pmp/algorithms/decimation.h"
 
 #include <iterator>
 #include <limits>
@@ -11,6 +11,459 @@
 #include "pmp/algorithms/normals.h"
 
 namespace pmp {
+
+//! \brief A class implementing a heap.
+//! \ingroup algorithms
+template <class HeapEntry, class HeapInterface>
+class Heap : private std::vector<HeapEntry>
+{
+public:
+    using This = Heap<HeapEntry, HeapInterface>;
+
+    //! Constructor
+    Heap() : HeapVector() {}
+
+    //! Construct with a given \p HeapInterface.
+    Heap(const HeapInterface& i) : HeapVector(), interface_(i) {}
+
+    //! Destructor.
+    ~Heap() = default;
+
+    //! clear the heap
+    void clear() { HeapVector::clear(); }
+
+    //! is heap empty?
+    bool empty() { return HeapVector::empty(); }
+
+    //! returns the size of heap
+    unsigned int size() { return (unsigned int)HeapVector::size(); }
+
+    //! reserve space for N entries
+    void reserve(unsigned int n) { HeapVector::reserve(n); }
+
+    //! reset heap position to -1 (not in heap)
+    void reset_heap_position(HeapEntry h)
+    {
+        interface_.set_heap_position(h, -1);
+    }
+
+    //! is an entry in the heap?
+    bool is_stored(HeapEntry h)
+    {
+        return interface_.get_heap_position(h) != -1;
+    }
+
+    //! insert the entry h
+    void insert(HeapEntry h)
+    {
+        This::push_back(h);
+        upheap(size() - 1);
+    }
+
+    //! get the first entry
+    HeapEntry front()
+    {
+        assert(!empty());
+        return entry(0);
+    }
+
+    //! delete the first entry
+    void pop_front()
+    {
+        assert(!empty());
+        interface_.set_heap_position(entry(0), -1);
+        if (size() > 1)
+        {
+            entry(0, entry(size() - 1));
+            HeapVector::resize(size() - 1);
+            downheap(0);
+        }
+        else
+            HeapVector::resize(size() - 1);
+    }
+
+    //! remove an entry
+    void remove(HeapEntry h)
+    {
+        int pos = interface_.get_heap_position(h);
+        interface_.set_heap_position(h, -1);
+
+        assert(pos != -1);
+        assert((unsigned int)pos < size());
+
+        // last item ?
+        if ((unsigned int)pos == size() - 1)
+            HeapVector::resize(size() - 1);
+
+        else
+        {
+            entry(pos, entry(size() - 1)); // move last elem to pos
+            HeapVector::resize(size() - 1);
+            downheap(pos);
+            upheap(pos);
+        }
+    }
+
+    //! update an entry: change the key and update the position to
+    //! reestablish the heap property.
+    void update(HeapEntry h)
+    {
+        int pos = interface_.get_heap_position(h);
+        assert(pos != -1);
+        assert((unsigned int)pos < size());
+        downheap(pos);
+        upheap(pos);
+    }
+
+    //! \brief Check heap condition.
+    //! \return \c true if heap condition is satisfied, \c false if not.
+    bool check()
+    {
+        bool ok(true);
+        unsigned int i, j;
+        for (i = 0; i < size(); ++i)
+        {
+            if (((j = left(i)) < size()) &&
+                interface_.greater(entry(i), entry(j)))
+            {
+                ok = false;
+            }
+            if (((j = right(i)) < size()) &&
+                interface_.greater(entry(i), entry(j)))
+            {
+                ok = false;
+            }
+        }
+        return ok;
+    }
+
+private:
+    using HeapVector = std::vector<HeapEntry>;
+
+    // Upheap. Establish heap property.
+    void upheap(unsigned int idx)
+    {
+        HeapEntry h = entry(idx);
+        unsigned int parentIdx;
+
+        while ((idx > 0) && interface_.less(h, entry(parentIdx = parent(idx))))
+        {
+            entry(idx, entry(parentIdx));
+            idx = parentIdx;
+        }
+
+        entry(idx, h);
+    }
+
+    // Downheap. Establish heap property.
+    void downheap(unsigned int idx)
+    {
+        HeapEntry h = entry(idx);
+        unsigned int childIdx;
+        unsigned int s = size();
+
+        while (idx < s)
+        {
+            childIdx = left(idx);
+            if (childIdx >= s)
+                break;
+
+            if ((childIdx + 1 < s) &&
+                (interface_.less(entry(childIdx + 1), entry(childIdx))))
+                ++childIdx;
+
+            if (interface_.less(h, entry(childIdx)))
+                break;
+
+            entry(idx, entry(childIdx));
+            idx = childIdx;
+        }
+
+        entry(idx, h);
+    }
+
+    // Get the entry at index idx
+    inline HeapEntry entry(unsigned int idx)
+    {
+        assert(idx < size());
+        return (This::operator[](idx));
+    }
+
+    // Set entry H to index idx and update H's heap position.
+    inline void entry(unsigned int idx, HeapEntry h)
+    {
+        assert(idx < size());
+        This::operator[](idx) = h;
+        interface_.set_heap_position(h, idx);
+    }
+
+    // Get parent's index
+    inline unsigned int parent(unsigned int i) { return (i - 1) >> 1; }
+
+    // Get left child's index
+    inline unsigned int left(unsigned int i) { return (i << 1) + 1; }
+
+    // Get right child's index
+    inline unsigned int right(unsigned int i) { return (i << 1) + 2; }
+
+    // Instance of HeapInterface
+    HeapInterface interface_;
+};
+
+//! \brief This class stores a quadric as a symmetric 4x4 matrix.
+//! \details Used by the error quadric mesh decimation algorithms.
+//! \ingroup algorithms
+class Quadric
+{
+public: // clang-format off
+
+    //! construct quadric from upper triangle of symmetrix 4x4 matrix
+    Quadric(double a, double b, double c, double d,
+            double e, double f, double g,
+            double h, double i,
+            double j)
+        : a_(a), b_(b), c_(c), d_(d),
+          e_(e), f_(f), g_(g),
+          h_(h), i_(i),
+          j_(j)
+    {}
+
+    //! constructor quadric from given plane equation: ax+by+cz+d=0
+    Quadric(double a=0.0, double b=0.0, double c=0.0, double d=0.0)
+        :  a_(a*a), b_(a*b), c_(a*c),  d_(a*d),
+           e_(b*b), f_(b*c), g_(b*d),
+           h_(c*c), i_(c*d),
+           j_(d*d)
+    {}
+
+    //! construct from point and normal specifying a plane
+    Quadric(const Normal& n, const Point& p)
+    {
+        *this = Quadric(n[0], n[1], n[2], -dot(n,p));
+    }
+
+    //! set all matrix entries to zero
+    void clear() { a_ = b_ = c_ = d_ = e_ = f_ = g_ = h_ = i_ = j_ = 0.0; }
+
+    //! add given quadric to this quadric
+    Quadric& operator+=(const Quadric& q)
+    {
+        a_ += q.a_; b_ += q.b_; c_ += q.c_; d_ += q.d_;
+        e_ += q.e_; f_ += q.f_; g_ += q.g_;
+        h_ += q.h_; i_ += q.i_;
+        j_ += q.j_;
+        return *this;
+    }
+
+    //! multiply quadric by a scalar
+    Quadric& operator*=(double s)
+    {
+        a_ *= s; b_ *= s; c_ *= s;  d_ *= s;
+        e_ *= s; f_ *= s; g_ *= s;
+        h_ *= s; i_ *= s;
+        j_ *= s;
+        return *this;
+    }
+
+    //! evaluate quadric Q at position p by computing (p^T * Q * p)
+    double operator()(const Point& p) const
+    {
+        const double x(p[0]), y(p[1]), z(p[2]);
+        return a_*x*x + 2.0*b_*x*y + 2.0*c_*x*z + 2.0*d_*x
+            +  e_*y*y + 2.0*f_*y*z + 2.0*g_*y
+            +  h_*z*z + 2.0*i_*z
+            +  j_;
+    }
+
+private:
+
+    double a_, b_, c_, d_,
+        e_, f_, g_,
+        h_, i_,
+        j_;
+}; // clang-format on
+
+//! \brief A class implementing a normal cone.
+//! \ingroup algorithms
+class NormalCone
+{
+public:
+    //! default constructor (not initialized)
+    NormalCone() = default;
+
+    //! Initialize cone with center (unit vector) and angle (radius in radians)
+    NormalCone(const Normal& normal, Scalar angle = 0.0)
+        : center_normal_(normal), angle_(angle)
+    {
+    }
+
+    //! returns center normal
+    const Normal& center_normal() const { return center_normal_; }
+
+    //! returns size of cone (radius in radians)
+    Scalar angle() const { return angle_; }
+
+    //! merge *this with n.
+    NormalCone& merge(const Normal& n) { return merge(NormalCone(n)); }
+
+    //! merge *this with nc. *this will then enclose both cones.
+    NormalCone& merge(const NormalCone& nc)
+    {
+        const Scalar dp = dot(center_normal_, nc.center_normal_);
+
+        // axes point in same direction
+        if (dp > 0.99999)
+        {
+            angle_ = std::max(angle_, nc.angle_);
+        }
+
+        // axes point in opposite directions
+        else if (dp < -0.99999)
+        {
+            angle_ = Scalar(2 * M_PI);
+        }
+
+        else
+        {
+            // new angle
+            Scalar center_angle = std::acos(dp);
+            Scalar min_angle = std::min(-angle_, center_angle - nc.angle_);
+            Scalar max_angle = std::max(angle_, center_angle + nc.angle_);
+            angle_ = Scalar(0.5) * (max_angle - min_angle);
+
+            // axis by SLERP
+            Scalar axis_angle = Scalar(0.5) * (min_angle + max_angle);
+            center_normal_ =
+                ((center_normal_ * std::sin(center_angle - axis_angle) +
+                  nc.center_normal_ * std::sin(axis_angle)) /
+                 std::sin(center_angle));
+        }
+
+        return *this;
+    }
+
+private:
+    Normal center_normal_;
+    Scalar angle_;
+};
+
+class Decimation
+{
+public:
+    Decimation(SurfaceMesh& mesh);
+    ~Decimation();
+    void initialize(Scalar aspect_ratio = 0.0, Scalar edge_length = 0.0,
+                    unsigned int max_valence = 0, Scalar normal_deviation = 0.0,
+                    Scalar hausdorff_error = 0.0, Scalar seam_threshold = 1e-2,
+                    Scalar seam_angle_deviation = 1);
+    void decimate(unsigned int n_vertices);
+
+private:
+    // Store data for an halfedge collapse
+    struct CollapseData
+    {
+        CollapseData(SurfaceMesh& sm, Halfedge h);
+
+        SurfaceMesh& mesh;
+
+        /*        vl
+         *        *
+         *       / \
+         *      /   \
+         *     / fl  \
+         * v0 *------>* v1
+         *     \ fr  /
+         *      \   /
+         *       \ /
+         *        *
+         *        vr
+         */
+        Halfedge v0v1; // Halfedge to be collapsed
+        Halfedge v1v0; // Reverse halfedge
+        Vertex v0;     // Vertex to be removed
+        Vertex v1;     // Remaining vertex
+        Face fl;       // Left face
+        Face fr;       // Right face
+        Vertex vl;     // Left vertex
+        Vertex vr;     // Right vertex
+        Halfedge v1vl, vlv0, v0vr, vrv1;
+    };
+
+    // Heap interface
+    class HeapInterface
+    {
+    public:
+        HeapInterface(VertexProperty<float> prio, VertexProperty<int> pos)
+            : prio_(prio), pos_(pos)
+        {
+        }
+
+        bool less(Vertex v0, Vertex v1) { return prio_[v0] < prio_[v1]; }
+        bool greater(Vertex v0, Vertex v1) { return prio_[v0] > prio_[v1]; }
+        int get_heap_position(Vertex v) { return pos_[v]; }
+        void set_heap_position(Vertex v, int pos) { pos_[v] = pos; }
+
+    private:
+        VertexProperty<float> prio_;
+        VertexProperty<int> pos_;
+    };
+
+    using PriorityQueue = Heap<Vertex, HeapInterface>;
+
+    using Points = std::vector<Point>;
+
+    // put the vertex v in the priority queue
+    void enqueue_vertex(PriorityQueue& queue, Vertex v);
+
+    // is collapsing the halfedge h allowed?
+    bool is_collapse_legal(const CollapseData& cd);
+
+    // are texture seams preserved if h is collapsed?
+    bool texcoord_check(Halfedge h);
+
+    // what is the priority of collapsing the halfedge h
+    float priority(const CollapseData& cd);
+
+    // preprocess halfedge collapse
+    void preprocess_collapse(const CollapseData& cd);
+
+    // postprocess halfedge collapse
+    void postprocess_collapse(const CollapseData& cd);
+
+    // compute aspect ratio for face f
+    Scalar aspect_ratio(Face f) const;
+
+    // compute distance from point p to triangle f
+    Scalar distance(Face f, const Point& p) const;
+
+    SurfaceMesh& mesh_;
+
+    bool initialized_{false};
+
+    VertexProperty<float> vpriority_;
+    VertexProperty<Halfedge> vtarget_;
+    VertexProperty<int> heap_pos_;
+    VertexProperty<Quadric> vquadric_;
+    FaceProperty<NormalCone> normal_cone_;
+    FaceProperty<Points> face_points_;
+
+    VertexProperty<Point> vpoint_;
+    FaceProperty<Point> fnormal_;
+    VertexProperty<bool> vselected_;
+    VertexProperty<bool> vfeature_;
+    EdgeProperty<bool> efeature_;
+    EdgeProperty<bool> texture_seams_;
+
+    bool has_selection_;
+    bool has_features_;
+    Scalar normal_deviation_;
+    Scalar hausdorff_error_;
+    Scalar aspect_ratio_;
+    Scalar edge_length_;
+    Scalar seam_threshold_;
+    Scalar seam_angle_deviation_;
+    unsigned int max_valence_;
+};
 
 Decimation::Decimation(SurfaceMesh& mesh) : mesh_(mesh)
 {
@@ -766,6 +1219,18 @@ Decimation::CollapseData::CollapseData(SurfaceMesh& sm, Halfedge h) : mesh(sm)
         vrv1 = mesh.prev_halfedge(v0vr);
         vr = mesh.from_vertex(vrv1);
     }
+}
+
+void decimate(SurfaceMesh& mesh, unsigned int n_vertices, Scalar aspect_ratio,
+              Scalar edge_length, unsigned int max_valence,
+              Scalar normal_deviation, Scalar hausdorff_error,
+              Scalar seam_threshold, Scalar seam_angle_deviation)
+{
+    Decimation decimator(mesh);
+    decimator.initialize(aspect_ratio, edge_length, max_valence,
+                         normal_deviation, hausdorff_error, seam_threshold,
+                         seam_angle_deviation);
+    decimator.decimate(n_vertices);
 }
 
 } // namespace pmp

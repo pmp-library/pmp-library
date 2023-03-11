@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/Decimation.h>
+#include <pmp/algorithms/decimation.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -51,11 +51,9 @@ void Viewer::process_imgui()
         {
             try
             {
-                Decimation decimater(mesh_);
-                decimater.initialize(aspect_ratio, 0.0, 0.0, normal_deviation,
-                                     0.0);
-                decimater.decimate(mesh_.n_vertices() * 0.01 *
-                                   target_percentage);
+                auto nv = mesh_.n_vertices() * 0.01 * target_percentage;
+                decimate(mesh_, nv, aspect_ratio, 0.0, 0.0, normal_deviation,
+                         0.0);
             }
             catch (const InvalidInputException& e)
             {
