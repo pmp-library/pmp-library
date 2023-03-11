@@ -6,7 +6,7 @@
 #include <pmp/algorithms/subdivision.h>
 #include <pmp/algorithms/Features.h>
 #include <pmp/algorithms/Decimation.h>
-#include <pmp/algorithms/Remeshing.h>
+#include <pmp/algorithms/remeshing.h>
 #include <pmp/algorithms/Curvature.h>
 #include <pmp/algorithms/Geodesics.h>
 #include <pmp/algorithms/hole_filling.h>
@@ -326,10 +326,10 @@ void MeshProcessingViewer::process_imgui()
 
             try
             {
-                Remeshing(mesh_).adaptive_remeshing(
-                    0.001 * bb,  // min length
-                    1.0 * bb,    // max length
-                    0.001 * bb); // approx. error
+                adaptive_remeshing(mesh_,
+                                   0.001 * bb,  // min length
+                                   1.0 * bb,    // max length
+                                   0.001 * bb); // approx. error
             }
             catch (const InvalidInputException& e)
             {
@@ -349,7 +349,7 @@ void MeshProcessingViewer::process_imgui()
 
             try
             {
-                Remeshing(mesh_).uniform_remeshing(l);
+                uniform_remeshing(mesh_, l);
             }
             catch (const InvalidInputException& e)
             {

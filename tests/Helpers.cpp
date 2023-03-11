@@ -4,7 +4,6 @@
 #include "Helpers.h"
 
 #include "pmp/algorithms/shapes.h"
-#include "pmp/algorithms/Remeshing.h"
 #include "pmp/algorithms/Features.h"
 #include "pmp/algorithms/subdivision.h"
 #include "pmp/algorithms/triangulation.h"

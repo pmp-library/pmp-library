@@ -3,7 +3,7 @@
 
 #include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/Features.h>
-#include <pmp/algorithms/Remeshing.h>
+#include <pmp/algorithms/remeshing.h>
 #include <pmp/utilities.h>
 
 #include <imgui.h>
@@ -60,7 +60,7 @@ void Viewer::process_imgui()
             l /= (Scalar)mesh_.n_edges();
             try
             {
-                Remeshing(mesh_).uniform_remeshing(l);
+                uniform_remeshing(mesh_, l);
             }
             catch (const InvalidInputException& e)
             {
@@ -77,10 +77,10 @@ void Viewer::process_imgui()
             auto bb = bounds(mesh_).size();
             try
             {
-                Remeshing(mesh_).adaptive_remeshing(
-                    0.0010 * bb,  // min length
-                    0.0500 * bb,  // max length
-                    0.0005 * bb); // approx. error
+                adaptive_remeshing(mesh_,
+                                   0.0010 * bb,  // min length
+                                   0.0500 * bb,  // max length
+                                   0.0005 * bb); // approx. error
             }
             catch (const InvalidInputException& e)
             {
