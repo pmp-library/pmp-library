@@ -387,13 +387,13 @@ Scalar Geodesics::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         b = r1 == std::numeric_limits<Scalar>::max() ? pmp::distance(A, C) : r1;
     }
 
-    // Dykstra: propagate along edges
-    const double dykstra = std::min(TA + b, TB + a);
+    // Dijkstra: propagate along edges
+    const double dijkstra = std::min(TA + b, TB + a);
 
-    // obtuse angle -> fall back to Dykstra
+    // obtuse angle -> fall back to Dijkstra
     const double c = dot(normalize(A - C), normalize(B - C)); // cosine
     if (c < 0.0)
-        return dykstra;
+        return dijkstra;
 
     // Kimmel: solve quadratic equation
     const double u = TB - TA;
@@ -413,8 +413,8 @@ Scalar Geodesics::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         }
     }
 
-    // use Dykstra as fall-back
-    return dykstra;
+    // use Dijkstra as fall-back
+    return dijkstra;
 }
 
 void Geodesics::distance_to_texture_coordinates()
