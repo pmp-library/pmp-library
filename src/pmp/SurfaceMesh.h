@@ -189,28 +189,6 @@ public:
     }
 };
 
-//! Object property of type T
-template <class T>
-class ObjectProperty : public Property<T>
-{
-public:
-    //! default constructor
-    explicit ObjectProperty() = default;
-    explicit ObjectProperty(Property<T> p) : Property<T>(p) {}
-
-    //! access the data stored for the object
-    typename Property<T>::reference operator[](IndexType idx)
-    {
-        return Property<T>::operator[](idx);
-    }
-
-    //! access the data stored for the object
-    typename Property<T>::const_reference operator[](IndexType idx) const
-    {
-        return Property<T>::operator[](idx);
-    }
-};
-
 //! A halfedge data structure for polygonal meshes.
 class SurfaceMesh
 {
