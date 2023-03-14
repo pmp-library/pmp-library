@@ -8,7 +8,7 @@
 #include <pmp/algorithms/decimation.h>
 #include <pmp/algorithms/remeshing.h>
 #include <pmp/algorithms/Curvature.h>
-#include <pmp/algorithms/Geodesics.h>
+#include <pmp/algorithms/geodesics.h>
 #include <pmp/algorithms/hole_filling.h>
 #include <pmp/algorithms/shapes.h>
 #include <pmp/algorithms/smoothing.h>
@@ -430,11 +430,10 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
             seed.push_back(v);
 
             // compute geodesic distance
-            Geodesics geodist(mesh_);
-            geodist.compute(seed);
+            geodesics(mesh_, seed);
 
             // setup texture coordinates for visualization
-            geodist.distance_to_texture_coordinates();
+            distance_to_texture_coordinates(mesh_);
             mesh_.use_checkerboard_texture();
             update_mesh();
             set_draw_mode("Texture");

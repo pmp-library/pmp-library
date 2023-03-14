@@ -1,14 +1,77 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/algorithms/Geodesics.h"
+#include "pmp/algorithms/geodesics.h"
+#include <cassert>
 
 namespace pmp {
+
+class Geodesics
+{
+public:
+    Geodesics(SurfaceMesh& mesh, bool use_virtual_edges = true);
+    ~Geodesics();
+    unsigned int compute(const std::vector<Vertex>& seed,
+                         Scalar maxdist = std::numeric_limits<Scalar>::max(),
+                         unsigned int maxnum = INT_MAX,
+                         std::vector<Vertex>* neighbors = nullptr);
+
+private:
+    // functor for comparing two vertices w.r.t. their geodesic distance
+    class VertexCmp
+    {
+    public:
+        VertexCmp(const VertexProperty<Scalar>& dist) : dist_(dist) {}
+
+        bool operator()(Vertex v0, Vertex v1) const
+        {
+            return ((dist_[v0] == dist_[v1]) ? (v0 < v1)
+                                             : (dist_[v0] < dist_[v1]));
+        }
+
+    private:
+        const VertexProperty<Scalar>& dist_;
+    };
+
+    // priority queue using geodesic distance as sorting criterion
+    using PriorityQueue = std::set<Vertex, VertexCmp>;
+
+    // virtual edges for walking through obtuse triangles
+    struct VirtualEdge
+    {
+        VirtualEdge(Vertex v, Scalar l) : vertex(v), length(l) {}
+        Vertex vertex;
+        Scalar length;
+    };
+
+    // set for storing virtual edges
+    using VirtualEdges = std::map<Halfedge, VirtualEdge>;
+
+    void find_virtual_edges();
+    unsigned int init_front(const std::vector<Vertex>& seed,
+                            std::vector<Vertex>* neighbors);
+    unsigned int propagate_front(Scalar maxdist, unsigned int maxnum,
+                                 std::vector<Vertex>* neighbors);
+    void heap_vertex(Vertex v);
+    Scalar distance(Vertex v0, Vertex v1, Vertex v2,
+                    Scalar r0 = std::numeric_limits<Scalar>::max(),
+                    Scalar r1 = std::numeric_limits<Scalar>::max());
+
+    SurfaceMesh& mesh_;
+
+    bool use_virtual_edges_;
+    VirtualEdges virtual_edges_;
+
+    PriorityQueue* front_;
+
+    VertexProperty<Scalar> distance_;
+    VertexProperty<bool> processed_;
+};
 
 Geodesics::Geodesics(SurfaceMesh& mesh, bool use_virtual_edges)
     : mesh_(mesh), use_virtual_edges_(use_virtual_edges)
 {
-    distance_ = mesh_.add_vertex_property<Scalar>("geodesic:distance");
+    distance_ = mesh_.vertex_property<Scalar>("geodesic:distance");
     processed_ = mesh_.add_vertex_property<bool>("geodesic:processed");
 
     if (use_virtual_edges_)
@@ -17,7 +80,6 @@ Geodesics::Geodesics(SurfaceMesh& mesh, bool use_virtual_edges)
 
 Geodesics::~Geodesics()
 {
-    mesh_.remove_vertex_property(distance_);
     mesh_.remove_vertex_property(processed_);
 }
 
@@ -387,13 +449,13 @@ Scalar Geodesics::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         b = r1 == std::numeric_limits<Scalar>::max() ? pmp::distance(A, C) : r1;
     }
 
-    // Dykstra: propagate along edges
-    const double dykstra = std::min(TA + b, TB + a);
+    // Dijkstra: propagate along edges
+    const double dijkstra = std::min(TA + b, TB + a);
 
-    // obtuse angle -> fall back to Dykstra
+    // obtuse angle -> fall back to Dijkstra
     const double c = dot(normalize(A - C), normalize(B - C)); // cosine
     if (c < 0.0)
-        return dykstra;
+        return dijkstra;
 
     // Kimmel: solve quadratic equation
     const double u = TB - TA;
@@ -413,34 +475,45 @@ Scalar Geodesics::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
         }
     }
 
-    // use Dykstra as fall-back
-    return dykstra;
+    // use Dijkstra as fall-back
+    return dijkstra;
 }
 
-void Geodesics::distance_to_texture_coordinates()
+void distance_to_texture_coordinates(SurfaceMesh& mesh)
 {
+    auto distance = mesh.get_vertex_property<Scalar>("geodesic:distance");
+    assert(distance);
+
     // find maximum distance
     Scalar maxdist(0);
-    for (auto v : mesh_.vertices())
+    for (auto v : mesh.vertices())
     {
-        if (distance_[v] < std::numeric_limits<Scalar>::max())
+        if (distance[v] < std::numeric_limits<Scalar>::max())
         {
-            maxdist = std::max(maxdist, distance_[v]);
+            maxdist = std::max(maxdist, distance[v]);
         }
     }
 
-    auto tex = mesh_.vertex_property<TexCoord>("v:tex");
-    for (auto v : mesh_.vertices())
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
+    for (auto v : mesh.vertices())
     {
-        if (distance_[v] < std::numeric_limits<Scalar>::max())
+        if (distance[v] < std::numeric_limits<Scalar>::max())
         {
-            tex[v] = TexCoord(distance_[v] / maxdist, 0.0);
+            tex[v] = TexCoord(distance[v] / maxdist, 0.0);
         }
         else
         {
             tex[v] = TexCoord(1.0, 0.0);
         }
     }
+}
+
+unsigned int geodesics(SurfaceMesh& mesh, const std::vector<Vertex>& seed,
+                       Scalar maxdist, unsigned int maxnum,
+                       std::vector<Vertex>* neighbors)
+{
+    return Geodesics(mesh, true /*virtual edges*/)
+        .compute(seed, maxdist, maxnum, neighbors);
 }
 
 } // namespace pmp

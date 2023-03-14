@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/Geodesics.h>
+#include <pmp/algorithms/geodesics.h>
 #include <pmp/algorithms/shapes.h>
 #include <pmp/io/io.h>
 
@@ -15,17 +15,18 @@ TEST(GeodesicsTest, geodesic)
     SurfaceMesh mesh = icosphere(5);
 
     // compute geodesic distance from first vertex
-    Geodesics geodist(mesh);
-    geodist.compute(std::vector<Vertex>{Vertex(0)});
+    geodesics(mesh, std::vector<Vertex>{Vertex(0)});
 
     // find maximum geodesic distance
     Scalar d(0);
+    auto distance = mesh.get_vertex_property<Scalar>("geodesic:distance");
+
     for (auto v : mesh.vertices())
-        d = std::max(d, geodist(v));
+        d = std::max(d, distance[v]);
     EXPECT_FLOAT_EQ(d, 3.1355045);
 
     // map distances to texture coordinates
-    geodist.distance_to_texture_coordinates();
+    distance_to_texture_coordinates(mesh);
     auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);
 }
@@ -36,28 +37,29 @@ TEST(GeodesicsTest, geodesic_symmetry)
     SurfaceMesh mesh;
     read(mesh, "pmp-data/off/bunny_adaptive.off");
 
-    Geodesics geodist(mesh);
     Vertex v0, v1;
     Scalar d0, d1;
 
     // grow from first vector
     v0 = Vertex(0);
-    geodist.compute(std::vector<Vertex>{v0});
+    geodesics(mesh, std::vector<Vertex>{v0});
 
     // find maximum geodesic distance
     d0 = 0;
+    auto distance = mesh.get_vertex_property<Scalar>("geodesic:distance");
+
     for (auto v : mesh.vertices())
     {
-        if (geodist(v) > d0)
+        if (distance[v] > d0)
         {
-            d0 = geodist(v);
+            d0 = distance[v];
             v1 = v;
         }
     }
 
     // grow back from max-dist vertex to vertex 0
-    geodist.compute(std::vector<Vertex>{v1});
-    d1 = geodist(v0);
+    geodesics(mesh, std::vector<Vertex>{v1});
+    d1 = distance[v0];
 
     // expect both distance to be the same
     Scalar err = fabs(d0 - d1) / (0.5 * (d0 + d1));
@@ -71,18 +73,17 @@ TEST(GeodesicsTest, geodesic_maxnum)
 
     // compute geodesic distance from first vertex
     unsigned int maxnum = 42;
-    unsigned int num;
-    Geodesics geodist(mesh);
     std::vector<Vertex> neighbors;
-    num =
-        geodist.compute(std::vector<Vertex>{Vertex(0)},
-                        std::numeric_limits<Scalar>::max(), maxnum, &neighbors);
+    auto num =
+        geodesics(mesh, std::vector<Vertex>{Vertex(0)},
+                  std::numeric_limits<Scalar>::max(), maxnum, &neighbors);
     EXPECT_TRUE(num == maxnum);
     EXPECT_TRUE(neighbors.size() == maxnum);
 
     // test that neighbor array is properly sorted
+    auto distance = mesh.get_vertex_property<Scalar>("geodesic:distance");
     for (unsigned int i = 0; i < neighbors.size() - 1; ++i)
     {
-        EXPECT_TRUE(geodist(neighbors[i]) <= geodist(neighbors[i + 1]));
+        EXPECT_TRUE(distance[neighbors[i]] <= distance[neighbors[i + 1]]);
     }
 }
