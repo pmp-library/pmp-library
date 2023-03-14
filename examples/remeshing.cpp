@@ -37,7 +37,7 @@ void Viewer::process_imgui()
     {
         static int feature_angle = 70;
         ImGui::PushItemWidth(80);
-        ImGui::SliderInt("", &feature_angle, 1, 180);
+        ImGui::SliderInt("##feature_angle", &feature_angle, 1, 180);
         ImGui::PopItemWidth();
         ImGui::SameLine();
         if (ImGui::Button("Detect Features"))
