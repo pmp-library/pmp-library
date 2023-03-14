@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-#include "pmp/algorithms/Features.h"
+#include "pmp/algorithms/features.h"
 #include "pmp/algorithms/shapes.h"
 #include "Helpers.h"
 
@@ -12,24 +12,22 @@ using namespace pmp;
 TEST(FeaturesTest, detect_angle)
 {
     auto mesh = hexahedron();
-    auto nf = Features(mesh).detect_angle(25);
+    auto nf = detect_features(mesh, 25);
     EXPECT_EQ(nf, 12u);
 }
 
 TEST(FeaturesTest, detect_boundary)
 {
     auto mesh = vertex_onering();
-    auto features = Features(mesh);
-    auto nb = features.detect_boundary();
+    auto nb = detect_boundary(mesh);
     EXPECT_EQ(nb, 6u);
 }
 
 TEST(FeaturesTest, clear)
 {
     auto mesh = vertex_onering();
-    auto features = Features(mesh);
-    features.detect_boundary();
-    features.clear();
+    detect_boundary(mesh);
+    clear_features(mesh);
     auto is_feature = mesh.get_edge_property<bool>("e:feature");
     for (auto e : mesh.edges())
         EXPECT_FALSE(is_feature[e]);

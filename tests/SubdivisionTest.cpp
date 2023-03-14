@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 
 #include "pmp/algorithms/subdivision.h"
-#include "pmp/algorithms/Features.h"
+#include "pmp/algorithms/features.h"
 #include "pmp/algorithms/shapes.h"
 #include "Helpers.h"
 
@@ -20,7 +20,7 @@ TEST(SubdivisionTest, loop_subdivision)
 TEST(SubdivisionTest, loop_with_features)
 {
     auto mesh = icosahedron();
-    Features(mesh).detect_angle(25);
+    detect_features(mesh, 25);
     loop_subdivision(mesh);
     EXPECT_EQ(mesh.n_faces(), size_t(80));
 }
@@ -42,7 +42,7 @@ TEST(SubdivisionTest, catmull_clark_subdivision)
 TEST(SubdivisionTest, catmull_clark_with_features)
 {
     auto mesh = hexahedron();
-    Features(mesh).detect_angle(25);
+    detect_features(mesh, 25);
     catmull_clark_subdivision(mesh);
     EXPECT_EQ(mesh.n_faces(), size_t(24));
 }

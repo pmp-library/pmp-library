@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 
 #include "pmp/algorithms/remeshing.h"
-#include "pmp/algorithms/Features.h"
+#include "pmp/algorithms/features.h"
 #include "pmp/algorithms/shapes.h"
 #include "pmp/algorithms/triangulation.h"
 #include "pmp/utilities.h"
@@ -18,7 +18,7 @@ TEST(RemeshingTest, adaptive_remeshing_with_features)
 {
     auto mesh = cylinder();
     triangulate(mesh);
-    Features(mesh).detect_angle(25);
+    detect_features(mesh, 25);
     auto bb = bounds(mesh).size();
     adaptive_remeshing(mesh, 0.001 * bb, // min length
                        1.0 * bb,         // max length

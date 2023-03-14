@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/Features.h>
+#include <pmp/algorithms/features.h>
 #include <pmp/algorithms/remeshing.h>
 #include <pmp/utilities.h>
 
@@ -42,9 +42,8 @@ void Viewer::process_imgui()
         ImGui::SameLine();
         if (ImGui::Button("Detect Features"))
         {
-            Features sf(mesh_);
-            sf.clear();
-            sf.detect_angle(feature_angle);
+            clear_features(mesh_);
+            detect_features(mesh_, feature_angle);
             update_mesh();
         }
 

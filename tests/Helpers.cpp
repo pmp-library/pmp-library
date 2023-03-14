@@ -4,7 +4,7 @@
 #include "Helpers.h"
 
 #include "pmp/algorithms/shapes.h"
-#include "pmp/algorithms/Features.h"
+#include "pmp/algorithms/features.h"
 #include "pmp/algorithms/subdivision.h"
 #include "pmp/algorithms/triangulation.h"
 
@@ -72,8 +72,7 @@ SurfaceMesh subdivided_icosahedron()
         mesh = icosahedron();
 
         // select all edges as features
-        Features sf(mesh);
-        sf.detect_angle(25);
+        detect_features(mesh, 25);
 
         // feature-preserving subdivision
         loop_subdivision(mesh);

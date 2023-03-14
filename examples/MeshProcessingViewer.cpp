@@ -4,7 +4,7 @@
 #include "MeshProcessingViewer.h"
 
 #include <pmp/algorithms/subdivision.h>
-#include <pmp/algorithms/Features.h>
+#include <pmp/algorithms/features.h>
 #include <pmp/algorithms/decimation.h>
 #include <pmp/algorithms/remeshing.h>
 #include <pmp/algorithms/Curvature.h>
@@ -37,7 +37,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
     {
         case GLFW_KEY_A:
         {
-            Features(mesh_).detect_angle(25);
+            detect_features(mesh_, 25);
             update_mesh();
             break;
         }

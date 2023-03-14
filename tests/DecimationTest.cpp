@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 
 #include "pmp/algorithms/decimation.h"
-#include "pmp/algorithms/Features.h"
+#include "pmp/algorithms/features.h"
 #include "Helpers.h"
 
 using namespace pmp;
@@ -14,7 +14,7 @@ using namespace pmp;
 TEST(DecimationTest, simplification)
 {
     auto mesh = subdivided_icosahedron();
-    Features(mesh).clear();
+    clear_features(mesh);
     decimate(mesh, mesh.n_vertices() * 0.01,
              5,    // aspect ratio
              0.5,  // edge length

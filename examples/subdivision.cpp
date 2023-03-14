@@ -3,7 +3,6 @@
 
 #include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/subdivision.h>
-#include <pmp/algorithms/Features.h>
 #include <pmp/algorithms/triangulation.h>
 #include <imgui.h>
 
