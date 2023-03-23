@@ -1,10 +1,10 @@
+cmake_minimum_required(VERSION 3.16.3)
 cmake_policy(SET CMP0048 NEW)
 project(
   pmp-library
   VERSION 2.0.1
   DESCRIPTION "The Polygon Mesh Processing Library"
   HOMEPAGE_URL "https://www.pmp-library.org")
-cmake_minimum_required(VERSION 3.16.3)
 cmake_policy(SET CMP0072 NEW)
 
 option(PMP_BUILD_EXAMPLES "Build the PMP examples" ON)
