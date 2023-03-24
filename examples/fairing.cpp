@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/Curvature.h>
+#include <pmp/algorithms/curvature.h>
 #include <pmp/algorithms/fairing.h>
 #include <imgui.h>
 
@@ -33,9 +33,8 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.mean_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::mean, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             update_mesh();
             mesh_.use_cold_warm_texture();
             set_draw_mode("Texture");

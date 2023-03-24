@@ -10,7 +10,7 @@
 #include <memory>
 #include <limits>
 
-#include "pmp/algorithms/Curvature.h"
+#include "pmp/algorithms/curvature.h"
 #include "pmp/algorithms/normals.h"
 #include "pmp/algorithms/BarycentricCoordinates.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
@@ -453,8 +453,8 @@ void Remeshing::preprocessing()
         // curvature over sharp features edges, leading to high curvatures.
         // prefer tensor analysis over cotan-Laplace, since the former is more
         // robust and gives better results on the boundary.
-        Curvature curv(mesh_);
-        curv.analyze_tensor(1);
+        curvature(mesh_, Curvature::max_abs, 1, true, false);
+        auto curvatures = mesh_.get_vertex_property<Scalar>("v:curv");
 
         // use vsizing_ to store/smooth curvatures to avoid another vertex property
 
@@ -465,7 +465,7 @@ void Remeshing::preprocessing()
             if (mesh_.is_boundary(v) || (vfeature_ && vfeature_[v]))
                 vsizing_[v] = -1.0;
             else
-                vsizing_[v] = curv.max_abs_curvature(v);
+                vsizing_[v] = curvatures[v];
         }
 
         // curvature values might be noisy. smooth them.

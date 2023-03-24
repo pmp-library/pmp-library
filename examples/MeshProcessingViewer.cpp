@@ -7,7 +7,7 @@
 #include <pmp/algorithms/features.h>
 #include <pmp/algorithms/decimation.h>
 #include <pmp/algorithms/remeshing.h>
-#include <pmp/algorithms/Curvature.h>
+#include <pmp/algorithms/curvature.h>
 #include <pmp/algorithms/geodesics.h>
 #include <pmp/algorithms/hole_filling.h>
 #include <pmp/algorithms/shapes.h>
@@ -171,27 +171,24 @@ void MeshProcessingViewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.mean_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::mean, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             mesh_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
         }
         if (ImGui::Button("Gauss Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.gauss_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::gauss, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             mesh_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
         }
         if (ImGui::Button("Abs. Max. Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.max_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::max_abs, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             mesh_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
