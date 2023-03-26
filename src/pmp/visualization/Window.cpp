@@ -294,7 +294,7 @@ void Window::add_help_item(std::string key, std::string description, int pos)
     {
         auto it = help_items_.begin();
         it += pos;
-        help_items_.insert(it, std::make_pair(key, description));
+        help_items_.emplace(it, key, description);
     }
 }
 
