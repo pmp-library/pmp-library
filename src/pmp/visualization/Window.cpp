@@ -288,7 +288,7 @@ void Window::add_help_item(std::string key, std::string description, int pos)
 {
     if (pos == -1)
     {
-        help_items_.emplace_back(std::make_pair(key, description));
+        help_items_.emplace_back(key, description);
     }
     else
     {
