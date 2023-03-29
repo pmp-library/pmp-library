@@ -500,7 +500,6 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
         case GLFW_KEY_Q:
         {
             exit(0);
-            break;
         }
 
         case GLFW_KEY_PRINT_SCREEN:
