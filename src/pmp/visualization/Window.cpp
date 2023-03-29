@@ -318,17 +318,17 @@ void Window::show_help()
         ImGui::SetColumnWidth(0, 100 * imgui_scale_);
         ImGui::SetColumnWidth(1, 200 * imgui_scale_);
         ImGui::Separator();
-        ImGui::Text("Trigger");
+        ImGui::Text("Key");
         ImGui::NextColumn();
         ImGui::Text("Description");
         ImGui::NextColumn();
         ImGui::Separator();
 
-        for (const auto& item : help_items_)
+        for (const auto& [key, description] : help_items_)
         {
-            ImGui::Text("%s", item.first.c_str());
+            ImGui::Text("%s", key.c_str());
             ImGui::NextColumn();
-            ImGui::Text("%s", item.second.c_str());
+            ImGui::Text("%s", description.c_str());
             ImGui::NextColumn();
         }
 
