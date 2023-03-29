@@ -481,12 +481,10 @@ void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode,
 
 void Window::character(unsigned int c)
 {
-    switch (c)
+    if (c == 63) // question mark
     {
-        case 63: // question mark
-            show_help_ = true;
-            show_imgui_ = true;
-            break;
+        show_help_ = true;
+        show_imgui_ = true;
     }
 }
 
