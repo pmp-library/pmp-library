@@ -8,13 +8,14 @@
 namespace pmp {
 
 //! Type of curvature to be computed
+//! \ingroup algorithms
 enum class Curvature
 {
-    min,
-    max,
-    mean,
-    gauss,
-    max_abs
+    min,    //!< minimum curvature
+    max,    //!< maximum curvature
+    mean,   //!< mean curvature
+    gauss,  //!< Gauss curvature
+    max_abs //!< maximum absolute curvature
 };
 
 //! \brief Compute per-vertex curvature (min,max,mean,Gaussian).
