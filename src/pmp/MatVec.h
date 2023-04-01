@@ -1051,7 +1051,7 @@ bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
     if (iterations > 0)
     {
         // sort and return
-        std::array<int, 3> sorted;
+        std::array<int, 3> sorted{};
         std::array<Scalar, 3> d = {A(0, 0), A(1, 1), A(2, 2)};
 
         if (d[0] > d[1])
