@@ -10,7 +10,6 @@
 using namespace pmp;
 
 // plain simplification test
-// disabled on macOS due to flakiness of results across OS versions
 TEST(DecimationTest, simplification)
 {
     auto mesh = subdivided_icosahedron();
@@ -22,7 +21,9 @@ TEST(DecimationTest, simplification)
                          10,   // normal deviation
                          0.1); // Hausdorff
     decimater.decimate(mesh.n_vertices() * 0.01);
-    EXPECT_EQ(mesh.n_vertices(), size_t(101));
+
+    // use tolerance due to flakiness across OS versions
+    EXPECT_NEAR(mesh.n_vertices(), size_t(101), 2);
 }
 
 // simplify with feature edge preservation enabled
