@@ -12,62 +12,60 @@
 
 namespace pmp {
 
-//! \brief A class implementing a heap.
-//! \ingroup algorithms
 template <class HeapEntry, class HeapInterface>
 class Heap : private std::vector<HeapEntry>
 {
 public:
     using This = Heap<HeapEntry, HeapInterface>;
 
-    //! Constructor
+    // Constructor
     Heap() : HeapVector() {}
 
-    //! Construct with a given \p HeapInterface.
+    // Construct with a given \p HeapInterface.
     Heap(const HeapInterface& i) : HeapVector(), interface_(i) {}
 
-    //! Destructor.
+    // Destructor.
     ~Heap() = default;
 
-    //! clear the heap
+    // clear the heap
     void clear() { HeapVector::clear(); }
 
-    //! is heap empty?
+    // is heap empty?
     bool empty() { return HeapVector::empty(); }
 
-    //! returns the size of heap
+    // returns the size of heap
     unsigned int size() { return (unsigned int)HeapVector::size(); }
 
-    //! reserve space for N entries
+    // reserve space for N entries
     void reserve(unsigned int n) { HeapVector::reserve(n); }
 
-    //! reset heap position to -1 (not in heap)
+    // reset heap position to -1 (not in heap)
     void reset_heap_position(HeapEntry h)
     {
         interface_.set_heap_position(h, -1);
     }
 
-    //! is an entry in the heap?
+    // is an entry in the heap?
     bool is_stored(HeapEntry h)
     {
         return interface_.get_heap_position(h) != -1;
     }
 
-    //! insert the entry h
+    // insert the entry h
     void insert(HeapEntry h)
     {
         This::push_back(h);
         upheap(size() - 1);
     }
 
-    //! get the first entry
+    // get the first entry
     HeapEntry front()
     {
         assert(!empty());
         return entry(0);
     }
 
-    //! delete the first entry
+    // delete the first entry
     void pop_front()
     {
         assert(!empty());
@@ -82,7 +80,7 @@ public:
             HeapVector::resize(size() - 1);
     }
 
-    //! remove an entry
+    // remove an entry
     void remove(HeapEntry h)
     {
         int pos = interface_.get_heap_position(h);
@@ -104,8 +102,8 @@ public:
         }
     }
 
-    //! update an entry: change the key and update the position to
-    //! reestablish the heap property.
+    // update an entry: change the key and update the position to
+    // reestablish the heap property.
     void update(HeapEntry h)
     {
         int pos = interface_.get_heap_position(h);
@@ -115,8 +113,7 @@ public:
         upheap(pos);
     }
 
-    //! \brief Check heap condition.
-    //! \return \c true if heap condition is satisfied, \c false if not.
+    // Check heap condition. true if heap condition is satisfied, false if not.
     bool check()
     {
         bool ok(true);
@@ -210,14 +207,12 @@ private:
     HeapInterface interface_;
 };
 
-//! \brief This class stores a quadric as a symmetric 4x4 matrix.
-//! \details Used by the error quadric mesh decimation algorithms.
-//! \ingroup algorithms
+// Store a quadric as a symmetric 4x4 matrix.
 class Quadric
 {
 public: // clang-format off
 
-    //! construct quadric from upper triangle of symmetrix 4x4 matrix
+    // construct quadric from upper triangle of symmetric 4x4 matrix
     Quadric(double a, double b, double c, double d,
             double e, double f, double g,
             double h, double i,
@@ -228,7 +223,7 @@ public: // clang-format off
           j_(j)
     {}
 
-    //! constructor quadric from given plane equation: ax+by+cz+d=0
+    // constructor quadric from given plane equation: ax+by+cz+d=0
     Quadric(double a=0.0, double b=0.0, double c=0.0, double d=0.0)
         :  a_(a*a), b_(a*b), c_(a*c),  d_(a*d),
            e_(b*b), f_(b*c), g_(b*d),
@@ -236,16 +231,16 @@ public: // clang-format off
            j_(d*d)
     {}
 
-    //! construct from point and normal specifying a plane
+    // construct from point and normal specifying a plane
     Quadric(const Normal& n, const Point& p)
     {
         *this = Quadric(n[0], n[1], n[2], -dot(n,p));
     }
 
-    //! set all matrix entries to zero
+    // set all matrix entries to zero
     void clear() { a_ = b_ = c_ = d_ = e_ = f_ = g_ = h_ = i_ = j_ = 0.0; }
 
-    //! add given quadric to this quadric
+    // add given quadric to this quadric
     Quadric& operator+=(const Quadric& q)
     {
         a_ += q.a_; b_ += q.b_; c_ += q.c_; d_ += q.d_;
@@ -255,7 +250,7 @@ public: // clang-format off
         return *this;
     }
 
-    //! multiply quadric by a scalar
+    // multiply quadric by a scalar
     Quadric& operator*=(double s)
     {
         a_ *= s; b_ *= s; c_ *= s;  d_ *= s;
@@ -265,7 +260,7 @@ public: // clang-format off
         return *this;
     }
 
-    //! evaluate quadric Q at position p by computing (p^T * Q * p)
+    // evaluate quadric Q at position p by computing (p^T * Q * p)
     double operator()(const Point& p) const
     {
         const double x(p[0]), y(p[1]), z(p[2]);
@@ -283,30 +278,27 @@ private:
         j_;
 }; // clang-format on
 
-//! \brief A class implementing a normal cone.
-//! \ingroup algorithms
 class NormalCone
 {
 public:
-    //! default constructor (not initialized)
     NormalCone() = default;
 
-    //! Initialize cone with center (unit vector) and angle (radius in radians)
+    // Initialize cone with center (unit vector) and angle (radius in radians)
     NormalCone(const Normal& normal, Scalar angle = 0.0)
         : center_normal_(normal), angle_(angle)
     {
     }
 
-    //! returns center normal
+    // returns center normal
     const Normal& center_normal() const { return center_normal_; }
 
-    //! returns size of cone (radius in radians)
+    // returns size of cone (radius in radians)
     Scalar angle() const { return angle_; }
 
-    //! merge *this with n.
+    // merge *this with n.
     NormalCone& merge(const Normal& n) { return merge(NormalCone(n)); }
 
-    //! merge *this with nc. *this will then enclose both cones.
+    // merge *this with nc. *this will then enclose both cones.
     NormalCone& merge(const NormalCone& nc)
     {
         const Scalar dp = dot(center_normal_, nc.center_normal_);
