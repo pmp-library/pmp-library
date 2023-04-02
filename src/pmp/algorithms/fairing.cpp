@@ -11,9 +11,6 @@
 namespace pmp {
 namespace {
 
-using SparseMatrix = Eigen::SparseMatrix<double>;
-using Triplet = Eigen::Triplet<double>;
-
 struct Triple
 {
     Triple() = default;
@@ -184,11 +181,13 @@ void fair(SurfaceMesh& mesh, unsigned int k)
 
     // construct matrix & rhs
     const unsigned int n = vertices.size();
+    using SparseMatrix = Eigen::SparseMatrix<double>;
     SparseMatrix A(n, n);
     Eigen::MatrixXd B(n, 3);
     dvec3 b;
 
     std::map<Vertex, double> row;
+    using Triplet = Eigen::Triplet<double>;
     std::vector<Triplet> triplets;
 
     for (unsigned int i = 0; i < n; ++i)

@@ -8,9 +8,6 @@
 
 #include "pmp/algorithms/fairing.h"
 
-using SparseMatrix = Eigen::SparseMatrix<double>;
-using Triplet = Eigen::Triplet<double>;
-
 namespace pmp {
 namespace {
 
@@ -481,6 +478,7 @@ void HoleFilling::relaxation()
 
     // setup matrix & rhs
     Eigen::MatrixXd B(n, 3);
+    using Triplet = Eigen::Triplet<double>;
     std::vector<Triplet> triplets;
     for (int i = 0; i < n; ++i)
     {
@@ -506,6 +504,7 @@ void HoleFilling::relaxation()
     }
 
     // solve least squares system
+    using SparseMatrix = Eigen::SparseMatrix<double>;
     SparseMatrix A(n, n);
     A.setFromTriplets(triplets.begin(), triplets.end());
     Eigen::SimplicialLDLT<SparseMatrix> solver(A);

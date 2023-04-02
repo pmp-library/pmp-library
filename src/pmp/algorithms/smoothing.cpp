@@ -9,10 +9,6 @@
 #include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
-
-using SparseMatrix = Eigen::SparseMatrix<double>;
-using Triplet = Eigen::Triplet<double>;
-
 namespace {
 
 // compute cotan/uniform Laplace weights.
@@ -142,10 +138,12 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
     const unsigned int n = free_vertices.size();
 
     // A*X = B
+    using SparseMatrix = Eigen::SparseMatrix<double>;
     SparseMatrix A(n, n);
     Eigen::MatrixXd B(n, 3);
 
     // nonzero elements of A as triplets: (row, column, value)
+    using Triplet = Eigen::Triplet<double>;
     std::vector<Triplet> triplets;
 
     // setup matrix A and rhs B
