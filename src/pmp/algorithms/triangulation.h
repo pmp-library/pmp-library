@@ -10,6 +10,7 @@
 namespace pmp {
 
 //! Triangulation objective
+//! \ingroup algorithms
 enum class TriangulationObjective
 {
     min_area, //!< minimize the sum of squared areas

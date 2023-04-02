@@ -17,6 +17,7 @@ namespace pmp {
 //! See \cite kobbelt_1998_general and \cite garland_1997_surface for details.
 //! \pre Input mesh needs to be a pure triangle mesh.
 //! \throw InvalidInputException if the input precondition is violated.
+//! \ingroup algorithms
 void decimate(SurfaceMesh& mesh, unsigned int n_vertices,
               Scalar aspect_ratio = 0.0, Scalar edge_length = 0.0,
               unsigned int max_valence = 0, Scalar normal_deviation = 0.0,

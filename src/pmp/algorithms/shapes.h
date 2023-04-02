@@ -7,6 +7,9 @@
 
 namespace pmp {
 
+//! \addtogroup algorithms
+//! @{
+
 //! Generate tetrahedron.
 SurfaceMesh tetrahedron();
 
@@ -24,12 +27,10 @@ SurfaceMesh icosahedron();
 
 //! \brief Generate icosphere refined by \p n_subdivisions .
 //! \details Uses Loop subdivision to refine the initial icosahedron.
-//! \sa Subdivision
 SurfaceMesh icosphere(size_t n_subdivisions = 3);
 
 //! \brief Generate quad sphere refined by \p n_subdivisions .
 //! \details Uses Catmull-Clark subdivision to refine the initial hexahedron.
-//! \sa Subdivision
 SurfaceMesh quad_sphere(size_t n_subdivisions = 3);
 
 //! Generate UV sphere with given \p center, \p radius, \p n_slices, and \p n_stacks.
@@ -68,5 +69,7 @@ SurfaceMesh cylinder(size_t n_subdivisions = 30, Scalar radius = 1.0,
 //! \param thickness Thickness of the tube. Default: 0.4.
 SurfaceMesh torus(size_t radial_resolution = 20, size_t tubular_resolution = 40,
                   Scalar radius = 1.0, Scalar thickness = 0.4);
+
+//! @}
 
 } // namespace pmp

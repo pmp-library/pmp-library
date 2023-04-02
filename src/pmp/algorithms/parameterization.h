@@ -12,6 +12,7 @@ namespace pmp {
 //! \pre The mesh has a boundary.
 //! \throw InvalidInputException if the input precondition is violated.
 //! \throw SolverException in case of failure to solve the linear system.
+//! \ingroup algorithms
 void harmonic_parameterization(SurfaceMesh& mesh,
                                bool use_uniform_weights = false);
 
@@ -20,6 +21,7 @@ void harmonic_parameterization(SurfaceMesh& mesh,
 //! \pre The mesh has a boundary.
 //! \throw InvalidInputException if the input precondition is violated.
 //! \throw SolverException in case of failure to solve the linear system.
+//! \ingroup algorithms
 void lscm_parameterization(SurfaceMesh& mesh);
 
 } // namespace pmp
