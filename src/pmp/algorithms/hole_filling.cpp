@@ -20,25 +20,25 @@ public:
 private:
     struct Weight
     {
-        Weight(Scalar _angle = std::numeric_limits<Scalar>::max(),
-               Scalar _area = std::numeric_limits<Scalar>::max())
-            : angle(_angle), area(_area)
+        Weight(Scalar angle = std::numeric_limits<Scalar>::max(),
+               Scalar area = std::numeric_limits<Scalar>::max())
+            : angle_(angle), area_(area)
         {
         }
 
-        Weight operator+(const Weight& _rhs) const
+        Weight operator+(const Weight& rhs) const
         {
-            return Weight(std::max(angle, _rhs.angle), area + _rhs.area);
+            return Weight(std::max(angle_, rhs.angle_), area_ + rhs.area_);
         }
 
-        bool operator<(const Weight& _rhs) const
+        bool operator<(const Weight& rhs) const
         {
-            return (angle < _rhs.angle ||
-                    (angle == _rhs.angle && area < _rhs.area));
+            return (angle_ < rhs.angle_ ||
+                    (angle_ == rhs.angle_ && area_ < rhs.area_));
         }
 
-        Scalar angle;
-        Scalar area;
+        Scalar angle_;
+        Scalar area_;
     };
 
     // compute optimal triangulation of hole
@@ -72,16 +72,16 @@ private:
     }
 
     // does interior edge (_a,_b) exist already?
-    bool is_interior_edge(Vertex _a, Vertex _b) const;
+    bool is_interior_edge(Vertex a, Vertex b) const;
 
     // triangle area
-    Scalar compute_area(Vertex _a, Vertex _b, Vertex _c) const;
+    Scalar compute_area(Vertex a, Vertex b, Vertex c) const;
 
     // triangle normal
-    Point compute_normal(Vertex _a, Vertex _b, Vertex _c) const;
+    Point compute_normal(Vertex a, Vertex b, Vertex c) const;
 
     // dihedral angle
-    Scalar compute_angle(const Point& _n1, const Point& _n2) const;
+    Scalar compute_angle(const Point& n1, const Point& n2) const;
 
     // mesh and properties
     SurfaceMesh& mesh_;
@@ -96,34 +96,33 @@ private:
     std::vector<std::vector<int>> index_;
 };
 
-HoleFilling::HoleFilling(SurfaceMesh& _mesh) : mesh_(_mesh)
+HoleFilling::HoleFilling(SurfaceMesh& mesh) : mesh_(mesh)
 {
     points_ = mesh_.vertex_property<Point>("v:point");
 }
 
-bool HoleFilling::is_interior_edge(Vertex _a, Vertex _b) const
+bool HoleFilling::is_interior_edge(Vertex a, Vertex b) const
 {
-    Halfedge h = mesh_.find_halfedge(_a, _b);
+    Halfedge h = mesh_.find_halfedge(a, b);
     if (!h.is_valid())
         return false; // edge does not exist
     return (!mesh_.is_boundary(h) &&
             !mesh_.is_boundary(mesh_.opposite_halfedge(h)));
 }
 
-Scalar HoleFilling::compute_area(Vertex _a, Vertex _b, Vertex _c) const
+Scalar HoleFilling::compute_area(Vertex a, Vertex b, Vertex c) const
 {
-    return sqrnorm(cross(points_[_b] - points_[_a], points_[_c] - points_[_a]));
+    return sqrnorm(cross(points_[b] - points_[a], points_[c] - points_[a]));
 }
 
-Point HoleFilling::compute_normal(Vertex _a, Vertex _b, Vertex _c) const
+Point HoleFilling::compute_normal(Vertex a, Vertex b, Vertex c) const
 {
-    return normalize(
-        cross(points_[_b] - points_[_a], points_[_c] - points_[_a]));
+    return normalize(cross(points_[b] - points_[a], points_[c] - points_[a]));
 }
 
-Scalar HoleFilling::compute_angle(const Point& _n1, const Point& _n2) const
+Scalar HoleFilling::compute_angle(const Point& n1, const Point& n2) const
 {
-    return (1.0 - dot(_n1, _n2));
+    return (1.0 - dot(n1, n2));
 }
 
 void HoleFilling::fill_hole(Halfedge h)
@@ -170,22 +169,22 @@ void HoleFilling::fill_hole(Halfedge h)
     mesh_.remove_edge_property(elocked_);
 }
 
-void HoleFilling::triangulate_hole(Halfedge _h)
+void HoleFilling::triangulate_hole(Halfedge h)
 {
     // trace hole
     hole_.clear();
-    Halfedge h = _h;
+    Halfedge hit = h;
     do
     {
         // check for manifoldness
-        if (!mesh_.is_manifold(mesh_.to_vertex(h)))
+        if (!mesh_.is_manifold(mesh_.to_vertex(hit)))
         {
             auto what = "HoleFilling: Non-manifold hole.";
             throw InvalidInputException(what);
         }
 
-        hole_.emplace_back(h);
-    } while ((h = mesh_.next_halfedge(h)) != _h);
+        hole_.emplace_back(hit);
+    } while ((hit = mesh_.next_halfedge(hit)) != h);
     const int n = hole_.size();
 
     // compute minimal triangulation by dynamic programming
@@ -256,11 +255,11 @@ void HoleFilling::triangulate_hole(Halfedge _h)
     index_.clear();
 }
 
-HoleFilling::Weight HoleFilling::compute_weight(int _i, int _j, int _k) const
+HoleFilling::Weight HoleFilling::compute_weight(int i, int j, int k) const
 {
-    const Vertex a = hole_vertex(_i);
-    const Vertex b = hole_vertex(_j);
-    const Vertex c = hole_vertex(_k);
+    const Vertex a = hole_vertex(i);
+    const Vertex b = hole_vertex(j);
+    const Vertex c = hole_vertex(k);
     Vertex d;
 
     // if one of the potential edges already exists, this would result
@@ -279,15 +278,15 @@ HoleFilling::Weight HoleFilling::compute_weight(int _i, int _j, int _k) const
     const Point n = compute_normal(a, b, c);
 
     // ...neighbor to (i,j)
-    d = (_i + 1 == _j) ? opposite_vertex(_j) : hole_vertex(index_[_i][_j]);
+    d = (i + 1 == j) ? opposite_vertex(j) : hole_vertex(index_[i][j]);
     angle = std::max(angle, compute_angle(n, compute_normal(a, d, b)));
 
     // ...neighbor to (j,k)
-    d = (_j + 1 == _k) ? opposite_vertex(_k) : hole_vertex(index_[_j][_k]);
+    d = (j + 1 == k) ? opposite_vertex(k) : hole_vertex(index_[j][k]);
     angle = std::max(angle, compute_angle(n, compute_normal(b, d, c)));
 
     // ...neighbor to (k,i) if (k,i)==(n-1, 0)
-    if (_i == 0 && _k + 1 == (int)hole_.size())
+    if (i == 0 && k + 1 == (int)hole_.size())
     {
         d = opposite_vertex(0);
         angle = std::max(angle, compute_angle(n, compute_normal(c, d, a)));
@@ -323,7 +322,7 @@ void HoleFilling::refine()
     fairing();
 }
 
-void HoleFilling::split_long_edges(const Scalar _lmax)
+void HoleFilling::split_long_edges(const Scalar lmax)
 {
     bool ok;
     int i;
@@ -341,7 +340,7 @@ void HoleFilling::split_long_edges(const Scalar _lmax)
                 const Point& p0 = points_[mesh_.to_vertex(h10)];
                 const Point& p1 = points_[mesh_.to_vertex(h01)];
 
-                if (distance(p0, p1) > _lmax)
+                if (distance(p0, p1) > lmax)
                 {
                     mesh_.split(e, 0.5 * (p0 + p1));
                     ok = false;
