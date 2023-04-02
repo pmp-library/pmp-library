@@ -11,7 +11,7 @@ namespace {
 class Triangulation
 {
 public:
-    Triangulation(SurfaceMesh& mesh);
+    explicit Triangulation(SurfaceMesh& mesh);
 
     void triangulate(
         TriangulationObjective o = TriangulationObjective::min_area);
