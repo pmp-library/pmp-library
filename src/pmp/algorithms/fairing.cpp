@@ -52,12 +52,6 @@ void setup_matrix_row(const SurfaceMesh& mesh, const Vertex vertex,
         {
             row[v] += t.weight_;
         }
-
-        // else if (d == 1 && mesh.is_boundary(v))
-        // {
-        //     // ignore?
-        // }
-
         else
         {
             auto ww = 0.0;
