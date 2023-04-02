@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/Curvature.h>
+#include <pmp/algorithms/curvature.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -30,27 +30,24 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.mean_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::mean, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             mesh_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
         }
         if (ImGui::Button("Gauss Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.gauss_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::gauss, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             mesh_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
         }
         if (ImGui::Button("Abs. Max. Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.max_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::max_abs, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             mesh_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");

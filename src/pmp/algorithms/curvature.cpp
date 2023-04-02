@@ -1,25 +1,74 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/algorithms/Curvature.h"
-#include "pmp/algorithms/Normals.h"
+#include "pmp/algorithms/curvature.h"
+#include "pmp/Exceptions.h"
+#include "pmp/algorithms/normals.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
 
-Curvature::Curvature(SurfaceMesh& mesh) : mesh_(mesh)
+class CurvatureAnalyzer
+{
+public:
+    //! construct with mesh to be analyzed
+    CurvatureAnalyzer(SurfaceMesh& mesh);
+
+    ~CurvatureAnalyzer()
+    {
+        mesh_.remove_vertex_property(min_curvature_);
+        mesh_.remove_vertex_property(max_curvature_);
+    }
+
+    //! compute curvature information for each vertex, optionally followed
+    //! by some smoothing iterations of the curvature values
+    void analyze(unsigned int post_smoothing_steps = 0);
+
+    //! compute curvature information for each vertex, optionally followed
+    //! by some smoothing iterations of the curvature values
+    void analyze_tensor(unsigned int post_smoothing_steps = 0,
+                        bool two_ring_neighborhood = false);
+
+    //! return mean curvature
+    Scalar mean_curvature(Vertex v) const
+    {
+        return Scalar(0.5) * (min_curvature_[v] + max_curvature_[v]);
+    }
+
+    //! return Gaussian curvature
+    Scalar gauss_curvature(Vertex v) const
+    {
+        return min_curvature_[v] * max_curvature_[v];
+    }
+
+    //! return minimum (signed) curvature
+    Scalar min_curvature(Vertex v) const { return min_curvature_[v]; }
+
+    //! return maximum (signed) curvature
+    Scalar max_curvature(Vertex v) const { return max_curvature_[v]; }
+
+    //! return maximum absolute curvature
+    Scalar max_abs_curvature(Vertex v) const
+    {
+        return std::max(fabs(min_curvature_[v]), fabs(max_curvature_[v]));
+    }
+
+private:
+    // smooth curvature values
+    void smooth_curvatures(unsigned int iterations);
+
+    SurfaceMesh& mesh_;
+    VertexProperty<Scalar> min_curvature_;
+    VertexProperty<Scalar> max_curvature_;
+};
+
+CurvatureAnalyzer::CurvatureAnalyzer(SurfaceMesh& mesh) : mesh_(mesh)
 {
     min_curvature_ = mesh_.add_vertex_property<Scalar>("curv:min");
     max_curvature_ = mesh_.add_vertex_property<Scalar>("curv:max");
 }
 
-Curvature::~Curvature()
-{
-    mesh_.remove_vertex_property(min_curvature_);
-    mesh_.remove_vertex_property(max_curvature_);
-}
-
-void Curvature::analyze(unsigned int post_smoothing_steps)
+void CurvatureAnalyzer::analyze(unsigned int post_smoothing_steps)
 {
     Scalar kmin, kmax, mean, gauss;
     Scalar area, sum_angles;
@@ -118,8 +167,8 @@ void Curvature::analyze(unsigned int post_smoothing_steps)
     smooth_curvatures(post_smoothing_steps);
 }
 
-void Curvature::analyze_tensor(unsigned int post_smoothing_steps,
-                               bool two_ring_neighborhood)
+void CurvatureAnalyzer::analyze_tensor(unsigned int post_smoothing_steps,
+                                       bool two_ring_neighborhood)
 {
     auto area = mesh_.add_vertex_property<double>("curv:area", 0.0);
     auto normal = mesh_.add_face_property<dvec3>("curv:normal");
@@ -145,7 +194,7 @@ void Curvature::analyze_tensor(unsigned int post_smoothing_steps,
     // precompute face normals
     for (auto f : mesh_.faces())
     {
-        normal[f] = (dvec3)Normals::compute_face_normal(mesh_, f);
+        normal[f] = (dvec3)face_normal(mesh_, f);
     }
 
     // precompute dihedralAngle*edge_length*edge per edge
@@ -270,7 +319,7 @@ void Curvature::analyze_tensor(unsigned int post_smoothing_steps,
     smooth_curvatures(post_smoothing_steps);
 }
 
-void Curvature::smooth_curvatures(unsigned int iterations)
+void CurvatureAnalyzer::smooth_curvatures(unsigned int iterations)
 {
     Scalar kmin, kmax;
     Scalar weight, sum_weights;
@@ -321,48 +370,15 @@ void Curvature::smooth_curvatures(unsigned int iterations)
     mesh_.remove_edge_property(cotan);
 }
 
-void Curvature::mean_curvature_to_texture_coordinates() const
+void curvature_to_texture_coordinates(SurfaceMesh& mesh)
 {
-    auto curvatures = mesh_.add_vertex_property<Scalar>("v:curv");
-    for (auto v : mesh_.vertices())
-    {
-        curvatures[v] = fabs(mean_curvature(v));
-    }
-    curvature_to_texture_coordinates();
-    mesh_.remove_vertex_property<Scalar>(curvatures);
-}
-
-void Curvature::gauss_curvature_to_texture_coordinates() const
-{
-    auto curvatures = mesh_.add_vertex_property<Scalar>("v:curv");
-    for (auto v : mesh_.vertices())
-    {
-        curvatures[v] = gauss_curvature(v);
-    }
-    curvature_to_texture_coordinates();
-    mesh_.remove_vertex_property<Scalar>(curvatures);
-}
-
-void Curvature::max_curvature_to_texture_coordinates() const
-{
-    auto curvatures = mesh_.add_vertex_property<Scalar>("v:curv");
-    for (auto v : mesh_.vertices())
-    {
-        curvatures[v] = max_abs_curvature(v);
-    }
-    curvature_to_texture_coordinates();
-    mesh_.remove_vertex_property<Scalar>(curvatures);
-}
-
-void Curvature::curvature_to_texture_coordinates() const
-{
-    auto curvatures = mesh_.get_vertex_property<Scalar>("v:curv");
+    auto curvatures = mesh.get_vertex_property<Scalar>("v:curv");
     assert(curvatures);
 
     // sort curvature values
     std::vector<Scalar> values;
-    values.reserve(mesh_.n_vertices());
-    for (auto v : mesh_.vertices())
+    values.reserve(mesh.n_vertices());
+    for (auto v : mesh.vertices())
     {
         values.push_back(curvatures[v]);
     }
@@ -375,21 +391,69 @@ void Curvature::curvature_to_texture_coordinates() const
     Scalar kmax = values[n - 1 - i];
 
     // generate 1D texture coordinates
-    auto tex = mesh_.vertex_property<TexCoord>("v:tex");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
     if (kmin < 0.0) // signed
     {
         kmax = std::max(fabs(kmin), fabs(kmax));
-        for (auto v : mesh_.vertices())
+        for (auto v : mesh.vertices())
         {
             tex[v] = TexCoord((0.5f * curvatures[v] / kmax) + 0.5f, 0.0);
         }
     }
     else // unsigned
     {
-        for (auto v : mesh_.vertices())
+        for (auto v : mesh.vertices())
         {
             tex[v] = TexCoord((curvatures[v] - kmin) / (kmax - kmin), 0.0);
         }
+    }
+}
+
+void curvature(SurfaceMesh& mesh, Curvature c, int smoothing_steps,
+               bool use_tensor, bool use_two_ring)
+{
+    CurvatureAnalyzer analyzer(mesh);
+    if (use_tensor)
+        analyzer.analyze_tensor(smoothing_steps, use_two_ring);
+    else
+        analyzer.analyze(smoothing_steps);
+
+    auto curvatures = mesh.vertex_property<Scalar>("v:curv");
+
+    switch (c)
+    {
+        case Curvature::min:
+        {
+            for (auto v : mesh.vertices())
+                curvatures[v] = analyzer.min_curvature(v);
+            break;
+        }
+        case Curvature::max:
+        {
+            for (auto v : mesh.vertices())
+                curvatures[v] = analyzer.max_curvature(v);
+            break;
+        }
+        case Curvature::mean:
+        {
+            for (auto v : mesh.vertices())
+                curvatures[v] = fabs(analyzer.mean_curvature(v));
+            break;
+        }
+        case Curvature::gauss:
+        {
+            for (auto v : mesh.vertices())
+                curvatures[v] = analyzer.gauss_curvature(v);
+            break;
+        }
+        case Curvature::max_abs:
+        {
+            for (auto v : mesh.vertices())
+                curvatures[v] = analyzer.max_abs_curvature(v);
+            break;
+        }
+        default:
+            throw InvalidInputException("Unknown Curvature type");
     }
 }
 

@@ -3,7 +3,7 @@
 
 #include "gtest/gtest.h"
 
-#include <pmp/algorithms/Triangulation.h>
+#include <pmp/algorithms/triangulation.h>
 #include "Helpers.h"
 
 using namespace pmp;
@@ -11,15 +11,13 @@ using namespace pmp;
 TEST(TriangulationTest, min_area)
 {
     auto mesh = l_shape();
-    Triangulation tr(mesh);
-    tr.triangulate(Triangulation::Objective::MIN_AREA);
+    triangulate(mesh, TriangulationObjective::min_area);
     EXPECT_EQ(mesh.n_faces(), size_t(10));
 }
 
 TEST(TriangulationTest, max_angle)
 {
     auto mesh = l_shape();
-    Triangulation tr(mesh);
-    tr.triangulate(Triangulation::Objective::MAX_ANGLE);
+    triangulate(mesh, TriangulationObjective::max_angle);
     EXPECT_EQ(mesh.n_faces(), size_t(10));
 }

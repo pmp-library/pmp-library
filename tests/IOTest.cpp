@@ -3,7 +3,7 @@
 
 #include "SurfaceMeshTest.h"
 
-#include <pmp/algorithms/Normals.h>
+#include <pmp/algorithms/normals.h>
 #include <pmp/io/io.h>
 
 using namespace pmp;
@@ -15,7 +15,7 @@ class IOTest : public SurfaceMeshTest
 TEST_F(IOTest, obj_io)
 {
     add_triangle();
-    Normals::compute_vertex_normals(mesh);
+    vertex_normals(mesh);
     mesh.add_halfedge_property<TexCoord>("h:texcoord", TexCoord(0, 0));
     write(mesh, "test.obj");
     mesh.clear();
@@ -28,7 +28,7 @@ TEST_F(IOTest, obj_io)
 TEST_F(IOTest, off_io)
 {
     add_triangle();
-    Normals::compute_vertex_normals(mesh);
+    vertex_normals(mesh);
     mesh.add_vertex_property<TexCoord>("v:texcoord", TexCoord(0, 0));
     mesh.add_vertex_property<Color>("v:color", Color(0, 0, 0));
 
@@ -91,7 +91,7 @@ TEST_F(IOTest, stl_io)
     ASSERT_THROW(write(mesh, "test.stl"), InvalidInputException);
 
     // the same with normals computed
-    Normals::compute_face_normals(mesh);
+    face_normals(mesh);
     EXPECT_NO_THROW(write(mesh, "test.stl"));
 
     // try to write non-triangle mesh

@@ -3,25 +3,17 @@
 
 #include "gtest/gtest.h"
 
-#include "pmp/algorithms/Curvature.h"
-#include "pmp/algorithms/Shapes.h"
+#include "pmp/algorithms/curvature.h"
+#include "pmp/algorithms/shapes.h"
 
 using namespace pmp;
 
 class CurvatureTest : public ::testing::Test
 {
 public:
-    CurvatureTest()
-    {
-        mesh = Shapes::icosphere(5);
-        curvature = new Curvature(mesh);
-        curvature->analyze(1);
-    }
-
-    ~CurvatureTest() { delete curvature; }
+    CurvatureTest() { mesh = icosphere(5); }
 
     SurfaceMesh mesh;
-    Curvature* curvature;
 };
 
 TEST_F(CurvatureTest, curvature)
@@ -33,14 +25,27 @@ TEST_F(CurvatureTest, curvature)
     Scalar gmin = std::numeric_limits<Scalar>::max();
     Scalar gmax = -std::numeric_limits<Scalar>::max();
 
+    curvature(mesh, Curvature::min, 1);
+    auto vcurv = mesh.vertex_property<Scalar>("v:curv");
+    for (auto v : mesh.vertices())
+        kmin = std::min(kmin, vcurv[v]);
+
+    curvature(mesh, Curvature::max, 1);
+    for (auto v : mesh.vertices())
+        kmax = std::max(kmax, vcurv[v]);
+
+    curvature(mesh, Curvature::mean, 1);
     for (auto v : mesh.vertices())
     {
-        kmin = std::min(kmin, curvature->min_curvature(v));
-        kmax = std::max(kmax, curvature->max_curvature(v));
-        mmin = std::min(mmin, curvature->mean_curvature(v));
-        mmax = std::max(mmax, curvature->mean_curvature(v));
-        gmin = std::min(gmin, curvature->gauss_curvature(v));
-        gmax = std::max(gmax, curvature->gauss_curvature(v));
+        mmin = std::min(mmin, vcurv[v]);
+        mmax = std::max(mmax, vcurv[v]);
+    }
+
+    curvature(mesh, Curvature::gauss, 1);
+    for (auto v : mesh.vertices())
+    {
+        gmin = std::min(gmin, vcurv[v]);
+        gmax = std::max(gmax, vcurv[v]);
     }
 
     EXPECT_NEAR(kmin, 1.0, 0.02);
@@ -51,23 +56,10 @@ TEST_F(CurvatureTest, curvature)
     EXPECT_NEAR(gmax, 1.0, 0.02);
 }
 
-TEST_F(CurvatureTest, mean_curvature_to_texture_coordinates)
+TEST_F(CurvatureTest, curvature_to_texture_coordinates)
 {
-    curvature->mean_curvature_to_texture_coordinates();
-    auto tex = mesh.vertex_property<TexCoord>("v:tex");
-    EXPECT_TRUE(tex);
-}
-
-TEST_F(CurvatureTest, max_curvature_to_texture_coordinates)
-{
-    curvature->max_curvature_to_texture_coordinates();
-    auto tex = mesh.vertex_property<TexCoord>("v:tex");
-    EXPECT_TRUE(tex);
-}
-
-TEST_F(CurvatureTest, gauss_curvature_to_texture_coordinates)
-{
-    curvature->gauss_curvature_to_texture_coordinates();
+    curvature(mesh, Curvature::mean, 1);
+    curvature_to_texture_coordinates(mesh);
     auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);
 }

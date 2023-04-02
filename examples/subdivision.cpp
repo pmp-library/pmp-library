@@ -2,9 +2,8 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/Subdivision.h>
-#include <pmp/algorithms/Features.h>
-#include <pmp/algorithms/Triangulation.h>
+#include <pmp/algorithms/subdivision.h>
+#include <pmp/algorithms/triangulation.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -36,8 +35,7 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Triangulate Mesh"))
         {
-            Triangulation tesselator(mesh_);
-            tesselator.triangulate();
+            triangulate(mesh_);
             update_mesh();
         }
 
@@ -45,7 +43,7 @@ void Viewer::process_imgui()
         {
             try
             {
-                Subdivision(mesh_).loop();
+                loop_subdivision(mesh_);
             }
             catch (const InvalidInputException& e)
             {
@@ -57,13 +55,13 @@ void Viewer::process_imgui()
 
         if (ImGui::Button("Catmull-Clark Subdivision"))
         {
-            Subdivision(mesh_).catmull_clark();
+            catmull_clark_subdivision(mesh_);
             update_mesh();
         }
 
         if (ImGui::Button("Quad/Tri Subdivision"))
         {
-            Subdivision(mesh_).quad_tri();
+            quad_tri_subdivision(mesh_);
             update_mesh();
         }
     }

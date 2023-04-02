@@ -3,16 +3,16 @@
 
 #include "MeshProcessingViewer.h"
 
-#include <pmp/algorithms/Subdivision.h>
-#include <pmp/algorithms/Features.h>
-#include <pmp/algorithms/Decimation.h>
-#include <pmp/algorithms/Fairing.h>
-#include <pmp/algorithms/Remeshing.h>
-#include <pmp/algorithms/Curvature.h>
-#include <pmp/algorithms/Geodesics.h>
-#include <pmp/algorithms/HoleFilling.h>
-#include <pmp/algorithms/Shapes.h>
-#include <pmp/algorithms/Triangulation.h>
+#include <pmp/algorithms/subdivision.h>
+#include <pmp/algorithms/features.h>
+#include <pmp/algorithms/decimation.h>
+#include <pmp/algorithms/remeshing.h>
+#include <pmp/algorithms/curvature.h>
+#include <pmp/algorithms/geodesics.h>
+#include <pmp/algorithms/hole_filling.h>
+#include <pmp/algorithms/shapes.h>
+#include <pmp/algorithms/smoothing.h>
+#include <pmp/algorithms/triangulation.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
 #include <pmp/utilities.h>
 
@@ -22,7 +22,7 @@ using namespace pmp;
 
 MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
                                            int height)
-    : MeshViewer(title, width, height), smoother_(mesh_)
+    : MeshViewer(title, width, height)
 {
     // add help items
     add_help_item("O", "Flip mesh orientation", 5);
@@ -37,7 +37,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
     {
         case GLFW_KEY_A:
         {
-            Features(mesh_).detect_angle(25);
+            detect_features(mesh_, 25);
             update_mesh();
             break;
         }
@@ -86,8 +86,7 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         }
         case GLFW_KEY_T:
         {
-            Triangulation tr(mesh_);
-            tr.triangulate();
+            triangulate(mesh_);
             update_mesh();
             break;
         }
@@ -104,31 +103,31 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
             switch (key)
             {
                 case GLFW_KEY_1:
-                    mesh_.assign(Shapes::tetrahedron());
+                    mesh_.assign(tetrahedron());
                     break;
                 case GLFW_KEY_2:
-                    mesh_.assign(Shapes::octahedron());
+                    mesh_.assign(octahedron());
                     break;
                 case GLFW_KEY_3:
-                    mesh_.assign(Shapes::hexahedron());
+                    mesh_.assign(hexahedron());
                     break;
                 case GLFW_KEY_4:
-                    mesh_.assign(Shapes::icosahedron());
+                    mesh_.assign(icosahedron());
                     break;
                 case GLFW_KEY_5:
-                    mesh_.assign(Shapes::dodecahedron());
+                    mesh_.assign(dodecahedron());
                     break;
                 case GLFW_KEY_6:
-                    mesh_.assign(Shapes::icosphere(3));
+                    mesh_.assign(icosphere(3));
                     break;
                 case GLFW_KEY_7:
-                    mesh_.assign(Shapes::quad_sphere(3));
+                    mesh_.assign(quad_sphere(3));
                     break;
                 case GLFW_KEY_8:
-                    mesh_.assign(Shapes::uv_sphere());
+                    mesh_.assign(uv_sphere());
                     break;
                 case GLFW_KEY_9:
-                    mesh_.assign(Shapes::torus());
+                    mesh_.assign(torus());
                     break;
             }
 
@@ -157,27 +156,24 @@ void MeshProcessingViewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.mean_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::mean, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             mesh_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
         }
         if (ImGui::Button("Gauss Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.gauss_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::gauss, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             mesh_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
         }
         if (ImGui::Button("Abs. Max. Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.max_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::max_abs, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             mesh_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
@@ -196,7 +192,7 @@ void MeshProcessingViewer::process_imgui()
 
         if (ImGui::Button("Explicit Smoothing"))
         {
-            smoother_.explicit_smoothing(iterations);
+            explicit_smoothing(mesh_, iterations);
             update_mesh();
         }
 
@@ -214,7 +210,7 @@ void MeshProcessingViewer::process_imgui()
             Scalar dt = timestep * radius_ * radius_;
             try
             {
-                smoother_.implicit_smoothing(dt);
+                implicit_smoothing(mesh_, dt);
             }
             catch (const SolverException& e)
             {
@@ -254,11 +250,9 @@ void MeshProcessingViewer::process_imgui()
         {
             try
             {
-                Decimation decimater(mesh_);
-                decimater.initialize(aspect_ratio, 0.0, 0.0, normal_deviation,
-                                     0.0, 0.01, seam_angle_deviation);
-                decimater.decimate(mesh_.n_vertices() * 0.01 *
-                                   target_percentage);
+                auto nv = mesh_.n_vertices() * 0.01 * target_percentage;
+                decimate(mesh_, nv, aspect_ratio, 0.0, 0.0, normal_deviation,
+                         0.0, 0.01, seam_angle_deviation);
             }
             catch (const InvalidInputException& e)
             {
@@ -278,7 +272,7 @@ void MeshProcessingViewer::process_imgui()
         {
             try
             {
-                Subdivision(mesh_).loop();
+                loop_subdivision(mesh_);
             }
             catch (const InvalidInputException& e)
             {
@@ -290,13 +284,13 @@ void MeshProcessingViewer::process_imgui()
 
         if (ImGui::Button("Quad-Tri Subdivision"))
         {
-            Subdivision(mesh_).quad_tri();
+            quad_tri_subdivision(mesh_);
             update_mesh();
         }
 
         if (ImGui::Button("Catmull-Clark Subdivision"))
         {
-            Subdivision(mesh_).catmull_clark();
+            catmull_clark_subdivision(mesh_);
             update_mesh();
         }
     }
@@ -312,10 +306,10 @@ void MeshProcessingViewer::process_imgui()
 
             try
             {
-                Remeshing(mesh_).adaptive_remeshing(
-                    0.001 * bb,  // min length
-                    1.0 * bb,    // max length
-                    0.001 * bb); // approx. error
+                adaptive_remeshing(mesh_,
+                                   0.001 * bb,  // min length
+                                   1.0 * bb,    // max length
+                                   0.001 * bb); // approx. error
             }
             catch (const InvalidInputException& e)
             {
@@ -335,7 +329,7 @@ void MeshProcessingViewer::process_imgui()
 
             try
             {
-                Remeshing(mesh_).uniform_remeshing(l);
+                uniform_remeshing(mesh_, l);
             }
             catch (const InvalidInputException& e)
             {
@@ -386,8 +380,7 @@ void MeshProcessingViewer::process_imgui()
             {
                 try
                 {
-                    HoleFilling hf(mesh_);
-                    hf.fill_hole(hmin);
+                    fill_hole(mesh_, hmin);
                 }
                 catch (const InvalidInputException& e)
                 {
@@ -419,11 +412,10 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
             seed.push_back(v);
 
             // compute geodesic distance
-            Geodesics geodist(mesh_);
-            geodist.compute(seed);
+            geodesics(mesh_, seed);
 
             // setup texture coordinates for visualization
-            geodist.distance_to_texture_coordinates();
+            distance_to_texture_coordinates(mesh_);
             mesh_.use_checkerboard_texture();
             update_mesh();
             set_draw_mode("Texture");

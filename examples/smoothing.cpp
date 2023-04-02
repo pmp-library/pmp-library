@@ -2,8 +2,8 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include <pmp/visualization/MeshViewer.h>
-#include <pmp/algorithms/Curvature.h>
-#include <pmp/algorithms/Smoothing.h>
+#include <pmp/algorithms/curvature.h>
+#include <pmp/algorithms/smoothing.h>
 #include <imgui.h>
 
 using namespace pmp;
@@ -15,13 +15,10 @@ public:
 
 protected:
     void process_imgui() override;
-
-private:
-    Smoothing smoother_;
 };
 
 Viewer::Viewer(const char* title, int width, int height)
-    : MeshViewer(title, width, height), smoother_(mesh_)
+    : MeshViewer(title, width, height)
 {
     crease_angle_ = 180.0;
 }
@@ -37,9 +34,8 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            Curvature analyzer(mesh_);
-            analyzer.analyze_tensor(1, true);
-            analyzer.mean_curvature_to_texture_coordinates();
+            curvature(mesh_, Curvature::mean, 1, true, true);
+            curvature_to_texture_coordinates(mesh_);
             update_mesh();
             mesh_.use_cold_warm_texture();
             set_draw_mode("Texture");
@@ -63,7 +59,7 @@ void Viewer::process_imgui()
 
         if (ImGui::Button("Explicit Smoothing"))
         {
-            smoother_.explicit_smoothing(iterations, uniform_laplace);
+            explicit_smoothing(mesh_, iterations, uniform_laplace);
             update_mesh();
         }
 
@@ -92,7 +88,7 @@ void Viewer::process_imgui()
                 uniform_laplace ? timestep : timestep * radius_ * radius_;
             try
             {
-                smoother_.implicit_smoothing(dt, uniform_laplace, rescale);
+                implicit_smoothing(mesh_, dt, uniform_laplace, rescale);
             }
             catch (const SolverException& e)
             {

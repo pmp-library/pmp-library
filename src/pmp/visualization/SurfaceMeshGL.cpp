@@ -8,7 +8,7 @@
 #include "pmp/visualization/PhongShader.h"
 #include "pmp/visualization/MatCapShader.h"
 #include "pmp/visualization/ColdWarmTexture.h"
-#include "pmp/algorithms/Normals.h"
+#include "pmp/algorithms/normals.h"
 
 namespace pmp {
 
@@ -320,13 +320,13 @@ void SurfaceMeshGL::update_opengl_buffers()
         {
             fnormals = add_face_property<Normal>("gl:fnormal");
             for (auto f : faces())
-                fnormals[f] = Normals::compute_face_normal(*this, f);
+                fnormals[f] = face_normal(*this, f);
         }
         else if (crease_angle_ > 170)
         {
             vnormals = add_vertex_property<Normal>("gl:vnormal");
             for (auto v : vertices())
-                vnormals[v] = Normals::compute_vertex_normal(*this, v);
+                vnormals[v] = vertex_normal(*this, v);
         }
 
         // data per face (for all corners)
@@ -372,8 +372,7 @@ void SurfaceMeshGL::update_opengl_buffers()
                 }
                 else
                 {
-                    n = Normals::compute_corner_normal(*this, h,
-                                                       crease_angle_radians);
+                    n = corner_normal(*this, h, crease_angle_radians);
                 }
                 corner_normals.push_back((vec3)n);
 

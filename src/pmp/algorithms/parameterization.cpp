@@ -1,62 +1,55 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/algorithms/Parameterization.h"
+#include "pmp/algorithms/parameterization.h"
 
 #include <cmath>
 
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
+#include "pmp/SurfaceMesh.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
+namespace {
 
-Parameterization::Parameterization(SurfaceMesh& mesh) : mesh_(mesh)
+bool has_boundary(const SurfaceMesh& mesh)
 {
-    bool has_boundary = false;
-    for (auto v : mesh_.vertices())
-        if (mesh_.is_boundary(v))
-        {
-            has_boundary = true;
-            break;
-        }
-
-    if (!has_boundary)
-    {
-        auto what = "Parameterization: Mesh has no boundary.";
-        throw InvalidInputException(what);
-    }
+    for (auto v : mesh.vertices())
+        if (mesh.is_boundary(v))
+            return true;
+    return false;
 }
 
-void Parameterization::setup_boundary_constraints()
+void setup_boundary_constraints(SurfaceMesh& mesh)
 {
     // get properties
-    auto points = mesh_.vertex_property<Point>("v:point");
-    auto tex = mesh_.vertex_property<TexCoord>("v:tex");
+    auto points = mesh.vertex_property<Point>("v:point");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
 
-    SurfaceMesh::VertexIterator vit, vend = mesh_.vertices_end();
+    SurfaceMesh::VertexIterator vit, vend = mesh.vertices_end();
     Vertex vh;
     Halfedge hh;
     std::vector<Vertex> loop;
 
     // Initialize all texture coordinates to the origin.
-    for (auto v : mesh_.vertices())
+    for (auto v : mesh.vertices())
         tex[v] = TexCoord(0.5, 0.5);
 
     // find 1st boundary vertex
-    for (vit = mesh_.vertices_begin(); vit != vend; ++vit)
-        if (mesh_.is_boundary(*vit))
+    for (vit = mesh.vertices_begin(); vit != vend; ++vit)
+        if (mesh.is_boundary(*vit))
             break;
 
     // collect boundary loop
     vh = *vit;
-    hh = mesh_.halfedge(vh);
+    hh = mesh.halfedge(vh);
     do
     {
-        loop.push_back(mesh_.to_vertex(hh));
-        hh = mesh_.next_halfedge(hh);
-    } while (hh != mesh_.halfedge(vh));
+        loop.push_back(mesh.to_vertex(hh));
+        hh = mesh.next_halfedge(hh);
+    } while (hh != mesh.halfedge(vh));
 
     // map boundary loop to unit circle in texture domain
     unsigned int i, n = loop.size();
@@ -86,31 +79,84 @@ void Parameterization::setup_boundary_constraints()
     }
 }
 
-void Parameterization::harmonic(bool use_uniform_weights)
+void setup_lscm_boundary(SurfaceMesh& mesh)
 {
+    // constrain the two boundary vertices farthest from each other to fix
+    // the translation and rotation of the resulting parameterization
+
+    // vertex properties
+    auto pos = mesh.vertex_property<Point>("v:point");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
+    auto locked = mesh.add_vertex_property<bool>("v:locked", false);
+
+    // find boundary vertices and store handles in vector
+    std::vector<Vertex> boundary;
+    for (auto v : mesh.vertices())
+        if (mesh.is_boundary(v))
+            boundary.push_back(v);
+
+    // find boundary vertices with largest distance
+    Scalar diam(0.0), d;
+    Vertex v1, v2;
+    for (auto vv1 : boundary)
+    {
+        for (auto vv2 : boundary)
+        {
+            d = distance(pos[vv1], pos[vv2]);
+            if (d > diam)
+            {
+                diam = d;
+                v1 = vv1;
+                v2 = vv2;
+            }
+        }
+    }
+
+    // pin these two boundary vertices
+    for (auto v : mesh.vertices())
+    {
+        tex[v] = TexCoord(0.5, 0.5);
+        locked[v] = false;
+    }
+    tex[v1] = TexCoord(0.0, 0.0);
+    tex[v2] = TexCoord(1.0, 1.0);
+    locked[v1] = true;
+    locked[v2] = true;
+}
+} // namespace
+
+void harmonic_parameterization(SurfaceMesh& mesh, bool use_uniform_weights)
+{
+    // check precondition
+    if (!has_boundary(mesh))
+    {
+        auto what = "Parameterization: Mesh has no boundary.";
+        throw InvalidInputException(what);
+    }
+
     // map boundary to circle
-    setup_boundary_constraints();
+    setup_boundary_constraints(mesh);
 
     // get properties
-    auto tex = mesh_.vertex_property<TexCoord>("v:tex");
-    auto eweight = mesh_.add_edge_property<Scalar>("e:param");
-    auto idx = mesh_.add_vertex_property<int>("v:idx", -1);
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
+    auto eweight = mesh.add_edge_property<Scalar>("e:param");
+    auto idx = mesh.add_vertex_property<int>("v:idx", -1);
 
     // compute Laplace weight per edge: cotan or uniform
-    for (auto e : mesh_.edges())
+    for (auto e : mesh.edges())
     {
         eweight[e] =
-            use_uniform_weights ? 1.0 : std::max(0.0, cotan_weight(mesh_, e));
+            use_uniform_weights ? 1.0 : std::max(0.0, cotan_weight(mesh, e));
     }
 
     // collect free (non-boundary) vertices in array free_vertices[]
     // assign indices such that idx[ free_vertices[i] ] == i
     unsigned i = 0;
     std::vector<Vertex> free_vertices;
-    free_vertices.reserve(mesh_.n_vertices());
-    for (auto v : mesh_.vertices())
+    free_vertices.reserve(mesh.n_vertices());
+    for (auto v : mesh.vertices())
     {
-        if (!mesh_.is_boundary(v))
+        if (!mesh.is_boundary(v))
         {
             idx[v] = i++;
             free_vertices.push_back(v);
@@ -135,14 +181,14 @@ void Parameterization::harmonic(bool use_uniform_weights)
 
         // lhs row
         ww = 0.0;
-        for (auto h : mesh_.halfedges(v))
+        for (auto h : mesh.halfedges(v))
         {
-            vv = mesh_.to_vertex(h);
-            e = mesh_.edge(h);
+            vv = mesh.to_vertex(h);
+            e = mesh.edge(h);
             w = eweight[e];
             ww += w;
 
-            if (mesh_.is_boundary(vv))
+            if (mesh.is_boundary(vv))
             {
                 b -= -w * static_cast<dvec2>(tex[vv]);
             }
@@ -164,8 +210,8 @@ void Parameterization::harmonic(bool use_uniform_weights)
     if (solver.info() != Eigen::Success)
     {
         // clean-up
-        mesh_.remove_vertex_property(idx);
-        mesh_.remove_edge_property(eweight);
+        mesh.remove_vertex_property(idx);
+        mesh.remove_edge_property(eweight);
         auto what = "Parameterization: Failed to solve linear system.";
         throw SolverException(what);
     }
@@ -179,73 +225,35 @@ void Parameterization::harmonic(bool use_uniform_weights)
     }
 
     // clean-up
-    mesh_.remove_vertex_property(idx);
-    mesh_.remove_edge_property(eweight);
+    mesh.remove_vertex_property(idx);
+    mesh.remove_edge_property(eweight);
 }
 
-void Parameterization::setup_lscm_boundary()
+void lscm_parameterization(SurfaceMesh& mesh)
 {
-    // constrain the two boundary vertices farthest from each other to fix
-    // the translation and rotation of the resulting parameterization
-
-    // vertex properties
-    auto pos = mesh_.vertex_property<Point>("v:point");
-    auto tex = mesh_.vertex_property<TexCoord>("v:tex");
-    auto locked = mesh_.add_vertex_property<bool>("v:locked", false);
-
-    // find boundary vertices and store handles in vector
-    std::vector<Vertex> boundary;
-    for (auto v : mesh_.vertices())
-        if (mesh_.is_boundary(v))
-            boundary.push_back(v);
-
-    // find boundary vertices with largest distance
-    Scalar diam(0.0), d;
-    Vertex v1, v2;
-    for (auto vv1 : boundary)
+    // check precondition
+    if (!has_boundary(mesh))
     {
-        for (auto vv2 : boundary)
-        {
-            d = distance(pos[vv1], pos[vv2]);
-            if (d > diam)
-            {
-                diam = d;
-                v1 = vv1;
-                v2 = vv2;
-            }
-        }
+        auto what = "Parameterization: Mesh has no boundary.";
+        throw InvalidInputException(what);
     }
 
-    // pin these two boundary vertices
-    for (auto v : mesh_.vertices())
-    {
-        tex[v] = TexCoord(0.5, 0.5);
-        locked[v] = false;
-    }
-    tex[v1] = TexCoord(0.0, 0.0);
-    tex[v2] = TexCoord(1.0, 1.0);
-    locked[v1] = true;
-    locked[v2] = true;
-}
-
-void Parameterization::lscm()
-{
     // boundary constraints
-    setup_lscm_boundary();
+    setup_lscm_boundary(mesh);
 
     // properties
-    auto pos = mesh_.vertex_property<Point>("v:point");
-    auto tex = mesh_.vertex_property<TexCoord>("v:tex");
-    auto idx = mesh_.add_vertex_property<int>("v:idx", -1);
-    auto weight = mesh_.add_halfedge_property<dvec2>("h:lscm");
-    auto locked = mesh_.get_vertex_property<bool>("v:locked");
+    auto pos = mesh.vertex_property<Point>("v:point");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
+    auto idx = mesh.add_vertex_property<int>("v:idx", -1);
+    auto weight = mesh.add_halfedge_property<dvec2>("h:lscm");
+    auto locked = mesh.get_vertex_property<bool>("v:locked");
     assert(locked);
 
     // compute weights/gradients per face/halfedge
-    for (auto f : mesh_.faces())
+    for (auto f : mesh.faces())
     {
         // collect face halfedge
-        auto fh_it = mesh_.halfedges(f);
+        auto fh_it = mesh.halfedges(f);
         auto ha = *fh_it;
         ++fh_it;
         auto hb = *fh_it;
@@ -253,9 +261,9 @@ void Parameterization::lscm()
         auto hc = *fh_it;
 
         // collect face vertices
-        auto a = (dvec3)pos[mesh_.to_vertex(ha)];
-        auto b = (dvec3)pos[mesh_.to_vertex(hb)];
-        auto c = (dvec3)pos[mesh_.to_vertex(hc)];
+        auto a = (dvec3)pos[mesh.to_vertex(ha)];
+        auto b = (dvec3)pos[mesh.to_vertex(hb)];
+        auto c = (dvec3)pos[mesh.to_vertex(hc)];
 
         // calculate local coordinate system
         dvec3 z = normalize(cross(normalize(c - b), normalize(a - b)));
@@ -294,8 +302,8 @@ void Parameterization::lscm()
     // assign indices such that idx[ free_vertices[j] ] == j
     unsigned int j = 0;
     std::vector<Vertex> free_vertices;
-    free_vertices.reserve(mesh_.n_vertices());
-    for (auto v : mesh_.vertices())
+    free_vertices.reserve(mesh.n_vertices());
+    for (auto v : mesh.vertices())
     {
         if (!locked[v])
         {
@@ -305,8 +313,8 @@ void Parameterization::lscm()
     }
 
     // build matrix and rhs
-    const unsigned int nv2 = 2 * mesh_.n_vertices();
-    const unsigned int nv = mesh_.n_vertices();
+    const unsigned int nv2 = 2 * mesh.n_vertices();
+    const unsigned int nv = mesh.n_vertices();
     const unsigned int n = free_vertices.size();
     Vertex vi, vj;
     Halfedge hh;
@@ -338,26 +346,26 @@ void Parameterization::lscm()
         {
             si = 0;
 
-            for (auto h : mesh_.halfedges(vi))
+            for (auto h : mesh.halfedges(vi))
             {
-                vj = mesh_.to_vertex(h);
+                vj = mesh.to_vertex(h);
                 sj0 = sj1 = 0;
 
-                if (!mesh_.is_boundary(h))
+                if (!mesh.is_boundary(h))
                 {
                     const dvec2& wj = weight[h];
-                    const dvec2& wi = weight[mesh_.prev_halfedge(h)];
+                    const dvec2& wi = weight[mesh.prev_halfedge(h)];
 
                     sj0 += sign * wi[c0] * wj[0] + wi[c1] * wj[1];
                     sj1 += -sign * wi[c0] * wj[1] + wi[c1] * wj[0];
                     si += wi[0] * wi[0] + wi[1] * wi[1];
                 }
 
-                h = mesh_.opposite_halfedge(h);
-                if (!mesh_.is_boundary(h))
+                h = mesh.opposite_halfedge(h);
+                if (!mesh.is_boundary(h))
                 {
                     const dvec2& wi = weight[h];
-                    const dvec2& wj = weight[mesh_.prev_halfedge(h)];
+                    const dvec2& wj = weight[mesh.prev_halfedge(h)];
 
                     sj0 += sign * wi[c0] * wj[0] + wi[c1] * wj[1];
                     sj1 += -sign * wi[c0] * wj[1] + wi[c1] * wj[0];
@@ -391,9 +399,9 @@ void Parameterization::lscm()
     if (solver.info() != Eigen::Success)
     {
         // clean-up
-        mesh_.remove_vertex_property(idx);
-        mesh_.remove_vertex_property(locked);
-        mesh_.remove_halfedge_property(weight);
+        mesh.remove_vertex_property(idx);
+        mesh.remove_vertex_property(locked);
+        mesh.remove_halfedge_property(weight);
         auto what = "Parameterization: Failed solve linear system.";
         throw SolverException(what);
     }
@@ -408,23 +416,23 @@ void Parameterization::lscm()
 
     // scale tex coordinates to unit square
     TexCoord bbmin(1, 1), bbmax(0, 0);
-    for (auto v : mesh_.vertices())
+    for (auto v : mesh.vertices())
     {
         bbmin = min(bbmin, tex[v]);
         bbmax = max(bbmax, tex[v]);
     }
     bbmax -= bbmin;
     Scalar s = std::max(bbmax[0], bbmax[1]);
-    for (auto v : mesh_.vertices())
+    for (auto v : mesh.vertices())
     {
         tex[v] -= bbmin;
         tex[v] /= s;
     }
 
     // clean-up
-    mesh_.remove_vertex_property(idx);
-    mesh_.remove_vertex_property(locked);
-    mesh_.remove_halfedge_property(weight);
+    mesh.remove_vertex_property(idx);
+    mesh.remove_vertex_property(locked);
+    mesh.remove_halfedge_property(weight);
 }
 
 } // namespace pmp
