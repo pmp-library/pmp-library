@@ -94,6 +94,13 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     auto eweight = mesh.add_edge_property<double>("fairing:eweight");
     auto idx = mesh.add_vertex_property<int>("fairing:idx", -1);
 
+    auto cleanup = [&]() {
+        mesh.remove_vertex_property(vlocked);
+        mesh.remove_vertex_property(vweight);
+        mesh.remove_edge_property(eweight);
+        mesh.remove_vertex_property(idx);
+    };
+
     // compute cotan weights
     for (auto v : mesh.vertices())
     {
@@ -175,6 +182,7 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     // we need locked vertices as boundary constraints
     if (vertices.size() == mesh.n_vertices())
     {
+        cleanup();
         auto what = "Fairing: Missing boundary constraints.";
         throw InvalidInputException(what);
     }
@@ -231,10 +239,7 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     }
 
     // remove properties
-    mesh.remove_vertex_property(vlocked);
-    mesh.remove_vertex_property(vweight);
-    mesh.remove_edge_property(eweight);
-    mesh.remove_vertex_property(idx);
+    cleanup();
 }
 
 } // namespace pmp
