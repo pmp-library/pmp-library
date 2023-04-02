@@ -281,7 +281,7 @@ void lscm_parameterization(SurfaceMesh& mesh)
         if (area)
             area = 1.0 / area;
 
-        // uncommend the following line if your meshes are very bad...
+        // uncomment the following line if your meshes are very bad...
         //area = 1.0;
 
         // calculate W_j,Ti (index by corner a,b,c and real/imaginary)
