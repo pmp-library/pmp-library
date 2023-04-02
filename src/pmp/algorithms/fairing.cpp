@@ -183,7 +183,7 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     if (vertices.size() == mesh.n_vertices())
     {
         cleanup();
-        auto what = "Fairing: Missing boundary constraints.";
+        auto what = std::string{__func__} + ": Missing boundary constraints.";
         throw InvalidInputException(what);
     }
 

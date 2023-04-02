@@ -185,7 +185,7 @@ void loop_subdivision(SurfaceMesh& mesh)
 
     if (!mesh.is_triangle_mesh())
     {
-        auto what = "Subdivision: Not a triangle mesh.";
+        auto what = std::string{__func__} + ": Not a triangle mesh.";
         throw InvalidInputException(what);
     }
 

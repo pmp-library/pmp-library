@@ -192,7 +192,7 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
         mesh.remove_vertex_property(idx);
         mesh.remove_vertex_property(vweight);
         mesh.remove_edge_property(eweight);
-        auto what = "Smoothing: Failed to solve linear system.";
+        auto what = std::string{__func__} + ": Failed to solve linear system.";
         throw SolverException(what);
     }
     else

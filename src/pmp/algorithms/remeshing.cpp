@@ -1115,7 +1115,7 @@ Point Remeshing::minimize_squared_areas(Vertex v)
     }
     catch (...)
     {
-        auto what = "Remeshing: Matrix not invertible.";
+        auto what = std::string{__func__} + ": Matrix not invertible.";
         throw SolverException(what);
     }
 

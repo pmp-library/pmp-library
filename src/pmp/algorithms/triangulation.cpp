@@ -67,7 +67,7 @@ void Triangulation::triangulate(Face f, TriangulationObjective o)
     {
         if (!mesh_.is_manifold(mesh_.to_vertex(h)))
         {
-            auto what = "[Triangulation] Non-manifold polygon";
+            auto what = std::string{__func__} + ": Non-manifold polygon";
             throw InvalidInputException(what);
         }
 

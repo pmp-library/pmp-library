@@ -135,7 +135,7 @@ void HoleFilling::fill_hole(Halfedge h)
     // is it really a hole?
     if (!mesh_.is_boundary(h))
     {
-        auto what = "HoleFilling: Not a boundary halfedge.";
+        auto what = std::string{__func__} + ": Not a boundary halfedge.";
         throw InvalidInputException(what);
     }
 
@@ -179,7 +179,7 @@ void HoleFilling::triangulate_hole(Halfedge h)
         // check for manifoldness
         if (!mesh_.is_manifold(mesh_.to_vertex(hit)))
         {
-            auto what = "HoleFilling: Non-manifold hole.";
+            auto what = std::string{__func__} + ": Non-manifold hole.";
             throw InvalidInputException(what);
         }
 
@@ -513,7 +513,7 @@ void HoleFilling::relaxation()
     {
         // clean up
         mesh_.remove_vertex_property(idx);
-        auto what = "HoleFilling: Failed to solve linear system.";
+        auto what = std::string{__func__} + ": Failed to solve linear system.";
         throw SolverException(what);
     }
 

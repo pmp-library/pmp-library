@@ -130,7 +130,7 @@ void harmonic_parameterization(SurfaceMesh& mesh, bool use_uniform_weights)
     // check precondition
     if (!has_boundary(mesh))
     {
-        auto what = "Parameterization: Mesh has no boundary.";
+        auto what = std::string{__func__} + ": Mesh has no boundary.";
         throw InvalidInputException(what);
     }
 
@@ -212,7 +212,7 @@ void harmonic_parameterization(SurfaceMesh& mesh, bool use_uniform_weights)
         // clean-up
         mesh.remove_vertex_property(idx);
         mesh.remove_edge_property(eweight);
-        auto what = "Parameterization: Failed to solve linear system.";
+        auto what = std::string{__func__} + ": Failed to solve linear system.";
         throw SolverException(what);
     }
     else
@@ -234,7 +234,7 @@ void lscm_parameterization(SurfaceMesh& mesh)
     // check precondition
     if (!has_boundary(mesh))
     {
-        auto what = "Parameterization: Mesh has no boundary.";
+        auto what = std::string{__func__} + ": Mesh has no boundary.";
         throw InvalidInputException(what);
     }
 
@@ -402,7 +402,7 @@ void lscm_parameterization(SurfaceMesh& mesh)
         mesh.remove_vertex_property(idx);
         mesh.remove_vertex_property(locked);
         mesh.remove_halfedge_property(weight);
-        auto what = "Parameterization: Failed solve linear system.";
+        auto what = std::string{__func__} + ": Failed solve linear system.";
         throw SolverException(what);
     }
     else
