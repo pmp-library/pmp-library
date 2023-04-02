@@ -416,11 +416,6 @@ void Geodesics::heap_vertex(Vertex v)
     }
 }
 
-bool valid_triangle(double a, double b, double c)
-{
-    return (a + b > c && a + c > b && b + c > a);
-}
-
 Scalar Geodesics::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
                            Scalar r1)
 {
