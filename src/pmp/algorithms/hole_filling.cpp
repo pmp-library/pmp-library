@@ -14,7 +14,7 @@ namespace {
 class HoleFilling
 {
 public:
-    HoleFilling(SurfaceMesh& mesh);
+    explicit HoleFilling(SurfaceMesh& mesh);
     void fill_hole(Halfedge h);
 
 private:
