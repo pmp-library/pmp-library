@@ -12,6 +12,7 @@ using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;
 
 namespace pmp {
+namespace {
 
 class HoleFilling
 {
@@ -559,6 +560,7 @@ void HoleFilling::fairing()
     // clean up
     mesh_.remove_vertex_property(vsel);
 }
+} // namespace
 
 void fill_hole(SurfaceMesh& mesh, Halfedge h)
 {

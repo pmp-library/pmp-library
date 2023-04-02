@@ -13,6 +13,8 @@ namespace pmp {
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;
 
+namespace {
+
 // compute cotan/uniform Laplace weights.
 void compute_edge_weights(SurfaceMesh& mesh, bool use_uniform_laplace)
 {
@@ -46,6 +48,7 @@ void compute_vertex_weights(SurfaceMesh& mesh, bool use_uniform_laplace)
             vweight[v] = 0.5 / voronoi_area(mesh, v);
     }
 }
+} // namespace
 
 void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
                         bool use_uniform_laplace)

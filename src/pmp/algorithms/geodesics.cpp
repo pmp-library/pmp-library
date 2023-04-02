@@ -5,6 +5,7 @@
 #include <cassert>
 
 namespace pmp {
+namespace {
 
 class Geodesics
 {
@@ -478,6 +479,7 @@ Scalar Geodesics::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
     // use Dijkstra as fall-back
     return dijkstra;
 }
+} // namespace
 
 void distance_to_texture_coordinates(SurfaceMesh& mesh)
 {

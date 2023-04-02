@@ -9,7 +9,7 @@
 #include <algorithm>
 
 namespace pmp {
-
+namespace {
 void project_to_unit_sphere(SurfaceMesh& mesh)
 {
     for (auto v : mesh.vertices())
@@ -19,6 +19,7 @@ void project_to_unit_sphere(SurfaceMesh& mesh)
         mesh.position(v) = (1.0 / n) * p;
     }
 }
+} // namespace
 
 SurfaceMesh tetrahedron()
 {

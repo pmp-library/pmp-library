@@ -12,6 +12,7 @@
 #include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
+namespace {
 
 bool has_boundary(const SurfaceMesh& mesh)
 {
@@ -77,6 +78,52 @@ void setup_boundary_constraints(SurfaceMesh& mesh)
         }
     }
 }
+
+void setup_lscm_boundary(SurfaceMesh& mesh)
+{
+    // constrain the two boundary vertices farthest from each other to fix
+    // the translation and rotation of the resulting parameterization
+
+    // vertex properties
+    auto pos = mesh.vertex_property<Point>("v:point");
+    auto tex = mesh.vertex_property<TexCoord>("v:tex");
+    auto locked = mesh.add_vertex_property<bool>("v:locked", false);
+
+    // find boundary vertices and store handles in vector
+    std::vector<Vertex> boundary;
+    for (auto v : mesh.vertices())
+        if (mesh.is_boundary(v))
+            boundary.push_back(v);
+
+    // find boundary vertices with largest distance
+    Scalar diam(0.0), d;
+    Vertex v1, v2;
+    for (auto vv1 : boundary)
+    {
+        for (auto vv2 : boundary)
+        {
+            d = distance(pos[vv1], pos[vv2]);
+            if (d > diam)
+            {
+                diam = d;
+                v1 = vv1;
+                v2 = vv2;
+            }
+        }
+    }
+
+    // pin these two boundary vertices
+    for (auto v : mesh.vertices())
+    {
+        tex[v] = TexCoord(0.5, 0.5);
+        locked[v] = false;
+    }
+    tex[v1] = TexCoord(0.0, 0.0);
+    tex[v2] = TexCoord(1.0, 1.0);
+    locked[v1] = true;
+    locked[v2] = true;
+}
+} // namespace
 
 void harmonic_parameterization(SurfaceMesh& mesh, bool use_uniform_weights)
 {
@@ -180,51 +227,6 @@ void harmonic_parameterization(SurfaceMesh& mesh, bool use_uniform_weights)
     // clean-up
     mesh.remove_vertex_property(idx);
     mesh.remove_edge_property(eweight);
-}
-
-void setup_lscm_boundary(SurfaceMesh& mesh)
-{
-    // constrain the two boundary vertices farthest from each other to fix
-    // the translation and rotation of the resulting parameterization
-
-    // vertex properties
-    auto pos = mesh.vertex_property<Point>("v:point");
-    auto tex = mesh.vertex_property<TexCoord>("v:tex");
-    auto locked = mesh.add_vertex_property<bool>("v:locked", false);
-
-    // find boundary vertices and store handles in vector
-    std::vector<Vertex> boundary;
-    for (auto v : mesh.vertices())
-        if (mesh.is_boundary(v))
-            boundary.push_back(v);
-
-    // find boundary vertices with largest distance
-    Scalar diam(0.0), d;
-    Vertex v1, v2;
-    for (auto vv1 : boundary)
-    {
-        for (auto vv2 : boundary)
-        {
-            d = distance(pos[vv1], pos[vv2]);
-            if (d > diam)
-            {
-                diam = d;
-                v1 = vv1;
-                v2 = vv2;
-            }
-        }
-    }
-
-    // pin these two boundary vertices
-    for (auto v : mesh.vertices())
-    {
-        tex[v] = TexCoord(0.5, 0.5);
-        locked[v] = false;
-    }
-    tex[v1] = TexCoord(0.0, 0.0);
-    tex[v2] = TexCoord(1.0, 1.0);
-    locked[v1] = true;
-    locked[v2] = true;
 }
 
 void lscm_parameterization(SurfaceMesh& mesh)

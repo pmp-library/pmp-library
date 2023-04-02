@@ -9,14 +9,79 @@
 #include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
+namespace {
 
 using SparseMatrix = Eigen::SparseMatrix<double>;
 using Triplet = Eigen::Triplet<double>;
 
-void setup_matrix_row(const SurfaceMesh& mesh, const Vertex v,
+struct Triple
+{
+    Triple() = default;
+
+    Triple(Vertex v, double weight, unsigned int degree)
+        : vertex_(v), weight_(weight), degree_(degree)
+    {
+    }
+
+    Vertex vertex_;
+    double weight_;
+    unsigned int degree_;
+};
+
+void setup_matrix_row(const SurfaceMesh& mesh, const Vertex vertex,
                       VertexProperty<double> vweight,
                       EdgeProperty<double> eweight, unsigned int laplace_degree,
-                      std::map<Vertex, double>& row);
+                      std::map<Vertex, double>& row)
+{
+    Triple t(vertex, 1.0, laplace_degree);
+
+    // init
+    static std::vector<Triple> todo;
+    todo.reserve(50);
+    todo.push_back(t);
+    row.clear();
+
+    while (!todo.empty())
+    {
+        t = todo.back();
+        todo.pop_back();
+        auto v = t.vertex_;
+        auto d = t.degree_;
+
+        if (d == 0)
+        {
+            row[v] += t.weight_;
+        }
+
+        // else if (d == 1 && mesh.is_boundary(v))
+        // {
+        //     // ignore?
+        // }
+
+        else
+        {
+            auto ww = 0.0;
+
+            for (auto h : mesh.halfedges(v))
+            {
+                auto e = mesh.edge(h);
+                auto vv = mesh.to_vertex(h);
+                auto w = eweight[e];
+
+                if (d < laplace_degree)
+                    w *= vweight[v];
+
+                w *= t.weight_;
+                ww -= w;
+
+                todo.emplace_back(vv, w, d - 1);
+            }
+
+            todo.emplace_back(v, ww, d - 1);
+        }
+    }
+}
+} // namespace
 
 void minimize_area(SurfaceMesh& mesh)
 {
@@ -177,74 +242,6 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     mesh.remove_vertex_property(vweight);
     mesh.remove_edge_property(eweight);
     mesh.remove_vertex_property(idx);
-}
-
-struct Triple
-{
-    Triple() = default;
-
-    Triple(Vertex v, double weight, unsigned int degree)
-        : vertex_(v), weight_(weight), degree_(degree)
-    {
-    }
-
-    Vertex vertex_;
-    double weight_;
-    unsigned int degree_;
-};
-
-void setup_matrix_row(const SurfaceMesh& mesh, const Vertex vertex,
-                      VertexProperty<double> vweight,
-                      EdgeProperty<double> eweight, unsigned int laplace_degree,
-                      std::map<Vertex, double>& row)
-{
-    Triple t(vertex, 1.0, laplace_degree);
-
-    // init
-    static std::vector<Triple> todo;
-    todo.reserve(50);
-    todo.push_back(t);
-    row.clear();
-
-    while (!todo.empty())
-    {
-        t = todo.back();
-        todo.pop_back();
-        auto v = t.vertex_;
-        auto d = t.degree_;
-
-        if (d == 0)
-        {
-            row[v] += t.weight_;
-        }
-
-        // else if (d == 1 && mesh.is_boundary(v))
-        // {
-        //     // ignore?
-        // }
-
-        else
-        {
-            auto ww = 0.0;
-
-            for (auto h : mesh.halfedges(v))
-            {
-                auto e = mesh.edge(h);
-                auto vv = mesh.to_vertex(h);
-                auto w = eweight[e];
-
-                if (d < laplace_degree)
-                    w *= vweight[v];
-
-                w *= t.weight_;
-                ww -= w;
-
-                todo.emplace_back(vv, w, d - 1);
-            }
-
-            todo.emplace_back(v, ww, d - 1);
-        }
-    }
 }
 
 } // namespace pmp

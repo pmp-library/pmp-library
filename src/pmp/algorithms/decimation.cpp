@@ -11,6 +11,7 @@
 #include "pmp/algorithms/normals.h"
 
 namespace pmp {
+namespace {
 
 template <class HeapEntry, class HeapInterface>
 class Heap : private std::vector<HeapEntry>
@@ -1212,6 +1213,7 @@ Decimation::CollapseData::CollapseData(SurfaceMesh& sm, Halfedge h) : mesh(sm)
         vr = mesh.from_vertex(vrv1);
     }
 }
+} // namespace
 
 void decimate(SurfaceMesh& mesh, unsigned int n_vertices, Scalar aspect_ratio,
               Scalar edge_length, unsigned int max_valence,

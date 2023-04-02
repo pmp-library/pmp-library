@@ -19,6 +19,7 @@
 #include "pmp/Timer.h"
 
 namespace pmp {
+namespace {
 
 class TriangleKdTree
 {
@@ -1156,6 +1157,7 @@ Point Remeshing::weighted_centroid(Vertex v)
 
     return p;
 }
+} // namespace
 
 void uniform_remeshing(SurfaceMesh& mesh, Scalar edge_length,
                        unsigned int iterations, bool use_projection)

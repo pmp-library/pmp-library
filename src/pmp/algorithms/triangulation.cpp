@@ -6,6 +6,7 @@
 #include <limits>
 
 namespace pmp {
+namespace {
 
 class Triangulation
 {
@@ -252,6 +253,7 @@ bool Triangulation::insert_edge(int i, int j)
 
     return false;
 }
+} // namespace
 
 void triangulate(SurfaceMesh& mesh, TriangulationObjective o)
 {
