@@ -26,10 +26,11 @@ enum class TriangulationObjective
 void triangulate(SurfaceMesh& mesh,
                  TriangulationObjective o = TriangulationObjective::min_area);
 
-//! Triangulate the Face \p f
+//! \brief Triangulate the Face \p f
 //! \pre The input face is manifold
 //! \throw InvalidInputException in case the input precondition is violated
 //! \warning Objective::MAX_ANGLE can lead to fold-overs in case of non-convex polygons. Use Objective::MIN_AREA` instead in this case.
+//! \ingroup algorithms
 void triangulate(SurfaceMesh& mesh, Face f,
                  TriangulationObjective o = TriangulationObjective::min_area);
 
