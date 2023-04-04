@@ -88,24 +88,24 @@ void Triangulation::triangulate(Face f, TriangulationObjective o)
     index_.resize(n, std::vector<int>(n, 0));
 
     // initialize 2-gons
-    for (int i = 0; i < n - 1; ++i)
+    for (size_t i = 0; i < n - 1; ++i)
     {
         weight_[i][i + 1] = 0.0;
         index_[i][i + 1] = -1;
     }
 
     // n-gons with n>2
-    for (int j = 2; j < n; ++j)
+    for (size_t j = 2; j < n; ++j)
     {
         // for all n-gons [i,i+j]
-        for (int i = 0; i < n - j; ++i)
+        for (size_t i = 0; i < n - j; ++i)
         {
             auto k = i + j;
             auto wmin = std::numeric_limits<Scalar>::max();
             auto imin = -1;
 
             // find best split i < m < i+j
-            for (int m = i + 1; m < k; ++m)
+            for (size_t m = i + 1; m < k; ++m)
             {
                 Scalar w{0};
                 switch (objective_)
