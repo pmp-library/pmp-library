@@ -76,7 +76,7 @@ void Triangulation::triangulate(Face f, TriangulationObjective o)
     } while ((h = mesh_.next_halfedge(h)) != h0);
 
     // do we have at least four vertices?
-    const int n = halfedges_.size();
+    const auto n = halfedges_.size();
     if (n <= 3)
         return;
 
@@ -87,29 +87,27 @@ void Triangulation::triangulate(Face f, TriangulationObjective o)
     index_.clear();
     index_.resize(n, std::vector<int>(n, 0));
 
-    int i, j, m, k, imin;
-    Scalar w, wmin;
-
     // initialize 2-gons
-    for (i = 0; i < n - 1; ++i)
+    for (int i = 0; i < n - 1; ++i)
     {
         weight_[i][i + 1] = 0.0;
         index_[i][i + 1] = -1;
     }
 
     // n-gons with n>2
-    for (j = 2; j < n; ++j)
+    for (int j = 2; j < n; ++j)
     {
         // for all n-gons [i,i+j]
-        for (i = 0; i < n - j; ++i)
+        for (int i = 0; i < n - j; ++i)
         {
-            k = i + j;
-            wmin = std::numeric_limits<Scalar>::max();
-            imin = -1;
+            auto k = i + j;
+            auto wmin = std::numeric_limits<Scalar>::max();
+            auto imin = -1;
 
             // find best split i < m < i+j
-            for (m = i + 1; m < k; ++m)
+            for (int m = i + 1; m < k; ++m)
             {
+                Scalar w{0};
                 switch (objective_)
                 {
                     case TriangulationObjective::min_area:
