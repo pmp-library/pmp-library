@@ -14,6 +14,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Breaking change: Re-design algorithms API to use a simple function interface.
+- Breaking change: Make helper classes `Heap`, `Quadric`, `NormalCone`, `TriangleKdTree` private.
 - Support CMake's `BUILD_SHARED_LIBS` option to control building shared libraries
 - Fix `Mat3::inverse()` to use `fabs()`
 - Remove `Matrix::allFinite()`.
