@@ -71,16 +71,6 @@ TEST_F(DifferentialGeometryTest, laplace)
     EXPECT_GT(norm(lv), 0);
 }
 
-TEST_F(DifferentialGeometryTest, vertex_curvature)
-{
-    one_ring();
-    auto vcurv = vertex_curvature(mesh, central_vertex);
-    EXPECT_FLOAT_EQ(vcurv.mean, 6.1538467);
-    EXPECT_FLOAT_EQ(vcurv.gauss, 50.860939);
-    EXPECT_FLOAT_EQ(vcurv.max, 6.1538467);
-    EXPECT_FLOAT_EQ(vcurv.min, 6.1538467);
-}
-
 TEST_F(DifferentialGeometryTest, surface_area)
 {
     auto area = surface_area(sphere);

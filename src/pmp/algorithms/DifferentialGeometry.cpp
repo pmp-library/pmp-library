@@ -308,30 +308,4 @@ Scalar angle_sum(const SurfaceMesh& mesh, Vertex v)
     return angles;
 }
 
-VertexCurvature vertex_curvature(const SurfaceMesh& mesh, Vertex v)
-{
-    VertexCurvature c;
-
-    const Scalar area = voronoi_area(mesh, v);
-    if (area > std::numeric_limits<Scalar>::min())
-    {
-        c.mean = Scalar(0.5) * norm(laplace(mesh, v));
-        c.gauss = (2.0 * M_PI - angle_sum(mesh, v)) / area;
-
-        const Scalar s = sqrt(std::max(Scalar(0.0), c.mean * c.mean - c.gauss));
-        c.min = c.mean - s;
-        c.max = c.mean + s;
-
-        assert(!std::isnan(c.mean));
-        assert(!std::isnan(c.gauss));
-        assert(!std::isinf(c.mean));
-        assert(!std::isinf(c.gauss));
-
-        assert(c.min <= c.mean);
-        assert(c.mean <= c.max);
-    }
-
-    return c;
-}
-
 } // namespace pmp

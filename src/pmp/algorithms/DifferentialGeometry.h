@@ -91,21 +91,6 @@ Point laplace(const SurfaceMesh& mesh, Vertex v);
 //! compute the sum of angles around vertex v (used for Gaussian curvature)
 Scalar angle_sum(const SurfaceMesh& mesh, Vertex v);
 
-//! discrete curvature information for a vertex. used for vertex_curvature()
-struct VertexCurvature
-{
-    VertexCurvature() = default;
-
-    Scalar mean{0.0};
-    Scalar gauss{0.0};
-    Scalar max{0.0};
-    Scalar min{0.0};
-};
-
-//! compute min, max, mean, and Gaussian curvature for vertex v. this will not
-//! give reliable values for boundary vertices.
-VertexCurvature vertex_curvature(const SurfaceMesh& mesh, Vertex v);
-
 //! @}
 
 } // namespace pmp
