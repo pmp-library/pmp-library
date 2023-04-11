@@ -204,11 +204,8 @@ void fair(SurfaceMesh& mesh, unsigned int k)
 
         setup_matrix_row(mesh, vertices[i], vweight, eweight, k, row);
 
-        for (auto r : row)
+        for (auto [v, w] : row)
         {
-            auto v = r.first;
-            auto w = r.second;
-
             if (idx[v] != -1)
             {
                 triplets.emplace_back(i, idx[v], w);
