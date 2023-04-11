@@ -227,7 +227,8 @@ void fair(SurfaceMesh& mesh, unsigned int k)
 
     if (solver.info() != Eigen::Success)
     {
-        throw SolverException("Fairing: Failed to solve linear system.");
+        auto what = std::string{__func__} + ": Failed to solve linear system.";
+        throw SolverException(what);
     }
     else
     {
