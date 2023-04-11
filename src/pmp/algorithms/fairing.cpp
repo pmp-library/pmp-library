@@ -188,7 +188,7 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     }
 
     // construct matrix & rhs
-    const unsigned int n = vertices.size();
+    const auto n = vertices.size();
     using SparseMatrix = Eigen::SparseMatrix<double>;
     SparseMatrix A(n, n);
     Eigen::MatrixXd B(n, 3);
@@ -198,7 +198,7 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     using Triplet = Eigen::Triplet<double>;
     std::vector<Triplet> triplets;
 
-    for (unsigned int i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
         b = dvec3(0.0);
 
@@ -231,7 +231,7 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     }
     else
     {
-        for (unsigned int i = 0; i < n; ++i)
+        for (size_t i = 0; i < n; ++i)
             points[vertices[i]] = X.row(i);
     }
 
