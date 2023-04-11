@@ -12,7 +12,7 @@ namespace pmp {
 
 //! \brief Exception indicating invalid input passed to a function.
 //! \details This exception should be used to signal violation of a
-//! precondition, e.g., if an algorithm expects a pure triangle mesh but a
+//! precondition, e.g., if an algorithm expects a triangle mesh but a
 //! general polygon mesh is passed instead.
 class InvalidInputException : public std::invalid_argument
 {

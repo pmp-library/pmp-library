@@ -15,7 +15,7 @@ namespace pmp {
 //! \details Performs incremental greedy mesh decimation based on halfedge
 //! collapses.
 //! See \cite kobbelt_1998_general and \cite garland_1997_surface for details.
-//! \pre Input mesh needs to be a pure triangle mesh.
+//! \pre Input mesh needs to be a triangle mesh.
 //! \throw InvalidInputException if the input precondition is violated.
 //! \ingroup algorithms
 void decimate(SurfaceMesh& mesh, unsigned int n_vertices,

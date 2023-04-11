@@ -16,7 +16,7 @@ namespace pmp {
 //! \param edge_length the target edge length.
 //! \param iterations the number of iterations
 //! \param use_projection use back-projection to the input surface
-//! \pre Input mesh needs to be a pure triangle mesh.
+//! \pre Input mesh needs to be a triangle mesh.
 //! \throw InvalidInputException if the input precondition is violated.
 //! \ingroup algorithms
 void uniform_remeshing(SurfaceMesh& mesh, Scalar edge_length,
@@ -32,7 +32,7 @@ void uniform_remeshing(SurfaceMesh& mesh, Scalar edge_length,
 //! \param approx_error the maximum approximation error
 //! \param iterations the number of iterations
 //! \param use_projection use back-projection to the input surface
-//! \pre Input mesh needs to be a pure triangle mesh.
+//! \pre Input mesh needs to be a triangle mesh.
 //! \throw InvalidInputException if the input precondition is violated.
 //! \ingroup algorithms
 void adaptive_remeshing(SurfaceMesh& mesh, Scalar min_edge_length,
