@@ -4,6 +4,7 @@
 #include "pmp/algorithms/triangulation.h"
 
 #include <limits>
+#include <stdexcept>
 
 namespace pmp {
 namespace {
@@ -121,7 +122,7 @@ void Triangulation::triangulate(Face f, TriangulationObjective o)
                         break;
                     default:
                         // should never happen
-                        exit(1);
+                        throw std::invalid_argument("Unknown objective!");
                         break;
                 }
 
