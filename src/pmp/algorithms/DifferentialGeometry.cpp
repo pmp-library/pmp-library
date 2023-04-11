@@ -282,30 +282,4 @@ Point laplace(const SurfaceMesh& mesh, Vertex v)
     return laplace;
 }
 
-Scalar angle_sum(const SurfaceMesh& mesh, Vertex v)
-{
-    Scalar angles(0.0);
-
-    if (!mesh.is_boundary(v))
-    {
-        const Point& p0 = mesh.position(v);
-
-        for (auto h : mesh.halfedges(v))
-        {
-            const Point& p1 = mesh.position(mesh.to_vertex(h));
-            const Point& p2 =
-                mesh.position(mesh.to_vertex(mesh.ccw_rotated_halfedge(h)));
-
-            const Point p01 = normalize(p1 - p0);
-            const Point p02 = normalize(p2 - p0);
-
-            Scalar cos_angle = clamp_cos(dot(p01, p02));
-
-            angles += acos(cos_angle);
-        }
-    }
-
-    return angles;
-}
-
 } // namespace pmp
