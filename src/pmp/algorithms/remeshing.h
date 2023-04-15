@@ -13,9 +13,10 @@ namespace pmp {
 //! \details Performs incremental remeshing based
 //! on edge collapse, split, flip, and tangential relaxation.
 //! See \cite botsch_2004_remeshing and \cite dunyach_2013_adaptive for details.
-//! \param edge_length the target edge length.
-//! \param iterations the number of iterations
-//! \param use_projection use back-projection to the input surface
+//! \param mesh The input mesh, modified in place.
+//! \param edge_length The target edge length.
+//! \param iterations The number of iterations
+//! \param use_projection Use back-projection to the input surface.
 //! \pre Input mesh needs to be a triangle mesh.
 //! \throw InvalidInputException if the input precondition is violated.
 //! \ingroup algorithms
@@ -27,11 +28,12 @@ void uniform_remeshing(SurfaceMesh& mesh, Scalar edge_length,
 //! \details Performs incremental remeshing based
 //! on edge collapse, split, flip, and tangential relaxation.
 //! See \cite botsch_2004_remeshing and \cite dunyach_2013_adaptive for details.
-//! \param min_edge_length the minimum edge length.
-//! \param max_edge_length the maximum edge length.
-//! \param approx_error the maximum approximation error
-//! \param iterations the number of iterations
-//! \param use_projection use back-projection to the input surface
+//! \param mesh The input mesh, modified in place.
+//! \param min_edge_length The minimum edge length.
+//! \param max_edge_length The maximum edge length.
+//! \param approx_error The maximum approximation error.
+//! \param iterations The number of iterations.
+//! \param use_projection Use back-projection to the input surface.
 //! \pre Input mesh needs to be a triangle mesh.
 //! \throw InvalidInputException if the input precondition is violated.
 //! \ingroup algorithms

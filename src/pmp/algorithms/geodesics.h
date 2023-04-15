@@ -16,6 +16,7 @@ namespace pmp {
 //! \details The method works by a Dijkstra-like breadth first traversal from
 //! the seed vertices, implemented by a heap structure.
 //! See \cite kimmel_1998_geodesic for details.
+//! \param mesh The input mesh, modified in place.
 //! \param[in] seed The vector of seed vertices.
 //! \param[in] maxdist The maximum distance up to which to compute the
 //! geodesic distances.
