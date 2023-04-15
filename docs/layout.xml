@@ -4,10 +4,8 @@
   <navindex>
     <tab type="mainpage" visible="yes" title=""/>
     <tab type="pages" visible="yes" title="" intro=""/>
-    <tab type="usergroup" visible="yes" title="API Reference" url="" intro="">
-      <tab type="modules" visible="yes" title="" intro=""/>
-      <tab type="classlist" visible="yes" title="Classes" intro=""/>
-    </tab>
+    <tab type="modules" visible="yes" title="API" intro=""/>
+    <tab type="user" url="https://github.com/pmp-library/pmp-library" visible="yes" title="Code" intro=""/>
   </navindex>
 
   <!-- Layout definition for a class page -->
