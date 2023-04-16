@@ -14,7 +14,7 @@ jobs:
           submodules: true
 
       - name: Install dependencies
-        run: sudo apt-get install -o Acquire::Retries=3 doxygen texlive-base libclang-9-dev libclang-cpp9
+        run: sudo apt-get update && sudo apt-get install -o Acquire::Retries=3 doxygen texlive-base libclang-9-dev libclang-cpp9
 
       - name: Fetch doxygen
         run: export DOXYGEN_URL="https://github.com/doxygen/doxygen/releases/download/Release_1_9_2/doxygen-1.9.2.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && echo `pwd`/doxygen/bin >> $GITHUB_PATH
