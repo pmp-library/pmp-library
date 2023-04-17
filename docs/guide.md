@@ -1,10 +1,6 @@
 # Guide {#guide}
 
-Welcome to the PMP library guide. This guide covers all the basics like
-[installation](@ref installation) and [getting started](@ref tutorial) with the
-library. It also contains guidelines for contributions and development. See the
-[Reference](modules.html) for detailed information on the classes and
-functions provided by the library.
+Welcome to the PMP library guide. This guide covers all the basics like [installation](@ref installation) and [getting started](@ref tutorial) with the library. It also contains guidelines for contributions and development. See the [API Reference](modules.html) for detailed information on the classes and functions provided by the library.
 
 Sections:
 
