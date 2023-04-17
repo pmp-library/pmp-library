@@ -63,12 +63,12 @@ using IndexType = std::uint_least32_t;
 //! \brief Core data structure and utilities.
 
 //! \defgroup algorithms algorithms
-//! \brief Geometry processing algorithms.
+//! \brief Mesh processing algorithms.
 
 //! \defgroup visualization visualization
 //! \brief Visualization tools using OpenGL.
 
 //! \defgroup io io
-//! \brief Readers and writers for common mesh formats.
+//! Read and write common mesh formats.
 
 } // namespace pmp
