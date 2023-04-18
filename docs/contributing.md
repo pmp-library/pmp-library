@@ -1,5 +1,7 @@
 # Contributing {#contributing}
 
+[TOC]
+
 Contributions to the pmp-library are generally welcome. However, please keep in
 mind that we develop the library besides our daily jobs and therefore might not
 always find the time to quickly react to your requests and suggestions.

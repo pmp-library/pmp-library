@@ -142,7 +142,7 @@ Within a section use the following order:
 
 Use C++-style comments, i.e., `// my comment.`
 
-### Doxygen Documentation Comments
+### Doxygen Comments
 
 We use [Doxygen](http://www.doxygen.org/index.html) to generate our API
 documentation. All public types and interfaces should be properly documented.
@@ -153,13 +153,10 @@ look like:
 
 \verbatim
 //! \brief Does foo.
-//!
 //! \details Does foo and nothing else. If \p use_bar argument is true uses the
 //! bar method instead of foo.
-//!
 //! \param[in] use_bar toggle to switch method
 //! \param[out] results filled with results from foo
-//!
 //! \return true on success.
 \endverbatim
 
@@ -321,7 +318,7 @@ See also: #456, #789
 Sign-off-by: Jane Miller <jane.miller@example.com>
 ```
 
-## See Also
+## Further Reading
 
 The above coding standard is necessarily incomplete. Therefore, we list some
 additional references and pointers to useful resources regarding C++ coding

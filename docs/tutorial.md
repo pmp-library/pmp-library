@@ -1,5 +1,7 @@
 # Tutorial {#tutorial}
 
+[TOC]
+
 This section provides a hands-on tutorial showing the basic usage of PMP. For a
 thorough introduction to polygon mesh processing we refer to the book of Botsch
 et al. \cite botsch_2010_polygon.

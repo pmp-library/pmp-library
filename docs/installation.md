@@ -1,5 +1,7 @@
 # Installation {#installation}
 
+[TOC]
+
 In this section, we describe how to configure, build, and install PMP in detail.
 
 ## System Requirements
