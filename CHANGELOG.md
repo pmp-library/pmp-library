@@ -10,6 +10,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Added
 
+- Add `PMP_STRICT_COMPILATION` CMake option to control treating warnings as errors. Default: On.
 - Add function `flip_faces()` to reverse face orientation in a mesh (#123)
 
 ### Changed

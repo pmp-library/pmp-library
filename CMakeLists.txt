@@ -12,6 +12,7 @@ option(PMP_BUILD_TESTS "Build the PMP test programs" ON)
 option(PMP_BUILD_DOCS "Build the PMP documentation" ON)
 option(PMP_BUILD_VIS "Build the PMP visualization tools" ON)
 option(PMP_INSTALL "Install the PMP library and headers" ON)
+option(PMP_STRICT_COMPILATION "Treat compiler warnings as errors" ON)
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 # set output paths
@@ -107,7 +108,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # set default compiler flags for both gcc and clang
-set(COMMON_CXX_FLAGS "-pedantic -Wall -Wextra -Wshadow -Werror")
+set(COMMON_CXX_FLAGS "-pedantic -Wall -Wextra -Wshadow")
+if(PMP_STRICT_COMPILATION)
+  set(COMMON_CXX_FLAGS "${COMMON_CXX_FLAGS} -Werror")
+endif()
 
 if((UNIX OR APPLE) AND CMAKE_COMPILER_IS_GNUCXX)
   set(CMAKE_CXX_FLAGS
