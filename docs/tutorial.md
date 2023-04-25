@@ -162,37 +162,3 @@ data.
 A simple example reading and writing a mesh is shown below.
 
 \snippet io.cpp io
-
-## Eigen Interoperability
-
-The pmp-library supports some level of interoperability with Eigen. The
-pmp::Matrix and pmp::Vector classes can be constructed/assigned from Eigen
-matrix/vector types. In addition, it possible to cast the pmp::Matrix and
-pmp::Vector classes to Eigen.
-
-Example for construction:
-
-```cpp
-// construction from Eigen
-Eigen::Vector3d eigen_vector(1.0, 2.0, 3.0);
-pmp::dvec3 pmp_vector = eigen_vector;
-```
-
-Example for assignment:
-
-```cpp
-// assignment from Eigen
-Eigen::Vector3d eigen_vector(1.0, 2.0, 3.0);
-pmp::dvec3 pmp_vector;
-pmp_vector = eigen_vector;
-```
-
-Example for cast:
-
-```cpp
-// cast to Eigen
-pmp::vec3 pmp_vector(1.0, 2.0, 3.0);
-Eigen::Vector3f eigen_vector = static_cast<Eigen::Vector3f>(pmp_vector);
-```
-
-See the reference documentation for pmp::Matrix and pmp::Vector for more details.

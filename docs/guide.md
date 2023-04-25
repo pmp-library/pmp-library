@@ -8,3 +8,4 @@ Sections:
 - @subpage overview -- an overview of the library and its capabilities
 - @subpage contributing -- guidelines for contributions
 - @subpage codingstyle -- contains our coding guidelines
+- @subpage eigen -- interfacing with Eigen

@@ -13,6 +13,9 @@ target_link_libraries(barycenter pmp)
 add_executable(properties properties.cpp)
 target_link_libraries(properties pmp)
 
+add_executable(eigen eigen.cpp)
+target_link_libraries(eigen pmp)
+
 add_custom_target(
   examples
   COMMAND
