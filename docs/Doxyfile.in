@@ -918,6 +918,7 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = ${CMAKE_SOURCE_DIR}/docs/news.md \
+                         ${CMAKE_SOURCE_DIR}/docs/tutorial.md \
                          ${CMAKE_SOURCE_DIR}/docs/guide.md \
                          ${CMAKE_SOURCE_DIR}/docs \
                          ${CMAKE_SOURCE_DIR}/src \

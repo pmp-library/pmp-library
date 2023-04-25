@@ -6,6 +6,5 @@ Sections:
 
 - @subpage installation -- detailed installation instructions
 - @subpage overview -- an overview of the library and its capabilities
-- @subpage tutorial -- how to perform basic tasks
 - @subpage contributing -- guidelines for contributions
 - @subpage codingstyle -- contains our coding guidelines
