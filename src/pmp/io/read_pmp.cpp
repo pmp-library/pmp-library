@@ -35,23 +35,24 @@ void read_pmp(SurfaceMesh& mesh, const std::filesystem::path& file)
 
     // read properties from file
     // clang-format off
-    size_t nvc = fread((char*)mesh.vconn_.data(), sizeof(SurfaceMesh::VertexConnectivity), nv, in);
-    size_t nhc = fread((char*)mesh.hconn_.data(), sizeof(SurfaceMesh::HalfedgeConnectivity), nh, in);
-    size_t nfc = fread((char*)mesh.fconn_.data(), sizeof(SurfaceMesh::FaceConnectivity), nf, in);
-    size_t np = fread((char*)mesh.vpoint_.data(), sizeof(Point), nv, in);
+    [[maybe_unused]] size_t nvc = fread((char*)mesh.vconn_.data(), sizeof(SurfaceMesh::VertexConnectivity), nv, in);
+    [[maybe_unused]] size_t nhc = fread((char*)mesh.hconn_.data(), sizeof(SurfaceMesh::HalfedgeConnectivity), nh, in);
+    [[maybe_unused]] size_t nfc = fread((char*)mesh.fconn_.data(), sizeof(SurfaceMesh::FaceConnectivity), nf, in);
+    [[maybe_unused]] size_t np = fread((char*)mesh.vpoint_.data(), sizeof(Point), nv, in);
     // clang-format on
 
-    PMP_ASSERT(nvc == nv);
-    PMP_ASSERT(nhc == nh);
-    PMP_ASSERT(nfc == nf);
-    PMP_ASSERT(np == nv);
+    assert(nvc == nv);
+    assert(nhc == nh);
+    assert(nfc == nf);
+    assert(np == nv);
 
     // read texture coordiantes
     if (has_htex)
     {
         auto htex = mesh.halfedge_property<TexCoord>("h:tex");
-        size_t nhtc = fread((char*)htex.data(), sizeof(TexCoord), nh, in);
-        PMP_ASSERT(nhtc == nh);
+        [[maybe_unused]] size_t nhtc =
+            fread((char*)htex.data(), sizeof(TexCoord), nh, in);
+        assert(nhtc == nh);
     }
 
     fclose(in);

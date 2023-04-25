@@ -8,13 +8,11 @@
 template <typename T>
 void tfread(FILE* in, const T& t)
 {
-    size_t n_items = fread((char*)&t, 1, sizeof(t), in);
-    PMP_ASSERT(n_items > 0);
+    [[maybe_unused]] auto n_items = fread((char*)&t, 1, sizeof(t), in);
 }
 
 template <typename T>
 void tfwrite(FILE* out, const T& t)
 {
-    size_t n_items = fwrite((char*)&t, 1, sizeof(t), out);
-    PMP_ASSERT(n_items > 0);
+    [[maybe_unused]] auto n_items = fwrite((char*)&t, 1, sizeof(t), out);
 }

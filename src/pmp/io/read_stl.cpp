@@ -38,7 +38,6 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
     vec3 p;
     Vertex v;
     std::vector<Vertex> vertices(3);
-    size_t n_items(0);
 
     CompareVec3 comp;
     std::map<vec3, Vertex, CompareVec3> vertex_map(comp);
@@ -50,7 +49,7 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
 
     // ASCII or binary STL?
     auto c = fgets(line.data(), 6, in);
-    PMP_ASSERT(c != nullptr);
+    assert(c != nullptr);
     const bool binary = ((strncmp(line.data(), "SOLID", 5) != 0) &&
                          (strncmp(line.data(), "solid", 5) != 0));
 
@@ -64,8 +63,8 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
             throw IOException("Failed to open file: " + file.string());
 
         // skip dummy header
-        n_items = fread(line.data(), 1, 80, in);
-        PMP_ASSERT(n_items > 0);
+        [[maybe_unused]] auto n_items = fread(line.data(), 1, 80, in);
+        assert(n_items > 0);
 
         // read number of triangles
         tfread(in, nT);
@@ -75,7 +74,8 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
         {
             // skip triangle normal
             n_items = fread(line.data(), 1, 12, in);
-            PMP_ASSERT(n_items > 0);
+            assert(n_items > 0);
+
             // triangle's vertices
             for (i = 0; i < 3; ++i)
             {
@@ -103,7 +103,8 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
                 mesh.add_face(vertices);
 
             n_items = fread(line.data(), 1, 2, in);
-            PMP_ASSERT(n_items > 0);
+            assert(n_items > 0);
+
             --nT;
         }
     }
@@ -127,7 +128,7 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
                 {
                     // read line
                     c = fgets(line.data(), 100, in);
-                    PMP_ASSERT(c != nullptr);
+                    assert(c != nullptr);
 
                     // skip white-space
                     for (c = line.data(); isspace(*c) && *c != '\0'; ++c)

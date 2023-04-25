@@ -7,21 +7,6 @@
 
 #include "pmp/MatVec.h"
 
-//! \def PMP_ASSERT(x)
-//! Custom assert macro that allows to silence unused variable warnings with no
-//! overhead. Generates no code in release mode since if the argument to
-//! sizeof() is an expression it is not evaluated. In debug mode we just fall
-//! back to the default assert().
-#ifdef NDEBUG
-#define PMP_ASSERT(x)    \
-    do                   \
-    {                    \
-        (void)sizeof(x); \
-    } while (0)
-#else
-#define PMP_ASSERT(x) assert(x)
-#endif
-
 //! The pmp-library namespace
 namespace pmp {
 

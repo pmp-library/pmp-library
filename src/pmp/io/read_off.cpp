@@ -99,7 +99,7 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
 {
     std::array<char, 1000> line;
     int nc;
-    unsigned int i, j, items, idx;
+    unsigned int i, j, idx;
     unsigned int nv, nf, ne;
     float x, y, z, r, g, b;
     Vertex v;
@@ -116,8 +116,8 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         colors = mesh.vertex_property<Color>("v:color");
 
     // #Vertices, #Faces, #Edges
-    items = fscanf(in, "%d %d %d\n", (int*)&nv, (int*)&nf, (int*)&ne);
-    PMP_ASSERT(items);
+    [[maybe_unused]] auto items =
+        fscanf(in, "%d %d %d\n", (int*)&nv, (int*)&nf, (int*)&ne);
 
     mesh.reserve(nv, std::max(3 * nv, ne), nf);
 
