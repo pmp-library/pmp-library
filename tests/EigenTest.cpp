@@ -38,6 +38,7 @@ TEST(EigenTest, construct_from_eigen)
         Eigen::MatrixXd eigenMat(2, 2);
         eigenMat << 1.0, 2.0, 3.0, 4.0;
         mat2 pmpMat(eigenMat);
+        EXPECT_EQ(pmpMat(1, 1), 4.0);
     }
 }
 
