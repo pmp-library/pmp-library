@@ -2,7 +2,7 @@
 
 [TOC]
 
-Welcome to the PMP library tutorial! This tutorial will walk you through your first steps using PMP. After completion, you should be able to build your own mesh processing applications use PMP for a variety of mesh processing tasks.
+Welcome to the PMP library tutorial! This tutorial will walk you through your first steps using PMP. After completion, you should be able to build your own mesh processing applications and use PMP for a variety of mesh processing tasks.
 
 Note, however, that this tutorial is not meant to be a comprehensive introduction to mesh processing. We refer to the textbook of Botsch et al. \cite botsch_2010_polygon for a more comprehensive treatment.
 
