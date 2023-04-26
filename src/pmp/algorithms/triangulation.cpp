@@ -15,9 +15,6 @@ public:
     explicit Triangulation(SurfaceMesh& mesh);
 
     void triangulate(
-        TriangulationObjective o = TriangulationObjective::min_area);
-
-    void triangulate(
         Face f, TriangulationObjective o = TriangulationObjective::min_area);
 
 private:
@@ -46,12 +43,6 @@ private:
 Triangulation::Triangulation(SurfaceMesh& mesh) : mesh_(mesh)
 {
     points_ = mesh_.vertex_property<Point>("v:point");
-}
-
-void Triangulation::triangulate(TriangulationObjective o)
-{
-    for (auto f : mesh_.faces())
-        triangulate(f, o);
 }
 
 void Triangulation::triangulate(Face f, TriangulationObjective o)
@@ -256,7 +247,9 @@ bool Triangulation::insert_edge(int i, int j)
 
 void triangulate(SurfaceMesh& mesh, TriangulationObjective o)
 {
-    Triangulation(mesh).triangulate(o);
+    Triangulation tr(mesh);
+    for (auto f : mesh.faces())
+        tr.triangulate(f, o);
 }
 
 void triangulate(SurfaceMesh& mesh, Face f, TriangulationObjective o)
