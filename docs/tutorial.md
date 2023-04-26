@@ -2,9 +2,13 @@
 
 [TOC]
 
-Welcome to the PMP library tutorial! This tutorial will walk you through your first steps using PMP. After completion, you should be able to build your own mesh processing applications and use PMP for a variety of mesh processing tasks.
+Welcome to the PMP library tutorial!
 
-Note, however, that this tutorial is not meant to be a comprehensive introduction to mesh processing. We refer to the textbook of Botsch et al. \cite botsch_2010_polygon for a more comprehensive treatment.
+This tutorial will walk you through your first steps using PMP. After completion, you should be able to build your own mesh processing applications and use PMP for a variety of mesh processing tasks.
+
+Note that this tutorial is _not_ a comprehensive introduction to mesh processing. If that's what you are looking for, we highly recommend the textbook of Botsch et al. \cite botsch_2010_polygon.
+
+By the way: This is a living document that's built from the latest version of our sources. If you spot any errors, inaccuracies, or typos, please don't hesitate to report them using our [issue tracker](https://github.com/pmp-library/pmp-library/issues). Your feedback and suggestions are welcome!
 
 ## Getting Started
 
@@ -30,7 +34,7 @@ Now run CMake to generate the build files:
 cmake ..
 ```
 
-This should work out-of-the-box as long as you have recent compiler and standard build tools installed.
+This should work out-of-the-box as long as you have recent compiler and standard build tools installed. In case of doubt, see the detailed @ref installation instructions.
 
 By default, CMake will generate `Makefiles` on Linux and macOS. You can now build the library using
 
@@ -46,9 +50,9 @@ After watching a few pages of compiler output passing by, you should see somethi
 [100%] Built target mpview
 ```
 
-Congratulations! You successfully built PMP! 🎉
+Congratulations! You successfully built PMP!
 
-We include a number of example applications that you might want to try out. The `mpview` application provides a simple graphical interface for many of the algorithms we provide. You can give it a try and see what you can do with the famous [Stanford bunny](https://en.wikipedia.org/wiki/Stanford_bunny):
+We include a number of example applications that you can to try out. The `mpview` application provides a simple graphical interface for many of our algorithms. You can give it a try and see what you can do with the famous [Stanford bunny](https://en.wikipedia.org/wiki/Stanford_bunny):
 
 ```sh
 ./mpview ../external/pmp-data/off/bunny.off
@@ -56,7 +60,7 @@ We include a number of example applications that you might want to try out. The 
 
 You should see a window like this:
 
-![MeshProcessingViewer showing the Stanford bunny.](/images/mpview.jpg)
+![MeshProcessingViewer showing the Stanford bunny.](/images/mpview.webp)
 
 If you're having trouble with one of the steps, please read the detailed @ref installation instructions carefully. You can also head over to our [discussions](https://github.com/pmp-library/pmp-library/discussions) forum and ask for help.
 
