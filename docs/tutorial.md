@@ -6,6 +6,60 @@ Welcome to the PMP library tutorial! This tutorial will walk you through your fi
 
 Note, however, that this tutorial is not meant to be a comprehensive introduction to mesh processing. We refer to the textbook of Botsch et al. \cite botsch_2010_polygon for a more comprehensive treatment.
 
+## Getting Started
+
+Let's begin by getting the PMP library source code and building the library and its example applications. In the following, I'm assuming you are using a Unix-like operating system such as Linux or macOS. If you are on Windows the steps are the same but the exact commands might be slightly different.
+
+First, clone the repository using git:
+
+```sh
+git clone --recursive https://github.com/pmp-library/pmp-library.git
+```
+
+\note The `--recursive` flag above is important to get the third-party libraries required to build PMP.
+
+The next step is to configure the build system using [CMake](https://www.cmake.org). Create a separate build directory for all the files you'll generate:
+
+```sh
+cd pmp-library && mkdir build && cd build
+```
+
+Now run CMake to generate the build files:
+
+```sh
+cmake ..
+```
+
+This should work out-of-the-box as long as you have recent compiler and standard build tools installed.
+
+By default, CMake will generate `Makefiles` on Linux and macOS. You can now build the library using
+
+```sh
+make -j
+```
+
+After watching a few pages of compiler output passing by, you should see something like this:
+
+```text
+[ 98%] Built target subdivision
+[100%] Linking CXX executable ../mpview
+[100%] Built target mpview
+```
+
+Congratulations! You successfully built PMP! 🎉
+
+We include a number of example applications that you might want to try out. The `mpview` application provides a simple graphical interface for many of the algorithms we provide. You can give it a try and see what you can do with the famous [Stanford bunny](https://en.wikipedia.org/wiki/Stanford_bunny):
+
+```sh
+./mpview ../external/pmp-data/off/bunny.off
+```
+
+You should see a window like this:
+
+![MeshProcessingViewer showing the Stanford bunny.](/images/mpview.jpg)
+
+If you're having trouble with one of the steps, please read the detailed @ref installation instructions carefully. You can also head over to our [discussions](https://github.com/pmp-library/pmp-library/discussions) forum and ask for help.
+
 ## Introduction
 
 In general, a polygonal surface mesh is composed of vertices, edges and faces as
