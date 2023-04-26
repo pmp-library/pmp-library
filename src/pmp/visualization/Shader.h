@@ -89,7 +89,7 @@ private:
     // compile a vertex/fragment shader
     GLint compile(const char* source, GLenum type);
 
-    // loads a vertex/fragmend shader from a file and compiles it
+    // loads a vertex/fragment shader from a file and compiles it
     GLint load_and_compile(const char* filename, GLenum type);
 
     // relink: use this after setting/changing attrib location
