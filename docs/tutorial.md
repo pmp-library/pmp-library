@@ -64,65 +64,46 @@ You should see a window like this:
 
 If you're having trouble with one of the steps, please read the detailed @ref installation instructions carefully. You can also head over to our [discussions](https://github.com/pmp-library/pmp-library/discussions) forum and ask for help.
 
-## Introduction
+## Basic Concepts
 
-In general, a polygonal surface mesh is composed of vertices, edges and faces as
-well as the incidence relationships between them. pmp::SurfaceMesh stores the
-connectivity information based on halfedges, i.e., pairs of directed edges with
-opposing direction. To be more precise:
+A polygonal surface mesh is composed of vertices, edges, and faces. We call those _entities_. In order to access and manipulate the mesh, you also need incidence relationships between those entities. The central class for storing and manipulating all that data is pmp::SurfaceMesh. It stores connectivity information based on halfedges, i.e., pairs of directed edges with opposing direction. To be more precise:
 
 - Each vertex stores an outgoing halfedge.
 - Each face stores an incident halfedge.
-- Each halfedge stores its incident face, its target vertex, and its previous
-  and next halfedges within the face.
+- Each halfedge stores its incident face, its target vertex, and its previous and next halfedges within the face.
 
 The halfedge connectivity is illustrated in the figure below:
 
 ![Halfedge connectivity.](./images/halfedge-connectivity.svg)
 
-In the following sections we describe the basic usage of pmp::SurfaceMesh by
-means of simple example programs and code excerpts.
+In the following, we show the basic usage of pmp::SurfaceMesh by example.
 
-## Basics
+## Adding Elements by Hand
 
-The very basic usage of pmp::SurfaceMesh is demonstrated in the example below. The
-program first instantiates a pmp::SurfaceMesh object as well as four vertex
-handles. These handles, as well as the handles for the other mesh entities
-`Halfedge`, `Edge` and `Face` basically indices. Four vertices are added to the
-mesh, as well as four triangular faces composing a tetrahedron. Finally, the
-number of vertices, edges, and faces is printed to standard output.
+The basic usage of pmp::SurfaceMesh is demonstrated in the example below. The program first instantiates a pmp::SurfaceMesh object as well as four vertex handles. These handles, as well as the handles for the other mesh entities `Halfedge`, `Edge` and `Face` basically indices. Four vertices are added to the mesh, as well as four triangular faces composing a tetrahedron. Finally, the number of vertices, edges, and faces is printed to standard output.
 
 \snippet basics.cpp basics
 
 ## Iterators and Circulators
 
-In order to sequentially access mesh entities pmp::SurfaceMesh provides
-iterators for each entity type:
+In order to sequentially access mesh entities pmp::SurfaceMesh provides iterators for each entity type:
 
 1. pmp::SurfaceMesh::VertexIterator
 2. pmp::SurfaceMesh::HalfedgeIterator
 3. pmp::SurfaceMesh::EdgeIterator
 4. pmp::SurfaceMesh::FaceIterator
 
-Similar to iterators, pmp::SurfaceMesh also provides circulators for the ordered
-enumeration of all incident vertices, halfedges, or faces around a given face or
-vertex. The example below demonstrates the use of iterators and circulators for
-computing the mean valence of a mesh.
+Similar to iterators, pmp::SurfaceMesh also provides circulators for the ordered enumeration of all incident vertices, halfedges, or faces around a given face or vertex. The example below demonstrates the use of iterators and circulators for computing the mean valence of a mesh.
 
 \snippet iterators.cpp iterators
 
 ## Dynamic Properties
 
-Attaching additional attributes to mesh entities is important for many
-applications. pmp::SurfaceMesh supports properties by means of synchronized arrays
-that can be (de-)allocated dynamically at run-time. Property arrays are also
-used internally, e.g., to store vertex coordinates. The example program below
-shows how to access vertex coordinates through the pre-defined point property.
+Attaching additional attributes to mesh entities is important for many applications. pmp::SurfaceMesh supports properties by means of synchronized arrays that can be (de-)allocated dynamically at run-time. Property arrays are also used internally, e.g., to store vertex coordinates. The example program below shows how to access vertex coordinates through the pre-defined point property.
 
 \snippet barycenter.cpp barycenter
 
-The dynamic (de-)allocation of properties at run-time is managed by a set
-of four different functions.
+The dynamic (de-)allocation of properties at run-time is managed by a set of four different functions.
 
 - Add a new property of a specific type for a given entity. Example:
 
@@ -136,9 +117,7 @@ of four different functions.
   auto points = mesh.get_vertex_property<Point>("v:point");
   ```
 
-- Get or add: Return a handle to an existing property if a property of the
-  same type and name exists. If there is no such property, a new one is
-  allocated and its handle is returned. Example:
+- Get or add: Return a handle to an existing property if a property of the same type and name exists. If there is no such property, a new one is allocated and its handle is returned. Example:
 
   ```cpp
   auto edge_weights = mesh.edge_property<Scalar>("e:weight");
@@ -151,8 +130,7 @@ of four different functions.
   mesh.remove_face_property(face_colors);
   ```
 
-Functions that allocate a new property take an optional default value for the
-property as a second argument. Example:
+Functions that allocate a new property take an optional default value for the property as a second argument. Example:
 
 ```cpp
 mesh.face_property<Color>("f:color", Color(1.0, 0.0, 0.0));
@@ -165,8 +143,7 @@ allocate, use and remove a custom edge property.
 
 ## Connectivity Queries
 
-Commonly used connectivity queries such as retrieving the next
-halfedge or the target vertex of an halfedge are illustrated below.
+Commonly used connectivity queries such as retrieving the next halfedge or the target vertex of an halfedge are illustrated below.
 
 ```cpp
 Halfedge h;
@@ -182,14 +159,11 @@ auto v1 = mesh.to_vertex(h);
 
 ## Topological Operations
 
-pmp::SurfaceMesh also offers higher-level topological operations, such as
-performing edge flips, edge splits, face splits, or halfedge collapses. The
-figure below illustrates some of these operations.
+pmp::SurfaceMesh also offers higher-level topological operations, such as performing edge flips, edge splits, face splits, or halfedge collapses. The figure below illustrates some of these operations.
 
 ![High-level operations changing the topology.](./images/topology-changes.png)
 
-The corresponding member functions and their syntax is demonstrated in the
-pseudo-code below.
+The corresponding member functions and their syntax is demonstrated in the pseudo-code below.
 
 ```cpp
 Vertex   v;
@@ -203,19 +177,14 @@ mesh.flip(e);
 mesh.collapse(h);
 ```
 
-When entities are removed from the mesh due to topological changes, the member
-function pmp::SurfaceMesh::garbage_collection() has to be called in order to
-ensure the consistency of the data structure.
+When entities are removed from the mesh due to topological changes, the member function pmp::SurfaceMesh::garbage_collection() has to be called in order to ensure the consistency of the data structure.
 
 ## File I/O
 
-All I/O operations are handled by the pmp::read() and pmp::write() functions.
-They take a mesh, a file path, and optional pmp::IOFlags as an argument.
+All I/O operations are handled by the pmp::read() and pmp::write() functions. They take a mesh, a file path, and optional pmp::IOFlags as an argument.
 
-We currently support reading and writing several standard file formats: OFF,
-OBJ, STL. See the reference documentation for the pmp::read() and pmp::write()
-functions for details on which format supports reading / writing which type of
-data.
+We currently support reading and writing several standard file formats: OFF, OBJ, STL. See the reference documentation for the pmp::read() and pmp::write()
+functions for details on which format supports reading / writing which type of data.
 
 A simple example reading and writing a mesh is shown below.
 
