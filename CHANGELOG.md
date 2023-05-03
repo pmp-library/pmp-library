@@ -8,6 +8,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+- Upgrade ImGui to version 1.89.5 (fixes emscripten bug)
+
 ### Added
 
 - Add `PMP_STRICT_COMPILATION` CMake option to control treating warnings as errors. Default: On.
