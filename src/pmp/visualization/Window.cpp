@@ -368,6 +368,7 @@ void Window::render_frame()
     emscripten_get_canvas_element_size("#canvas", &w, &h);
     emscripten_get_element_css_size("#canvas", &dw, &dh);
     double s = instance_->pixel_ratio_;
+    s = 1.0;
     if (w != int(dw * s) || h != int(dh * s))
     {
         // set canvas size to match element css size
@@ -377,6 +378,8 @@ void Window::render_frame()
         glfw_resize(instance_->window_, w, h);
     }
 #endif
+
+
 
     // do some computations
     instance_->do_processing();
@@ -388,6 +391,12 @@ void Window::render_frame()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        
+#if __EMSCRIPTEN__
+        // Emscripten problem: glfwGetWindowSize() does not giving correct size 
+        // in ImGui_ImplGlfw_NewFrame(). We have to correct this (after calling NewFrame())
+        ImGui::GetMainViewport()->Size = ImVec2(w, h);
+#endif
 
         // prepare, process, and finish applications ImGUI dialog
         ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
