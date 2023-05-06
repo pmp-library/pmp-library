@@ -2,7 +2,10 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/geodesics.h"
+
 #include <cassert>
+#include <set>
+#include <map>
 
 namespace pmp {
 namespace {

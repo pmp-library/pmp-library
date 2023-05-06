@@ -3,9 +3,6 @@
 
 #pragma once
 
-#include <limits>
-#include <vector>
-
 #include "pmp/SurfaceMesh.h"
 
 namespace pmp {

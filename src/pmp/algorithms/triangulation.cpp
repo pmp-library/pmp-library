@@ -5,6 +5,7 @@
 
 #include <limits>
 #include <stdexcept>
+#include <vector>
 
 namespace pmp {
 namespace {

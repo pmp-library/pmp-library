@@ -6,6 +6,8 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
+#include <map>
+
 #include "pmp/algorithms/DifferentialGeometry.h"
 
 namespace pmp {
