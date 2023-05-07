@@ -389,13 +389,13 @@ void Window::render_frame()
         // start imgui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-        
 #if __EMSCRIPTEN__
         // Emscripten problem: glfwGetWindowSize() does not giving correct size 
-        // in ImGui_ImplGlfw_NewFrame(). We have to correct this (after calling NewFrame())
+        // in ImGui_ImplGlfw_NewFrame(). We have to correct this, after calling NewFrame()
+        // and before calling ImGUI::NewFrame()
         ImGui::GetMainViewport()->Size = ImVec2(w, h);
 #endif
+        ImGui::NewFrame();
 
         // prepare, process, and finish applications ImGUI dialog
         ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
