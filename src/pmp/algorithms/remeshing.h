@@ -5,8 +5,6 @@
 
 #include "pmp/SurfaceMesh.h"
 
-#include <memory>
-
 namespace pmp {
 
 //! \brief Perform uniform remeshing.

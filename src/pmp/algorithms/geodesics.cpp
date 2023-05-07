@@ -2,7 +2,10 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/geodesics.h"
+
 #include <cassert>
+#include <set>
+#include <map>
 
 namespace pmp {
 namespace {
@@ -12,10 +15,11 @@ class Geodesics
 public:
     Geodesics(SurfaceMesh& mesh, bool use_virtual_edges = true);
     ~Geodesics();
-    unsigned int compute(const std::vector<Vertex>& seed,
-                         Scalar maxdist = std::numeric_limits<Scalar>::max(),
-                         unsigned int maxnum = INT_MAX,
-                         std::vector<Vertex>* neighbors = nullptr);
+    unsigned int compute(
+        const std::vector<Vertex>& seed,
+        Scalar maxdist = std::numeric_limits<Scalar>::max(),
+        unsigned int maxnum = std::numeric_limits<unsigned int>::max(),
+        std::vector<Vertex>* neighbors = nullptr);
 
 private:
     // functor for comparing two vertices w.r.t. their geodesic distance

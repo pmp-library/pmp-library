@@ -6,6 +6,9 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
+#include <limits>
+#include <vector>
+
 #include "pmp/algorithms/fairing.h"
 
 namespace pmp {

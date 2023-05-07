@@ -4,9 +4,7 @@
 #pragma once
 
 #include <limits>
-#include <set>
 #include <vector>
-#include <map>
 
 #include "pmp/SurfaceMesh.h"
 
@@ -25,10 +23,11 @@ namespace pmp {
 //! \param[out] neighbors The vector of neighbor vertices.
 //! \return The number of neighbors that have been found.
 //! \ingroup algorithms
-unsigned int geodesics(SurfaceMesh& mesh, const std::vector<Vertex>& seed,
-                       Scalar maxdist = std::numeric_limits<Scalar>::max(),
-                       unsigned int maxnum = INT_MAX,
-                       std::vector<Vertex>* neighbors = nullptr);
+unsigned int geodesics(
+    SurfaceMesh& mesh, const std::vector<Vertex>& seed,
+    Scalar maxdist = std::numeric_limits<Scalar>::max(),
+    unsigned int maxnum = std::numeric_limits<unsigned int>::max(),
+    std::vector<Vertex>* neighbors = nullptr);
 
 //! \brief Use the normalized distances as texture coordinates
 //! \details Stores the normalized distances in a vertex property of type
