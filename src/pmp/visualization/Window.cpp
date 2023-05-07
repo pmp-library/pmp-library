@@ -393,7 +393,7 @@ void Window::render_frame()
         // Emscripten problem: glfwGetWindowSize() does not giving correct size 
         // in ImGui_ImplGlfw_NewFrame(). We have to correct this, after calling NewFrame()
         // and before calling ImGUI::NewFrame()
-        ImGui::GetMainViewport()->Size = ImVec2(w, h);
+        ImGui::GetIO().DisplaySize = ImVec2(w, h);
 #endif
         ImGui::NewFrame();
 
