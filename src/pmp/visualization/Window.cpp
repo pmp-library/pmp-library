@@ -368,7 +368,6 @@ void Window::render_frame()
     emscripten_get_canvas_element_size("#canvas", &w, &h);
     emscripten_get_element_css_size("#canvas", &dw, &dh);
     double s = instance_->pixel_ratio_;
-    s = 1.0;
     if (w != int(dw * s) || h != int(dh * s))
     {
         // set canvas size to match element css size
