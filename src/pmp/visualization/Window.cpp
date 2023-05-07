@@ -137,6 +137,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwSetMouseButtonCallback(window_, glfw_mouse);
     glfwSetScrollCallback(window_, glfw_scroll);
     glfwSetFramebufferSizeCallback(window_, glfw_resize);
+    glfwSetDropCallback(window_, glfw_drop);
 
     // setup imgui
     init_imgui();
@@ -653,6 +654,11 @@ void Window::glfw_resize(GLFWwindow* /*window*/, int width, int height)
     instance_->width_ = width;
     instance_->height_ = height;
     instance_->resize(width, height);
+}
+
+void Window::glfw_drop(GLFWwindow* /*window*/, int count, const char** paths)
+{
+    instance_->drop(count, paths);
 }
 
 void Window::cursor_pos(double& x, double& y) const

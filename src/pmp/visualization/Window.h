@@ -51,6 +51,9 @@ protected:
     //! this function is called if the window is resized
     virtual void resize(int /*width*/, int /*height*/) {}
 
+    //! this function is called if a file is dropped onto the window
+    virtual void drop(int /*count*/, const char** /*paths*/) {}
+
     //! this function renders the ImGUI elements and handles their events
     virtual void process_imgui() {}
 
@@ -128,6 +131,7 @@ private:
     static void glfw_motion(GLFWwindow* window, double xpos, double ypos);
     static void glfw_scroll(GLFWwindow* window, double xoffset, double yoffset);
     static void glfw_resize(GLFWwindow* window, int width, int height);
+    static void glfw_drop(GLFWwindow* window, int count, const char** paths);
 
     static void render_frame();
 

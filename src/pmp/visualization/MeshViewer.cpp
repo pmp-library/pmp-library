@@ -107,6 +107,23 @@ void MeshViewer::load_texture(const char* filename, GLint format,
     mesh_.set_shininess(1.0);
 }
 
+void MeshViewer::drop(int count, const char** paths)
+{
+    for (int i=0; i<count; ++i)
+    {
+        const std::filesystem::path filename(paths[i]);
+        const std::filesystem::path extension(filename.extension());
+
+        if (extension == ".jpg" || extension == ".png")
+        {
+            load_texture(paths[i]);
+        }
+        else {
+            load_mesh(paths[i]);
+        }
+    }
+}
+
 void MeshViewer::update_mesh()
 {
     // update scene center and radius, but don't update camera view
