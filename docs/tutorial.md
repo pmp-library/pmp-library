@@ -66,7 +66,17 @@ If you're having trouble with one of the steps, please read the detailed @ref in
 
 ## Basic Concepts
 
-A polygonal surface mesh is composed of vertices, edges, and faces. We call those _entities_. In order to access and manipulate the mesh, you also need incidence relationships between those entities. The central class for storing and manipulating all that data is pmp::SurfaceMesh. It stores connectivity information based on halfedges, i.e., pairs of directed edges with opposing direction. To be more precise:
+Polygon meshes are a fundamental data structure for representing 3D surfaces in computer graphics and geometry processing. A mesh is composed of vertices, edges, and faces:
+
+- **Vertices** are the individual points defining the shape of the object. Each vertex typically has 3D coordinates \f$(x,y,z)\f$ associated with it. In many applications additional properties such as colors or texture coordinates are stored for each vertex.
+- **Edges** are the line segments connecting two vertices. They define the boundary of each face. In a manifold surface mesh, all edges are connected to exactly two faces. In PMP, all meshes are manifold.
+- **Faces** are the polygonal shapes that make up the visible surface of the object. Each face has at least three vertices. Triangles and quads (4 vertices) are the most frequently used faces. PMP supports meshes with general polygonal faces.
+
+We also call those mesh _elements_.
+
+![Mesh elements.](./images/elements.svg)
+
+In order to access and manipulate the mesh, you also need incidence relationships between those elements. The central class for storing and manipulating all that data is pmp::SurfaceMesh. It stores connectivity information based on halfedges, i.e., pairs of directed edges with opposing direction. To be more precise:
 
 - Each vertex stores an outgoing halfedge.
 - Each face stores an incident halfedge.
@@ -80,13 +90,13 @@ In the following, we show the basic usage of pmp::SurfaceMesh by example.
 
 ## Adding Elements by Hand
 
-The basic usage of pmp::SurfaceMesh is demonstrated in the example below. The program first instantiates a pmp::SurfaceMesh object as well as four vertex handles. These handles, as well as the handles for the other mesh entities `Halfedge`, `Edge` and `Face` basically indices. Four vertices are added to the mesh, as well as four triangular faces composing a tetrahedron. Finally, the number of vertices, edges, and faces is printed to standard output.
+The basic usage of pmp::SurfaceMesh is demonstrated in the example below. The program first instantiates a pmp::SurfaceMesh object as well as four vertex handles. These handles, as well as the handles for the other mesh elements `Halfedge`, `Edge` and `Face` basically indices. Four vertices are added to the mesh, as well as four triangular faces composing a tetrahedron. Finally, the number of vertices, edges, and faces is printed to standard output.
 
 \snippet basics.cpp basics
 
 ## Iterators and Circulators
 
-In order to sequentially access mesh entities pmp::SurfaceMesh provides iterators for each entity type:
+In order to sequentially access mesh elements pmp::SurfaceMesh provides iterators for each element type:
 
 1. pmp::SurfaceMesh::VertexIterator
 2. pmp::SurfaceMesh::HalfedgeIterator
@@ -99,13 +109,13 @@ Similar to iterators, pmp::SurfaceMesh also provides circulators for the ordered
 
 ## Dynamic Properties
 
-Attaching additional attributes to mesh entities is important for many applications. pmp::SurfaceMesh supports properties by means of synchronized arrays that can be (de-)allocated dynamically at run-time. Property arrays are also used internally, e.g., to store vertex coordinates. The example program below shows how to access vertex coordinates through the pre-defined point property.
+Attaching additional attributes to mesh elements is important for many applications. pmp::SurfaceMesh supports properties by means of synchronized arrays that can be (de-)allocated dynamically at run-time. Property arrays are also used internally, e.g., to store vertex coordinates. The example program below shows how to access vertex coordinates through the pre-defined point property.
 
 \snippet barycenter.cpp barycenter
 
 The dynamic (de-)allocation of properties at run-time is managed by a set of four different functions.
 
-- Add a new property of a specific type for a given entity. Example:
+- Add a new property of a specific type for a given element type. Example:
 
   ```cpp
   auto vertex_weights = mesh.add_vertex_property<Scalar>("v:weight");
@@ -177,7 +187,7 @@ mesh.flip(e);
 mesh.collapse(h);
 ```
 
-When entities are removed from the mesh due to topological changes, the member function pmp::SurfaceMesh::garbage_collection() has to be called in order to ensure the consistency of the data structure.
+When elements are removed from the mesh due to topological changes, the member function pmp::SurfaceMesh::garbage_collection() has to be called in order to ensure the consistency of the data structure.
 
 ## File I/O
 
