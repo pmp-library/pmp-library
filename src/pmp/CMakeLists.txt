@@ -22,8 +22,10 @@ endif()
 if(NOT EMSCRIPTEN AND PMP_INSTALL)
 
   target_include_directories(
-    pmp PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
-               $<INSTALL_INTERFACE:include/>)
+      pmp PUBLIC 
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
+      $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/external/eigen>
+      $<INSTALL_INTERFACE:include/>)
 
   target_compile_features(pmp PUBLIC cxx_std_17)
 
@@ -37,7 +39,8 @@ if(NOT EMSCRIPTEN AND PMP_INSTALL)
     DESTINATION include)
 
   install(FILES ${HEADERS} DESTINATION include/pmp/)
-
+else()
+    target_include_directories(pmp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../ ../../external/eigen)
 endif()
 
 if(PMP_BUILD_VIS)

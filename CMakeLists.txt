@@ -30,7 +30,6 @@ if(PMP_BUILD_VIS)
 
   # setup STB Image (place *before* GLFW since GLFW has an old copy of
   # stb_image_write.h)
-  include_directories(${STBI_SOURCE_DIR})
   add_subdirectory(${STBI_SOURCE_DIR})
 
   # Building only the GLFW lib
@@ -54,27 +53,18 @@ if(PMP_BUILD_VIS)
   if(NOT EMSCRIPTEN)
     add_subdirectory(${GLFW_SOURCE_DIR} ${GLEW_SOURCE_DIR})
 
-    include_directories(${GLFW_SOURCE_DIR}/include ${GLFW_SOURCE_DIR}/deps
-                        ${GLEW_SOURCE_DIR}/include)
-
     add_definitions(-DGLEW_STATIC)
     add_library(glew STATIC ${GLEW_SOURCE_DIR}/src/glew.c
                             ${GLEW_SOURCE_DIR}/include)
     set_property(TARGET glew PROPERTY POSITION_INDEPENDENT_CODE ON)
+    target_include_directories(glew PUBLIC ${GLEW_SOURCE_DIR}/include
+                                           ${GLFW_SOURCE_DIR}/include)
     target_link_libraries(glew ${GLFW_LIBRARIES})
   endif()
 
   # setup IMGUI
-  include_directories(${IMGUI_SOURCE_DIR})
   add_subdirectory(${IMGUI_SOURCE_DIR})
 endif(PMP_BUILD_VIS)
-
-# setup Eigen
-set(EIGEN_SOURCE_DIR "external/eigen")
-include_directories(${EIGEN_SOURCE_DIR})
-
-include(AddFileDependencies)
-include_directories(${PROJECT_SOURCE_DIR}/src/)
 
 # setup for code coverage testing
 if(CMAKE_BUILD_TYPE STREQUAL "Debug"
