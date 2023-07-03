@@ -15,8 +15,7 @@ class Triangulation
 public:
     explicit Triangulation(SurfaceMesh& mesh);
 
-    void triangulate(
-        Face f, TriangulationObjective o = TriangulationObjective::min_area);
+    void triangulate(Face f);
 
 private:
     // Compute the weight of the triangle (i,j,k).
@@ -37,8 +36,6 @@ private:
     // data for computing optimal triangulation
     std::vector<std::vector<Scalar>> weight_;
     std::vector<std::vector<int>> index_;
-
-    TriangulationObjective objective_;
 };
 
 Triangulation::Triangulation(SurfaceMesh& mesh) : mesh_(mesh)
@@ -46,11 +43,8 @@ Triangulation::Triangulation(SurfaceMesh& mesh) : mesh_(mesh)
     points_ = mesh_.vertex_property<Point>("v:point");
 }
 
-void Triangulation::triangulate(Face f, TriangulationObjective o)
+void Triangulation::triangulate(Face f)
 {
-    // store TriangulationObjective
-    objective_ = o;
-
     // collect polygon halfedges
     Halfedge h0 = mesh_.halfedge(f);
     halfedges_.clear();
@@ -100,23 +94,8 @@ void Triangulation::triangulate(Face f, TriangulationObjective o)
             // find best split i < m < i+j
             for (size_t m = i + 1; m < k; ++m)
             {
-                Scalar w{0};
-                switch (objective_)
-                {
-                    case TriangulationObjective::min_area:
-                        w = weight_[i][m] + compute_weight(i, m, k) +
-                            weight_[m][k];
-                        break;
-                    case TriangulationObjective::max_angle:
-                        w = std::max(
-                            weight_[i][m],
-                            std::max(compute_weight(i, m, k), weight_[m][k]));
-                        break;
-                    default:
-                        // should never happen
-                        throw std::invalid_argument("Unknown objective!");
-                        break;
-                }
+                Scalar w =
+                    weight_[i][m] + compute_weight(i, m, k) + weight_[m][k];
 
                 if (w < wmin)
                 {
@@ -174,26 +153,7 @@ Scalar Triangulation::compute_weight(int i, int j, int k) const
     const Point& pb = points_[b];
     const Point& pc = points_[c];
 
-    Scalar w = std::numeric_limits<Scalar>::max();
-    switch (objective_)
-    {
-        // compute squared triangle area
-        case TriangulationObjective::min_area:
-            w = sqrnorm(cross(pb - pa, pc - pa));
-            break;
-
-        // compute one over minimum angle
-        // or cosine of minimum angle
-        // maximum cosine (which should then be minimized)
-        case TriangulationObjective::max_angle:
-            Scalar cosa = dot(normalize(pb - pa), normalize(pc - pa));
-            Scalar cosb = dot(normalize(pa - pb), normalize(pc - pb));
-            Scalar cosc = dot(normalize(pa - pc), normalize(pb - pc));
-            w = std::max(cosa, std::max(cosb, cosc));
-            break;
-    }
-
-    return w;
+    return sqrnorm(cross(pb - pa, pc - pa));
 }
 
 bool Triangulation::is_edge(Vertex a, Vertex b) const
@@ -246,16 +206,16 @@ bool Triangulation::insert_edge(int i, int j)
 }
 } // namespace
 
-void triangulate(SurfaceMesh& mesh, TriangulationObjective o)
+void triangulate(SurfaceMesh& mesh)
 {
     Triangulation tr(mesh);
     for (auto f : mesh.faces())
-        tr.triangulate(f, o);
+        tr.triangulate(f);
 }
 
-void triangulate(SurfaceMesh& mesh, Face f, TriangulationObjective o)
+void triangulate(SurfaceMesh& mesh, Face f)
 {
-    Triangulation(mesh).triangulate(f, o);
+    Triangulation(mesh).triangulate(f);
 }
 
 } // namespace pmp

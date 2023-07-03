@@ -11,13 +11,6 @@ using namespace pmp;
 TEST(TriangulationTest, min_area)
 {
     auto mesh = l_shape();
-    triangulate(mesh, TriangulationObjective::min_area);
-    EXPECT_EQ(mesh.n_faces(), size_t(10));
-}
-
-TEST(TriangulationTest, max_angle)
-{
-    auto mesh = l_shape();
-    triangulate(mesh, TriangulationObjective::max_angle);
+    triangulate(mesh);
     EXPECT_EQ(mesh.n_faces(), size_t(10));
 }
