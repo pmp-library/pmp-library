@@ -34,8 +34,6 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
 #endif
 }
 
-MeshViewer::~MeshViewer() = default;
-
 void MeshViewer::load_mesh(const char* filename)
 {
     // load mesh
