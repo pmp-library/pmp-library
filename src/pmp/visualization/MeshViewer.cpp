@@ -109,7 +109,7 @@ void MeshViewer::load_texture(const char* filename, GLint format,
 
 void MeshViewer::drop(int count, const char** paths)
 {
-    for (int i=0; i<count; ++i)
+    for (int i = 0; i < count; ++i)
     {
         const std::filesystem::path filename(paths[i]);
         const std::filesystem::path extension(filename.extension());
@@ -118,7 +118,8 @@ void MeshViewer::drop(int count, const char** paths)
         {
             load_texture(paths[i]);
         }
-        else {
+        else
+        {
             load_mesh(paths[i]);
         }
     }

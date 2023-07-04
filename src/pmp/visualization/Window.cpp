@@ -379,8 +379,6 @@ void Window::render_frame()
     }
 #endif
 
-
-
     // do some computations
     instance_->do_processing();
 
@@ -391,7 +389,7 @@ void Window::render_frame()
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
 #if __EMSCRIPTEN__
-        // Emscripten problem: glfwGetWindowSize() does not giving correct size 
+        // Emscripten problem: glfwGetWindowSize() does not giving correct size
         // in ImGui_ImplGlfw_NewFrame(). We have to correct this, after calling NewFrame()
         // and before calling ImGUI::NewFrame()
         ImGui::GetIO().DisplaySize = ImVec2(w, h);
