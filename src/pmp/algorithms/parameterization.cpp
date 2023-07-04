@@ -2,11 +2,9 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/parameterization.h"
+#include "pmp/algorithms/laplace.h"
 
 #include <cmath>
-
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
 
 #include "pmp/SurfaceMesh.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
@@ -139,94 +137,28 @@ void harmonic_parameterization(SurfaceMesh& mesh, bool use_uniform_weights)
 
     // get properties
     auto tex = mesh.vertex_property<TexCoord>("v:tex");
-    auto eweight = mesh.add_edge_property<Scalar>("e:param");
-    auto idx = mesh.add_vertex_property<int>("v:idx", -1);
 
-    // compute Laplace weight per edge: cotan or uniform
-    for (auto e : mesh.edges())
-    {
-        eweight[e] =
-            use_uniform_weights ? 1.0 : std::max(0.0, cotan_weight(mesh, e));
-    }
+    // build system matrix (clamp negative cotan weights to zero)
+    SparseMatrix A;
+    setup_stiffness_matrix(mesh, A, use_uniform_weights, true);
 
-    // collect free (non-boundary) vertices in array free_vertices[]
-    // assign indices such that idx[ free_vertices[i] ] == i
-    unsigned i = 0;
-    std::vector<Vertex> free_vertices;
-    free_vertices.reserve(mesh.n_vertices());
+    // build right-hand side B and inject boundary constraints
+    DenseMatrix B(mesh.n_vertices(), 2);
+    B.setZero();
     for (auto v : mesh.vertices())
-    {
+        if (mesh.is_boundary(v))
+            B.row(v.idx()) = static_cast<Eigen::Vector2d>(tex[v]);
+
+    // solve system
+    auto is_constrained = [&](unsigned int i) {
+        return mesh.is_boundary(Vertex(i));
+    };
+    DenseMatrix X = cholesky_solve(A, B, is_constrained, B);
+
+    // copy solution
+    for (auto v : mesh.vertices())
         if (!mesh.is_boundary(v))
-        {
-            idx[v] = i++;
-            free_vertices.push_back(v);
-        }
-    }
-
-    // setup matrix A and rhs B
-    const unsigned int n = free_vertices.size();
-    Eigen::SparseMatrix<double> A(n, n);
-    Eigen::MatrixXd B(n, 2);
-    std::vector<Eigen::Triplet<double>> triplets;
-    dvec2 b;
-    double w, ww;
-    Vertex v, vv;
-    Edge e;
-    for (i = 0; i < n; ++i)
-    {
-        v = free_vertices[i];
-
-        // rhs row
-        b = dvec2(0.0);
-
-        // lhs row
-        ww = 0.0;
-        for (auto h : mesh.halfedges(v))
-        {
-            vv = mesh.to_vertex(h);
-            e = mesh.edge(h);
-            w = eweight[e];
-            ww += w;
-
-            if (mesh.is_boundary(vv))
-            {
-                b -= -w * static_cast<dvec2>(tex[vv]);
-            }
-            else
-            {
-                triplets.emplace_back(i, idx[vv], -w);
-            }
-        }
-        triplets.emplace_back(i, i, ww);
-        B.row(i) = (Eigen::Vector2d)b;
-    }
-
-    // build sparse matrix from triplets
-    A.setFromTriplets(triplets.begin(), triplets.end());
-
-    // solve A*X = B
-    Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver(A);
-    Eigen::MatrixXd X = solver.solve(B);
-    if (solver.info() != Eigen::Success)
-    {
-        // clean-up
-        mesh.remove_vertex_property(idx);
-        mesh.remove_edge_property(eweight);
-        auto what = std::string{__func__} + ": Failed to solve linear system.";
-        throw SolverException(what);
-    }
-    else
-    {
-        // copy solution
-        for (i = 0; i < n; ++i)
-        {
-            tex[free_vertices[i]] = X.row(i);
-        }
-    }
-
-    // clean-up
-    mesh.remove_vertex_property(idx);
-    mesh.remove_edge_property(eweight);
+            tex[v] = X.row(v.idx());
 }
 
 void lscm_parameterization(SurfaceMesh& mesh)

@@ -2,79 +2,9 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/fairing.h"
-
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
-
-#include <map>
-
-#include "pmp/algorithms/DifferentialGeometry.h"
+#include "pmp/algorithms/laplace.h"
 
 namespace pmp {
-namespace {
-
-struct Triple
-{
-    Triple() = default;
-
-    Triple(Vertex v, double weight, unsigned int degree)
-        : vertex_(v), weight_(weight), degree_(degree)
-    {
-    }
-
-    Vertex vertex_;
-    double weight_;
-    unsigned int degree_;
-};
-
-void setup_matrix_row(const SurfaceMesh& mesh, const Vertex vertex,
-                      VertexProperty<double> vweight,
-                      EdgeProperty<double> eweight, unsigned int laplace_degree,
-                      std::map<Vertex, double>& row)
-{
-    Triple t(vertex, 1.0, laplace_degree);
-
-    // init
-    static std::vector<Triple> todo;
-    todo.reserve(50);
-    todo.push_back(t);
-    row.clear();
-
-    while (!todo.empty())
-    {
-        t = todo.back();
-        todo.pop_back();
-        auto v = t.vertex_;
-        auto d = t.degree_;
-
-        if (d == 0)
-        {
-            row[v] += t.weight_;
-        }
-        else
-        {
-            auto ww = 0.0;
-
-            for (auto h : mesh.halfedges(v))
-            {
-                auto e = mesh.edge(h);
-                auto vv = mesh.to_vertex(h);
-                auto w = eweight[e];
-
-                if (d < laplace_degree)
-                    w *= vweight[v];
-
-                w *= t.weight_;
-                ww -= w;
-
-                todo.emplace_back(vv, w, d - 1);
-            }
-
-            todo.emplace_back(v, ww, d - 1);
-        }
-    }
-}
-} // namespace
 
 void minimize_area(SurfaceMesh& mesh)
 {
@@ -92,26 +22,8 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     auto points = mesh.vertex_property<Point>("v:point");
     auto vselected = mesh.get_vertex_property<bool>("v:selected");
     auto vlocked = mesh.add_vertex_property<bool>("fairing:locked");
-    auto vweight = mesh.add_vertex_property<double>("fairing:vweight");
-    auto eweight = mesh.add_edge_property<double>("fairing:eweight");
-    auto idx = mesh.add_vertex_property<int>("fairing:idx", -1);
 
-    auto cleanup = [&]() {
-        mesh.remove_vertex_property(vlocked);
-        mesh.remove_vertex_property(vweight);
-        mesh.remove_edge_property(eweight);
-        mesh.remove_vertex_property(idx);
-    };
-
-    // compute cotan weights
-    for (auto v : mesh.vertices())
-    {
-        vweight[v] = 0.5 / voronoi_area(mesh, v);
-    }
-    for (auto e : mesh.edges())
-    {
-        eweight[e] = std::max(0.0, cotan_weight(mesh, e));
-    }
+    auto cleanup = [&]() { mesh.remove_vertex_property(vlocked); };
 
     // check whether some vertices are selected
     bool no_selection = true;
@@ -169,74 +81,52 @@ void fair(SurfaceMesh& mesh, unsigned int k)
         }
     }
 
-    // collect free vertices
-    std::vector<Vertex> vertices;
-    vertices.reserve(mesh.n_vertices());
+    // we need locked vertices as boundary constraints
+    bool something_locked = false;
     for (auto v : mesh.vertices())
     {
-        if (!vlocked[v])
+        if (vlocked[v])
         {
-            idx[v] = vertices.size();
-            vertices.push_back(v);
+            something_locked = true;
+            break;
         }
     }
-
-    // we need locked vertices as boundary constraints
-    if (vertices.size() == mesh.n_vertices())
+    if (!something_locked)
     {
         cleanup();
         auto what = std::string{__func__} + ": Missing boundary constraints.";
         throw InvalidInputException(what);
     }
 
-    // construct matrix & rhs
-    const auto n = vertices.size();
-    using SparseMatrix = Eigen::SparseMatrix<double>;
-    SparseMatrix A(n, n);
-    Eigen::MatrixXd B(n, 3);
-    dvec3 b;
+    const int n = mesh.n_vertices();
 
-    std::map<Vertex, double> row;
-    using Triplet = Eigen::Triplet<double>;
-    std::vector<Triplet> triplets;
+    // build (zero) right-hand side B
+    DenseMatrix B(n, 3);
+    B.setZero();
 
-    for (size_t i = 0; i < n; ++i)
-    {
-        b = dvec3(0.0);
+    // positions will be used as constraints
+    DenseMatrix X(n, 3);
+    for (auto v : mesh.vertices())
+        X.row(v.idx()) = static_cast<Eigen::Vector3d>(points[v]);
 
-        setup_matrix_row(mesh, vertices[i], vweight, eweight, k, row);
+    // build matrix
+    SparseMatrix S;
+    setup_stiffness_matrix(mesh, S, false, true);
+    DiagonalMatrix M;
+    setup_mass_matrix(mesh, M, false);
+    DiagonalMatrix invM = M.inverse();
+    SparseMatrix A = S;
+    for (unsigned int i = 1; i < k; ++i)
+        A = S * invM * A;
+    B = M * B;
 
-        for (auto [v, w] : row)
-        {
-            if (idx[v] != -1)
-            {
-                triplets.emplace_back(i, idx[v], w);
-            }
-            else
-            {
-                b -= w * static_cast<dvec3>(points[v]);
-            }
-        }
+    // solve system
+    auto is_locked = [&](unsigned int i) { return vlocked[Vertex(i)]; };
+    X = cholesky_solve(A, B, is_locked, X);
 
-        B.row(i) = (Eigen::Vector3d)b;
-    }
-
-    A.setFromTriplets(triplets.begin(), triplets.end());
-
-    // solve A*X = B
-    Eigen::SimplicialLDLT<SparseMatrix> solver(A);
-    Eigen::MatrixXd X = solver.solve(B);
-
-    if (solver.info() != Eigen::Success)
-    {
-        auto what = std::string{__func__} + ": Failed to solve linear system.";
-        throw SolverException(what);
-    }
-    else
-    {
-        for (size_t i = 0; i < n; ++i)
-            points[vertices[i]] = X.row(i);
-    }
+    // copy solution
+    for (auto v : mesh.vertices())
+        points[v] = X.row(v.idx());
 
     // remove properties
     cleanup();
