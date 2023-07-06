@@ -17,7 +17,7 @@ public:
     MeshViewer(const char* title, int width, int height, bool showgui = true);
 
     //! destructor
-    ~MeshViewer() override;
+    ~MeshViewer() override = default;
 
     //! load a mesh from file \p filename
     virtual void load_mesh(const char* filename);
@@ -48,7 +48,7 @@ public:
     //! load mesh by dropping file onto the window
     void drop(int count, const char** paths) override;
 
-    //! get vertex closest to 3D position Distributed under the mouse cursor
+    //! get vertex closest to 3D position under the mouse cursor
     Vertex pick_vertex(int x, int y);
 
 protected:
