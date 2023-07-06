@@ -33,3 +33,9 @@ TEST_F(UtilitiesTest, flip_faces)
     auto vertices_after = vertex_indices(f0);
     EXPECT_EQ(vertices_before, vertices_after);
 }
+
+TEST_F(UtilitiesTest, min_face_area)
+{
+    add_quad();
+    EXPECT_EQ(min_face_area(mesh), 1.0);
+}

@@ -2,6 +2,8 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/utilities.h"
+#include "pmp/algorithms/DifferentialGeometry.h"
+#include <limits>
 
 namespace pmp {
 
@@ -31,6 +33,17 @@ void flip_faces(SurfaceMesh& mesh)
         new_mesh.add_face(vertices);
     }
     mesh = new_mesh;
+}
+
+Scalar min_face_area(const SurfaceMesh& mesh)
+{
+    auto min_area = std::numeric_limits<Scalar>::max();
+    for (auto f : mesh.faces())
+    {
+        auto area = face_area(mesh, f);
+        min_area = std::min(area, min_area);
+    }
+    return min_area;
 }
 
 } // namespace pmp

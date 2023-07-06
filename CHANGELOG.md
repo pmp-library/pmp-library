@@ -12,10 +12,11 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Added
 
+- Add `min_face_area()` to compute minimum face area of all faces.
 - Add `edge_area()` to compute area associated to an edge.
 - Added circulator enumerating edges around vertex: `SurfaceMesh::edges(Vertex)`.
-- Functions `setup_laplace_matrix()` and `setup_mass_matrix()` compute those 
-  two matrices for both triangle meshes and general polygon meshes. 
+- Functions `setup_laplace_matrix()` and `setup_mass_matrix()` compute those
+  two matrices for both triangle meshes and general polygon meshes.
   The general case is based on the paper Bunge et al, "Polygon Laplacian made simple",
   Eurographics 2020.
 - Smoothing, parameterization, and fairing are now implemented based on

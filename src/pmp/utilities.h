@@ -14,4 +14,7 @@ BoundingBox bounds(const SurfaceMesh& mesh);
 //! Flip the orientation of all faces in \p mesh .
 void flip_faces(SurfaceMesh& mesh);
 
+//! Compute the minimum area of all faces in \p mesh .
+Scalar min_face_area(const SurfaceMesh& mesh);
+
 } // namespace pmp
