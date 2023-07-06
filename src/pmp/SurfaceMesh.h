@@ -780,6 +780,99 @@ public:
         bool is_active_{true}; // helper for C++11 range-based for-loops
     };
 
+    //! this class circulates through all edges incident to a vertex.
+    //! it also acts as a container-concept for C++11 range-based for loops.
+    //! \sa VertexAroundVertexCirculator, edges(Vertex)
+    class EdgeAroundVertexCirculator
+    {
+    public:
+        using difference_type = std::ptrdiff_t;
+        using value_type = Edge;
+        using reference = Edge&;
+        using pointer = Edge*;
+        using iterator_category = std::bidirectional_iterator_tag;
+
+        //! default constructor
+        EdgeAroundVertexCirculator(const SurfaceMesh* mesh = nullptr,
+                                   Vertex v = Vertex())
+            : mesh_(mesh)
+        {
+            if (mesh_)
+                halfedge_ = mesh_->halfedge(v);
+        }
+
+        //! are two circulators equal?
+        bool operator==(const EdgeAroundVertexCirculator& rhs) const
+        {
+            assert(mesh_);
+            assert(mesh_ == rhs.mesh_);
+            return (is_active_ && (halfedge_ == rhs.halfedge_));
+        }
+
+        //! are two circulators different?
+        bool operator!=(const EdgeAroundVertexCirculator& rhs) const
+        {
+            return !operator==(rhs);
+        }
+
+        //! pre-increment (rotate counter-clockwise)
+        EdgeAroundVertexCirculator& operator++()
+        {
+            assert(mesh_);
+            halfedge_ = mesh_->ccw_rotated_halfedge(halfedge_);
+            is_active_ = true;
+            return *this;
+        }
+
+        //! post-increment (rotate counter-clockwise)
+        EdgeAroundVertexCirculator operator++(int)
+        {
+            auto tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        //! pre-decrement (rotate clockwise)
+        EdgeAroundVertexCirculator& operator--()
+        {
+            assert(mesh_);
+            halfedge_ = mesh_->cw_rotated_halfedge(halfedge_);
+            return *this;
+        }
+
+        //! post-decrement (rotate clockwise)
+        EdgeAroundVertexCirculator operator--(int)
+        {
+            auto tmp = *this;
+            --(*this);
+            return tmp;
+        }
+
+        //! get the halfedge the circulator refers to
+        Edge operator*() const { return mesh_->edge(halfedge_); }
+
+        //! cast to bool: true if vertex is not isolated
+        operator bool() const { return halfedge_.is_valid(); }
+
+        // helper for C++11 range-based for-loops
+        EdgeAroundVertexCirculator& begin()
+        {
+            is_active_ = !halfedge_.is_valid();
+            return *this;
+        }
+        // helper for C++11 range-based for-loops
+        EdgeAroundVertexCirculator& end()
+        {
+            is_active_ = true;
+            return *this;
+        }
+
+    private:
+        const SurfaceMesh* mesh_;
+        Halfedge halfedge_;
+        bool is_active_{true}; // helper for C++11 range-based for-loops
+    };
+
     //! this class circulates through all incident faces of a vertex.
     //! it also acts as a container-concept for C++11 range-based for loops.
     //! \sa VertexAroundVertexCirculator, HalfedgeAroundVertexCirculator, faces(Vertex)
@@ -1597,6 +1690,12 @@ public:
     VertexAroundVertexCirculator vertices(Vertex v) const
     {
         return VertexAroundVertexCirculator(this, v);
+    }
+
+    //! \return circulator for edges around vertex \p v
+    EdgeAroundVertexCirculator edges(Vertex v) const
+    {
+        return EdgeAroundVertexCirculator(this, v);
     }
 
     //! \return circulator for outgoing halfedges around vertex \p v
