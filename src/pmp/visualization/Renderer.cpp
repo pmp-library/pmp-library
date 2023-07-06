@@ -12,7 +12,7 @@
 
 namespace pmp {
 
-Renderer::Renderer(SurfaceMesh& mesh) : mesh_(mesh)
+Renderer::Renderer(const SurfaceMesh& mesh) : mesh_(mesh)
 {
     // initialize GL buffers to zero
     vertex_array_object_ = 0;

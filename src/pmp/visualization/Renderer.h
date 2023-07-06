@@ -5,12 +5,14 @@
 
 #include <limits>
 
-#include "pmp/SurfaceMesh.h"
+#include "pmp/Types.h"
 #include "pmp/visualization/GL.h"
 #include "pmp/visualization/Shader.h"
 #include "pmp/MatVec.h"
 
 namespace pmp {
+
+class SurfaceMesh;
 
 //! Class for rendering surface meshes using OpenGL
 //! \ingroup visualization
@@ -18,7 +20,7 @@ class Renderer
 {
 public:
     //! Constructor
-    explicit Renderer(SurfaceMesh& mesh);
+    explicit Renderer(const SurfaceMesh& mesh);
 
     //! default destructor
     ~Renderer();
@@ -111,7 +113,7 @@ public:
     void load_matcap(const char* filename);
 
 private:
-    SurfaceMesh& mesh_;
+    const SurfaceMesh& mesh_;
 
     // helpers for computing triangulation of a polygon
     struct Triangulation
