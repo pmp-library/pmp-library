@@ -190,7 +190,7 @@ private:
     // material properties
     vec3 front_color_, back_color_;
     float ambient_, diffuse_, specular_, shininess_, alpha_;
-    bool srgb_;
+    bool use_srgb_;
     bool use_colors_;
     float crease_angle_;
     float point_size_;

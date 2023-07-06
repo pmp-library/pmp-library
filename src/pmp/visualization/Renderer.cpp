@@ -40,7 +40,7 @@ Renderer::Renderer(SurfaceMesh& mesh) : mesh_(mesh)
     specular_ = 0.6;
     shininess_ = 100.0;
     alpha_ = 1.0;
-    srgb_ = false;
+    use_srgb_ = false;
     use_colors_ = true;
     crease_angle_ = 180.0;
     point_size_ = 5.0;
@@ -93,7 +93,7 @@ void Renderer::clear()
 }
 
 void Renderer::load_texture(const char* filename, GLint format,
-                                 GLint min_filter, GLint mag_filter, GLint wrap)
+                            GLint min_filter, GLint mag_filter, GLint wrap)
 {
 #ifdef __EMSCRIPTEN__
     // emscripen/WebGL does not like mapmapping for SRGB textures
@@ -162,7 +162,7 @@ void Renderer::load_texture(const char* filename, GLint format,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
     // use SRGB rendering?
-    srgb_ = (format == GL_SRGB8);
+    use_srgb_ = (format == GL_SRGB8);
 
     // free memory
     stbi_image_free(img);
@@ -201,7 +201,7 @@ void Renderer::use_cold_warm_texture()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        srgb_ = false;
+        use_srgb_ = false;
         texture_mode_ = ColdWarmTexture;
     }
 }
@@ -250,7 +250,7 @@ void Renderer::use_checkerboard_texture()
         // clean up
         delete[] tex;
 
-        srgb_ = false;
+        use_srgb_ = false;
         texture_mode_ = CheckerboardTexture;
     }
 }
@@ -629,9 +629,8 @@ void Renderer::update_opengl_buffers()
     mesh_.remove_vertex_property(vertex_indices);
 }
 
-void Renderer::draw(const mat4& projection_matrix,
-                         const mat4& modelview_matrix,
-                         const std::string& draw_mode)
+void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
+                    const std::string& draw_mode)
 {
     // did we generate buffers already?
     if (!vertex_array_object_)
@@ -765,7 +764,7 @@ void Renderer::draw(const mat4& projection_matrix,
                 phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
                 phong_shader_.set_uniform("use_texture", true);
                 phong_shader_.set_uniform("use_vertex_color", false);
-                phong_shader_.set_uniform("use_srgb", srgb_);
+                phong_shader_.set_uniform("use_srgb", use_srgb_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
                 draw_triangles();
 
@@ -833,7 +832,7 @@ void Renderer::draw(const mat4& projection_matrix,
 }
 
 void Renderer::tesselate(const std::vector<vec3>& points,
-                              std::vector<ivec3>& triangles)
+                         std::vector<ivec3>& triangles)
 {
     const int n = points.size();
 
