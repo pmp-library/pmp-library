@@ -13,9 +13,6 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
     if (!mesh.n_vertices())
         return;
 
-    const unsigned int n = mesh.n_vertices();
-    auto points = mesh.get_vertex_property<Point>("v:point");
-
     // Laplace matrix (clamp negative cotan weights to zero)
     SparseMatrix L;
     setup_laplace_matrix(mesh, L, use_uniform_laplace, true);
@@ -31,19 +28,17 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
     setup_selector_matrix(mesh, is_inner, S);
     L = S.transpose() * S * L;
 
-    DenseMatrix X(n, 3);
 
     // copy vertex coordinates to matrix
-    for (auto v : mesh.vertices())
-        X.row(v.idx()) = static_cast<Eigen::Vector3d>(points[v]);
+    DenseMatrix X;
+    coordinates_to_matrix(mesh, X);
 
     // perform some interations
     for (unsigned int i = 0; i < iters; ++i)
         X += L * X;
 
     // copy matrix back to vertex coordinates
-    for (auto v : mesh.vertices())
-        points[v] = X.row(v.idx());
+    matrix_to_coordinates(X, mesh);
 }
 
 void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
@@ -51,9 +46,6 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
 {
     if (!mesh.n_vertices())
         return;
-
-    const unsigned int n = mesh.n_vertices();
-    auto points = mesh.get_vertex_property<Point>("v:point");
 
     // store center and area
     Point center_before(0, 0, 0);
@@ -72,9 +64,8 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
     SparseMatrix A = SparseMatrix(M) - timestep * L;
 
     // build right-hand side B
-    DenseMatrix X(n, 3);
-    for (auto v : mesh.vertices())
-        X.row(v.idx()) = static_cast<Eigen::Vector3d>(points[v]);
+    DenseMatrix X;
+    coordinates_to_matrix(mesh, X);
     DenseMatrix B = M * X;
 
     // solve system
@@ -82,8 +73,7 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
         return mesh.is_boundary(Vertex(i));
     };
     X = cholesky_solve(A, B, is_constrained, X);
-    for (auto v : mesh.vertices())
-        points[v] = X.row(v.idx());
+    matrix_to_coordinates(X, mesh);
 
     if (rescale)
     {

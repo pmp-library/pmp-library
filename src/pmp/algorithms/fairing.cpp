@@ -19,10 +19,8 @@ void minimize_curvature(SurfaceMesh& mesh)
 void fair(SurfaceMesh& mesh, unsigned int k)
 {
     // get & add properties
-    auto points = mesh.vertex_property<Point>("v:point");
     auto vselected = mesh.get_vertex_property<bool>("v:selected");
     auto vlocked = mesh.add_vertex_property<bool>("fairing:locked");
-
     auto cleanup = [&]() { mesh.remove_vertex_property(vlocked); };
 
     // check whether some vertices are selected
@@ -105,9 +103,8 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     B.setZero();
 
     // positions will be used as constraints
-    DenseMatrix X(n, 3);
-    for (auto v : mesh.vertices())
-        X.row(v.idx()) = static_cast<Eigen::Vector3d>(points[v]);
+    DenseMatrix X;
+    coordinates_to_matrix(mesh, X);
 
     // build matrix
     SparseMatrix L;
@@ -125,8 +122,7 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     X = cholesky_solve(A, B, is_locked, X);
 
     // copy solution
-    for (auto v : mesh.vertices())
-        points[v] = X.row(v.idx());
+    matrix_to_coordinates(X, mesh);
 
     // remove properties
     cleanup();
