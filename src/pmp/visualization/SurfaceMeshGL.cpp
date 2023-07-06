@@ -12,7 +12,7 @@
 
 namespace pmp {
 
-SurfaceMeshGL::SurfaceMeshGL()
+SurfaceMeshGL::SurfaceMeshGL(SurfaceMesh& mesh) : mesh_(mesh)
 {
     // initialize GL buffers to zero
     vertex_array_object_ = 0;
@@ -89,7 +89,7 @@ void SurfaceMeshGL::deleteBuffers()
 void SurfaceMeshGL::clear()
 {
     deleteBuffers();
-    SurfaceMesh::clear();
+    mesh_.clear();
 }
 
 void SurfaceMeshGL::load_texture(const char* filename, GLint format,
@@ -284,14 +284,14 @@ void SurfaceMeshGL::update_opengl_buffers()
     glBindVertexArray(vertex_array_object_);
 
     // get properties
-    auto vpos = get_vertex_property<Point>("v:point");
-    auto vcolor = get_vertex_property<Color>("v:color");
-    auto vtex = get_vertex_property<TexCoord>("v:tex");
-    auto htex = get_halfedge_property<TexCoord>("h:tex");
-    auto fcolor = get_face_property<Color>("f:color");
+    auto vpos = mesh_.get_vertex_property<Point>("v:point");
+    auto vcolor = mesh_.get_vertex_property<Color>("v:color");
+    auto vtex = mesh_.get_vertex_property<TexCoord>("v:tex");
+    auto htex = mesh_.get_halfedge_property<TexCoord>("h:tex");
+    auto fcolor = mesh_.get_face_property<Color>("f:color");
 
     // index array for remapping vertex indices during duplication
-    auto vertex_indices = add_vertex_property<size_t>("v:index");
+    auto vertex_indices = mesh_.add_vertex_property<size_t>("v:index");
 
     // produce arrays of points, normals, and texcoords
     // (duplicate vertices to allow for flat shading)
@@ -302,31 +302,31 @@ void SurfaceMeshGL::update_opengl_buffers()
     std::vector<ivec3> triangles;
 
     // we have a mesh: fill arrays by looping over faces
-    if (n_faces())
+    if (mesh_.n_faces())
     {
         // reserve memory
-        position_array.reserve(3 * n_faces());
-        normal_array.reserve(3 * n_faces());
+        position_array.reserve(3 * mesh_.n_faces());
+        normal_array.reserve(3 * mesh_.n_faces());
         if (htex || vtex)
-            tex_array.reserve(3 * n_faces());
+            tex_array.reserve(3 * mesh_.n_faces());
 
         if ((vcolor || fcolor) && use_colors_)
-            color_array.reserve(3 * n_faces());
+            color_array.reserve(3 * mesh_.n_faces());
 
         // precompute normals for easy cases
         FaceProperty<Normal> fnormals;
         VertexProperty<Normal> vnormals;
         if (crease_angle_ < 1)
         {
-            fnormals = add_face_property<Normal>("gl:fnormal");
-            for (auto f : faces())
-                fnormals[f] = face_normal(*this, f);
+            fnormals = mesh_.add_face_property<Normal>("gl:fnormal");
+            for (auto f : mesh_.faces())
+                fnormals[f] = face_normal(mesh_, f);
         }
         else if (crease_angle_ > 170)
         {
-            vnormals = add_vertex_property<Normal>("gl:vnormal");
-            for (auto v : vertices())
-                vnormals[v] = vertex_normal(*this, v);
+            vnormals = mesh_.add_vertex_property<Normal>("gl:vnormal");
+            for (auto v : mesh_.vertices())
+                vnormals[v] = vertex_normal(mesh_, v);
         }
 
         // data per face (for all corners)
@@ -343,7 +343,7 @@ void SurfaceMeshGL::update_opengl_buffers()
         size_t vidx(0);
 
         // loop over all faces
-        for (auto f : faces())
+        for (auto f : mesh_.faces())
         {
             // collect corner positions and normals
             corner_halfedges.clear();
@@ -355,9 +355,9 @@ void SurfaceMeshGL::update_opengl_buffers()
             Vertex v;
             Normal n;
 
-            for (auto h : halfedges(f))
+            for (auto h : mesh_.halfedges(f))
             {
-                v = to_vertex(h);
+                v = mesh_.to_vertex(h);
                 corner_halfedges.push_back(h);
                 corner_vertices.push_back(v);
                 corner_positions.push_back((vec3)vpos[v]);
@@ -372,7 +372,7 @@ void SurfaceMeshGL::update_opengl_buffers()
                 }
                 else
                 {
-                    n = corner_normal(*this, h, crease_angle_radians);
+                    n = corner_normal(mesh_, h, crease_angle_radians);
                 }
                 corner_normals.push_back((vec3)n);
 
@@ -434,34 +434,34 @@ void SurfaceMeshGL::update_opengl_buffers()
 
         // clean up
         if (vnormals)
-            remove_vertex_property(vnormals);
+            mesh_.remove_vertex_property(vnormals);
         if (fnormals)
-            remove_face_property(fnormals);
+            mesh_.remove_face_property(fnormals);
     }
 
     // we have a point cloud
-    else if (n_vertices())
+    else if (mesh_.n_vertices())
     {
-        auto position = vertex_property<Point>("v:point");
+        auto position = mesh_.vertex_property<Point>("v:point");
         if (position)
         {
-            position_array.reserve(n_vertices());
-            for (auto v : vertices())
+            position_array.reserve(mesh_.n_vertices());
+            for (auto v : mesh_.vertices())
                 position_array.push_back((vec3)position[v]);
         }
 
-        auto normals = get_vertex_property<Point>("v:normal");
+        auto normals = mesh_.get_vertex_property<Point>("v:normal");
         if (normals)
         {
-            normal_array.reserve(n_vertices());
-            for (auto v : vertices())
+            normal_array.reserve(mesh_.n_vertices());
+            for (auto v : mesh_.vertices())
                 normal_array.push_back((vec3)normals[v]);
         }
 
         if (vcolor && use_colors_)
         {
-            color_array.reserve(n_vertices());
-            for (auto v : vertices())
+            color_array.reserve(mesh_.n_vertices());
+            for (auto v : mesh_.vertices())
                 color_array.push_back((vec3)vcolor[v]);
         }
     }
@@ -529,18 +529,18 @@ void SurfaceMeshGL::update_opengl_buffers()
     }
 
     size_t seam_count = 0;
-    auto texcoords = get_halfedge_property<TexCoord>("h:tex");
+    auto texcoords = mesh_.get_halfedge_property<TexCoord>("h:tex");
     EdgeProperty<bool> texture_seams;
     if (texcoords)
     {
-        texture_seams = edge_property<bool>("e:seam");
-        for (auto e : edges())
+        texture_seams = mesh_.edge_property<bool>("e:seam");
+        for (auto e : mesh_.edges())
         {
             // texcoords are stored in halfedge pointing towards a vertex
-            Halfedge h0 = halfedge(e, 0);
-            Halfedge h1 = halfedge(e, 1);     //opposite halfedge
-            Halfedge h0p = prev_halfedge(h0); // start point edge 0
-            Halfedge h1p = prev_halfedge(h1); // start point edge 1
+            Halfedge h0 = mesh_.halfedge(e, 0);
+            Halfedge h1 = mesh_.halfedge(e, 1);     //opposite halfedge
+            Halfedge h0p = mesh_.prev_halfedge(h0); // start point edge 0
+            Halfedge h1p = mesh_.prev_halfedge(h1); // start point edge 1
 
             // if start or end points differs more than seam_threshold
             // the corresponding edge is a texture seam
@@ -554,28 +554,28 @@ void SurfaceMeshGL::update_opengl_buffers()
                 texture_seams[e] = false;
             }
         }
-        for (auto e : edges())
+        for (auto e : mesh_.edges())
             if (texture_seams && texture_seams[e])
                 seam_count++;
     }
 
     // edge indices & if available seam indices
-    if (n_edges())
+    if (mesh_.n_edges())
     {
         std::vector<unsigned int> edge_indices;
-        edge_indices.reserve(n_edges());
+        edge_indices.reserve(mesh_.n_edges());
 
         std::vector<unsigned int> seam_indices;
         seam_indices.reserve(seam_count);
 
-        for (auto e : edges())
+        for (auto e : mesh_.edges())
         {
-            edge_indices.push_back(vertex_indices[vertex(e, 0)]);
-            edge_indices.push_back(vertex_indices[vertex(e, 1)]);
+            edge_indices.push_back(vertex_indices[mesh_.vertex(e, 0)]);
+            edge_indices.push_back(vertex_indices[mesh_.vertex(e, 1)]);
             if (texture_seams && texture_seams[e])
             {
-                seam_indices.push_back(vertex_indices[vertex(e, 0)]);
-                seam_indices.push_back(vertex_indices[vertex(e, 1)]);
+                seam_indices.push_back(vertex_indices[mesh_.vertex(e, 1)]);
+                seam_indices.push_back(vertex_indices[mesh_.vertex(e, 0)]);
             }
         }
         if (texture_seams)
@@ -599,17 +599,17 @@ void SurfaceMeshGL::update_opengl_buffers()
         n_edges_ = 0;
 
     // feature edges
-    auto efeature = get_edge_property<bool>("e:feature");
+    auto efeature = mesh_.get_edge_property<bool>("e:feature");
     if (efeature)
     {
         std::vector<unsigned int> features;
 
-        for (auto e : edges())
+        for (auto e : mesh_.edges())
         {
             if (efeature[e])
             {
-                features.push_back(vertex_indices[vertex(e, 0)]);
-                features.push_back(vertex_indices[vertex(e, 1)]);
+                features.push_back(vertex_indices[mesh_.vertex(e, 0)]);
+                features.push_back(vertex_indices[mesh_.vertex(e, 1)]);
             }
         }
 
@@ -626,7 +626,7 @@ void SurfaceMeshGL::update_opengl_buffers()
     glBindVertexArray(0);
 
     // remove vertex index property again
-    remove_vertex_property(vertex_indices);
+    mesh_.remove_vertex_property(vertex_indices);
 }
 
 void SurfaceMeshGL::draw(const mat4& projection_matrix,
@@ -660,7 +660,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     }
 
     // empty mesh?
-    if (is_empty())
+    if (mesh_.is_empty())
         return;
 
     // allow for transparent objects
@@ -705,7 +705,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
 
     else if (draw_mode == "Hidden Line")
     {
-        if (n_faces())
+        if (mesh_.n_faces())
         {
             // draw faces
             glDepthRange(0.01, 1.0);
@@ -739,7 +739,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
 
     else if (draw_mode == "Smooth Shading")
     {
-        if (n_faces())
+        if (mesh_.n_faces())
         {
             draw_triangles();
         }
@@ -747,7 +747,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
 
     else if (draw_mode == "Texture")
     {
-        if (n_faces())
+        if (mesh_.n_faces())
         {
             if (texture_mode_ == MatCapTexture)
             {
@@ -787,7 +787,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
 
     else if (draw_mode == "Texture Layout")
     {
-        if (n_faces() && has_texcoords_)
+        if (mesh_.n_faces() && has_texcoords_)
         {
             phong_shader_.set_uniform("show_texture_layout", true);
             phong_shader_.set_uniform("use_vertex_color", false);

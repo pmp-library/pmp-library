@@ -14,17 +14,17 @@ namespace pmp {
 
 //! Class for rendering surface meshes using OpenGL
 //! \ingroup visualization
-class SurfaceMeshGL : public SurfaceMesh
+class SurfaceMeshGL
 {
 public:
     //! Constructor
-    SurfaceMeshGL();
+    explicit SurfaceMeshGL(SurfaceMesh& mesh);
 
     //! default destructor
-    ~SurfaceMeshGL() override;
+    ~SurfaceMeshGL();
 
     //! clear mesh: remove all vertices, edges, faces, free OpenGL buffers
-    void clear() override;
+    void clear();
 
     //! get front color
     const vec3& front_color() const { return front_color_; }
@@ -116,6 +116,8 @@ public:
 private:
     // delete OpenGL buffers (called from destructor and clear())
     void deleteBuffers();
+
+    SurfaceMesh& mesh_;
 
     // helpers for computing triangulation of a polygon
     struct Triangulation

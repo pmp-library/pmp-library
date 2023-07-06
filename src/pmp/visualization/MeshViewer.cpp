@@ -15,7 +15,7 @@
 namespace pmp {
 
 MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
-    : TrackballViewer(title, width, height, showgui)
+    : TrackballViewer(title, width, height, showgui), renderer_(mesh_)
 {
     // setup draw modes
     clear_draw_modes();
@@ -65,14 +65,14 @@ void MeshViewer::load_mesh(const char* filename)
               << " vertices, " << mesh_.n_faces() << " faces\n";
 
     filename_ = filename;
-    mesh_.set_crease_angle(crease_angle_);
+    renderer_.set_crease_angle(crease_angle_);
 }
 
 void MeshViewer::load_matcap(const char* filename)
 {
     try
     {
-        mesh_.load_matcap(filename);
+        renderer_.load_matcap(filename);
     }
     catch (const IOException& e)
     {
@@ -88,7 +88,7 @@ void MeshViewer::load_texture(const char* filename, GLint format,
     // load texture from file
     try
     {
-        mesh_.load_texture(filename, format, min_filter, mag_filter, wrap);
+        renderer_.load_texture(filename, format, min_filter, mag_filter, wrap);
     }
     catch (const IOException& e)
     {
@@ -99,10 +99,10 @@ void MeshViewer::load_texture(const char* filename, GLint format,
     set_draw_mode("Texture");
 
     // set material
-    mesh_.set_ambient(1.0);
-    mesh_.set_diffuse(0.9);
-    mesh_.set_specular(0.0);
-    mesh_.set_shininess(1.0);
+    renderer_.set_ambient(1.0);
+    renderer_.set_diffuse(0.9);
+    renderer_.set_specular(0.0);
+    renderer_.set_shininess(1.0);
 }
 
 void MeshViewer::drop(int count, const char** paths)
@@ -131,7 +131,7 @@ void MeshViewer::update_mesh()
     radius_ = 0.5f * bb.size();
 
     // re-compute face and vertex normals
-    mesh_.update_opengl_buffers();
+    renderer_.update_opengl_buffers();
 }
 
 void MeshViewer::process_imgui()
@@ -148,9 +148,9 @@ void MeshViewer::process_imgui()
         ImGui::SliderFloat("Crease Angle", &crease_angle_, 0.0f, 180.0f,
                            "%.0f");
         ImGui::PopItemWidth();
-        if (crease_angle_ != mesh_.crease_angle())
+        if (crease_angle_ != renderer_.crease_angle())
         {
-            mesh_.set_crease_angle(crease_angle_);
+            renderer_.set_crease_angle(crease_angle_);
         }
     }
 }
@@ -158,7 +158,7 @@ void MeshViewer::process_imgui()
 void MeshViewer::draw(const std::string& drawMode)
 {
     // draw mesh
-    mesh_.draw(projection_matrix_, modelview_matrix_, drawMode);
+    renderer_.draw(projection_matrix_, modelview_matrix_, drawMode);
 }
 
 void MeshViewer::keyboard(int key, int scancode, int action, int mods)
