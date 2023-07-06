@@ -1,4 +1,5 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2022 the Polygon Mesh Processing Library developers.
+// Copyright 2020 Astrid Bunge, Philipp Herholz, Misha Kazhdan, Mario Botsch.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
@@ -11,11 +12,9 @@ namespace pmp {
 /// compute cotan mass matrix
 void setup_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M,
                        bool uniform_laplace = false);
-// void setup_mass_matrix(const SurfaceMesh& mesh, SparseMatrix& M,
-//                        bool uniform_laplace = false);
 
 /// compute cotan stiffness matrix
-void setup_stiffness_matrix(const SurfaceMesh& mesh, SparseMatrix& S,
-                            bool uniform_laplace = false, bool clamp = false);
+void setup_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L,
+                          bool uniform_laplace = false, bool clamp = false);
 
 } // namespace pmp

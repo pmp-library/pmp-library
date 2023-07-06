@@ -7,12 +7,12 @@
 #include <Eigen/Sparse>
 #include <Eigen/Dense>
 
-typedef Eigen::SparseMatrix<double> SparseMatrix;
-typedef Eigen::DiagonalMatrix<double, Eigen::Dynamic> DiagonalMatrix;
-typedef Eigen::MatrixXd DenseMatrix;
-typedef Eigen::Triplet<double> Triplet;
-
 namespace pmp {
+
+using SparseMatrix = Eigen::SparseMatrix<double>;
+using DiagonalMatrix = Eigen::DiagonalMatrix<double, Eigen::Dynamic>;
+using DenseMatrix = Eigen::MatrixXd;
+using Triplet = Eigen::Triplet<double>;
 
 DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B);
 
