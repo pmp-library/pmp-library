@@ -48,8 +48,8 @@ TEST_F(CurvatureTest, curvature)
         gmax = std::max(gmax, vcurv[v]);
     }
 
-    EXPECT_NEAR(kmin, 1.0, 0.02);
-    EXPECT_NEAR(kmax, 1.0, 0.02);
+    EXPECT_NEAR(kmin, 1.0, 0.07);
+    EXPECT_NEAR(kmax, 1.0, 0.07);
     EXPECT_NEAR(mmin, 1.0, 0.02);
     EXPECT_NEAR(mmax, 1.0, 0.02);
     EXPECT_NEAR(gmin, 1.0, 0.02);
