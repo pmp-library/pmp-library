@@ -12,6 +12,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Added
 
+- Add `edge_area()` to compute area associated to an edge.
 - Added circulator enumerating edges around vertex: `SurfaceMesh::edges(Vertex)`.
 - Functions `setup_laplace_matrix()` and `setup_mass_matrix()` compute those 
   two matrices for both triangle meshes and general polygon meshes. 

@@ -62,6 +62,10 @@ Scalar surface_area(const SurfaceMesh& mesh);
 //! compute (barycentric) Voronoi area of vertex v
 Scalar voronoi_area(const SurfaceMesh& mesh, Vertex v);
 
+//! compute area assigned to edge e 
+//! (a face with n edges assigns 1/n of its area to each edge)
+Scalar edge_area(const SurfaceMesh& mesh, Edge e);
+
 //! \brief Compute the volume of a mesh
 //! \details See \cite zhang_2002_efficient for details.
 //! \pre Input mesh needs to be a triangle mesh.
