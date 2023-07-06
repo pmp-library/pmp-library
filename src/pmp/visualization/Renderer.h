@@ -169,12 +169,10 @@ private:
     GLuint tex_coord_buffer_;
     GLuint edge_buffer_;
     GLuint feature_buffer_;
-    GLuint seam_buffer_;
 
     // buffer sizes
     GLsizei n_vertices_;
     GLsizei n_edges_;
-    GLsizei n_seams_;
     GLsizei n_triangles_;
     GLsizei n_features_;
     bool has_texcoords_;

@@ -22,7 +22,6 @@ Renderer::Renderer(SurfaceMesh& mesh) : mesh_(mesh)
     tex_coord_buffer_ = 0;
     edge_buffer_ = 0;
     feature_buffer_ = 0;
-    seam_buffer_ = 0;
 
     // initialize buffer sizes
     n_vertices_ = 0;
@@ -64,7 +63,6 @@ void Renderer::deleteBuffers()
     glDeleteBuffers(1, &tex_coord_buffer_);
     glDeleteBuffers(1, &edge_buffer_);
     glDeleteBuffers(1, &feature_buffer_);
-    glDeleteBuffers(1, &seam_buffer_);
     glDeleteVertexArrays(1, &vertex_array_object_);
 
     // initialize GL buffers to zero
@@ -75,7 +73,6 @@ void Renderer::deleteBuffers()
     tex_coord_buffer_ = 0;
     edge_buffer_ = 0;
     feature_buffer_ = 0;
-    seam_buffer_ = 0;
 
     // initialize buffer sizes
     n_vertices_ = 0;
@@ -277,7 +274,6 @@ void Renderer::update_opengl_buffers()
         glGenBuffers(1, &tex_coord_buffer_);
         glGenBuffers(1, &edge_buffer_);
         glGenBuffers(1, &feature_buffer_);
-        glGenBuffers(1, &seam_buffer_);
     }
 
     // activate VAO
@@ -522,45 +518,11 @@ void Renderer::update_opengl_buffers()
         has_vertex_colors_ = false;
     }
 
-    size_t seam_count = 0;
-    auto texcoords = mesh_.get_halfedge_property<TexCoord>("h:tex");
-    EdgeProperty<bool> texture_seams;
-    if (texcoords)
-    {
-        texture_seams = mesh_.edge_property<bool>("e:seam");
-        for (auto e : mesh_.edges())
-        {
-            // texcoords are stored in halfedge pointing towards a vertex
-            Halfedge h0 = mesh_.halfedge(e, 0);
-            Halfedge h1 = mesh_.halfedge(e, 1);     //opposite halfedge
-            Halfedge h0p = mesh_.prev_halfedge(h0); // start point edge 0
-            Halfedge h1p = mesh_.prev_halfedge(h1); // start point edge 1
-
-            // if start or end points differs more than seam_threshold
-            // the corresponding edge is a texture seam
-            if (norm(texcoords[h1] - texcoords[h0p]) > 1e-2 ||
-                norm(texcoords[h0] - texcoords[h1p]) > 1e-2)
-            {
-                texture_seams[e] = true;
-            }
-            else
-            {
-                texture_seams[e] = false;
-            }
-        }
-        for (auto e : mesh_.edges())
-            if (texture_seams && texture_seams[e])
-                seam_count++;
-    }
-
-    // edge indices & if available seam indices
+    // edge indices
     if (mesh_.n_edges())
     {
         std::vector<unsigned int> edge_indices;
         edge_indices.reserve(mesh_.n_edges());
-
-        std::vector<unsigned int> seam_indices;
-        seam_indices.reserve(seam_count);
 
         for (auto e : mesh_.edges())
         {
@@ -568,22 +530,7 @@ void Renderer::update_opengl_buffers()
             auto v1 = mesh_.vertex(e, 1).idx();
             edge_indices.push_back(vertex_indices[v0]);
             edge_indices.push_back(vertex_indices[v1]);
-            if (texture_seams && texture_seams[e])
-            {
-                seam_indices.push_back(vertex_indices[v0]);
-                seam_indices.push_back(vertex_indices[v1]);
-            }
         }
-        if (texture_seams)
-        {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                         seam_indices.size() * sizeof(unsigned int),
-                         seam_indices.data(), GL_STATIC_DRAW);
-            n_seams_ = seam_indices.size();
-        }
-        else
-            n_seams_ = 0;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
@@ -716,18 +663,6 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
             glDrawElements(GL_LINES, n_edges_, GL_UNSIGNED_INT, nullptr);
             glDepthFunc(GL_LESS);
-
-            // overlay seam edges
-            if (n_seams_ > 0)
-            {
-                glDepthRange(0.0, 1.0);
-                glDepthFunc(GL_LEQUAL);
-                phong_shader_.set_uniform("front_color", vec3(1, 0, 0.));
-                phong_shader_.set_uniform("back_color", vec3(0.1, 0, 0));
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-                glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT, nullptr);
-                glDepthFunc(GL_LESS);
-            }
         }
     }
 
@@ -762,19 +697,6 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
                 phong_shader_.set_uniform("use_srgb", use_srgb_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
                 glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
-
-                // overlay seam edges
-                if (n_seams_ > 0)
-                {
-                    glDepthRange(0.0, 1.0);
-                    glDepthFunc(GL_LEQUAL);
-                    phong_shader_.set_uniform("front_color", vec3(1, 0, 0.));
-                    phong_shader_.set_uniform("back_color", vec3(0.1, 0, 0));
-                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-                    glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT,
-                                   nullptr);
-                    glDepthFunc(GL_LESS);
-                }
             }
         }
     }
