@@ -17,4 +17,10 @@ void setup_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M,
 void setup_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L,
                           bool uniform_laplace = false, bool clamp = false);
 
+/// compute matrix that has vertex coordinates as rows
+void coordinates_to_matrix(const SurfaceMesh& mesh, DenseMatrix& X);
+
+/// set vertex coordinates from row of matrix X
+void matrix_to_coordinates(const DenseMatrix& X, SurfaceMesh& mesh);
+
 } // namespace pmp
