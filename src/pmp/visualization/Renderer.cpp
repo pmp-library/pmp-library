@@ -51,11 +51,6 @@ Renderer::Renderer(SurfaceMesh& mesh) : mesh_(mesh)
 
 Renderer::~Renderer()
 {
-    deleteBuffers();
-}
-
-void Renderer::deleteBuffers()
-{
     // delete OpenGL buffers
     glDeleteBuffers(1, &vertex_buffer_);
     glDeleteBuffers(1, &color_buffer_);
@@ -64,29 +59,6 @@ void Renderer::deleteBuffers()
     glDeleteBuffers(1, &edge_buffer_);
     glDeleteBuffers(1, &feature_buffer_);
     glDeleteVertexArrays(1, &vertex_array_object_);
-
-    // initialize GL buffers to zero
-    vertex_array_object_ = 0;
-    vertex_buffer_ = 0;
-    color_buffer_ = 0;
-    normal_buffer_ = 0;
-    tex_coord_buffer_ = 0;
-    edge_buffer_ = 0;
-    feature_buffer_ = 0;
-
-    // initialize buffer sizes
-    n_vertices_ = 0;
-    n_edges_ = 0;
-    n_triangles_ = 0;
-    n_features_ = 0;
-    has_texcoords_ = false;
-    has_vertex_colors_ = false;
-}
-
-void Renderer::clear()
-{
-    deleteBuffers();
-    mesh_.clear();
 }
 
 void Renderer::load_texture(const char* filename, GLint format,

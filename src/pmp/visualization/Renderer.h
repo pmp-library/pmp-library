@@ -23,9 +23,6 @@ public:
     //! default destructor
     ~Renderer();
 
-    //! clear mesh: remove all vertices, edges, faces, free OpenGL buffers
-    void clear();
-
     //! get front color
     const vec3& front_color() const { return front_color_; }
     //! set front color
@@ -114,9 +111,6 @@ public:
     void load_matcap(const char* filename);
 
 private:
-    // delete OpenGL buffers (called from destructor and clear())
-    void deleteBuffers();
-
     SurfaceMesh& mesh_;
 
     // helpers for computing triangulation of a polygon
