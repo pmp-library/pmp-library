@@ -62,7 +62,7 @@ Scalar surface_area(const SurfaceMesh& mesh);
 //! compute (barycentric) Voronoi area of vertex v
 Scalar voronoi_area(const SurfaceMesh& mesh, Vertex v);
 
-//! compute area assigned to edge e 
+//! compute area assigned to edge e
 //! (a face with n edges assigns 1/n of its area to each edge)
 Scalar edge_area(const SurfaceMesh& mesh, Edge e);
 
