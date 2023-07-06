@@ -1,7 +1,7 @@
 // Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/visualization/SurfaceMeshGL.h"
+#include "pmp/visualization/Renderer.h"
 
 #include <stb_image.h>
 
@@ -12,7 +12,7 @@
 
 namespace pmp {
 
-SurfaceMeshGL::SurfaceMeshGL(SurfaceMesh& mesh) : mesh_(mesh)
+Renderer::Renderer(SurfaceMesh& mesh) : mesh_(mesh)
 {
     // initialize GL buffers to zero
     vertex_array_object_ = 0;
@@ -50,12 +50,12 @@ SurfaceMeshGL::SurfaceMeshGL(SurfaceMesh& mesh) : mesh_(mesh)
     texture_mode_ = OtherTexture;
 }
 
-SurfaceMeshGL::~SurfaceMeshGL()
+Renderer::~Renderer()
 {
     deleteBuffers();
 }
 
-void SurfaceMeshGL::deleteBuffers()
+void Renderer::deleteBuffers()
 {
     // delete OpenGL buffers
     glDeleteBuffers(1, &vertex_buffer_);
@@ -86,13 +86,13 @@ void SurfaceMeshGL::deleteBuffers()
     has_vertex_colors_ = false;
 }
 
-void SurfaceMeshGL::clear()
+void Renderer::clear()
 {
     deleteBuffers();
     mesh_.clear();
 }
 
-void SurfaceMeshGL::load_texture(const char* filename, GLint format,
+void Renderer::load_texture(const char* filename, GLint format,
                                  GLint min_filter, GLint mag_filter, GLint wrap)
 {
 #ifdef __EMSCRIPTEN__
@@ -170,7 +170,7 @@ void SurfaceMeshGL::load_texture(const char* filename, GLint format,
     texture_mode_ = OtherTexture;
 }
 
-void SurfaceMeshGL::load_matcap(const char* filename)
+void Renderer::load_matcap(const char* filename)
 {
     try
     {
@@ -183,7 +183,7 @@ void SurfaceMeshGL::load_matcap(const char* filename)
     texture_mode_ = MatCapTexture;
 }
 
-void SurfaceMeshGL::use_cold_warm_texture()
+void Renderer::use_cold_warm_texture()
 {
     if (texture_mode_ != ColdWarmTexture)
     {
@@ -206,7 +206,7 @@ void SurfaceMeshGL::use_cold_warm_texture()
     }
 }
 
-void SurfaceMeshGL::use_checkerboard_texture()
+void Renderer::use_checkerboard_texture()
 {
     if (texture_mode_ != CheckerboardTexture)
     {
@@ -255,7 +255,7 @@ void SurfaceMeshGL::use_checkerboard_texture()
     }
 }
 
-void SurfaceMeshGL::set_crease_angle(Scalar ca)
+void Renderer::set_crease_angle(Scalar ca)
 {
     if (ca != crease_angle_)
     {
@@ -264,7 +264,7 @@ void SurfaceMeshGL::set_crease_angle(Scalar ca)
     }
 }
 
-void SurfaceMeshGL::update_opengl_buffers()
+void Renderer::update_opengl_buffers()
 {
     // are buffers already initialized?
     if (!vertex_array_object_)
@@ -629,7 +629,7 @@ void SurfaceMeshGL::update_opengl_buffers()
     mesh_.remove_vertex_property(vertex_indices);
 }
 
-void SurfaceMeshGL::draw(const mat4& projection_matrix,
+void Renderer::draw(const mat4& projection_matrix,
                          const mat4& modelview_matrix,
                          const std::string& draw_mode)
 {
@@ -832,7 +832,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     glCheckError();
 }
 
-void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
+void Renderer::tesselate(const std::vector<vec3>& points,
                               std::vector<ivec3>& triangles)
 {
     const int n = points.size();
@@ -927,7 +927,7 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
     }
 }
 
-void SurfaceMeshGL::draw_triangles() const
+void Renderer::draw_triangles() const
 {
 #ifndef __EMSCRIPTEN__
     glDrawArrays(GL_TRIANGLES, 0, n_vertices_);

@@ -14,14 +14,14 @@ namespace pmp {
 
 //! Class for rendering surface meshes using OpenGL
 //! \ingroup visualization
-class SurfaceMeshGL
+class Renderer
 {
 public:
     //! Constructor
-    explicit SurfaceMeshGL(SurfaceMesh& mesh);
+    explicit Renderer(SurfaceMesh& mesh);
 
     //! default destructor
-    ~SurfaceMeshGL();
+    ~Renderer();
 
     //! clear mesh: remove all vertices, edges, faces, free OpenGL buffers
     void clear();
