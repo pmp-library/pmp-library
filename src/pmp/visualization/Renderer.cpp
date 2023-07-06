@@ -47,7 +47,7 @@ Renderer::Renderer(SurfaceMesh& mesh) : mesh_(mesh)
 
     // initialize texture
     texture_ = 0;
-    texture_mode_ = OtherTexture;
+    texture_mode_ = TextureMode::Other;
 }
 
 Renderer::~Renderer()
@@ -167,7 +167,7 @@ void Renderer::load_texture(const char* filename, GLint format,
     // free memory
     stbi_image_free(img);
 
-    texture_mode_ = OtherTexture;
+    texture_mode_ = TextureMode::Other;
 }
 
 void Renderer::load_matcap(const char* filename)
@@ -180,12 +180,12 @@ void Renderer::load_matcap(const char* filename)
     {
         throw;
     }
-    texture_mode_ = MatCapTexture;
+    texture_mode_ = TextureMode::MatCap;
 }
 
 void Renderer::use_cold_warm_texture()
 {
-    if (texture_mode_ != ColdWarmTexture)
+    if (texture_mode_ != TextureMode::ColdWarm)
     {
         // delete old texture
         glDeleteTextures(1, &texture_);
@@ -202,13 +202,13 @@ void Renderer::use_cold_warm_texture()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
         use_srgb_ = false;
-        texture_mode_ = ColdWarmTexture;
+        texture_mode_ = TextureMode::ColdWarm;
     }
 }
 
 void Renderer::use_checkerboard_texture()
 {
-    if (texture_mode_ != CheckerboardTexture)
+    if (texture_mode_ != TextureMode::Checkerboard)
     {
         // delete old texture
         glDeleteTextures(1, &texture_);
@@ -251,7 +251,7 @@ void Renderer::use_checkerboard_texture()
         delete[] tex;
 
         use_srgb_ = false;
-        texture_mode_ = CheckerboardTexture;
+        texture_mode_ = TextureMode::Checkerboard;
     }
 }
 
@@ -748,7 +748,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     {
         if (mesh_.n_faces())
         {
-            if (texture_mode_ == MatCapTexture)
+            if (texture_mode_ == TextureMode::MatCap)
             {
                 matcap_shader_.use();
                 matcap_shader_.set_uniform("modelview_projection_matrix",

@@ -197,12 +197,12 @@ private:
 
     // 1D texture for scalar field rendering
     GLuint texture_;
-    enum TextureMode
+    enum class TextureMode
     {
-        ColdWarmTexture,
-        CheckerboardTexture,
-        MatCapTexture,
-        OtherTexture
+        ColdWarm,
+        Checkerboard,
+        MatCap,
+        Other
     } texture_mode_;
 };
 
