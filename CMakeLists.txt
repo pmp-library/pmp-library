@@ -70,12 +70,10 @@ if(PMP_BUILD_VIS)
 endif(PMP_BUILD_VIS)
 
 # setup Eigen
-find_package(Eigen3 3.1.0)
-if (EIGEN3_FOUND)
+set(ENV{EIGEN3_ROOT} "external/eigen")
+find_package(Eigen3 3.4.0 REQUIRED)
+if(EIGEN3_FOUND)
   include_directories(${EIGEN3_INCLUDE_DIR})
-else()
-  set(EIGEN_SOURCE_DIR "external/eigen")
-  include_directories(${EIGEN_SOURCE_DIR})
 endif()
 
 include(AddFileDependencies)
@@ -145,7 +143,9 @@ endif()
 
 if(EMSCRIPTEN)
   add_compile_options(--no-heap-copy)
-  add_link_options("SHELL:-sWASM=1 -sUSE_WEBGL2=1 -sUSE_GLFW=3 -sALLOW_MEMORY_GROWTH=1 -sALLOW_TABLE_GROWTH=1 -sSTACK_SIZE=5MB -sDISABLE_EXCEPTION_CATCHING=0")
+  add_link_options(
+    "SHELL:-sWASM=1 -sUSE_WEBGL2=1 -sUSE_GLFW=3 -sALLOW_MEMORY_GROWTH=1 -sALLOW_TABLE_GROWTH=1 -sSTACK_SIZE=5MB -sDISABLE_EXCEPTION_CATCHING=0"
+  )
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
 
