@@ -139,8 +139,8 @@ void harmonic_parameterization(SurfaceMesh& mesh, bool use_uniform_weights)
     auto tex = mesh.vertex_property<TexCoord>("v:tex");
 
     // build system matrix (clamp negative cotan weights to zero)
-    SparseMatrix A;
-    setup_stiffness_matrix(mesh, A, use_uniform_weights, true);
+    SparseMatrix L;
+    setup_laplace_matrix(mesh, L, use_uniform_weights, true);
 
     // build right-hand side B and inject boundary constraints
     DenseMatrix B(mesh.n_vertices(), 2);
@@ -153,7 +153,7 @@ void harmonic_parameterization(SurfaceMesh& mesh, bool use_uniform_weights)
     auto is_constrained = [&](unsigned int i) {
         return mesh.is_boundary(Vertex(i));
     };
-    DenseMatrix X = cholesky_solve(A, B, is_constrained, B);
+    DenseMatrix X = cholesky_solve(L, B, is_constrained, B);
 
     // copy solution
     for (auto v : mesh.vertices())

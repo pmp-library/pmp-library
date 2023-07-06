@@ -52,12 +52,15 @@ inline Scalar cotan(const Point& v0, const Point& v1)
 //! compute area of a triangle given by three points
 Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2);
 
-//! compute area of triangle f
-Scalar triangle_area(const SurfaceMesh& mesh, Face f);
+//! Compute area of face \p f.
+//! Computes standard area for triangles and norm of vector area for other polygons.
+Scalar face_area(const SurfaceMesh& mesh, Face f);
 
-//! Compute the surface area of \p mesh
-//! \pre Input \p mesh needs to be a triangle mesh.
+//! Compute the surface area of \p mesh (as sum of face areas).
 Scalar surface_area(const SurfaceMesh& mesh);
+
+//! compute (barycentric) Voronoi area of vertex v
+Scalar voronoi_area(const SurfaceMesh& mesh, Vertex v);
 
 //! \brief Compute the volume of a mesh
 //! \details See \cite zhang_2002_efficient for details.
@@ -78,12 +81,6 @@ void dual(SurfaceMesh& mesh);
 
 //! compute the cotangent weight for edge e
 double cotan_weight(const SurfaceMesh& mesh, Edge e);
-
-//! compute (mixed) Voronoi area of vertex v
-double voronoi_area(const SurfaceMesh& mesh, Vertex v);
-
-//! compute barycentric Voronoi area of vertex v
-double voronoi_area_barycentric(const SurfaceMesh& mesh, Vertex v);
 
 //! compute Laplace vector for vertex v (normalized by Voronoi area)
 Point laplace(const SurfaceMesh& mesh, Vertex v);

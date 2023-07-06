@@ -14,30 +14,35 @@ Scalar triangle_area(const Point& p0, const Point& p1, const Point& p2)
     return Scalar(0.5) * norm(cross(p1 - p0, p2 - p0));
 }
 
-Scalar triangle_area(const SurfaceMesh& mesh, Face f)
+Scalar face_area(const SurfaceMesh& mesh, Face f)
 {
-    assert(mesh.valence(f) == 3);
+    Point a(0, 0, 0), q, r;
+    for (auto h : mesh.halfedges(f))
+    {
+        q = mesh.position(mesh.from_vertex(h));
+        r = mesh.position(mesh.to_vertex(h));
+        a += cross(q, r);
+    }
 
-    auto fv = mesh.vertices(f);
-    const auto& p0 = mesh.position(*fv);
-    const auto& p1 = mesh.position(*(++fv));
-    const auto& p2 = mesh.position(*(++fv));
-
-    return triangle_area(p0, p1, p2);
+    return 0.5 * norm(a);
 }
 
 Scalar surface_area(const SurfaceMesh& mesh)
 {
-    if (!mesh.is_triangle_mesh())
-    {
-        throw InvalidInputException("Input is not a triangle mesh!");
-    }
-    Scalar area(0);
+    Scalar A(0);
     for (auto f : mesh.faces())
     {
-        area += triangle_area(mesh, f);
+        A += face_area(mesh, f);
     }
-    return area;
+    return A;
+}
+
+Scalar voronoi_area(const SurfaceMesh& mesh, Vertex v)
+{
+    Scalar A(0.0);
+    for (auto f : mesh.faces(v))
+        A += face_area(mesh, f) / mesh.valence(f);
+    return A;
 }
 
 Scalar volume(const SurfaceMesh& mesh)
@@ -77,15 +82,15 @@ Point centroid(const SurfaceMesh& mesh, Face f)
 Point centroid(const SurfaceMesh& mesh)
 {
     Point center(0, 0, 0), c;
-    Scalar area(0), a;
+    Scalar aa(0), a;
     for (auto f : mesh.faces())
     {
-        a = triangle_area(mesh, f);
+        a = face_area(mesh, f);
         c = centroid(mesh, f);
-        area += a;
+        aa += a;
         center += a * c;
     }
-    center /= area;
+    center /= aa;
     return center;
 }
 
@@ -135,7 +140,8 @@ double cotan_weight(const SurfaceMesh& mesh, Edge e)
         if (area > std::numeric_limits<double>::min())
         {
             const double cot = dot(d0, d1) / area;
-            weight += clamp_cot(cot);
+            // weight += clamp_cot(cot);
+            weight += cot;
         }
     }
 
@@ -149,7 +155,8 @@ double cotan_weight(const SurfaceMesh& mesh, Edge e)
         if (area > std::numeric_limits<double>::min())
         {
             const double cot = dot(d0, d1) / area;
-            weight += clamp_cot(cot);
+            // weight += clamp_cot(cot);
+            weight += cot;
         }
     }
 
@@ -157,107 +164,6 @@ double cotan_weight(const SurfaceMesh& mesh, Edge e)
     assert(!std::isinf(weight));
 
     return weight;
-}
-
-double voronoi_area(const SurfaceMesh& mesh, Vertex v)
-{
-    double area(0.0);
-
-    if (!mesh.is_isolated(v))
-    {
-        Halfedge h0, h1, h2;
-        dvec3 p, q, r, pq, qr, pr;
-        double dotp, dotq, dotr;
-        double cotq, cotr;
-
-        for (auto h : mesh.halfedges(v))
-        {
-            h0 = h;
-            h1 = mesh.next_halfedge(h0);
-            h2 = mesh.next_halfedge(h1);
-
-            if (mesh.is_boundary(h0))
-                continue;
-
-            // three vertex positions
-            p = (dvec3)mesh.position(mesh.to_vertex(h2));
-            q = (dvec3)mesh.position(mesh.to_vertex(h0));
-            r = (dvec3)mesh.position(mesh.to_vertex(h1));
-
-            // edge vectors
-            (pq = q) -= p;
-            (qr = r) -= q;
-            (pr = r) -= p;
-
-            // compute and check triangle area
-            const auto triangle_area = norm(cross(pq, pr));
-            if (triangle_area <= std::numeric_limits<double>::min())
-                continue;
-
-            // dot products for each corner (of its two emanating edge vectors)
-            dotp = dot(pq, pr);
-            dotq = -dot(qr, pq);
-            dotr = dot(qr, pr);
-
-            // angle at p is obtuse
-            if (dotp < 0.0)
-            {
-                area += 0.25 * triangle_area;
-            }
-
-            // angle at q or r obtuse
-            else if (dotq < 0.0 || dotr < 0.0)
-            {
-                area += 0.125 * triangle_area;
-            }
-
-            // no obtuse angles
-            else
-            {
-                // cot(angle) = cos(angle)/sin(angle) = dot(A,B)/norm(cross(A,B))
-                cotq = dotq / triangle_area;
-                cotr = dotr / triangle_area;
-
-                // clamp cot(angle) by clamping angle to [3, 177]
-                area += 0.125 * (sqrnorm(pr) * clamp_cot(cotq) +
-                                 sqrnorm(pq) * clamp_cot(cotr));
-            }
-        }
-    }
-
-    assert(!std::isnan(area));
-    assert(!std::isinf(area));
-
-    return area;
-}
-
-double voronoi_area_barycentric(const SurfaceMesh& mesh, Vertex v)
-{
-    double area(0.0);
-
-    if (!mesh.is_isolated(v))
-    {
-        const auto p = mesh.position(v);
-
-        for (auto h : mesh.halfedges(v))
-        {
-            if (mesh.is_boundary(h))
-                continue;
-
-            auto h0 = h;
-            auto h1 = mesh.next_halfedge(h0);
-
-            auto pq = mesh.position(mesh.to_vertex(h0));
-            pq -= p;
-
-            auto pr = mesh.position(mesh.to_vertex(h1));
-            pr -= p;
-
-            area += norm(cross(pq, pr)) / 6.0;
-        }
-    }
-
-    return area;
 }
 
 Point laplace(const SurfaceMesh& mesh, Vertex v)

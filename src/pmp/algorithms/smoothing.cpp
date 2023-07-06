@@ -4,7 +4,6 @@
 #include "pmp/algorithms/smoothing.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 #include "pmp/algorithms/laplace.h"
-#include "pmp/Timer.h"
 
 namespace pmp {
 
@@ -19,7 +18,7 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
 
     // Laplace matrix (clamp negative cotan weights to zero)
     SparseMatrix L;
-    setup_stiffness_matrix(mesh, L, use_uniform_laplace, true);
+    setup_laplace_matrix(mesh, L, use_uniform_laplace, true);
 
     // normalize each row by sum of weights
     // scale by 0.5 to make it more robust
@@ -50,9 +49,6 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
 void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
                         bool use_uniform_laplace, bool rescale)
 {
-    Timer t; t.start();
-
-
     if (!mesh.n_vertices())
         return;
 
@@ -69,11 +65,11 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
     }
 
     // build system matrix A (clamp negative cotan weights to zero)
-    SparseMatrix S;
-    setup_stiffness_matrix(mesh, S, use_uniform_laplace, true);
+    SparseMatrix L;
+    setup_laplace_matrix(mesh, L, use_uniform_laplace, true);
     DiagonalMatrix M;
     setup_mass_matrix(mesh, M, use_uniform_laplace);
-    SparseMatrix A = SparseMatrix(M) - timestep * S;
+    SparseMatrix A = SparseMatrix(M) - timestep * L;
 
     // build right-hand side B
     DenseMatrix X(n, 3);
@@ -103,9 +99,6 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
         for (auto v : mesh.vertices())
             mesh.position(v) += trans;
     }
-
-    t.stop();
-    std::cout << "Smoothing took " << t << std::endl;
 }
 
 } // namespace pmp

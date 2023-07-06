@@ -110,14 +110,14 @@ void fair(SurfaceMesh& mesh, unsigned int k)
         X.row(v.idx()) = static_cast<Eigen::Vector3d>(points[v]);
 
     // build matrix
-    SparseMatrix S;
-    setup_stiffness_matrix(mesh, S, false, true);
+    SparseMatrix L;
+    setup_laplace_matrix(mesh, L, false, true);
     DiagonalMatrix M;
     setup_mass_matrix(mesh, M, false);
     DiagonalMatrix invM = M.inverse();
-    SparseMatrix A = S;
+    SparseMatrix A = L;
     for (unsigned int i = 1; i < k; ++i)
-        A = S * invM * A;
+        A = L * invM * A;
     B = M * B;
 
     // solve system

@@ -42,26 +42,26 @@ public:
 
 SurfaceMesh DifferentialGeometryTest::sphere = icosphere(5);
 
-TEST_F(DifferentialGeometryTest, triangle_area_points)
+TEST_F(DifferentialGeometryTest, area_points)
 {
     add_triangle();
-    Scalar area =
+    Scalar a =
         triangle_area(mesh.position(v0), mesh.position(v1), mesh.position(v2));
-    EXPECT_EQ(area, 0.5);
+    EXPECT_EQ(a, 0.5);
 }
 
-TEST_F(DifferentialGeometryTest, triangle_area_face)
+TEST_F(DifferentialGeometryTest, area_face)
 {
     add_triangle();
-    Scalar area = triangle_area(mesh, f0);
-    EXPECT_EQ(area, 0.5);
+    Scalar a = face_area(mesh, f0);
+    EXPECT_EQ(a, 0.5);
 }
 
-TEST_F(DifferentialGeometryTest, voronoi_area_barycentric)
+TEST_F(DifferentialGeometryTest, area_vertex)
 {
     one_ring();
-    Scalar area = voronoi_area_barycentric(mesh, central_vertex);
-    EXPECT_FLOAT_EQ(area, 0.024590395);
+    Scalar a = voronoi_area(mesh, central_vertex);
+    EXPECT_FLOAT_EQ(a, 0.024590395);
 }
 
 TEST_F(DifferentialGeometryTest, laplace)
@@ -71,10 +71,10 @@ TEST_F(DifferentialGeometryTest, laplace)
     EXPECT_GT(norm(lv), 0);
 }
 
-TEST_F(DifferentialGeometryTest, surface_area)
+TEST_F(DifferentialGeometryTest, area_surface)
 {
-    auto area = surface_area(sphere);
-    EXPECT_NEAR(area, 12.57, 1.0e-2);
+    auto a = surface_area(sphere);
+    EXPECT_NEAR(a, 12.57, 1.0e-2);
 }
 
 TEST_F(DifferentialGeometryTest, volume)
