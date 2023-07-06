@@ -4,7 +4,8 @@
 #pragma once
 
 #include "pmp/visualization/TrackballViewer.h"
-#include "pmp/visualization/SurfaceMeshGL.h"
+#include "pmp/SurfaceMesh.h"
+#include "pmp/visualization/Renderer.h"
 
 namespace pmp {
 
@@ -52,7 +53,8 @@ public:
     Vertex pick_vertex(int x, int y);
 
 protected:
-    SurfaceMeshGL mesh_;   //!< the mesh
+    SurfaceMesh mesh_;
+    Renderer renderer_;
     std::string filename_; //!< the current file
     float crease_angle_;
 };

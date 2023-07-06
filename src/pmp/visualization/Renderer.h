@@ -5,26 +5,25 @@
 
 #include <limits>
 
-#include "pmp/SurfaceMesh.h"
+#include "pmp/Types.h"
 #include "pmp/visualization/GL.h"
 #include "pmp/visualization/Shader.h"
 #include "pmp/MatVec.h"
 
 namespace pmp {
 
+class SurfaceMesh;
+
 //! Class for rendering surface meshes using OpenGL
 //! \ingroup visualization
-class SurfaceMeshGL : public SurfaceMesh
+class Renderer
 {
 public:
     //! Constructor
-    SurfaceMeshGL();
+    explicit Renderer(const SurfaceMesh& mesh);
 
     //! default destructor
-    ~SurfaceMeshGL() override;
-
-    //! clear mesh: remove all vertices, edges, faces, free OpenGL buffers
-    void clear() override;
+    ~Renderer();
 
     //! get front color
     const vec3& front_color() const { return front_color_; }
@@ -114,8 +113,7 @@ public:
     void load_matcap(const char* filename);
 
 private:
-    // delete OpenGL buffers (called from destructor and clear())
-    void deleteBuffers();
+    const SurfaceMesh& mesh_;
 
     // helpers for computing triangulation of a polygon
     struct Triangulation
@@ -159,9 +157,6 @@ private:
     void tesselate(const std::vector<vec3>& points,
                    std::vector<ivec3>& triangles);
 
-    // circumvent WebGL bug in Chrome 99
-    void draw_triangles() const;
-
     // OpenGL buffers
     GLuint vertex_array_object_;
     GLuint vertex_buffer_;
@@ -170,12 +165,10 @@ private:
     GLuint tex_coord_buffer_;
     GLuint edge_buffer_;
     GLuint feature_buffer_;
-    GLuint seam_buffer_;
 
     // buffer sizes
     GLsizei n_vertices_;
     GLsizei n_edges_;
-    GLsizei n_seams_;
     GLsizei n_triangles_;
     GLsizei n_features_;
     bool has_texcoords_;
@@ -188,19 +181,19 @@ private:
     // material properties
     vec3 front_color_, back_color_;
     float ambient_, diffuse_, specular_, shininess_, alpha_;
-    bool srgb_;
+    bool use_srgb_;
     bool use_colors_;
     float crease_angle_;
     float point_size_;
 
     // 1D texture for scalar field rendering
     GLuint texture_;
-    enum TextureMode
+    enum class TextureMode
     {
-        ColdWarmTexture,
-        CheckerboardTexture,
-        MatCapTexture,
-        OtherTexture
+        ColdWarm,
+        Checkerboard,
+        MatCap,
+        Other
     } texture_mode_;
 };
 

@@ -62,7 +62,7 @@ void Viewer::process_imgui()
                 std::cerr << e.what() << std::endl;
                 return;
             }
-            mesh_.use_checkerboard_texture();
+            renderer_.use_checkerboard_texture();
             set_draw_mode("Texture");
             update_mesh();
         }
@@ -79,7 +79,7 @@ void Viewer::process_imgui()
                 std::cerr << e.what() << std::endl;
                 return;
             }
-            mesh_.use_checkerboard_texture();
+            renderer_.use_checkerboard_texture();
             set_draw_mode("Texture");
             update_mesh();
         }
@@ -90,7 +90,7 @@ void Viewer::draw(const std::string& draw_mode)
 {
     // normal mesh draw
     glViewport(0, 0, width(), height());
-    mesh_.draw(projection_matrix_, modelview_matrix_, draw_mode);
+    renderer_.draw(projection_matrix_, modelview_matrix_, draw_mode);
 
     // draw uv layout
     {
@@ -106,7 +106,7 @@ void Viewer::draw(const std::string& draw_mode)
         mat4 M = mat4::identity();
 
         // draw mesh once more
-        mesh_.draw(P, M, "Texture Layout");
+        renderer_.draw(P, M, "Texture Layout");
     }
 
     // reset viewport

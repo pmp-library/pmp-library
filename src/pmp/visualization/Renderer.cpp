@@ -1,7 +1,7 @@
 // Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/visualization/SurfaceMeshGL.h"
+#include "pmp/visualization/Renderer.h"
 
 #include <stb_image.h>
 
@@ -12,7 +12,7 @@
 
 namespace pmp {
 
-SurfaceMeshGL::SurfaceMeshGL()
+Renderer::Renderer(const SurfaceMesh& mesh) : mesh_(mesh)
 {
     // initialize GL buffers to zero
     vertex_array_object_ = 0;
@@ -22,7 +22,6 @@ SurfaceMeshGL::SurfaceMeshGL()
     tex_coord_buffer_ = 0;
     edge_buffer_ = 0;
     feature_buffer_ = 0;
-    seam_buffer_ = 0;
 
     // initialize buffer sizes
     n_vertices_ = 0;
@@ -40,22 +39,17 @@ SurfaceMeshGL::SurfaceMeshGL()
     specular_ = 0.6;
     shininess_ = 100.0;
     alpha_ = 1.0;
-    srgb_ = false;
+    use_srgb_ = false;
     use_colors_ = true;
     crease_angle_ = 180.0;
     point_size_ = 5.0;
 
     // initialize texture
     texture_ = 0;
-    texture_mode_ = OtherTexture;
+    texture_mode_ = TextureMode::Other;
 }
 
-SurfaceMeshGL::~SurfaceMeshGL()
-{
-    deleteBuffers();
-}
-
-void SurfaceMeshGL::deleteBuffers()
+Renderer::~Renderer()
 {
     // delete OpenGL buffers
     glDeleteBuffers(1, &vertex_buffer_);
@@ -64,36 +58,11 @@ void SurfaceMeshGL::deleteBuffers()
     glDeleteBuffers(1, &tex_coord_buffer_);
     glDeleteBuffers(1, &edge_buffer_);
     glDeleteBuffers(1, &feature_buffer_);
-    glDeleteBuffers(1, &seam_buffer_);
     glDeleteVertexArrays(1, &vertex_array_object_);
-
-    // initialize GL buffers to zero
-    vertex_array_object_ = 0;
-    vertex_buffer_ = 0;
-    color_buffer_ = 0;
-    normal_buffer_ = 0;
-    tex_coord_buffer_ = 0;
-    edge_buffer_ = 0;
-    feature_buffer_ = 0;
-    seam_buffer_ = 0;
-
-    // initialize buffer sizes
-    n_vertices_ = 0;
-    n_edges_ = 0;
-    n_triangles_ = 0;
-    n_features_ = 0;
-    has_texcoords_ = false;
-    has_vertex_colors_ = false;
 }
 
-void SurfaceMeshGL::clear()
-{
-    deleteBuffers();
-    SurfaceMesh::clear();
-}
-
-void SurfaceMeshGL::load_texture(const char* filename, GLint format,
-                                 GLint min_filter, GLint mag_filter, GLint wrap)
+void Renderer::load_texture(const char* filename, GLint format,
+                            GLint min_filter, GLint mag_filter, GLint wrap)
 {
 #ifdef __EMSCRIPTEN__
     // emscripen/WebGL does not like mapmapping for SRGB textures
@@ -162,15 +131,15 @@ void SurfaceMeshGL::load_texture(const char* filename, GLint format,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 
     // use SRGB rendering?
-    srgb_ = (format == GL_SRGB8);
+    use_srgb_ = (format == GL_SRGB8);
 
     // free memory
     stbi_image_free(img);
 
-    texture_mode_ = OtherTexture;
+    texture_mode_ = TextureMode::Other;
 }
 
-void SurfaceMeshGL::load_matcap(const char* filename)
+void Renderer::load_matcap(const char* filename)
 {
     try
     {
@@ -180,12 +149,12 @@ void SurfaceMeshGL::load_matcap(const char* filename)
     {
         throw;
     }
-    texture_mode_ = MatCapTexture;
+    texture_mode_ = TextureMode::MatCap;
 }
 
-void SurfaceMeshGL::use_cold_warm_texture()
+void Renderer::use_cold_warm_texture()
 {
-    if (texture_mode_ != ColdWarmTexture)
+    if (texture_mode_ != TextureMode::ColdWarm)
     {
         // delete old texture
         glDeleteTextures(1, &texture_);
@@ -201,14 +170,14 @@ void SurfaceMeshGL::use_cold_warm_texture()
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        srgb_ = false;
-        texture_mode_ = ColdWarmTexture;
+        use_srgb_ = false;
+        texture_mode_ = TextureMode::ColdWarm;
     }
 }
 
-void SurfaceMeshGL::use_checkerboard_texture()
+void Renderer::use_checkerboard_texture()
 {
-    if (texture_mode_ != CheckerboardTexture)
+    if (texture_mode_ != TextureMode::Checkerboard)
     {
         // delete old texture
         glDeleteTextures(1, &texture_);
@@ -250,12 +219,12 @@ void SurfaceMeshGL::use_checkerboard_texture()
         // clean up
         delete[] tex;
 
-        srgb_ = false;
-        texture_mode_ = CheckerboardTexture;
+        use_srgb_ = false;
+        texture_mode_ = TextureMode::Checkerboard;
     }
 }
 
-void SurfaceMeshGL::set_crease_angle(Scalar ca)
+void Renderer::set_crease_angle(Scalar ca)
 {
     if (ca != crease_angle_)
     {
@@ -264,7 +233,7 @@ void SurfaceMeshGL::set_crease_angle(Scalar ca)
     }
 }
 
-void SurfaceMeshGL::update_opengl_buffers()
+void Renderer::update_opengl_buffers()
 {
     // are buffers already initialized?
     if (!vertex_array_object_)
@@ -277,21 +246,20 @@ void SurfaceMeshGL::update_opengl_buffers()
         glGenBuffers(1, &tex_coord_buffer_);
         glGenBuffers(1, &edge_buffer_);
         glGenBuffers(1, &feature_buffer_);
-        glGenBuffers(1, &seam_buffer_);
     }
 
     // activate VAO
     glBindVertexArray(vertex_array_object_);
 
     // get properties
-    auto vpos = get_vertex_property<Point>("v:point");
-    auto vcolor = get_vertex_property<Color>("v:color");
-    auto vtex = get_vertex_property<TexCoord>("v:tex");
-    auto htex = get_halfedge_property<TexCoord>("h:tex");
-    auto fcolor = get_face_property<Color>("f:color");
+    auto vpos = mesh_.get_vertex_property<Point>("v:point");
+    auto vcolor = mesh_.get_vertex_property<Color>("v:color");
+    auto vtex = mesh_.get_vertex_property<TexCoord>("v:tex");
+    auto htex = mesh_.get_halfedge_property<TexCoord>("h:tex");
+    auto fcolor = mesh_.get_face_property<Color>("f:color");
 
     // index array for remapping vertex indices during duplication
-    auto vertex_indices = add_vertex_property<size_t>("v:index");
+    std::vector<size_t> vertex_indices(mesh_.n_vertices());
 
     // produce arrays of points, normals, and texcoords
     // (duplicate vertices to allow for flat shading)
@@ -302,31 +270,31 @@ void SurfaceMeshGL::update_opengl_buffers()
     std::vector<ivec3> triangles;
 
     // we have a mesh: fill arrays by looping over faces
-    if (n_faces())
+    if (mesh_.n_faces())
     {
         // reserve memory
-        position_array.reserve(3 * n_faces());
-        normal_array.reserve(3 * n_faces());
+        position_array.reserve(3 * mesh_.n_faces());
+        normal_array.reserve(3 * mesh_.n_faces());
         if (htex || vtex)
-            tex_array.reserve(3 * n_faces());
+            tex_array.reserve(3 * mesh_.n_faces());
 
         if ((vcolor || fcolor) && use_colors_)
-            color_array.reserve(3 * n_faces());
+            color_array.reserve(3 * mesh_.n_faces());
 
         // precompute normals for easy cases
-        FaceProperty<Normal> fnormals;
-        VertexProperty<Normal> vnormals;
+        std::vector<Normal> face_normals;
+        std::vector<Normal> vertex_normals;
+        face_normals.reserve(mesh_.n_faces());
+        vertex_normals.reserve(mesh_.n_vertices());
         if (crease_angle_ < 1)
         {
-            fnormals = add_face_property<Normal>("gl:fnormal");
-            for (auto f : faces())
-                fnormals[f] = face_normal(*this, f);
+            for (auto f : mesh_.faces())
+                face_normals.emplace_back(face_normal(mesh_, f));
         }
         else if (crease_angle_ > 170)
         {
-            vnormals = add_vertex_property<Normal>("gl:vnormal");
-            for (auto v : vertices())
-                vnormals[v] = vertex_normal(*this, v);
+            for (auto v : mesh_.vertices())
+                vertex_normals.emplace_back(vertex_normal(mesh_, v));
         }
 
         // data per face (for all corners)
@@ -343,7 +311,7 @@ void SurfaceMeshGL::update_opengl_buffers()
         size_t vidx(0);
 
         // loop over all faces
-        for (auto f : faces())
+        for (auto f : mesh_.faces())
         {
             // collect corner positions and normals
             corner_halfedges.clear();
@@ -355,24 +323,24 @@ void SurfaceMeshGL::update_opengl_buffers()
             Vertex v;
             Normal n;
 
-            for (auto h : halfedges(f))
+            for (auto h : mesh_.halfedges(f))
             {
-                v = to_vertex(h);
+                v = mesh_.to_vertex(h);
                 corner_halfedges.push_back(h);
                 corner_vertices.push_back(v);
                 corner_positions.push_back((vec3)vpos[v]);
 
                 if (crease_angle_ < 1)
                 {
-                    n = fnormals[f];
+                    n = face_normals[f.idx()];
                 }
                 else if (crease_angle_ > 170)
                 {
-                    n = vnormals[v];
+                    n = vertex_normals[v.idx()];
                 }
                 else
                 {
-                    n = corner_normal(*this, h, crease_angle_radians);
+                    n = corner_normal(mesh_, h, crease_angle_radians);
                 }
                 corner_normals.push_back((vec3)n);
 
@@ -426,42 +394,36 @@ void SurfaceMeshGL::update_opengl_buffers()
                     color_array.push_back(corner_colors[i2]);
                 }
 
-                vertex_indices[corner_vertices[i0]] = vidx++;
-                vertex_indices[corner_vertices[i1]] = vidx++;
-                vertex_indices[corner_vertices[i2]] = vidx++;
+                vertex_indices[corner_vertices[i0].idx()] = vidx++;
+                vertex_indices[corner_vertices[i1].idx()] = vidx++;
+                vertex_indices[corner_vertices[i2].idx()] = vidx++;
             }
         }
-
-        // clean up
-        if (vnormals)
-            remove_vertex_property(vnormals);
-        if (fnormals)
-            remove_face_property(fnormals);
     }
 
     // we have a point cloud
-    else if (n_vertices())
+    else if (mesh_.n_vertices())
     {
-        auto position = vertex_property<Point>("v:point");
+        auto position = mesh_.get_vertex_property<Point>("v:point");
         if (position)
         {
-            position_array.reserve(n_vertices());
-            for (auto v : vertices())
+            position_array.reserve(mesh_.n_vertices());
+            for (auto v : mesh_.vertices())
                 position_array.push_back((vec3)position[v]);
         }
 
-        auto normals = get_vertex_property<Point>("v:normal");
+        auto normals = mesh_.get_vertex_property<Point>("v:normal");
         if (normals)
         {
-            normal_array.reserve(n_vertices());
-            for (auto v : vertices())
+            normal_array.reserve(mesh_.n_vertices());
+            for (auto v : mesh_.vertices())
                 normal_array.push_back((vec3)normals[v]);
         }
 
         if (vcolor && use_colors_)
         {
-            color_array.reserve(n_vertices());
-            for (auto v : vertices())
+            color_array.reserve(mesh_.n_vertices());
+            for (auto v : mesh_.vertices())
                 color_array.push_back((vec3)vcolor[v]);
         }
     }
@@ -528,66 +490,19 @@ void SurfaceMeshGL::update_opengl_buffers()
         has_vertex_colors_ = false;
     }
 
-    size_t seam_count = 0;
-    auto texcoords = get_halfedge_property<TexCoord>("h:tex");
-    EdgeProperty<bool> texture_seams;
-    if (texcoords)
-    {
-        texture_seams = edge_property<bool>("e:seam");
-        for (auto e : edges())
-        {
-            // texcoords are stored in halfedge pointing towards a vertex
-            Halfedge h0 = halfedge(e, 0);
-            Halfedge h1 = halfedge(e, 1);     //opposite halfedge
-            Halfedge h0p = prev_halfedge(h0); // start point edge 0
-            Halfedge h1p = prev_halfedge(h1); // start point edge 1
-
-            // if start or end points differs more than seam_threshold
-            // the corresponding edge is a texture seam
-            if (norm(texcoords[h1] - texcoords[h0p]) > 1e-2 ||
-                norm(texcoords[h0] - texcoords[h1p]) > 1e-2)
-            {
-                texture_seams[e] = true;
-            }
-            else
-            {
-                texture_seams[e] = false;
-            }
-        }
-        for (auto e : edges())
-            if (texture_seams && texture_seams[e])
-                seam_count++;
-    }
-
-    // edge indices & if available seam indices
-    if (n_edges())
+    // edge indices
+    if (mesh_.n_edges())
     {
         std::vector<unsigned int> edge_indices;
-        edge_indices.reserve(n_edges());
+        edge_indices.reserve(mesh_.n_edges());
 
-        std::vector<unsigned int> seam_indices;
-        seam_indices.reserve(seam_count);
-
-        for (auto e : edges())
+        for (auto e : mesh_.edges())
         {
-            edge_indices.push_back(vertex_indices[vertex(e, 0)]);
-            edge_indices.push_back(vertex_indices[vertex(e, 1)]);
-            if (texture_seams && texture_seams[e])
-            {
-                seam_indices.push_back(vertex_indices[vertex(e, 0)]);
-                seam_indices.push_back(vertex_indices[vertex(e, 1)]);
-            }
+            auto v0 = mesh_.vertex(e, 0).idx();
+            auto v1 = mesh_.vertex(e, 1).idx();
+            edge_indices.push_back(vertex_indices[v0]);
+            edge_indices.push_back(vertex_indices[v1]);
         }
-        if (texture_seams)
-        {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                         seam_indices.size() * sizeof(unsigned int),
-                         seam_indices.data(), GL_STATIC_DRAW);
-            n_seams_ = seam_indices.size();
-        }
-        else
-            n_seams_ = 0;
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
@@ -599,17 +514,19 @@ void SurfaceMeshGL::update_opengl_buffers()
         n_edges_ = 0;
 
     // feature edges
-    auto efeature = get_edge_property<bool>("e:feature");
+    auto efeature = mesh_.get_edge_property<bool>("e:feature");
     if (efeature)
     {
         std::vector<unsigned int> features;
 
-        for (auto e : edges())
+        for (auto e : mesh_.edges())
         {
             if (efeature[e])
             {
-                features.push_back(vertex_indices[vertex(e, 0)]);
-                features.push_back(vertex_indices[vertex(e, 1)]);
+                auto v0 = mesh_.vertex(e, 0).idx();
+                auto v1 = mesh_.vertex(e, 1).idx();
+                features.push_back(vertex_indices[v0]);
+                features.push_back(vertex_indices[v1]);
             }
         }
 
@@ -624,14 +541,10 @@ void SurfaceMeshGL::update_opengl_buffers()
 
     // unbind vertex array
     glBindVertexArray(0);
-
-    // remove vertex index property again
-    remove_vertex_property(vertex_indices);
 }
 
-void SurfaceMeshGL::draw(const mat4& projection_matrix,
-                         const mat4& modelview_matrix,
-                         const std::string& draw_mode)
+void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
+                    const std::string& draw_mode)
 {
     // did we generate buffers already?
     if (!vertex_array_object_)
@@ -660,7 +573,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     }
 
     // empty mesh?
-    if (is_empty())
+    if (mesh_.is_empty())
         return;
 
     // allow for transparent objects
@@ -705,11 +618,11 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
 
     else if (draw_mode == "Hidden Line")
     {
-        if (n_faces())
+        if (mesh_.n_faces())
         {
             // draw faces
             glDepthRange(0.01, 1.0);
-            draw_triangles();
+            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
             glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
             // overlay edges
@@ -722,34 +635,22 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
             glDrawElements(GL_LINES, n_edges_, GL_UNSIGNED_INT, nullptr);
             glDepthFunc(GL_LESS);
-
-            // overlay seam edges
-            if (n_seams_ > 0)
-            {
-                glDepthRange(0.0, 1.0);
-                glDepthFunc(GL_LEQUAL);
-                phong_shader_.set_uniform("front_color", vec3(1, 0, 0.));
-                phong_shader_.set_uniform("back_color", vec3(0.1, 0, 0));
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-                glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT, nullptr);
-                glDepthFunc(GL_LESS);
-            }
         }
     }
 
     else if (draw_mode == "Smooth Shading")
     {
-        if (n_faces())
+        if (mesh_.n_faces())
         {
-            draw_triangles();
+            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
         }
     }
 
     else if (draw_mode == "Texture")
     {
-        if (n_faces())
+        if (mesh_.n_faces())
         {
-            if (texture_mode_ == MatCapTexture)
+            if (texture_mode_ == TextureMode::MatCap)
             {
                 matcap_shader_.use();
                 matcap_shader_.set_uniform("modelview_projection_matrix",
@@ -757,7 +658,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                 matcap_shader_.set_uniform("normal_matrix", n_matrix);
                 matcap_shader_.set_uniform("alpha", alpha_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
-                draw_triangles();
+                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
             }
             else
             {
@@ -765,29 +666,16 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
                 phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
                 phong_shader_.set_uniform("use_texture", true);
                 phong_shader_.set_uniform("use_vertex_color", false);
-                phong_shader_.set_uniform("use_srgb", srgb_);
+                phong_shader_.set_uniform("use_srgb", use_srgb_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
-                draw_triangles();
-
-                // overlay seam edges
-                if (n_seams_ > 0)
-                {
-                    glDepthRange(0.0, 1.0);
-                    glDepthFunc(GL_LEQUAL);
-                    phong_shader_.set_uniform("front_color", vec3(1, 0, 0.));
-                    phong_shader_.set_uniform("back_color", vec3(0.1, 0, 0));
-                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, seam_buffer_);
-                    glDrawElements(GL_LINES, n_seams_, GL_UNSIGNED_INT,
-                                   nullptr);
-                    glDepthFunc(GL_LESS);
-                }
+                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
             }
         }
     }
 
     else if (draw_mode == "Texture Layout")
     {
-        if (n_faces() && has_texcoords_)
+        if (mesh_.n_faces() && has_texcoords_)
         {
             phong_shader_.set_uniform("show_texture_layout", true);
             phong_shader_.set_uniform("use_vertex_color", false);
@@ -797,7 +685,7 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
             phong_shader_.set_uniform("front_color", vec3(0.8, 0.8, 0.8));
             phong_shader_.set_uniform("back_color", vec3(0.9, 0.0, 0.0));
             glDepthRange(0.01, 1.0);
-            draw_triangles();
+            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
 
             // overlay edges
             glDepthRange(0.0, 1.0);
@@ -832,8 +720,8 @@ void SurfaceMeshGL::draw(const mat4& projection_matrix,
     glCheckError();
 }
 
-void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
-                              std::vector<ivec3>& triangles)
+void Renderer::tesselate(const std::vector<vec3>& points,
+                         std::vector<ivec3>& triangles)
 {
     const int n = points.size();
 
@@ -925,69 +813,6 @@ void SurfaceMeshGL::tesselate(const std::vector<vec3>& points,
         todo.emplace_back(start, split);
         todo.emplace_back(split, end);
     }
-}
-
-void SurfaceMeshGL::draw_triangles() const
-{
-#ifndef __EMSCRIPTEN__
-    glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
-#else
-
-    // which arrays are active?
-    GLint use_normals, use_texcoords, use_colors;
-    glGetVertexAttribiv(1, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &use_normals);
-    glGetVertexAttribiv(2, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &use_texcoords);
-    glGetVertexAttribiv(3, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &use_colors);
-
-    // draw triangles in batch sizes < 2^16
-    const unsigned int nv = n_vertices_;
-    const unsigned int count = 65535;
-    for (int start = 0; start < nv; start += count)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0,
-                              (GLvoid*)(3 * start * sizeof(GLfloat)));
-        if (use_normals)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,
-                                  (GLvoid*)(3 * start * sizeof(GLfloat)));
-        }
-        if (use_texcoords)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, tex_coord_buffer_);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0,
-                                  (GLvoid*)(2 * start * sizeof(GLfloat)));
-        }
-        if (use_colors)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
-            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0,
-                                  (GLvoid*)(3 * start * sizeof(GLfloat)));
-        }
-
-        glDrawArrays(GL_TRIANGLES, 0, std::min(nv - start, count));
-    }
-
-    // reset buffers
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    if (use_normals)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    }
-    if (use_texcoords)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, tex_coord_buffer_);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-    }
-    if (use_colors)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    }
-#endif
 }
 
 } // namespace pmp

@@ -158,7 +158,7 @@ void MeshProcessingViewer::process_imgui()
         {
             curvature(mesh_, Curvature::mean, 1, true, true);
             curvature_to_texture_coordinates(mesh_);
-            mesh_.use_cold_warm_texture();
+            renderer_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
         }
@@ -166,7 +166,7 @@ void MeshProcessingViewer::process_imgui()
         {
             curvature(mesh_, Curvature::gauss, 1, true, true);
             curvature_to_texture_coordinates(mesh_);
-            mesh_.use_cold_warm_texture();
+            renderer_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
         }
@@ -174,7 +174,7 @@ void MeshProcessingViewer::process_imgui()
         {
             curvature(mesh_, Curvature::max_abs, 1, true, true);
             curvature_to_texture_coordinates(mesh_);
-            mesh_.use_cold_warm_texture();
+            renderer_.use_cold_warm_texture();
             update_mesh();
             set_draw_mode("Texture");
         }
@@ -416,7 +416,7 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
 
             // setup texture coordinates for visualization
             distance_to_texture_coordinates(mesh_);
-            mesh_.use_checkerboard_texture();
+            renderer_.use_checkerboard_texture();
             update_mesh();
             set_draw_mode("Texture");
         }

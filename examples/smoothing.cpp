@@ -37,7 +37,7 @@ void Viewer::process_imgui()
             curvature(mesh_, Curvature::mean, 1, true, true);
             curvature_to_texture_coordinates(mesh_);
             update_mesh();
-            mesh_.use_cold_warm_texture();
+            renderer_.use_cold_warm_texture();
             set_draw_mode("Texture");
         }
     }
