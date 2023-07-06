@@ -708,7 +708,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
         {
             // draw faces
             glDepthRange(0.01, 1.0);
-            draw_triangles();
+            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
             glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
             // overlay edges
@@ -740,7 +740,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     {
         if (mesh_.n_faces())
         {
-            draw_triangles();
+            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
         }
     }
 
@@ -756,7 +756,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
                 matcap_shader_.set_uniform("normal_matrix", n_matrix);
                 matcap_shader_.set_uniform("alpha", alpha_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
-                draw_triangles();
+                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
             }
             else
             {
@@ -766,7 +766,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
                 phong_shader_.set_uniform("use_vertex_color", false);
                 phong_shader_.set_uniform("use_srgb", use_srgb_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
-                draw_triangles();
+                glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
 
                 // overlay seam edges
                 if (n_seams_ > 0)
@@ -796,7 +796,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
             phong_shader_.set_uniform("front_color", vec3(0.8, 0.8, 0.8));
             phong_shader_.set_uniform("back_color", vec3(0.9, 0.0, 0.0));
             glDepthRange(0.01, 1.0);
-            draw_triangles();
+            glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
 
             // overlay edges
             glDepthRange(0.0, 1.0);
@@ -924,69 +924,6 @@ void Renderer::tesselate(const std::vector<vec3>& points,
         todo.emplace_back(start, split);
         todo.emplace_back(split, end);
     }
-}
-
-void Renderer::draw_triangles() const
-{
-#ifndef __EMSCRIPTEN__
-    glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
-#else
-
-    // which arrays are active?
-    GLint use_normals, use_texcoords, use_colors;
-    glGetVertexAttribiv(1, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &use_normals);
-    glGetVertexAttribiv(2, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &use_texcoords);
-    glGetVertexAttribiv(3, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &use_colors);
-
-    // draw triangles in batch sizes < 2^16
-    const unsigned int nv = n_vertices_;
-    const unsigned int count = 65535;
-    for (int start = 0; start < nv; start += count)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0,
-                              (GLvoid*)(3 * start * sizeof(GLfloat)));
-        if (use_normals)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0,
-                                  (GLvoid*)(3 * start * sizeof(GLfloat)));
-        }
-        if (use_texcoords)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, tex_coord_buffer_);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0,
-                                  (GLvoid*)(2 * start * sizeof(GLfloat)));
-        }
-        if (use_colors)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
-            glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0,
-                                  (GLvoid*)(3 * start * sizeof(GLfloat)));
-        }
-
-        glDrawArrays(GL_TRIANGLES, 0, std::min(nv - start, count));
-    }
-
-    // reset buffers
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-    if (use_normals)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, normal_buffer_);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    }
-    if (use_texcoords)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, tex_coord_buffer_);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-    }
-    if (use_colors)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, color_buffer_);
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
-    }
-#endif
 }
 
 } // namespace pmp

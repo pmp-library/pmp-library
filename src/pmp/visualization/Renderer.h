@@ -161,9 +161,6 @@ private:
     void tesselate(const std::vector<vec3>& points,
                    std::vector<ivec3>& triangles);
 
-    // circumvent WebGL bug in Chrome 99
-    void draw_triangles() const;
-
     // OpenGL buffers
     GLuint vertex_array_object_;
     GLuint vertex_buffer_;
