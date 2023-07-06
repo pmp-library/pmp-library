@@ -291,7 +291,7 @@ void Renderer::update_opengl_buffers()
     auto fcolor = mesh_.get_face_property<Color>("f:color");
 
     // index array for remapping vertex indices during duplication
-    auto vertex_indices = mesh_.add_vertex_property<size_t>("v:index");
+    std::vector<size_t> vertex_indices(mesh_.n_vertices());
 
     // produce arrays of points, normals, and texcoords
     // (duplicate vertices to allow for flat shading)
@@ -314,19 +314,19 @@ void Renderer::update_opengl_buffers()
             color_array.reserve(3 * mesh_.n_faces());
 
         // precompute normals for easy cases
-        FaceProperty<Normal> fnormals;
-        VertexProperty<Normal> vnormals;
+        std::vector<Normal> face_normals;
+        std::vector<Normal> vertex_normals;
+        face_normals.reserve(mesh_.n_faces());
+        vertex_normals.reserve(mesh_.n_vertices());
         if (crease_angle_ < 1)
         {
-            fnormals = mesh_.add_face_property<Normal>("gl:fnormal");
             for (auto f : mesh_.faces())
-                fnormals[f] = face_normal(mesh_, f);
+                face_normals.emplace_back(face_normal(mesh_, f));
         }
         else if (crease_angle_ > 170)
         {
-            vnormals = mesh_.add_vertex_property<Normal>("gl:vnormal");
             for (auto v : mesh_.vertices())
-                vnormals[v] = vertex_normal(mesh_, v);
+                vertex_normals.emplace_back(vertex_normal(mesh_, v));
         }
 
         // data per face (for all corners)
@@ -364,11 +364,11 @@ void Renderer::update_opengl_buffers()
 
                 if (crease_angle_ < 1)
                 {
-                    n = fnormals[f];
+                    n = face_normals[f.idx()];
                 }
                 else if (crease_angle_ > 170)
                 {
-                    n = vnormals[v];
+                    n = vertex_normals[v.idx()];
                 }
                 else
                 {
@@ -426,23 +426,17 @@ void Renderer::update_opengl_buffers()
                     color_array.push_back(corner_colors[i2]);
                 }
 
-                vertex_indices[corner_vertices[i0]] = vidx++;
-                vertex_indices[corner_vertices[i1]] = vidx++;
-                vertex_indices[corner_vertices[i2]] = vidx++;
+                vertex_indices[corner_vertices[i0].idx()] = vidx++;
+                vertex_indices[corner_vertices[i1].idx()] = vidx++;
+                vertex_indices[corner_vertices[i2].idx()] = vidx++;
             }
         }
-
-        // clean up
-        if (vnormals)
-            mesh_.remove_vertex_property(vnormals);
-        if (fnormals)
-            mesh_.remove_face_property(fnormals);
     }
 
     // we have a point cloud
     else if (mesh_.n_vertices())
     {
-        auto position = mesh_.vertex_property<Point>("v:point");
+        auto position = mesh_.get_vertex_property<Point>("v:point");
         if (position)
         {
             position_array.reserve(mesh_.n_vertices());
@@ -570,12 +564,14 @@ void Renderer::update_opengl_buffers()
 
         for (auto e : mesh_.edges())
         {
-            edge_indices.push_back(vertex_indices[mesh_.vertex(e, 0)]);
-            edge_indices.push_back(vertex_indices[mesh_.vertex(e, 1)]);
+            auto v0 = mesh_.vertex(e, 0).idx();
+            auto v1 = mesh_.vertex(e, 1).idx();
+            edge_indices.push_back(vertex_indices[v0]);
+            edge_indices.push_back(vertex_indices[v1]);
             if (texture_seams && texture_seams[e])
             {
-                seam_indices.push_back(vertex_indices[mesh_.vertex(e, 1)]);
-                seam_indices.push_back(vertex_indices[mesh_.vertex(e, 0)]);
+                seam_indices.push_back(vertex_indices[v0]);
+                seam_indices.push_back(vertex_indices[v1]);
             }
         }
         if (texture_seams)
@@ -608,8 +604,10 @@ void Renderer::update_opengl_buffers()
         {
             if (efeature[e])
             {
-                features.push_back(vertex_indices[mesh_.vertex(e, 0)]);
-                features.push_back(vertex_indices[mesh_.vertex(e, 1)]);
+                auto v0 = mesh_.vertex(e, 0).idx();
+                auto v1 = mesh_.vertex(e, 1).idx();
+                features.push_back(vertex_indices[v0]);
+                features.push_back(vertex_indices[v1]);
             }
         }
 
@@ -624,9 +622,6 @@ void Renderer::update_opengl_buffers()
 
     // unbind vertex array
     glBindVertexArray(0);
-
-    // remove vertex index property again
-    mesh_.remove_vertex_property(vertex_indices);
 }
 
 void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
