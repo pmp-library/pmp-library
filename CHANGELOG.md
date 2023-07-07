@@ -8,19 +8,13 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
-- Upgrade ImGui to version 1.89.5 (fixes emscripten bug)
-
 ### Added
 
 - Add `min_face_area()` to compute minimum face area of all faces.
 - Add `edge_area()` to compute area associated to an edge.
 - Added circulator enumerating edges around vertex: `SurfaceMesh::edges(Vertex)`.
-- Functions `setup_laplace_matrix()` and `setup_mass_matrix()` compute those
-  two matrices for both triangle meshes and general polygon meshes.
-  The general case is based on the paper Bunge et al, "Polygon Laplacian made simple",
-  Eurographics 2020.
-- Smoothing, parameterization, and fairing are now implemented based on
-  sparse Laplacian matrices, which generalizes to general polygon meshes.
+- Functions `setup_laplace_matrix()` and `setup_mass_matrix()` compute those two matrices for both triangle meshes and general polygon meshes. The general case is based on the paper Bunge et al, "Polygon Laplacian made simple", Eurographics 2020.
+- Smoothing, parameterization, and fairing are now implemented based on sparse Laplacian matrices, which generalizes to general polygon meshes.
 - Add `PMP_STRICT_COMPILATION` CMake option to control treating warnings as errors. Default: On.
 - Add function `flip_faces()` to reverse face orientation in a mesh (#123)
 - Meshes and textures can be loaded by dropping the files onto the window, both in
@@ -30,13 +24,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 - Rename `Timer` to `StopWatch`
 - `SurfaceMeshGL` renamed to `Renderer` and de-coupled from `SurfaceMesh`
-- Replace `triangle_area(Face)` by `face_area(Face)`, which now
-  supports general polygons. `surface_area(SurfaceMesh)` now also
-  works for general polygon meshes.
-- Replace mixed Voronoi area by barycentric Voronoi area in
-  `voronoi_area()`, because it generalizes better to polygon meshes.
-  Remove `voronoi_area_barycentric()`, because it's now computed by
-  `voronoi_area()`
+- Replace `triangle_area(Face)` by `face_area(Face)`, which now supports general polygons. `surface_area(SurfaceMesh)` now also works for general polygon meshes.
+- Replace mixed Voronoi area by barycentric Voronoi area in `voronoi_area()`, because it generalizes better to polygon meshes. Remove `voronoi_area_barycentric()`, because it's now computed by `voronoi_area()`
 - Remove max angle triangulation objective leading to fold-overs.
 - Breaking change: Re-design algorithms API to use a simple function interface.
 - Breaking change: Make helper classes `Heap`, `Quadric`, `NormalCone`, `TriangleKdTree` private.
@@ -59,6 +48,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Rename `Factory` to `Shapes`
 - Drop `Surface` prefix from algorithms
 - Update stb_image to version 2.27 and stb_image_writer to version 1.16.
+- Upgrade ImGui to version 1.89.5 (fixes emscripten bug)
 
 ## [2.0.1] 2022-08-26
 
