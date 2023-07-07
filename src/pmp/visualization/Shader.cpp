@@ -2,6 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/visualization/Shader.h"
+#include "pmp/Exceptions.h"
 
 #include <iostream>
 #include <fstream>
@@ -29,7 +30,7 @@ void Shader::cleanup()
     shaders_.clear();
 }
 
-bool Shader::source(const char* vshader, const char* fshader)
+void Shader::source(const char* vshader, const char* fshader)
 {
     GLint id;
 
@@ -41,35 +42,19 @@ bool Shader::source(const char* vshader, const char* fshader)
 
     // vertex shader
     id = compile(vshader, GL_VERTEX_SHADER);
-    if (!id)
-    {
-        std::cerr << "Cannot compile vertex shader!\n";
-        return false;
-    }
     glAttachShader(pid_, id);
     shaders_.push_back(id);
 
     // fragment shader
     id = compile(fshader, GL_FRAGMENT_SHADER);
-    if (!id)
-    {
-        std::cerr << "Cannot compile fragment shader!\n";
-        return false;
-    }
     glAttachShader(pid_, id);
     shaders_.push_back(id);
 
     // link program
-    if (!link())
-    {
-        std::cerr << "Cannot link program!\n";
-        return false;
-    }
-
-    return true;
+    link();
 }
 
-bool Shader::load(const char* vfile, const char* ffile, const char* gfile,
+void Shader::load(const char* vfile, const char* ffile, const char* gfile,
                   const char* tcfile, const char* tefile)
 {
     GLint id;
@@ -82,21 +67,11 @@ bool Shader::load(const char* vfile, const char* ffile, const char* gfile,
 
     // vertex shader
     id = load_and_compile(vfile, GL_VERTEX_SHADER);
-    if (!id)
-    {
-        std::cerr << "Cannot compile vertex shader!\n";
-        return false;
-    }
     glAttachShader(pid_, id);
     shaders_.push_back(id);
 
     // fragment shader
     id = load_and_compile(ffile, GL_FRAGMENT_SHADER);
-    if (!id)
-    {
-        std::cerr << "Cannot compile fragment shader!\n";
-        return false;
-    }
     glAttachShader(pid_, id);
     shaders_.push_back(id);
 
@@ -104,11 +79,6 @@ bool Shader::load(const char* vfile, const char* ffile, const char* gfile,
     if (tcfile)
     {
         id = load_and_compile(tcfile, GL_TESS_CONTROL_SHADER);
-        if (!id)
-        {
-            std::cerr << "Cannot compile tessellation control shader!\n";
-            return false;
-        }
         glAttachShader(pid_, id);
         shaders_.push_back(id);
     }
@@ -117,11 +87,6 @@ bool Shader::load(const char* vfile, const char* ffile, const char* gfile,
     if (tefile)
     {
         id = load_and_compile(tefile, GL_TESS_EVALUATION_SHADER);
-        if (!id)
-        {
-            std::cerr << "Cannot compile tessellation evaluation shader!\n";
-            return false;
-        }
         glAttachShader(pid_, id);
         shaders_.push_back(id);
     }
@@ -130,55 +95,36 @@ bool Shader::load(const char* vfile, const char* ffile, const char* gfile,
     if (gfile)
     {
         id = load_and_compile(gfile, GL_GEOMETRY_SHADER);
-        if (!id)
-        {
-            std::cerr << "Cannot compile geometry shader!\n";
-            return false;
-        }
         glAttachShader(pid_, id);
         shaders_.push_back(id);
     }
 
     // link program
-    if (!link())
-    {
-        std::cerr << "Cannot link program!\n";
-        return false;
-    }
-
-    return true;
+    link();
 }
 
-bool Shader::link()
+void Shader::link()
 {
     glLinkProgram(pid_);
     GLint status;
     glGetProgramiv(pid_, GL_LINK_STATUS, &status);
     if (status == GL_FALSE)
     {
-        GLint length;
-        glGetProgramiv(pid_, GL_INFO_LOG_LENGTH, &length);
-
-        auto* info = new GLchar[length + 1];
-        glGetProgramInfoLog(pid_, length, nullptr, info);
-        std::cerr << "Shader: Cannot link program:\n" << info << std::endl;
-        delete[] info;
-
+        auto info = get_info_log();
+        auto what = "Shader: Cannot link program:" + info;
         cleanup();
-
-        return false;
+        throw GLException(what);
     }
-
-    return true;
 }
 
-bool Shader::load(const char* filename, std::string& source)
+void Shader::load(const char* filename, std::string& source)
 {
     std::ifstream ifs(filename);
     if (!ifs)
     {
-        std::cerr << "Shader: Cannot open file \"" << filename << "\"\n";
-        return false;
+        auto what = "Shader: Cannot open file:" + std::string(filename);
+        cleanup();
+        throw IOException(what);
     }
 
     std::stringstream ss;
@@ -186,7 +132,6 @@ bool Shader::load(const char* filename, std::string& source)
     source = ss.str();
 
     ifs.close();
-    return true;
 }
 
 GLint Shader::compile(const char* source, GLenum type)
@@ -195,8 +140,9 @@ GLint Shader::compile(const char* source, GLenum type)
     GLint id = glCreateShader(type);
     if (!id)
     {
-        std::cerr << "Shader: Cannot create shader object\n";
-        return 0;
+        auto what = "Shader: Cannot create shader object.\n";
+        cleanup();
+        throw GLException(what);
     }
 
     // compile vertex shader
@@ -208,17 +154,10 @@ GLint Shader::compile(const char* source, GLenum type)
     glGetShaderiv(id, GL_COMPILE_STATUS, &status);
     if (status == GL_FALSE)
     {
-        GLint length;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
-
-        auto* info = new GLchar[length + 1];
-        glGetShaderInfoLog(id, length, nullptr, info);
-        std::cerr << "Shader: Cannot compile shader\n" << info << std::endl;
-        delete[] info;
-
-        glDeleteShader(id);
-
-        return 0;
+        auto info = get_info_log();
+        auto what = "Shader: Cannot compile shader:" + info;
+        cleanup();
+        throw GLException(what);
     }
 
     return id;
@@ -227,12 +166,7 @@ GLint Shader::compile(const char* source, GLenum type)
 GLint Shader::load_and_compile(const char* filename, GLenum type)
 {
     std::string source;
-    if (!load(filename, source))
-    {
-        std::cerr << "Shader: Cannot open file \"" << filename << "\"\n";
-        return 0;
-    }
-
+    load(filename, source);
     return compile(source.c_str(), type);
 }
 
@@ -331,6 +265,15 @@ void Shader::set_uniform(const char* name, const mat4& mat)
         return;
     }
     glUniformMatrix4fv(location, 1, false, mat.data());
+}
+
+std::string Shader::get_info_log() const
+{
+    GLint length;
+    glGetProgramiv(pid_, GL_INFO_LOG_LENGTH, &length);
+    auto info = std::vector<GLchar>(length + 1);
+    glGetProgramInfoLog(pid_, length, nullptr, info.data());
+    return {info.data()};
 }
 
 } // namespace pmp

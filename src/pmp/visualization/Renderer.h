@@ -22,7 +22,7 @@ public:
     //! Constructor
     explicit Renderer(const SurfaceMesh& mesh);
 
-    //! default destructor
+    //! Default destructor, deletes all OpenGL buffers.
     ~Renderer();
 
     //! get front color
@@ -70,7 +70,7 @@ public:
     //! set point size for visualization of points
     void set_point_size(float ps) { point_size_ = ps; }
 
-    //! \brief Control usage of color information
+    //! \brief Control usage of color information.
     //! \details Either per-vertex or per-face colors can be used. Vertex colors
     //! are only used if the mesh has a per-vertex property of type Color
     //! named \c "v:color". Face colors are only used if the mesh has a per-face
@@ -79,20 +79,20 @@ public:
     //! \note Vertex colors take precedence over face colors.
     void set_use_colors(bool use_colors) { use_colors_ = use_colors; }
 
-    //! draw the mesh
+    //! Draw the mesh.
     void draw(const mat4& projection_matrix, const mat4& modelview_matrix,
               const std::string& draw_mode);
 
-    //! update all opengl buffers for efficient core profile rendering
+    //! Update all OpenGL buffers for rendering.
     void update_opengl_buffers();
 
-    //! use color map to visualize scalar fields
+    //! Use color map to visualize scalar fields.
     void use_cold_warm_texture();
 
-    //! setup checkerboard texture
+    //! Use checkerboard texture.
     void use_checkerboard_texture();
 
-    //! load texture from file
+    //! Load texture from file.
     //! \param filename the location and name of the texture
     //! \param format internal format (GL_RGB, GL_RGBA, GL_SRGB8, etc.)
     //! \param min_filter interpolation filter for minification
