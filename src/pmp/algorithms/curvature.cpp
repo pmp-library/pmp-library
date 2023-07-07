@@ -366,7 +366,7 @@ void curvature_to_texture_coordinates(SurfaceMesh& mesh)
     }
     std::sort(values.begin(), values.end());
     unsigned int n = values.size() - 1;
-    std::cout << "curvatures in [" << values[0] << ", " << values[n] << "]\n";
+    // std::cout << "curvatures in [" << values[0] << ", " << values[n] << "]\n";
 
     // clamp upper/lower 5%
     unsigned int i = n / 20;
