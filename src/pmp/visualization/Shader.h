@@ -24,7 +24,7 @@ public:
     //! get source from strings, compile, and link vertex and fragment shader,
     //! \param vshader string with the address to the vertex shader
     //! \param fshader string with the address to the fragment shader
-    bool source(const char* vshader, const char* fshader);
+    void source(const char* vshader, const char* fshader);
 
     //! load (from file), compile, and link vertex and fragment shader,
     //! and optional geometry and tessellation shaders.
@@ -34,7 +34,7 @@ public:
     //! \param gfile filename of geometry shader
     //! \param tcfile filename of tessellation control shader
     //! \param tefile filename of tessellation evaluation shader
-    bool load(const char* vfile, const char* ffile, const char* gfile = nullptr,
+    void load(const char* vfile, const char* ffile, const char* gfile = nullptr,
               const char* tcfile = nullptr, const char* tefile = nullptr);
 
     //! enable/bind this shader program
@@ -81,7 +81,7 @@ private:
     void cleanup();
 
     // load shader from file, return as string
-    bool load(const char* filename, std::string& source);
+    void load(const char* filename, std::string& source);
 
     // compile a vertex/fragment shader
     GLint compile(const char* source, GLenum type);
@@ -90,7 +90,10 @@ private:
     GLint load_and_compile(const char* filename, GLenum type);
 
     // relink: use this after setting/changing attrib location
-    bool link();
+    void link();
+
+    // get OpenGL program info log
+    std::string get_info_log() const;
 
     // id of the linked shader program
     GLint pid_{0};

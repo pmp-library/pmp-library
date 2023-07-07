@@ -5,6 +5,7 @@
 
 #include <stb_image.h>
 
+#include "pmp/Exceptions.h"
 #include "pmp/visualization/PhongShader.h"
 #include "pmp/visualization/MatCapShader.h"
 #include "pmp/visualization/ColdWarmTexture.h"
@@ -555,15 +556,29 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     // load shader?
     if (!phong_shader_.is_valid())
     {
-        if (!phong_shader_.source(phong_vshader, phong_fshader))
+        try
+        {
+            phong_shader_.source(phong_vshader, phong_fshader);
+        }
+        catch (const GLException& e)
+        {
+            std::cerr << e.what() << std::endl;
             exit(1);
+        }
     }
 
     // load shader?
     if (!matcap_shader_.is_valid())
     {
-        if (!matcap_shader_.source(matcap_vshader, matcap_fshader))
+        try
+        {
+            matcap_shader_.source(matcap_vshader, matcap_fshader);
+        }
+        catch (const GLException& e)
+        {
+            std::cerr << e.what() << std::endl;
             exit(1);
+        }
     }
 
     // we need some texture, otherwise WebGL complains

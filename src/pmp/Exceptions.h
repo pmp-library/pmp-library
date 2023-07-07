@@ -52,6 +52,13 @@ public:
     IOException(const std::string& what) : std::runtime_error(what) {}
 };
 
+//! \brief Exception indicating an OpenGL error.
+class GLException : public std::runtime_error
+{
+public:
+    GLException(const std::string& what) : std::runtime_error(what) {}
+};
+
 //! @}
 
 } // namespace pmp
