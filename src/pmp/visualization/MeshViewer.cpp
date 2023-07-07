@@ -2,6 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/visualization/MeshViewer.h"
+#include "pmp/algorithms/utilities.h"
 
 #include <iostream>
 #include <limits>
@@ -10,7 +11,6 @@
 #include <imgui.h>
 
 #include "pmp/io/io.h"
-#include "pmp/utilities.h"
 
 namespace pmp {
 

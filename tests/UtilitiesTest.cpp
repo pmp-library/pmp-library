@@ -5,7 +5,7 @@
 
 #include "pmp/SurfaceMesh.h"
 #include "pmp/Types.h"
-#include "pmp/utilities.h"
+#include "pmp/algorithms/utilities.h"
 #include "Helpers.h"
 #include "SurfaceMeshTest.h"
 

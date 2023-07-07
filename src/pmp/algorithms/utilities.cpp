@@ -1,7 +1,7 @@
 // Copyright 2022 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "pmp/utilities.h"
+#include "pmp/algorithms/utilities.h"
 #include "pmp/algorithms/DifferentialGeometry.h"
 #include <limits>
 

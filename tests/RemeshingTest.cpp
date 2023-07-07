@@ -7,7 +7,7 @@
 #include "pmp/algorithms/features.h"
 #include "pmp/algorithms/shapes.h"
 #include "pmp/algorithms/triangulation.h"
-#include "pmp/utilities.h"
+#include "pmp/algorithms/utilities.h"
 
 #include "Helpers.h"
 
