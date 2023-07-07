@@ -141,8 +141,8 @@ else()
     add_executable(remeshing remeshing.cpp)
     target_link_libraries(remeshing pmp_vis)
 
-    add_executable(mpview mpview.cpp MeshProcessingViewer.cpp
-                          MeshProcessingViewer.h)
+    add_executable(mpview mpview.cpp mesh_processing_viewer.cpp
+                          mesh_processing_viewer.h)
     target_link_libraries(mpview pmp_vis)
   endif()
 

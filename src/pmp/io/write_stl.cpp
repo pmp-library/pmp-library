@@ -3,7 +3,7 @@
 
 #include "pmp/io/write_stl.h"
 
-#include "pmp/Exceptions.h"
+#include "pmp/exceptions.h"
 
 #include <fstream>
 

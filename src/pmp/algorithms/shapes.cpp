@@ -3,7 +3,7 @@
 
 #include "pmp/algorithms/shapes.h"
 #include "pmp/algorithms/subdivision.h"
-#include "pmp/algorithms/DifferentialGeometry.h"
+#include "pmp/algorithms/differential_geometry.h"
 
 #include <cmath>
 #include <algorithm>

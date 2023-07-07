@@ -2,9 +2,9 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/curvature.h"
-#include "pmp/Exceptions.h"
+#include "pmp/exceptions.h"
 #include "pmp/algorithms/normals.h"
-#include "pmp/algorithms/DifferentialGeometry.h"
+#include "pmp/algorithms/differential_geometry.h"
 #include "pmp/algorithms/laplace.h"
 
 namespace pmp {

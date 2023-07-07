@@ -1,7 +1,7 @@
 // Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include <pmp/visualization/MeshViewer.h>
+#include <pmp/visualization/mesh_viewer.h>
 #include <pmp/algorithms/features.h>
 #include <pmp/algorithms/remeshing.h>
 #include <pmp/algorithms/utilities.h>

@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "pmp/BoundingBox.h"
-#include "pmp/SurfaceMesh.h"
+#include "pmp/bounding_box.h"
+#include "pmp/surface_mesh.h"
 
 namespace pmp {
 

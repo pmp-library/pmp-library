@@ -203,7 +203,7 @@ Use quotes to include other project headers. Use the full relative path from the
 project `src` directory. Example:
 
 ```cpp
-#include "pmp/algorithms/SurfaceRemeshing.h"
+#include "pmp/algorithms/remeshing.h"
 ```
 
 ### Namespace

@@ -5,7 +5,7 @@
 
 #include <filesystem>
 
-#include "pmp/SurfaceMesh.h"
+#include "pmp/surface_mesh.h"
 
 namespace pmp {
 

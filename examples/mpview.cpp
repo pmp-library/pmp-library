@@ -1,7 +1,7 @@
 // Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
-#include "MeshProcessingViewer.h"
+#include "mesh_processing_viewer.h"
 
 int main(int argc, char** argv)
 {

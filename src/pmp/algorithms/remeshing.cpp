@@ -12,10 +12,10 @@
 
 #include "pmp/algorithms/curvature.h"
 #include "pmp/algorithms/normals.h"
-#include "pmp/algorithms/BarycentricCoordinates.h"
-#include "pmp/algorithms/DifferentialGeometry.h"
-#include "pmp/algorithms/DistancePointTriangle.h"
-#include "pmp/BoundingBox.h"
+#include "pmp/algorithms/barycentric_coordinates.h"
+#include "pmp/algorithms/differential_geometry.h"
+#include "pmp/algorithms/distance_point_triangle.h"
+#include "pmp/bounding_box.h"
 
 namespace pmp {
 namespace {
