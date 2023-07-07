@@ -62,6 +62,11 @@ Scalar surface_area(const SurfaceMesh& mesh);
 //! compute (barycentric) Voronoi area of vertex v
 Scalar voronoi_area(const SurfaceMesh& mesh, Vertex v);
 
+//! \brief Compute mixed Voronoi area of a vertex
+//! \details This version is preferred for irregular triangles with obtuse angles. See \cite meyer_2003_discrete for details.
+//! \pre Input mesh needs to be a triangle mesh.
+Scalar voronoi_area_mixed(const SurfaceMesh& mesh, Vertex v);
+
 //! compute area assigned to edge e
 //! (a face with n edges assigns 1/n of its area to each edge)
 Scalar edge_area(const SurfaceMesh& mesh, Edge e);
@@ -72,11 +77,10 @@ Scalar edge_area(const SurfaceMesh& mesh, Edge e);
 //! \throw InvalidInputException if the input precondition is violated.
 Scalar volume(const SurfaceMesh& mesh);
 
-//! barycenter/centroid of a face
+//! compute barycenter/centroid of a face
 Point centroid(const SurfaceMesh& mesh, Face f);
 
 //! barycenter/centroid of mesh, computed as area-weighted mean of vertices.
-//! assumes triangular faces.
 Point centroid(const SurfaceMesh& mesh);
 
 //! \brief Compute dual of a mesh.
@@ -84,9 +88,11 @@ Point centroid(const SurfaceMesh& mesh);
 void dual(SurfaceMesh& mesh);
 
 //! compute the cotangent weight for edge e
+//! \pre Input mesh needs to be a triangle mesh.
 double cotan_weight(const SurfaceMesh& mesh, Edge e);
 
 //! compute Laplace vector for vertex v (normalized by Voronoi area)
+//! \pre Input mesh needs to be a triangle mesh.
 Point laplace(const SurfaceMesh& mesh, Vertex v);
 
 //! @}

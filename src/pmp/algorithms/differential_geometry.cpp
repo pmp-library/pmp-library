@@ -56,6 +56,76 @@ Scalar voronoi_area(const SurfaceMesh& mesh, Vertex v)
     return A;
 }
 
+Scalar voronoi_area_mixed(const SurfaceMesh& mesh, Vertex v)
+{
+    Scalar area(0.0);
+
+    if (!mesh.is_isolated(v))
+    {
+        Halfedge h0, h1, h2;
+        dvec3 p, q, r, pq, qr, pr;
+        double dotp, dotq, dotr;
+        double cotq, cotr;
+
+        for (auto h : mesh.halfedges(v))
+        {
+            h0 = h;
+            h1 = mesh.next_halfedge(h0);
+            h2 = mesh.next_halfedge(h1);
+
+            if (mesh.is_boundary(h0))
+                continue;
+
+            // three vertex positions
+            p = (dvec3)mesh.position(mesh.to_vertex(h2));
+            q = (dvec3)mesh.position(mesh.to_vertex(h0));
+            r = (dvec3)mesh.position(mesh.to_vertex(h1));
+
+            // edge vectors
+            (pq = q) -= p;
+            (qr = r) -= q;
+            (pr = r) -= p;
+
+            // compute and check triangle area
+            const auto triangle_area = norm(cross(pq, pr));
+            if (triangle_area <= std::numeric_limits<double>::min())
+                continue;
+
+            // dot products for each corner (of its two emanating edge vectors)
+            dotp = dot(pq, pr);
+            dotq = -dot(qr, pq);
+            dotr = dot(qr, pr);
+
+            // angle at p is obtuse
+            if (dotp < 0.0)
+            {
+                area += 0.25 * triangle_area;
+            }
+            // angle at q or r obtuse
+            else if (dotq < 0.0 || dotr < 0.0)
+            {
+                area += 0.125 * triangle_area;
+            }
+            // no obtuse angles
+            else
+            {
+                // cot(angle) = cos(angle)/sin(angle) = dot(A,B)/norm(cross(A,B))
+                cotq = dotq / triangle_area;
+                cotr = dotr / triangle_area;
+
+                // clamp cot(angle) by clamping angle to [3, 177]
+                area += 0.125 * (sqrnorm(pr) * clamp_cot(cotq) +
+                                 sqrnorm(pq) * clamp_cot(cotr));
+            }
+        }
+    }
+
+    assert(!std::isnan(area));
+    assert(!std::isinf(area));
+
+    return area;
+}
+
 Scalar volume(const SurfaceMesh& mesh)
 {
     if (!mesh.is_triangle_mesh())

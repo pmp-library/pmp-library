@@ -78,14 +78,14 @@ void CurvatureAnalyzer::analyze(unsigned int post_smoothing_steps)
     Scalar area, sum_angles;
     Point p0, p1, p2;
 
-    // compute area-normalized Laplace 
+    // compute area-normalized Laplace
     SparseMatrix L;
     setup_laplace_matrix(mesh_, L);
     DiagonalMatrix M;
     setup_mass_matrix(mesh_, M);
     DenseMatrix X;
     coordinates_to_matrix(mesh_, X);
-    DenseMatrix LX = M.inverse() * L * X;
+    DenseMatrix LX = L * X;
 
     // mean curvature as norm of Laplace
     // Gauss curvatures as angle deficit
@@ -99,7 +99,7 @@ void CurvatureAnalyzer::analyze(unsigned int post_smoothing_steps)
             p0 = mesh_.position(v);
 
             // Voronoi area
-            area = voronoi_area(mesh_, v);
+            area = M.diagonal()[v.idx()];
 
             // angle sum
             sum_angles = 0.0;
@@ -108,11 +108,10 @@ void CurvatureAnalyzer::analyze(unsigned int post_smoothing_steps)
                 p1 = mesh_.position(mesh_.to_vertex(vh));
                 p2 = mesh_.position(
                     mesh_.to_vertex(mesh_.ccw_rotated_halfedge(vh)));
-                sum_angles += angle(p1-p0, p2-p0);
+                sum_angles += angle(p1 - p0, p2 - p0);
             }
 
-            // mean = Scalar(0.5) * norm(laplace);
-            mean = 0.5 * LX.row(v.idx()).norm();
+            mean = 0.5 * LX.row(v.idx()).norm() / area;
             gauss = (2.0 * M_PI - sum_angles) / area;
 
             const Scalar s = sqrt(std::max(Scalar(0.0), mean * mean - gauss));
@@ -134,7 +133,7 @@ void CurvatureAnalyzer::analyze(unsigned int post_smoothing_steps)
 void CurvatureAnalyzer::analyze_tensor(unsigned int post_smoothing_steps,
                                        bool two_ring_neighborhood)
 {
-    auto earea = mesh_.add_edge_property<double>("curv:area", 0.0);
+    auto area = mesh_.add_vertex_property<double>("curv:area", 0.0);
     auto normal = mesh_.add_face_property<dvec3>("curv:normal");
     auto evec = mesh_.add_edge_property<dvec3>("curv:evec", dvec3(0, 0, 0));
     auto angle = mesh_.add_edge_property<double>("curv:angle", 0.0);
@@ -149,10 +148,12 @@ void CurvatureAnalyzer::analyze_tensor(unsigned int post_smoothing_steps,
     std::vector<Vertex> neighborhood;
     neighborhood.reserve(15);
 
-    // precompute per-edge areas
-    for (auto e : mesh_.edges())
+    // precompute Voronoi area per vertex
+    DiagonalMatrix M;
+    setup_mass_matrix(mesh_, M);
+    for (auto v : mesh_.vertices())
     {
-        earea[e] = edge_area(mesh_, e);
+        area[v] = M.diagonal()[v.idx()];
     }
 
     // precompute face normals
@@ -176,6 +177,7 @@ void CurvatureAnalyzer::analyze_tensor(unsigned int post_smoothing_steps,
             ev -= (dvec3)mesh_.position(mesh_.to_vertex(h1));
             l = norm(ev);
             ev /= l;
+            l *= 0.5; // only consider half of the edge (matching Voronoi area)
             angle[e] = atan2(dot(cross(n0, n1), ev), dot(n0, n1));
             evec[e] = sqrt(l) * ev;
         }
@@ -187,14 +189,16 @@ void CurvatureAnalyzer::analyze_tensor(unsigned int post_smoothing_steps,
         kmin = 0.0;
         kmax = 0.0;
 
-        if (!mesh_.is_isolated(v))
+        if (!mesh_.is_isolated(v) && !mesh_.is_boundary(v))
         {
             // one-ring or two-ring neighborhood?
             neighborhood.clear();
             neighborhood.push_back(v);
             if (two_ring_neighborhood)
+            {
                 for (auto vv : mesh_.vertices(v))
                     neighborhood.push_back(vv);
+            }
 
             A = 0.0;
             tensor = dmat3(0.0);
@@ -202,22 +206,23 @@ void CurvatureAnalyzer::analyze_tensor(unsigned int post_smoothing_steps,
             // compute tensor over vertex neighborhood stored in vertices
             for (auto nit : neighborhood)
             {
+                if (mesh_.is_boundary(nit)) continue;
+
                 // accumulate tensor from dihedral angles around vertices
                 for (auto e : mesh_.edges(nit))
                 {
-                    if (!mesh_.is_boundary(e))
-                    {
-                        ev = evec[e];
-                        beta = angle[e];
-                        for (int i = 0; i < 3; ++i)
-                            for (int j = 0; j < 3; ++j)
-                                tensor(i, j) += beta * ev[i] * ev[j];
-                        A += earea[e];
-                    }
+                    ev = evec[e];
+                    beta = angle[e];
+                    for (int i = 0; i < 3; ++i)
+                        for (int j = 0; j < 3; ++j)
+                            tensor(i, j) += beta * ev[i] * ev[j];
                 }
+
+                // accumulate area
+                A += area[nit];
             }
 
-            // normalize tensor by accumulated area
+            // normalize tensor by accumulated
             tensor /= A;
 
             // Eigen-decomposition
@@ -271,7 +276,7 @@ void CurvatureAnalyzer::analyze_tensor(unsigned int post_smoothing_steps,
     }
 
     // clean-up properties
-    mesh_.remove_edge_property(earea);
+    mesh_.remove_vertex_property(area);
     mesh_.remove_edge_property(evec);
     mesh_.remove_edge_property(angle);
     mesh_.remove_face_property(normal);
@@ -321,12 +326,13 @@ void CurvatureAnalyzer::smooth_curvatures(unsigned int iterations)
     // normalize each row by sum of weights
     // scale by 0.5 to make it more robust
     // multiply by -1 to make it neg. definite again
-    L = -0.5 * L.diagonal().asDiagonal().inverse() * L;
+    DiagonalMatrix D = L.diagonal().asDiagonal().inverse();
+    L = -0.5 * D * L;
 
     // copy vertex curvatures to matrix
     const int n = mesh_.n_vertices();
-    DenseMatrix curv(n,2);
-    for (auto v: mesh_.vertices())
+    DenseMatrix curv(n, 2);
+    for (auto v : mesh_.vertices())
     {
         curv(v.idx(), 0) = min_curvature_[v];
         curv(v.idx(), 1) = max_curvature_[v];
@@ -339,7 +345,7 @@ void CurvatureAnalyzer::smooth_curvatures(unsigned int iterations)
     }
 
     // copy result to curvatures
-    for (auto v: mesh_.vertices())
+    for (auto v : mesh_.vertices())
     {
         min_curvature_[v] = curv(v.idx(), 0);
         max_curvature_[v] = curv(v.idx(), 1);
@@ -360,13 +366,12 @@ void curvature_to_texture_coordinates(SurfaceMesh& mesh)
     }
     std::sort(values.begin(), values.end());
     unsigned int n = values.size() - 1;
+    std::cout << "curvatures in [" << values[0] << ", " << values[n] << "]\n";
 
     // clamp upper/lower 5%
     unsigned int i = n / 20;
     Scalar kmin = values[i];
     Scalar kmax = values[n - 1 - i];
-    std::cout << "curvatures in [" << values[0] << ", " << values[n] << "]\n";
-
 
     // generate 1D texture coordinates
     auto tex = mesh.vertex_property<TexCoord>("v:tex");

@@ -10,8 +10,9 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Added
 
+- Generalize curvature computation in `curvature()` to polygon meshes.
 - Add `min_face_area()` to compute minimum face area of all faces.
-- Add `edge_area()` to compute area associated to an edge.
+- Add `edge_area()` to compute the area associated to an edge.
 - Added circulator enumerating edges around vertex: `SurfaceMesh::edges(Vertex)`.
 - Functions `setup_laplace_matrix()` and `setup_mass_matrix()` compute those two matrices for both triangle meshes and general polygon meshes. The general case is based on the paper Bunge et al, "Polygon Laplacian made simple", Eurographics 2020.
 - Smoothing, parameterization, and fairing are now implemented based on sparse Laplacian matrices, which generalizes to general polygon meshes.
@@ -22,11 +23,11 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- The function `voronoi_area()` now computes the barycentric Voronoi area, because this version generalizes better to polygon meshes. The mixed Voronoi area (for triangle meshes) is now computed by `voronoi_area_mixed()`.
 - Consistently use lowercase file names
 - Rename `Timer` to `StopWatch`
 - `SurfaceMeshGL` renamed to `Renderer` and de-coupled from `SurfaceMesh`
 - Replace `triangle_area(Face)` by `face_area(Face)`, which now supports general polygons. `surface_area(SurfaceMesh)` now also works for general polygon meshes.
-- Replace mixed Voronoi area by barycentric Voronoi area in `voronoi_area()`, because it generalizes better to polygon meshes. Remove `voronoi_area_barycentric()`, because it's now computed by `voronoi_area()`
 - Remove max angle triangulation objective leading to fold-overs.
 - Breaking change: Re-design algorithms API to use a simple function interface.
 - Breaking change: Make helper classes `Heap`, `Quadric`, `NormalCone`, `TriangleKdTree` private.

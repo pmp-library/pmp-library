@@ -192,6 +192,126 @@ void setup_uniform_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L)
     L.setFromTriplets(triplets.begin(), triplets.end());
 }
 
+void setup_mass_matrix_old(const SurfaceMesh& mesh, DiagonalMatrix& M,
+                           bool uniform)
+{
+    const unsigned int n = mesh.n_vertices();
+    Eigen::VectorXd diag(n);
+    for (auto v : mesh.vertices())
+        diag[v.idx()] = uniform ? mesh.valence(v) : voronoi_area_mixed(mesh, v);
+    M = diag.asDiagonal();
+}
+
+void setup_uniform_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
+{
+    const unsigned int n = mesh.n_vertices();
+    Eigen::VectorXd diag(n);
+    for (auto v : mesh.vertices())
+        diag[v.idx()] = mesh.valence(v);
+    M = diag.asDiagonal();
+}
+
+void setup_triangle_mass_matrix(const Eigen::Vector3d& p0,
+                                const Eigen::Vector3d& p1,
+                                const Eigen::Vector3d& p2, DiagonalMatrix& Mtri)
+{
+    // three vertex positions
+    const dvec3 p[3] = {p0, p1, p2};
+
+    // edge vectors
+    dvec3 e[3];
+    for (int i = 0; i < 3; ++i)
+        e[i] = p[(i + 1) % 3] - p[i];
+
+    // compute and check triangle area
+    const auto tri_area = norm(cross(e[0], e[1]));
+    if (tri_area <= std::numeric_limits<double>::min())
+    {
+        Mtri.setZero(3);
+        return;
+    }
+
+    // dot products for each corner (of its two emanating edge vectors)
+    double d[3];
+    for (int i = 0; i < 3; ++i)
+        d[i] = -dot(e[i], e[(i + 2) % 3]);
+
+    // cotangents for each corner: cot = cos/sin = dot(A,B)/norm(cross(A,B))
+    double cot[3];
+    for (int i = 0; i < 3; ++i)
+        cot[i] = d[i] / tri_area;
+
+    // compute area for each corner
+    Eigen::Vector3d area;
+    for (int i = 0; i < 3; ++i)
+    {
+        // angle at corner is obtuse
+        if (d[i] < 0.0)
+        {
+            area[i] = 0.25 * tri_area;
+        }
+        // angle at some other corner is obtuse
+        else if (d[(i + 1) % 3] < 0.0 || d[(i + 2) % 3] < 0.0)
+        {
+            area[i] = 0.125 * tri_area;
+        }
+        // no obtuse angles
+        else
+        {
+            area[i] = 0.125 * (sqrnorm(e[i]) * cot[(i + 2) % 3] +
+                               sqrnorm(e[(i + 2) % 3]) * cot[(i + 1) % 3]);
+        }
+    }
+
+    Mtri = area.asDiagonal();
+}
+
+void setup_polygon_mass_matrix(const DenseMatrix& polygon,
+                               DiagonalMatrix& Mpoly)
+{
+    const int n = (int)polygon.rows();
+
+    // shortcut for triangles
+    if (n == 3)
+    {
+        setup_triangle_mass_matrix(polygon.row(0), polygon.row(1),
+                                   polygon.row(2), Mpoly);
+        return;
+    }
+
+    // compute position of virtual vertex
+    Eigen::VectorXd vweights;
+    compute_virtual_vertex(polygon, vweights);
+    Eigen::Vector3d vvertex = polygon.transpose() * vweights;
+
+    // laplace matrix of refined triangle fan
+    DenseMatrix Mfan = DenseMatrix::Zero(n + 1, n + 1);
+    DiagonalMatrix Mtri;
+    for (int i = 0; i < n; ++i)
+    {
+        const int j = (i + 1) % n;
+
+        // build laplace matrix of one triangle
+        setup_triangle_mass_matrix(polygon.row(i), polygon.row(j), vvertex,
+                                   Mtri);
+
+        // assemble to laplace matrix for refined triangle fan
+        // (we are dealing with diagonal matrices)
+        Mfan.diagonal()[i] += Mtri.diagonal()[0];
+        Mfan.diagonal()[j] += Mtri.diagonal()[1];
+        Mfan.diagonal()[n] += Mtri.diagonal()[2];
+    }
+
+    // build prolongation matrix
+    DenseMatrix P(n + 1, n);
+    P.setIdentity();
+    P.row(n) = vweights;
+
+    // build polygon laplace matrix by sandwiching
+    DenseMatrix PMP = P.transpose() * Mfan * P;
+    Mpoly = PMP.rowwise().sum().asDiagonal();
+}
+
 } // anonymous namespace
 
 //=== public functions  ==============================================================
@@ -286,11 +406,57 @@ void setup_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L,
 
 void setup_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M, bool uniform)
 {
-    const unsigned int n = mesh.n_vertices();
-    Eigen::VectorXd diag(n);
-    for (auto v : mesh.vertices())
-        diag[v.idx()] = uniform ? mesh.valence(v) : voronoi_area(mesh, v);
-    M = diag.asDiagonal();
+    // uniform case
+    if (uniform)
+    {
+        setup_uniform_mass_matrix(mesh, M);
+    }
+
+    // non-uniform case: Voronoi areas
+    else
+    {
+        const int nv = mesh.n_vertices();
+        std::vector<Vertex> vertices; // polygon vertices
+        DenseMatrix polygon;          // positions of polygon vertices
+        DiagonalMatrix Mpoly;         // local mass matrix
+
+        M.setZero(nv);
+
+        for (Face f : mesh.faces())
+        {
+            // collect polygon vertices
+            vertices.clear();
+            for (Vertex v : mesh.vertices(f))
+            {
+                vertices.push_back(v);
+            }
+            const int n = vertices.size();
+
+            // collect their positions
+            polygon.resize(n, 3);
+            for (int i = 0; i < n; ++i)
+            {
+                polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
+            }
+
+            // setup local mass matrix
+            setup_polygon_mass_matrix(polygon, Mpoly);
+
+            // assemble to global mass matrix
+            for (int k = 0; k < n; ++k)
+            {
+                M.diagonal()[vertices[k].idx()] += Mpoly.diagonal()[k];
+            }
+        }
+    }
+
+    if (false)
+    {
+        DiagonalMatrix MM;
+        setup_mass_matrix_old(mesh, MM, uniform);
+        std::cout << "diff of new vs old mass matrix: "
+                  << (M.diagonal() - MM.diagonal()).norm() << std::endl;
+    }
 }
 
 void coordinates_to_matrix(const SurfaceMesh& mesh, DenseMatrix& X)
