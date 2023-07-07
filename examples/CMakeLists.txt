@@ -60,8 +60,8 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
       "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/hemisphere.off@input.off"
   )
 
-  add_executable(mpview mpview.cpp MeshProcessingViewer.cpp
-                        MeshProcessingViewer.h data/shell.html)
+  add_executable(mpview mpview.cpp mesh_processing_viewer.cpp
+                        mesh_processing_viewer.h data/shell.html)
   target_link_libraries(mpview pmp_vis)
   set_target_properties(
     mpview
