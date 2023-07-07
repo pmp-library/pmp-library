@@ -69,8 +69,9 @@ if(PMP_BUILD_VIS)
   add_subdirectory(${IMGUI_SOURCE_DIR})
 endif(PMP_BUILD_VIS)
 
-# setup Eigen
-set(ENV{EIGEN3_ROOT} "external/eigen")
+if(NOT DEFINED EIGEN3_INCLUDE_DIR)
+  set(EIGEN3_INCLUDE_DIR "external/eigen")
+endif()
 find_package(Eigen3 3.4.0 REQUIRED)
 if(EIGEN3_FOUND)
   include_directories(${EIGEN3_INCLUDE_DIR})
