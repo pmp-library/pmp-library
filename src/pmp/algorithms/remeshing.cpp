@@ -453,8 +453,29 @@ void Remeshing::preprocessing()
         // curvature over sharp features edges, leading to high curvatures.
         // prefer tensor analysis over cotan-Laplace, since the former is more
         // robust and gives better results on the boundary.
-        curvature(mesh_, Curvature::max_abs, 1, true, false);
+        // don't smooth curvatures here, since it does not take feature edges
+        // into account.
+        curvature(mesh_, Curvature::max_abs, 0, true, false);
         auto curvatures = mesh_.get_vertex_property<Scalar>("v:curv");
+
+        // smooth curvatures while taking feature edges into account
+        for (auto v : mesh_.vertices())
+        {
+            if (vfeature_ && vfeature_[v])
+                continue;
+            Scalar curv(0), weight, sum_weights(0);
+            for (auto vh : mesh_.halfedges(v))
+            {
+                auto vv = mesh_.to_vertex(vh);
+                if (vfeature_ && vfeature_[vv])
+                    continue;
+                weight = std::max(0.0, cotan_weight(mesh_, mesh_.edge(vh)));
+                sum_weights += weight;
+                curv += weight * curvatures[vv];
+            }
+            if (sum_weights)
+                curvatures[v] = curv / sum_weights;
+        }
 
         // use vsizing_ to store/smooth curvatures to avoid another vertex property
 

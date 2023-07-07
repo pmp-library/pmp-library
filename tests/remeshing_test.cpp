@@ -34,7 +34,7 @@ TEST(RemeshingTest, adaptive_remeshing_with_boundary)
     adaptive_remeshing(mesh, 0.01 * bb, // min length
                        1.0 * bb,        // max length
                        0.01 * bb);      // approx. error
-    EXPECT_EQ(mesh.n_vertices(), size_t(65));
+    EXPECT_EQ(mesh.n_vertices(), size_t(104));
 }
 
 TEST(RemeshingTest, adaptive_remeshing_with_selection)
