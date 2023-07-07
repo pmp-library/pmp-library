@@ -15,9 +15,6 @@ namespace pmp {
 class Shader
 {
 public:
-    //! default constructor
-    Shader();
-
     //! default destructor
     ~Shader();
 

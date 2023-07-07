@@ -6,11 +6,8 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <cassert>
 
 namespace pmp {
-
-Shader::Shader() = default;
 
 Shader::~Shader()
 {
