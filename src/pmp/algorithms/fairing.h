@@ -7,12 +7,12 @@
 
 namespace pmp {
 
-//! minimize surface area
+//! Minimize surface area.
 //! \sa fair()
 //! \ingroup algorithms
 void minimize_area(SurfaceMesh& mesh);
 
-//! minimize surface curvature
+//! Minimize surface curvature.
 //! \sa fair()
 //! \ingroup algorithms
 void minimize_curvature(SurfaceMesh& mesh);
