@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "pmp/Types.h"
+#include "pmp/types.h"
 
 template <typename T>
 void tfread(FILE* in, const T& t)

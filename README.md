@@ -34,7 +34,7 @@ Run the mesh processing app:
 Build your own tool:
 
 ```cpp
-#include <pmp/SurfaceMesh.h>
+#include <pmp/surface_mesh.h>
 
 int main(void)
 {

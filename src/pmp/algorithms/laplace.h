@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "pmp/SurfaceMesh.h"
+#include "pmp/surface_mesh.h"
 #include "pmp/algorithms/numerics.h"
 
 namespace pmp {

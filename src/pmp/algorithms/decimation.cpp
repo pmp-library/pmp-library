@@ -7,7 +7,7 @@
 #include <limits>
 #include <memory>
 
-#include "pmp/algorithms/DistancePointTriangle.h"
+#include "pmp/algorithms/distance_point_triangle.h"
 #include "pmp/algorithms/normals.h"
 
 namespace pmp {

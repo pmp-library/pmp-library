@@ -4,7 +4,7 @@
 #include "pmp/io/read_off.h"
 
 #include "pmp/io/helpers.h"
-#include "pmp/Exceptions.h"
+#include "pmp/exceptions.h"
 
 namespace pmp {
 

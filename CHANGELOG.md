@@ -22,6 +22,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Consistently use lowercase file names
 - Rename `Timer` to `StopWatch`
 - `SurfaceMeshGL` renamed to `Renderer` and de-coupled from `SurfaceMesh`
 - Replace `triangle_area(Face)` by `face_area(Face)`, which now supports general polygons. `surface_area(SurfaceMesh)` now also works for general polygon meshes.

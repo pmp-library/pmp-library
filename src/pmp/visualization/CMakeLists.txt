@@ -1,6 +1,6 @@
 file(GLOB SRCS ./*.cpp)
 file(GLOB HDRS ./*.h)
-set(HDRS ${HDRS} "../MatVec.h")
+set(HDRS ${HDRS} "../mat_vec.h")
 
 if(EMSCRIPTEN)
 

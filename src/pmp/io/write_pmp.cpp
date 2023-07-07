@@ -2,7 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/io/write_pmp.h"
-#include "pmp/Types.h"
+#include "pmp/types.h"
 #include "pmp/io/helpers.h"
 
 namespace pmp {
