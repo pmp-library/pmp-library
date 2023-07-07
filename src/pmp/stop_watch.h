@@ -8,30 +8,27 @@
 
 namespace pmp {
 
-//! A simple timer class.
+//! A simple stop watch class.
 //! \ingroup core
-class Timer
+class StopWatch
 {
 public:
-    //! Constructor
-    Timer() = default;
-
-    //! Start time measurement
+    //! Start time measurement.
     void start()
     {
         elapsed_ = 0.0;
-        cont();
+        resume();
     }
 
-    //! Continue measurement, accumulates elapased times
-    void cont()
+    //! Continue measurement, accumulates elapsed times.
+    void resume()
     {
         start_time_ = hclock::now();
         is_running_ = true;
     }
 
-    //! Stop time measurement, return elapsed time in ms
-    Timer& stop()
+    //! Stop time measurement.
+    StopWatch& stop()
     {
         using std::chrono::duration_cast;
         end_time_ = hclock::now();
@@ -46,7 +43,7 @@ public:
     {
         if (is_running_)
         {
-            std::cerr << "Timer: stop timer before calling elapsed()\n";
+            std::cerr << "StopWatch: stop timer before calling elapsed()\n";
         }
         return 1000.0 * elapsed_;
     }
@@ -56,15 +53,16 @@ private:
     using time_point = std::chrono::time_point<hclock>;
     using duration = std::chrono::duration<double>;
 
-    time_point start_time_, end_time_;
+    time_point start_time_;
+    time_point end_time_;
     double elapsed_{0.0};
     bool is_running_{false};
 };
 
-//! output a timer to a stream
-inline std::ostream& operator<<(std::ostream& os, const Timer& timer)
+//! output a elapsed time to a stream
+inline std::ostream& operator<<(std::ostream& os, const StopWatch& watch)
 {
-    os << timer.elapsed() << " ms";
+    os << watch.elapsed() << " ms";
     return os;
 }
 

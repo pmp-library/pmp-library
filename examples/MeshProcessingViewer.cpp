@@ -14,7 +14,7 @@
 #include <pmp/algorithms/smoothing.h>
 #include <pmp/algorithms/triangulation.h>
 #include <pmp/algorithms/DifferentialGeometry.h>
-#include <pmp/utilities.h>
+#include <pmp/algorithms/utilities.h>
 
 #include <imgui.h>
 

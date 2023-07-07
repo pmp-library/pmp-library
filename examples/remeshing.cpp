@@ -4,7 +4,7 @@
 #include <pmp/visualization/MeshViewer.h>
 #include <pmp/algorithms/features.h>
 #include <pmp/algorithms/remeshing.h>
-#include <pmp/utilities.h>
+#include <pmp/algorithms/utilities.h>
 
 #include <imgui.h>
 

@@ -10,14 +10,11 @@
 
 namespace pmp {
 
-//! shader class for easy handling of the shader
+//! Class for handling shaders.
 //! \ingroup visualization
 class Shader
 {
 public:
-    //! default constructor
-    Shader();
-
     //! default destructor
     ~Shader();
 
@@ -25,15 +22,15 @@ public:
     bool is_valid() const { return pid_ != 0; }
 
     //! get source from strings, compile, and link vertex and fragment shader,
-    //! \param vshader string with the adress to the vertex shader
-    //! \param fshader string with the adress to the fragment shader
+    //! \param vshader string with the address to the vertex shader
+    //! \param fshader string with the address to the fragment shader
     bool source(const char* vshader, const char* fshader);
 
     //! load (from file), compile, and link vertex and fragment shader,
     //! and optional geometry and tessellation shaders.
     //! unused shaders should be NULL.
-    //! \param vfile string with the adress to the vertex shader
-    //! \param ffile string with the adress to the fragment shader
+    //! \param vfile string with the address to the vertex shader
+    //! \param ffile string with the address to the fragment shader
     //! \param gfile filename of geometry shader
     //! \param tcfile filename of tessellation control shader
     //! \param tefile filename of tessellation evaluation shader

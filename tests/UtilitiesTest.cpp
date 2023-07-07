@@ -5,7 +5,7 @@
 
 #include "pmp/SurfaceMesh.h"
 #include "pmp/Types.h"
-#include "pmp/utilities.h"
+#include "pmp/algorithms/utilities.h"
 #include "Helpers.h"
 #include "SurfaceMeshTest.h"
 
@@ -32,4 +32,10 @@ TEST_F(UtilitiesTest, flip_faces)
     flip_faces(mesh);
     auto vertices_after = vertex_indices(f0);
     EXPECT_EQ(vertices_before, vertices_after);
+}
+
+TEST_F(UtilitiesTest, min_face_area)
+{
+    add_quad();
+    EXPECT_EQ(min_face_area(mesh), 1.0);
 }

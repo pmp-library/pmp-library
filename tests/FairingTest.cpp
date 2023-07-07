@@ -5,7 +5,7 @@
 
 #include "pmp/algorithms/fairing.h"
 #include "pmp/algorithms/subdivision.h"
-#include "pmp/utilities.h"
+#include "pmp/algorithms/utilities.h"
 #include "Helpers.h"
 
 using namespace pmp;

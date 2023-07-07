@@ -16,7 +16,6 @@
 #include "pmp/algorithms/DifferentialGeometry.h"
 #include "pmp/algorithms/DistancePointTriangle.h"
 #include "pmp/BoundingBox.h"
-#include "pmp/Timer.h"
 
 namespace pmp {
 namespace {
