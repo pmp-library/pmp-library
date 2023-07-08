@@ -247,34 +247,16 @@ void setup_polygon_laplace_matrix(const DenseMatrix& polygon,
     Lpoly = P.transpose() * Lfan * P;
 }
 
-// gradient wrt p0 of hat basis function
-Eigen::Vector3d gradient_hat_function(const Eigen::Vector3d& p0,
-                                      const Eigen::Vector3d& p1,
-                                      const Eigen::Vector3d& p2)
-{
-    const double area = triarea(p0, p1, p2);
-
-    if (area > std::numeric_limits<double>::min())
-    {
-        const Eigen::Vector3d site = p0 - p1;
-        const Eigen::Vector3d base = p2 - p1;
-        const double bn = base.norm();
-        Eigen::Vector3d grad = site - (site.dot(base) / (bn * bn)) * base;
-        grad *= base.norm() / grad.norm() / (2.0 * area);
-        return grad;
-    }
-
-    return Eigen::Vector3d(0, 0, 0);
-}
-
 void setup_triangle_gradient_matrix(const Eigen::Vector3d& p0,
                                     const Eigen::Vector3d& p1,
                                     const Eigen::Vector3d& p2, DenseMatrix& G)
 {
     G.resize(3, 3);
-    G.col(0) = gradient_hat_function(p0, p1, p2);
-    G.col(1) = gradient_hat_function(p1, p2, p0);
-    G.col(2) = gradient_hat_function(p2, p0, p1);
+    Eigen::Vector3d n = (p1 - p0).cross(p2 - p0);
+    n /= n.squaredNorm();
+    G.col(0) = n.cross(p2-p1);
+    G.col(1) = n.cross(p0-p2);
+    G.col(2) = n.cross(p1-p0);
 }
 
 void setup_polygon_gradient_matrix(const DenseMatrix& polygon,
