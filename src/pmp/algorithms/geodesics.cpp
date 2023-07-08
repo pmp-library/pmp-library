@@ -2,6 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/algorithms/geodesics.h"
+#include "pmp/algorithms/laplace.h"
 
 #include <cassert>
 #include <set>
@@ -478,6 +479,27 @@ Scalar Geodesics::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
     // use Dijkstra as fall-back
     return dijkstra;
 }
+
+Scalar max_diagonal_length(const SurfaceMesh& mesh)
+{
+    Scalar maxdiag, length;
+    for (auto f : mesh.faces())
+    {
+        for (auto v : mesh.vertices(f))
+        {
+            for (auto vv : mesh.vertices(f))
+            {
+                length = distance(mesh.position(v), mesh.position(vv));
+                if (length > maxdiag)
+                {
+                    maxdiag = length;
+                }
+            }
+        }
+    }
+    return maxdiag;
+}
+
 } // namespace
 
 void distance_to_texture_coordinates(SurfaceMesh& mesh)
@@ -515,6 +537,61 @@ unsigned int geodesics(SurfaceMesh& mesh, const std::vector<Vertex>& seed,
 {
     return Geodesics(mesh, true /*virtual edges*/)
         .compute(seed, maxdist, maxnum, neighbors);
+}
+
+void geodesics_heat(SurfaceMesh& mesh, const std::vector<Vertex>& seed)
+{
+    const unsigned int n = mesh.n_vertices();
+
+    // setup all matrices
+    SparseMatrix G, D, L;
+    DiagonalMatrix M;
+    setup_gradient_matrix(mesh, G);
+    setup_divergence_matrix(mesh, D);
+    setup_mass_matrix(mesh, M);
+    L = D * G;
+
+    // diffusion time step (squared mean edge length)
+    double h = max_diagonal_length(mesh);
+    const double dt = h * h;
+
+    // solve heat diffusion from seed points
+    SparseMatrix A = SparseMatrix(M) - dt * L;
+    Eigen::SparseVector<double> b(n);
+    for (auto s : seed)
+    {
+        b.coeffRef(s.idx()) = 1.0;
+    }
+    Eigen::VectorXd heat = cholesky_solve(A, b);
+
+    // compute and normalize heat gradient
+    Eigen::VectorXd grad = G * heat;
+    for (int i = 0; i < grad.rows(); i += 3)
+    {
+        dvec3& g = *reinterpret_cast<dvec3*>(&grad[i]);
+        double ng = norm(g);
+        if (ng > std::numeric_limits<double>::min())
+        {
+            g /= ng;
+        }
+    }
+
+    // solve Poisson system for distances
+    Eigen::VectorXd dist = cholesky_solve(L, D * (-grad));
+
+    // shift distances value such that min dist is zero
+    double mindist = dist.minCoeff();
+    for (int i = 0; i < dist.rows(); ++i)
+    {
+        dist[i] -= mindist;
+    }
+
+    // copy result
+    auto distance = mesh.vertex_property<Scalar>("geodesic:distance");
+    for (auto v : mesh.vertices())
+    {
+        distance[v] = dist[v.idx()];
+    }
 }
 
 } // namespace pmp

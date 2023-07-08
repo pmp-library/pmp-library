@@ -18,6 +18,20 @@
 
 #include <imgui.h>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+MeshProcessingViewer* instance = nullptr;
+void onload(const char* filename)
+{
+    if (instance)
+        instance->load_mesh(filename);
+}
+void onerror(const char* filename)
+{
+    std::cerr << "could not load " << filename << std::endl;
+}
+#endif
+
 using namespace pmp;
 
 MeshProcessingViewer::MeshProcessingViewer(const char* title, int width,
@@ -54,7 +68,15 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
         }
         case GLFW_KEY_O: // change face orientation
         {
+#ifdef __EMSCRIPTEN__
+            // [fileHandle] = await window.showOpenFilePicker();
+            instance = this;
+            EM_ASM(console.log("mario"););
+            emscripten_async_wget("icosphere.off", "input.off", onload,
+                                  onerror);
+#else
             flip_faces(mesh_);
+#endif
             update_mesh();
             break;
         }
@@ -412,7 +434,8 @@ void MeshProcessingViewer::mouse(int button, int action, int mods)
             seed.push_back(v);
 
             // compute geodesic distance
-            geodesics(mesh_, seed);
+            // geodesics(mesh_, seed);
+            geodesics_heat(mesh_, seed);
 
             // setup texture coordinates for visualization
             distance_to_texture_coordinates(mesh_);

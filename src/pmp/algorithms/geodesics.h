@@ -15,7 +15,7 @@ namespace pmp {
 //! the seed vertices, implemented by a heap structure.
 //! See \cite kimmel_1998_geodesic for details.
 //! \param mesh The input mesh, modified in place.
-//! \param[in] seed The vector of seed vertices.
+//! \param[in] seeds The vector of seed vertices.
 //! \param[in] maxdist The maximum distance up to which to compute the
 //! geodesic distances.
 //! \param[in] maxnum The maximum number of neighbors up to which to
@@ -24,10 +24,20 @@ namespace pmp {
 //! \return The number of neighbors that have been found.
 //! \ingroup algorithms
 unsigned int geodesics(
-    SurfaceMesh& mesh, const std::vector<Vertex>& seed,
+    SurfaceMesh& mesh, const std::vector<Vertex>& seeds,
     Scalar maxdist = std::numeric_limits<Scalar>::max(),
     unsigned int maxnum = std::numeric_limits<unsigned int>::max(),
     std::vector<Vertex>* neighbors = nullptr);
+
+//! \brief Compute geodesic distance from a set of seed vertices
+//! \details Compute geodesic distances based on the heat method,
+//! by solving two Poisson systems. Works on general polygon meshes.
+//! See \cite crane_2013_geodesics for details.
+//! \param mesh The input mesh, modified in place.
+//! \param seeds The vector of seed vertices.
+//! \pre Input mesh needs to be a triangle mesh.
+//! \ingroup algorithms
+void geodesics_heat(SurfaceMesh& mesh, const std::vector<Vertex>& seeds);
 
 //! \brief Use the normalized distances as texture coordinates
 //! \details Stores the normalized distances in a vertex property of type
