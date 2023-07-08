@@ -482,7 +482,7 @@ Scalar Geodesics::distance(Vertex v0, Vertex v1, Vertex v2, Scalar r0,
 
 Scalar max_diagonal_length(const SurfaceMesh& mesh)
 {
-    Scalar maxdiag, length;
+    Scalar maxdiag(0.0), length;
     for (auto f : mesh.faces())
     {
         for (auto v : mesh.vertices(f))
