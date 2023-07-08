@@ -11,6 +11,13 @@ namespace pmp {
 
 namespace {
 
+// compute triangle area (in double)
+double triarea(const Eigen::Vector3d& p0, const Eigen::Vector3d& p1,
+               const Eigen::Vector3d& p2)
+{
+    return 0.5 * (p1 - p0).cross(p2 - p0).norm();
+}
+
 // compute virtual vertex per polygon, represented by affine weights,
 // such that the resulting triangle fan minimizes the sum of squared triangle areas
 void compute_virtual_vertex(const DenseMatrix& poly, Eigen::VectorXd& weights)
@@ -49,166 +56,6 @@ void compute_virtual_vertex(const DenseMatrix& poly, Eigen::VectorXd& weights)
     b(n) = 1.0;
 
     weights = A.completeOrthogonalDecomposition().solve(b).topRows(n);
-}
-
-// compute 3x3 laplace matrix for a triangle
-void setup_triangle_laplace_matrix(const Eigen::Vector3d& p0,
-                                   const Eigen::Vector3d& p1,
-                                   const Eigen::Vector3d& p2, DenseMatrix& Ltri)
-{
-    double l[3], l2[3], cot[3];
-
-    // squared edge lengths
-    l2[0] = (p1 - p2).squaredNorm();
-    l2[1] = (p0 - p2).squaredNorm();
-    l2[2] = (p0 - p1).squaredNorm();
-
-    // edge lengths
-    l[0] = sqrt(l2[0]);
-    l[1] = sqrt(l2[1]);
-    l[2] = sqrt(l2[2]);
-
-    // triangle area
-    const double arg = (l[0] + (l[1] + l[2])) * (l[2] - (l[0] - l[1])) *
-                       (l[2] + (l[0] - l[1])) * (l[0] + (l[1] - l[2]));
-    const double area = 0.5 * sqrt(arg);
-
-    if (area > std::numeric_limits<double>::min())
-    {
-        // cotangents of angles
-        cot[0] = 0.25 * (l2[1] + l2[2] - l2[0]) / area;
-        cot[1] = 0.25 * (l2[2] + l2[0] - l2[1]) / area;
-        cot[2] = 0.25 * (l2[0] + l2[1] - l2[2]) / area;
-        // cot[0] = clamp_cot(cot[0]);
-        // cot[1] = clamp_cot(cot[1]);
-        // cot[2] = clamp_cot(cot[2]);
-
-        Ltri(0, 0) = cot[1] + cot[2];
-        Ltri(1, 1) = cot[0] + cot[2];
-        Ltri(2, 2) = cot[0] + cot[1];
-
-        Ltri(1, 0) = Ltri(0, 1) = -cot[2];
-        Ltri(2, 0) = Ltri(0, 2) = -cot[1];
-        Ltri(2, 1) = Ltri(1, 2) = -cot[0];
-    }
-}
-
-// compute NxN laplace matrix for an N-gon
-void setup_polygon_laplace_matrix(const DenseMatrix& polygon,
-                                  DenseMatrix& Lpoly)
-{
-    const int n = (int)polygon.rows();
-    Lpoly = DenseMatrix::Zero(n, n);
-
-    // shortcut for triangles
-    if (n == 3)
-    {
-        setup_triangle_laplace_matrix(polygon.row(0), polygon.row(1),
-                                      polygon.row(2), Lpoly);
-        return;
-    }
-
-    // compute position of virtual vertex
-    Eigen::VectorXd vweights;
-    compute_virtual_vertex(polygon, vweights);
-    Eigen::Vector3d vvertex = polygon.transpose() * vweights;
-
-    // laplace matrix of refined triangle fan
-    DenseMatrix Lfan = DenseMatrix::Zero(n + 1, n + 1);
-    DenseMatrix Ltri(3, 3);
-    for (int i = 0; i < n; ++i)
-    {
-        const int j = (i + 1) % n;
-
-        // build laplace matrix of one triangle
-        setup_triangle_laplace_matrix(polygon.row(i), polygon.row(j), vvertex,
-                                      Ltri);
-
-        // assemble to laplace matrix for refined triangle fan
-        Lfan(i, i) += Ltri(0, 0);
-        Lfan(i, j) += Ltri(0, 1);
-        Lfan(i, n) += Ltri(0, 2);
-        Lfan(j, i) += Ltri(1, 0);
-        Lfan(j, j) += Ltri(1, 1);
-        Lfan(j, n) += Ltri(1, 2);
-        Lfan(n, i) += Ltri(2, 0);
-        Lfan(n, j) += Ltri(2, 1);
-        Lfan(n, n) += Ltri(2, 2);
-    }
-
-    // build prolongation matrix
-    DenseMatrix P(n + 1, n);
-    P.setIdentity();
-    P.row(n) = vweights;
-
-    // build polygon laplace matrix by sandwiching
-    Lpoly = P.transpose() * Lfan * P;
-}
-
-void setup_laplace_matrix_old(const SurfaceMesh& mesh, SparseMatrix& L,
-                              bool uniform, bool clamp)
-{
-    const unsigned int n = mesh.n_vertices();
-    std::vector<Eigen::Triplet<double>> triplets;
-    triplets.reserve(7 * n);
-
-    for (auto vi : mesh.vertices())
-    {
-        Scalar sum_weights = 0.0;
-        for (auto h : mesh.halfedges(vi))
-        {
-            Vertex vj = mesh.to_vertex(h);
-            Scalar w = uniform ? 1.0 : 0.5 * cotan_weight(mesh, mesh.edge(h));
-            if (clamp && w < 0.0)
-                w = 0.0;
-            sum_weights += w;
-            triplets.emplace_back(vi.idx(), vj.idx(), w);
-        }
-        triplets.emplace_back(vi.idx(), vi.idx(), -sum_weights);
-    }
-
-    L.resize(n, n);
-    L.setFromTriplets(triplets.begin(), triplets.end());
-}
-
-void setup_uniform_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L)
-{
-    const unsigned int n = mesh.n_vertices();
-    std::vector<Eigen::Triplet<double>> triplets;
-    triplets.reserve(7 * n);
-
-    for (auto vi : mesh.vertices())
-    {
-        Scalar sum_weights = 0.0;
-        for (auto vj : mesh.vertices(vi))
-        {
-            sum_weights += 1.0;
-            triplets.emplace_back(vi.idx(), vj.idx(), 1.0);
-        }
-        triplets.emplace_back(vi.idx(), vi.idx(), -sum_weights);
-    }
-
-    L.resize(n, n);
-    L.setFromTriplets(triplets.begin(), triplets.end());
-}
-
-void setup_mass_matrix_old(const SurfaceMesh& mesh, DiagonalMatrix& M,
-                           bool uniform)
-{
-    const unsigned int n = mesh.n_vertices();
-    Eigen::VectorXd diag(n);
-    for (auto v : mesh.vertices())
-        diag[v.idx()] = uniform ? mesh.valence(v) : voronoi_area_mixed(mesh, v);
-    M = diag.asDiagonal();
-}
-
-void setup_uniform_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
-{
-    const unsigned int n = mesh.n_vertices();
-    Eigen::VectorXd diag(n);
-    for (auto v : mesh.vertices())
-        diag[v.idx()] = mesh.valence(v);
-    M = diag.asDiagonal();
 }
 
 void setup_triangle_mass_matrix(const Eigen::Vector3d& p0,
@@ -312,151 +159,452 @@ void setup_polygon_mass_matrix(const DenseMatrix& polygon,
     Mpoly = PMP.rowwise().sum().asDiagonal();
 }
 
+void setup_triangle_laplace_matrix(const Eigen::Vector3d& p0,
+                                   const Eigen::Vector3d& p1,
+                                   const Eigen::Vector3d& p2, DenseMatrix& Ltri)
+{
+    double l[3], l2[3], cot[3];
+
+    // squared edge lengths
+    l2[0] = (p1 - p2).squaredNorm();
+    l2[1] = (p0 - p2).squaredNorm();
+    l2[2] = (p0 - p1).squaredNorm();
+
+    // edge lengths
+    l[0] = sqrt(l2[0]);
+    l[1] = sqrt(l2[1]);
+    l[2] = sqrt(l2[2]);
+
+    // triangle area
+    const double arg = (l[0] + (l[1] + l[2])) * (l[2] - (l[0] - l[1])) *
+                       (l[2] + (l[0] - l[1])) * (l[0] + (l[1] - l[2]));
+    const double area = 0.5 * sqrt(arg);
+
+    if (area > std::numeric_limits<double>::min())
+    {
+        // cotangents of angles
+        cot[0] = 0.25 * (l2[1] + l2[2] - l2[0]) / area;
+        cot[1] = 0.25 * (l2[2] + l2[0] - l2[1]) / area;
+        cot[2] = 0.25 * (l2[0] + l2[1] - l2[2]) / area;
+
+        Ltri(0, 0) = cot[1] + cot[2];
+        Ltri(1, 1) = cot[0] + cot[2];
+        Ltri(2, 2) = cot[0] + cot[1];
+        Ltri(1, 0) = Ltri(0, 1) = -cot[2];
+        Ltri(2, 0) = Ltri(0, 2) = -cot[1];
+        Ltri(2, 1) = Ltri(1, 2) = -cot[0];
+    }
+}
+
+void setup_polygon_laplace_matrix(const DenseMatrix& polygon,
+                                  DenseMatrix& Lpoly)
+{
+    const int n = (int)polygon.rows();
+    Lpoly = DenseMatrix::Zero(n, n);
+
+    // shortcut for triangles
+    if (n == 3)
+    {
+        setup_triangle_laplace_matrix(polygon.row(0), polygon.row(1),
+                                      polygon.row(2), Lpoly);
+        return;
+    }
+
+    // compute position of virtual vertex
+    Eigen::VectorXd vweights;
+    compute_virtual_vertex(polygon, vweights);
+    Eigen::Vector3d vvertex = polygon.transpose() * vweights;
+
+    // laplace matrix of refined triangle fan
+    DenseMatrix Lfan = DenseMatrix::Zero(n + 1, n + 1);
+    DenseMatrix Ltri(3, 3);
+    for (int i = 0; i < n; ++i)
+    {
+        const int j = (i + 1) % n;
+
+        // build laplace matrix of one triangle
+        setup_triangle_laplace_matrix(polygon.row(i), polygon.row(j), vvertex,
+                                      Ltri);
+
+        // assemble to laplace matrix for refined triangle fan
+        Lfan(i, i) += Ltri(0, 0);
+        Lfan(i, j) += Ltri(0, 1);
+        Lfan(i, n) += Ltri(0, 2);
+        Lfan(j, i) += Ltri(1, 0);
+        Lfan(j, j) += Ltri(1, 1);
+        Lfan(j, n) += Ltri(1, 2);
+        Lfan(n, i) += Ltri(2, 0);
+        Lfan(n, j) += Ltri(2, 1);
+        Lfan(n, n) += Ltri(2, 2);
+    }
+
+    // build prolongation matrix
+    DenseMatrix P(n + 1, n);
+    P.setIdentity();
+    P.row(n) = vweights;
+
+    // build polygon laplace matrix by sandwiching
+    Lpoly = P.transpose() * Lfan * P;
+}
+
+// gradient wrt p0 of hat basis function
+Eigen::Vector3d gradient_hat_function(const Eigen::Vector3d& p0,
+                                      const Eigen::Vector3d& p1,
+                                      const Eigen::Vector3d& p2)
+{
+    const double area = triarea(p0, p1, p2);
+
+    if (area > std::numeric_limits<double>::min())
+    {
+        const Eigen::Vector3d site = p0 - p1;
+        const Eigen::Vector3d base = p2 - p1;
+        const double bn = base.norm();
+        Eigen::Vector3d grad = site - (site.dot(base) / (bn * bn)) * base;
+        grad *= base.norm() / grad.norm() / (2.0 * area);
+        return grad;
+    }
+
+    return Eigen::Vector3d(0, 0, 0);
+}
+
+void setup_triangle_gradient_matrix(const Eigen::Vector3d& p0,
+                                    const Eigen::Vector3d& p1,
+                                    const Eigen::Vector3d& p2, DenseMatrix& G)
+{
+    G.resize(3, 3);
+    G.col(0) = gradient_hat_function(p0, p1, p2);
+    G.col(1) = gradient_hat_function(p1, p2, p0);
+    G.col(2) = gradient_hat_function(p2, p0, p1);
+}
+
+void setup_polygon_gradient_matrix(const DenseMatrix& polygon,
+                                   DenseMatrix& Gpoly)
+{
+    const int n = (int)polygon.rows();
+
+    // shortcut for triangles
+    if (n == 3)
+    {
+        setup_triangle_gradient_matrix(polygon.row(0), polygon.row(1),
+                                       polygon.row(2), Gpoly);
+        return;
+    }
+
+    // compute position of virtual vertex
+    Eigen::VectorXd vweights;
+    compute_virtual_vertex(polygon, vweights);
+    Eigen::Vector3d vvertex = polygon.transpose() * vweights;
+
+    DenseMatrix Gfan = DenseMatrix::Zero(3 * n, n + 1);
+    DenseMatrix Gtri(3, 3);
+    int row = 0;
+    for (int i = 0; i < n; ++i)
+    {
+        const int j = (i + 1) % n;
+
+        // build laplace matrix of one triangle
+        setup_triangle_gradient_matrix(polygon.row(i), polygon.row(j), vvertex,
+                                       Gtri);
+
+        // assemble to matrix for triangle fan
+        for (int k = 0; k < 3; ++k)
+        {
+            Gfan(row + k, i) += Gtri(k, 0);
+            Gfan(row + k, j) += Gtri(k, 1);
+            Gfan(row + k, n) += Gtri(k, 2);
+        }
+
+        row += 3;
+    }
+
+    // build prolongation matrix
+    DenseMatrix P(n + 1, n);
+    P.setIdentity();
+    P.row(n) = vweights;
+
+    // build polygon gradient matrix by sandwiching (from left only)
+    Gpoly = Gfan * P;
+}
+
+void setup_divmass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
+{
+    // how many virtual triangles will we have after refinement?
+    // triangles are not refined, other polygons are.
+    unsigned int nt = 0;
+    for (auto f : mesh.faces())
+    {
+        const unsigned int v = mesh.valence(f);
+        nt += v == 3 ? 1 : v;
+    }
+
+    // initialize global matrix
+    M.resize(3 * nt);
+    auto& diag = M.diagonal();
+
+    std::vector<Vertex> vertices; // polygon vertices
+    DenseMatrix polygon;          // positions of polygon vertices
+
+    unsigned int idx = 0;
+
+    for (Face f : mesh.faces())
+    {
+        // collect polygon vertices
+        vertices.clear();
+        for (Vertex v : mesh.vertices(f))
+        {
+            vertices.push_back(v);
+        }
+        const int n = vertices.size();
+
+        // collect their positions
+        polygon.resize(n, 3);
+        for (int i = 0; i < n; ++i)
+        {
+            polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
+        }
+
+        // shortcut for triangles
+        if (n == 3)
+        {
+            const double area =
+                triarea(polygon.row(0), polygon.row(1), polygon.row(2));
+            diag[idx++] = area;
+            diag[idx++] = area;
+            diag[idx++] = area;
+        }
+
+        // general polygon
+        else
+        {
+            // compute position of virtual vertex
+            Eigen::VectorXd vweights;
+            compute_virtual_vertex(polygon, vweights);
+            Eigen::Vector3d vvertex = polygon.transpose() * vweights;
+
+            for (int i = 0; i < n; ++i)
+            {
+                const double area =
+                    triarea(polygon.row(i), polygon.row((i + 1) % n), vvertex);
+
+                diag[idx++] = area;
+                diag[idx++] = area;
+                diag[idx++] = area;
+            }
+        }
+    }
+    assert(idx == 3 * nt);
+}
+
 } // anonymous namespace
 
 //=== public functions  ==============================================================
 
-void setup_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L,
-                          bool uniform, bool clamp)
+void setup_uniform_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
 {
-    // uniform Laplace
-    if (uniform)
+    const unsigned int n = mesh.n_vertices();
+    Eigen::VectorXd diag(n);
+    for (auto v : mesh.vertices())
+        diag[v.idx()] = mesh.valence(v);
+    M = diag.asDiagonal();
+}
+
+void setup_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
+{
+    const int nv = mesh.n_vertices();
+    std::vector<Vertex> vertices; // polygon vertices
+    DenseMatrix polygon;          // positions of polygon vertices
+    DiagonalMatrix Mpoly;         // local mass matrix
+
+    M.setZero(nv);
+
+    for (Face f : mesh.faces())
     {
-        setup_uniform_laplace_matrix(mesh, L);
-    }
-
-    // cotan Laplace
-    else
-    {
-        const int nv = mesh.n_vertices();
-        std::vector<Vertex> vertices; // polygon vertices
-        DenseMatrix polygon;          // positions of polygon vertices
-        DenseMatrix Lpoly;            // local laplace matrix
-
-        std::vector<Eigen::Triplet<double>> triplets;
-        triplets.reserve(7 * nv);
-
-        for (Face f : mesh.faces())
+        // collect polygon vertices
+        vertices.clear();
+        for (Vertex v : mesh.vertices(f))
         {
-            // collect polygon vertices
-            vertices.clear();
-            for (Vertex v : mesh.vertices(f))
-            {
-                vertices.push_back(v);
-            }
-            const int n = vertices.size();
+            vertices.push_back(v);
+        }
+        const int n = vertices.size();
 
-            // collect their positions
-            polygon.resize(n, 3);
-            for (int i = 0; i < n; ++i)
-            {
-                polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
-            }
-
-            // setup local laplace matrix
-            setup_polygon_laplace_matrix(polygon, Lpoly);
-
-            // assemble to global laplace matrix
-            for (int j = 0; j < n; ++j)
-            {
-                for (int k = 0; k < n; ++k)
-                {
-                    triplets.emplace_back(vertices[k].idx(), vertices[j].idx(),
-                                          -Lpoly(k, j));
-                }
-            }
+        // collect their positions
+        polygon.resize(n, 3);
+        for (int i = 0; i < n; ++i)
+        {
+            polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
         }
 
-        // build sparse matrix from triplets
-        L.resize(nv, nv);
-        L.setFromTriplets(triplets.begin(), triplets.end());
+        // setup local mass matrix
+        setup_polygon_mass_matrix(polygon, Mpoly);
 
-        // clamp negative off-diagonal entries to zero
-        if (clamp)
+        // assemble to global mass matrix
+        for (int k = 0; k < n; ++k)
         {
-            for (unsigned int k = 0; k < L.outerSize(); k++)
-            {
-                double diag_offset(0.0);
-
-                for (SparseMatrix::InnerIterator iter(L, k); iter; ++iter)
-                {
-                    if (iter.row() != iter.col() && iter.value() < 0.0)
-                    {
-                        diag_offset += -iter.value();
-                        iter.valueRef() = 0.0;
-                    }
-                }
-                for (SparseMatrix::InnerIterator iter(L, k); iter; ++iter)
-                {
-                    if (iter.row() == iter.col() && iter.value() < 0.0)
-                        iter.valueRef() -= diag_offset;
-                }
-            }
+            M.diagonal()[vertices[k].idx()] += Mpoly.diagonal()[k];
         }
-    }
-
-    if (false)
-    {
-        SparseMatrix LL;
-        setup_laplace_matrix_old(mesh, LL, uniform, clamp);
-        std::cout << "diff of new vs old laplace matrix: " << (L - LL).norm()
-                  << std::endl;
     }
 }
 
-void setup_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M, bool uniform)
+void setup_uniform_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L)
 {
-    // uniform case
-    if (uniform)
+    const unsigned int n = mesh.n_vertices();
+
+    std::vector<Triplet> triplets;
+    triplets.reserve(8 * n); // conservative estimate for triangle meshes
+
+    for (auto vi : mesh.vertices())
     {
-        setup_uniform_mass_matrix(mesh, M);
+        Scalar sum_weights = 0.0;
+        for (auto vj : mesh.vertices(vi))
+        {
+            sum_weights += 1.0;
+            triplets.emplace_back(vi.idx(), vj.idx(), 1.0);
+        }
+        triplets.emplace_back(vi.idx(), vi.idx(), -sum_weights);
     }
 
-    // non-uniform case: Voronoi areas
-    else
+    L.resize(n, n);
+    L.setFromTriplets(triplets.begin(), triplets.end());
+}
+
+void setup_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L, bool clamp)
+{
+    const int nv = mesh.n_vertices();
+    const int nf = mesh.n_faces();
+    std::vector<Vertex> vertices; // polygon vertices
+    DenseMatrix polygon;          // positions of polygon vertices
+    DenseMatrix Lpoly;            // local laplace matrix
+
+    std::vector<Triplet> triplets;
+    triplets.reserve(9 * nf); // estimate for triangle meshes
+
+    for (Face f : mesh.faces())
     {
-        const int nv = mesh.n_vertices();
-        std::vector<Vertex> vertices; // polygon vertices
-        DenseMatrix polygon;          // positions of polygon vertices
-        DiagonalMatrix Mpoly;         // local mass matrix
-
-        M.setZero(nv);
-
-        for (Face f : mesh.faces())
+        // collect polygon vertices
+        vertices.clear();
+        for (Vertex v : mesh.vertices(f))
         {
-            // collect polygon vertices
-            vertices.clear();
-            for (Vertex v : mesh.vertices(f))
-            {
-                vertices.push_back(v);
-            }
-            const int n = vertices.size();
+            vertices.push_back(v);
+        }
+        const int n = vertices.size();
 
-            // collect their positions
-            polygon.resize(n, 3);
-            for (int i = 0; i < n; ++i)
-            {
-                polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
-            }
+        // collect their positions
+        polygon.resize(n, 3);
+        for (int i = 0; i < n; ++i)
+        {
+            polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
+        }
 
-            // setup local mass matrix
-            setup_polygon_mass_matrix(polygon, Mpoly);
+        // setup local laplace matrix
+        setup_polygon_laplace_matrix(polygon, Lpoly);
 
-            // assemble to global mass matrix
+        // assemble to global laplace matrix
+        for (int j = 0; j < n; ++j)
+        {
             for (int k = 0; k < n; ++k)
             {
-                M.diagonal()[vertices[k].idx()] += Mpoly.diagonal()[k];
+                triplets.emplace_back(vertices[k].idx(), vertices[j].idx(),
+                                      -Lpoly(k, j));
             }
         }
     }
 
-    if (false)
+    // build sparse matrix from triplets
+    L.resize(nv, nv);
+    L.setFromTriplets(triplets.begin(), triplets.end());
+
+    // clamp negative off-diagonal entries to zero
+    if (clamp)
     {
-        DiagonalMatrix MM;
-        setup_mass_matrix_old(mesh, MM, uniform);
-        std::cout << "diff of new vs old mass matrix: "
-                  << (M.diagonal() - MM.diagonal()).norm() << std::endl;
+        for (unsigned int k = 0; k < L.outerSize(); k++)
+        {
+            double diag_offset(0.0);
+
+            for (SparseMatrix::InnerIterator iter(L, k); iter; ++iter)
+            {
+                if (iter.row() != iter.col() && iter.value() < 0.0)
+                {
+                    diag_offset += -iter.value();
+                    iter.valueRef() = 0.0;
+                }
+            }
+            for (SparseMatrix::InnerIterator iter(L, k); iter; ++iter)
+            {
+                if (iter.row() == iter.col() && iter.value() < 0.0)
+                    iter.valueRef() -= diag_offset;
+            }
+        }
     }
+}
+
+void setup_gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G)
+{
+    const int nv = mesh.n_vertices();
+
+    // how many virtual triangles will we have after refinement?
+    // triangles are not refined, other polygons are.
+    unsigned int nt = 0;
+    for (auto f : mesh.faces())
+    {
+        const unsigned int v = mesh.valence(f);
+        nt += v == 3 ? 1 : v;
+    }
+
+    std::vector<Vertex> vertices; // polygon vertices
+    DenseMatrix polygon;          // positions of polygon vertices
+    DenseMatrix Gpoly;            // local gradient matrix
+
+    std::vector<Triplet> triplets;
+    triplets.reserve(9 * nt);
+
+    unsigned int n_rows = 0;
+
+    for (Face f : mesh.faces())
+    {
+        // collect polygon vertices
+        vertices.clear();
+        for (Vertex v : mesh.vertices(f))
+        {
+            vertices.push_back(v);
+        }
+        const int n = vertices.size();
+
+        // collect their positions
+        polygon.resize(n, 3);
+        for (int i = 0; i < n; ++i)
+        {
+            polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
+        }
+
+        // setup local element matrix
+        setup_polygon_gradient_matrix(polygon, Gpoly);
+
+        // assemble to global matrix
+        for (int j = 0; j < Gpoly.cols(); ++j)
+        {
+            for (int i = 0; i < Gpoly.rows(); ++i)
+            {
+                triplets.emplace_back(n_rows + i, vertices[j].idx(),
+                                      Gpoly(i, j));
+            }
+        }
+
+        n_rows += Gpoly.rows();
+    }
+    assert(n_rows == 3 * nt);
+
+    // build sparse matrix from triplets
+    G.resize(n_rows, nv);
+    G.setFromTriplets(triplets.begin(), triplets.end());
+}
+
+void setup_divergence_matrix(const SurfaceMesh& mesh, SparseMatrix& D)
+{
+    SparseMatrix G;
+    setup_gradient_matrix(mesh, G);
+    DiagonalMatrix M;
+    setup_divmass_matrix(mesh, M);
+    D = -G.transpose() * M;
 }
 
 void coordinates_to_matrix(const SurfaceMesh& mesh, DenseMatrix& X)

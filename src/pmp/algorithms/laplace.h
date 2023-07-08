@@ -9,13 +9,24 @@
 
 namespace pmp {
 
-/// compute cotan mass matrix
-void setup_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M,
-                       bool uniform_laplace = false);
+/// compute uniform mass matrix, containing vertex valence on the diagonal
+void setup_uniform_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M);
 
-/// compute cotan stiffness matrix
+/// compute uniform Laplace matrix
+void setup_uniform_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& M);
+
+/// compute (lumped) mass matrix, containing per-vertex Voronoi areas on the diagonal
+void setup_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M);
+
+/// compute cotan Laplace matrix, optionally clamping negative cotan weights to zero
 void setup_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L,
-                          bool uniform_laplace = false, bool clamp = false);
+                          bool clamp = false);
+
+/// compute gradient matrix
+void setup_gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G);
+
+/// compute divergence matrix
+void setup_divergence_matrix(const SurfaceMesh& mesh, SparseMatrix& D);
 
 /// compute matrix that has vertex coordinates as rows
 void coordinates_to_matrix(const SurfaceMesh& mesh, DenseMatrix& X);

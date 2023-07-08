@@ -15,7 +15,20 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
 
     // Laplace matrix (clamp negative cotan weights to zero)
     SparseMatrix L;
-    setup_laplace_matrix(mesh, L, use_uniform_laplace, true);
+    if (use_uniform_laplace)
+        setup_uniform_laplace_matrix(mesh, L);
+    else
+        setup_laplace_matrix(mesh, L, true);
+
+    if (true)
+    {
+        SparseMatrix G, D, L1, L2;
+        setup_laplace_matrix(mesh, L1);
+        setup_gradient_matrix(mesh, G);
+        setup_divergence_matrix(mesh, D);
+        L2 = D * G;
+        std::cout << "laplace-div(grad) : " << (L1 - L2).norm() << std::endl;
+    }
 
     // normalize each row by sum of weights
     // scale by 0.5 to make it more robust
@@ -27,7 +40,6 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
     auto is_inner = [&](Vertex v) { return !mesh.is_boundary(v); };
     setup_selector_matrix(mesh, is_inner, S);
     L = S.transpose() * S * L;
-
 
     // copy vertex coordinates to matrix
     DenseMatrix X;
@@ -58,9 +70,17 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
 
     // build system matrix A (clamp negative cotan weights to zero)
     SparseMatrix L;
-    setup_laplace_matrix(mesh, L, use_uniform_laplace, true);
     DiagonalMatrix M;
-    setup_mass_matrix(mesh, M, use_uniform_laplace);
+    if (use_uniform_laplace)
+    {
+        setup_uniform_laplace_matrix(mesh, L);
+        setup_uniform_mass_matrix(mesh, M);
+    }
+    else
+    {
+        setup_laplace_matrix(mesh, L, true);
+        setup_mass_matrix(mesh, M);
+    }
     SparseMatrix A = SparseMatrix(M) - timestep * L;
 
     // build right-hand side B

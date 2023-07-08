@@ -206,7 +206,8 @@ void CurvatureAnalyzer::analyze_tensor(unsigned int post_smoothing_steps,
             // compute tensor over vertex neighborhood stored in vertices
             for (auto nit : neighborhood)
             {
-                if (mesh_.is_boundary(nit)) continue;
+                if (mesh_.is_boundary(nit))
+                    continue;
 
                 // accumulate tensor from dihedral angles around vertices
                 for (auto e : mesh_.edges(nit))
@@ -321,7 +322,7 @@ void CurvatureAnalyzer::smooth_curvatures(unsigned int iterations)
 {
     // Laplace matrix (clamp negative cotan weights to zero)
     SparseMatrix L;
-    setup_laplace_matrix(mesh_, L, false, true);
+    setup_laplace_matrix(mesh_, L, true);
 
     // normalize each row by sum of weights
     // scale by 0.5 to make it more robust

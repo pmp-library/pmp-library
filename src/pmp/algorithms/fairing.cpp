@@ -108,9 +108,9 @@ void fair(SurfaceMesh& mesh, unsigned int k)
 
     // build matrix
     SparseMatrix L;
-    setup_laplace_matrix(mesh, L, false, true);
+    setup_laplace_matrix(mesh, L, true);
     DiagonalMatrix M;
-    setup_mass_matrix(mesh, M, false);
+    setup_mass_matrix(mesh, M);
     DiagonalMatrix invM = M.inverse();
     SparseMatrix A = L;
     for (unsigned int i = 1; i < k; ++i)
