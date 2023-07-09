@@ -5,7 +5,7 @@
 
 #include <filesystem>
 
-#include "pmp/io/IOFlags.h"
+#include "pmp/io/io_flags.h"
 #include "pmp/surface_mesh.h"
 
 namespace pmp {

@@ -9,7 +9,7 @@
 
 #include "pmp/types.h"
 #include "pmp/properties.h"
-#include "pmp/io/IOFlags.h"
+#include "pmp/io/io_flags.h"
 
 namespace pmp {
 
