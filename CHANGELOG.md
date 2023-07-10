@@ -20,7 +20,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Add `PMP_STRICT_COMPILATION` CMake option to control treating warnings as errors. Default: On.
 - Add function `flip_faces()` to reverse face orientation in a mesh (#123)
 - Meshes and textures can be loaded by dropping the files onto the window, both in
-  normal GLFW windows and browser windows (using emscripten).
+  normal GLFW windows and browser windows (using emscripten). Thanks to Stephan Wenninger!
 
 ### Changed
 
