@@ -35,7 +35,6 @@ unsigned int geodesics(
 //! See \cite crane_2013_geodesics for details.
 //! \param mesh The input mesh, modified in place.
 //! \param seeds The vector of seed vertices.
-//! \pre Input mesh needs to be a triangle mesh.
 //! \ingroup algorithms
 void geodesics_heat(SurfaceMesh& mesh, const std::vector<Vertex>& seeds);
 
