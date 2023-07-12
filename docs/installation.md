@@ -27,9 +27,9 @@ Some parts of PMP depend on the following third-party libraries:
 | [GLEW](http://glew.sourceforge.net)                 | OpenGL Extension Wrangler Library | &ge; 2.1.0  |
 | [GLFW](http://glfw.org)                             | Graphics Library Framework        | &ge; 3.3.8  |
 | [ImGui](https://github.com/ocornut/imgui)           | Immediate Mode GUI                | &ge; 1.88   |
-| [Google Test](https://github.com/google/googletest) | C++ Test Framework                | &ge; 1.13.0 |
+| [Google Test](https://github.com/google/googletest) | C++ Test Framework                | &ge; 1.12.1 |
 
-By default, we include the corresponding libraries in our repository. Note that OpenGL and related dependencies are optional. They are only needed if you want to use the viewer classes. Google Test is optional as well and only required if you want to run the unit test suite.
+By default, we include the corresponding libraries using git submodules. Note that OpenGL and related dependencies are optional. They are only needed if you want to use the viewer classes. Google Test is optional as well and only required if you want to run the unit test suite.
 
 ## Configuration
 
