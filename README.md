@@ -16,7 +16,7 @@ The Polygon Mesh Processing Library is a modern C++ open-source library for proc
 Clone the repository:
 
 ```sh
-git clone --recursive https://github.com/pmp-library/pmp-library.git
+git clone https://github.com/pmp-library/pmp-library.git
 ```
 
 Configure and build:
@@ -28,7 +28,7 @@ cd pmp-library && mkdir build && cd build && cmake .. && make
 Run the mesh processing app:
 
 ```sh
-./mpview ../external/pmp-data/off/bunny.off
+./mpview ../data/off/bunny.off
 ```
 
 Build your own tool:
