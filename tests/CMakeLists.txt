@@ -15,8 +15,7 @@ add_library(googletest STATIC ${GOOGLE_TEST_SOURCES})
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 # copy test data
-file(COPY ${PROJECT_SOURCE_DIR}/external/pmp-data
-     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${PROJECT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 # source files
 file(GLOB SOURCES ./*.cpp)

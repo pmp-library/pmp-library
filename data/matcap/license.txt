@@ -1,0 +1,5 @@
+These matcap images are taken from the Blender repository:
+
+https://github.com/sobotka/blender/tree/master/release/datafiles/studiolights/matcap
+
+They are licensed as CC0 or public domain. Thanks to the Blender community for contributing these matcaps.

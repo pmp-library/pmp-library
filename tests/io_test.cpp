@@ -77,12 +77,12 @@ TEST_F(IOTest, pmp_io)
 
 TEST_F(IOTest, stl_io)
 {
-    read(mesh, "pmp-data/stl/icosahedron_ascii.stl");
+    read(mesh, "data/stl/icosahedron_ascii.stl");
     EXPECT_EQ(mesh.n_vertices(), size_t(12));
     EXPECT_EQ(mesh.n_faces(), size_t(20));
     EXPECT_EQ(mesh.n_edges(), size_t(30));
     mesh.clear();
-    read(mesh, "pmp-data/stl/icosahedron_binary.stl");
+    read(mesh, "data/stl/icosahedron_binary.stl");
     EXPECT_EQ(mesh.n_vertices(), size_t(12));
     EXPECT_EQ(mesh.n_faces(), size_t(20));
     EXPECT_EQ(mesh.n_edges(), size_t(30));
