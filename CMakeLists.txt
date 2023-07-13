@@ -24,7 +24,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if(PMP_BUILD_VIS)
   set(GLFW_SOURCE_DIR "external/glfw-3.3.8")
-  set(GLEW_SOURCE_DIR "external/glew")
+  set(GLEW_SOURCE_DIR "external/glew-2.2.0")
   set(IMGUI_SOURCE_DIR "external/imgui")
   set(STBI_SOURCE_DIR "external/stb_image")
 
