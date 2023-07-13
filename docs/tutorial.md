@@ -17,10 +17,8 @@ Let's begin by getting the PMP library source code and building the library and 
 First, clone the repository using git:
 
 ```sh
-git clone --recursive https://github.com/pmp-library/pmp-library.git
+git clone https://github.com/pmp-library/pmp-library.git
 ```
-
-\note The `--recursive` flag above is important to get the third-party libraries required to build PMP.
 
 The next step is to configure the build system using [CMake](https://www.cmake.org). Create a separate build directory for all the files you'll generate:
 
@@ -55,7 +53,7 @@ Congratulations! You successfully built PMP!
 We include a number of example applications that you can to try out. The `mpview` application provides a simple graphical interface for many of our algorithms. You can give it a try and see what you can do with the famous [Stanford bunny](https://en.wikipedia.org/wiki/Stanford_bunny):
 
 ```sh
-./mpview ../external/pmp-data/off/bunny.off
+./mpview ../data/off/bunny.off
 ```
 
 You should see a window like this:

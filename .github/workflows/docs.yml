@@ -10,8 +10,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          submodules: true
 
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -o Acquire::Retries=3 doxygen texlive-base libclang-12-dev libclang-cpp12

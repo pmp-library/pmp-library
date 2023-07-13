@@ -24,6 +24,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Get rid of git submodules, vendor all third-party libraries
 - The function `voronoi_area()` now computes the barycentric Voronoi area, because this version generalizes better to polygon meshes. The mixed Voronoi area (for triangle meshes) is now computed by `voronoi_area_mixed()`.
 - Consistently use lowercase file names
 - Rename `Timer` to `StopWatch`
