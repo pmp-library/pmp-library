@@ -5,7 +5,7 @@ set(HDRS ${HDRS} "../mat_vec.h")
 if(EMSCRIPTEN)
 
   add_library(pmp_vis STATIC ${SRCS} ${HDRS})
-  target_link_libraries(pmp_vis stb_image imgui pmp)
+  target_link_libraries(pmp_vis stb_image stb_image_write imgui pmp)
 
 else()
 
@@ -17,6 +17,7 @@ else()
       pmp_vis
       pmp
       stb_image
+      stb_image_write
       imgui
       glfw
       glew

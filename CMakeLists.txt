@@ -26,12 +26,15 @@ if(PMP_BUILD_VIS)
   set(GLFW_SOURCE_DIR "external/glfw-3.3.8")
   set(GLEW_SOURCE_DIR "external/glew-2.2.0")
   set(IMGUI_SOURCE_DIR "external/imgui-1.89.5")
-  set(STBI_SOURCE_DIR "external/stb_image")
+  set(STB_IMAGE_SOURCE_DIR "external/stb_image-2.28")
+  set(STB_IMAGE_WRITE_SOURCE_DIR "external/stb_image_write-1.16")
 
   # setup STB Image (place *before* GLFW since GLFW has an old copy of
   # stb_image_write.h)
-  include_directories(${STBI_SOURCE_DIR})
-  add_subdirectory(${STBI_SOURCE_DIR})
+  include_directories(${STB_IMAGE_WRITE_SOURCE_DIR})
+  add_subdirectory(${STB_IMAGE_WRITE_SOURCE_DIR})
+  include_directories(${STB_IMAGE_SOURCE_DIR})
+  add_subdirectory(${STB_IMAGE_SOURCE_DIR})
 
   # Building only the GLFW lib
   set(BUILD_SHARED_LIBS
