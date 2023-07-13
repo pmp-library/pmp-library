@@ -14,4 +14,4 @@ The @ref algorithms module provides implementations of canonical geometry proces
 
 ## Visualization
 
-In order to easily create visualizations the library contains an optional @ref visualization module including basic viewers, e.g., pmp::MeshViewer. The corresponding OpenGL&reg; code for rendering the data is contained in pmp::SurfaceMeshGL. For simplicity, the this class inherits from pmp::SurfaceMesh.
+In order to easily create visualizations the library contains an optional @ref visualization module including basic viewers, e.g., pmp::MeshViewer. The corresponding OpenGL&reg; code for rendering the data is contained in pmp::Renderer class.
