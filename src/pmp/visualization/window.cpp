@@ -148,7 +148,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     add_help_item("G", "Toggle GUI dialog");
     add_help_item("PageUp/Down", "Scale GUI dialogs");
 #ifndef __EMSCRIPTEN__
-    add_help_item("PrtScr", "Save screenshot");
+    add_help_item("PrtScr/P", "Save screenshot");
     add_help_item("Esc/Q", "Quit application");
 #endif
 
@@ -511,6 +511,7 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
         }
 
         case GLFW_KEY_PRINT_SCREEN:
+        case GLFW_KEY_P:
         {
             screenshot();
             break;
