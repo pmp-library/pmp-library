@@ -39,7 +39,7 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
     curvature
     PROPERTIES
       LINK_FLAGS
-      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off"
+      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/data/off/bunny.off@input.off"
   )
 
   add_executable(smoothing smoothing.cpp data/shell.html)
@@ -48,7 +48,7 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
     smoothing
     PROPERTIES
       LINK_FLAGS
-      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/fandisk.off@input.off"
+      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/data/off/fandisk.off@input.off"
   )
 
   add_executable(fairing fairing.cpp data/shell.html)
@@ -57,7 +57,7 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
     fairing
     PROPERTIES
       LINK_FLAGS
-      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/hemisphere.off@input.off"
+      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/data/off/hemisphere.off@input.off"
   )
 
   add_executable(mpview mpview.cpp mesh_processing_viewer.cpp
@@ -67,7 +67,7 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
     mpview
     PROPERTIES
       LINK_FLAGS
-      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off"
+      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/data/off/bunny.off@input.off"
   )
 
   add_executable(subdivision subdivision.cpp data/shell.html)
@@ -76,7 +76,7 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
     subdivision
     PROPERTIES
       LINK_FLAGS
-      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/obj/suzanne.obj@input.obj"
+      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/data/obj/suzanne.obj@input.obj"
   )
 
   add_executable(remeshing remeshing.cpp data/shell.html)
@@ -85,7 +85,7 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
     remeshing
     PROPERTIES
       LINK_FLAGS
-      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/bunny.off@input.off"
+      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/data/off/bunny.off@input.off"
   )
 
   add_executable(decimation decimation.cpp data/shell.html)
@@ -94,7 +94,7 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
     decimation
     PROPERTIES
       LINK_FLAGS
-      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/fandisk.off@input.off"
+      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/data/off/fandisk.off@input.off"
   )
 
   add_executable(parameterization parameterization.cpp data/shell.html)
@@ -103,7 +103,7 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
     parameterization
     PROPERTIES
       LINK_FLAGS
-      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/external/pmp-data/off/hemisphere.off@input.off"
+      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/data/off/hemisphere.off@input.off"
   )
 
 else()
