@@ -170,7 +170,8 @@ void MeshViewer::keyboard(int key, int scancode, int action, int mods)
     {
         case GLFW_KEY_BACKSPACE: // reload model
         {
-            load_mesh(filename_.c_str());
+            if (!filename_.empty())
+                load_mesh(filename_.c_str());
             break;
         }
 
