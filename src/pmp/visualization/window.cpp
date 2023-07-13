@@ -671,7 +671,7 @@ void Window::cursor_pos(double& x, double& y) const
 void Window::screenshot()
 {
     std::stringstream filename{""};
-    filename << title_ << std::to_string(screenshot_number_++);
+    filename << title_ << std::to_string(screenshot_number_++) << ".png";
     std::cout << "Save screenshot to " << filename.str() << std::endl;
 
     // allocate buffer
