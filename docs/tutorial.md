@@ -4,7 +4,7 @@
 
 Welcome to the PMP library tutorial!
 
-This tutorial will walk you through your first steps using PMP. After completion, you should be able to build your own mesh processing applications and use PMP for a variety of mesh processing tasks.
+This tutorial will walk you through your first steps using PMP. After completion, you should be able to build your own mesh processing applications and use PMP for basic mesh processing tasks.
 
 Note that this tutorial is _not_ a comprehensive introduction to mesh processing. If that's what you are looking for, we highly recommend the textbook of Botsch et al. \cite botsch_2010_polygon.
 
@@ -86,7 +86,7 @@ The halfedge connectivity is illustrated in the figure below:
 
 In the following, we show the basic usage of pmp::SurfaceMesh by example.
 
-## Adding Elements by Hand
+## Adding Elements
 
 The basic usage of pmp::SurfaceMesh is demonstrated in the example below. The program first instantiates a pmp::SurfaceMesh object as well as four vertex handles. These handles, as well as the handles for the other mesh elements `Halfedge`, `Edge` and `Face` basically indices. Four vertices are added to the mesh, as well as four triangular faces composing a tetrahedron. Finally, the number of vertices, edges, and faces is printed to standard output.
 
