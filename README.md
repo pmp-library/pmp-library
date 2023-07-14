@@ -47,7 +47,7 @@ int main(void)
 
 ## Contribute
 
-Contributions to PMP are welcome. See the [contributing](https://www.pmp-library.org/contributing.html) section of the [user guide](https://www.pmp-library.org/userguide.html).
+Contributions to PMP are welcome. See the [contributing](https://www.pmp-library.org/contributing.html) section of the [user guide](https://www.pmp-library.org/guide.html).
 
 ## Acknowledge
 
