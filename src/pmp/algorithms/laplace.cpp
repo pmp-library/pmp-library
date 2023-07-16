@@ -63,10 +63,10 @@ void setup_triangle_mass_matrix(const Eigen::Vector3d& p0,
                                 const Eigen::Vector3d& p2, DiagonalMatrix& Mtri)
 {
     // three vertex positions
-    const dvec3 p[3] = {p0, p1, p2};
+    const std::array<dvec3, 3> p = {p0, p1, p2};
 
     // edge vectors
-    dvec3 e[3];
+    std::array<dvec3, 3> e;
     for (int i = 0; i < 3; ++i)
         e[i] = p[(i + 1) % 3] - p[i];
 
@@ -79,12 +79,12 @@ void setup_triangle_mass_matrix(const Eigen::Vector3d& p0,
     }
 
     // dot products for each corner (of its two emanating edge vectors)
-    double d[3];
+    std::array<double, 3> d;
     for (int i = 0; i < 3; ++i)
         d[i] = -dot(e[i], e[(i + 2) % 3]);
 
     // cotangents for each corner: cot = cos/sin = dot(A,B)/norm(cross(A,B))
-    double cot[3];
+    std::array<double, 3> cot;
     for (int i = 0; i < 3; ++i)
         cot[i] = d[i] / tri_area;
 
@@ -163,7 +163,7 @@ void setup_triangle_laplace_matrix(const Eigen::Vector3d& p0,
                                    const Eigen::Vector3d& p1,
                                    const Eigen::Vector3d& p2, DenseMatrix& Ltri)
 {
-    double l[3], l2[3], cot[3];
+    std::array<double, 3> l, l2, cot;
 
     // squared edge lengths
     l2[0] = (p1 - p2).squaredNorm();
@@ -254,9 +254,9 @@ void setup_triangle_gradient_matrix(const Eigen::Vector3d& p0,
     G.resize(3, 3);
     Eigen::Vector3d n = (p1 - p0).cross(p2 - p0);
     n /= n.squaredNorm();
-    G.col(0) = n.cross(p2-p1);
-    G.col(1) = n.cross(p0-p2);
-    G.col(2) = n.cross(p1-p0);
+    G.col(0) = n.cross(p2 - p1);
+    G.col(1) = n.cross(p0 - p2);
+    G.col(2) = n.cross(p1 - p0);
 }
 
 void setup_polygon_gradient_matrix(const DenseMatrix& polygon,
