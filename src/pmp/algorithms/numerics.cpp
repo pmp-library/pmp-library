@@ -57,7 +57,7 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
             {
                 if (idx[j] != -1) // col is dof
                 {
-                    triplets.push_back(Triplet(idx[i], idx[j], iter.value()));
+                    triplets.emplace_back(idx[i], idx[j], iter.value());
                 }
                 else // col is constraint
                 {
@@ -99,7 +99,7 @@ void setup_selector_matrix(const SurfaceMesh& mesh,
     {
         if (is_selected(v))
         {
-            triplets.emplace_back(Triplet(row++, v.idx(), 1.0));
+            triplets.emplace_back(row++, v.idx(), 1.0);
         }
     }
 
