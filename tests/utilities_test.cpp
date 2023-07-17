@@ -39,3 +39,11 @@ TEST_F(UtilitiesTest, min_face_area)
     add_quad();
     EXPECT_EQ(min_face_area(mesh), 1.0);
 }
+
+TEST_F(UtilitiesTest, edge_length)
+{
+    add_quad();
+    Edge e(0);
+    auto length = edge_length(mesh, e);
+    EXPECT_EQ(length, 1);
+}

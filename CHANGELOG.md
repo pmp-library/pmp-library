@@ -38,7 +38,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Fix `Mat3::inverse()` to use `fabs()`
 - Remove `Matrix::allFinite()`.
 - Make `SurfaceMesh::bounds()` a free function `pmp::bounds()`.
-- Remove `SurfaceMesh::edge_length()`.
+- Make `SurfaceMesh::edge_length()` a free function `pmp::edge_length()`.
 - Remove object properties.
 - Remove support for PLY format, see 1ec912b for why.
 - Remove support for XYZ and AGI point set formats.

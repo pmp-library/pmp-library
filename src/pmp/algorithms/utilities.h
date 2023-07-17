@@ -20,4 +20,12 @@ void flip_faces(SurfaceMesh& mesh);
 //! \ingroup algorithms
 Scalar min_face_area(const SurfaceMesh& mesh);
 
+//! Compute length of an edge \p e in \p mesh .
+//! \ingroup algorithms
+inline Scalar edge_length(const SurfaceMesh& mesh, Edge e)
+{
+    return distance(mesh.position(mesh.vertex(e, 0)),
+                    mesh.position(mesh.vertex(e, 1)));
+}
+
 } // namespace pmp
