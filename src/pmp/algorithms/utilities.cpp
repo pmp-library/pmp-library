@@ -46,4 +46,13 @@ Scalar min_face_area(const SurfaceMesh& mesh)
     return min_area;
 }
 
+Scalar mean_edge_length(const SurfaceMesh& mesh)
+{
+    Scalar length{0};
+    for (auto e : mesh.edges())
+        length += edge_length(mesh, e);
+    length /= (Scalar)mesh.n_edges();
+    return length;
+}
+
 } // namespace pmp

@@ -343,12 +343,7 @@ void MeshProcessingViewer::process_imgui()
 
         if (ImGui::Button("Uniform Remeshing"))
         {
-            Scalar l(0);
-            for (auto eit : mesh_.edges())
-                l += distance(mesh_.position(mesh_.vertex(eit, 0)),
-                              mesh_.position(mesh_.vertex(eit, 1)));
-            l /= (Scalar)mesh_.n_edges();
-
+            auto l = mean_edge_length(mesh_);
             try
             {
                 uniform_remeshing(mesh_, l);

@@ -28,4 +28,8 @@ inline Scalar edge_length(const SurfaceMesh& mesh, Edge e)
                     mesh.position(mesh.vertex(e, 1)));
 }
 
+//! Compute mean edge length of \p mesh .
+//! \ingroup algorithms
+Scalar mean_edge_length(const SurfaceMesh& mesh);
+
 } // namespace pmp

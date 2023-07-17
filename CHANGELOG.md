@@ -12,6 +12,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 - Added `geodesics_heat()` for computing geodesics (based on the heat method) on general polygon meshes.
 - Generalize curvature computation in `curvature()` to polygon meshes.
+- Add `pmp::mean_edge_length(SurfaceMesh)`.
 - Add `min_face_area()` to compute minimum face area of all faces.
 - Add `edge_area()` to compute the area associated to an edge.
 - Added circulator enumerating edges around vertex: `SurfaceMesh::edges(Vertex)`.

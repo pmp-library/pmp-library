@@ -47,3 +47,10 @@ TEST_F(UtilitiesTest, edge_length)
     auto length = edge_length(mesh, e);
     EXPECT_EQ(length, 1);
 }
+
+TEST_F(UtilitiesTest, mean_edge_length)
+{
+    add_quad();
+    auto mean = mean_edge_length(mesh);
+    EXPECT_EQ(mean, 1);
+}
