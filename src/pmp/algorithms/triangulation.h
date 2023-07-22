@@ -7,14 +7,14 @@
 
 namespace pmp {
 
-//! \brief Triangulate polygons to get a triangle mesh.
-//! \details Triangulate n-gons into n-2 triangles. Finds the triangulation that
-//! minimizes the sum of squared triangle areas.
-//! See \cite liepa_2003_filling for details.
+//! \brief Triangulate all faces in \p mesh by applying triangulate().
 //! \ingroup algorithms
 void triangulate(SurfaceMesh& mesh);
 
-//! \brief Triangulate the Face \p f
+//! \brief Triangulate the Face \p f .
+//! \details Triangulate n-gons into n-2 triangles. Finds the triangulation that
+//! minimizes the sum of squared triangle areas.
+//! See \cite liepa_2003_filling for details.
 //! \pre The input face is manifold
 //! \throw InvalidInputException in case the input precondition is violated
 //! \ingroup algorithms
