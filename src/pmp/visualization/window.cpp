@@ -383,7 +383,7 @@ void Window::render_frame()
     // do some computations
     instance_->do_processing();
 
-    // preapre and process ImGUI elements
+    // prepare and process ImGUI elements
     if (instance_->show_imgui())
     {
         // start imgui frame
