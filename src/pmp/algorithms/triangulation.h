@@ -9,8 +9,7 @@ namespace pmp {
 
 //! \brief Triangulate polygons to get a triangle mesh.
 //! \details Triangulate n-gons into n-2 triangles. Finds the triangulation that
-//! minimizes the sum of squared triangle areas, or the one that maximizes the
-//! minimum angle.
+//! minimizes the sum of squared triangle areas.
 //! See \cite liepa_2003_filling for details.
 //! \ingroup algorithms
 void triangulate(SurfaceMesh& mesh);
