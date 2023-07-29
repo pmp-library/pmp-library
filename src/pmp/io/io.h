@@ -35,7 +35,7 @@ void read(SurfaceMesh& mesh, const std::filesystem::path& file);
 //! OBJ    | yes   | no     | a       | no     | no
 //! OFF    | yes   | yes    | a       | a      | a
 //! PMP    | no    | yes    | no      | no     | no
-//! STL    | yes   | yes    | yes     | no     | no
+//! STL    | yes   | yes    | no      | no     | no
 //!
 //! In addition, the OBJ and PMP formats support writing per-halfedge
 //! texture coordinates.
