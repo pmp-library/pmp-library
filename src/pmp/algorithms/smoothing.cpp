@@ -20,15 +20,11 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
     else
         setup_laplace_matrix(mesh, L, true);
 
-    if (true)
-    {
-        SparseMatrix G, D, L1, L2;
-        setup_laplace_matrix(mesh, L1);
-        setup_gradient_matrix(mesh, G);
-        setup_divergence_matrix(mesh, D);
-        L2 = D * G;
-        std::cout << "laplace-div(grad) : " << (L1 - L2).norm() << std::endl;
-    }
+    SparseMatrix G, D, L1, L2;
+    setup_laplace_matrix(mesh, L1);
+    setup_gradient_matrix(mesh, G);
+    setup_divergence_matrix(mesh, D);
+    L2 = D * G;
 
     // normalize each row by sum of weights
     // scale by 0.5 to make it more robust
