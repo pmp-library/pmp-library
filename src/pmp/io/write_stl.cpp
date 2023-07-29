@@ -6,29 +6,70 @@
 #include "pmp/exceptions.h"
 
 #include <fstream>
+#include <array>
+#include <ios>
 
 namespace pmp {
+
+namespace {
+void write_binary_stl(const SurfaceMesh& mesh,
+                      const std::filesystem::path& file)
+{
+    std::ofstream ofs(file.string(), std::ios::binary);
+
+    // write 80 byte header
+    std::array<char, 80> header{};
+    for (auto c : header)
+        ofs.write(&c, sizeof(char));
+
+    //  write number of triangles
+    auto n_triangles = static_cast<uint32_t>(mesh.n_faces());
+    ofs.write((char*)&n_triangles, sizeof(n_triangles));
+
+    // write normal, points, and attribute byte count
+    auto normals = mesh.get_face_property<Normal>("f:normal");
+    auto points = mesh.get_vertex_property<Point>("v:point");
+    for (auto f : mesh.faces())
+    {
+        auto n = (vec3)normals[f];
+        ofs.write((char*)&n[0], sizeof(float));
+        ofs.write((char*)&n[1], sizeof(float));
+        ofs.write((char*)&n[2], sizeof(float));
+
+        for (auto v : mesh.vertices(f))
+        {
+            auto p = (vec3)points[v];
+            ofs.write((char*)&p[0], sizeof(float));
+            ofs.write((char*)&p[1], sizeof(float));
+            ofs.write((char*)&p[2], sizeof(float));
+        }
+        ofs << "  ";
+    }
+    ofs.close();
+}
+
+} // namespace
 
 void write_stl(const SurfaceMesh& mesh, const std::filesystem::path& file,
                const IOFlags& flags)
 {
     if (!mesh.is_triangle_mesh())
     {
-        auto what = "SurfaceMeshIO::write_stl: Not a triangle mesh.";
+        auto what = "write_stl: Not a triangle mesh.";
         throw InvalidInputException(what);
-    }
-
-    if (flags.use_binary)
-    {
-        auto what = "Binary STL not supported.";
-        throw IOException(what);
     }
 
     auto fnormals = mesh.get_face_property<Normal>("f:normal");
     if (!fnormals)
     {
-        auto what = "SurfaceMeshIO::write_stl: No face normals present.";
+        auto what = "write_stl: No face normals present.";
         throw InvalidInputException(what);
+    }
+
+    if (flags.use_binary)
+    {
+        write_binary_stl(mesh, file);
+        return;
     }
 
     std::ofstream ofs(file.string().c_str());

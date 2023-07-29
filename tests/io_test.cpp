@@ -1,6 +1,7 @@
 // Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
+#include "pmp/io/io_flags.h"
 #include "surface_mesh_test.h"
 
 #include <pmp/algorithms/normals.h>
@@ -88,6 +89,18 @@ TEST_F(IOTest, read_stl_binary)
     EXPECT_EQ(mesh.n_vertices(), size_t(12));
     EXPECT_EQ(mesh.n_faces(), size_t(20));
     EXPECT_EQ(mesh.n_edges(), size_t(30));
+}
+
+TEST_F(IOTest, write_stl_binary)
+{
+    add_triangle();
+    face_normals(mesh);
+    IOFlags flags;
+    flags.use_binary = true;
+    write(mesh, "binary.stl", flags);
+    read(mesh, "binary.stl");
+    EXPECT_EQ(mesh.n_vertices(), size_t(3));
+    EXPECT_EQ(mesh.n_faces(), size_t(1));
 }
 
 TEST_F(IOTest, write_stl_no_normals)

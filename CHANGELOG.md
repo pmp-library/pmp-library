@@ -10,6 +10,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Added
 
+- Add support to write binary STL files.
 - Added `geodesics_heat()` for computing geodesics (based on the heat method) on general polygon meshes.
 - Generalize curvature computation in `curvature()` to polygon meshes.
 - Add `pmp::mean_edge_length(SurfaceMesh)`.
