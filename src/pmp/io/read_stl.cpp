@@ -5,6 +5,7 @@
 
 #include "pmp/io/helpers.h"
 
+#include <algorithm>
 #include <limits>
 #include <map>
 
@@ -47,14 +48,44 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
     if (!in)
         throw IOException("Failed to open file: " + file.string());
 
-    // ASCII or binary STL?
-    auto c = fgets(line.data(), 6, in);
-    assert(c != nullptr);
-    const bool binary = ((strncmp(line.data(), "SOLID", 5) != 0) &&
-                         (strncmp(line.data(), "solid", 5) != 0));
+    // determine if the file is a binary STL file
+    auto is_binary = [&]() {
+        [[maybe_unused]] auto c = fgets(line.data(), 6, in);
+
+        // if the file does *not* start with "solid" we have a binary file
+        if ((strncmp(line.data(), "SOLID", 5) != 0) &&
+            (strncmp(line.data(), "solid", 5) != 0))
+        {
+            return true;
+        }
+
+        // otherwise check if file size matches number of triangles
+        auto fp = fopen(file.string().c_str(), "rb");
+        if (!fp)
+            throw IOException("Failed to open file: " + file.string());
+
+        // skip header
+        [[maybe_unused]] auto n_items = fread(line.data(), 1, 80, fp);
+
+        // read number of triangles
+        unsigned int n_triangles{0};
+        tfread(fp, n_triangles);
+
+        // get file size minus header and element count
+        fseek(fp, 0L, SEEK_END);
+        auto size = ftell(fp);
+        size -= 84;
+        fclose(fp);
+
+        // for each triangle we should have 4*12+2 bytes:
+        // normal, x,y,z, attribute byte count
+        auto predicted = (4 * 12 + 2) * n_triangles;
+
+        return size == predicted;
+    };
 
     // parse binary STL
-    if (binary)
+    if (is_binary())
     {
         // re-open file in binary mode
         fclose(in);
@@ -112,6 +143,8 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
     // parse ASCII STL
     else
     {
+        char* c{nullptr};
+
         // parse line by line
         while (in && !feof(in) && fgets(line.data(), 100, in))
         {
