@@ -18,9 +18,9 @@ void write_binary_stl(const SurfaceMesh& mesh,
     std::ofstream ofs(file.string(), std::ios::binary);
 
     // write 80 byte header
-    std::array<char, 80> header{};
-    for (auto c : header)
-        ofs.write(&c, sizeof(char));
+    std::string header{"Binary STL export from PMP"};
+    ofs.write(header.c_str(), header.size());
+    std::fill_n(std::ostream_iterator<char>(ofs), 80 - header.size(), ' ');
 
     //  write number of triangles
     auto n_triangles = static_cast<uint32_t>(mesh.n_faces());
