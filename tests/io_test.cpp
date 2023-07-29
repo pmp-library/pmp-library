@@ -98,6 +98,13 @@ TEST_F(IOTest, write_stl_binary)
     IOFlags flags;
     flags.use_binary = true;
     write(mesh, "binary.stl", flags);
+
+    // inject solid keyword to test for robustness
+    auto fp = fopen("binary.stl", "r+b");
+    std::string key{"solid"};
+    fwrite(key.c_str(), 1, key.size(), fp);
+    fclose(fp);
+
     read(mesh, "binary.stl");
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
