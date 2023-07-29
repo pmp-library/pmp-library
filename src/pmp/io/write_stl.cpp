@@ -76,18 +76,16 @@ void write_stl(const SurfaceMesh& mesh, const std::filesystem::path& file,
     auto points = mesh.get_vertex_property<Point>("v:point");
 
     ofs << "solid stl\n";
-    Normal n;
-    Point p;
 
-    for (auto f : mesh.faces())
+    for (const auto& f : mesh.faces())
     {
-        n = fnormals[f];
+        const auto& n = fnormals[f];
         ofs << "  facet normal ";
         ofs << n[0] << " " << n[1] << " " << n[2] << "\n";
         ofs << "    outer loop\n";
-        for (auto v : mesh.vertices(f))
+        for (const auto& v : mesh.vertices(f))
         {
-            p = points[v];
+            const auto& p = points[v];
             ofs << "      vertex ";
             ofs << p[0] << " " << p[1] << " " << p[2] << "\n";
         }
