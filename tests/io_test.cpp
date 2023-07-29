@@ -75,27 +75,39 @@ TEST_F(IOTest, pmp_io)
     EXPECT_THROW(write(mesh, "testpolyly"), IOException);
 }
 
-TEST_F(IOTest, stl_io)
+TEST_F(IOTest, read_stl_ascii)
 {
     read(mesh, "data/stl/icosahedron_ascii.stl");
     EXPECT_EQ(mesh.n_vertices(), size_t(12));
     EXPECT_EQ(mesh.n_faces(), size_t(20));
     EXPECT_EQ(mesh.n_edges(), size_t(30));
-    mesh.clear();
+}
+TEST_F(IOTest, read_stl_binary)
+{
     read(mesh, "data/stl/icosahedron_binary.stl");
     EXPECT_EQ(mesh.n_vertices(), size_t(12));
     EXPECT_EQ(mesh.n_faces(), size_t(20));
     EXPECT_EQ(mesh.n_edges(), size_t(30));
+}
 
+TEST_F(IOTest, write_stl_no_normals)
+{
     // try to write without normals being present
+    add_triangle();
     ASSERT_THROW(write(mesh, "test.stl"), InvalidInputException);
+}
 
+TEST_F(IOTest, write_stl_with_normals)
+{
     // the same with normals computed
+    add_triangle();
     face_normals(mesh);
     EXPECT_NO_THROW(write(mesh, "test.stl"));
+}
 
+TEST_F(IOTest, write_stl_no_triangles)
+{
     // try to write non-triangle mesh
-    mesh.clear();
     add_quad();
     ASSERT_THROW(write(mesh, "test.stl"), InvalidInputException);
 }
