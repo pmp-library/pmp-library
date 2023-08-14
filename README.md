@@ -45,9 +45,13 @@ int main(void)
 }
 ```
 
+## Read the Docs
+
+The [user guide](https://www.pmp-library.org/guide.html) contains all you need to get started using PMP, including a [tutorial](https://www.pmp-library.org/tutorial.html) covering mesh processing basics.
+
 ## Contribute
 
-Contributions to PMP are welcome. See the [contributing](https://www.pmp-library.org/contributing.html) section of the [user guide](https://www.pmp-library.org/guide.html).
+Contributions to PMP are welcome! There are many ways you can help: Report any [issues](https://github.com/pmp-library/pmp-library/issues) you find, help to improve the documentation, join our [discussions](https://github.com/pmp-library/pmp-library/discussions) forum, or [contribute](https://www.pmp-library.org/contributing.html) new code.
 
 ## Acknowledge
 
