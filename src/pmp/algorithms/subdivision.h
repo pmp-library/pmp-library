@@ -20,7 +20,7 @@ void catmull_clark_subdivision(SurfaceMesh& mesh);
 void loop_subdivision(SurfaceMesh& mesh);
 
 //! \brief Perform one step of quad-tri subdivision.
-//! \details See \cite stam_2003_subdiv for details.
+//! \details Suitable for mixed quad/triangle meshes. See \cite stam_2003_subdiv for details.
 //! \ingroup algorithms
 void quad_tri_subdivision(SurfaceMesh& mesh);
 
