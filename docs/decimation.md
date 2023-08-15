@@ -21,6 +21,12 @@ The decimation function can be controlled by the following parameters:
 - `seam_threshold`: Threshold for detecting texture seams.
 - `seam_angle_deviation`: The maximum texture seam deviation.
 
+Try for yourself:
+
+\htmlonly
+<iframe class="demo" src="/demos/decimation.html"></iframe>
+\endhtmlonly
+
 ## Selections
 
 The decimation algorithm supports selections. You can select a subset of all vertices in the mesh to perform the simplification. This is done using the boolean `v:selected` vertex property.

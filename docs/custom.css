@@ -45,3 +45,11 @@ dl.citelist dt {
   color: var(--page-foreground-color);
   padding-top: 0.4em;
 }
+
+.demo {
+  display: block;
+  width: 75%;
+  height: 60vh;
+  border: 1px solid #dedede;
+  border-radius: 3px;
+}

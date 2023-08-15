@@ -48,6 +48,11 @@ jobs:
         shell: bash
         run: cmake --build . --target docs
 
+      - name: Copy emscripten demos
+        working-directory: ${{runner.workspace}}/build
+        shell: bash
+        run: mkdir docs/html/demos/ && cp ${{runner.workspace}}/embuild/*.html ${{runner.workspace}}/embuild/*.js ${{runner.workspace}}/embuild/*.data ${{runner.workspace}}/embuild/*.wasm docs/html/demos
+
       - name: GH Pages Deployment
         uses: peaceiris/actions-gh-pages@v3
         with:
