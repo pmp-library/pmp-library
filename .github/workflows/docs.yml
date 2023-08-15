@@ -17,23 +17,31 @@ jobs:
       - name: Fetch doxygen
         run: export DOXYGEN_URL="https://github.com/doxygen/doxygen/releases/download/Release_1_9_6/doxygen-1.9.6.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && echo `pwd`/doxygen/bin >> $GITHUB_PATH
 
-      - name: Create build directory
-        run: cmake -E make_directory ${{runner.workspace}}/build
+      - name: Create emscripten build directory
+        run: cmake -E make_directory ${{runner.workspace}}/embuild
 
       - name: Fetch emscripten
         shell: bash
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ${{runner.workspace}}/embuild
         run: git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest
 
-      - name: Configure CMake
+      - name: Configure emscripten
         shell: bash
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ${{runner.workspace}}/embuild
         run: source ./emsdk/emsdk_env.sh && emcmake cmake $GITHUB_WORKSPACE
 
-      - name: Build
-        working-directory: ${{runner.workspace}}/build
+      - name: Build emscripten
+        working-directory: ${{runner.workspace}}/embuild
         shell: bash
         run: cmake --build . --parallel
+
+      - name: Create build directory
+        run: cmake -E make_directory ${{runner.workspace}}/build
+
+      - name: Configure CMkae
+        shell: bash
+        working-directory: ${{runner.workspace}}/build
+        run: cmake -DPMP_BUILD_VIS=OFF $GITHUB_WORKSPACE
 
       - name: Build docs
         working-directory: ${{runner.workspace}}/build
