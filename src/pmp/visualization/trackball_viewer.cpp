@@ -155,7 +155,7 @@ void TrackballViewer::mouse(int /*button*/, int action, int /*mods*/)
 
 void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 {
-    float d = -(float)yoffset * 0.12 * radius_;
+    float d = (float)yoffset * 0.12 * radius_;
 #ifdef __EMSCRIPTEN__
     d *= 0.5; // scrolling in browser is faster
 #endif
