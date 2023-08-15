@@ -2,6 +2,12 @@
 
 Mesh decimation reduces the number of elements in a mesh while preserving additional attributes such as surface approximation error or triangle quality. Our implementation performs incremental greedy mesh decimation based on halfedge collapses.
 
+Try for yourself:
+
+\htmlonly
+<iframe class="demo" src="/demos/decimation.html"></iframe>
+\endhtmlonly
+
 The function is pmp::decimate().
 
 See \cite kobbelt_1998_general and \cite garland_1997_surface for more details.
@@ -20,12 +26,6 @@ The decimation function can be controlled by the following parameters:
 - `hausdorff_error`: The maximum deviation from the original surface.
 - `seam_threshold`: Threshold for detecting texture seams.
 - `seam_angle_deviation`: The maximum texture seam deviation.
-
-Try for yourself:
-
-\htmlonly
-<iframe class="demo" src="/demos/decimation.html"></iframe>
-\endhtmlonly
 
 ## Selections
 
