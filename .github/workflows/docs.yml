@@ -12,10 +12,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -o Acquire::Retries=3 doxygen texlive-base libclang-12-dev libclang-cpp12 emscripten
+        run: sudo apt-get update && sudo apt-get install -o Acquire::Retries=3 doxygen texlive-base libclang-12-dev libclang-cpp12
 
       - name: Fetch doxygen
         run: export DOXYGEN_URL="https://github.com/doxygen/doxygen/releases/download/Release_1_9_6/doxygen-1.9.6.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && echo `pwd`/doxygen/bin >> $GITHUB_PATH
+
+      - name: Fetch emscripten
+        run: git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest
 
       - name: Create build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
@@ -23,7 +26,7 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: emcmake cmake $GITHUB_WORKSPACE
+        run: source ../emsdk/emsdk_env.sh && emcmake cmake $GITHUB_WORKSPACE
 
       - name: Build
         working-directory: ${{runner.workspace}}/build
