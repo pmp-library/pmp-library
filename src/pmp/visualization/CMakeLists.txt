@@ -5,6 +5,9 @@ set(HDRS ${HDRS} "../mat_vec.h")
 if(EMSCRIPTEN)
 
   add_library(pmp_vis STATIC ${SRCS} ${HDRS})
+  target_include_directories(
+    pmp_vis PRIVATE ${PROJECT_SOURCE_DIR}/${STB_IMAGE_WRITE_SOURCE_DIR}
+                    ${PROJECT_SOURCE_DIR}/${STB_IMAGE_SOURCE_DIR})
   target_link_libraries(pmp_vis stb_image stb_image_write imgui pmp)
 
 else()
@@ -13,6 +16,9 @@ else()
 
   if(OpenGL_FOUND)
     add_library(pmp_vis STATIC ${SRCS} ${HDRS})
+    target_include_directories(
+      pmp_vis PRIVATE ${PROJECT_SOURCE_DIR}/${STB_IMAGE_WRITE_SOURCE_DIR}
+                      ${PROJECT_SOURCE_DIR}/${STB_IMAGE_SOURCE_DIR})
     target_link_libraries(
       pmp_vis
       pmp

@@ -29,11 +29,7 @@ if(PMP_BUILD_VIS)
   set(STB_IMAGE_SOURCE_DIR "external/stb_image-2.28")
   set(STB_IMAGE_WRITE_SOURCE_DIR "external/stb_image_write-1.16")
 
-  # setup STB Image (place *before* GLFW since GLFW has an old copy of
-  # stb_image_write.h)
-  include_directories(${STB_IMAGE_WRITE_SOURCE_DIR})
   add_subdirectory(${STB_IMAGE_WRITE_SOURCE_DIR})
-  include_directories(${STB_IMAGE_SOURCE_DIR})
   add_subdirectory(${STB_IMAGE_SOURCE_DIR})
 
   # Building only the GLFW lib
@@ -57,30 +53,24 @@ if(PMP_BUILD_VIS)
   if(NOT EMSCRIPTEN)
     add_subdirectory(${GLFW_SOURCE_DIR} ${GLEW_SOURCE_DIR})
 
-    include_directories(${GLFW_SOURCE_DIR}/include ${GLFW_SOURCE_DIR}/deps
-                        ${GLEW_SOURCE_DIR}/include)
-
     add_definitions(-DGLEW_STATIC)
     add_library(glew STATIC ${GLEW_SOURCE_DIR}/src/glew.c
                             ${GLEW_SOURCE_DIR}/include)
     set_property(TARGET glew PROPERTY POSITION_INDEPENDENT_CODE ON)
+    target_include_directories(glew PUBLIC ${GLEW_SOURCE_DIR}/include
+                                           ${GLFW_SOURCE_DIR}/include)
     target_link_libraries(glew ${GLFW_LIBRARIES})
   endif()
 
   # setup IMGUI
-  include_directories(${IMGUI_SOURCE_DIR})
   add_subdirectory(${IMGUI_SOURCE_DIR})
 endif(PMP_BUILD_VIS)
 
 if(NOT DEFINED EIGEN3_INCLUDE_DIR)
-  set(EIGEN3_INCLUDE_DIR "external/eigen-3.4.0")
+  set(EIGEN3_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/external/eigen-3.4.0")
 endif()
 find_package(Eigen3 3.4.0 REQUIRED)
-if(EIGEN3_FOUND)
-  include_directories(${EIGEN3_INCLUDE_DIR})
-endif()
 
-include(AddFileDependencies)
 include_directories(${PROJECT_SOURCE_DIR}/src/)
 
 # setup for code coverage testing
