@@ -70,7 +70,7 @@ void setup_triangle_mass_matrix(const Eigen::Vector3d& p0,
     for (int i = 0; i < 3; ++i)
         e[i] = p[(i + 1) % 3] - p[i];
 
-    // compute and check triangle area
+    // compute and check (twice the) triangle area
     const auto tri_area = norm(cross(e[0], e[1]));
     if (tri_area <= std::numeric_limits<double>::min())
     {
@@ -264,14 +264,6 @@ void setup_polygon_gradient_matrix(const DenseMatrix& polygon,
 {
     const int n = (int)polygon.rows();
 
-    // shortcut for triangles
-    if (n == 3)
-    {
-        setup_triangle_gradient_matrix(polygon.row(0), polygon.row(1),
-                                       polygon.row(2), Gpoly);
-        return;
-    }
-
     // compute position of virtual vertex
     Eigen::VectorXd vweights;
     compute_virtual_vertex(polygon, vweights);
@@ -311,12 +303,10 @@ void setup_polygon_gradient_matrix(const DenseMatrix& polygon,
 void setup_divmass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
 {
     // how many virtual triangles will we have after refinement?
-    // triangles are not refined, other polygons are.
     unsigned int nt = 0;
     for (auto f : mesh.faces())
     {
-        const unsigned int v = mesh.valence(f);
-        nt += v == 3 ? 1 : v;
+        nt += mesh.valence(f);
     }
 
     // initialize global matrix
@@ -345,35 +335,22 @@ void setup_divmass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
             polygon.row(i) = (Eigen::Vector3d)mesh.position(vertices[i]);
         }
 
-        // shortcut for triangles
-        if (n == 3)
+        // compute position of virtual vertex
+        Eigen::VectorXd vweights;
+        compute_virtual_vertex(polygon, vweights);
+        Eigen::Vector3d vvertex = polygon.transpose() * vweights;
+
+        for (int i = 0; i < n; ++i)
         {
             const double area =
-                triarea(polygon.row(0), polygon.row(1), polygon.row(2));
+                triarea(polygon.row(i), polygon.row((i + 1) % n), vvertex);
+
             diag[idx++] = area;
             diag[idx++] = area;
             diag[idx++] = area;
-        }
-
-        // general polygon
-        else
-        {
-            // compute position of virtual vertex
-            Eigen::VectorXd vweights;
-            compute_virtual_vertex(polygon, vweights);
-            Eigen::Vector3d vvertex = polygon.transpose() * vweights;
-
-            for (int i = 0; i < n; ++i)
-            {
-                const double area =
-                    triarea(polygon.row(i), polygon.row((i + 1) % n), vvertex);
-
-                diag[idx++] = area;
-                diag[idx++] = area;
-                diag[idx++] = area;
-            }
         }
     }
+
     assert(idx == 3 * nt);
 }
 
@@ -528,8 +505,7 @@ void setup_gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G)
     unsigned int nt = 0;
     for (auto f : mesh.faces())
     {
-        const unsigned int v = mesh.valence(f);
-        nt += v == 3 ? 1 : v;
+        nt += mesh.valence(f);
     }
 
     std::vector<Vertex> vertices; // polygon vertices

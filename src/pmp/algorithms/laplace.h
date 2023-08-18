@@ -31,7 +31,7 @@ void setup_divergence_matrix(const SurfaceMesh& mesh, SparseMatrix& D);
 /// compute matrix that has vertex coordinates as rows
 void coordinates_to_matrix(const SurfaceMesh& mesh, DenseMatrix& X);
 
-/// set vertex coordinates from row of matrix X
+/// set vertex coordinates from rows of matrix X
 void matrix_to_coordinates(const DenseMatrix& X, SurfaceMesh& mesh);
 
 } // namespace pmp
