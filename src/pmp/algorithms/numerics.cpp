@@ -107,4 +107,46 @@ void setup_selector_matrix(const SurfaceMesh& mesh,
     S.setFromTriplets(triplets.begin(), triplets.end());
 }
 
+void matrices_to_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
+                      pmp::SurfaceMesh& mesh)
+{
+    mesh.clear();
+    assert(V.cols() == 3);
+    assert(F.cols() == 3);
+
+    for (int i = 0; i < V.rows(); i++)
+    {
+        auto x = static_cast<pmp::Scalar>(V(i, 0));
+        auto y = static_cast<pmp::Scalar>(V(i, 1));
+        auto z = static_cast<pmp::Scalar>(V(i, 2));
+        pmp::Point p(x, y, z);
+        mesh.add_vertex(p);
+    }
+
+    for (int i = 0; i < F.rows(); i++)
+    {
+        pmp::Vertex a(F(i, 0));
+        pmp::Vertex b(F(i, 1));
+        pmp::Vertex c(F(i, 2));
+        mesh.add_triangle(a, b, c);
+    }
+}
+
+void mesh_to_matrices(const pmp::SurfaceMesh& mesh, Eigen::MatrixXd& V,
+                      Eigen::MatrixXi& F)
+{
+    V.resize(mesh.n_vertices(), 3);
+    for (auto v : mesh.vertices())
+        V.row(v.idx()) = static_cast<Eigen::Vector3d>(mesh.position(v));
+
+    F.resize(mesh.n_faces(), 3);
+    for (auto f : mesh.faces())
+    {
+        int j{0};
+        auto i = f.idx();
+        for (auto v : mesh.vertices(f))
+            F(i, j++) = v.idx();
+    }
+}
+
 } // namespace pmp

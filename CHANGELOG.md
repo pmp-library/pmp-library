@@ -10,6 +10,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Added
 
+- Add `mesh_to_matrices()` and `matrices_to_mesh()` functions to convert to and from Eigen matrices.
 - Add support to write binary STL files.
 - Added `geodesics_heat()` for computing geodesics (based on the heat method) on general polygon meshes.
 - Generalize curvature computation in `curvature()` to polygon meshes.
