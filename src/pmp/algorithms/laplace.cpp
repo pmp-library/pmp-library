@@ -1,4 +1,4 @@
-// Copyright 2011-2022 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2023 the Polygon Mesh Processing Library developers.
 // Copyright 2020 Astrid Bunge, Philipp Herholz, Misha Kazhdan, Mario Botsch.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 

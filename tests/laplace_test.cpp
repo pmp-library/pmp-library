@@ -29,8 +29,8 @@ unsigned int matrix_dimension_error(const SurfaceMesh& mesh)
     error += std::abs(L.rows() - nv);
     error += std::abs(L.cols() - nv);
     error += std::abs(G.cols() - nv);
-    error += std::abs(G.rows() - 3*nh);
-    error += std::abs(D.cols() - 3*nh);
+    error += std::abs(G.rows() - 3 * nh);
+    error += std::abs(D.cols() - 3 * nh);
     error += std::abs(D.rows() - nv);
     error += std::abs(M.rows() - nv);
     error += std::abs(M.cols() - nv);
@@ -45,7 +45,7 @@ double div_grad_error(const SurfaceMesh& mesh)
     setup_laplace_matrix(mesh, L);
     setup_gradient_matrix(mesh, G);
     setup_divergence_matrix(mesh, D);
-    return (L - D*G).norm();
+    return (L - D * G).norm();
 }
 
 // Gradient of linear function on PLANAR mesh should be constant
@@ -56,16 +56,16 @@ double constant_gradient_error(const SurfaceMesh& mesh)
     setup_gradient_matrix(mesh, G);
     DenseMatrix X;
     coordinates_to_matrix(mesh, X);
-    DenseMatrix GX = G*X;
+    DenseMatrix GX = G * X;
 
     DenseMatrix GG = DenseMatrix::Zero(GX.rows(), GX.cols());
-    for (int i=0; i<GG.rows(); i+=3)
+    for (int i = 0; i < GG.rows(); i += 3)
     {
-        GG(i+0, 0) = 1.0;
-        GG(i+1, 1) = 1.0;
+        GG(i + 0, 0) = 1.0;
+        GG(i + 1, 1) = 1.0;
     }
 
-    return (GX-GG).norm();
+    return (GX - GG).norm();
 }
 
 // Laplace of linear function on PLANAR Mesh should vanish
@@ -75,10 +75,10 @@ double linear_precision_error(const SurfaceMesh& mesh)
     setup_laplace_matrix(mesh, L);
     DenseMatrix X;
     coordinates_to_matrix(mesh, X);
-    DenseMatrix LX = L*X;
+    DenseMatrix LX = L * X;
 
     double error(0);
-    for (auto v: mesh.vertices())
+    for (auto v : mesh.vertices())
     {
         if (!mesh.is_boundary(v))
         {
@@ -98,7 +98,7 @@ double mass_matrix_error(const SurfaceMesh& mesh)
     setup_mass_matrix(mesh, M);
     double a2 = M.diagonal().sum();
 
-    return std::fabs(a1-a2);
+    return std::fabs(a1 - a2);
 }
 
 } // anonymous namespace
