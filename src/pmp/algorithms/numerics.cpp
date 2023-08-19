@@ -116,10 +116,7 @@ void matrices_to_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
 
     for (int i = 0; i < V.rows(); i++)
     {
-        auto x = static_cast<pmp::Scalar>(V(i, 0));
-        auto y = static_cast<pmp::Scalar>(V(i, 1));
-        auto z = static_cast<pmp::Scalar>(V(i, 2));
-        pmp::Point p(x, y, z);
+        auto p = static_cast<pmp::Point>(V.row(i));
         mesh.add_vertex(p);
     }
 
