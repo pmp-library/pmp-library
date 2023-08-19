@@ -2,6 +2,12 @@
 
 A common task in mesh processing is to improve the shape and size of the elements in a triangle mesh. Surface triangulations coming out of CAD programs, 3D modeling tools, or surface reconstruction can contain low quality elements not suitable for downstream processing. Low quality triangles typically include very long and skinny triangles or zero area faces.
 
+Try for yourself:
+
+\htmlonly
+<iframe class="demo" src="/demos/remeshing.html"></iframe>
+\endhtmlonly
+
 PMP provides an implementation of the remeshing algorithm by Botsch and Kobbelt \cite botsch_2004_remeshing that improves the quality of the triangles in your mesh. The algorithm is based on applying a series of local mesh modifications through edge splits, collapses, flips, as well as tangential smoothing. In addition to the standard uniform remeshing, PMP also provides a curvature-adaptive remeshing based on the paper of Dunyach et al. \cite dunyach_2013_adaptive
 
 In this section, you will learn the basics of the algorithm and how to use it effectively for remeshing tasks.

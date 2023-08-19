@@ -6,3 +6,9 @@ PMP provides two different methods for smoothing:
 
 1. Explicit Laplacian smoothing. See pmp::explicit_smoothing().
 2. Implicit Laplacian smoothing. See pmp::implicit_smoothing().
+
+Try for yourself:
+
+\htmlonly
+<iframe class="demo" src="/demos/smoothing.html"></iframe>
+\endhtmlonly
