@@ -546,9 +546,9 @@ void geodesics_heat(SurfaceMesh& mesh, const std::vector<Vertex>& seed)
     // setup all matrices
     SparseMatrix G, D, L;
     DiagonalMatrix M;
-    setup_gradient_matrix(mesh, G);
-    setup_divergence_matrix(mesh, D);
-    setup_mass_matrix(mesh, M);
+    gradient_matrix(mesh, G);
+    divergence_matrix(mesh, D);
+    mass_matrix(mesh, M);
     L = D * G;
 
     // diffusion time step (squared mean edge length)

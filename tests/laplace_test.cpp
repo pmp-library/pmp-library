@@ -17,10 +17,10 @@ unsigned int matrix_dimension_error(const SurfaceMesh& mesh)
 {
     SparseMatrix L, G, D;
     DiagonalMatrix M;
-    setup_laplace_matrix(mesh, L);
-    setup_gradient_matrix(mesh, G);
-    setup_divergence_matrix(mesh, D);
-    setup_mass_matrix(mesh, M);
+    laplace_matrix(mesh, L);
+    gradient_matrix(mesh, G);
+    divergence_matrix(mesh, D);
+    mass_matrix(mesh, M);
 
     unsigned int nv = mesh.n_vertices();
     unsigned int nh = mesh.n_halfedges();
@@ -42,9 +42,9 @@ unsigned int matrix_dimension_error(const SurfaceMesh& mesh)
 double div_grad_error(const SurfaceMesh& mesh)
 {
     SparseMatrix L, G, D;
-    setup_laplace_matrix(mesh, L);
-    setup_gradient_matrix(mesh, G);
-    setup_divergence_matrix(mesh, D);
+    laplace_matrix(mesh, L);
+    gradient_matrix(mesh, G);
+    divergence_matrix(mesh, D);
     return (L - D * G).norm();
 }
 
@@ -53,7 +53,7 @@ double div_grad_error(const SurfaceMesh& mesh)
 double constant_gradient_error(const SurfaceMesh& mesh)
 {
     SparseMatrix G;
-    setup_gradient_matrix(mesh, G);
+    gradient_matrix(mesh, G);
     DenseMatrix X;
     coordinates_to_matrix(mesh, X);
     DenseMatrix GX = G * X;
@@ -72,7 +72,7 @@ double constant_gradient_error(const SurfaceMesh& mesh)
 double linear_precision_error(const SurfaceMesh& mesh)
 {
     SparseMatrix L;
-    setup_laplace_matrix(mesh, L);
+    laplace_matrix(mesh, L);
     DenseMatrix X;
     coordinates_to_matrix(mesh, X);
     DenseMatrix LX = L * X;
@@ -95,7 +95,7 @@ double mass_matrix_error(const SurfaceMesh& mesh)
     double a1 = surface_area(mesh);
 
     DiagonalMatrix M;
-    setup_mass_matrix(mesh, M);
+    mass_matrix(mesh, M);
     double a2 = M.diagonal().sum();
 
     return std::fabs(a1 - a2);

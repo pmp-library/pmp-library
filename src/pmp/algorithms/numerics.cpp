@@ -87,7 +87,7 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
     return X;
 }
 
-void setup_selector_matrix(const SurfaceMesh& mesh,
+void selector_matrix(const SurfaceMesh& mesh,
                            std::function<bool(Vertex)> is_selected,
                            SparseMatrix& S)
 {

@@ -141,9 +141,9 @@ void harmonic_parameterization(SurfaceMesh& mesh, bool use_uniform_weights)
     // build system matrix (clamp negative cotan weights to zero)
     SparseMatrix L;
     if (use_uniform_weights)
-        setup_uniform_laplace_matrix(mesh, L);
+        uniform_laplace_matrix(mesh, L);
     else
-        setup_laplace_matrix(mesh, L, true);
+        laplace_matrix(mesh, L, true);
 
     // build right-hand side B and inject boundary constraints
     DenseMatrix B(mesh.n_vertices(), 2);

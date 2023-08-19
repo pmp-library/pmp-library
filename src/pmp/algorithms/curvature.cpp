@@ -80,9 +80,9 @@ void CurvatureAnalyzer::analyze(unsigned int post_smoothing_steps)
 
     // compute area-normalized Laplace
     SparseMatrix L;
-    setup_laplace_matrix(mesh_, L);
+    laplace_matrix(mesh_, L);
     DiagonalMatrix M;
-    setup_mass_matrix(mesh_, M);
+    mass_matrix(mesh_, M);
     DenseMatrix X;
     coordinates_to_matrix(mesh_, X);
     DenseMatrix LX = L * X;
@@ -150,7 +150,7 @@ void CurvatureAnalyzer::analyze_tensor(unsigned int post_smoothing_steps,
 
     // precompute Voronoi area per vertex
     DiagonalMatrix M;
-    setup_mass_matrix(mesh_, M);
+    mass_matrix(mesh_, M);
     for (auto v : mesh_.vertices())
     {
         area[v] = M.diagonal()[v.idx()];
@@ -322,7 +322,7 @@ void CurvatureAnalyzer::smooth_curvatures(unsigned int iterations)
 {
     // Laplace matrix (clamp negative cotan weights to zero)
     SparseMatrix L;
-    setup_laplace_matrix(mesh_, L, true);
+    laplace_matrix(mesh_, L, true);
 
     // normalize each row by sum of weights
     // scale by 0.5 to make it more robust

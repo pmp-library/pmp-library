@@ -15,7 +15,7 @@ namespace pmp {
 //! \param mesh The input mesh.
 //! \param M The output matrix.
 //! \ingroup algorithms
-void setup_uniform_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M);
+void uniform_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M);
 
 //! \brief Construct the uniform Laplace matrix.
 //! \details Matrix is sparse, symmetric and negative semi-definite.
@@ -23,7 +23,7 @@ void setup_uniform_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M);
 //! \param mesh The input mesh.
 //! \param L The output matrix.
 //! \ingroup algorithms
-void setup_uniform_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L);
+void uniform_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L);
 
 //! \brief Construct the (lumped) mass matrix for the cotangent Laplacian.
 //! \details Matrix is diagonal and positive definite.
@@ -32,7 +32,7 @@ void setup_uniform_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L);
 //! \param mesh The input mesh.
 //! \param M The output matrix.
 //! \ingroup algorithms
-void setup_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M);
+void mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M);
 
 //! \brief Construct the cotan Laplace matrix.
 //! \details Matrix is sparse, symmetric and negative semi-definite.
@@ -42,10 +42,10 @@ void setup_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M);
 //! \param mesh The input mesh.
 //! \param L The output matrix.
 //! \param clamp Whether or not negative off-diagonal entries should be clamped to zero.
-//! \sa setup_gradient_matrix
-//! \sa setup_divergence_matrix
+//! \sa gradient_matrix
+//! \sa divergence_matrix
 //! \ingroup algorithms
-void setup_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L,
+void laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L,
                           bool clamp = false);
 
 //! \brief Construct the cotan gradient matrix.
@@ -54,10 +54,10 @@ void setup_laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L,
 //! See \cite meyer_2003_discrete for details on triangle meshes and \cite bunge_2020_polygon for details on polygon meshes.
 //! \param mesh The input mesh.
 //! \param G The output matrix.
-//! \sa setup_laplace_matrix
-//! \sa setup_divergence_matrix
+//! \sa laplace_matrix
+//! \sa divergence_matrix
 //! \ingroup algorithms
-void setup_gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G);
+void gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G);
 
 //! \brief Construct the cotan divergence matrix.
 //! \details Matrix is sparse and maps constant gradient vectors at non-boundary halfedges to values at vertices.
@@ -65,10 +65,10 @@ void setup_gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G);
 //! See \cite meyer_2003_discrete for details on triangle meshes and \cite bunge_2020_polygon for details on polygon meshes.
 //! \param mesh The input mesh.
 //! \param D The output matrix.
-//! \sa setup_laplace_matrix
-//! \sa setup_gradient_matrix
+//! \sa laplace_matrix
+//! \sa gradient_matrix
 //! \ingroup algorithms
-void setup_divergence_matrix(const SurfaceMesh& mesh, SparseMatrix& D);
+void divergence_matrix(const SurfaceMesh& mesh, SparseMatrix& D);
 
 //! For a mesh with N vertices, construct an Nx3 matrix containint the vertex coordinates in its rows.
 //! \param mesh The input mesh.

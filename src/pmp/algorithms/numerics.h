@@ -41,7 +41,7 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
 //! \param mesh The input mesh.
 //! \param is_selected A function returning whether or not vertex i is selected or not.
 //! \param S The output matrix.
-void setup_selector_matrix(const SurfaceMesh& mesh,
+void selector_matrix(const SurfaceMesh& mesh,
                            std::function<bool(Vertex)> is_selected,
                            SparseMatrix& S);
 
