@@ -36,7 +36,7 @@ void setup_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M);
 
 //! \brief Construct the cotan Laplace matrix.
 //! \details Matrix is sparse, symmetric and negative semi-definite.
-//! M(i,i) is the negative valence of vertex i. M(i,j) is contangent weight of edge (i,j). M(i,i) is negative sum of off-diagonals.
+//! M(i,i) is the negative valence of vertex i. M(i,j) is cotangent weight of edge (i,j). M(i,i) is negative sum of off-diagonals.
 //! The discrete operators are consistent, such that Laplacian is divergence of gradient.
 //! See \cite meyer_2003_discrete for details on triangle meshes and \cite bunge_2020_polygon for details on polygon meshes.
 //! \param mesh The input mesh.
@@ -70,7 +70,7 @@ void setup_gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G);
 //! \ingroup algorithms
 void setup_divergence_matrix(const SurfaceMesh& mesh, SparseMatrix& D);
 
-//! For a mesh with N vertices, construct an Nx3 matrix containint the vertex coordinates in its rows.
+//! For a mesh with N vertices, construct an Nx3 matrix containing the vertex coordinates in its rows.
 //! \param mesh The input mesh.
 //! \param X The output matrix.
 //! \ingroup algorithms
