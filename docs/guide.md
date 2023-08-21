@@ -19,6 +19,7 @@ The @subpage algorithms-guide section contains task-specific guides:
 The @subpage advanced section covers special topics:
 
 - @ref eigen -- interfacing with Eigen
+- @ref emscripten -- building JavaScript apps using emscripten
 
 The @subpage developers section contains guidelines for developers and contributors:
 
