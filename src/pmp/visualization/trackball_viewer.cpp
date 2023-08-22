@@ -158,6 +158,7 @@ void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
     float d = (float)yoffset * 0.12 * radius_;
 #ifdef __EMSCRIPTEN__
     d *= 0.5; // scrolling in browser is faster
+    d = -d;   // invert direction
 #endif
     translate(vec3(0.0, 0.0, d));
 }
