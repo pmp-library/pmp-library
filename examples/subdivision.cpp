@@ -15,6 +15,11 @@ public:
 
 protected:
     void process_imgui() override;
+
+private:
+    bool show_error_{false};
+    std::string error_message_{};
+    void show_error();
 };
 
 Viewer::Viewer(const char* title, int width, int height, bool showgui)
@@ -41,16 +46,18 @@ void Viewer::process_imgui()
 
         if (ImGui::Button("Loop Subdivision"))
         {
-            try
+            // avoid throwing an exception, directly show error message
+            if (!mesh_.is_triangle_mesh())
+            {
+                error_message_ = "Loop subdivision requires a triangle mesh.\n";
+                error_message_ += "Triangulate the mesh first.\n";
+                show_error_ = true;
+            }
+            else
             {
                 loop_subdivision(mesh_);
+                update_mesh();
             }
-            catch (const InvalidInputException& e)
-            {
-                std::cerr << e.what() << std::endl;
-                return;
-            }
-            update_mesh();
         }
 
         if (ImGui::Button("Catmull-Clark Subdivision"))
@@ -65,6 +72,34 @@ void Viewer::process_imgui()
             update_mesh();
         }
     }
+
+    if (show_error_)
+        show_error();
+}
+
+void Viewer::show_error()
+{
+    auto color = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
+    color.w = 1.0;
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, color);
+    ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(),
+                            ImGuiCond_Always, ImVec2(0.5f, 1.0f));
+    if (!ImGui::Begin("Error", &show_error_,
+                      ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse))
+    {
+        ImGui::PopStyleColor();
+        ImGui::End();
+        return;
+    }
+    ImGui::Text("%s", error_message_.c_str());
+    ImGui::Spacing();
+    if (ImGui::Button("Ok"))
+    {
+        show_error_ = false;
+    }
+
+    ImGui::PopStyleColor();
+    ImGui::End();
 }
 
 int main(int argc, char** argv)
