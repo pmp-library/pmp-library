@@ -32,28 +32,48 @@ void Viewer::process_imgui()
 
     if (ImGui::CollapsingHeader("Decimation", ImGuiTreeNodeFlags_DefaultOpen))
     {
+        ImGui::PushItemWidth(80);
+
         static int target_percentage = 10;
-        ImGui::PushItemWidth(100);
-        ImGui::SliderInt("Percentage", &target_percentage, 1, 99);
-        ImGui::PopItemWidth();
+        ImGui::SliderInt("Number of Vertices (%)", &target_percentage, 1, 99);
 
         static int normal_deviation = 180;
-        ImGui::PushItemWidth(100);
         ImGui::SliderInt("Normal Deviation", &normal_deviation, 1, 180);
-        ImGui::PopItemWidth();
 
         static int aspect_ratio = 10;
-        ImGui::PushItemWidth(100);
         ImGui::SliderInt("Aspect Ratio", &aspect_ratio, 1, 10);
-        ImGui::PopItemWidth();
 
+        static double edge_length = 0.0;
+        static int max_valence = 0;
+        static double hausdorff_error = 0.0;
+        static double seam_threshold = 0.0;
+        static double seam_angle_deviation = 0.0;
+
+        ImGui::Indent(3);
+        if (ImGui::CollapsingHeader("Advanced Options"))
+        {
+            ImGui::Indent(10);
+
+            ImGui::InputDouble("Min. Edge Length", &edge_length, 0.0, 0.0,
+                               "%g");
+            ImGui::SliderInt("Max. Valence", &max_valence, 0, 15);
+            ImGui::InputDouble("Max. Hausdorff Error", &hausdorff_error, 0.0,
+                               0.0, "%g");
+            ImGui::InputDouble("Texture Seam Threshold", &seam_threshold, 0.0,
+                               0.0, "%g");
+            ImGui::InputDouble("Texture Seam Deviation", &seam_angle_deviation,
+                               0.0, 0.0, "%g");
+            ImGui::Unindent(10);
+        }
+        ImGui::Unindent(3);
         if (ImGui::Button("Decimate"))
         {
             try
             {
                 auto nv = mesh_.n_vertices() * 0.01 * target_percentage;
-                decimate(mesh_, nv, aspect_ratio, 0.0, 0.0, normal_deviation,
-                         0.0);
+                decimate(mesh_, nv, aspect_ratio, edge_length, max_valence,
+                         normal_deviation, hausdorff_error, seam_threshold,
+                         seam_angle_deviation);
             }
             catch (const InvalidInputException& e)
             {
@@ -62,6 +82,8 @@ void Viewer::process_imgui()
             }
             update_mesh();
         }
+
+        ImGui::PopItemWidth();
     }
 }
 
