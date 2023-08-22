@@ -35,6 +35,8 @@ void Viewer::process_imgui()
 
     if (ImGui::CollapsingHeader("Features", ImGuiTreeNodeFlags_DefaultOpen))
     {
+        ImGui::Spacing();
+
         static int feature_angle = 70;
         ImGui::PushItemWidth(80);
         ImGui::SliderInt("##feature_angle", &feature_angle, 1, 180);
@@ -48,9 +50,14 @@ void Viewer::process_imgui()
         }
     }
 
+    ImGui::Spacing();
+    ImGui::Spacing();
+
     if (ImGui::CollapsingHeader("Uniform Remeshing",
                                 ImGuiTreeNodeFlags_DefaultOpen))
     {
+        ImGui::Spacing();
+
         ImGui::PushItemWidth(80);
 
         static double edge_length{0.01};
@@ -69,6 +76,8 @@ void Viewer::process_imgui()
 
         static bool scale_lengths{true};
         ImGui::Checkbox("Scale Lengths##uniform", &scale_lengths);
+
+        ImGui::Spacing();
 
         if (ImGui::Button("Remesh##uniform"))
         {
@@ -89,9 +98,14 @@ void Viewer::process_imgui()
         ImGui::PopItemWidth();
     }
 
+    ImGui::Spacing();
+    ImGui::Spacing();
+
     if (ImGui::CollapsingHeader("Adaptive Remeshing",
                                 ImGuiTreeNodeFlags_DefaultOpen))
     {
+        ImGui::Spacing();
+
         ImGui::PushItemWidth(80);
 
         static double min_length{0.001};
@@ -111,6 +125,8 @@ void Viewer::process_imgui()
 
         static bool scale_lengths{true};
         ImGui::Checkbox("Scale Lengths##adaptive", &scale_lengths);
+
+        ImGui::Spacing();
 
         if (ImGui::Button("Remesh##adaptive"))
         {

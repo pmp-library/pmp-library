@@ -32,6 +32,7 @@ void Viewer::process_imgui()
 
     if (ImGui::CollapsingHeader("Decimation", ImGuiTreeNodeFlags_DefaultOpen))
     {
+        ImGui::Spacing();
         ImGui::PushItemWidth(80);
 
         static int target_percentage = 10;
@@ -49,9 +50,11 @@ void Viewer::process_imgui()
         static double seam_threshold = 0.0;
         static double seam_angle_deviation = 0.0;
 
+        ImGui::Spacing();
         ImGui::Indent(3);
         if (ImGui::CollapsingHeader("Advanced Options"))
         {
+            ImGui::Spacing();
             ImGui::Indent(10);
 
             ImGui::InputDouble("Min. Edge Length", &edge_length, 0.0, 0.0,
@@ -66,6 +69,9 @@ void Viewer::process_imgui()
             ImGui::Unindent(10);
         }
         ImGui::Unindent(3);
+
+        ImGui::Spacing();
+
         if (ImGui::Button("Decimate"))
         {
             try
