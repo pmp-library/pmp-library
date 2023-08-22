@@ -79,9 +79,15 @@ void Viewer::process_imgui()
 
 void Viewer::show_error()
 {
-    auto color = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
-    color.w = 1.0;
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, color);
+    // no transparency
+    auto window_color = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
+    auto title_color = ImGui::GetStyle().Colors[ImGuiCol_TitleBgActive];
+    window_color.w = 1.0;
+    title_color.w = 1.0;
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, window_color);
+    ImGui::PushStyleColor(ImGuiCol_TitleBgActive, title_color);
+
+    // centered message box
     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(),
                             ImGuiCond_Always, ImVec2(0.5f, 1.0f));
     if (!ImGui::Begin("Error", &show_error_,
@@ -98,7 +104,7 @@ void Viewer::show_error()
         show_error_ = false;
     }
 
-    ImGui::PopStyleColor();
+    ImGui::PopStyleColor(2);
     ImGui::End();
 }
 
