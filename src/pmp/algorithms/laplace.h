@@ -46,7 +46,7 @@ void mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M);
 //! \sa divergence_matrix
 //! \ingroup algorithms
 void laplace_matrix(const SurfaceMesh& mesh, SparseMatrix& L,
-                          bool clamp = false);
+                    bool clamp = false);
 
 //! \brief Construct the cotan gradient matrix.
 //! \details Matrix is sparse and maps values at vertices to constant gradient 3D-vectors at non-boundary halfedges.

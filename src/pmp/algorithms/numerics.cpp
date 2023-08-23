@@ -88,8 +88,7 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
 }
 
 void selector_matrix(const SurfaceMesh& mesh,
-                           std::function<bool(Vertex)> is_selected,
-                           SparseMatrix& S)
+                     std::function<bool(Vertex)> is_selected, SparseMatrix& S)
 {
     std::vector<Triplet> triplets;
     triplets.reserve(mesh.n_vertices());

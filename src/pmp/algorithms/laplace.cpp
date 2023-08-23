@@ -58,9 +58,8 @@ void compute_virtual_vertex(const DenseMatrix& poly, Eigen::VectorXd& weights)
     weights = A.completeOrthogonalDecomposition().solve(b).topRows(n);
 }
 
-void triangle_mass_matrix(const Eigen::Vector3d& p0,
-                                const Eigen::Vector3d& p1,
-                                const Eigen::Vector3d& p2, DiagonalMatrix& Mtri)
+void triangle_mass_matrix(const Eigen::Vector3d& p0, const Eigen::Vector3d& p1,
+                          const Eigen::Vector3d& p2, DiagonalMatrix& Mtri)
 {
     // three vertex positions
     const std::array<dvec3, 3> p = {p0, p1, p2};
@@ -113,16 +112,15 @@ void triangle_mass_matrix(const Eigen::Vector3d& p0,
     Mtri = area.asDiagonal();
 }
 
-void polygon_mass_matrix(const DenseMatrix& polygon,
-                               DiagonalMatrix& Mpoly)
+void polygon_mass_matrix(const DenseMatrix& polygon, DiagonalMatrix& Mpoly)
 {
     const int n = (int)polygon.rows();
 
     // shortcut for triangles
     if (n == 3)
     {
-        triangle_mass_matrix(polygon.row(0), polygon.row(1),
-                                   polygon.row(2), Mpoly);
+        triangle_mass_matrix(polygon.row(0), polygon.row(1), polygon.row(2),
+                             Mpoly);
         return;
     }
 
@@ -139,8 +137,7 @@ void polygon_mass_matrix(const DenseMatrix& polygon,
         const int j = (i + 1) % n;
 
         // build laplace matrix of one triangle
-        triangle_mass_matrix(polygon.row(i), polygon.row(j), vvertex,
-                                   Mtri);
+        triangle_mass_matrix(polygon.row(i), polygon.row(j), vvertex, Mtri);
 
         // assemble to laplace matrix for refined triangle fan
         // (we are dealing with diagonal matrices)
@@ -160,8 +157,8 @@ void polygon_mass_matrix(const DenseMatrix& polygon,
 }
 
 void triangle_laplace_matrix(const Eigen::Vector3d& p0,
-                                   const Eigen::Vector3d& p1,
-                                   const Eigen::Vector3d& p2, DenseMatrix& Ltri)
+                             const Eigen::Vector3d& p1,
+                             const Eigen::Vector3d& p2, DenseMatrix& Ltri)
 {
     std::array<double, 3> l, l2, cot;
 
@@ -196,8 +193,7 @@ void triangle_laplace_matrix(const Eigen::Vector3d& p0,
     }
 }
 
-void polygon_laplace_matrix(const DenseMatrix& polygon,
-                                  DenseMatrix& Lpoly)
+void polygon_laplace_matrix(const DenseMatrix& polygon, DenseMatrix& Lpoly)
 {
     const int n = (int)polygon.rows();
     Lpoly = DenseMatrix::Zero(n, n);
@@ -205,8 +201,8 @@ void polygon_laplace_matrix(const DenseMatrix& polygon,
     // shortcut for triangles
     if (n == 3)
     {
-        triangle_laplace_matrix(polygon.row(0), polygon.row(1),
-                                      polygon.row(2), Lpoly);
+        triangle_laplace_matrix(polygon.row(0), polygon.row(1), polygon.row(2),
+                                Lpoly);
         return;
     }
 
@@ -223,8 +219,7 @@ void polygon_laplace_matrix(const DenseMatrix& polygon,
         const int j = (i + 1) % n;
 
         // build laplace matrix of one triangle
-        triangle_laplace_matrix(polygon.row(i), polygon.row(j), vvertex,
-                                      Ltri);
+        triangle_laplace_matrix(polygon.row(i), polygon.row(j), vvertex, Ltri);
 
         // assemble to laplace matrix for refined triangle fan
         Lfan(i, i) += Ltri(0, 0);
@@ -248,8 +243,8 @@ void polygon_laplace_matrix(const DenseMatrix& polygon,
 }
 
 void triangle_gradient_matrix(const Eigen::Vector3d& p0,
-                                    const Eigen::Vector3d& p1,
-                                    const Eigen::Vector3d& p2, DenseMatrix& G)
+                              const Eigen::Vector3d& p1,
+                              const Eigen::Vector3d& p2, DenseMatrix& G)
 {
     G.resize(3, 3);
     Eigen::Vector3d n = (p1 - p0).cross(p2 - p0);
@@ -259,8 +254,7 @@ void triangle_gradient_matrix(const Eigen::Vector3d& p0,
     G.col(2) = n.cross(p1 - p0);
 }
 
-void polygon_gradient_matrix(const DenseMatrix& polygon,
-                                   DenseMatrix& Gpoly)
+void polygon_gradient_matrix(const DenseMatrix& polygon, DenseMatrix& Gpoly)
 {
     const int n = (int)polygon.rows();
 
@@ -277,8 +271,7 @@ void polygon_gradient_matrix(const DenseMatrix& polygon,
         const int j = (i + 1) % n;
 
         // build laplace matrix of one triangle
-        triangle_gradient_matrix(polygon.row(i), polygon.row(j), vvertex,
-                                       Gtri);
+        triangle_gradient_matrix(polygon.row(i), polygon.row(j), vvertex, Gtri);
 
         // assemble to matrix for triangle fan
         for (int k = 0; k < 3; ++k)
