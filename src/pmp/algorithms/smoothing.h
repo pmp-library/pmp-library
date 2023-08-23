@@ -20,11 +20,12 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters = 10,
 //! \details See \cite desbrun_1999_implicit and \cite kazhdan_2012
 //! \param mesh The input mesh, modified in place.
 //! \param timestep The time step taken.
+//! \param iters The number of iterations performed.
 //! \param use_uniform_laplace Use uniform or cotan Laplacian. Default: cotan.
 //! \param rescale Re-center and re-scale model after smoothing. Default: true.
 //! \throw SolverException in case of a failure to solve the linear system.
 //! \ingroup algorithms
-void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep = 0.001,
+void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep = 0.001, unsigned int iters=1,
                         bool use_uniform_laplace = false, bool rescale = true);
 
 } // namespace pmp

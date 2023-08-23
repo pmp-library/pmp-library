@@ -49,7 +49,7 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
     matrix_to_coordinates(X, mesh);
 }
 
-void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
+void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep, unsigned int iters,
                         bool use_uniform_laplace, bool rescale)
 {
     if (!mesh.n_vertices())
@@ -74,36 +74,46 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
     }
     else
     {
-        laplace_matrix(mesh, L, true);
+        laplace_matrix(mesh, L);
         mass_matrix(mesh, M);
     }
     SparseMatrix A = SparseMatrix(M) - timestep * L;
+    DenseMatrix X, B;
 
-    // build right-hand side B
-    DenseMatrix X;
-    coordinates_to_matrix(mesh, X);
-    DenseMatrix B = M * X;
 
-    // solve system
-    auto is_constrained = [&](unsigned int i) {
-        return mesh.is_boundary(Vertex(i));
-    };
-    X = cholesky_solve(A, B, is_constrained, X);
-    matrix_to_coordinates(X, mesh);
-
-    if (rescale)
+    for (unsigned int iter=0; iter<iters; ++iter)
     {
-        // restore original surface area
-        Scalar area_after = surface_area(mesh);
-        Scalar scale = sqrt(area_before / area_after);
-        for (auto v : mesh.vertices())
-            mesh.position(v) *= scale;
+        if (!use_uniform_laplace)
+        {
+            mass_matrix(mesh, M);
+            A = SparseMatrix(M) - timestep * L;
+        }
 
-        // restore original center
-        Point center_after = centroid(mesh);
-        Point trans = center_before - center_after;
-        for (auto v : mesh.vertices())
-            mesh.position(v) += trans;
+        // build right-hand side B
+        coordinates_to_matrix(mesh, X);
+        B = M * X;
+
+        // solve system
+        auto is_constrained = [&](unsigned int i) {
+            return mesh.is_boundary(Vertex(i));
+        };
+        X = cholesky_solve(A, B, is_constrained, X);
+        matrix_to_coordinates(X, mesh);
+
+        if (rescale)
+        {
+            // restore original surface area
+            Scalar area_after = surface_area(mesh);
+            Scalar scale = sqrt(area_before / area_after);
+            for (auto v : mesh.vertices())
+                mesh.position(v) *= scale;
+
+            // restore original center
+            Point center_after = centroid(mesh);
+            Point trans = center_before - center_after;
+            for (auto v : mesh.vertices())
+                mesh.position(v) += trans;
+        }
     }
 }
 

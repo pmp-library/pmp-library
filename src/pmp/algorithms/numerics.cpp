@@ -11,10 +11,18 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& b)
     solver.compute(A);
     if (solver.info() != Eigen::Success)
     {
+        auto what = std::string{__func__} + ": Failed to factorize linear system.";
+        throw SolverException(what);
+    }
+
+    const DenseMatrix x = solver.solve(b);
+    if (solver.info() != Eigen::Success)
+    {
         auto what = std::string{__func__} + ": Failed to solve linear system.";
         throw SolverException(what);
     }
-    return solver.solve(b);
+
+    return x;
 }
 
 DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
@@ -69,15 +77,22 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
     SparseMatrix AA(n, n);
     AA.setFromTriplets(triplets.begin(), triplets.end());
 
-    // solve linear system
+    // factorize system
     Eigen::SimplicialLDLT<SparseMatrix> solver;
     solver.compute(AA);
+    if (solver.info() != Eigen::Success)
+    {
+        auto what = std::string{__func__} + ": Failed to factorize linear system.";
+        throw SolverException(what);
+    }
+
+    // solve system
+    const DenseMatrix XX = solver.solve(BB);
     if (solver.info() != Eigen::Success)
     {
         auto what = std::string{__func__} + ": Failed to solve linear system.";
         throw SolverException(what);
     }
-    const DenseMatrix XX = solver.solve(BB);
 
     // build full-size result vector from solver result (X) and constraints (C)
     DenseMatrix X(B.rows(), B.cols());
