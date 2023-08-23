@@ -18,6 +18,12 @@ void write_off(const SurfaceMesh& mesh, const std::filesystem::path& file,
         return;
     }
 
+    // check if we can write the mesh using 32-bit indices
+    if (const auto max_idx = std::numeric_limits<uint32_t>::max();
+        mesh.n_vertices() > max_idx)
+        throw InvalidInputException(
+            "Mesh too large to be written with 32-bit indices.");
+
     FILE* out = fopen(file.string().c_str(), "w");
     if (!out)
         throw IOException("Failed to open file: " + file.string());
@@ -83,7 +89,7 @@ void write_off(const SurfaceMesh& mesh, const std::filesystem::path& file,
         auto fvend = fv;
         do
         {
-            fprintf(out, " %d", (*fv).idx());
+            fprintf(out, " %d", (uint32_t)(*fv).idx());
         } while (++fv != fvend);
         fprintf(out, "\n");
     }

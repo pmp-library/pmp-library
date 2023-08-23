@@ -2,6 +2,8 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/io/write_obj.h"
+#include <limits>
+#include "pmp/exceptions.h"
 
 namespace pmp {
 
@@ -11,6 +13,12 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
     FILE* out = fopen(file.string().c_str(), "w");
     if (!out)
         throw IOException("Failed to open file: " + file.string());
+
+    // check if we can write the mesh using 32-bit indices
+    const auto uint_max = std::numeric_limits<uint32_t>::max();
+    if (mesh.n_vertices() > uint_max)
+        throw InvalidInputException(
+            "Mesh too large to be written with 32-bit indices.");
 
     // comment
     fprintf(out, "# OBJ export from PMP\n");
@@ -38,6 +46,10 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
     auto tex_coords = mesh.get_halfedge_property<TexCoord>("h:tex");
     if (tex_coords && flags.use_halfedge_texcoords)
     {
+        if (mesh.n_halfedges() > uint_max)
+            throw InvalidInputException(
+                "Mesh too large to be written with 32-bit indices.");
+
         for (auto h : mesh.halfedges())
         {
             const TexCoord& pt = tex_coords[h];
@@ -57,13 +69,14 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
             if (tex_coords)
             {
                 // write vertex index, texCoord index and normal index
-                fprintf(out, " %d/%d/%d", idx, (*h).idx() + 1, idx);
+                fprintf(out, " %d/%d/%d", (uint32_t)idx,
+                        (uint32_t)(*h).idx() + 1, (uint32_t)idx);
                 ++h;
             }
             else
             {
                 // write vertex index and normal index
-                fprintf(out, " %d//%d", idx, idx);
+                fprintf(out, " %d//%d", (uint32_t)idx, (uint32_t)idx);
             }
         }
         fprintf(out, "\n");
