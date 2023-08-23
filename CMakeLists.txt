@@ -137,9 +137,10 @@ endif()
 
 if(EMSCRIPTEN)
   add_compile_options(--no-heap-copy)
-  add_compile_options(-fwasm-exceptions)
+  add_compile_options(-fexceptions)
+  add_link_options(-fexceptions)
   add_link_options(
-    "SHELL:-sWASM=1 -sUSE_WEBGL2=1 -sUSE_GLFW=3 -sALLOW_MEMORY_GROWTH=1 -sALLOW_TABLE_GROWTH=1 -sSTACK_SIZE=5MB -fwasm-exceptions"
+    "SHELL:-sWASM=1 -sUSE_WEBGL2=1 -sUSE_GLFW=3 -sALLOW_MEMORY_GROWTH=1 -sALLOW_TABLE_GROWTH=1 -sSTACK_SIZE=5MB"
   )
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
