@@ -200,9 +200,9 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
 void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                      const bool has_texcoords, const bool has_colors)
 {
-    IndexType i, j, idx(0);
-    IndexType nv(0), nf(0), ne(0);
-    Point p, n;
+    uint32_t i, j, idx(0);
+    uint32_t nv(0), nf(0), ne(0);
+    vec3 p, n;
     vec2 t;
     Vertex v;
 

@@ -35,7 +35,7 @@ struct CompareVec3
 void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
 {
     std::array<char, 100> line;
-    unsigned int i, nT(0);
+    uint32_t i, nT(0);
     vec3 p;
     Vertex v;
     std::vector<Vertex> vertices(3);
@@ -68,7 +68,7 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
         [[maybe_unused]] auto n_items = fread(line.data(), 1, 80, fp);
 
         // read number of triangles
-        unsigned int n_triangles{0};
+        uint32_t n_triangles{0};
         tfread(fp, n_triangles);
 
         // get file size minus header and element count

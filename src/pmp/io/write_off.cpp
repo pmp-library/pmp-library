@@ -106,9 +106,9 @@ void write_off_binary(const SurfaceMesh& mesh,
 
     fprintf(out, "OFF BINARY\n");
     fclose(out);
-    auto nv = (IndexType)mesh.n_vertices();
-    auto nf = (IndexType)mesh.n_faces();
-    auto ne = IndexType{};
+    uint32_t nv = mesh.n_vertices();
+    uint32_t nf = mesh.n_faces();
+    uint32_t ne = 0;
 
     out = fopen(file.string().c_str(), "ab");
     tfwrite(out, nv);
@@ -117,16 +117,19 @@ void write_off_binary(const SurfaceMesh& mesh,
     auto points = mesh.get_vertex_property<Point>("v:point");
     for (auto v : mesh.vertices())
     {
-        const Point& p = points[v];
+        const vec3 p = (vec3)points[v];
         tfwrite(out, p);
     }
 
     for (auto f : mesh.faces())
     {
-        IndexType valence = mesh.valence(f);
+        uint32_t valence = mesh.valence(f);
         tfwrite(out, valence);
         for (auto fv : mesh.vertices(f))
-            tfwrite(out, fv.idx());
+        {
+            uint32_t idx = fv.idx();
+            tfwrite(out, idx);
+        }
     }
     fclose(out);
 }
