@@ -16,10 +16,13 @@ In this section, you will learn the basics of the algorithm and how to use it ef
 
 ## Algorithm Basics
 
-- Incremental algorithm based on iterative refinement
-- Split, flip, collapse, smooth
-- Projection on original surface
-- Uniform vs. curvature-adaptive sizing
+In this section, we provide a basic overview of the algorithm. Please refer to the original publications \cite botsch_2004_remeshing and \cite dunyach_2013_adaptive for details.
+
+First of all, it is important to understand that our remeshing algorithm works in an incremental fashion. Starting from the original mesh the algorithm iteratively improves the shape and size of the triangles.
+
+The optimization is performed by applying a series of local mesh modifications based on edge splits, edge collapse, edge flips, as well as tangential smoothing. An optional step projects mesh vertices back to the original surface to stay closer to the input shape.
+
+In case of _uniform_ or _isotropic_ remeshing, the goal of the optimization are equally sized triangles as close as possible to regular triangles. Alternatively, _adaptive_ remeshing employs a spatially varying sizing field that refines the mesh in regions of high curvature while using larger elements in flat regions.
 
 ## Uniform Remeshing
 
@@ -43,7 +46,7 @@ Adaptive remeshing creates an adaptive mesh with varying element size depending 
 
 ## Preserving Sharp Features
 
-Both the uniform and adaptive remeshing functions preserve feature edges present in the input mesh. They can be either detected by using the pmp::detect_features() function or by using the `v:feature` boolean vertex property and the `e:feature` boolean edge property.
+Both uniform and adaptive remeshing functions preserve feature edges present in the input mesh. They can be either detected by using the pmp::detect_features() function or by using the `v:feature` boolean vertex property and the `e:feature` boolean edge property.
 
 ## Selections
 
