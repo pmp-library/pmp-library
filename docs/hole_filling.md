@@ -9,3 +9,5 @@ Meshes sometimes contain holes as artifacts from previous modeling or reconstruc
 The function is pmp::fill_hole().
 
 See \cite liepa_2003_filling for details.
+
+\note This algorithm works on general polygon meshes.
