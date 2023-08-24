@@ -23,6 +23,7 @@ enum class Curvature
 //! interior neighbors. Curvature values can be smoothed. See
 //! \cite meyer_2003_discrete and \cite cohen-steiner_2003_restricted for
 //! details.
+//! \note This algorithm works on general polygon meshes.
 //! \ingroup algorithms
 void curvature(SurfaceMesh& mesh, Curvature c = Curvature::mean,
                int smoothing_steps = 0, bool use_tensor = false,

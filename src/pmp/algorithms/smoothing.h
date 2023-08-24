@@ -9,6 +9,7 @@ namespace pmp {
 
 //! \brief Perform explicit Laplacian smoothing.
 //! \details See \cite desbrun_1999_implicit for details
+//! \note This algorithm works on general polygon meshes.
 //! \param mesh The input mesh, modified in place.
 //! \param iters The number of iterations performed.
 //! \param use_uniform_laplace Use uniform or cotan Laplacian. Default: cotan.
@@ -17,7 +18,8 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters = 10,
                         bool use_uniform_laplace = false);
 
 //! \brief Perform implicit Laplacian smoothing.
-//! \details See \cite desbrun_1999_implicit and \cite kazhdan_2012
+//! \details See \cite desbrun_1999_implicit and \cite kazhdan_2012 .
+//! \note This algorithm works on general polygon meshes.
 //! \param mesh The input mesh, modified in place.
 //! \param timestep The time step taken.
 //! \param iters The number of iterations performed.

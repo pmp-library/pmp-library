@@ -9,6 +9,7 @@ namespace pmp {
 
 //! \brief Compute discrete harmonic parameterization.
 //! \details See \cite desbrun_2002_intrinsic for details.
+//! \note This algorithm works on general polygon meshes.
 //! \pre The mesh has a boundary.
 //! \throw InvalidInputException if the input precondition is violated.
 //! \throw SolverException in case of failure to solve the linear system.
