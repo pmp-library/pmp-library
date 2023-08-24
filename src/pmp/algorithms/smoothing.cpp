@@ -7,7 +7,7 @@
 
 namespace pmp {
 
-void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
+void explicit_smoothing(SurfaceMesh& mesh, unsigned int iterations,
                         bool use_uniform_laplace)
 {
     if (!mesh.n_vertices())
@@ -42,15 +42,16 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters,
     coordinates_to_matrix(mesh, X);
 
     // perform some iterations
-    for (unsigned int i = 0; i < iters; ++i)
+    for (unsigned int i = 0; i < iterations; ++i)
         X += L * X;
 
     // copy matrix back to vertex coordinates
     matrix_to_coordinates(X, mesh);
 }
 
-void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep, unsigned int iters,
-                        bool use_uniform_laplace, bool rescale)
+void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
+                        unsigned int iterations, bool use_uniform_laplace,
+                        bool rescale)
 {
     if (!mesh.n_vertices())
         return;
@@ -80,7 +81,7 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep, unsigned int iters,
     SparseMatrix A = SparseMatrix(M) - timestep * L;
     DenseMatrix X, B;
 
-    for (unsigned int iter = 0; iter < iters; ++iter)
+    for (unsigned int iter = 0; iter < iterations; ++iter)
     {
         if (!use_uniform_laplace)
         {
