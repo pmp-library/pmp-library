@@ -1,5 +1,5 @@
-file(GLOB SOURCES ./*.cpp)
-file(GLOB HEADERS ./*.h)
+file(GLOB SOURCES ./*.cpp ./backends/*.cpp)
+file(GLOB HEADERS ./*.h ./backends/*.h)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

@@ -55,7 +55,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Drop `Surface` prefix from algorithms
 - Update glew to version 2.2.0.
 - Update stb_image to version 2.28 and stb_image_write to version 1.16.
-- Upgrade ImGui to version 1.89.5 (fixes emscripten bug)
+- Upgrade ImGui to version 1.89.8
 
 ## [2.0.1] 2022-08-26
 
