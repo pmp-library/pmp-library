@@ -36,7 +36,7 @@ A good default value for `edge_length` is the mean edge length which can be comp
 
 ## Adaptive Remeshing
 
-Adaptive remeshing creates an adaptive mesh with varying element size depending on the local curvature of the input mesh. In addition
+Adaptive remeshing creates an adaptive mesh with varying element size depending on the local curvature of the input mesh. The remeshing is controlled by the following parameters:
 
 - `min_edge_length`: The minimum edge length.
 - `max_edge_length`: The maximum edge length.
