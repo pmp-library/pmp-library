@@ -25,7 +25,8 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iters = 10,
 //! \param rescale Re-center and re-scale model after smoothing. Default: true.
 //! \throw SolverException in case of a failure to solve the linear system.
 //! \ingroup algorithms
-void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep = 0.001, unsigned int iters=1,
+void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep = 0.001,
+                        unsigned int iters = 1,
                         bool use_uniform_laplace = false, bool rescale = true);
 
 } // namespace pmp

@@ -80,8 +80,7 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep, unsigned int iters,
     SparseMatrix A = SparseMatrix(M) - timestep * L;
     DenseMatrix X, B;
 
-
-    for (unsigned int iter=0; iter<iters; ++iter)
+    for (unsigned int iter = 0; iter < iters; ++iter)
     {
         if (!use_uniform_laplace)
         {

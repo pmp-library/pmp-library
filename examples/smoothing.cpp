@@ -107,7 +107,8 @@ void Viewer::process_imgui()
                     uniform_laplace ? timestep : timestep * radius_ * radius_;
                 try
                 {
-                    implicit_smoothing(mesh_, dt, implicit_iterations, uniform_laplace, rescale);
+                    implicit_smoothing(mesh_, dt, implicit_iterations,
+                                       uniform_laplace, rescale);
                 }
                 catch (const SolverException& e)
                 {

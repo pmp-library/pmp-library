@@ -11,7 +11,8 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& b)
     solver.compute(A);
     if (solver.info() != Eigen::Success)
     {
-        auto what = std::string{__func__} + ": Failed to factorize linear system.";
+        auto what =
+            std::string{__func__} + ": Failed to factorize linear system.";
         throw SolverException(what);
     }
 
@@ -82,7 +83,8 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
     solver.compute(AA);
     if (solver.info() != Eigen::Success)
     {
-        auto what = std::string{__func__} + ": Failed to factorize linear system.";
+        auto what =
+            std::string{__func__} + ": Failed to factorize linear system.";
         throw SolverException(what);
     }
 
