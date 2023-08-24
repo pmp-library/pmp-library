@@ -14,16 +14,15 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Add support to write binary STL files.
 - Added `geodesics_heat()` for computing geodesics (based on the heat method) on general polygon meshes.
 - Generalize curvature computation in `curvature()` to polygon meshes.
-- Add `pmp::mean_edge_length(SurfaceMesh)`.
+- Add `mean_edge_length(SurfaceMesh)`.
 - Add `min_face_area()` to compute minimum face area of all faces.
 - Add `edge_area()` to compute the area associated to an edge.
 - Added circulator enumerating edges around vertex: `SurfaceMesh::edges(Vertex)`.
-- Functions `setup_laplace_matrix()`, `setup_mass_matrix()`, `setup_gradient_matrix()`, and `setup_divergence_matrix()` that compute matrix representations of those discrete differential operators. Works for both triangle meshes and general polygon meshes, based on the paper Bunge et al, "Polygon Laplacian made simple", Eurographics 2020.
+- Functions `laplace_matrix()`, `mass_matrix()`, `gradient_matrix()`, and `divergence_matrix()` that compute matrix representations of those discrete differential operators. Works for both triangle meshes and general polygon meshes, based on the paper Bunge et al, "Polygon Laplacian made simple", Eurographics 2020.
 - Smoothing, parameterization, and fairing are now implemented based on sparse Laplacian matrices, which generalizes to general polygon meshes.
 - Add `PMP_STRICT_COMPILATION` CMake option to control treating warnings as errors. Default: On.
 - Add function `flip_faces()` to reverse face orientation in a mesh (#123)
-- Meshes and textures can be loaded by dropping the files onto the window, both in
-  normal GLFW windows and browser windows (using emscripten). Thanks to Stephan Wenninger!
+- Meshes and textures can be loaded by dropping the files onto the window, both in normal GLFW windows and browser windows (using emscripten). Thanks to Stephan Wenninger!
 
 ### Changed
 
@@ -122,8 +121,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 - Fix rendering issues around sharp edges
 - Fix bug in adaptive remeshing leading to over-refinement of corner vertices.
-- Fix bug in bounding box computation.
-  Thanks a lot to Jascha Achenbach for reporting this bug!
+- Fix bug in bounding box computation. Thanks a lot to Jascha Achenbach for reporting this bug!
 
 ## [1.2.0] 2020-03-15
 
@@ -137,19 +135,14 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 - Add constructors using initializer lists to Matrix/Vector classes
 - Add assignment from and cast from Eigen matrices and vectors
-- Improved rendering of general polygons, avoiding erroneous
-  tessellation into overlapping/flipped triangles in case of
-  non-convex polygons.
-- Added support for rendering using MatCaps.
-  Thanks to Alec Jacobson for suggesting this!
+- Improved rendering of general polygons, avoiding erroneous tessellation into overlapping/flipped triangles in case of non-convex polygons.
+- Added support for rendering using MatCaps. Thanks to Alec Jacobson for suggesting this!
 
 ### Fixed
 
 - Fix erroneous header install path (visualization)
-- Fix bug hole filling (when filling single-triangle holes).
-  Thanks a lot to Pierre Buyssens for reporting this bug!
-- Fix bug when fairing a mesh w/o boundary constraints.
-  Thanks a lot to Pierre Buyssens for reporting this bug!
+- Fix bug hole filling (when filling single-triangle holes). Thanks a lot to Pierre Buyssens for reporting this bug!
+- Fix bug when fairing a mesh w/o boundary constraints. Thanks a lot to Pierre Buyssens for reporting this bug!
 
 ## [1.1.0] 2019-05-30
 
@@ -174,8 +167,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 ### Fixed
 
 - Fix a bug in OFF reader when loading faces with high valence
-- Fix a bug SurfaceGeodesic that lead to dist(v0,v1) != dist(v1,v0). As a
-  consequence, the Novotni method has been removed from SurfaceGeodesic.
+- Fix a bug SurfaceGeodesic that lead to dist(v0,v1) != dist(v1,v0). As a consequence, the Novotni method has been removed from SurfaceGeodesic.
 
 ## [1.0.0] 2019-02-18
 
