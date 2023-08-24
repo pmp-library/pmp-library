@@ -16,6 +16,7 @@ void triangulate(SurfaceMesh& mesh);
 //! minimizes the sum of squared triangle areas.
 //! See \cite liepa_2003_filling for details.
 //! \pre The input face is manifold
+//! \note This algorithm works on general polygon meshes.
 //! \throw InvalidInputException in case the input precondition is violated
 //! \ingroup algorithms
 void triangulate(SurfaceMesh& mesh, Face f);

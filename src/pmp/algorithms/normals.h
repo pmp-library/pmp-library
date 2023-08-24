@@ -10,16 +10,19 @@ namespace pmp {
 //! \brief Compute vertex normals for the whole \p mesh.
 //! \details Calls vertex_normal() for each vertex and adds a new
 //! vertex property of type Normal named "v:normal".
+//! \note This algorithm works on general polygon meshes.
 //! \ingroup algorithms
 void vertex_normals(SurfaceMesh& mesh);
 
 //! \brief Compute face normals for the whole \p mesh.
 //! \details Calls face_normal() for each face and adds a new face
 //! property of type Normal named "f:normal".
+//! \note This algorithm works on general polygon meshes.
 //! \ingroup algorithms
 void face_normals(SurfaceMesh& mesh);
 
 //! \brief Compute the normal vector of vertex \p v.
+//! \note This algorithm works on general polygon meshes.
 //! \ingroup algorithms
 Normal vertex_normal(const SurfaceMesh& mesh, Vertex v);
 
@@ -27,6 +30,7 @@ Normal vertex_normal(const SurfaceMesh& mesh, Vertex v);
 //! \details Normal is computed as (normalized) sum of per-corner
 //! cross products of the two incident edges. This corresponds to
 //! the normalized vector area in \cite alexa_2011_laplace
+//! \note This algorithm works on general polygon meshes.
 //! \ingroup algorithms
 Normal face_normal(const SurfaceMesh& mesh, Face f);
 
@@ -34,6 +38,7 @@ Normal face_normal(const SurfaceMesh& mesh, Face f);
 //! target vertex of halfedge \p h.
 //! \details Averages incident corner normals if they are within crease_angle
 //! of the face normal. \p crease_angle is in radians, not degrees.
+//! \note This algorithm works on general polygon meshes.
 //! \ingroup algorithms
 Normal corner_normal(const SurfaceMesh& mesh, Halfedge h, Scalar crease_angle);
 

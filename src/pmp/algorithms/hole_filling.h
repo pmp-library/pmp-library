@@ -17,6 +17,7 @@ namespace pmp {
 //! \pre The specified halfedge is a boundary halfedge.
 //! \pre The specified halfedge is not adjacent to a non-manifold hole.
 //! \throw InvalidInputException in case on of the input preconditions is violated
+//! \note This algorithm works on general polygon meshes.
 //! \ingroup algorithms
 void fill_hole(SurfaceMesh& mesh, Halfedge h);
 

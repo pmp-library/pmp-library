@@ -22,6 +22,7 @@ namespace pmp {
 //! compute the geodesic distances.
 //! \param[out] neighbors The vector of neighbor vertices.
 //! \return The number of neighbors that have been found.
+//! \pre Input mesh needs to be a triangle mesh.
 //! \ingroup algorithms
 unsigned int geodesics(
     SurfaceMesh& mesh, const std::vector<Vertex>& seeds,
@@ -35,6 +36,7 @@ unsigned int geodesics(
 //! See \cite crane_2013_geodesics for details.
 //! \param mesh The input mesh, modified in place.
 //! \param seeds The vector of seed vertices.
+//! \note This algorithm works on general polygon meshes.
 //! \ingroup algorithms
 void geodesics_heat(SurfaceMesh& mesh, const std::vector<Vertex>& seeds);
 

@@ -10,6 +10,8 @@ Try for yourself:
 <iframe class="demo" src="/demos/smoothing.html"></iframe>
 \endhtmlonly
 
+\note This algorithm works on general polygon meshes.
+
 ## Explicit Laplacian smoothing
 
 Explicit Laplacian can be controlled by the following parameters:
