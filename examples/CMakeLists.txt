@@ -106,6 +106,15 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
       "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/data/off/hemisphere.off@input.off"
   )
 
+  add_executable(hole_filling hole_filling.cpp data/shell.html)
+  target_link_libraries(hole_filling pmp_vis)
+  set_target_properties(
+    hole_filling
+    PROPERTIES
+      LINK_FLAGS
+      "--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/data/shell.html --preload-file ${PROJECT_SOURCE_DIR}/data/off/hole_capsule.off@input.off"
+  )
+
 else()
 
   find_package(OpenGL)
@@ -140,6 +149,9 @@ else()
 
     add_executable(remeshing remeshing.cpp)
     target_link_libraries(remeshing pmp_vis)
+
+    add_executable(hole_filling hole_filling.cpp)
+    target_link_libraries(hole_filling pmp_vis)
 
     add_executable(mpview mpview.cpp mesh_processing_viewer.cpp
                           mesh_processing_viewer.h)

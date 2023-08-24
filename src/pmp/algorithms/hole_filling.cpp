@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "pmp/algorithms/fairing.h"
+#include "pmp/algorithms/normals.h"
 
 namespace pmp {
 namespace {
@@ -66,12 +67,11 @@ private:
         return mesh_.to_vertex(hole_[i]);
     }
 
-    // return vertex opposite edge (i-1,i)
-    Vertex opposite_vertex(unsigned int i) const
+    // return normal of face opposite to edge (i-1,i)
+    Normal opposite_normal(unsigned int i) const
     {
         assert(i < hole_.size());
-        return mesh_.to_vertex(
-            mesh_.next_halfedge(mesh_.opposite_halfedge(hole_[i])));
+        return face_normal(mesh_, mesh_.face(mesh_.opposite_halfedge(hole_[i])));
     }
 
     // does interior edge (_a,_b) exist already?
@@ -279,20 +279,21 @@ HoleFilling::Weight HoleFilling::compute_weight(int i, int j, int k) const
     // compute dihedral angles with...
     Scalar angle(0);
     const Point n = compute_normal(a, b, c);
+    Point n2;
 
     // ...neighbor to (i,j)
-    d = (i + 1 == j) ? opposite_vertex(j) : hole_vertex(index_[i][j]);
-    angle = std::max(angle, compute_angle(n, compute_normal(a, d, b)));
+    n2 = (i + 1 == j) ? opposite_normal(j) : compute_normal(a, hole_vertex(index_[i][j]), b);
+    angle = std::max(angle, compute_angle(n, n2));
 
     // ...neighbor to (j,k)
-    d = (j + 1 == k) ? opposite_vertex(k) : hole_vertex(index_[j][k]);
-    angle = std::max(angle, compute_angle(n, compute_normal(b, d, c)));
+    n2 = (j + 1 == k) ? opposite_normal(k) : compute_normal(b, hole_vertex(index_[j][k]), c);
+    angle = std::max(angle, compute_angle(n, n2));
 
     // ...neighbor to (k,i) if (k,i)==(n-1, 0)
     if (i == 0 && k + 1 == (int)hole_.size())
     {
-        d = opposite_vertex(0);
-        angle = std::max(angle, compute_angle(n, compute_normal(c, d, a)));
+        n2 = opposite_normal(0);
+        angle = std::max(angle, compute_angle(n, n2));
     }
 
     return {angle, area};
