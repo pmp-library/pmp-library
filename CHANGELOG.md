@@ -8,6 +8,8 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+## [3.0.0] 2023-08-24
+
 ### Added
 
 - Add `mesh_to_matrices()` and `matrices_to_mesh()` functions to convert to and from Eigen matrices.
