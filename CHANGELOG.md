@@ -8,6 +8,10 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ## Unreleased
 
+### Fixed
+
+- Fix GLFW include path for ImGui when using PMP as a sub-project (use relative path)
+
 ## [3.0.0] 2023-08-24
 
 ### Added
