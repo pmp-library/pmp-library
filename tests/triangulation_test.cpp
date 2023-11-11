@@ -8,6 +8,14 @@
 
 using namespace pmp;
 
+TEST(TriangulationTest, triangulate)
+{
+    auto mesh = l_shape();
+    EXPECT_FALSE(mesh.is_triangle_mesh());
+    triangulate(mesh);
+    EXPECT_TRUE(mesh.is_triangle_mesh());
+}
+
 TEST(TriangulationTest, min_area)
 {
     auto mesh = l_shape();
