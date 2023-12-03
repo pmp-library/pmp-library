@@ -92,9 +92,6 @@ private:
     // relink: use this after setting/changing attrib location
     void link();
 
-    // get OpenGL program info log
-    std::string get_info_log() const;
-
     // id of the linked shader program
     GLint pid_{0};
 

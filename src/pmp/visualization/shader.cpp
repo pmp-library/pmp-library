@@ -110,8 +110,11 @@ void Shader::link()
     glGetProgramiv(pid_, GL_LINK_STATUS, &status);
     if (status == GL_FALSE)
     {
-        auto info = get_info_log();
-        auto what = "Shader: Cannot link program:" + info;
+        GLint length;
+        glGetProgramiv(pid_, GL_INFO_LOG_LENGTH, &length);
+        auto info = std::vector<GLchar>(length + 1);
+        glGetProgramInfoLog(pid_, length, nullptr, info.data());
+        auto what = "Shader: Cannot link program:" + std::string(info.data());
         cleanup();
         throw GLException(what);
     }
@@ -268,15 +271,6 @@ void Shader::set_uniform(const char* name, const mat4& mat)
         return;
     }
     glUniformMatrix4fv(location, 1, false, mat.data());
-}
-
-std::string Shader::get_info_log() const
-{
-    GLint length;
-    glGetProgramiv(pid_, GL_INFO_LOG_LENGTH, &length);
-    auto info = std::vector<GLchar>(length + 1);
-    glGetProgramInfoLog(pid_, length, nullptr, info.data());
-    return {info.data()};
 }
 
 } // namespace pmp
