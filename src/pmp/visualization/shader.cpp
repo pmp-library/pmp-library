@@ -154,8 +154,11 @@ GLint Shader::compile(const char* source, GLenum type)
     glGetShaderiv(id, GL_COMPILE_STATUS, &status);
     if (status == GL_FALSE)
     {
-        auto info = get_info_log();
-        auto what = "Shader: Cannot compile shader:" + info;
+        GLint length;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
+        auto info = std::vector<GLchar>(length + 1);
+        glGetShaderInfoLog(id, length, nullptr, info.data());
+        auto what = "Shader: Cannot compile shader:" + std::string(info.data());
         cleanup();
         throw GLException(what);
     }
