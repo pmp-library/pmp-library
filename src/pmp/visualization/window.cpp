@@ -463,25 +463,26 @@ void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode,
                            int action, int mods)
 {
     ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
+
+    // remember modifier status
+    switch (key)
+    {
+        case GLFW_KEY_LEFT_CONTROL:
+        case GLFW_KEY_RIGHT_CONTROL:
+            instance_->ctrl_pressed_ = (action != GLFW_RELEASE);
+            break;
+        case GLFW_KEY_LEFT_SHIFT:
+        case GLFW_KEY_RIGHT_SHIFT:
+            instance_->shift_pressed_ = (action != GLFW_RELEASE);
+            break;
+        case GLFW_KEY_LEFT_ALT:
+        case GLFW_KEY_RIGHT_ALT:
+            instance_->alt_pressed_ = (action != GLFW_RELEASE);
+            break;
+    }
+
     if (!ImGui::GetIO().WantCaptureKeyboard)
     {
-        // remember modifier status
-        switch (key)
-        {
-            case GLFW_KEY_LEFT_CONTROL:
-            case GLFW_KEY_RIGHT_CONTROL:
-                instance_->ctrl_pressed_ = (action != GLFW_RELEASE);
-                break;
-            case GLFW_KEY_LEFT_SHIFT:
-            case GLFW_KEY_RIGHT_SHIFT:
-                instance_->shift_pressed_ = (action != GLFW_RELEASE);
-                break;
-            case GLFW_KEY_LEFT_ALT:
-            case GLFW_KEY_RIGHT_ALT:
-                instance_->alt_pressed_ = (action != GLFW_RELEASE);
-                break;
-        }
-
         // send event to window
         instance_->keyboard(key, scancode, action, mods);
     }
