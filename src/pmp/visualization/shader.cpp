@@ -43,12 +43,10 @@ void Shader::source(const char* vshader, const char* fshader)
     // vertex shader
     id = compile(vshader, GL_VERTEX_SHADER);
     glAttachShader(pid_, id);
-    shaders_.push_back(id);
 
     // fragment shader
     id = compile(fshader, GL_FRAGMENT_SHADER);
     glAttachShader(pid_, id);
-    shaders_.push_back(id);
 
     // link program
     link();
@@ -68,19 +66,16 @@ void Shader::load(const char* vfile, const char* ffile, const char* gfile,
     // vertex shader
     id = load_and_compile(vfile, GL_VERTEX_SHADER);
     glAttachShader(pid_, id);
-    shaders_.push_back(id);
 
     // fragment shader
     id = load_and_compile(ffile, GL_FRAGMENT_SHADER);
     glAttachShader(pid_, id);
-    shaders_.push_back(id);
 
     // tessellation control shader
     if (tcfile)
     {
         id = load_and_compile(tcfile, GL_TESS_CONTROL_SHADER);
         glAttachShader(pid_, id);
-        shaders_.push_back(id);
     }
 
     // tessellation evaluation shader
@@ -88,7 +83,6 @@ void Shader::load(const char* vfile, const char* ffile, const char* gfile,
     {
         id = load_and_compile(tefile, GL_TESS_EVALUATION_SHADER);
         glAttachShader(pid_, id);
-        shaders_.push_back(id);
     }
 
     // geometry shader
@@ -96,7 +90,6 @@ void Shader::load(const char* vfile, const char* ffile, const char* gfile,
     {
         id = load_and_compile(gfile, GL_GEOMETRY_SHADER);
         glAttachShader(pid_, id);
-        shaders_.push_back(id);
     }
 
     // link program
@@ -147,6 +140,7 @@ GLint Shader::compile(const char* source, GLenum type)
         cleanup();
         throw GLException(what);
     }
+    shaders_.push_back(id);
 
     // compile vertex shader
     glShaderSource(id, 1, &source, nullptr);
