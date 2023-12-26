@@ -4,6 +4,7 @@ endif()
 
 add_library(stb_image_write STATIC stb_image_write.cpp stb_image_write.h)
 set_target_properties(stb_image_write PROPERTIES POSITION_INDEPENDENT_CODE ON)
+target_include_directories(stb_image_write PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # disable deprecation warnings until https://github.com/nothings/stb/issues/1446
 # is fixed
