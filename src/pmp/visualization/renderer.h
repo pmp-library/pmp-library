@@ -112,7 +112,7 @@ public:
     //! \throw IOException in case of failure to load texture from file
     void load_matcap(const char* filename);
 
-private:
+protected:
     const SurfaceMesh& mesh_;
 
     // helpers for computing triangulation of a polygon
