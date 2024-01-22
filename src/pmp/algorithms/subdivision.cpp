@@ -6,7 +6,7 @@
 
 namespace pmp {
 
-void catmull_clark_subdivision(SurfaceMesh& mesh)
+void catmull_clark_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
 {
     auto points_ = mesh.vertex_property<Point>("v:point");
     auto vfeature_ = mesh.get_vertex_property<bool>("v:feature");
@@ -64,16 +64,23 @@ void catmull_clark_subdivision(SurfaceMesh& mesh)
         // boundary vertex?
         else if (mesh.is_boundary(v))
         {
-            auto h1 = mesh.halfedge(v);
-            auto h0 = mesh.prev_halfedge(h1);
+            if (preserve_boundary)
+            {
+                vpoint[v] = points_[v];
+            }
+            else
+            {
+                auto h1 = mesh.halfedge(v);
+                auto h0 = mesh.prev_halfedge(h1);
 
-            Point p = points_[v];
-            p *= 6.0;
-            p += points_[mesh.to_vertex(h1)];
-            p += points_[mesh.from_vertex(h0)];
-            p *= 0.125;
+                Point p = points_[v];
+                p *= 6.0;
+                p += points_[mesh.to_vertex(h1)];
+                p += points_[mesh.from_vertex(h0)];
+                p *= 0.125;
 
-            vpoint[v] = p;
+                vpoint[v] = p;
+            }
         }
 
         // interior feature vertex?
@@ -177,7 +184,7 @@ void catmull_clark_subdivision(SurfaceMesh& mesh)
     mesh.remove_face_property(fpoint);
 }
 
-void loop_subdivision(SurfaceMesh& mesh)
+void loop_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
 {
     auto points_ = mesh.vertex_property<Point>("v:point");
     auto vfeature_ = mesh.get_vertex_property<bool>("v:feature");
@@ -211,15 +218,22 @@ void loop_subdivision(SurfaceMesh& mesh)
         // boundary vertex?
         else if (mesh.is_boundary(v))
         {
-            auto h1 = mesh.halfedge(v);
-            auto h0 = mesh.prev_halfedge(h1);
+            if (preserve_boundary)
+            {
+                vpoint[v] = points_[v];
+            }
+            else
+            {
+                auto h1 = mesh.halfedge(v);
+                auto h0 = mesh.prev_halfedge(h1);
 
-            Point p = points_[v];
-            p *= 6.0;
-            p += points_[mesh.to_vertex(h1)];
-            p += points_[mesh.from_vertex(h0)];
-            p *= 0.125;
-            vpoint[v] = p;
+                Point p = points_[v];
+                p *= 6.0;
+                p += points_[mesh.to_vertex(h1)];
+                p += points_[mesh.from_vertex(h0)];
+                p *= 0.125;
+                vpoint[v] = p;
+            }
         }
 
         // interior feature vertex?
@@ -341,7 +355,7 @@ void loop_subdivision(SurfaceMesh& mesh)
     mesh.remove_edge_property(epoint);
 }
 
-void quad_tri_subdivision(SurfaceMesh& mesh)
+void quad_tri_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
 {
     auto points_ = mesh.vertex_property<Point>("v:point");
 
@@ -399,14 +413,21 @@ void quad_tri_subdivision(SurfaceMesh& mesh)
     {
         if (mesh.is_boundary(v))
         {
-            new_pos[v] = 0.5 * points_[v];
-
-            // add neighboring vertices on boundary
-            for (auto vv : mesh.vertices(v))
+            if (preserve_boundary)
             {
-                if (mesh.is_boundary(vv))
+                new_pos[v] = points_[v];
+            }
+            else
+            {
+                new_pos[v] = 0.5 * points_[v];
+
+                // add neighboring vertices on boundary
+                for (auto vv : mesh.vertices(v))
                 {
-                    new_pos[v] += 0.25 * points_[vv];
+                    if (mesh.is_boundary(vv))
+                    {
+                        new_pos[v] += 0.25 * points_[vv];
+                    }
                 }
             }
         }
