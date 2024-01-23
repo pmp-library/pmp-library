@@ -71,7 +71,8 @@ private:
     Normal opposite_normal(unsigned int i) const
     {
         assert(i < hole_.size());
-        return face_normal(mesh_, mesh_.face(mesh_.opposite_halfedge(hole_[i])));
+        return face_normal(mesh_,
+                           mesh_.face(mesh_.opposite_halfedge(hole_[i])));
     }
 
     // does interior edge (_a,_b) exist already?
@@ -282,11 +283,13 @@ HoleFilling::Weight HoleFilling::compute_weight(int i, int j, int k) const
     Point n2;
 
     // ...neighbor to (i,j)
-    n2 = (i + 1 == j) ? opposite_normal(j) : compute_normal(a, hole_vertex(index_[i][j]), b);
+    n2 = (i + 1 == j) ? opposite_normal(j)
+                      : compute_normal(a, hole_vertex(index_[i][j]), b);
     angle = std::max(angle, compute_angle(n, n2));
 
     // ...neighbor to (j,k)
-    n2 = (j + 1 == k) ? opposite_normal(k) : compute_normal(b, hole_vertex(index_[j][k]), c);
+    n2 = (j + 1 == k) ? opposite_normal(k)
+                      : compute_normal(b, hole_vertex(index_[j][k]), c);
     angle = std::max(angle, compute_angle(n, n2));
 
     // ...neighbor to (k,i) if (k,i)==(n-1, 0)
