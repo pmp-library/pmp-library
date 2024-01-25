@@ -1867,12 +1867,15 @@ public:
     size_t valence(Face f) const;
 
     //! Delete vertex \p v from the mesh.
+    //! \note Only marks the vertex as deleted. Call garbage_collection() to finally remove deleted entities.
     void delete_vertex(Vertex v);
 
     //! Delete edge \p e from the mesh.
+    //! \note Only marks the edge as deleted. Call garbage_collection() to finally remove deleted entities.
     void delete_edge(Edge e);
 
     //! Deletes face \p f from the mesh.
+    //! \note Only marks the face as deleted. Call garbage_collection() to finally remove deleted entities.
     void delete_face(Face f);
 
     //!@}
