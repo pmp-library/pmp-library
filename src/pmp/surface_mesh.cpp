@@ -4,8 +4,6 @@
 
 #include "pmp/surface_mesh.h"
 
-#include <cmath>
-
 namespace pmp {
 
 SurfaceMesh::SurfaceMesh()
