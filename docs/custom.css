@@ -19,6 +19,12 @@ div.header .title {
   font-size: 2.25em;
 }
 
+/* group header margins */
+div.groupHeader {
+  margin-left: 0;
+  margin-bottom: 1em;
+}
+
 /* figure caption font and margin */
 div.caption {
   font-weight: normal;
