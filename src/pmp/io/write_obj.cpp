@@ -44,7 +44,9 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
 
     // write texture coordinates
     auto tex_coords = mesh.get_halfedge_property<TexCoord>("h:tex");
-    if (tex_coords && flags.use_halfedge_texcoords)
+    bool write_texcoords = tex_coords && flags.use_halfedge_texcoords;
+
+    if (write_texcoords)
     {
         if (mesh.n_halfedges() > uint_max)
             throw InvalidInputException(
@@ -66,7 +68,7 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
         for (auto v : mesh.vertices(f))
         {
             auto idx = v.idx() + 1;
-            if (tex_coords)
+            if (write_texcoords)
             {
                 // write vertex index, texCoord index and normal index
                 fprintf(out, " %d/%d/%d", (uint32_t)idx,

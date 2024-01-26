@@ -17,7 +17,7 @@ TEST_F(IOTest, obj_io)
 {
     add_triangle();
     vertex_normals(mesh);
-    mesh.add_halfedge_property<TexCoord>("h:texcoord", TexCoord(0, 0));
+    mesh.add_halfedge_property<TexCoord>("h:tex", TexCoord(0, 0));
     write(mesh, "test.obj");
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
