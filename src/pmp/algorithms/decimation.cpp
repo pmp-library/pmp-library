@@ -446,8 +446,8 @@ private:
     EdgeProperty<bool> efeature_;
     EdgeProperty<bool> texture_seams_;
 
-    bool has_selection_;
-    bool has_features_;
+    bool has_selection_{false};
+    bool has_features_{false};
     Scalar normal_deviation_;
     Scalar hausdorff_error_;
     Scalar aspect_ratio_;
