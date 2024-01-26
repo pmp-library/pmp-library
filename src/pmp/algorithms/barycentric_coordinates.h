@@ -17,7 +17,7 @@ const Vector<Scalar, 3> barycentric_coordinates(const Vector<Scalar, 3>& p,
 
     Vector<Scalar, 3> vu = v - u, wu = w - u, pu = p - u;
 
-    // find largest absolute coodinate of normal
+    // find largest absolute coordinate of normal
     Scalar nx = vu[1] * wu[2] - vu[2] * wu[1],
            ny = vu[2] * wu[0] - vu[0] * wu[2],
            nz = vu[0] * wu[1] - vu[1] * wu[0], ax = fabs(nx), ay = fabs(ny),

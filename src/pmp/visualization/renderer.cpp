@@ -66,7 +66,7 @@ void Renderer::load_texture(const char* filename, GLint format,
                             GLint min_filter, GLint mag_filter, GLint wrap)
 {
 #ifdef __EMSCRIPTEN__
-    // emscripen/WebGL does not like mapmapping for SRGB textures
+    // emscripten/WebGL does not like mipmapping for SRGB textures
     if ((min_filter == GL_NEAREST_MIPMAP_NEAREST ||
          min_filter == GL_NEAREST_MIPMAP_LINEAR ||
          min_filter == GL_LINEAR_MIPMAP_NEAREST ||

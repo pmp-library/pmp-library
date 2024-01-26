@@ -192,7 +192,7 @@ void TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
         node->left_child = left;
         node->right_child = right;
 
-        // recurse to childen
+        // recurse to children
         build_recurse(node->left_child, max_faces, depth - 1);
         build_recurse(node->right_child, max_faces, depth - 1);
     }
