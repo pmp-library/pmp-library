@@ -6,8 +6,6 @@
 
 namespace pmp {
 
-//=== hidden internal functions =====================================================
-
 namespace {
 
 // compute triangle area (in double)
@@ -347,8 +345,6 @@ void divmass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
 }
 
 } // anonymous namespace
-
-//=== public functions  ==============================================================
 
 void uniform_mass_matrix(const SurfaceMesh& mesh, DiagonalMatrix& M)
 {
