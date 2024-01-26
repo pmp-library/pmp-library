@@ -504,4 +504,56 @@ void quad_tri_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
     mesh.remove_vertex_property(new_pos);
 }
 
+void linear_subdivision(SurfaceMesh& mesh)
+{
+    auto points_ = mesh.vertex_property<Point>("v:point");
+
+    // linear subdivision of edges
+    for (auto e : mesh.edges())
+    {
+        mesh.insert_vertex(e, 0.5f * (points_[mesh.vertex(e, 0)] +
+                                      points_[mesh.vertex(e, 1)]));
+    }
+
+    // subdivide faces
+    for (auto f : mesh.faces())
+    {
+        size_t f_val = mesh.valence(f) / 2;
+
+        if (f_val == 3) // triangle
+        {
+            Halfedge h0 = mesh.halfedge(f);
+            Halfedge h1 = mesh.next_halfedge(mesh.next_halfedge(h0));
+            mesh.insert_edge(h0, h1);
+
+            h0 = mesh.next_halfedge(h0);
+            h1 = mesh.next_halfedge(mesh.next_halfedge(h0));
+            mesh.insert_edge(h0, h1);
+
+            h0 = mesh.next_halfedge(h0);
+            h1 = mesh.next_halfedge(mesh.next_halfedge(h0));
+            mesh.insert_edge(h0, h1);
+        }
+        else // quadrangulate other faces
+        {
+            Halfedge h0 = mesh.halfedge(f);
+            Halfedge h1 = mesh.next_halfedge(mesh.next_halfedge(h0));
+
+            // NOTE: It's important to calculate the centroid before inserting the new edge
+            auto cen = centroid(mesh, f);
+            h1 = mesh.insert_edge(h0, h1);
+            mesh.insert_vertex(mesh.edge(h1), cen);
+
+            auto h =
+                mesh.next_halfedge(mesh.next_halfedge(mesh.next_halfedge(h1)));
+            while (h != h0)
+            {
+                mesh.insert_edge(h1, h);
+                h = mesh.next_halfedge(
+                    mesh.next_halfedge(mesh.next_halfedge(h1)));
+            }
+        }
+    }
+}
+
 } // namespace pmp

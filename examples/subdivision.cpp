@@ -74,6 +74,12 @@ void Viewer::process_imgui()
             quad_tri_subdivision(mesh_, preserve_boundary);
             update_mesh();
         }
+
+        if (ImGui::Button("Linear subdivision"))
+        {
+            linear_subdivision(mesh_);
+            update_mesh();
+        }
     }
 
     if (show_error_)

@@ -31,4 +31,10 @@ void loop_subdivision(SurfaceMesh& mesh, bool preserve_boundary = false);
 //! \ingroup algorithms
 void quad_tri_subdivision(SurfaceMesh& mesh, bool preserve_boundary = false);
 
+//! \brief Perform one step of linear quad-tri subdivision.
+//! \details Suitable for mixed quad/triangle meshes.
+//! \param mesh The input mesh, modified in place.
+//! \ingroup algorithms
+void linear_subdivision(SurfaceMesh& mesh);
+
 } // namespace pmp
