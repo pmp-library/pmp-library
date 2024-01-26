@@ -4,7 +4,6 @@
 #include "pmp/algorithms/triangulation.h"
 
 #include <limits>
-#include <stdexcept>
 #include <vector>
 
 namespace pmp {

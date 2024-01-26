@@ -6,7 +6,6 @@
 #include "pmp/exceptions.h"
 
 #include <fstream>
-#include <array>
 #include <ios>
 #include <iterator>
 

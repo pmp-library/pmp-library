@@ -5,7 +5,6 @@
 
 #include <iterator>
 #include <limits>
-#include <memory>
 
 #include "pmp/algorithms/distance_point_triangle.h"
 #include "pmp/algorithms/normals.h"

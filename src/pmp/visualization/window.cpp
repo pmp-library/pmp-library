@@ -3,7 +3,6 @@
 
 #include "window.h"
 
-#include <algorithm>
 #include <sstream>
 
 #define IMGUI_DISABLE_OBSOLETE_FUNCTIONS

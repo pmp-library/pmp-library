@@ -5,7 +5,6 @@
 
 #include "pmp/io/helpers.h"
 
-#include <algorithm>
 #include <limits>
 #include <map>
 

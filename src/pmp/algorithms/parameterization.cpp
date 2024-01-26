@@ -7,7 +7,6 @@
 #include <cmath>
 
 #include "pmp/surface_mesh.h"
-#include "pmp/algorithms/differential_geometry.h"
 
 namespace pmp {
 namespace {
