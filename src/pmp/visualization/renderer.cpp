@@ -260,7 +260,9 @@ void Renderer::update_opengl_buffers()
     auto fcolor = mesh_.get_face_property<Color>("f:color");
 
     // index array for remapping vertex indices during duplication
-    std::vector<size_t> vertex_indices(mesh_.n_vertices());
+    // note: use vertices_size() instead of n_vertices() to also
+    // take deleted vertices into account
+    std::vector<size_t> vertex_indices(mesh_.vertices_size());
 
     // produce arrays of points, normals, and texcoords
     // (duplicate vertices to allow for flat shading)
@@ -285,17 +287,21 @@ void Renderer::update_opengl_buffers()
         // precompute normals for easy cases
         std::vector<Normal> face_normals;
         std::vector<Normal> vertex_normals;
-        face_normals.reserve(mesh_.n_faces());
-        vertex_normals.reserve(mesh_.n_vertices());
         if (crease_angle_ < 1)
         {
+            // note: use faces_size() instead of n_faces() to
+            // take deleted faces into account
+            face_normals.resize(mesh_.faces_size());
             for (auto f : mesh_.faces())
-                face_normals.emplace_back(face_normal(mesh_, f));
+                face_normals[f.idx()] = face_normal(mesh_, f);
         }
         else if (crease_angle_ > 170)
         {
+            // note: use vertices_size() instead of n_vertices() to
+            // take deleted vertices into account
+            vertex_normals.resize(mesh_.vertices_size());
             for (auto v : mesh_.vertices())
-                vertex_normals.emplace_back(vertex_normal(mesh_, v));
+                vertex_normals[v.idx()] = vertex_normal(mesh_, v);
         }
 
         // data per face (for all corners)
