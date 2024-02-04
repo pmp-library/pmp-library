@@ -6,7 +6,6 @@
 #include "gtest/gtest.h"
 
 #include <pmp/surface_mesh.h>
-#include <vector>
 
 class SurfaceMeshTest : public ::testing::Test
 {
