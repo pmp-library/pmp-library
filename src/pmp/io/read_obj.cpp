@@ -2,6 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/io/read_obj.h"
+#include "pmp/exceptions.h"
 
 namespace pmp {
 
@@ -138,7 +139,15 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
                 }
             }
 
-            Face f = mesh.add_face(vertices);
+            Face f;
+            try
+            {
+                f = mesh.add_face(vertices);
+            }
+            catch (const TopologyException& e)
+            {
+                std::cerr << e.what();
+            }
 
             // add texture coordinates
             if (with_tex_coord && f.is_valid())

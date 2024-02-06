@@ -193,7 +193,14 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
             vertices[j] = Vertex(idx);
             lp += nc;
         }
-        mesh.add_face(vertices);
+        try
+        {
+            mesh.add_face(vertices);
+        }
+        catch (const TopologyException& e)
+        {
+            std::cerr << e.what() << std::endl;
+        }
     }
 }
 
@@ -258,7 +265,14 @@ void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
             tfread(in, idx);
             vertices[j] = Vertex(idx);
         }
-        mesh.add_face(vertices);
+        try
+        {
+            mesh.add_face(vertices);
+        }
+        catch (const TopologyException& e)
+        {
+            std::cerr << e.what() << std::endl;
+        }
     }
 }
 

@@ -130,7 +130,16 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
             // Add face only if it is not degenerated
             if ((vertices[0] != vertices[1]) && (vertices[0] != vertices[2]) &&
                 (vertices[1] != vertices[2]))
-                mesh.add_face(vertices);
+            {
+                try
+                {
+                    mesh.add_face(vertices);
+                }
+                catch (const TopologyException& e)
+                {
+                    std::cerr << e.what() << std::endl;
+                }
+            }
 
             n_items = fread(line.data(), 1, 2, in);
             assert(n_items > 0);
@@ -190,7 +199,16 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
                 if ((vertices[0] != vertices[1]) &&
                     (vertices[0] != vertices[2]) &&
                     (vertices[1] != vertices[2]))
-                    mesh.add_face(vertices);
+                {
+                    try
+                    {
+                        mesh.add_face(vertices);
+                    }
+                    catch (const TopologyException& e)
+                    {
+                        std::cerr << e.what() << std::endl;
+                    }
+                }
             }
         }
     }
