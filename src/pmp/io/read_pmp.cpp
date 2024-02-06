@@ -46,7 +46,7 @@ void read_pmp(SurfaceMesh& mesh, const std::filesystem::path& file)
     assert(nfc == nf);
     assert(np == nv);
 
-    // read texture coordiantes
+    // read texture coordinates
     if (has_htex)
     {
         auto htex = mesh.halfedge_property<TexCoord>("h:tex");
