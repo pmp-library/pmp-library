@@ -1085,6 +1085,7 @@ h1.glow, h2.glow, h3.glow, h4.glow, h5.glow, h6.glow {
  */
 
 div.contents .toc {
+    font-family: var(--font-family);
     max-height: var(--toc-max-height);
     min-width: var(--toc-width);
     border: 0;
