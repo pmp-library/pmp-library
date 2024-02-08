@@ -41,6 +41,10 @@ void Viewer::process_imgui()
         static bool preserve_boundary = false;
         ImGui::Checkbox("Preserve Boundary", &preserve_boundary);
 
+        const auto boundary_handling = preserve_boundary
+                                           ? BoundaryHandling::Preserve
+                                           : BoundaryHandling::Interpolate;
+
         if (ImGui::Button("Triangulate Mesh"))
         {
             triangulate(mesh_);
@@ -58,20 +62,20 @@ void Viewer::process_imgui()
             }
             else
             {
-                loop_subdivision(mesh_, preserve_boundary);
+                loop_subdivision(mesh_, boundary_handling);
                 update_mesh();
             }
         }
 
         if (ImGui::Button("Catmull-Clark Subdivision"))
         {
-            catmull_clark_subdivision(mesh_, preserve_boundary);
+            catmull_clark_subdivision(mesh_, boundary_handling);
             update_mesh();
         }
 
         if (ImGui::Button("Quad/Tri Subdivision"))
         {
-            quad_tri_subdivision(mesh_, preserve_boundary);
+            quad_tri_subdivision(mesh_, boundary_handling);
             update_mesh();
         }
 

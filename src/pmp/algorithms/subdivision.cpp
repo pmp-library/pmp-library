@@ -6,7 +6,8 @@
 
 namespace pmp {
 
-void catmull_clark_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
+void catmull_clark_subdivision(SurfaceMesh& mesh,
+                               BoundaryHandling boundary_handling)
 {
     auto points_ = mesh.vertex_property<Point>("v:point");
     auto vfeature_ = mesh.get_vertex_property<bool>("v:feature");
@@ -64,7 +65,7 @@ void catmull_clark_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
         // boundary vertex?
         else if (mesh.is_boundary(v))
         {
-            if (preserve_boundary)
+            if (boundary_handling == BoundaryHandling::Preserve)
             {
                 vpoint[v] = points_[v];
             }
@@ -184,7 +185,7 @@ void catmull_clark_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
     mesh.remove_face_property(fpoint);
 }
 
-void loop_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
+void loop_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
 {
     auto points_ = mesh.vertex_property<Point>("v:point");
     auto vfeature_ = mesh.get_vertex_property<bool>("v:feature");
@@ -218,7 +219,7 @@ void loop_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
         // boundary vertex?
         else if (mesh.is_boundary(v))
         {
-            if (preserve_boundary)
+            if (boundary_handling == BoundaryHandling::Preserve)
             {
                 vpoint[v] = points_[v];
             }
@@ -355,7 +356,7 @@ void loop_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
     mesh.remove_edge_property(epoint);
 }
 
-void quad_tri_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
+void quad_tri_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
 {
     auto points_ = mesh.vertex_property<Point>("v:point");
 
@@ -413,7 +414,7 @@ void quad_tri_subdivision(SurfaceMesh& mesh, bool preserve_boundary)
     {
         if (mesh.is_boundary(v))
         {
-            if (preserve_boundary)
+            if (boundary_handling == BoundaryHandling::Preserve)
             {
                 new_pos[v] = points_[v];
             }

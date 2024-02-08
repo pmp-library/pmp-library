@@ -7,29 +7,39 @@
 
 namespace pmp {
 
+enum class BoundaryHandling
+{
+    Interpolate,
+    Preserve
+};
+
 //! \brief Perform one step of Catmull-Clark subdivision.
 //! \details See \cite catmull_1978_recursively for details.
 //! \param mesh The input mesh, modified in place.
-//! \param preserve_boundary Whether to interpolate boundary edges of the input mesh
+//! \param boundary_handling Specify to interpolate or preserve boundary edges.
 //! \ingroup algorithms
-void catmull_clark_subdivision(SurfaceMesh& mesh,
-                               bool preserve_boundary = false);
+void catmull_clark_subdivision(
+    SurfaceMesh& mesh,
+    BoundaryHandling boundary_handling = BoundaryHandling::Interpolate);
 
 //! \brief Perform one step of Loop subdivision.
 //! \details See \cite loop_1987_smooth for details.
 //! \param mesh The input mesh, modified in place.
-//! \param preserve_boundary Whether to interpolate boundary edges of the input mesh
+//! \param boundary_handling Specify to interpolate or preserve boundary edges.
 //! \pre Requires a triangle mesh as input.
 //! \throw InvalidInputException in case the input violates the precondition.
 //! \ingroup algorithms
-void loop_subdivision(SurfaceMesh& mesh, bool preserve_boundary = false);
+void loop_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling =
+                                             BoundaryHandling::Interpolate);
 
 //! \brief Perform one step of quad-tri subdivision.
 //! \details Suitable for mixed quad/triangle meshes. See \cite stam_2003_subdiv for details.
 //! \param mesh The input mesh, modified in place.
-//! \param preserve_boundary Whether to interpolate boundary edges of the input mesh
+//! \param boundary_handling Specify to interpolate or preserve boundary edges.
 //! \ingroup algorithms
-void quad_tri_subdivision(SurfaceMesh& mesh, bool preserve_boundary = false);
+void quad_tri_subdivision(
+    SurfaceMesh& mesh,
+    BoundaryHandling boundary_handling = BoundaryHandling::Interpolate);
 
 //! \brief Perform one step of linear quad-tri subdivision.
 //! \details Suitable for mixed quad/triangle meshes.
