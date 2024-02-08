@@ -59,3 +59,8 @@ dl.citelist dt {
   border: 1px solid #dedede;
   border-radius: 3px;
 }
+
+div.toc h3,
+div.toc li {
+  font-family: var(--font-family);
+}
