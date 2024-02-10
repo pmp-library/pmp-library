@@ -208,8 +208,9 @@ public:
     std::vector<std::string> properties() const
     {
         std::vector<std::string> names;
-        for (auto parray : parrays_)
-            names.push_back(parray->name());
+        names.reserve(parrays_.size());
+        for (const auto* array : parrays_)
+            names.emplace_back(array->name());
         return names;
     }
 
