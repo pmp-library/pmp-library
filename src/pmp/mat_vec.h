@@ -268,7 +268,7 @@ public:
         return *this;
     }
 
-    //! multply matrix by scalar
+    //! multiply matrix by scalar
     Matrix<Scalar, M, N>& operator*=(const Scalar s)
     {
         for (int i = 0; i < size(); ++i)
