@@ -384,7 +384,7 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix<Scalar, M, N>& m)
     {
         for (int j = 0; j < N; ++j)
             os << m(i, j) << " ";
-        os << std::endl;
+        os << '\n';
     }
     return os;
 }
