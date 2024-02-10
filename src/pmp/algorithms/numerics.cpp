@@ -26,9 +26,10 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& b)
     return x;
 }
 
-DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
-                           std::function<bool(unsigned int)> is_constrained,
-                           const DenseMatrix& C)
+DenseMatrix cholesky_solve(
+    const SparseMatrix& A, const DenseMatrix& B,
+    const std::function<bool(unsigned int)>& is_constrained,
+    const DenseMatrix& C)
 {
     // if nothing is fixed, then use unconstrained solve
     int n_constraints(0);
@@ -105,7 +106,8 @@ DenseMatrix cholesky_solve(const SparseMatrix& A, const DenseMatrix& B,
 }
 
 void selector_matrix(const SurfaceMesh& mesh,
-                     std::function<bool(Vertex)> is_selected, SparseMatrix& S)
+                     const std::function<bool(Vertex)>& is_selected,
+                     SparseMatrix& S)
 {
     std::vector<Triplet> triplets;
     triplets.reserve(mesh.n_vertices());
