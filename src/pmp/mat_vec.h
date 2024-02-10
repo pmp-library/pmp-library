@@ -376,7 +376,7 @@ using mat4 = Mat4<float>;
 //! template specialization for a 4x4 matrix of double values
 using dmat4 = Mat4<double>;
 
-//! output a matrix by printing its space-separated compontens
+//! output a matrix by printing its space-separated components
 template <typename Scalar, int M, int N>
 inline std::ostream& operator<<(std::ostream& os, const Matrix<Scalar, M, N>& m)
 {
