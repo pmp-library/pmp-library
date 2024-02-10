@@ -149,22 +149,24 @@ void SurfaceMesh::property_stats() const
     std::cout << "point properties:\n";
     props = vertex_properties();
     for (const auto& prop : props)
-        std::cout << "\t" << prop << std::endl;
+        std::cout << "\t" << prop << '\n';
 
     std::cout << "halfedge properties:\n";
     props = halfedge_properties();
     for (const auto& prop : props)
-        std::cout << "\t" << prop << std::endl;
+        std::cout << "\t" << prop << '\n';
 
     std::cout << "edge properties:\n";
     props = edge_properties();
     for (const auto& prop : props)
-        std::cout << "\t" << prop << std::endl;
+        std::cout << "\t" << prop << '\n';
 
     std::cout << "face properties:\n";
     props = face_properties();
     for (const auto& prop : props)
-        std::cout << "\t" << prop << std::endl;
+        std::cout << "\t" << prop << '\n';
+
+    std::cout << std::flush;
 }
 
 Halfedge SurfaceMesh::find_halfedge(Vertex start, Vertex end) const
