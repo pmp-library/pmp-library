@@ -1,3 +1,12 @@
-Checks: '-*,modernize-*,-modernize-use-trailing-return-type, -modernize-return-braced-init-list,-modernize-use-nodiscard'
+Checks: '-*,\
+         modernize-*,\
+         -modernize-use-trailing-return-type,\
+         -modernize-return-braced-init-list,\
+         -modernize-use-nodiscard,\
+         #performance-*,\
+         #-performance-noexcept-swap,\
+         #cppcoreguidelines-*,\
+         #-cppcoreguidelines-avoid-magic-numbers,\
+         '
 WarningsAsErrors: '*'
 HeaderFilterRegex: 'pmp/.*'
