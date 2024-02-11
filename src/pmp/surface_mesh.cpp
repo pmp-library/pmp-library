@@ -144,27 +144,21 @@ void SurfaceMesh::reserve(size_t nvertices, size_t nedges, size_t nfaces)
 
 void SurfaceMesh::property_stats() const
 {
-    std::vector<std::string> props;
-
     std::cout << "point properties:\n";
-    props = vertex_properties();
-    for (const auto& prop : props)
-        std::cout << "\t" << prop << '\n';
+    for (const auto& p : vertex_properties())
+        std::cout << "\t" << p << '\n';
 
     std::cout << "halfedge properties:\n";
-    props = halfedge_properties();
-    for (const auto& prop : props)
-        std::cout << "\t" << prop << '\n';
+    for (const auto& p : halfedge_properties())
+        std::cout << "\t" << p << '\n';
 
     std::cout << "edge properties:\n";
-    props = edge_properties();
-    for (const auto& prop : props)
-        std::cout << "\t" << prop << '\n';
+    for (const auto& p : edge_properties())
+        std::cout << "\t" << p << '\n';
 
     std::cout << "face properties:\n";
-    props = face_properties();
-    for (const auto& prop : props)
-        std::cout << "\t" << prop << '\n';
+    for (const auto& p : face_properties())
+        std::cout << "\t" << p << '\n';
 
     std::cout << std::flush;
 }
