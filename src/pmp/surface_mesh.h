@@ -4,14 +4,22 @@
 
 #pragma once
 
-#include <vector>
+#include <cassert>
+#include <cstddef>
 #include <filesystem>
+#include <iterator>
+#include <ostream>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "pmp/types.h"
 #include "pmp/properties.h"
-#include "pmp/io/io_flags.h"
+#include "pmp/exceptions.h"
 
 namespace pmp {
+
+struct IOFlags;
 
 //! \addtogroup core
 //!@{
