@@ -46,6 +46,15 @@ using IndexType = std::uint_least32_t;
 
 //! \defgroup core core
 //! \brief Core data structure and utilities.
+//! \details The central class of the library is SurfaceMesh: \copybrief SurfaceMesh
+//!
+//! The Matrix class provides basic matrix and vector operations.
+//!
+//! Utility classes:
+//!
+//!   * BoundingBox: \copybrief BoundingBox
+//!   * StopWatch: \copybrief StopWatch
+//!   * MemoryUsage: \copybrief MemoryUsage
 
 //! \defgroup algorithms algorithms
 //! \brief Mesh processing algorithms.

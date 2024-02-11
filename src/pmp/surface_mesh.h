@@ -197,7 +197,10 @@ public:
     }
 };
 
-//! A halfedge data structure for polygonal meshes.
+//! \brief A class for representing polygon surface meshes.
+//! \details This class implements a half-edge data structure for surface meshes.
+//! See \cite sieger_2011_design for details on the design and implementation.
+//! \note This class only supports 2-manifold surface meshes with boundary.
 class SurfaceMesh
 {
 public:

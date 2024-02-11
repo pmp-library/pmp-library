@@ -21,32 +21,34 @@ namespace pmp {
 //! \addtogroup core
 //!@{
 
-//! Base class for MxN matrix
+//! Generic class for \f$ M \times N \f$ matrices.
 template <typename Scalar, int M, int N>
 class Matrix
 {
 public:
-    //! the scalar type of the vector
+    //! The scalar type of the matrix.
     using value_type = Scalar;
 
-    //! returns number of rows of the matrix
+    //! Return the number of rows of the matrix.
     static constexpr int rows() { return M; }
-    //! returns number of columns of the matrix
+
+    //! Return the number of columns of the matrix.
     static constexpr int cols() { return N; }
-    //! returns the dimension of the vector (or size of the matrix, rows*cols)
+
+    //! Return the size (rows*cols) of the matrix.
     static constexpr int size() { return M * N; }
 
-    //! default constructor
+    //! Default constructor
     Matrix() = default;
 
-    //! construct with all entries being a given scalar (matrix and vector)
+    //! Construct with all entries initialized to Scalar \p s.
     explicit Matrix(Scalar s)
     {
         for (int i = 0; i < size(); ++i)
             data_[i] = s;
     }
 
-    //! constructor with row-wise initializer list of M*N entries
+    //! Construct from row-wise initializer list of M*N entries.
     explicit Matrix(const std::initializer_list<Scalar>&& values)
     {
         assert(values.size() == M * N);
