@@ -347,8 +347,3 @@ TEST_F(SurfaceMeshTest, is_manifold)
     for (auto v : mesh.vertices())
         EXPECT_TRUE(mesh.is_manifold(v));
 }
-
-TEST_F(SurfaceMeshTest, property_stats)
-{
-    mesh.property_stats();
-}

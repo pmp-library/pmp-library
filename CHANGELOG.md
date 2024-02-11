@@ -15,6 +15,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Remove `SurfaceMesh::property_stats()`
 - Make `is_constrained()` predicate in `cholesky_solve()` a const reference.
 - Make `is_selection()` predicate in `selector_matrix()` a const reference.
 

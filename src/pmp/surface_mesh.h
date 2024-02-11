@@ -1626,9 +1626,6 @@ public:
         return fprops_.properties();
     }
 
-    //! prints the names of all properties
-    void property_stats() const;
-
     //!@}
     //! \name Iterators and circulators
     //!@{
