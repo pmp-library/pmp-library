@@ -11,7 +11,12 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 ### Added
 
 - Add `linear_subdivision()` function performing linear quad/tri subdivision.
-- Add `preserve_boundary` option to subdivision functions (Loop, Catmull-Clark, Quad/Tri).
+- Add `BoundaryHandling` option to subdivision functions (Loop, Catmull-Clark, Quad/Tri).
+
+### Changed
+
+- Make `is_constrained()` predicate in `cholesky_solve()` a const reference.
+- Make `is_selection()` predicate in `selector_matrix()` a const reference.
 
 ### Fixed
 
