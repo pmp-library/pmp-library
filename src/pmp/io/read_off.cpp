@@ -9,7 +9,7 @@
 namespace pmp {
 
 void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                    const bool has_texcoords, const bool has_colors);
+                    const bool has_texcoords, const bool has_colors, char *first_line);
 void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                      const bool has_texcoords, const bool has_colors);
 
@@ -29,7 +29,7 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
         throw IOException("Failed to open file: " + file.string());
 
     // read header: [ST][C][N][4][n]OFF BINARY
-    auto c = fgets(line.data(), 200, in);
+    char *c = fgets(line.data(), 200, in);
     assert(c != nullptr);
     c = line.data();
     if (c[0] == 'S' && c[1] == 'T')
@@ -62,8 +62,15 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
         fclose(in);
         throw IOException("Failed to parse OFF header");
     }
-    if (strncmp(c + 4, "BINARY", 6) == 0)
+    c += 3;
+    if (c[0] == ' ')
+        ++c;
+    if (strncmp(c, "BINARY", 6) == 0) {
         is_binary = true;
+        c += 6;
+    }
+    if (c[0] == ' ')
+        ++c;
 
     if (has_hcoords)
     {
@@ -89,16 +96,16 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
     if (is_binary)
         read_off_binary(mesh, in, has_normals, has_texcoords, has_colors);
     else
-        read_off_ascii(mesh, in, has_normals, has_texcoords, has_colors);
+        read_off_ascii(mesh, in, has_normals, has_texcoords, has_colors, c);
 
     fclose(in);
 }
 
 void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                    const bool has_texcoords, const bool has_colors)
+                    const bool has_texcoords, const bool has_colors, char *first_line)
 {
     std::array<char, 1000> line;
-    char *lp;
+    char *lp = first_line;
     int nc;
     long int i, j, idx;
     long int nv, nf, ne;
@@ -117,9 +124,9 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         colors = mesh.vertex_property<Color>("v:color");
 
     // read line, but skip comment lines
-    do {
+    while(lp && (lp[0] == '#' || lp[0] == '\n')) {
         lp = fgets(line.data(), 1000, in);
-    } while(lp && (lp[0] == '#' || lp[0] == '\n'));
+    }
 
     // #Vertices, #Faces, #Edges
     auto items = sscanf(lp, "%ld %ld %ld\n", &nv, &nf, &ne);
