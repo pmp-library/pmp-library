@@ -131,10 +131,8 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     // #Vertices, #Faces, #Edges
     auto items = sscanf(lp, "%ld %ld %ld\n", &nv, &nf, &ne);
 
-    if (items < 3 || nv < 1 || nf < 1 || ne < 0) {
-        std::cerr << "Invalid header" << std::endl;
-        return;
-    }
+    if (items < 3 || nv < 1 || nf < 1 || ne < 0)
+        throw IOException("Failed to parse OFF header");
 
     mesh.reserve(nv, std::max(3 * nv, ne), nf);
 
@@ -203,10 +201,8 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         // #vertices
         items = sscanf(lp, "%ld%n", &nv, &nc);
         assert(items == 1);
-        if (nv < 1) {
-            std::cerr << "Invalid index count" << std::endl;
-            return;
-        }
+        if (nv < 1)
+            throw IOException("Invalid index count");
         vertices.resize(nv);
         lp += nc;
 
@@ -215,10 +211,8 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         {
             items = sscanf(lp, "%ld%n", &idx, &nc);
             assert(items == 1);
-            if (idx < 0) {
-                std::cerr << "Invalid index" << std::endl;
-                return;
-            }
+            if (idx < 0)
+                throw IOException("Invalid index");
             vertices[j] = Vertex(idx);
             lp += nc;
         }
