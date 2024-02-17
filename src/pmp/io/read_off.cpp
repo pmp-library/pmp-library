@@ -100,8 +100,8 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     std::array<char, 1000> line;
     char *lp;
     int nc;
-    unsigned int i, j, idx;
-    unsigned int nv, nf, ne;
+    long int i, j, idx;
+    long int nv, nf, ne;
     float x, y, z, r, g, b;
     Vertex v;
 
@@ -122,8 +122,12 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     } while(lp && lp[0] == '#');
 
     // #Vertices, #Faces, #Edges
-    [[maybe_unused]] auto items =
-        sscanf(lp, "%d %d %d\n", (int*)&nv, (int*)&nf, (int*)&ne);
+    auto items = sscanf(lp, "%ld %ld %ld\n", &nv, &nf, &ne);
+
+    if (items < 3 || nv < 1 || nf < 1 || ne < 0) {
+        std::cerr << "Invalid header" << std::endl;
+        return;
+    }
 
     mesh.reserve(nv, std::max(3 * nv, ne), nf);
 
@@ -190,16 +194,24 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         lp = line.data();
 
         // #vertices
-        items = sscanf(lp, "%d%n", (int*)&nv, &nc);
+        items = sscanf(lp, "%ld%n", &nv, &nc);
         assert(items == 1);
+        if (nv < 1) {
+            std::cerr << "Invalid index count" << std::endl;
+            return;
+        }
         vertices.resize(nv);
         lp += nc;
 
         // indices
         for (j = 0; j < nv; ++j)
         {
-            items = sscanf(lp, "%d%n", (int*)&idx, &nc);
+            items = sscanf(lp, "%ld%n", &idx, &nc);
             assert(items == 1);
+            if (idx < 0) {
+                std::cerr << "Invalid index" << std::endl;
+                return;
+            }
             vertices[j] = Vertex(idx);
             lp += nc;
         }
