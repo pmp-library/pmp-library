@@ -98,6 +98,7 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                     const bool has_texcoords, const bool has_colors)
 {
     std::array<char, 1000> line;
+    char *lp;
     int nc;
     unsigned int i, j, idx;
     unsigned int nv, nf, ne;
@@ -115,17 +116,24 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     if (has_colors)
         colors = mesh.vertex_property<Color>("v:color");
 
+    // read line, but skip comment lines
+    do {
+        lp = fgets(line.data(), 1000, in);
+    } while(lp && lp[0] == '#');
+
     // #Vertices, #Faces, #Edges
     [[maybe_unused]] auto items =
-        fscanf(in, "%d %d %d\n", (int*)&nv, (int*)&nf, (int*)&ne);
+        sscanf(lp, "%d %d %d\n", (int*)&nv, (int*)&nf, (int*)&ne);
 
     mesh.reserve(nv, std::max(3 * nv, ne), nf);
 
     // read vertices: pos [normal] [color] [texcoord]
     for (i = 0; i < nv && !feof(in); ++i)
     {
-        // read line
-        auto lp = fgets(line.data(), 1000, in);
+        // read line, but skip comment lines
+        do {
+            lp = fgets(line.data(), 1000, in);
+        } while(lp && lp[0] == '#');
         lp = line.data();
 
         // position
@@ -175,8 +183,10 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     std::vector<Vertex> vertices;
     for (i = 0; i < nf; ++i)
     {
-        // read line
-        auto lp = fgets(line.data(), 1000, in);
+        // read line, but skip comment lines
+        do {
+            lp = fgets(line.data(), 1000, in);
+        } while(lp && lp[0] == '#');
         lp = line.data();
 
         // #vertices
