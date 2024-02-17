@@ -119,7 +119,7 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     // read line, but skip comment lines
     do {
         lp = fgets(line.data(), 1000, in);
-    } while(lp && lp[0] == '#');
+    } while(lp && (lp[0] == '#' || lp[0] == '\n'));
 
     // #Vertices, #Faces, #Edges
     auto items = sscanf(lp, "%ld %ld %ld\n", &nv, &nf, &ne);
@@ -137,7 +137,7 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         // read line, but skip comment lines
         do {
             lp = fgets(line.data(), 1000, in);
-        } while(lp && lp[0] == '#');
+        } while(lp && (lp[0] == '#' || lp[0] == '\n'));
         lp = line.data();
 
         // position
@@ -190,7 +190,7 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         // read line, but skip comment lines
         do {
             lp = fgets(line.data(), 1000, in);
-        } while(lp && lp[0] == '#');
+        } while(lp && (lp[0] == '#' || lp[0] == '\n'));
         lp = line.data();
 
         // #vertices
