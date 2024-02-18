@@ -21,8 +21,9 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Fixed
 
-- Fix error reporting when shader compilation fails, thanks to Stephan Wenninger (#183)
-- Fix GLFW include path for ImGui when using PMP as a sub-project (use relative path)
+- Make OFF file parsing robust to comments and whitespace. Thanks to François Revol (#197).
+- Fix error reporting when shader compilation fails, thanks to Stephan Wenninger (#183).
+- Fix GLFW include path for ImGui when using PMP as a sub-project (use relative path).
 
 ## [3.0.0] 2023-08-24
 
