@@ -9,7 +9,8 @@
 namespace pmp {
 
 void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                    const bool has_texcoords, const bool has_colors, char *first_line);
+                    const bool has_texcoords, const bool has_colors,
+                    char* first_line);
 void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                      const bool has_texcoords, const bool has_colors);
 
@@ -29,7 +30,7 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
         throw IOException("Failed to open file: " + file.string());
 
     // read header: [ST][C][N][4][n]OFF BINARY
-    char *c = fgets(line.data(), 200, in);
+    char* c = fgets(line.data(), 200, in);
     assert(c != nullptr);
     c = line.data();
     if (c[0] == 'S' && c[1] == 'T')
@@ -65,7 +66,8 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
     c += 3;
     if (c[0] == ' ')
         ++c;
-    if (strncmp(c, "BINARY", 6) == 0) {
+    if (strncmp(c, "BINARY", 6) == 0)
+    {
         is_binary = true;
         c += 6;
     }
@@ -102,10 +104,11 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
 }
 
 void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                    const bool has_texcoords, const bool has_colors, char *first_line)
+                    const bool has_texcoords, const bool has_colors,
+                    char* first_line)
 {
     std::array<char, 1000> line;
-    char *lp = first_line;
+    char* lp = first_line;
     int nc;
     long int i, j, idx;
     long int nv, nf, ne;
@@ -124,7 +127,8 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         colors = mesh.vertex_property<Color>("v:color");
 
     // read line, but skip comment lines
-    while(lp && (lp[0] == '#' || lp[0] == '\n')) {
+    while (lp && (lp[0] == '#' || lp[0] == '\n'))
+    {
         lp = fgets(line.data(), 1000, in);
     }
 
@@ -140,9 +144,10 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     for (i = 0; i < nv && !feof(in); ++i)
     {
         // read line, but skip comment lines
-        do {
+        do
+        {
             lp = fgets(line.data(), 1000, in);
-        } while(lp && (lp[0] == '#' || lp[0] == '\n'));
+        } while (lp && (lp[0] == '#' || lp[0] == '\n'));
         lp = line.data();
 
         // position
@@ -193,9 +198,10 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     for (i = 0; i < nf; ++i)
     {
         // read line, but skip comment lines
-        do {
+        do
+        {
             lp = fgets(line.data(), 1000, in);
-        } while(lp && (lp[0] == '#' || lp[0] == '\n'));
+        } while (lp && (lp[0] == '#' || lp[0] == '\n'));
         lp = line.data();
 
         // #vertices
