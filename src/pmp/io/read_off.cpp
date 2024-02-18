@@ -9,7 +9,7 @@
 namespace pmp {
 
 void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                    const bool has_texcoords, const bool has_colors);
+                    const bool has_texcoords, const bool has_colors, char *first_line);
 void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                      const bool has_texcoords, const bool has_colors);
 
@@ -29,7 +29,7 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
         throw IOException("Failed to open file: " + file.string());
 
     // read header: [ST][C][N][4][n]OFF BINARY
-    auto c = fgets(line.data(), 200, in);
+    char *c = fgets(line.data(), 200, in);
     assert(c != nullptr);
     c = line.data();
     if (c[0] == 'S' && c[1] == 'T')
@@ -62,8 +62,15 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
         fclose(in);
         throw IOException("Failed to parse OFF header");
     }
-    if (strncmp(c + 4, "BINARY", 6) == 0)
+    c += 3;
+    if (c[0] == ' ')
+        ++c;
+    if (strncmp(c, "BINARY", 6) == 0) {
         is_binary = true;
+        c += 6;
+    }
+    if (c[0] == ' ')
+        ++c;
 
     if (has_hcoords)
     {
@@ -89,18 +96,19 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
     if (is_binary)
         read_off_binary(mesh, in, has_normals, has_texcoords, has_colors);
     else
-        read_off_ascii(mesh, in, has_normals, has_texcoords, has_colors);
+        read_off_ascii(mesh, in, has_normals, has_texcoords, has_colors, c);
 
     fclose(in);
 }
 
 void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                    const bool has_texcoords, const bool has_colors)
+                    const bool has_texcoords, const bool has_colors, char *first_line)
 {
     std::array<char, 1000> line;
+    char *lp = first_line;
     int nc;
-    unsigned int i, j, idx;
-    unsigned int nv, nf, ne;
+    long int i, j, idx;
+    long int nv, nf, ne;
     float x, y, z, r, g, b;
     Vertex v;
 
@@ -115,17 +123,26 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     if (has_colors)
         colors = mesh.vertex_property<Color>("v:color");
 
+    // read line, but skip comment lines
+    while(lp && (lp[0] == '#' || lp[0] == '\n')) {
+        lp = fgets(line.data(), 1000, in);
+    }
+
     // #Vertices, #Faces, #Edges
-    [[maybe_unused]] auto items =
-        fscanf(in, "%d %d %d\n", (int*)&nv, (int*)&nf, (int*)&ne);
+    auto items = sscanf(lp, "%ld %ld %ld\n", &nv, &nf, &ne);
+
+    if (items < 3 || nv < 1 || nf < 1 || ne < 0)
+        throw IOException("Failed to parse OFF header");
 
     mesh.reserve(nv, std::max(3 * nv, ne), nf);
 
     // read vertices: pos [normal] [color] [texcoord]
     for (i = 0; i < nv && !feof(in); ++i)
     {
-        // read line
-        auto lp = fgets(line.data(), 1000, in);
+        // read line, but skip comment lines
+        do {
+            lp = fgets(line.data(), 1000, in);
+        } while(lp && (lp[0] == '#' || lp[0] == '\n'));
         lp = line.data();
 
         // position
@@ -175,21 +192,27 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     std::vector<Vertex> vertices;
     for (i = 0; i < nf; ++i)
     {
-        // read line
-        auto lp = fgets(line.data(), 1000, in);
+        // read line, but skip comment lines
+        do {
+            lp = fgets(line.data(), 1000, in);
+        } while(lp && (lp[0] == '#' || lp[0] == '\n'));
         lp = line.data();
 
         // #vertices
-        items = sscanf(lp, "%d%n", (int*)&nv, &nc);
+        items = sscanf(lp, "%ld%n", &nv, &nc);
         assert(items == 1);
+        if (nv < 1)
+            throw IOException("Invalid index count");
         vertices.resize(nv);
         lp += nc;
 
         // indices
         for (j = 0; j < nv; ++j)
         {
-            items = sscanf(lp, "%d%n", (int*)&idx, &nc);
+            items = sscanf(lp, "%ld%n", &idx, &nc);
             assert(items == 1);
+            if (idx < 0)
+                throw IOException("Invalid index");
             vertices[j] = Vertex(idx);
             lp += nc;
         }
