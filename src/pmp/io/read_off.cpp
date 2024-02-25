@@ -2,8 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/io/read_off.h"
-
-#include "pmp/io/helpers.h"
+#include <filesystem>
 #include "pmp/exceptions.h"
 
 namespace pmp {
@@ -12,7 +11,8 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                     const bool has_texcoords, const bool has_colors,
                     char* first_line);
 void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                     const bool has_texcoords, const bool has_colors);
+                     const bool has_texcoords, const bool has_colors,
+                     const std::filesystem::path& file);
 
 void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
 {
@@ -96,7 +96,7 @@ void read_off(SurfaceMesh& mesh, const std::filesystem::path& file)
 
     // read as ASCII or binary
     if (is_binary)
-        read_off_binary(mesh, in, has_normals, has_texcoords, has_colors);
+        read_off_binary(mesh, in, has_normals, has_texcoords, has_colors, file);
     else
         read_off_ascii(mesh, in, has_normals, has_texcoords, has_colors, c);
 
@@ -233,8 +233,23 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     }
 }
 
+template <typename T>
+    requires(sizeof(T) == 4)
+void read_binary(FILE* in, T& t, bool swap = false)
+{
+    [[maybe_unused]] auto n_items = fread((char*)&t, 1, sizeof(t), in);
+
+    if (swap)
+    {
+        const auto u32v = std::bit_cast<uint32_t>(t);
+        const auto vv = std::byteswap(u32v);
+        t = std::bit_cast<T>(vv);
+    }
+}
+
 void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
-                     const bool has_texcoords, const bool has_colors)
+                     const bool has_texcoords, const bool has_colors,
+                     const std::filesystem::path& file)
 {
     uint32_t i, j, idx(0);
     uint32_t nv(0), nf(0), ne(0);
@@ -255,29 +270,43 @@ void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         texcoords = mesh.vertex_property<TexCoord>("v:tex");
 
     // #Vertices, #Faces, #Edges
-    tfread(in, nv);
-    tfread(in, nf);
-    tfread(in, ne);
+    read_binary(in, nv);
+
+    // Check for little endian encoding used by previous versions.
+    // Swap the ordering if the total file size is smaller than the size
+    // required to store all vertex coordinates.
+    auto file_size = std::filesystem::file_size(file);
+    bool swap = file_size < nv * 3 * 4 ? true : false;
+    if (swap)
+        nv = std::byteswap(nv);
+
+    read_binary(in, nf, swap);
+    read_binary(in, ne, swap);
     mesh.reserve(nv, std::max(3 * nv, ne), nf);
 
     // read vertices: pos [normal] [color] [texcoord]
     for (i = 0; i < nv && !feof(in); ++i)
     {
         // position
-        tfread(in, p);
+        read_binary(in, p[0], swap);
+        read_binary(in, p[1], swap);
+        read_binary(in, p[2], swap);
         v = mesh.add_vertex((Point)p);
 
         // normal
         if (has_normals)
         {
-            tfread(in, n);
+            read_binary(in, n[0], swap);
+            read_binary(in, n[1], swap);
+            read_binary(in, n[2], swap);
             normals[v] = (Normal)n;
         }
 
         // tex coord
         if (has_texcoords)
         {
-            tfread(in, t);
+            read_binary(in, t[0], swap);
+            read_binary(in, t[1], swap);
             texcoords[v][0] = t[0];
             texcoords[v][1] = t[1];
         }
@@ -287,11 +316,11 @@ void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     std::vector<Vertex> vertices;
     for (i = 0; i < nf; ++i)
     {
-        tfread(in, nv);
+        read_binary(in, nv, swap);
         vertices.resize(nv);
         for (j = 0; j < nv; ++j)
         {
-            tfread(in, idx);
+            read_binary(in, idx, swap);
             vertices[j] = Vertex(idx);
         }
         try
