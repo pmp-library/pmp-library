@@ -22,11 +22,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        include:
-          - os: ubuntu-latest
-            env:
-              CC: gcc-12
-              CXX: g++-12
 
     runs-on: ${{ matrix.os }}
 
@@ -40,6 +35,12 @@ jobs:
       - name: Install dependencies
         if: runner.os == 'Linux'
         run: sudo apt-get install -o Acquire::Retries=3 xorg-dev libglfw3-dev libglu1-mesa-dev
+
+      - name: Modify environment
+        if: runner.os == 'Linux'
+        run: |
+          echo "CC=gcc-12" >> "$GITHUB_ENV"
+          echo "CXX=g++-12" >> "$GITHUB_ENV"
 
       - name: Create build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
