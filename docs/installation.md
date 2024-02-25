@@ -6,11 +6,11 @@ In this section, we describe how to configure, build, and install PMP in detail.
 
 ## System Requirements
 
-PMP uses [CMake](http://www.cmake.org) as its build configuration system. Version 3.16.3 or greater is required. PMP requires a C++17-compliant compiler. We continuously build and test PMP with the following compilers and operating systems:
+PMP uses [CMake](http://www.cmake.org) as its build configuration system. Version 3.16.3 or greater is required. PMP requires a C++23 compiler. We continuously build and test PMP with the following compilers and operating systems:
 
 | Operating System | Compiler           |
 | ---------------- | ------------------ |
-| Linux            | gcc 11.3.0         |
+| Linux            | gcc 11.4.0         |
 | macOS            | AppleClang 14.0.0  |
 | Windows          | Visual Studio 2022 |
 
