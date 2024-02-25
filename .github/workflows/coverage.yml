@@ -30,12 +30,6 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get install -o Acquire::Retries=3 xorg-dev libglfw3-dev libglu1-mesa-dev lcov
 
-      - name: Modify environment
-        if: runner.os == 'Linux'
-        run: |
-          echo "CC=gcc-12" >> "$GITHUB_ENV"
-          echo "CXX=g++-12" >> "$GITHUB_ENV"
-
       - name: Create build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
 

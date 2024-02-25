@@ -2,12 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/io/write_off.h"
-#include <bit>
-#include <cstdint>
-#include <fstream>
-#include <ios>
-#include "pmp/exceptions.h"
-#include "pmp/types.h"
+#include "pmp/io/helpers.h"
 
 namespace pmp {
 
@@ -102,64 +97,41 @@ void write_off(const SurfaceMesh& mesh, const std::filesystem::path& file,
     fclose(out);
 }
 
-template <class T>
-    requires(sizeof(T) == 4)
-void write_binary(std::ofstream& ofs, const T& val)
-{
-    if constexpr (std::endian::native == std::endian::little)
-    {
-        const auto u32v = std::bit_cast<uint32_t>(val);
-        const auto vv = std::byteswap(u32v);
-        ofs.write(reinterpret_cast<const char*>(&vv), sizeof(vv));
-    }
-    else
-    {
-        ofs.write(reinterpret_cast<const char*>(&val), sizeof(val));
-    }
-}
-
 void write_off_binary(const SurfaceMesh& mesh,
                       const std::filesystem::path& file)
 {
-    if constexpr (sizeof(IndexType) == 8 || sizeof(Scalar) == 8)
-        throw IOException("Binary OFF files only support 32-bit types.");
-
-    std::ofstream ofs(file.string());
-    if (ofs.fail())
+    FILE* out = fopen(file.string().c_str(), "w");
+    if (!out)
         throw IOException("Failed to open file: " + file.string());
 
-    ofs << "OFF BINARY\n";
-    ofs.close();
-    ofs.open(file.string(), std::ios::binary | std::ios::app);
-
+    fprintf(out, "OFF BINARY\n");
+    fclose(out);
     uint32_t nv = mesh.n_vertices();
     uint32_t nf = mesh.n_faces();
     uint32_t ne = 0;
 
-    write_binary(ofs, nv);
-    write_binary(ofs, nf);
-    write_binary(ofs, ne);
-
+    out = fopen(file.string().c_str(), "ab");
+    tfwrite(out, nv);
+    tfwrite(out, nf);
+    tfwrite(out, ne);
     auto points = mesh.get_vertex_property<Point>("v:point");
     for (auto v : mesh.vertices())
     {
         const vec3 p = (vec3)points[v];
-        write_binary(ofs, p[0]);
-        write_binary(ofs, p[1]);
-        write_binary(ofs, p[2]);
+        tfwrite(out, p);
     }
 
     for (auto f : mesh.faces())
     {
         uint32_t valence = mesh.valence(f);
-        write_binary(ofs, valence);
+        tfwrite(out, valence);
         for (auto fv : mesh.vertices(f))
         {
             uint32_t idx = fv.idx();
-            write_binary(ofs, idx);
+            tfwrite(out, idx);
         }
     }
-    ofs.close();
+    fclose(out);
 }
 
 } // namespace pmp
