@@ -30,7 +30,7 @@ jobs:
           mkdir build
           cd build
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/doxygen ..
-          make -j install
+          make -j2 install
           echo ${{runner.workspace}}/doxygen/bin >> $GITHUB_PATH
 
       - name: Create emscripten build directory
