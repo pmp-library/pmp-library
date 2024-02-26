@@ -6,16 +6,16 @@ on:
 
 jobs:
   docs:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -o Acquire::Retries=3 doxygen texlive-base libclang-12-dev libclang-cpp12 build-essential flex bison
+        run: sudo apt-get update && sudo apt-get install -o Acquire::Retries=3 doxygen texlive-base build-essential flex bison
 
-      - name: Fetch doxygen
-        run: export DOXYGEN_URL="https://github.com/doxygen/doxygen/releases/download/Release_1_9_6/doxygen-1.9.6.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && echo `pwd`/doxygen/bin >> $GITHUB_PATH
+      # - name: Fetch doxygen
+      #   run: export DOXYGEN_URL="https://github.com/doxygen/doxygen/releases/download/Release_1_9_6/doxygen-1.9.6.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && echo `pwd`/doxygen/bin >> $GITHUB_PATH
 
       - name: Create doxygen build directory
         run: cmake -E make_directory ${{runner.workspace}}/doxybuild
@@ -26,7 +26,7 @@ jobs:
         run: |
           git clone https://github.com/doxygen/doxygen.git
           cd doxygen
-          git checkout Release_1_10_0
+          git checkout Release_1_9_6
           mkdir build
           cd build
           cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/doxygen ..
