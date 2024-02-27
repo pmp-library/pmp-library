@@ -24,8 +24,10 @@ void tfwrite(FILE* out, const T& t)
 // replace with std::byteswap once we move to C++23
 inline uint32_t byteswap32(uint32_t val)
 {
-#if __has_builtin(__builtin_bswap32)
+#if !defined(_MSC_VER) && __has_builtin(__builtin_bswap32)
     return __builtin_bswap32(val);
+#elif defined(_MSC_VER)
+    return _byteswap_ulong(val);
 #else
     std::array<uint8_t, 4> bytes;
     uint32_t ret;
