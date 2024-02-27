@@ -2,10 +2,13 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "pmp/io/write_off.h"
+#include <bit>
+#include <cstdint>
 #include <fstream>
 #include <ios>
 #include "pmp/exceptions.h"
 #include "pmp/types.h"
+#include "pmp/io/helpers.h"
 
 namespace pmp {
 
@@ -101,9 +104,19 @@ void write_off(const SurfaceMesh& mesh, const std::filesystem::path& file,
 }
 
 template <class T>
+    requires(sizeof(T) == 4)
 void write_binary(std::ofstream& ofs, const T& val)
 {
-    ofs.write(reinterpret_cast<const char*>(&val), sizeof(val));
+    if constexpr (std::endian::native == std::endian::little)
+    {
+        const auto u32v = std::bit_cast<uint32_t>(val);
+        const auto vv = byteswap32(u32v);
+        ofs.write(reinterpret_cast<const char*>(&vv), sizeof(vv));
+    }
+    else
+    {
+        ofs.write(reinterpret_cast<const char*>(&val), sizeof(val));
+    }
 }
 
 void write_off_binary(const SurfaceMesh& mesh,

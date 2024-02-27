@@ -3,7 +3,11 @@
 
 #pragma once
 
+#include <array>
+#include <utility>
+#include <cstring>
 #include <cstdio>
+#include <cstdint>
 
 template <typename T>
 void tfread(FILE* in, const T& t)
@@ -15,4 +19,20 @@ template <typename T>
 void tfwrite(FILE* out, const T& t)
 {
     [[maybe_unused]] auto n_items = fwrite((char*)&t, 1, sizeof(t), out);
+}
+
+// replace with std::byteswap once we move to C++23
+inline uint32_t byteswap32(uint32_t val)
+{
+#if __has_builtin(__builtin_bswap32)
+    return __builtin_bswap32(val);
+#else
+    std::array<uint8_t, 4> bytes;
+    uint32_t ret;
+    std::memcpy(bytes.data(), &val, 4);
+    std::swap(bytes[0], bytes[3]);
+    std::swap(bytes[1], bytes[2]);
+    std::memcpy(&ret, bytes.data(), 4);
+    return ret;
+#endif
 }
