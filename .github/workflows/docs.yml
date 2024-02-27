@@ -39,7 +39,12 @@ jobs:
       - name: Fetch emscripten
         shell: bash
         working-directory: ${{runner.workspace}}/embuild
-        run: git clone https://github.com/emscripten-core/emsdk.git && cd emsdk && ./emsdk install latest && ./emsdk activate latest
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          git checkout 3.1.42
+          ./emsdk install latest
+          ./emsdk activate latest
 
       - name: Configure emscripten
         shell: bash
