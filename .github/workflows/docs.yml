@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
 
+env:
+  EMSDK_RELEASE: 3.1.42
+
 jobs:
   docs:
     runs-on: ubuntu-latest
@@ -42,9 +45,9 @@ jobs:
         run: |
           git clone https://github.com/emscripten-core/emsdk.git
           cd emsdk
-          git checkout 3.1.42
-          ./emsdk install latest
-          ./emsdk activate latest
+          git checkout $EMSDK_RELEASE
+          ./emsdk install $EMSDK_RELEASE
+          ./emsdk activate $EMSDK_RELEASE
 
       - name: Configure emscripten
         shell: bash
