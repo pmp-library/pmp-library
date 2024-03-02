@@ -133,9 +133,9 @@ void write_off_binary(const SurfaceMesh& mesh,
     ofs.close();
     ofs.open(file.string(), std::ios::binary | std::ios::app);
 
-    uint32_t nv = mesh.n_vertices();
-    uint32_t nf = mesh.n_faces();
-    uint32_t ne = 0;
+    const auto nv = static_cast<uint32_t>(mesh.n_vertices());
+    const auto nf = static_cast<uint32_t>(mesh.n_faces());
+    const uint32_t ne = 0;
 
     write_binary(ofs, nv);
     write_binary(ofs, nf);
@@ -152,11 +152,11 @@ void write_off_binary(const SurfaceMesh& mesh,
 
     for (auto f : mesh.faces())
     {
-        uint32_t valence = mesh.valence(f);
+        const auto valence = static_cast<uint32_t>(mesh.valence(f));
         write_binary(ofs, valence);
         for (auto fv : mesh.vertices(f))
         {
-            uint32_t idx = fv.idx();
+            const uint32_t idx = fv.idx();
             write_binary(ofs, idx);
         }
     }
