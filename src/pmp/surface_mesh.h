@@ -6,6 +6,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <compare>
 #include <filesystem>
 #include <iterator>
 #include <ostream>
@@ -44,13 +45,7 @@ public:
     bool is_valid() const { return idx_ != PMP_MAX_INDEX; }
 
     //! are two handles equal?
-    bool operator==(const Handle& rhs) const { return idx_ == rhs.idx_; }
-
-    //! are two handles different?
-    bool operator!=(const Handle& rhs) const { return idx_ != rhs.idx_; }
-
-    //! compare operator useful for sorting handles
-    bool operator<(const Handle& rhs) const { return idx_ < rhs.idx_; }
+    auto operator<=>(const Handle& rhs) const = default;
 
 private:
     friend class SurfaceMesh;
@@ -229,17 +224,8 @@ public:
         //! get the vertex the iterator refers to
         Vertex operator*() const { return handle_; }
 
-        //! are two iterators equal?
-        bool operator==(const VertexIterator& rhs) const
-        {
-            return (handle_ == rhs.handle_);
-        }
-
-        //! are two iterators different?
-        bool operator!=(const VertexIterator& rhs) const
-        {
-            return !operator==(rhs);
-        }
+        //! Three-way comparison operator.
+        auto operator<=>(const VertexIterator& rhs) const = default;
 
         //! pre-increment iterator
         VertexIterator& operator++()
@@ -309,17 +295,8 @@ public:
         //! get the halfedge the iterator refers to
         Halfedge operator*() const { return handle_; }
 
-        //! are two iterators equal?
-        bool operator==(const HalfedgeIterator& rhs) const
-        {
-            return (handle_ == rhs.handle_);
-        }
-
-        //! are two iterators different?
-        bool operator!=(const HalfedgeIterator& rhs) const
-        {
-            return !operator==(rhs);
-        }
+        //! Three-way comparison operator.
+        auto operator<=>(const HalfedgeIterator& rhs) const = default;
 
         //! pre-increment iterator
         HalfedgeIterator& operator++()
@@ -388,17 +365,8 @@ public:
         //! get the edge the iterator refers to
         Edge operator*() const { return handle_; }
 
-        //! are two iterators equal?
-        bool operator==(const EdgeIterator& rhs) const
-        {
-            return (handle_ == rhs.handle_);
-        }
-
-        //! are two iterators different?
-        bool operator!=(const EdgeIterator& rhs) const
-        {
-            return !operator==(rhs);
-        }
+        //! Three-way comparison operator.
+        auto operator<=>(const EdgeIterator& rhs) const = default;
 
         //! pre-increment iterator
         EdgeIterator& operator++()
@@ -467,17 +435,8 @@ public:
         //! get the face the iterator refers to
         Face operator*() const { return handle_; }
 
-        //! are two iterators equal?
-        bool operator==(const FaceIterator& rhs) const
-        {
-            return (handle_ == rhs.handle_);
-        }
-
-        //! are two iterators different?
-        bool operator!=(const FaceIterator& rhs) const
-        {
-            return !operator==(rhs);
-        }
+        //! Three-way comparison operator
+        auto operator<=>(const FaceIterator& rhs) const = default;
 
         //! pre-increment iterator
         FaceIterator& operator++()
