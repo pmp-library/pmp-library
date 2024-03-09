@@ -1133,8 +1133,8 @@ void SurfaceMesh::garbage_collection()
     // remove deleted vertices
     if (nV > 0)
     {
-        int i0 = 0;
-        int i1 = nV - 1;
+        size_t i0 = 0;
+        size_t i1 = nV - 1;
 
         while (true)
         {
@@ -1157,8 +1157,8 @@ void SurfaceMesh::garbage_collection()
     // remove deleted edges
     if (nE > 0)
     {
-        int i0 = 0;
-        int i1 = nE - 1;
+        size_t i0 = 0;
+        size_t i1 = nE - 1;
 
         while (true)
         {
@@ -1184,8 +1184,8 @@ void SurfaceMesh::garbage_collection()
     // remove deleted faces
     if (nF > 0)
     {
-        int i0 = 0;
-        int i1 = nF - 1;
+        size_t i0 = 0;
+        size_t i1 = nF - 1;
 
         while (true)
         {
