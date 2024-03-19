@@ -19,6 +19,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Remove `SurfaceMesh::property_stats()`
 - Make `is_constrained()` predicate in `cholesky_solve()` a const reference.
 - Make `is_selection()` predicate in `selector_matrix()` a const reference.
+- Update ImGui to version 1.90.4
 - Update GLFW to version 3.4
 
 ### Fixed

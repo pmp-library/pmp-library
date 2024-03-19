@@ -1,11 +1,12 @@
-file(GLOB SOURCES ./*.cpp ./backends/*.cpp)
-file(GLOB HEADERS ./*.h ./backends/*.h)
+file(GLOB SOURCES ./*.cpp)
+file(GLOB HEADERS ./*.h)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(imgui STATIC ${SOURCES} ${HEADERS})
 target_link_libraries(imgui ${CMAKE_DL_LIBS})
+target_compile_definitions(imgui PUBLIC IMGUI_USER_CONFIG="pmp_imconfig.h")
 
 if(NOT EMSCRIPTEN)
   target_include_directories(
