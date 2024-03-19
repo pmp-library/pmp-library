@@ -23,7 +23,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if(PMP_BUILD_VIS)
-  set(GLFW_SOURCE_DIR "external/glfw-3.3.8")
+  set(GLFW_SOURCE_DIR_INTERNAL "external/glfw-3.4")
   set(GLEW_SOURCE_DIR "external/glew-2.2.0")
   set(IMGUI_SOURCE_DIR "external/imgui-1.89.8")
   set(STB_IMAGE_SOURCE_DIR "external/stb_image-2.28")
@@ -51,14 +51,14 @@ if(PMP_BUILD_VIS)
 
   # setup use of GLFW and GLEW
   if(NOT EMSCRIPTEN)
-    add_subdirectory(${GLFW_SOURCE_DIR} ${GLEW_SOURCE_DIR})
+    add_subdirectory(${GLFW_SOURCE_DIR_INTERNAL} ${GLEW_SOURCE_DIR})
 
     add_definitions(-DGLEW_STATIC)
     add_library(glew STATIC ${GLEW_SOURCE_DIR}/src/glew.c
                             ${GLEW_SOURCE_DIR}/include)
     set_property(TARGET glew PROPERTY POSITION_INDEPENDENT_CODE ON)
     target_include_directories(glew PUBLIC ${GLEW_SOURCE_DIR}/include
-                                           ${GLFW_SOURCE_DIR}/include)
+                                           ${GLFW_SOURCE_DIR_INTERNAL}/include)
     target_link_libraries(glew ${GLFW_LIBRARIES})
   endif()
 
@@ -159,6 +159,9 @@ endif()
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 endif()
+
+add_definitions(-D_LIBCPP_ENABLE_ASSERTIONS=1)
+add_definitions(-D_GLIBCXX_ASSERTIONS=1)
 
 # choose size of the scalar type
 if(PMP_SCALAR_TYPE EQUAL 64)

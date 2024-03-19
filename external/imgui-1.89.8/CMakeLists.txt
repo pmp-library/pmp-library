@@ -11,7 +11,7 @@ if(NOT EMSCRIPTEN)
   target_include_directories(
     imgui
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../${GLFW_SOURCE_DIR}/include")
+    PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../../${GLFW_SOURCE_DIR_INTERNAL}/include")
 else()
   target_include_directories(imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
