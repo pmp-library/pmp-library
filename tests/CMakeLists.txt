@@ -31,10 +31,6 @@ endif()
 
 add_dependencies(gtest_runner googletest)
 
-# automatic test discovery
-include(GoogleTest)
-gtest_discover_tests(gtest_runner)
-
 # copy dlls on windows
 if(WIN32 AND BUILD_SHARED_LIBS)
   add_custom_command(
@@ -45,3 +41,8 @@ if(WIN32 AND BUILD_SHARED_LIBS)
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:googletest>
             $<TARGET_FILE_DIR:gtest_runner>)
 endif()
+
+# automatic test discovery
+include(GoogleTest)
+gtest_discover_tests(gtest_runner)
+
