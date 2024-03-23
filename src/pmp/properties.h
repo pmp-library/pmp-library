@@ -6,7 +6,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <format>
 #include <string>
 #include <utility>
 #include <vector>
@@ -222,10 +221,8 @@ public:
         {
             if (parray->name() == name)
             {
-                const auto msg = std::format(
-                    "[PropertyContainer] A property with name \"{}\" already "
-                    "exists.\n",
-                    name);
+                const auto msg = "[PropertyContainer] A property with name \"" +
+                                 name + "\" already exists.\n";
                 throw InvalidInputException(msg);
             }
         }
