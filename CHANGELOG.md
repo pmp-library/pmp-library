@@ -17,6 +17,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 - Upgrade C++ standard to C++20
 - Remove `SurfaceMesh::property_stats()`
+- Throw exception when trying to add a property with the same name as an existing one.
 - Make `is_constrained()` predicate in `cholesky_solve()` a const reference.
 - Make `is_selection()` predicate in `selector_matrix()` a const reference.
 - Update ImGui to version 1.90.4

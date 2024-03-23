@@ -6,10 +6,11 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
+#include <format>
 #include <string>
 #include <utility>
 #include <vector>
+#include "pmp/exceptions.h"
 
 namespace pmp {
 
@@ -216,15 +217,16 @@ public:
     template <class T>
     Property<T> add(const std::string& name, const T t = T())
     {
-        // if a property with this name already exists, return an invalid property
-        for (auto& parray : parrays_)
+        // throw exception if a property with this name already exists
+        for (const auto* parray : parrays_)
         {
             if (parray->name() == name)
             {
-                std::cerr << "[PropertyContainer] A property with name \""
-                          << name
-                          << "\" already exists. Returning invalid property.\n";
-                return Property<T>();
+                const auto msg = std::format(
+                    "[PropertyContainer] A property with name \"{}\" already "
+                    "exists.\n",
+                    name);
+                throw InvalidInputException(msg);
             }
         }
 
