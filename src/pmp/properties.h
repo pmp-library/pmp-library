@@ -16,9 +16,6 @@ namespace pmp {
 class BasePropertyArray
 {
 public:
-    //! Default constructor
-    explicit BasePropertyArray(std::string name) : name_(std::move(name)) {}
-
     //! Destructor.
     virtual ~BasePropertyArray() = default;
 
@@ -41,10 +38,7 @@ public:
     virtual BasePropertyArray* clone() const = 0;
 
     //! Return the name of the property
-    const std::string& name() const { return name_; }
-
-protected:
-    std::string name_;
+    virtual const std::string& name() const = 0;
 };
 
 template <class T>
@@ -57,7 +51,7 @@ public:
     using const_reference = typename VectorType::const_reference;
 
     PropertyArray(std::string name, T t = T())
-        : BasePropertyArray(std::move(name)), value_(std::move(t))
+        : name_(std::move(name)), value_(std::move(t))
     {
     }
 
@@ -103,7 +97,11 @@ public:
         return data_[idx];
     }
 
+    //! Return the name of the property
+    const std::string& name() const override { return name_; }
+
 private:
+    std::string name_;
     VectorType data_;
     ValueType value_;
 };
