@@ -65,7 +65,9 @@ public:
 
     void swap(size_t i0, size_t i1) override
     {
-        std::swap(data_[i0], data_[i1]);
+        T d(data_[i0]);
+        data_[i0] = data_[i1];
+        data_[i1] = d;
     }
 
     BasePropertyArray* clone() const override
