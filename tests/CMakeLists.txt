@@ -43,6 +43,7 @@ if(WIN32 AND BUILD_SHARED_LIBS)
 endif()
 
 # automatic test discovery
+# has to go *after* dll copy above, otherwise gtest_runner does not work
 include(GoogleTest)
 gtest_discover_tests(gtest_runner)
 
