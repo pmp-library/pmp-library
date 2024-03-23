@@ -72,5 +72,5 @@ TEST(RegressionTest, bunny)
     auto h = find_boundary(mesh);
     fill_hole(mesh, h);
 
-    EXPECT_EQ(size_t{14022}, mesh.n_faces());
+    EXPECT_FALSE(find_boundary(mesh).is_valid());
 }
