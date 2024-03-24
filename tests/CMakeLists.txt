@@ -20,6 +20,10 @@ file(COPY ${PROJECT_SOURCE_DIR}/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 # source files
 file(GLOB SOURCES ./*.cpp)
 
+if(NOT PMP_BUILD_REGRESSIONS)
+  list(FILTER SOURCES EXCLUDE REGEX ".*regression_test\\.cpp$")
+endif()
+
 # build test runner
 add_executable(gtest_runner ${SOURCES})
 
@@ -42,8 +46,7 @@ if(WIN32 AND BUILD_SHARED_LIBS)
             $<TARGET_FILE_DIR:gtest_runner>)
 endif()
 
-# automatic test discovery
-# has to go *after* dll copy above, otherwise gtest_runner does not work
+# automatic test discovery has to go *after* dll copy above, otherwise
+# gtest_runner does not work
 include(GoogleTest)
 gtest_discover_tests(gtest_runner)
-

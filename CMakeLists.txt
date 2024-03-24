@@ -13,6 +13,7 @@ option(PMP_BUILD_DOCS "Build the PMP documentation" ON)
 option(PMP_BUILD_VIS "Build the PMP visualization tools" ON)
 option(PMP_INSTALL "Install the PMP library and headers" ON)
 option(PMP_STRICT_COMPILATION "Treat compiler warnings as errors" ON)
+option(PMP_BUILD_REGRESSIONS "Build the PMP regression test programs" OFF)
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 # set output paths
