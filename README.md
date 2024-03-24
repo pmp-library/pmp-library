@@ -37,7 +37,7 @@ Build your own tool:
 ```cpp
 #include <pmp/surface_mesh.h>
 
-int main(void)
+int main()
 {
     pmp::SurfaceMesh mesh;
     pmp::read(mesh,"input.obj");
