@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Sieger"
+    given-names: "Daniel"
+    orcid: "https://orcid.org/0000-0001-9504-7909"
+  - family-names: "Botsch"
+    given-names: "Mario"
+    orcid: "https://orcid.org/0000-0001-9954-120X"
+title: "The Polygon Mesh Processing Library"
+version: 3.0.0
+doi: 10.5281/zenodo.10866532
+date-released: 2023-08-24
+url: "https://github.com/pmp-library/pmp-library"
