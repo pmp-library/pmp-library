@@ -161,9 +161,6 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 endif()
 
-add_definitions(-D_LIBCPP_ENABLE_ASSERTIONS=1)
-add_definitions(-D_GLIBCXX_ASSERTIONS=1)
-
 # choose size of the scalar type
 if(PMP_SCALAR_TYPE EQUAL 64)
   message(STATUS "Using 64-bit scalar type")
