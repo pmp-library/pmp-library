@@ -59,14 +59,14 @@ Contributions to PMP are welcome! There are many ways you can help: Report any [
 If you are using PMP for research projects, please acknowledge its use by referencing
 
 ```tex
-@software{Sieger_The_Polygon_Mesh_2023,
-author = {Sieger, Daniel and Botsch, Mario},
-doi = {10.5281/zenodo.10866532},
-month = aug,
-title = {{The Polygon Mesh Processing Library}},
-url = {https://github.com/pmp-library/pmp-library},
-version = {3.0.0},
-year = {2023}
+@software{pmp23,
+  author = {Sieger, Daniel and Botsch, Mario},
+  title = {{The Polygon Mesh Processing Library}},
+  year = {2023},
+  month = aug,
+  version = {3.0.0},
+  doi = {10.5281/zenodo.10866532},
+  url = {https://github.com/pmp-library/pmp-library}
 }
 ```
 
