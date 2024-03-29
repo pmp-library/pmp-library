@@ -5,6 +5,8 @@
 
 #include "pmp/algorithms/normals.h"
 #include "pmp/algorithms/shapes.h"
+
+#include <numbers>
 #include <vector>
 
 using namespace pmp;
@@ -31,7 +33,7 @@ TEST(NormalsTest, corner_normal)
 {
     auto mesh = icosahedron();
     auto h = Halfedge(0);
-    auto n = corner_normal(mesh, h, (Scalar)M_PI / 3.0);
+    auto n = corner_normal(mesh, h, (Scalar)std::numbers::pi / 3.0);
     EXPECT_GT(norm(n), 0);
 }
 

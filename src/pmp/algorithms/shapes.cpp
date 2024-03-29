@@ -7,6 +7,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <numbers>
 
 namespace pmp {
 namespace {
@@ -163,10 +164,10 @@ SurfaceMesh uv_sphere(const Point& center, Scalar radius, size_t n_slices,
     // generate vertices per stack / slice
     for (size_t i = 0; i < n_stacks - 1; i++)
     {
-        auto phi = M_PI * double(i + 1) / double(n_stacks);
+        auto phi = std::numbers::pi * double(i + 1) / double(n_stacks);
         for (size_t j = 0; j < n_slices; ++j)
         {
-            auto theta = 2.0 * M_PI * double(j) / double(n_slices);
+            auto theta = 2.0 * std::numbers::pi * double(j) / double(n_slices);
             auto x = center[0] + radius * std::sin(phi) * std::cos(theta);
             auto y = center[1] + radius * std::cos(phi);
             auto z = center[2] + radius * std::sin(phi) * std::sin(theta);
@@ -255,7 +256,7 @@ SurfaceMesh cone(size_t n_subdivisions, Scalar radius, Scalar height)
     for (size_t i = 0; i < n_subdivisions; i++)
     {
         Scalar ratio = static_cast<Scalar>(i) / (n_subdivisions);
-        Scalar r = ratio * (M_PI * 2.0);
+        Scalar r = ratio * (std::numbers::pi * 2.0);
         Scalar x = std::cos(r) * radius;
         Scalar y = std::sin(r) * radius;
         auto v = mesh.add_vertex(Point(x, y, 0.0));
@@ -293,7 +294,7 @@ SurfaceMesh cylinder(size_t n_subdivisions, Scalar radius, Scalar height)
     for (size_t i = 0; i < n_subdivisions; i++)
     {
         Scalar ratio = static_cast<Scalar>(i) / (n_subdivisions);
-        Scalar r = ratio * (M_PI * 2.0);
+        Scalar r = ratio * (std::numbers::pi * 2.0);
         Scalar x = std::cos(r) * radius;
         Scalar y = std::sin(r) * radius;
         Vertex v = mesh.add_vertex(Point(x, y, 0.0));
@@ -337,8 +338,10 @@ SurfaceMesh torus(size_t radial_resolution, size_t tubular_resolution,
     {
         for (size_t j = 0; j < tubular_resolution; j++)
         {
-            Scalar u = static_cast<Scalar>(j) / tubular_resolution * M_PI * 2.0;
-            Scalar v = static_cast<Scalar>(i) / radial_resolution * M_PI * 2.0;
+            Scalar u = static_cast<Scalar>(j) / tubular_resolution *
+                       std::numbers::pi * 2.0;
+            Scalar v = static_cast<Scalar>(i) / radial_resolution *
+                       std::numbers::pi * 2.0;
             Scalar x = (radius + thickness * std::cos(v)) * std::cos(u);
             Scalar y = (radius + thickness * std::cos(v)) * std::sin(u);
             Scalar z = thickness * std::sin(v);

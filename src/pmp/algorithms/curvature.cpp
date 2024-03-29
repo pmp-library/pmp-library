@@ -7,6 +7,8 @@
 #include "pmp/algorithms/differential_geometry.h"
 #include "pmp/algorithms/laplace.h"
 
+#include <numbers>
+
 namespace pmp {
 
 class CurvatureAnalyzer
@@ -112,7 +114,7 @@ void CurvatureAnalyzer::analyze(unsigned int post_smoothing_steps)
             }
 
             mean = 0.5 * LX.row(v.idx()).norm() / area;
-            gauss = (2.0 * M_PI - sum_angles) / area;
+            gauss = (2.0 * std::numbers::pi - sum_angles) / area;
 
             const Scalar s = sqrt(std::max(Scalar(0.0), mean * mean - gauss));
             kmin = mean - s;

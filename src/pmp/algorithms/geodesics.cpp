@@ -7,6 +7,7 @@
 #include <cassert>
 #include <set>
 #include <map>
+#include <numbers>
 
 namespace pmp {
 namespace {
@@ -99,7 +100,7 @@ void Geodesics::find_virtual_edges()
     Scalar f, alpha, beta, tan_beta;
 
     const Scalar one(1.0), minus_one(-1.0);
-    const Scalar max_angle = 90.0 / 180.0 * M_PI;
+    const Scalar max_angle = 90.0 / 180.0 * std::numbers::pi;
     const Scalar max_angle_cos = cos(max_angle);
 
     virtual_edges_.clear();

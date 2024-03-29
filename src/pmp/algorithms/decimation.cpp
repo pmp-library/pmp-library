@@ -5,6 +5,7 @@
 
 #include <iterator>
 #include <limits>
+#include <numbers>
 
 #include "pmp/algorithms/distance_point_triangle.h"
 #include "pmp/algorithms/normals.h"
@@ -312,7 +313,7 @@ public:
         // axes point in opposite directions
         else if (dp < -0.99999)
         {
-            angle_ = Scalar(2 * M_PI);
+            angle_ = Scalar(2 * std::numbers::pi);
         }
 
         else
@@ -501,7 +502,7 @@ void Decimation::initialize(Scalar aspect_ratio, Scalar edge_length,
     aspect_ratio_ = aspect_ratio;
     max_valence_ = max_valence;
     edge_length_ = edge_length;
-    normal_deviation_ = normal_deviation / 180.0 * M_PI;
+    normal_deviation_ = normal_deviation / 180.0 * std::numbers::pi;
     hausdorff_error_ = hausdorff_error;
     seam_threshold_ = seam_threshold;
     seam_angle_deviation_ = (180.0 - seam_angle_deviation) / 180.0;

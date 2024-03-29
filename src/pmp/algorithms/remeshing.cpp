@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <memory>
 #include <limits>
+#include <numbers>
 
 #include "pmp/algorithms/curvature.h"
 #include "pmp/algorithms/normals.h"
@@ -1045,7 +1046,7 @@ void Remeshing::remove_caps()
     Halfedge h;
     Vertex v, vb, vd;
     Face fb, fd;
-    Scalar a0, a1, amin, aa(::cos(170.0 * M_PI / 180.0));
+    Scalar a0, a1, amin, aa(::cos(170.0 * std::numbers::pi / 180.0));
     Point a, b, c, d;
 
     for (auto e : mesh_.edges())

@@ -4,6 +4,8 @@
 #include "pmp/algorithms/subdivision.h"
 #include "pmp/algorithms/differential_geometry.h"
 
+#include <numbers>
+
 namespace pmp {
 
 void catmull_clark_subdivision(SurfaceMesh& mesh,
@@ -278,7 +280,8 @@ void loop_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
             p /= k;
 
             Scalar beta =
-                (0.625 - pow(0.375 + 0.25 * std::cos(2.0 * M_PI / k), 2.0));
+                (0.625 -
+                 pow(0.375 + 0.25 * std::cos(2.0 * std::numbers::pi / k), 2.0));
 
             vpoint[v] = points_[v] * (Scalar)(1.0 - beta) + beta * p;
         }
@@ -448,9 +451,11 @@ void quad_tri_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
             {
                 // vertex is surrounded only by triangles
                 double a =
-                    2.0 * pow(3.0 / 8.0 +
-                                  (std::cos(2.0 * M_PI / n_faces) - 1.0) / 4.0,
-                              2.0);
+                    2.0 *
+                    pow(3.0 / 8.0 +
+                            (std::cos(2.0 * std::numbers::pi / n_faces) - 1.0) /
+                                4.0,
+                        2.0);
                 double b = (1.0 - a) / n_faces;
 
                 new_pos[v] = a * points_[v];

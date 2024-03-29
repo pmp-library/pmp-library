@@ -3,6 +3,7 @@
 
 #include "trackball_viewer.h"
 #include <algorithm>
+#include <numbers>
 
 namespace pmp {
 
@@ -289,8 +290,8 @@ bool TrackballViewer::map_to_sphere(const ivec2& point2D, vec3& result)
         double h = height();
         double x = (double)(point2D[0] - 0.5 * w) / w;
         double y = (double)(0.5 * h - point2D[1]) / h;
-        double sinx = sin(M_PI * x * 0.5);
-        double siny = sin(M_PI * y * 0.5);
+        double sinx = sin(std::numbers::pi * x * 0.5);
+        double siny = sin(std::numbers::pi * y * 0.5);
         double sinx2siny2 = sinx * sinx + siny * siny;
 
         result[0] = sinx;
@@ -321,7 +322,7 @@ void TrackballViewer::rotation(int x, int y)
 
             if (fabs(cosAngle) < 1.0)
             {
-                float angle = 2.0 * acos(cosAngle) * 180.0 / M_PI;
+                float angle = 2.0 * acos(cosAngle) * 180.0 / std::numbers::pi;
                 rotate(axis, angle);
             }
         }
@@ -338,7 +339,7 @@ void TrackballViewer::translation(int x, int y)
     float z = -(ec[2] / ec[3]);
 
     float aspect = (float)width() / (float)height();
-    float up = tan(fovy_ / 2.0f * M_PI / 180.f) * near_;
+    float up = tan(fovy_ / 2.0f * std::numbers::pi / 180.f) * near_;
     float right = aspect * up;
 
     translate(vec3(2.0 * dx / width() * right / near_ * z,

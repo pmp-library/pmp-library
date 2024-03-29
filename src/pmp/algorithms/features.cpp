@@ -4,13 +4,15 @@
 #include "pmp/algorithms/features.h"
 #include "pmp/algorithms/normals.h"
 
+#include <numbers>
+
 namespace pmp {
 
 size_t detect_features(SurfaceMesh& mesh, Scalar angle)
 {
     auto vfeature = mesh.vertex_property("v:feature", false);
     auto efeature = mesh.edge_property("e:feature", false);
-    const Scalar feature_cosine = cos(angle / 180.0 * M_PI);
+    const Scalar feature_cosine = cos(angle / 180.0 * std::numbers::pi);
     size_t n_edges = 0;
     for (auto e : mesh.edges())
     {

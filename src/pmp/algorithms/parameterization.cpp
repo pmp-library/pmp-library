@@ -4,7 +4,7 @@
 #include "pmp/algorithms/parameterization.h"
 #include "pmp/algorithms/laplace.h"
 
-#include <cmath>
+#include <numbers>
 
 #include "pmp/surface_mesh.h"
 
@@ -61,7 +61,7 @@ void setup_boundary_constraints(SurfaceMesh& mesh)
     for (i = 0, l = 0.0; i < n;)
     {
         // go from 2pi to 0 to preserve orientation
-        angle = 2.0 * M_PI * (1.0 - l / length);
+        angle = 2.0 * std::numbers::pi * (1.0 - l / length);
 
         t[0] = 0.5 + 0.5 * cosf(angle);
         t[1] = 0.5 + 0.5 * sinf(angle);

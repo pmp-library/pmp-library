@@ -11,6 +11,8 @@
 #include "pmp/visualization/cold_warm_texture.h"
 #include "pmp/algorithms/normals.h"
 
+#include <numbers>
+
 namespace pmp {
 
 Renderer::Renderer(const SurfaceMesh& mesh) : mesh_(mesh)
@@ -313,7 +315,8 @@ void Renderer::update_opengl_buffers()
         std::vector<vec2> corner_texcoords;
 
         // convert from degrees to radians
-        const Scalar crease_angle_radians = crease_angle_ / 180.0 * M_PI;
+        const Scalar crease_angle_radians =
+            crease_angle_ / 180.0 * std::numbers::pi;
 
         size_t vidx(0);
 
