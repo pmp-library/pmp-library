@@ -100,11 +100,6 @@ void TrackballViewer::keyboard(int key, int code, int action, int mods)
     }
 }
 
-void TrackballViewer::resize(int width, int height)
-{
-    glViewport(0, 0, width, height);
-}
-
 void TrackballViewer::display()
 {
     // clear buffers

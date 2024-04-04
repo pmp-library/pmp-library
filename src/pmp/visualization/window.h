@@ -133,6 +133,7 @@ private:
     static void glfw_scroll(GLFWwindow* window, double xoffset, double yoffset);
     static void glfw_resize(GLFWwindow* window, int width, int height);
     static void glfw_drop(GLFWwindow* window, int count, const char** paths);
+    static void glfw_scale(GLFWwindow* window, float xscale, float yscale);
 
     static void render_frame();
 
@@ -149,9 +150,6 @@ private:
 
     // highDPI scaling
     float scaling_{1.0};
-#if __EMSCRIPTEN__
-    float pixel_ratio_;
-#endif
 
     // whether to show ImGUI menu
     bool show_imgui_;

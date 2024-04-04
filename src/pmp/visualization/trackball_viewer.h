@@ -47,9 +47,6 @@ protected:
     //! this function handles mouse scroll events
     void scroll(double xoffset, double yoffset) override;
 
-    //! this function is called if the window is resized
-    void resize(int width, int height) override;
-
 protected:
     //! reset the list of draw modes
     void clear_draw_modes();

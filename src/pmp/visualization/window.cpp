@@ -38,6 +38,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 
     window_ = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
@@ -99,33 +100,21 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glGetError();
 
     // detect highDPI framebuffer scaling and UI scaling
-    // this part is OS dependent:
-    // MacOS: just ratio of framebuffer size and window size
-    // Linux: use new GLFW content scaling
-    // Emscripten: use device pixel ratio
     int window_width, window_height, framebuffer_width, framebuffer_height;
     glfwGetWindowSize(window_, &window_width, &window_height);
     glfwGetFramebufferSize(window_, &framebuffer_width, &framebuffer_height);
     width_ = framebuffer_width;
     height_ = framebuffer_height;
-#ifndef __EMSCRIPTEN__
     scaling_ = framebuffer_width / window_width;
     if (scaling_ != 1)
         std::cout << "highDPI scaling: " << scaling_ << std::endl;
 
-#ifndef __APPLE__ // not needed for MacOS retina
+#if !defined(__APPLE__) && !defined(__EMSCRIPTEN__)
     float sx, sy;
     glfwGetWindowContentScale(window_, &sx, &sy);
     imgui_scale_ = std::max(1.0f, 0.5f * (sx + sy));
     if (imgui_scale_ != 1.0f)
         std::cout << "UI scaling: " << imgui_scale_ << std::endl;
-#endif
-
-#else
-    pixel_ratio_ = emscripten_get_device_pixel_ratio();
-    if (pixel_ratio_ != 1)
-        std::cout << "highDPI scaling: " << pixel_ratio_ << std::endl;
-    imgui_scale_ = pixel_ratio_;
 #endif
 
     // register glfw callbacks
@@ -137,6 +126,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwSetScrollCallback(window_, glfw_scroll);
     glfwSetFramebufferSizeCallback(window_, glfw_resize);
     glfwSetDropCallback(window_, glfw_drop);
+    glfwSetWindowContentScaleCallback(window_, glfw_scale);
 
     // setup imgui
     init_imgui();
@@ -174,6 +164,9 @@ void Window::init_imgui()
     io.IniFilename = nullptr;
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window_, false);
+#ifdef __EMSCRIPTEN__
+    ImGui_ImplGlfw_InstallEmscriptenCanvasResizeCallback("#canvas");
+#endif
 #ifdef __EMSCRIPTEN__
     const char* glsl_version = "#version 300 es";
 #else
@@ -361,23 +354,6 @@ void Window::render_frame()
 {
     glfwMakeContextCurrent(instance_->window_);
 
-#if __EMSCRIPTEN__
-    // determine correct canvas/framebuffer size
-    int w, h, f;
-    double dw, dh;
-    emscripten_get_canvas_element_size("#canvas", &w, &h);
-    emscripten_get_element_css_size("#canvas", &dw, &dh);
-    double s = instance_->pixel_ratio_;
-    if (w != int(dw * s) || h != int(dh * s))
-    {
-        // set canvas size to match element css size
-        w = int(dw * s);
-        h = int(dh * s);
-        emscripten_set_canvas_element_size("#canvas", w, h);
-        glfw_resize(instance_->window_, w, h);
-    }
-#endif
-
     // do some computations
     instance_->do_processing();
 
@@ -387,12 +363,6 @@ void Window::render_frame()
         // start imgui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
-#if __EMSCRIPTEN__
-        // Emscripten problem: glfwGetWindowSize() does not giving correct size
-        // in ImGui_ImplGlfw_NewFrame(). We have to correct this, after calling NewFrame()
-        // and before calling ImGUI::NewFrame()
-        ImGui::GetIO().DisplaySize = ImVec2(w, h);
-#endif
         ImGui::NewFrame();
 
         // prepare, process, and finish applications ImGUI dialog
@@ -412,6 +382,11 @@ void Window::render_frame()
 
         ImGui::Render();
     }
+
+    // setup viewport
+    int display_w, display_h;
+    glfwGetFramebufferSize(instance_->window_, &display_w, &display_h);
+    glViewport(0, 0, display_w, display_h);
 
     // draw scene
     instance_->display();
@@ -658,6 +633,11 @@ void Window::glfw_resize(GLFWwindow* /*window*/, int width, int height)
 void Window::glfw_drop(GLFWwindow* /*window*/, int count, const char** paths)
 {
     instance_->drop(count, paths);
+}
+
+void Window::glfw_scale(GLFWwindow* /*window*/, float xscale, float yscale)
+{
+    instance_->scaling_ = std::max(1.0, 0.5*(xscale+yscale));
 }
 
 void Window::cursor_pos(double& x, double& y) const
