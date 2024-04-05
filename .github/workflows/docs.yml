@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  EMSDK_RELEASE: 3.1.42
+  EMSDK_RELEASE: 3.1.56
 
 jobs:
   docs:
