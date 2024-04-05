@@ -241,12 +241,17 @@ void Window::scale_imgui(float scale)
     // scale imgui scale by new factor
     imgui_scale_ *= scale;
 
+    // get content scale (HighDPI display)
+    float sx, sy;
+    glfwGetWindowContentScale(window_, &sx, &sy);
+    float content_scale = std::max(1.0f, 0.5f*(sx+sy));
+
     // reload font
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->Clear();
     io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
                                              LatoLatin_compressed_size,
-                                             14 * imgui_scale_);
+                                             14 * content_scale * imgui_scale_);
 
     // trigger font texture regeneration
     ImGui_ImplOpenGL3_DestroyFontsTexture();
@@ -254,21 +259,21 @@ void Window::scale_imgui(float scale)
 
     // adjust element styles (scaled version of default style or pmp style)
     ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowPadding = ImVec2(8 * scale, 8 * scale);
-    style.WindowRounding = 4 * scale;
-    style.FramePadding = ImVec2(4 * scale, 2 * scale);
-    style.FrameRounding = 4 * scale;
-    style.ItemSpacing = ImVec2(8 * scale, 4 * scale);
-    style.ItemInnerSpacing = ImVec2(4 * scale, 4 * scale);
-    style.IndentSpacing = 21 * scale;
-    style.ColumnsMinSpacing = 6 * scale;
-    style.ScrollbarSize = 16 * scale;
-    style.ScrollbarRounding = 9 * scale;
-    style.GrabMinSize = 10 * scale;
-    style.GrabRounding = 4 * scale;
-    style.TabRounding = 4 * scale;
-    style.DisplayWindowPadding = ImVec2(19 * scale, 19 * scale);
-    style.DisplaySafeAreaPadding = ImVec2(3 * scale, 3 * scale);
+    style.WindowPadding = ImVec2(8 * imgui_scale_, 8 * imgui_scale_);
+    style.WindowRounding = 4 * imgui_scale_;
+    style.FramePadding = ImVec2(4 * imgui_scale_, 2 * imgui_scale_);
+    style.FrameRounding = 4 * imgui_scale_;
+    style.ItemSpacing = ImVec2(8 * imgui_scale_, 4 * imgui_scale_);
+    style.ItemInnerSpacing = ImVec2(4 * imgui_scale_, 4 * imgui_scale_);
+    style.IndentSpacing = 21 * imgui_scale_;
+    style.ColumnsMinSpacing = 6 * imgui_scale_;
+    style.ScrollbarSize = 16 * imgui_scale_;
+    style.ScrollbarRounding = 9 * imgui_scale_;
+    style.GrabMinSize = 10 * imgui_scale_;
+    style.GrabRounding = 4 * imgui_scale_;
+    style.TabRounding = 4 * imgui_scale_;
+    style.DisplayWindowPadding = ImVec2(19 * imgui_scale_, 19 * imgui_scale_);
+    style.DisplaySafeAreaPadding = ImVec2(3 * imgui_scale_, 3 * imgui_scale_);
 }
 
 void Window::add_help_item(std::string key, std::string description, int pos)
