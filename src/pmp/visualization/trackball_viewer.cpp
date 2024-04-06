@@ -131,8 +131,6 @@ void TrackballViewer::mouse(int /*button*/, int action, int /*mods*/)
     // mouse press
     if (action == GLFW_PRESS)
     {
-        last_point_ok_ = map_to_sphere(last_point_2d_, last_point_3d_);
-
         // set rotation center
         if (ctrl_pressed())
         {
@@ -142,11 +140,8 @@ void TrackballViewer::mouse(int /*button*/, int action, int /*mods*/)
         }
     }
 
-    // mouse release
-    else
-    {
-        last_point_ok_ = false;
-    }
+    // force re-initialization of rotation/translation/zoom
+    last_point_ok_ = false;
 }
 
 void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
@@ -161,22 +156,25 @@ void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 
 void TrackballViewer::motion(double xpos, double ypos)
 {
-    // zoom
-    if (right_mouse_pressed() || (left_mouse_pressed() && shift_pressed()))
+    if (last_point_ok_)
     {
-        zoom(xpos, ypos);
-    }
+        // zoom
+        if (right_mouse_pressed() || (left_mouse_pressed() && shift_pressed()))
+        {
+            zoom(xpos, ypos);
+        }
 
-    // translation
-    else if (middle_mouse_pressed() || (left_mouse_pressed() && alt_pressed()))
-    {
-        translation(xpos, ypos);
-    }
+        // translation
+        else if (middle_mouse_pressed() || (left_mouse_pressed() && alt_pressed()))
+        {
+            translation(xpos, ypos);
+        }
 
-    // rotation
-    else if (left_mouse_pressed())
-    {
-        rotation(xpos, ypos);
+        // rotation
+        else if (left_mouse_pressed())
+        {
+            rotation(xpos, ypos);
+        }
     }
 
     // remember points
