@@ -165,7 +165,8 @@ void TrackballViewer::motion(double xpos, double ypos)
         }
 
         // translation
-        else if (middle_mouse_pressed() || (left_mouse_pressed() && alt_pressed()))
+        else if (middle_mouse_pressed() ||
+                 (left_mouse_pressed() && alt_pressed()))
         {
             translation(xpos, ypos);
         }

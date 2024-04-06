@@ -244,7 +244,7 @@ void Window::scale_imgui(float scale)
     // get content scale (HighDPI display)
     float sx, sy;
     glfwGetWindowContentScale(window_, &sx, &sy);
-    float content_scale = std::max(1.0f, 0.5f*(sx+sy));
+    float content_scale = std::max(1.0f, 0.5f * (sx + sy));
 
     // reload font
     ImGuiIO& io = ImGui::GetIO();
@@ -642,7 +642,7 @@ void Window::glfw_drop(GLFWwindow* /*window*/, int count, const char** paths)
 
 void Window::glfw_scale(GLFWwindow* /*window*/, float xscale, float yscale)
 {
-    instance_->scaling_ = std::max(1.0, 0.5*(xscale+yscale));
+    instance_->scaling_ = std::max(1.0, 0.5 * (xscale + yscale));
 }
 
 void Window::cursor_pos(double& x, double& y) const
