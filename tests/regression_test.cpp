@@ -3,6 +3,7 @@
 
 #include "gtest/gtest.h"
 
+#include "pmp/algorithms/differential_geometry.h"
 #include "pmp/algorithms/hole_filling.h"
 #include "pmp/algorithms/shapes.h"
 #include "pmp/algorithms/subdivision.h"
@@ -12,6 +13,7 @@
 #include "pmp/algorithms/utilities.h"
 #include "pmp/io/io.h"
 #include "pmp/surface_mesh.h"
+#include "pmp/stop_watch.h"
 
 using namespace pmp;
 
@@ -114,4 +116,12 @@ TEST(RegressionTest, hole_filling)
 
     // no more holes
     EXPECT_FALSE(find_boundary(mesh).is_valid());
+}
+
+TEST(RegressionTest, triangulation)
+{
+    auto mesh = icosphere(8);
+    dual(mesh);
+    triangulate(mesh);
+    EXPECT_TRUE(mesh.is_triangle_mesh());
 }
