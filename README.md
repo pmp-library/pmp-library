@@ -36,6 +36,7 @@ Build your own tool:
 
 ```cpp
 #include <pmp/surface_mesh.h>
+#include <pmp/io/io.h>
 
 int main()
 {
