@@ -640,8 +640,7 @@ void Remeshing::project_to_reference(Vertex v)
 void Remeshing::split_long_edges()
 {
     Vertex vnew, v0, v1;
-    Edge enew, e0, e1;
-    Face f0, f1, f2, f3;
+    Edge enew;
     bool ok, is_feature, is_boundary;
     int i;
 
@@ -920,8 +919,7 @@ void Remeshing::flip_edges()
 
 void Remeshing::tangential_smoothing(unsigned int iterations)
 {
-    Vertex v1, v2, v3, vv;
-    Edge e;
+    Vertex vv;
     Scalar w, ww;
     Point u, n, t, b;
 
@@ -1045,7 +1043,6 @@ void Remeshing::remove_caps()
 {
     Halfedge h;
     Vertex v, vb, vd;
-    Face fb, fd;
     Scalar a0, a1, amin, aa(::cos(170.0 * std::numbers::pi / 180.0));
     Point a, b, c, d;
 

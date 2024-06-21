@@ -264,7 +264,6 @@ HoleFilling::Weight HoleFilling::compute_weight(int i, int j, int k) const
     const Vertex a = hole_vertex(i);
     const Vertex b = hole_vertex(j);
     const Vertex c = hole_vertex(k);
-    Vertex d;
 
     // if one of the potential edges already exists, this would result
     // in an invalid triangulation -> prevent by giving infinite weight

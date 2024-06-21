@@ -251,7 +251,6 @@ void lscm_parameterization(SurfaceMesh& mesh)
     const unsigned int nv = mesh.n_vertices();
     const unsigned int n = free_vertices.size();
     Vertex vi, vj;
-    Halfedge hh;
     double si, sj0, sj1, sign;
     int row(0), c0, c1;
 

@@ -338,7 +338,7 @@ void Geodesics::heap_vertex(Vertex v)
 {
     assert(!processed_[v]);
 
-    Vertex v0, v1, vv, v0_min, v1_min;
+    Vertex v0, v1, vv;
     Scalar dist, dist_min(std::numeric_limits<Scalar>::max()), d;
     typename VirtualEdges::const_iterator ve_it, ve_end(virtual_edges_.end());
     bool found(false);
