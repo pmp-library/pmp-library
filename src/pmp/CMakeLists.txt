@@ -40,7 +40,8 @@ if(NOT EMSCRIPTEN AND PMP_INSTALL)
 
   install(FILES ${HEADERS} DESTINATION include/pmp/)
 else()
-  target_include_directories(pmp PUBLIC ${EIGEN3_INCLUDE_DIR})
+  target_include_directories(pmp PUBLIC ${EIGEN3_INCLUDE_DIR}
+                                        ${CMAKE_CURRENT_SOURCE_DIR}/../)
 endif()
 
 if(PMP_BUILD_VIS)
