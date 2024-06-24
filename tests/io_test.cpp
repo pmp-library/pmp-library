@@ -18,12 +18,21 @@ TEST_F(IOTest, obj_io)
     add_triangle();
     vertex_normals(mesh);
     mesh.add_halfedge_property<TexCoord>("h:tex", TexCoord(0, 0));
+    mesh.add_vertex_property<Color>("v:color", Color(0, 0, 0));
     write(mesh, "test.obj");
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
     read(mesh, "test.obj");
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
+
+    read(mesh, "data/obj/cube_vc_inline.obj");
+    EXPECT_NO_THROW(mesh.get_vertex_property<Color>("v:color"));
+    mesh.clear();
+
+    read(mesh, "data/obj/cube_vc_zbrush.obj");
+    EXPECT_NO_THROW(mesh.get_vertex_property<Color>("v:color"));
+    mesh.clear();
 }
 
 TEST_F(IOTest, off_io)
