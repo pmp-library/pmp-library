@@ -50,6 +50,12 @@ if(PMP_BUILD_VIS)
       OFF
       CACHE BOOL "")
 
+  # disable GLFW wayland support if scanner is not found. See #207
+  find_program(WAYLAND_SCANNER_EXECUTABLE NAMES wayland-scanner)
+  if(NOT WAYLAND_SCANNER_EXECUTABLE)
+    set(GLFW_BUILD_WAYLAND False)
+  endif()
+
   # setup use of GLFW and GLEW
   if(NOT EMSCRIPTEN)
     add_subdirectory(${GLFW_SOURCE_DIR_INTERNAL} ${GLEW_SOURCE_DIR})
