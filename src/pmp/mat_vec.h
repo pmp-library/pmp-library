@@ -929,16 +929,16 @@ Mat4<Scalar> inverse(const Mat4<Scalar>& m)
     Vector<Scalar, 4> fac4(coef16, coef16, coef18, coef19);
     Vector<Scalar, 4> fac5(coef20, coef20, coef22, coef23);
 
-    Vector<Scalar, 4> vec0(m(0, 1), m(0, 0), m(0, 0), m(0, 0));
-    Vector<Scalar, 4> vec1(m(1, 1), m(1, 0), m(1, 0), m(1, 0));
-    Vector<Scalar, 4> vec2(m(2, 1), m(2, 0), m(2, 0), m(2, 0));
-    Vector<Scalar, 4> vec3(m(3, 1), m(3, 0), m(3, 0), m(3, 0));
+    Vector<Scalar, 4> v0(m(0, 1), m(0, 0), m(0, 0), m(0, 0));
+    Vector<Scalar, 4> v1(m(1, 1), m(1, 0), m(1, 0), m(1, 0));
+    Vector<Scalar, 4> v2(m(2, 1), m(2, 0), m(2, 0), m(2, 0));
+    Vector<Scalar, 4> v3(m(3, 1), m(3, 0), m(3, 0), m(3, 0));
 
     // clang-format off
-    Vector<Scalar, 4> inv0 = cmult(sign_a, (cmult(vec1, fac0) - cmult(vec2, fac1) + cmult(vec3, fac2)));
-    Vector<Scalar, 4> inv1 = cmult(sign_b, (cmult(vec0, fac0) - cmult(vec2, fac3) + cmult(vec3, fac4)));
-    Vector<Scalar, 4> inv2 = cmult(sign_a, (cmult(vec0, fac1) - cmult(vec1, fac3) + cmult(vec3, fac5)));
-    Vector<Scalar, 4> inv3 = cmult(sign_b, (cmult(vec0, fac2) - cmult(vec1, fac4) + cmult(vec2, fac5)));
+    Vector<Scalar, 4> inv0 = cmult(sign_a, (cmult(v1, fac0) - cmult(v2, fac1) + cmult(v3, fac2)));
+    Vector<Scalar, 4> inv1 = cmult(sign_b, (cmult(v0, fac0) - cmult(v2, fac3) + cmult(v3, fac4)));
+    Vector<Scalar, 4> inv2 = cmult(sign_a, (cmult(v0, fac1) - cmult(v1, fac3) + cmult(v3, fac5)));
+    Vector<Scalar, 4> inv3 = cmult(sign_b, (cmult(v0, fac2) - cmult(v1, fac4) + cmult(v2, fac5)));
     // clang-format on
 
     Mat4<Scalar> inverse(inv0, inv1, inv2, inv3);
