@@ -941,17 +941,16 @@ Mat4<Scalar> inverse(const Mat4<Scalar>& m)
     Vector<Scalar, 4> inv3 = cmult(sign_b, (cmult(v0, fac2) - cmult(v1, fac4) + cmult(v2, fac5)));
     // clang-format on
 
-    Mat4<Scalar> inverse(inv0, inv1, inv2, inv3);
+    Mat4<Scalar> inv(inv0, inv1, inv2, inv3);
 
-    Vector<Scalar, 4> row0(inverse(0, 0), inverse(1, 0), inverse(2, 0),
-                           inverse(3, 0));
+    Vector<Scalar, 4> row0(inv(0, 0), inv(1, 0), inv(2, 0), inv(3, 0));
     Vector<Scalar, 4> col0(m(0, 0), m(0, 1), m(0, 2), m(0, 3));
 
-    Scalar determinant = dot(col0, row0);
+    Scalar det = dot(col0, row0);
 
-    inverse /= determinant;
+    inv /= det;
 
-    return inverse;
+    return inv;
 }
 
 //! return determinant of 3x3 matrix
