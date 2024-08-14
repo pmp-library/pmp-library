@@ -1,12 +1,34 @@
-Checks: '-*,\
-         modernize-*,\
-         -modernize-use-trailing-return-type,\
-         -modernize-return-braced-init-list,\
-         -modernize-use-nodiscard,\
-         #performance-*,\
-         #-performance-noexcept-swap,\
-         #cppcoreguidelines-*,\
-         #-cppcoreguidelines-avoid-magic-numbers,\
-         '
+Checks: >
+  -*,
+  bugprone-*,
+  cppcoreguidelines-*,
+  misc-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -bugprone-easily-swappable-parameters,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -misc-non-private-member-variables-in-classes,
+  -modernize-use-trailing-return-type,
+  -modernize-return-braced-init-list,
+  -modernize-use-nodiscard,
+  -readability-named-parameter,
+  -readability-braces-around-statements,
+  -readability-magic-numbers,
+  -readability-identifier-length
+
 WarningsAsErrors: '*'
 HeaderFilterRegex: 'pmp/.*'
+
+CheckOptions:
+  - { key: readability-identifier-naming.NamespaceCase,          value: lower_case }
+  - { key: readability-identifier-naming.ClassCase,              value: CamelCase  }
+  - { key: readability-identifier-naming.StructCase,             value: CamelCase  }
+  - { key: readability-identifier-naming.TemplateParameterCase,  value: CamelCase  }
+  - { key: readability-identifier-naming.FunctionCase,           value: lower_case }
+  - { key: readability-identifier-naming.VariableCase,           value: lower_case }
+  - { key: readability-identifier-naming.PrivateMemberSuffix,    value: _          }
+  - { key: readability-identifier-naming.ProtectedMemberSuffix,  value: _          }
+  - { key: readability-identifier-naming.MacroDefinitionCase,    value: UPPER_CASE }
+  - { key: readability-identifier-naming.EnumConstantCase,       value: CamelCase  }
