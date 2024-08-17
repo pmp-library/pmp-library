@@ -999,12 +999,12 @@ bool symmetric_eigendecomposition(const Mat3<Scalar>& m, Scalar& eval1,
     Mat3<Scalar> V = Mat3<Scalar>::identity();
     Mat3<Scalar> R;
     Mat3<Scalar> A = m;
-    const Scalar eps = 1e-10; //0.000001;
+    const Scalar eps = 1e-10;
 
     int iterations = 100;
     while (iterations--)
     {
-        // find largest off-diagonal elem
+        // find largest off-diagonal element
         if (fabs(A(0, 1)) < fabs(A(0, 2)))
         {
             if (fabs(A(0, 2)) < fabs(A(1, 2)))
@@ -1118,7 +1118,7 @@ inline std::istream& operator>>(std::istream& is, Vector<Scalar, N>& vec)
     return is;
 }
 
-//! output a vector by printing its space-separated compontens
+//! output a vector by printing its space-separated components
 template <typename Scalar, int N>
 inline std::ostream& operator<<(std::ostream& os, const Vector<Scalar, N>& vec)
 {
