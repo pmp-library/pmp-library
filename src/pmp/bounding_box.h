@@ -49,10 +49,10 @@ public:
     }
 
     //! Get min point.
-    Point& min() { return min_; }
+    const Point& min() const { return min_; }
 
     //! Get max point.
-    Point& max() { return max_; }
+    const Point& max() const { return max_; }
 
     //! Get center point.
     Point center() const { return 0.5f * (min_ + max_); }
