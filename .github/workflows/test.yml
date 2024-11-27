@@ -1,3 +1,4 @@
+# Windows debug build and test run
 name: test
 
 on:
