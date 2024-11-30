@@ -14,6 +14,15 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
     if (!out)
         throw IOException("Failed to open file: " + file.string());
 
+    bool has_colors = false;
+
+    auto colors = mesh.get_vertex_property<Color>("v:color");
+
+    if (colors)
+    {
+        has_colors = true;
+    }
+
     // check if we can write the mesh using 32-bit indices
     const auto uint_max = std::numeric_limits<uint32_t>::max();
     if (mesh.n_vertices() > uint_max)
@@ -28,7 +37,15 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
     for (auto v : mesh.vertices())
     {
         const Point& p = points[v];
-        fprintf(out, "v %.10f %.10f %.10f\n", p[0], p[1], p[2]);
+        fprintf(out, "v %.10f %.10f %.10f", p[0], p[1], p[2]);
+
+        if (has_colors)
+        {
+            const Color& c = colors[v];
+            fprintf(out, " %.10f %.10f %.10f", c[0], c[1], c[2]);
+        }
+
+        fprintf(out, "\n");
     }
 
     // write normals
