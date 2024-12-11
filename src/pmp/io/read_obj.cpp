@@ -81,9 +81,9 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
 
                 // overwrite next separator
 
-                // skip '/', '\n', ' ', '\0', '\r' <-- don't forget Windows
+                // skip '/', '\n', ' ', '\0', '\t', '\r' <-- don't forget Windows
                 while (*p1 != '/' && *p1 != '\r' && *p1 != '\n' && *p1 != ' ' &&
-                       *p1 != '\0')
+                       *p1 != '\0' && *p1 != '\t')
                     ++p1;
 
                 // detect end of vertex
