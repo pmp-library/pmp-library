@@ -105,7 +105,8 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwGetFramebufferSize(window_, &framebuffer_width, &framebuffer_height);
     width_ = framebuffer_width;
     height_ = framebuffer_height;
-    scaling_ = framebuffer_width / window_width;
+    scaling_ = static_cast<float>(framebuffer_width) /
+               static_cast<float>(window_width);
     if (scaling_ != 1)
         std::cout << "highDPI scaling: " << scaling_ << std::endl;
 
