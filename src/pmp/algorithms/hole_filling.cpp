@@ -303,25 +303,23 @@ HoleFilling::Weight HoleFilling::compute_weight(int i, int j, int k) const
 
 void HoleFilling::refine()
 {
-    const int n = hole_.size();
-    Scalar l, lmin, lmax;
-
     // compute target edge length
-    l = 0.0;
+    const int n = hole_.size();
+    Scalar mean_length(0);
     for (int i = 0; i < n; ++i)
     {
-        l += distance(points_[hole_vertex(i)],
-                      points_[hole_vertex((i + 1) % n)]);
+        mean_length += distance(points_[hole_vertex(i)],
+                                points_[hole_vertex((i + 1) % n)]);
     }
-    l /= (Scalar)n;
-    lmin = 0.7 * l;
-    lmax = 1.5 * l;
+    mean_length /= (Scalar)n;
 
     // do some iterations
+    const auto min_length = Scalar{0.7} * mean_length;
+    const auto max_length = Scalar{1.5} * mean_length;
     for (int iter = 0; iter < 10; ++iter)
     {
-        split_long_edges(lmax);
-        collapse_short_edges(lmin);
+        split_long_edges(max_length);
+        collapse_short_edges(min_length);
         flip_edges();
         relaxation();
     }
@@ -570,5 +568,4 @@ void fill_hole(SurfaceMesh& mesh, Halfedge h)
 {
     HoleFilling(mesh).fill_hole(h);
 }
-
 } // namespace pmp
