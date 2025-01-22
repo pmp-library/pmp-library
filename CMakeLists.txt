@@ -100,7 +100,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug"
     COMMAND
       ${LCOV} --directory . --capture --exclude '*/external/*' --exclude
       '*/tests/*' --exclude '/usr/*' --exclude '/Applications/*' --exclude
-      'v1/*' --output-file coverage.info
+      'v1/*' --output-file coverage.info --ignore-errors unused
     # generate report
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
