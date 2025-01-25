@@ -375,7 +375,7 @@ void Renderer::update_opengl_buffers()
             assert(corner_vertices.size() >= 3);
 
             // tessellate face into triangles
-            tesselate(corner_positions, triangles);
+            tessellate(corner_positions, triangles);
             for (auto& t : triangles)
             {
                 int i0 = t[0];
@@ -744,8 +744,8 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     glCheckError();
 }
 
-void Renderer::tesselate(const std::vector<vec3>& points,
-                         std::vector<ivec3>& triangles)
+void Renderer::tessellate(const std::vector<vec3>& points,
+                          std::vector<ivec3>& triangles)
 {
     const int n = points.size();
 

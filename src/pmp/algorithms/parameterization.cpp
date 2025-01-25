@@ -57,7 +57,7 @@ void setup_boundary_constraints(SurfaceMesh& mesh)
     for (i = 0, length = 0.0; i < n; ++i)
         length += distance(points[loop[i]], points[loop[(i + 1) % n]]);
 
-    // map length intervalls to unit circle intervals
+    // map length intervals to unit circle intervals
     for (i = 0, l = 0.0; i < n;)
     {
         // go from 2pi to 0 to preserve orientation
