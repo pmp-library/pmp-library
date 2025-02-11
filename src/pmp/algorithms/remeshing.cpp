@@ -601,18 +601,18 @@ void Remeshing::project_to_reference(Vertex v)
     const Face f = nn.face;
 
     // get face data
-    auto fvIt = refmesh_->vertices(f);
-    const Point p0 = refpoints_[*fvIt];
-    const Point n0 = refnormals_[*fvIt];
-    const Scalar s0 = refsizing_[*fvIt];
-    ++fvIt;
-    const Point p1 = refpoints_[*fvIt];
-    const Point n1 = refnormals_[*fvIt];
-    const Scalar s1 = refsizing_[*fvIt];
-    ++fvIt;
-    const Point p2 = refpoints_[*fvIt];
-    const Point n2 = refnormals_[*fvIt];
-    const Scalar s2 = refsizing_[*fvIt];
+    auto fv = refmesh_->vertices(f);
+    const Point p0 = refpoints_[*fv];
+    const Point n0 = refnormals_[*fv];
+    const Scalar s0 = refsizing_[*fv];
+    ++fv;
+    const Point p1 = refpoints_[*fv];
+    const Point n1 = refnormals_[*fv];
+    const Scalar s1 = refsizing_[*fv];
+    ++fv;
+    const Point p2 = refpoints_[*fv];
+    const Point n2 = refnormals_[*fv];
+    const Scalar s2 = refsizing_[*fv];
 
     // get barycentric coordinates
     Point b = barycentric_coordinates(p, p0, p1, p2);

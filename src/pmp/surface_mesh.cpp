@@ -1011,8 +1011,8 @@ void SurfaceMesh::delete_face(Face f)
     }
 
     // boundary edges of face f to be deleted
-    std::vector<Edge> deletedEdges;
-    deletedEdges.reserve(3);
+    std::vector<Edge> deleted_edges;
+    deleted_edges.reserve(3);
 
     // vertices of face f for updating their outgoing halfedge
     std::vector<Vertex> vertices;
@@ -1027,16 +1027,16 @@ void SurfaceMesh::delete_face(Face f)
         set_face(hc, Face());
 
         if (is_boundary(opposite_halfedge(hc)))
-            deletedEdges.push_back(edge(hc));
+            deleted_edges.push_back(edge(hc));
 
         vertices.push_back(to_vertex(hc));
     }
 
     // delete all collected (half)edges
     // delete isolated vertices
-    if (!deletedEdges.empty())
+    if (!deleted_edges.empty())
     {
-        auto delit(deletedEdges.begin()), delend(deletedEdges.end());
+        auto delit(deleted_edges.begin()), delend(deleted_edges.end());
 
         Halfedge h0, h1, next0, next1, prev0, prev1;
         Vertex v0, v1;
@@ -1109,10 +1109,10 @@ void SurfaceMesh::garbage_collection()
     if (!has_garbage_)
         return;
 
-    auto nV = vertices_size();
-    auto nE = edges_size();
-    auto nH = halfedges_size();
-    auto nF = faces_size();
+    auto nv = vertices_size();
+    auto ne = edges_size();
+    auto nh = halfedges_size();
+    auto nf = faces_size();
 
     // setup handle mapping
     VertexProperty<Vertex> vmap =
@@ -1120,18 +1120,18 @@ void SurfaceMesh::garbage_collection()
     HalfedgeProperty<Halfedge> hmap =
         add_halfedge_property<Halfedge>("h:garbage-collection");
     FaceProperty<Face> fmap = add_face_property<Face>("f:garbage-collection");
-    for (size_t i = 0; i < nV; ++i)
+    for (size_t i = 0; i < nv; ++i)
         vmap[Vertex(i)] = Vertex(i);
-    for (size_t i = 0; i < nH; ++i)
+    for (size_t i = 0; i < nh; ++i)
         hmap[Halfedge(i)] = Halfedge(i);
-    for (size_t i = 0; i < nF; ++i)
+    for (size_t i = 0; i < nf; ++i)
         fmap[Face(i)] = Face(i);
 
     // remove deleted vertices
-    if (nV > 0)
+    if (nv > 0)
     {
         size_t i0 = 0;
-        size_t i1 = nV - 1;
+        size_t i1 = nv - 1;
 
         while (true)
         {
@@ -1148,14 +1148,14 @@ void SurfaceMesh::garbage_collection()
         }
 
         // remember new size
-        nV = vdeleted_[Vertex(i0)] ? i0 : i0 + 1;
+        nv = vdeleted_[Vertex(i0)] ? i0 : i0 + 1;
     }
 
     // remove deleted edges
-    if (nE > 0)
+    if (ne > 0)
     {
         size_t i0 = 0;
-        size_t i1 = nE - 1;
+        size_t i1 = ne - 1;
 
         while (true)
         {
@@ -1174,15 +1174,15 @@ void SurfaceMesh::garbage_collection()
         }
 
         // remember new size
-        nE = edeleted_[Edge(i0)] ? i0 : i0 + 1;
-        nH = 2 * nE;
+        ne = edeleted_[Edge(i0)] ? i0 : i0 + 1;
+        nh = 2 * ne;
     }
 
     // remove deleted faces
-    if (nF > 0)
+    if (nf > 0)
     {
         size_t i0 = 0;
-        size_t i1 = nF - 1;
+        size_t i1 = nf - 1;
 
         while (true)
         {
@@ -1199,11 +1199,11 @@ void SurfaceMesh::garbage_collection()
         }
 
         // remember new size
-        nF = fdeleted_[Face(i0)] ? i0 : i0 + 1;
+        nf = fdeleted_[Face(i0)] ? i0 : i0 + 1;
     }
 
     // update vertex connectivity
-    for (size_t i = 0; i < nV; ++i)
+    for (size_t i = 0; i < nv; ++i)
     {
         auto v = Vertex(i);
         if (!is_isolated(v))
@@ -1211,7 +1211,7 @@ void SurfaceMesh::garbage_collection()
     }
 
     // update halfedge connectivity
-    for (size_t i = 0; i < nH; ++i)
+    for (size_t i = 0; i < nh; ++i)
     {
         auto h = Halfedge(i);
         set_vertex(h, vmap[to_vertex(h)]);
@@ -1221,7 +1221,7 @@ void SurfaceMesh::garbage_collection()
     }
 
     // update handles of faces
-    for (size_t i = 0; i < nF; ++i)
+    for (size_t i = 0; i < nf; ++i)
     {
         auto f = Face(i);
         set_halfedge(f, hmap[halfedge(f)]);
@@ -1233,13 +1233,13 @@ void SurfaceMesh::garbage_collection()
     remove_face_property(fmap);
 
     // finally resize arrays
-    vprops_.resize(nV);
+    vprops_.resize(nv);
     vprops_.free_memory();
-    hprops_.resize(nH);
+    hprops_.resize(nh);
     hprops_.free_memory();
-    eprops_.resize(nE);
+    eprops_.resize(ne);
     eprops_.free_memory();
-    fprops_.resize(nF);
+    fprops_.resize(nf);
     fprops_.free_memory();
 
     deleted_vertices_ = deleted_edges_ = deleted_faces_ = 0;
