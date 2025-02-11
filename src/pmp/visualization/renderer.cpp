@@ -741,7 +741,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     glBindVertexArray(0);
-    glCheckError();
+    check_gl_errors();
 }
 
 void Renderer::tessellate(const std::vector<vec3>& points,
