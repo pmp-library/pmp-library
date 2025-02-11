@@ -377,11 +377,8 @@ Face SurfaceMesh::add_face(const std::vector<Vertex>& vertices)
     }
 
     // process next halfedge cache
-    NextCache::const_iterator ncIt(next_cache.begin()), ncEnd(next_cache.end());
-    for (; ncIt != ncEnd; ++ncIt)
-    {
-        set_next_halfedge(ncIt->first, ncIt->second);
-    }
+    for (const auto& [first, second] : next_cache)
+        set_next_halfedge(first, second);
 
     // adjust vertices' halfedge handle
     for (i = 0; i < n; ++i)
