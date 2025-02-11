@@ -1036,20 +1036,17 @@ void SurfaceMesh::delete_face(Face f)
     // delete isolated vertices
     if (!deleted_edges.empty())
     {
-        Halfedge h0, h1, next0, next1, prev0, prev1;
-        Vertex v0, v1;
-
         for (const auto& e : deleted_edges)
         {
-            h0 = halfedge(e, 0);
-            v0 = to_vertex(h0);
-            next0 = next_halfedge(h0);
-            prev0 = prev_halfedge(h0);
+            const auto h0 = halfedge(e, 0);
+            const auto v0 = to_vertex(h0);
+            const auto next0 = next_halfedge(h0);
+            const auto prev0 = prev_halfedge(h0);
 
-            h1 = halfedge(e, 1);
-            v1 = to_vertex(h1);
-            next1 = next_halfedge(h1);
-            prev1 = prev_halfedge(h1);
+            const auto h1 = halfedge(e, 1);
+            const auto v1 = to_vertex(h1);
+            const auto next1 = next_halfedge(h1);
+            const auto prev1 = prev_halfedge(h1);
 
             // adjust next and prev handles
             set_next_halfedge(prev0, next1);
