@@ -38,7 +38,7 @@ void Viewer::process_imgui()
 
         if (ImGui::Button("Mean Curvature"))
         {
-            curvature(mesh_, Curvature::mean, iters, tensor, two_ring);
+            curvature(mesh_, Curvature::Mean, iters, tensor, two_ring);
             curvature_to_texture_coordinates(mesh_);
             renderer_.use_cold_warm_texture();
             update_mesh();
@@ -46,7 +46,7 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Gauss Curvature"))
         {
-            curvature(mesh_, Curvature::gauss, iters, tensor, two_ring);
+            curvature(mesh_, Curvature::Gauss, iters, tensor, two_ring);
             curvature_to_texture_coordinates(mesh_);
             renderer_.use_cold_warm_texture();
             update_mesh();
@@ -54,7 +54,7 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Abs. Max. Curvature"))
         {
-            curvature(mesh_, Curvature::max_abs, iters, tensor, two_ring);
+            curvature(mesh_, Curvature::MaxAbs, iters, tensor, two_ring);
             curvature_to_texture_coordinates(mesh_);
             renderer_.use_cold_warm_texture();
             update_mesh();

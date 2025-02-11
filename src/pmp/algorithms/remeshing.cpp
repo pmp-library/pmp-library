@@ -455,7 +455,7 @@ void Remeshing::preprocessing()
         // robust and gives better results on the boundary.
         // don't smooth curvatures here, since it does not take feature edges
         // into account.
-        curvature(mesh_, Curvature::max_abs, 0, true, false);
+        curvature(mesh_, Curvature::MaxAbs, 0, true, false);
         auto curvatures = mesh_.get_vertex_property<Scalar>("v:curv");
 
         // smooth curvatures while taking feature edges into account

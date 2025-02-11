@@ -408,31 +408,31 @@ void curvature(SurfaceMesh& mesh, Curvature c, int smoothing_steps,
 
     switch (c)
     {
-        case Curvature::min:
+        case Curvature::Min:
         {
             for (auto v : mesh.vertices())
                 curvatures[v] = analyzer.min_curvature(v);
             break;
         }
-        case Curvature::max:
+        case Curvature::Max:
         {
             for (auto v : mesh.vertices())
                 curvatures[v] = analyzer.max_curvature(v);
             break;
         }
-        case Curvature::mean:
+        case Curvature::Mean:
         {
             for (auto v : mesh.vertices())
                 curvatures[v] = fabs(analyzer.mean_curvature(v));
             break;
         }
-        case Curvature::gauss:
+        case Curvature::Gauss:
         {
             for (auto v : mesh.vertices())
                 curvatures[v] = analyzer.gauss_curvature(v);
             break;
         }
-        case Curvature::max_abs:
+        case Curvature::MaxAbs:
         {
             for (auto v : mesh.vertices())
                 curvatures[v] = analyzer.max_abs_curvature(v);

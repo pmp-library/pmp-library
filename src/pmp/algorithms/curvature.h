@@ -11,11 +11,11 @@ namespace pmp {
 //! \ingroup algorithms
 enum class Curvature
 {
-    min,    //!< minimum curvature
-    max,    //!< maximum curvature
-    mean,   //!< mean curvature
-    gauss,  //!< Gauss curvature
-    max_abs //!< maximum absolute curvature
+    Min,   //!< minimum curvature
+    Max,   //!< maximum curvature
+    Mean,  //!< mean curvature
+    Gauss, //!< Gauss curvature
+    MaxAbs //!< maximum absolute curvature
 };
 
 //! \brief Compute per-vertex curvature (min,max,mean,Gaussian).
@@ -25,7 +25,7 @@ enum class Curvature
 //! details.
 //! \note This algorithm works on general polygon meshes.
 //! \ingroup algorithms
-void curvature(SurfaceMesh& mesh, Curvature c = Curvature::mean,
+void curvature(SurfaceMesh& mesh, Curvature c = Curvature::Mean,
                int smoothing_steps = 0, bool use_tensor = false,
                bool use_two_ring = false);
 
