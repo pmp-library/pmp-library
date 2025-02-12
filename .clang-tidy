@@ -28,7 +28,7 @@ CheckOptions:
   - { key: readability-identifier-naming.TemplateParameterCase,  value: CamelCase  }
   - { key: readability-identifier-naming.FunctionCase,           value: lower_case }
   - { key: readability-identifier-naming.VariableCase,           value: lower_case }
-  - { key: readability-identifier-naming.VariableIgnoredRegexp,  value: '^[A-Z]$'  } # allow single uppercase letters for matrices     
+  - { key: readability-identifier-naming.VariableIgnoredRegexp,  value: '^[A-Z]*[a-z,0-9]*$' } # ignore matrix names     
   - { key: readability-identifier-naming.ClassMemberCase,        value: lower_case }
   - { key: readability-identifier-naming.ClassMemberSuffix,      value: _          }
   - { key: readability-identifier-naming.PrivateMemberSuffix,    value: _          }

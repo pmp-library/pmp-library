@@ -302,21 +302,21 @@ void TrackballViewer::rotation(int x, int y)
 {
     if (last_point_ok_)
     {
-        ivec2 newPoint2D;
-        vec3 newPoint3D;
-        bool newPointok;
+        ivec2 new_point2d;
+        vec3 new_point3d;
+        bool new_point_ok;
 
-        newPoint2D = ivec2(x, y);
-        newPointok = map_to_sphere(newPoint2D, newPoint3D);
+        new_point2d = ivec2(x, y);
+        new_point_ok = map_to_sphere(new_point2d, new_point3d);
 
-        if (newPointok)
+        if (new_point_ok)
         {
-            vec3 axis = cross(last_point_3d_, newPoint3D);
-            float cosAngle = dot(last_point_3d_, newPoint3D);
+            vec3 axis = cross(last_point_3d_, new_point3d);
+            float cos_angle = dot(last_point_3d_, new_point3d);
 
-            if (fabs(cosAngle) < 1.0)
+            if (fabs(cos_angle) < 1.0)
             {
-                float angle = 2.0 * acos(cosAngle) * 180.0 / std::numbers::pi;
+                float angle = 2.0 * acos(cos_angle) * 180.0 / std::numbers::pi;
                 rotate(axis, angle);
             }
         }

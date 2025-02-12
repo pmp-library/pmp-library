@@ -34,7 +34,7 @@ struct CompareVec3
 void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
 {
     std::array<char, 100> line;
-    uint32_t i, nT(0);
+    uint32_t i, nt(0);
     vec3 p;
     Vertex v;
     std::vector<Vertex> vertices(3);
@@ -97,10 +97,10 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
         assert(n_items > 0);
 
         // read number of triangles
-        tfread(in, nT);
+        tfread(in, nt);
 
         // read triangles
-        while (nT)
+        while (nt)
         {
             // skip triangle normal
             n_items = fread(line.data(), 1, 12, in);
@@ -144,7 +144,7 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
             n_items = fread(line.data(), 1, 2, in);
             assert(n_items > 0);
 
-            --nT;
+            --nt;
         }
     }
 

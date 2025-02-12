@@ -142,12 +142,12 @@ private:
     void upheap(unsigned int idx)
     {
         HeapEntry h = entry(idx);
-        unsigned int parentIdx;
+        unsigned int parent_idx;
 
-        while ((idx > 0) && interface_.less(h, entry(parentIdx = parent(idx))))
+        while ((idx > 0) && interface_.less(h, entry(parent_idx = parent(idx))))
         {
-            entry(idx, entry(parentIdx));
-            idx = parentIdx;
+            entry(idx, entry(parent_idx));
+            idx = parent_idx;
         }
 
         entry(idx, h);
@@ -157,24 +157,24 @@ private:
     void downheap(unsigned int idx)
     {
         HeapEntry h = entry(idx);
-        unsigned int childIdx;
+        unsigned int child_idx;
         unsigned int s = size();
 
         while (idx < s)
         {
-            childIdx = left(idx);
-            if (childIdx >= s)
+            child_idx = left(idx);
+            if (child_idx >= s)
                 break;
 
-            if ((childIdx + 1 < s) &&
-                (interface_.less(entry(childIdx + 1), entry(childIdx))))
-                ++childIdx;
+            if ((child_idx + 1 < s) &&
+                (interface_.less(entry(child_idx + 1), entry(child_idx))))
+                ++child_idx;
 
-            if (interface_.less(h, entry(childIdx)))
+            if (interface_.less(h, entry(child_idx)))
                 break;
 
-            entry(idx, entry(childIdx));
-            idx = childIdx;
+            entry(idx, entry(child_idx));
+            idx = child_idx;
         }
 
         entry(idx, h);
