@@ -919,8 +919,8 @@ Mat4<Scalar> inverse(const Mat4<Scalar>& m)
     Scalar coef22 = m(0, 1) * m(1, 3) - m(0, 3) * m(1, 1);
     Scalar coef23 = m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1);
 
-    Vector<Scalar, 4> const sign_a(+1, -1, +1, -1);
-    Vector<Scalar, 4> const sign_b(-1, +1, -1, +1);
+    const Vector<Scalar, 4> sign_a(+1, -1, +1, -1);
+    const Vector<Scalar, 4> sign_b(-1, +1, -1, +1);
 
     Vector<Scalar, 4> fac0(coef00, coef00, coef02, coef03);
     Vector<Scalar, 4> fac1(coef04, coef04, coef06, coef07);
