@@ -25,10 +25,10 @@ void project_to_unit_sphere(SurfaceMesh& mesh)
 SurfaceMesh tetrahedron()
 {
     SurfaceMesh mesh;
-    float a = 1.0f / 3.0f;
-    float b = sqrt(8.0f / 9.0f);
-    float c = sqrt(2.0f / 9.0f);
-    float d = sqrt(2.0f / 3.0f);
+    const float a = 1.0f / 3.0f;
+    const float b = sqrt(8.0f / 9.0f);
+    const float c = sqrt(2.0f / 9.0f);
+    const float d = sqrt(2.0f / 3.0f);
 
     auto v0 = mesh.add_vertex(Point(0, 0, 1));
     auto v1 = mesh.add_vertex(Point(-c, d, -a));
@@ -47,7 +47,7 @@ SurfaceMesh hexahedron()
 {
     SurfaceMesh mesh;
 
-    float a = 1.0f / sqrt(3.0f);
+    const float a = 1.0f / sqrt(3.0f);
     auto v0 = mesh.add_vertex(Point(-a, -a, -a));
     auto v1 = mesh.add_vertex(Point(a, -a, -a));
     auto v2 = mesh.add_vertex(Point(a, a, -a));
@@ -87,9 +87,9 @@ SurfaceMesh icosahedron()
 {
     SurfaceMesh mesh;
 
-    float phi = (1.0f + sqrt(5.0f)) * 0.5f; // golden ratio
-    float a = 1.0f;
-    float b = 1.0f / phi;
+    const float phi = (1.0f + sqrt(5.0f)) * 0.5f; // golden ratio
+    const float a = 1.0f;
+    const float b = 1.0f / phi;
 
     auto v1 = mesh.add_vertex(Point(0, b, -a));
     auto v2 = mesh.add_vertex(Point(b, a, 0));
@@ -256,10 +256,10 @@ SurfaceMesh cone(size_t n_subdivisions, Scalar radius, Scalar height)
     std::vector<Vertex> base_vertices;
     for (size_t i = 0; i < n_subdivisions; i++)
     {
-        Scalar ratio = static_cast<Scalar>(i) / (n_subdivisions);
-        Scalar r = ratio * (std::numbers::pi * 2.0);
-        Scalar x = std::cos(r) * radius;
-        Scalar y = std::sin(r) * radius;
+        const Scalar ratio = static_cast<Scalar>(i) / (n_subdivisions);
+        const Scalar r = ratio * (std::numbers::pi * 2.0);
+        const Scalar x = std::cos(r) * radius;
+        const Scalar y = std::sin(r) * radius;
         auto v = mesh.add_vertex(Point(x, y, 0.0));
         base_vertices.push_back(v);
     }
@@ -294,10 +294,10 @@ SurfaceMesh cylinder(size_t n_subdivisions, Scalar radius, Scalar height)
     std::vector<Vertex> top_vertices;
     for (size_t i = 0; i < n_subdivisions; i++)
     {
-        Scalar ratio = static_cast<Scalar>(i) / (n_subdivisions);
-        Scalar r = ratio * (std::numbers::pi * 2.0);
-        Scalar x = std::cos(r) * radius;
-        Scalar y = std::sin(r) * radius;
+        const Scalar ratio = static_cast<Scalar>(i) / (n_subdivisions);
+        const Scalar r = ratio * (std::numbers::pi * 2.0);
+        const Scalar x = std::cos(r) * radius;
+        const Scalar y = std::sin(r) * radius;
         Vertex v = mesh.add_vertex(Point(x, y, 0.0));
         bottom_vertices.push_back(v);
         v = mesh.add_vertex(Point(x, y, height));
@@ -339,13 +339,13 @@ SurfaceMesh torus(size_t radial_resolution, size_t tubular_resolution,
     {
         for (size_t j = 0; j < tubular_resolution; j++)
         {
-            Scalar u = static_cast<Scalar>(j) / tubular_resolution *
-                       std::numbers::pi * 2.0;
-            Scalar v = static_cast<Scalar>(i) / radial_resolution *
-                       std::numbers::pi * 2.0;
-            Scalar x = (radius + thickness * std::cos(v)) * std::cos(u);
-            Scalar y = (radius + thickness * std::cos(v)) * std::sin(u);
-            Scalar z = thickness * std::sin(v);
+            const Scalar u = static_cast<Scalar>(j) / tubular_resolution *
+                             std::numbers::pi * 2.0;
+            const Scalar v = static_cast<Scalar>(i) / radial_resolution *
+                             std::numbers::pi * 2.0;
+            const Scalar x = (radius + thickness * std::cos(v)) * std::cos(u);
+            const Scalar y = (radius + thickness * std::cos(v)) * std::sin(u);
+            const Scalar z = thickness * std::sin(v);
             mesh.add_vertex(Point(x, y, z));
         }
     }

@@ -39,7 +39,7 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
     Vertex v;
     std::vector<Vertex> vertices(3);
 
-    CompareVec3 comp;
+    const CompareVec3 comp;
     std::map<vec3, Vertex, CompareVec3> vertex_map(comp);
 
     // open file (in ASCII mode)

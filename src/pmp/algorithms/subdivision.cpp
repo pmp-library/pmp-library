@@ -16,9 +16,9 @@ void catmull_clark_subdivision(SurfaceMesh& mesh,
     auto efeature = mesh.get_edge_property<bool>("e:feature");
 
     // reserve memory
-    size_t nv = mesh.n_vertices();
-    size_t ne = mesh.n_edges();
-    size_t nf = mesh.n_faces();
+    const size_t nv = mesh.n_vertices();
+    const size_t ne = mesh.n_edges();
+    const size_t nf = mesh.n_faces();
     mesh.reserve(nv + ne + nf, 2 * ne + 4 * nf, 4 * nf);
 
     // get properties
@@ -200,9 +200,9 @@ void loop_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
     }
 
     // reserve memory
-    size_t nv = mesh.n_vertices();
-    size_t ne = mesh.n_edges();
-    size_t nf = mesh.n_faces();
+    const size_t nv = mesh.n_vertices();
+    const size_t ne = mesh.n_edges();
+    const size_t nf = mesh.n_faces();
     mesh.reserve(nv + ne, 2 * ne + 3 * nf, 4 * nf);
 
     // add properties
@@ -279,7 +279,7 @@ void loop_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
             }
             p /= k;
 
-            Scalar beta =
+            const Scalar beta =
                 (0.625 -
                  pow(0.375 + 0.25 * std::cos(2.0 * std::numbers::pi / k), 2.0));
 
@@ -373,7 +373,7 @@ void quad_tri_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
     // subdivide faces without repositioning
     for (auto f : mesh.faces())
     {
-        size_t f_val = mesh.valence(f) / 2;
+        const size_t f_val = mesh.valence(f) / 2;
         if (f_val == 3)
         {
             // face was a triangle
@@ -392,7 +392,7 @@ void quad_tri_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
         else
         {
             // quadrangulate the rest
-            Halfedge h0 = mesh.halfedge(f);
+            const Halfedge h0 = mesh.halfedge(f);
             Halfedge h1 = mesh.next_halfedge(mesh.next_halfedge(h0));
             //NOTE: It's important to calculate the centroid before inserting the new edge
             auto cen = centroid(mesh, f);
@@ -450,13 +450,13 @@ void quad_tri_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
             if (n_quads == 0)
             {
                 // vertex is surrounded only by triangles
-                double a =
+                const double a =
                     2.0 *
                     pow(3.0 / 8.0 +
                             (std::cos(2.0 * std::numbers::pi / n_faces) - 1.0) /
                                 4.0,
                         2.0);
-                double b = (1.0 - a) / n_faces;
+                const double b = (1.0 - a) / n_faces;
 
                 new_pos[v] = a * points[v];
                 for (auto vv : mesh.vertices(v))
@@ -467,9 +467,9 @@ void quad_tri_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
             else if (n_quads == n_faces)
             {
                 // vertex is surrounded only by quads
-                double c = (n_faces - 3.0) / n_faces;
-                double d = 2.0 / pow(n_faces, 2.0);
-                double e = 1.0 / pow(n_faces, 2.0);
+                const double c = (n_faces - 3.0) / n_faces;
+                const double d = 2.0 / pow(n_faces, 2.0);
+                const double e = 1.0 / pow(n_faces, 2.0);
 
                 new_pos[v] = c * points[v];
                 for (auto h : mesh.halfedges(v))
@@ -482,9 +482,10 @@ void quad_tri_subdivision(SurfaceMesh& mesh, BoundaryHandling boundary_handling)
             else
             {
                 // vertex is surrounded by triangles and quads
-                double alpha = 1.0 / (1.0 + 0.5 * n_faces + 0.25 * n_quads);
-                double beta = 0.5 * alpha;
-                double gamma = 0.25 * alpha;
+                const double alpha =
+                    1.0 / (1.0 + 0.5 * n_faces + 0.25 * n_quads);
+                const double beta = 0.5 * alpha;
+                const double gamma = 0.25 * alpha;
 
                 new_pos[v] = alpha * points[v];
                 for (auto h : mesh.halfedges(v))
@@ -524,7 +525,7 @@ void linear_subdivision(SurfaceMesh& mesh)
     // subdivide faces
     for (auto f : mesh.faces())
     {
-        size_t f_val = mesh.valence(f) / 2;
+        const size_t f_val = mesh.valence(f) / 2;
 
         if (f_val == 3) // triangle
         {
@@ -542,7 +543,7 @@ void linear_subdivision(SurfaceMesh& mesh)
         }
         else // quadrangulate other faces
         {
-            Halfedge h0 = mesh.halfedge(f);
+            const Halfedge h0 = mesh.halfedge(f);
             Halfedge h1 = mesh.next_halfedge(mesh.next_halfedge(h0));
 
             // NOTE: It's important to calculate the centroid before inserting the new edge

@@ -56,7 +56,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     GLint major, minor;
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
-    GLint glversion = 10 * major + minor;
+    const GLint glversion = 10 * major + minor;
 #ifdef __EMSCRIPTEN__
     if (glversion < 30)
     {
@@ -82,7 +82,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
 
     // now that we have a GL context, initialize GLEW
     glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
+    const GLenum err = glewInit();
     if (err != GLEW_OK)
     {
         std::cerr << "Error initializing GLEW: " << glewGetErrorString(err)
@@ -245,7 +245,7 @@ void Window::scale_imgui(float scale)
     // get content scale (HighDPI display)
     float sx, sy;
     glfwGetWindowContentScale(window_, &sx, &sy);
-    float content_scale = std::max(1.0f, 0.5f * (sx + sy));
+    const float content_scale = std::max(1.0f, 0.5f * (sx + sy));
 
     // reload font
     ImGuiIO& io = ImGui::GetIO();

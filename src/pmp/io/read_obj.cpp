@@ -120,7 +120,7 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
                         }
                         case 1: // texture coord
                         {
-                            int idx = atoi(p0) - 1;
+                            const int idx = atoi(p0) - 1;
                             halfedge_tex_idx.push_back(idx);
                             with_tex_coord = true;
                             break;

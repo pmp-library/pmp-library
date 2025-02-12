@@ -45,7 +45,7 @@ Triangulation::Triangulation(SurfaceMesh& mesh) : mesh_(mesh)
 void Triangulation::triangulate(Face f)
 {
     // collect polygon halfedges
-    Halfedge h0 = mesh_.halfedge(f);
+    const Halfedge h0 = mesh_.halfedge(f);
     halfedges_.clear();
     vertices_.clear();
     Halfedge h = h0;
@@ -93,7 +93,7 @@ void Triangulation::triangulate(Face f)
             // find best split i < m < i+j
             for (size_t m = i + 1; m < k; ++m)
             {
-                Scalar w =
+                const Scalar w =
                     weight_[i][m] + compute_weight(i, m, k) + weight_[m][k];
 
                 if (w < wmin)
@@ -116,11 +116,11 @@ void Triangulation::triangulate(Face f)
     {
         ivec2 tri = todo.back();
         todo.pop_back();
-        int start = tri[0];
-        int end = tri[1];
+        const int start = tri[0];
+        const int end = tri[1];
         if (end - start < 2)
             continue;
-        int split = index_[start][end];
+        const int split = index_[start][end];
 
         insert_edge(start, split);
         insert_edge(split, end);
@@ -162,10 +162,10 @@ bool Triangulation::is_edge(Vertex a, Vertex b) const
 
 bool Triangulation::insert_edge(int i, int j)
 {
-    Halfedge h0 = halfedges_[i];
-    Halfedge h1 = halfedges_[j];
-    Vertex v0 = vertices_[i];
-    Vertex v1 = vertices_[j];
+    const Halfedge h0 = halfedges_[i];
+    const Halfedge h1 = halfedges_[j];
+    const Vertex v0 = vertices_[i];
+    const Vertex v1 = vertices_[j];
 
     // does edge already exist?
     if (mesh_.find_halfedge(v0, v1).is_valid())

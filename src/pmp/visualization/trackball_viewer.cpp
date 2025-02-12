@@ -65,7 +65,7 @@ void TrackballViewer::keyboard(int key, int code, int action, int mods)
         {
             if (++draw_mode_ >= n_draw_modes_)
                 draw_mode_ = 0;
-            std::string mode = draw_mode_names_[draw_mode_];
+            const std::string mode = draw_mode_names_[draw_mode_];
             std::cout << "setting draw mode to " << mode << std::endl;
             set_draw_mode(mode);
             break;
@@ -106,9 +106,9 @@ void TrackballViewer::display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // adjust clipping planes to tightly fit bounding sphere
-    vec4 mc(center_, 1.0);
+    const vec4 mc(center_, 1.0);
     vec4 ec = modelview_matrix_ * mc;
-    float z = -ec[2];
+    const float z = -ec[2];
     near_ = 0.01 * radius_;
     far_ = 10.0 * radius_;
     fovy_ = 45.0;
@@ -146,7 +146,7 @@ void TrackballViewer::mouse(int /*button*/, int action, int /*mods*/)
 
 void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 {
-    float d = (float)yoffset * 0.12 * radius_;
+    float d = (float)yoffset * 0.12 * radius_; // NOLINT
 #ifdef __EMSCRIPTEN__
     d *= 0.5; // scrolling in browser is faster
     d = -d;   // invert direction
@@ -211,7 +211,7 @@ void TrackballViewer::set_scene(const vec3& center, float radius)
 
 void TrackballViewer::view_all()
 {
-    vec4 c = vec4(center_, 1.0);
+    const vec4 c = vec4(center_, 1.0);
     vec4 t = modelview_matrix_ * c;
     translate(vec3(-t[0], -t[1], -t[2] - 2.5 * radius_));
 }
@@ -240,16 +240,16 @@ bool TrackballViewer::pick(int x, int y, vec3& result)
 
     if (zf != 1.0f)
     {
-        float xf =
+        const float xf =
             ((float)x - (float)viewport[0]) / ((float)viewport[2]) * 2.0f -
             1.0f;
-        float yf =
+        const float yf =
             ((float)y - (float)viewport[1]) / ((float)viewport[3]) * 2.0f -
             1.0f;
         zf = zf * 2.0f - 1.0f;
 
-        mat4 mvp = projection_matrix_ * modelview_matrix_;
-        mat4 inv = inverse(mvp);
+        const mat4 mvp = projection_matrix_ * modelview_matrix_;
+        const mat4 inv = inverse(mvp);
         vec4 p = inv * vec4(xf, yf, zf, 1.0f);
         p /= p[3];
 
@@ -269,7 +269,7 @@ void TrackballViewer::fly_to(int x, int y)
     if (pick(x, y, p))
     {
         center_ = p;
-        vec4 c = vec4(center_, 1.0);
+        const vec4 c = vec4(center_, 1.0);
         vec4 t = modelview_matrix_ * c;
         translate(vec3(-t[0], -t[1], -0.5 * t[2]));
     }
@@ -280,13 +280,13 @@ bool TrackballViewer::map_to_sphere(const ivec2& point2D, vec3& result)
     if ((point2D[0] >= 0) && (point2D[0] <= width()) && (point2D[1] >= 0) &&
         (point2D[1] <= height()))
     {
-        double w = width();
-        double h = height();
-        double x = (double)(point2D[0] - 0.5 * w) / w;
-        double y = (double)(0.5 * h - point2D[1]) / h;
-        double sinx = sin(std::numbers::pi * x * 0.5);
-        double siny = sin(std::numbers::pi * y * 0.5);
-        double sinx2siny2 = sinx * sinx + siny * siny;
+        const double w = width();
+        const double h = height();
+        const double x = (double)(point2D[0] - 0.5 * w) / w;
+        const double y = (double)(0.5 * h - point2D[1]) / h;
+        const double sinx = sin(std::numbers::pi * x * 0.5);
+        const double siny = sin(std::numbers::pi * y * 0.5);
+        const double sinx2siny2 = sinx * sinx + siny * siny;
 
         result[0] = sinx;
         result[1] = siny;
@@ -311,12 +311,13 @@ void TrackballViewer::rotation(int x, int y)
 
         if (new_point_ok)
         {
-            vec3 axis = cross(last_point_3d_, new_point3d);
-            float cos_angle = dot(last_point_3d_, new_point3d);
+            const vec3 axis = cross(last_point_3d_, new_point3d);
+            const float cos_angle = dot(last_point_3d_, new_point3d);
 
             if (fabs(cos_angle) < 1.0)
             {
-                float angle = 2.0 * acos(cos_angle) * 180.0 / std::numbers::pi;
+                const float angle =
+                    2.0 * acos(cos_angle) * 180.0 / std::numbers::pi;
                 rotate(axis, angle);
             }
         }
@@ -325,16 +326,16 @@ void TrackballViewer::rotation(int x, int y)
 
 void TrackballViewer::translation(int x, int y)
 {
-    float dx = x - last_point_2d_[0];
-    float dy = y - last_point_2d_[1];
+    const float dx = x - last_point_2d_[0];
+    const float dy = y - last_point_2d_[1];
 
-    vec4 mc = vec4(center_, 1.0);
+    const vec4 mc = vec4(center_, 1.0);
     vec4 ec = modelview_matrix_ * mc;
-    float z = -(ec[2] / ec[3]);
+    const float z = -(ec[2] / ec[3]);
 
-    float aspect = (float)width() / (float)height();
-    float up = tan(fovy_ / 2.0f * std::numbers::pi / 180.f) * near_;
-    float right = aspect * up;
+    const float aspect = (float)width() / (float)height();
+    const float up = tan(fovy_ / 2.0f * std::numbers::pi / 180.f) * near_;
+    const float right = aspect * up;
 
     translate(vec3(2.0 * dx / width() * right / near_ * z,
                    -2.0 * dy / height() * up / near_ * z, 0.0f));
@@ -342,8 +343,8 @@ void TrackballViewer::translation(int x, int y)
 
 void TrackballViewer::zoom(int, int y)
 {
-    float dy = y - last_point_2d_[1];
-    float h = height();
+    const float dy = y - last_point_2d_[1];
+    const float h = height();
     translate(vec3(0.0, 0.0, radius_ * dy * 3.0 / h));
 }
 
@@ -355,9 +356,9 @@ void TrackballViewer::translate(const vec3& t)
 void TrackballViewer::rotate(const vec3& axis, float angle)
 {
     // center in eye coordinates
-    vec4 mc = vec4(center_, 1.0);
+    const vec4 mc = vec4(center_, 1.0);
     vec4 ec = modelview_matrix_ * mc;
-    vec3 c(ec[0] / ec[3], ec[1] / ec[3], ec[2] / ec[3]);
+    const vec3 c(ec[0] / ec[3], ec[1] / ec[3], ec[2] / ec[3]);
 
     modelview_matrix_ = translation_matrix(c) * rotation_matrix(axis, angle) *
                         translation_matrix(-c) * modelview_matrix_;

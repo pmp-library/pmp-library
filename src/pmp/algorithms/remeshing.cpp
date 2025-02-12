@@ -124,7 +124,7 @@ void TriangleKdTree::build_recurse(Node* node, unsigned int max_faces,
         length = bb[(axis = 2)];
 
     // split in the middle
-    Scalar split = bbox.center()[axis];
+    const Scalar split = bbox.center()[axis];
 
     // create children
     auto* left = new Node();
@@ -230,7 +230,7 @@ void TriangleKdTree::nearest_recurse(Node* node, const Point& point,
     // non-terminal node
     else
     {
-        Scalar dist = point[node->axis] - node->split;
+        const Scalar dist = point[node->axis] - node->split;
 
         if (dist <= 0.0)
         {
@@ -521,7 +521,7 @@ void Remeshing::preprocessing()
         // now convert per-vertex curvature into target edge length
         for (auto v : mesh_.vertices())
         {
-            Scalar c = vsizing_[v];
+            const Scalar c = vsizing_[v];
 
             // get edge length from curvature
             const Scalar r = 1.0 / c;
@@ -763,7 +763,7 @@ void Remeshing::collapse_short_edges()
                         hcol10 = false;
 
                     // topological rules
-                    bool collapse_ok = mesh_.is_collapse_ok(h01);
+                    const bool collapse_ok = mesh_.is_collapse_ok(h01);
 
                     if (hcol01)
                         hcol01 = collapse_ok;
@@ -1043,7 +1043,8 @@ void Remeshing::remove_caps()
 {
     Halfedge h;
     Vertex v, vb, vd;
-    Scalar a0, a1, amin, aa(::cos(170.0 * std::numbers::pi / 180.0));
+    Scalar a0, a1, amin;
+    const Scalar aa(::cos(170.0 * std::numbers::pi / 180.0));
     Point a, b, c, d;
 
     for (auto e : mesh_.edges())
@@ -1163,7 +1164,7 @@ Point Remeshing::weighted_centroid(Vertex v)
         if (area == 0)
             area = 1.0;
 
-        double w =
+        const double w =
             area / pow((vsizing_[v1] + vsizing_[v2] + vsizing_[v3]) / 3.0, 2.0);
 
         p += w * b;

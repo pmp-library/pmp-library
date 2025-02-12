@@ -895,56 +895,56 @@ Vector<Scalar, 3> linear_transform(const Mat4<Scalar>& m,
 template <typename Scalar>
 Mat4<Scalar> inverse(const Mat4<Scalar>& m)
 {
-    Scalar coef00 = m(2, 2) * m(3, 3) - m(2, 3) * m(3, 2);
-    Scalar coef02 = m(2, 1) * m(3, 3) - m(2, 3) * m(3, 1);
-    Scalar coef03 = m(2, 1) * m(3, 2) - m(2, 2) * m(3, 1);
+    const Scalar coef00 = m(2, 2) * m(3, 3) - m(2, 3) * m(3, 2);
+    const Scalar coef02 = m(2, 1) * m(3, 3) - m(2, 3) * m(3, 1);
+    const Scalar coef03 = m(2, 1) * m(3, 2) - m(2, 2) * m(3, 1);
 
-    Scalar coef04 = m(1, 2) * m(3, 3) - m(1, 3) * m(3, 2);
-    Scalar coef06 = m(1, 1) * m(3, 3) - m(1, 3) * m(3, 1);
-    Scalar coef07 = m(1, 1) * m(3, 2) - m(1, 2) * m(3, 1);
+    const Scalar coef04 = m(1, 2) * m(3, 3) - m(1, 3) * m(3, 2);
+    const Scalar coef06 = m(1, 1) * m(3, 3) - m(1, 3) * m(3, 1);
+    const Scalar coef07 = m(1, 1) * m(3, 2) - m(1, 2) * m(3, 1);
 
-    Scalar coef08 = m(1, 2) * m(2, 3) - m(1, 3) * m(2, 2);
-    Scalar coef10 = m(1, 1) * m(2, 3) - m(1, 3) * m(2, 1);
-    Scalar coef11 = m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1);
+    const Scalar coef08 = m(1, 2) * m(2, 3) - m(1, 3) * m(2, 2);
+    const Scalar coef10 = m(1, 1) * m(2, 3) - m(1, 3) * m(2, 1);
+    const Scalar coef11 = m(1, 1) * m(2, 2) - m(1, 2) * m(2, 1);
 
-    Scalar coef12 = m(0, 2) * m(3, 3) - m(0, 3) * m(3, 2);
-    Scalar coef14 = m(0, 1) * m(3, 3) - m(0, 3) * m(3, 1);
-    Scalar coef15 = m(0, 1) * m(3, 2) - m(0, 2) * m(3, 1);
+    const Scalar coef12 = m(0, 2) * m(3, 3) - m(0, 3) * m(3, 2);
+    const Scalar coef14 = m(0, 1) * m(3, 3) - m(0, 3) * m(3, 1);
+    const Scalar coef15 = m(0, 1) * m(3, 2) - m(0, 2) * m(3, 1);
 
-    Scalar coef16 = m(0, 2) * m(2, 3) - m(0, 3) * m(2, 2);
-    Scalar coef18 = m(0, 1) * m(2, 3) - m(0, 3) * m(2, 1);
-    Scalar coef19 = m(0, 1) * m(2, 2) - m(0, 2) * m(2, 1);
+    const Scalar coef16 = m(0, 2) * m(2, 3) - m(0, 3) * m(2, 2);
+    const Scalar coef18 = m(0, 1) * m(2, 3) - m(0, 3) * m(2, 1);
+    const Scalar coef19 = m(0, 1) * m(2, 2) - m(0, 2) * m(2, 1);
 
-    Scalar coef20 = m(0, 2) * m(1, 3) - m(0, 3) * m(1, 2);
-    Scalar coef22 = m(0, 1) * m(1, 3) - m(0, 3) * m(1, 1);
-    Scalar coef23 = m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1);
+    const Scalar coef20 = m(0, 2) * m(1, 3) - m(0, 3) * m(1, 2);
+    const Scalar coef22 = m(0, 1) * m(1, 3) - m(0, 3) * m(1, 1);
+    const Scalar coef23 = m(0, 1) * m(1, 2) - m(0, 2) * m(1, 1);
 
     const Vector<Scalar, 4> sign_a(+1, -1, +1, -1);
     const Vector<Scalar, 4> sign_b(-1, +1, -1, +1);
 
-    Vector<Scalar, 4> fac0(coef00, coef00, coef02, coef03);
-    Vector<Scalar, 4> fac1(coef04, coef04, coef06, coef07);
-    Vector<Scalar, 4> fac2(coef08, coef08, coef10, coef11);
-    Vector<Scalar, 4> fac3(coef12, coef12, coef14, coef15);
-    Vector<Scalar, 4> fac4(coef16, coef16, coef18, coef19);
-    Vector<Scalar, 4> fac5(coef20, coef20, coef22, coef23);
+    const Vector<Scalar, 4> fac0(coef00, coef00, coef02, coef03);
+    const Vector<Scalar, 4> fac1(coef04, coef04, coef06, coef07);
+    const Vector<Scalar, 4> fac2(coef08, coef08, coef10, coef11);
+    const Vector<Scalar, 4> fac3(coef12, coef12, coef14, coef15);
+    const Vector<Scalar, 4> fac4(coef16, coef16, coef18, coef19);
+    const Vector<Scalar, 4> fac5(coef20, coef20, coef22, coef23);
 
-    Vector<Scalar, 4> v0(m(0, 1), m(0, 0), m(0, 0), m(0, 0));
-    Vector<Scalar, 4> v1(m(1, 1), m(1, 0), m(1, 0), m(1, 0));
-    Vector<Scalar, 4> v2(m(2, 1), m(2, 0), m(2, 0), m(2, 0));
-    Vector<Scalar, 4> v3(m(3, 1), m(3, 0), m(3, 0), m(3, 0));
+    const Vector<Scalar, 4> v0(m(0, 1), m(0, 0), m(0, 0), m(0, 0));
+    const Vector<Scalar, 4> v1(m(1, 1), m(1, 0), m(1, 0), m(1, 0));
+    const Vector<Scalar, 4> v2(m(2, 1), m(2, 0), m(2, 0), m(2, 0));
+    const Vector<Scalar, 4> v3(m(3, 1), m(3, 0), m(3, 0), m(3, 0));
 
     // clang-format off
-    Vector<Scalar, 4> inv0 = cmult(sign_a, (cmult(v1, fac0) - cmult(v2, fac1) + cmult(v3, fac2)));
-    Vector<Scalar, 4> inv1 = cmult(sign_b, (cmult(v0, fac0) - cmult(v2, fac3) + cmult(v3, fac4)));
-    Vector<Scalar, 4> inv2 = cmult(sign_a, (cmult(v0, fac1) - cmult(v1, fac3) + cmult(v3, fac5)));
-    Vector<Scalar, 4> inv3 = cmult(sign_b, (cmult(v0, fac2) - cmult(v1, fac4) + cmult(v2, fac5)));
+    const Vector<Scalar, 4> inv0 = cmult(sign_a, (cmult(v1, fac0) - cmult(v2, fac1) + cmult(v3, fac2)));
+    const Vector<Scalar, 4> inv1 = cmult(sign_b, (cmult(v0, fac0) - cmult(v2, fac3) + cmult(v3, fac4)));
+    const Vector<Scalar, 4> inv2 = cmult(sign_a, (cmult(v0, fac1) - cmult(v1, fac3) + cmult(v3, fac5)));
+    const Vector<Scalar, 4> inv3 = cmult(sign_b, (cmult(v0, fac2) - cmult(v1, fac4) + cmult(v2, fac5)));
     // clang-format on
 
     Mat4<Scalar> inv(inv0, inv1, inv2, inv3);
 
-    Vector<Scalar, 4> row0(inv(0, 0), inv(1, 0), inv(2, 0), inv(3, 0));
-    Vector<Scalar, 4> col0(m(0, 0), m(0, 1), m(0, 2), m(0, 3));
+    const Vector<Scalar, 4> row0(inv(0, 0), inv(1, 0), inv(2, 0), inv(3, 0));
+    const Vector<Scalar, 4> col0(m(0, 0), m(0, 1), m(0, 2), m(0, 3));
 
     Scalar det = dot(col0, row0);
 

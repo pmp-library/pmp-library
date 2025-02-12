@@ -111,7 +111,7 @@ void fair(SurfaceMesh& mesh, unsigned int k)
     laplace_matrix(mesh, L, true);
     DiagonalMatrix M;
     mass_matrix(mesh, M);
-    DiagonalMatrix Minv = M.inverse();
+    const DiagonalMatrix Minv = M.inverse();
     SparseMatrix A = L;
     for (unsigned int i = 1; i < k; ++i)
         A = L * Minv * A;

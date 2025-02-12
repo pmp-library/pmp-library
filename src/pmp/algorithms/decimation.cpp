@@ -84,7 +84,7 @@ public:
     // remove an entry
     void remove(HeapEntry h)
     {
-        int pos = interface_.get_heap_position(h);
+        const int pos = interface_.get_heap_position(h);
         interface_.set_heap_position(h, -1);
 
         assert(pos != -1);
@@ -107,7 +107,7 @@ public:
     // reestablish the heap property.
     void update(HeapEntry h)
     {
-        int pos = interface_.get_heap_position(h);
+        const int pos = interface_.get_heap_position(h);
         assert(pos != -1);
         assert((unsigned int)pos < size());
         downheap(pos);
@@ -158,7 +158,7 @@ private:
     {
         HeapEntry h = entry(idx);
         unsigned int child_idx;
-        unsigned int s = size();
+        const unsigned int s = size();
 
         while (idx < s)
         {
@@ -319,13 +319,14 @@ public:
         else
         {
             // new angle
-            Scalar center_angle = std::acos(dp);
-            Scalar min_angle = std::min(-angle_, center_angle - nc.angle_);
-            Scalar max_angle = std::max(angle_, center_angle + nc.angle_);
+            const Scalar center_angle = std::acos(dp);
+            const Scalar min_angle =
+                std::min(-angle_, center_angle - nc.angle_);
+            const Scalar max_angle = std::max(angle_, center_angle + nc.angle_);
             angle_ = Scalar(0.5) * (max_angle - min_angle);
 
             // axis by SLERP
-            Scalar axis_angle = Scalar(0.5) * (min_angle + max_angle);
+            const Scalar axis_angle = Scalar(0.5) * (min_angle + max_angle);
             center_normal_ =
                 ((center_normal_ * std::sin(center_angle - axis_angle) +
                   nc.center_normal_ * std::sin(axis_angle)) /
@@ -587,10 +588,10 @@ void Decimation::initialize(Scalar aspect_ratio, Scalar edge_length,
         for (auto e : mesh_.edges())
         {
             // texcoords are stored in halfedge pointing towards a vertex
-            Halfedge h0 = mesh_.halfedge(e, 0);
-            Halfedge h1 = mesh_.halfedge(e, 1);     //opposite halfedge
-            Halfedge h0p = mesh_.prev_halfedge(h0); // start point edge 0
-            Halfedge h1p = mesh_.prev_halfedge(h1); // start point edge 1
+            const Halfedge h0 = mesh_.halfedge(e, 0);
+            const Halfedge h1 = mesh_.halfedge(e, 1);     //opposite halfedge
+            const Halfedge h0p = mesh_.prev_halfedge(h0); // start point edge 0
+            const Halfedge h1p = mesh_.prev_halfedge(h1); // start point edge 1
 
             // if start or end points differ more than seam_threshold
             // the corresponding edge is a texture seam
@@ -623,7 +624,7 @@ void Decimation::decimate(unsigned int n_vertices)
     vtarget_ = mesh_.add_vertex_property<Halfedge>("v:target");
 
     // build priority queue
-    HeapInterface hi(vpriority_, heap_pos_);
+    const HeapInterface hi(vpriority_, heap_pos_);
     PriorityQueue queue(hi);
     queue.reserve(mesh_.n_vertices());
     for (auto v : mesh_.vertices())
@@ -639,7 +640,7 @@ void Decimation::decimate(unsigned int n_vertices)
         auto v = queue.front();
         queue.pop_front();
         auto h = vtarget_[v];
-        CollapseData cd(mesh_, h);
+        const CollapseData cd(mesh_, h);
 
         // check this (again)
         if (!mesh_.is_collapse_ok(h))
@@ -685,7 +686,7 @@ void Decimation::enqueue_vertex(PriorityQueue& queue, Vertex v)
 
     for (auto h : mesh_.halfedges(v))
     {
-        CollapseData cd(mesh_, h);
+        const CollapseData cd(mesh_, h);
         if (is_collapse_legal(cd))
         {
             prio = priority(cd);
@@ -798,8 +799,8 @@ bool Decimation::is_collapse_legal(const CollapseData& cd)
         {
             if (f != cd.fl && f != cd.fr)
             {
-                Normal n0 = fnormal_[f];
-                Normal n1 = face_normal(mesh_, f);
+                const Normal n0 = fnormal_[f];
+                const Normal n1 = face_normal(mesh_, f);
                 if (dot(n0, n1) < 0.0)
                 {
                     vpoint_[cd.v0] = p0;
@@ -930,8 +931,8 @@ bool Decimation::texcoord_check(Halfedge h)
         return true;
     }
 
-    Halfedge o(mesh_.opposite_halfedge(h));
-    Vertex v0(mesh_.to_vertex(o));
+    const Halfedge o(mesh_.opposite_halfedge(h));
+    const Vertex v0(mesh_.to_vertex(o));
 
     if (!texture_seams[mesh_.edge(h)])
     {
@@ -968,7 +969,8 @@ bool Decimation::texcoord_check(Halfedge h)
         return false;
     }
 
-    Halfedge seam1 = h, seam2 = mesh_.prev_halfedge(h);
+    const Halfedge seam1 = h;
+    Halfedge seam2 = mesh_.prev_halfedge(h);
     while (seam2.idx() != o.idx())
     {
         if (texture_seams[mesh_.edge(seam2)])
@@ -979,8 +981,8 @@ bool Decimation::texcoord_check(Halfedge h)
                                 texcoords[mesh_.prev_halfedge(seam2)]);
 
             // opposite uvs
-            Halfedge o_seam1 = mesh_.opposite_halfedge(seam1);
-            Halfedge o_seam2 = mesh_.opposite_halfedge(seam2);
+            const Halfedge o_seam1 = mesh_.opposite_halfedge(seam1);
+            const Halfedge o_seam2 = mesh_.opposite_halfedge(seam2);
             auto o1 = normalize(texcoords[o_seam1] -
                                 texcoords[mesh_.prev_halfedge(o_seam1)]);
             auto o2 = normalize(texcoords[o_seam2] -
@@ -1012,8 +1014,8 @@ float Decimation::priority(const CollapseData& cd)
 
 void Decimation::preprocess_collapse(const CollapseData& cd)
 {
-    Halfedge h = cd.v0v1;
-    Halfedge o = mesh_.opposite_halfedge(h);
+    const Halfedge h = cd.v0v1;
+    const Halfedge o = mesh_.opposite_halfedge(h);
     Halfedge v1v2, v2v1, v0v2;
 
     // move texcoords in correct halfedge before collapsing an edge
@@ -1078,14 +1080,14 @@ void Decimation::postprocess_collapse(const CollapseData& cd)
 
         if (cd.vl.is_valid())
         {
-            Face f = mesh_.face(cd.v1vl);
+            const Face f = mesh_.face(cd.v1vl);
             if (f.is_valid())
                 normal_cone_[f].merge(normal_cone_[cd.fl]);
         }
 
         if (cd.vr.is_valid())
         {
-            Face f = mesh_.face(cd.vrv1);
+            const Face f = mesh_.face(cd.vrv1);
             if (f.is_valid())
                 normal_cone_[f].merge(normal_cone_[cd.fr]);
         }
@@ -1170,7 +1172,7 @@ Scalar Decimation::aspect_ratio(Face f) const
     const Scalar l = std::max(l0, std::max(l1, l2));
 
     // triangle area
-    Scalar a = norm(cross(d0, d1));
+    const Scalar a = norm(cross(d0, d1));
 
     return l / a;
 }

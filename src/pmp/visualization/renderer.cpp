@@ -378,9 +378,9 @@ void Renderer::update_opengl_buffers()
             tessellate(corner_positions, triangles);
             for (auto& t : triangles)
             {
-                int i0 = t[0];
-                int i1 = t[1];
-                int i2 = t[2];
+                const int i0 = t[0];
+                const int i1 = t[1];
+                const int i2 = t[2];
 
                 position_array.push_back(corner_positions[i0]);
                 position_array.push_back(corner_positions[i1]);
@@ -604,9 +604,9 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     glEnable(GL_SAMPLE_ALPHA_TO_COVERAGE);
 
     // setup matrices
-    mat4 mv_matrix = modelview_matrix;
-    mat4 mvp_matrix = projection_matrix * modelview_matrix;
-    mat3 n_matrix = inverse(transpose(linear_part(mv_matrix)));
+    const mat4 mv_matrix = modelview_matrix;
+    const mat4 mvp_matrix = projection_matrix * modelview_matrix;
+    const mat3 n_matrix = inverse(transpose(linear_part(mv_matrix)));
 
     // setup shader
     phong_shader_.use();
@@ -826,11 +826,11 @@ void Renderer::tessellate(const std::vector<vec3>& points,
     {
         ivec2 tri = todo.back();
         todo.pop_back();
-        int start = tri[0];
-        int end = tri[1];
+        const int start = tri[0];
+        const int end = tri[1];
         if (end - start < 2)
             continue;
-        int split = triangulation(start, end).split;
+        const int split = triangulation(start, end).split;
 
         triangles.emplace_back(start, split, end);
 

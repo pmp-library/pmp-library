@@ -1258,7 +1258,7 @@ public:
     //! \return whether \p v is a boundary vertex
     bool is_boundary(Vertex v) const
     {
-        Halfedge h(halfedge(v));
+        const Halfedge h(halfedge(v));
         return (!(h.is_valid() && face(h).is_valid()));
     }
 
@@ -1393,7 +1393,7 @@ public:
     bool is_boundary(Face f) const
     {
         Halfedge h = halfedge(f);
-        Halfedge hh = h;
+        const Halfedge hh = h;
         do
         {
             if (is_boundary(opposite_halfedge(h)))
@@ -1892,7 +1892,7 @@ public:
         hprops_.push_back();
 
         Halfedge h0(static_cast<IndexType>(halfedges_size()) - 2);
-        Halfedge h1(static_cast<IndexType>(halfedges_size()) - 1);
+        const Halfedge h1(static_cast<IndexType>(halfedges_size()) - 1);
 
         return h0;
     }
@@ -1915,8 +1915,8 @@ public:
         hprops_.push_back();
         hprops_.push_back();
 
-        Halfedge h0(static_cast<IndexType>(halfedges_size()) - 2);
-        Halfedge h1(static_cast<IndexType>(halfedges_size()) - 1);
+        const Halfedge h0(static_cast<IndexType>(halfedges_size()) - 2);
+        const Halfedge h1(static_cast<IndexType>(halfedges_size()) - 1);
 
         set_vertex(h0, end);
         set_vertex(h1, start);

@@ -278,7 +278,7 @@ void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     // Swap the ordering if the total file size is smaller than the size
     // required to store all vertex coordinates.
     auto file_size = std::filesystem::file_size(file);
-    bool swap = file_size < nv * 3 * 4 ? true : false;
+    const bool swap = file_size < nv * 3 * 4 ? true : false;
     if (swap)
         nv = byteswap32(nv);
 

@@ -140,9 +140,9 @@ void matrices_to_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
 
     for (int i = 0; i < F.rows(); i++)
     {
-        pmp::Vertex a(F(i, 0));
-        pmp::Vertex b(F(i, 1));
-        pmp::Vertex c(F(i, 2));
+        const pmp::Vertex a(F(i, 0));
+        const pmp::Vertex b(F(i, 1));
+        const pmp::Vertex c(F(i, 2));
         mesh.add_triangle(a, b, c);
     }
 }
