@@ -25,7 +25,7 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if(PMP_BUILD_VIS)
   set(GLFW_SOURCE_DIR_INTERNAL "external/glfw-3.4")
-  set(GLEW_SOURCE_DIR "external/glew-2.2.0")
+  set(GLAD_SOURCE_DIR "external/glad-2.0.8")
   set(IMGUI_SOURCE_DIR "external/imgui-1.90.4")
   set(STB_IMAGE_SOURCE_DIR "external/stb_image-2.28")
   set(STB_IMAGE_WRITE_SOURCE_DIR "external/stb_image_write-1.16")
@@ -56,17 +56,10 @@ if(PMP_BUILD_VIS)
     set(GLFW_BUILD_WAYLAND False)
   endif()
 
-  # setup use of GLFW and GLEW
+  # setup use of GLFW and GLAD
   if(NOT EMSCRIPTEN)
-    add_subdirectory(${GLFW_SOURCE_DIR_INTERNAL} ${GLEW_SOURCE_DIR})
-
-    add_definitions(-DGLEW_STATIC)
-    add_library(glew STATIC ${GLEW_SOURCE_DIR}/src/glew.c
-                            ${GLEW_SOURCE_DIR}/include)
-    set_property(TARGET glew PROPERTY POSITION_INDEPENDENT_CODE ON)
-    target_include_directories(glew PUBLIC ${GLEW_SOURCE_DIR}/include
-                                           ${GLFW_SOURCE_DIR_INTERNAL}/include)
-    target_link_libraries(glew ${GLFW_LIBRARIES})
+    add_subdirectory(${GLFW_SOURCE_DIR_INTERNAL})
+    include_directories(${GLAD_SOURCE_DIR}/include)
   endif()
 
   # setup IMGUI

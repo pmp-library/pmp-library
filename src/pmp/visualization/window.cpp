@@ -14,6 +14,9 @@
 #if __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
+#else
+#define GLAD_GL_IMPLEMENTATION
+#include <glad/gl.h>
 #endif
 
 namespace pmp {
@@ -52,6 +55,15 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwMakeContextCurrent(window_);
     instance_ = this;
 
+#ifndef __EMSCRIPTEN__
+    const auto version = gladLoadGL(glfwGetProcAddress);
+    if (version == 0)
+    {
+        std::cout << "Failed to initialize OpenGL context\n";
+        exit(EXIT_FAILURE);
+    }
+#endif
+
     // check for sufficient OpenGL version
     GLint major, minor;
     glGetIntegerv(GL_MAJOR_VERSION, &major);
@@ -80,6 +92,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     // enable v-sync
     glfwSwapInterval(1);
 
+#if __EMSCRIPTEN__
     // now that we have a GL context, initialize GLEW
     glewExperimental = GL_TRUE;
     const GLenum err = glewInit();
@@ -89,9 +102,10 @@ Window::Window(const char* title, int width, int height, bool showgui)
                   << std::endl;
         exit(1);
     }
+    std::cout << "GLEW   " << glewGetString(GLEW_VERSION) << std::endl;
+#endif
 
     // debug: print GL and GLSL version
-    std::cout << "GLEW   " << glewGetString(GLEW_VERSION) << std::endl;
     std::cout << "GL     " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL   " << glGetString(GL_SHADING_LANGUAGE_VERSION)
               << std::endl;

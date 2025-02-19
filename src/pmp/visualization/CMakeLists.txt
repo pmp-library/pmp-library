@@ -26,7 +26,6 @@ else()
       stb_image_write
       imgui
       glfw
-      glew
       ${OPENGL_LIBRARIES})
     if(PMP_INSTALL)
       install(TARGETS pmp_vis DESTINATION lib)

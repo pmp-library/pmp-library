@@ -8,7 +8,11 @@
 #include <Windows.h>
 #endif
 
+#if __EMSCRIPTEN__
 #include <GL/glew.h>
+#else
+#include <glad/gl.h>
+#endif
 
 #include <iostream>
 
