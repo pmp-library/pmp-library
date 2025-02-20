@@ -14,6 +14,7 @@
 #if __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
+#include <GL/gl.h>
 #else
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
@@ -91,19 +92,6 @@ Window::Window(const char* title, int width, int height, bool showgui)
 
     // enable v-sync
     glfwSwapInterval(1);
-
-#if __EMSCRIPTEN__
-    // now that we have a GL context, initialize GLEW
-    glewExperimental = GL_TRUE;
-    const GLenum err = glewInit();
-    if (err != GLEW_OK)
-    {
-        std::cerr << "Error initializing GLEW: " << glewGetErrorString(err)
-                  << std::endl;
-        exit(1);
-    }
-    std::cout << "GLEW   " << glewGetString(GLEW_VERSION) << std::endl;
-#endif
 
     // debug: print GL and GLSL version
     std::cout << "GL     " << glGetString(GL_VERSION) << std::endl;
