@@ -536,7 +536,7 @@ void Remeshing::preprocessing()
             else
             {
                 // this does not really make sense
-                h = e * 3.0 / sqrt(3.0);
+                h = e * 3.0 / std::numbers::sqrt3;
             }
 
             // clamp to min. and max. edge length

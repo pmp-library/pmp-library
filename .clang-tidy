@@ -1,7 +1,8 @@
 Checks: >
   -*,
   readability-identifier-naming,
-  misc-const-correctness
+  misc-const-correctness,
+  modernize-use-std-numbers
 
 WarningsAsErrors: "*"
 HeaderFilterRegex: "pmp/.*"

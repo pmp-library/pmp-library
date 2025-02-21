@@ -47,7 +47,7 @@ SurfaceMesh hexahedron()
 {
     SurfaceMesh mesh;
 
-    const float a = 1.0f / sqrt(3.0f);
+    const float a = std::numbers::inv_sqrt3_v<float>;
     auto v0 = mesh.add_vertex(Point(-a, -a, -a));
     auto v1 = mesh.add_vertex(Point(a, -a, -a));
     auto v2 = mesh.add_vertex(Point(a, a, -a));
