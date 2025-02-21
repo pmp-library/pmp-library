@@ -1169,7 +1169,7 @@ Scalar Decimation::aspect_ratio(Face f) const
     const Scalar l2 = sqrnorm(d2);
 
     // max squared edge length
-    const Scalar l = std::max(l0, std::max(l1, l2));
+    const Scalar l = std::max({l0, l1, l2});
 
     // triangle area
     const Scalar a = norm(cross(d0, d1));
