@@ -6,7 +6,6 @@
 #include "pmp/surface_mesh.h"
 #include "pmp/types.h"
 #include "pmp/algorithms/utilities.h"
-#include "helpers.h"
 #include "surface_mesh_test.h"
 
 using namespace pmp;
@@ -53,4 +52,13 @@ TEST_F(UtilitiesTest, mean_edge_length)
     add_quad();
     auto mean = mean_edge_length(mesh);
     EXPECT_EQ(mean, 1);
+}
+
+TEST_F(UtilitiesTest, connected_components)
+{
+    // add two faces with duplicate vertices
+    add_triangle();
+    add_quad();
+    auto nc = connected_components(mesh);
+    EXPECT_EQ(nc, 2);
 }
