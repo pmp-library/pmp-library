@@ -4,6 +4,7 @@
 #include "pmp/algorithms/geodesics.h"
 #include "pmp/algorithms/laplace.h"
 
+#include <algorithm>
 #include <cassert>
 #include <set>
 #include <map>
@@ -213,7 +214,7 @@ unsigned int Geodesics::compute(const std::vector<Vertex>& seed, Scalar maxdist,
     // sort one-ring neighbors of seed vertices
     if (neighbors)
     {
-        std::sort(neighbors->begin(), neighbors->end(), VertexCmp(distance_));
+        std::ranges::sort(*neighbors, VertexCmp(distance_));
     }
 
     // correct if seed vertices have more than maxnum neighbors

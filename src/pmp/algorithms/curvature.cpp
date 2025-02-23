@@ -7,6 +7,7 @@
 #include "pmp/algorithms/differential_geometry.h"
 #include "pmp/algorithms/laplace.h"
 
+#include <algorithm>
 #include <numbers>
 
 namespace pmp {
@@ -367,7 +368,7 @@ void curvature_to_texture_coordinates(SurfaceMesh& mesh)
     {
         values.push_back(curvatures[v]);
     }
-    std::sort(values.begin(), values.end());
+    std::ranges::sort(values);
     const unsigned int n = values.size() - 1;
     // std::cout << "curvatures in [" << values[0] << ", " << values[n] << "]\n";
 

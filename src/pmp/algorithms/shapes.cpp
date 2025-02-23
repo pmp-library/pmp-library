@@ -5,6 +5,7 @@
 #include "pmp/algorithms/subdivision.h"
 #include "pmp/algorithms/differential_geometry.h"
 
+#include <algorithm>
 #include <cmath>
 #include <algorithm>
 #include <numbers>
@@ -275,7 +276,7 @@ SurfaceMesh cone(size_t n_subdivisions, Scalar radius, Scalar height)
     }
 
     // reverse order for consistent face orientation
-    std::reverse(base_vertices.begin(), base_vertices.end());
+    std::ranges::reverse(base_vertices);
 
     // add polygonal base face
     mesh.add_face(base_vertices);
@@ -318,7 +319,7 @@ SurfaceMesh cylinder(size_t n_subdivisions, Scalar radius, Scalar height)
     mesh.add_face(top_vertices);
 
     // reverse order for consistent face orientation
-    std::reverse(bottom_vertices.begin(), bottom_vertices.end());
+    std::ranges::reverse(bottom_vertices);
 
     // add bottom polygon
     mesh.add_face(bottom_vertices);

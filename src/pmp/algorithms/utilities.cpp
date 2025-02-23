@@ -3,6 +3,7 @@
 
 #include "pmp/algorithms/utilities.h"
 #include "pmp/algorithms/differential_geometry.h"
+#include <algorithm>
 #include <limits>
 
 namespace pmp {
@@ -29,7 +30,7 @@ void flip_faces(SurfaceMesh& mesh)
         {
             vertices.push_back(v);
         }
-        std::reverse(vertices.begin(), vertices.end());
+        std::ranges::reverse(vertices);
         new_mesh.add_face(vertices);
     }
     mesh = new_mesh;
