@@ -168,9 +168,6 @@ void Window::init_imgui()
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window_, false);
 #ifdef __EMSCRIPTEN__
-    ImGui_ImplGlfw_InstallEmscriptenCanvasResizeCallback("#canvas");
-#endif
-#ifdef __EMSCRIPTEN__
     const char* glsl_version = "#version 300 es";
 #else
     const char* glsl_version = "#version 330";
@@ -362,6 +359,13 @@ void Window::render_frame()
 {
     glfwMakeContextCurrent(instance_->window_);
 
+#if __EMSCRIPTEN__
+    // dynamicall adjust window size based on container
+    double dw, dh;
+    emscripten_get_element_css_size("#canvas_container", &dw, &dh);
+    glfwSetWindowSize(instance_->window_, (int)dw, (int)dh);
+#endif
+
     // do some computations
     instance_->do_processing();
 
@@ -391,10 +395,15 @@ void Window::render_frame()
         ImGui::Render();
     }
 
+    // (re)determine scaling
+    int window_width, window_height, framebuffer_width, framebuffer_height;
+    glfwGetWindowSize(instance_->window_, &window_width, &window_height);
+    glfwGetFramebufferSize(instance_->window_, &framebuffer_width, &framebuffer_height);
+    instance_->scaling_ = static_cast<float>(framebuffer_width) /
+                          static_cast<float>(window_width);
+
     // setup viewport
-    int display_w, display_h;
-    glfwGetFramebufferSize(instance_->window_, &display_w, &display_h);
-    glViewport(0, 0, display_w, display_h);
+    glViewport(0, 0, framebuffer_width, framebuffer_height);
 
     // draw scene
     instance_->display();
@@ -528,50 +537,24 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
     }
 }
 
-// fullscreen handling from here:
-// https://github.com/emscripten-core/emscripten/issues/5124
 
-#ifdef __EMSCRIPTEN__
 
 bool Window::is_fullscreen() const
 {
+#ifdef __EMSCRIPTEN__
     EmscriptenFullscreenChangeEvent fsce;
     emscripten_get_fullscreen_status(&fsce);
     return fsce.isFullscreen;
-}
-
-void Window::enter_fullscreen()
-{
-    // get screen size
-    int w = EM_ASM_INT({ return screen.width; });
-    int h = EM_ASM_INT({ return screen.height; });
-
-    // Workaround https://github.com/kripken/emscripten/issues/5124#issuecomment-292849872
-    EM_ASM(JSEvents.inEventHandler = true);
-    EM_ASM(JSEvents.currentEventHandler = {allowsDeferredCalls : true});
-
-    // remember window size
-    glfwGetWindowSize(window_, &backup_width_, &backup_height_);
-
-    // setting window to screen size triggers fullscreen mode
-    glfwSetWindowSize(window_, w, h);
-}
-
-void Window::exit_fullscreen()
-{
-    emscripten_exit_fullscreen();
-    glfwSetWindowSize(window_, backup_width_, backup_height_);
-}
-
 #else
-
-bool Window::is_fullscreen() const
-{
     return glfwGetWindowMonitor(window_) != nullptr;
+#endif
 }
 
 void Window::enter_fullscreen()
 {
+#ifdef __EMSCRIPTEN__
+    emscripten_request_fullscreen("#canvas_container", false);
+#else
     // get monitor
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
@@ -585,15 +568,18 @@ void Window::enter_fullscreen()
     // switch to fullscreen on primary monitor
     glfwSetWindowMonitor(window_, monitor, 0, 0, mode->width, mode->height,
                          GLFW_DONT_CARE);
+#endif
 }
 
 void Window::exit_fullscreen()
 {
+#ifdef __EMSCRIPTEN__
+    emscripten_exit_fullscreen();
+#else
     glfwSetWindowMonitor(window_, nullptr, backup_xpos_, backup_ypos_,
                          backup_width_, backup_height_, GLFW_DONT_CARE);
-}
-
 #endif
+}
 
 void Window::glfw_motion(GLFWwindow* /*window*/, double xpos, double ypos)
 {
