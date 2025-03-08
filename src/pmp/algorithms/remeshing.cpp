@@ -1,3 +1,4 @@
+#include "remeshing.h"
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
@@ -259,6 +260,10 @@ public:
                             Scalar approx_error, unsigned int iterations = 10,
                             bool use_projection = true);
 
+    void custom_remeshing(std::vector<double>& target_edge_lengths,
+                          unsigned int iterations = 10, bool use_projection = true);
+                            
+
 private:
     void preprocessing();
     void postprocessing();
@@ -292,6 +297,8 @@ private:
     std::unique_ptr<TriangleKdTree> kd_tree_;
 
     bool uniform_;
+    bool custom_vertex_edgeLengths_;
+    std::vector<double> target_edge_lengths_per_vertex_;
     Scalar target_edge_length_;
     Scalar min_edge_length_;
     Scalar max_edge_length_;
@@ -331,6 +338,7 @@ void Remeshing::uniform_remeshing(Scalar edge_length, unsigned int iterations,
                                   bool use_projection)
 {
     uniform_ = true;
+    custom_vertex_edgeLengths_ = false;
     use_projection_ = use_projection;
     target_edge_length_ = edge_length;
 
@@ -359,6 +367,7 @@ void Remeshing::adaptive_remeshing(Scalar min_edge_length,
                                    unsigned int iterations, bool use_projection)
 {
     uniform_ = false;
+    custom_vertex_edgeLengths_ = false;
     min_edge_length_ = min_edge_length;
     max_edge_length_ = max_edge_length;
     approx_error_ = approx_error;
@@ -384,6 +393,32 @@ void Remeshing::adaptive_remeshing(Scalar min_edge_length,
     postprocessing();
 }
 
+
+void Remeshing::custom_remeshing(std::vector<double>& target_edge_lengths,
+                                 unsigned int iterations, bool use_projection)
+{
+    uniform_ = false;
+    custom_vertex_edgeLengths_ = true;
+    target_edge_lengths_per_vertex_ = target_edge_lengths;
+    use_projection_ = use_projection;
+    preprocessing();
+
+    for (unsigned int i = 0; i < iterations; ++i)
+    {
+        split_long_edges();
+
+        vertex_normals(mesh_);
+
+        collapse_short_edges();
+
+        flip_edges();
+
+        tangential_smoothing(5);
+    }
+    remove_caps();
+    postprocessing();
+}
+
 void Remeshing::preprocessing()
 {
     // properties
@@ -392,6 +427,11 @@ void Remeshing::preprocessing()
     vlocked_ = mesh_.add_vertex_property<bool>("v:locked", false);
     elocked_ = mesh_.add_edge_property<bool>("e:locked", false);
     vsizing_ = mesh_.add_vertex_property<Scalar>("v:sizing");
+
+    if (!vsizing_)
+    {
+        std::cerr << "Failed to add v:sizing property to the mesh.\n";
+    }
 
     // lock unselected vertices if some vertices are selected
     auto vselected = mesh_.get_vertex_property<bool>("v:selected");
@@ -439,14 +479,14 @@ void Remeshing::preprocessing()
     }
 
     // compute sizing field
-    if (uniform_)
+    if (uniform_ && !custom_vertex_edgeLengths_)
     {
         for (auto v : mesh_.vertices())
         {
             vsizing_[v] = target_edge_length_;
         }
     }
-    else
+    else if (!uniform_ && !custom_vertex_edgeLengths_)
     {
         // compute curvature for all mesh vertices, using cotan or Cohen-Steiner
         // don't use two-ring neighborhood, since we otherwise compute
@@ -547,6 +587,16 @@ void Remeshing::preprocessing()
 
             // store target edge length
             vsizing_[v] = h;
+        }
+    }
+
+    else // if custom_vertex_edgeLengths_ is true
+    {    
+        size_t id = 0;
+        for (auto v : mesh_.vertices())
+        {
+            vsizing_[v] = target_edge_lengths_per_vertex_[id];
+            id++;
         }
     }
 
@@ -999,6 +1049,7 @@ void Remeshing::tangential_smoothing(unsigned int iterations)
                     catch (SolverException&)
                     {
                         p = weighted_centroid(v);
+                        throw SolverException("Failed at tangential_smoothing");
                     }
                     u = p - mesh_.position(v);
 
@@ -1188,6 +1239,14 @@ void adaptive_remeshing(SurfaceMesh& mesh, Scalar min_edge_length,
 {
     Remeshing(mesh).adaptive_remeshing(min_edge_length, max_edge_length,
                                        approx_error, iterations,
+                                       use_projection);
+}
+
+void custom_remeshing(SurfaceMesh& mesh, 
+                      std::vector<double>& target_edge_lengths,
+                      unsigned int iterations, bool use_projection)
+{
+    Remeshing(mesh).custom_remeshing(target_edge_lengths, iterations,
                                        use_projection);
 }
 
