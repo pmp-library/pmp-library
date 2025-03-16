@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     bool gui = false;
 
     // parse command line parameters
-    for (int i = 0; i < argc; ++i)
+    for (int i = 1; i < argc; ++i)
     {
         if (std::string(argv[i]) == std::string("-g"))
         {
@@ -57,22 +57,12 @@ int main(int argc, char** argv)
         }
     }
 
-    // need a mesh!
-    if (!input)
-        usage_and_exit();
-
     // open window, start application
     MeshViewer viewer("MeshViewer", 800, 600, gui);
-    try
+    if (input)
     {
         viewer.load_mesh(input);
     }
-    catch (...)
-    {
-        std::cerr << "Could not load mesh\n";
-        exit(1);
-    }
-
     if (texture)
     {
         viewer.load_texture(texture, GL_SRGB8);
