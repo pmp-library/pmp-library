@@ -25,6 +25,7 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
     set_draw_mode("Smooth Shading");
 
     crease_angle_ = 180.0;
+    point_size_ = 5;
 
     // add help items
     add_help_item("Backspace", "Reload mesh", 3);
@@ -160,14 +161,28 @@ void MeshViewer::process_imgui()
         }
         ImGui::PopItemWidth();
 
-        // crease angle
-        ImGui::PushItemWidth(120);
-        ImGui::SliderFloat("Crease Angle", &crease_angle_, 0.0f, 180.0f,
-                           "%.0f");
-        ImGui::PopItemWidth();
-        if (crease_angle_ != renderer_.crease_angle())
+        if (draw_mode_names_[draw_mode_] == "Points")
         {
-            renderer_.set_crease_angle(crease_angle_);
+            // point size
+            ImGui::PushItemWidth(120);
+            ImGui::SliderInt("Point Size", &point_size_, 1, 20);
+            ImGui::PopItemWidth();
+            if (crease_angle_ != renderer_.point_size())
+            {
+                renderer_.set_point_size(point_size_);
+            }
+        }
+        else 
+        {
+            // crease angle
+            ImGui::PushItemWidth(120);
+            ImGui::SliderFloat("Crease Angle", &crease_angle_, 0.0f, 180.0f,
+                            "%.0f");
+            ImGui::PopItemWidth();
+            if (crease_angle_ != renderer_.crease_angle())
+            {
+                renderer_.set_crease_angle(crease_angle_);
+            }
         }
     }
 }

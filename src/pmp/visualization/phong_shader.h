@@ -57,6 +57,7 @@ uniform bool   use_lighting;
 uniform bool   use_texture;
 uniform bool   use_srgb;
 uniform bool   use_vertex_color;
+uniform bool   use_round_points;
 uniform vec3   front_color;
 uniform vec3   back_color;
 uniform float  ambient;
@@ -121,6 +122,13 @@ void main()
 
     if (use_texture) rgb *= texture(mytexture, v2f_tex).xyz;
     if (use_srgb)    rgb  = pow(clamp(rgb, 0.0, 1.0), vec3(0.45));
+
+    // round points
+    if (use_round_points) 
+    {
+        vec2 uv = 2.0 * gl_PointCoord - 1.0;
+        if (dot(uv, uv) > 1.0) discard;
+    }
 
     f_color = vec4(rgb, alpha);
 }

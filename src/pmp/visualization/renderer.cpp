@@ -45,7 +45,7 @@ Renderer::Renderer(const SurfaceMesh& mesh) : mesh_(mesh)
     use_srgb_ = false;
     use_colors_ = true;
     crease_angle_ = 180.0;
-    point_size_ = 5.0;
+    point_size_ = 5;
 
     // initialize texture
     texture_ = 0;
@@ -613,7 +613,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     phong_shader_.set_uniform("modelview_projection_matrix", mvp_matrix);
     phong_shader_.set_uniform("modelview_matrix", mv_matrix);
     phong_shader_.set_uniform("normal_matrix", n_matrix);
-    phong_shader_.set_uniform("point_size", point_size_);
+    phong_shader_.set_uniform("point_size", (float)point_size_);
     phong_shader_.set_uniform("light1", vec3(1.0, 1.0, 1.0));
     phong_shader_.set_uniform("light2", vec3(-1.0, 1.0, 1.0));
     phong_shader_.set_uniform("front_color", front_color_);
@@ -626,6 +626,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     phong_shader_.set_uniform("use_lighting", true);
     phong_shader_.set_uniform("use_texture", false);
     phong_shader_.set_uniform("use_srgb", false);
+    phong_shader_.set_uniform("use_round_points", false);
     phong_shader_.set_uniform("show_texture_layout", false);
     phong_shader_.set_uniform("use_vertex_color",
                               has_vertex_colors_ && use_colors_);
@@ -634,6 +635,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
 
     if (draw_mode == "Points")
     {
+        phong_shader_.set_uniform("use_round_points", true);
 #ifndef __EMSCRIPTEN__
         glEnable(GL_PROGRAM_POINT_SIZE);
 #endif
