@@ -1,0 +1,66 @@
+#projectname {
+  white-space: revert;
+}
+
+.arrow {
+  color: var(--primary-color);
+  font-size: 80%;
+  font-family: var(--font-family);
+  text-align: left;
+}
+
+/* hide nav-sync icon */
+#nav-sync {
+  visibility: hidden;
+}
+
+/* page title larger than section heading */
+div.header .title {
+  font-size: 2.25em;
+}
+
+/* group header margins */
+div.groupHeader {
+  margin-left: 0;
+  margin-bottom: 1em;
+}
+
+/* figure caption font and margin */
+div.caption {
+  font-weight: normal;
+  margin-top: 0.5em;
+}
+
+/* centered copyright footer */
+#nav-path address {
+  border-top: 1px solid var(--separator-color);
+  border-bottom: 1px solid var(--separator-color);
+  background-color: var(--page-background-color);
+  color: var(--page-secondary-foreground-color);
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  font-size: small;
+  text-align: center;
+}
+
+/* fix appearance of numbers in citation list */
+dl.citelist dt {
+  font-weight: normal;
+  font-size: var(--page-font-size);
+  line-height: var(--content-line-height);
+  color: var(--page-foreground-color);
+  padding-top: 0.4em;
+}
+
+.demo {
+  display: block;
+  width: 75%;
+  height: 60vh;
+  border: 1px solid #dedede;
+  border-radius: 3px;
+}
+
+div.toc h3,
+div.toc li {
+  font-family: var(--font-family);
+}
