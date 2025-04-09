@@ -167,7 +167,7 @@ void MeshViewer::process_imgui()
             ImGui::PushItemWidth(120);
             ImGui::SliderInt("Point Size", &point_size_, 1, 20);
             ImGui::PopItemWidth();
-            if (crease_angle_ != renderer_.point_size())
+            if (point_size_ != renderer_.point_size())
             {
                 renderer_.set_point_size(point_size_);
             }
