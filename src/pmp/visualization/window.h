@@ -122,6 +122,8 @@ protected:
     //! is SHIFT modifier key pressed down?
     bool shift_pressed() const { return shift_pressed_; }
 
+    static void render_frame();
+
 private:
     static void glfw_error(int error, const char* description);
     static void glfw_keyboard(GLFWwindow* window, int key, int scancode,
@@ -134,8 +136,6 @@ private:
     static void glfw_resize(GLFWwindow* window, int width, int height);
     static void glfw_drop(GLFWwindow* window, int count, const char** paths);
     static void glfw_scale(GLFWwindow* window, float xscale, float yscale);
-
-    static void render_frame();
 
     static Window* instance_;
 

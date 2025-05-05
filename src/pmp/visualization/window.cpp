@@ -581,18 +581,34 @@ void Window::exit_fullscreen()
 #endif
 }
 
-void Window::glfw_motion(GLFWwindow* /*window*/, double xpos, double ypos)
+void Window::glfw_motion(GLFWwindow* window, double xpos, double ypos)
 {
-    // correct for highDPI scaling
-    instance_->motion(instance_->scaling_ * xpos, instance_->scaling_ * ypos);
+    ImGui_ImplGlfw_CursorPosCallback(window, instance_->scaling_ * xpos, instance_->scaling_ * ypos);
+
+    if (!ImGui::GetIO().WantCaptureMouse)
+    {
+        // correct for highDPI scaling
+        instance_->motion(instance_->scaling_ * xpos, instance_->scaling_ * ypos);
+    }
 }
 
 void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
 {
+#ifdef __EMSCRIPTEN__
+    // since touch input does not trigger hover events,
+    // we have to set mouse position before button press.
+    // since we cannot distinguish mouse and touch events,
+    // we simply do this all the time.
+    double x,y; 
+    glfwGetCursorPos(window, &x, &y);
+    ImGui_ImplGlfw_CursorPosCallback(window, x, y);
+#endif
+
     ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
+
+    instance_->button_[button] = (action == GLFW_PRESS);
     if (!ImGui::GetIO().WantCaptureMouse)
     {
-        instance_->button_[button] = (action == GLFW_PRESS);
         instance_->mouse(button, action, mods);
     }
 }
