@@ -2,6 +2,7 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "trackball_viewer.h"
+#include "pmp/stop_watch.h"
 #include <algorithm>
 #include <numbers>
 
@@ -91,6 +92,12 @@ void TrackballViewer::keyboard(int key, int code, int action, int mods)
             rotate(vec3(1, 0, 0), 5.0);
             break;
         }
+        case GLFW_KEY_F:
+        {
+            double fps = measure_fps();
+            std::cout << "FPS: " << fps << std::endl;
+            break;
+        }
 
         default:
         {
@@ -141,7 +148,7 @@ void TrackballViewer::mouse(int /*button*/, int action, int /*mods*/)
     }
 
     // force re-initialization of rotation/translation/zoom
-    last_point_ok_ = false;
+    prev_point_ok_ = false;
 }
 
 void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
@@ -156,7 +163,9 @@ void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 
 void TrackballViewer::motion(double xpos, double ypos)
 {
-    if (last_point_ok_)
+    if (num_touches_ > 1) return;
+
+    if (prev_point_ok_)
     {
         // zoom
         if (right_mouse_pressed() || (left_mouse_pressed() && shift_pressed()))
@@ -179,8 +188,8 @@ void TrackballViewer::motion(double xpos, double ypos)
     }
 
     // remember points
-    last_point_2d_ = ivec2(xpos, ypos);
-    last_point_ok_ = map_to_sphere(last_point_2d_, last_point_3d_);
+    prev_point_2d_ = ivec2(xpos, ypos);
+    prev_point_ok_ = map_to_sphere(prev_point_2d_, prev_point_3d_);
 }
 
 void TrackballViewer::init()
@@ -300,7 +309,7 @@ bool TrackballViewer::map_to_sphere(const ivec2& point2D, vec3& result)
 
 void TrackballViewer::rotation(int x, int y)
 {
-    if (last_point_ok_)
+    if (prev_point_ok_)
     {
         ivec2 new_point2d;
         vec3 new_point3d;
@@ -311,8 +320,8 @@ void TrackballViewer::rotation(int x, int y)
 
         if (new_point_ok)
         {
-            const vec3 axis = cross(last_point_3d_, new_point3d);
-            const float cos_angle = dot(last_point_3d_, new_point3d);
+            const vec3 axis = cross(prev_point_3d_, new_point3d);
+            const float cos_angle = dot(prev_point_3d_, new_point3d);
 
             if (fabs(cos_angle) < 1.0)
             {
@@ -326,8 +335,8 @@ void TrackballViewer::rotation(int x, int y)
 
 void TrackballViewer::translation(int x, int y)
 {
-    const float dx = x - last_point_2d_[0];
-    const float dy = y - last_point_2d_[1];
+    const float dx = x - prev_point_2d_[0];
+    const float dy = y - prev_point_2d_[1];
 
     const vec4 mc = vec4(center_, 1.0);
     vec4 ec = modelview_matrix_ * mc;
@@ -343,7 +352,7 @@ void TrackballViewer::translation(int x, int y)
 
 void TrackballViewer::zoom(int, int y)
 {
-    const float dy = y - last_point_2d_[1];
+    const float dy = y - prev_point_2d_[1];
     const float h = height();
     translate(vec3(0.0, 0.0, radius_ * dy * 3.0 / h));
 }
@@ -363,5 +372,85 @@ void TrackballViewer::rotate(const vec3& axis, float angle)
     modelview_matrix_ = translation_matrix(c) * rotation_matrix(axis, angle) *
                         translation_matrix(-c) * modelview_matrix_;
 }
+
+double TrackballViewer::measure_fps()
+{
+	double        fps(0.0);
+    unsigned int  i, frames = 360;
+    const float   angle = 360.0/(float)frames;
+    vec3          axis;
+	
+    // disable vsync
+    glfwSwapInterval(0);
+
+	StopWatch timer;
+	timer.start();
+	
+    for (i=0, axis=vec3(1,0,0); i<frames; ++i)
+    { rotate(axis, angle); render_frame(); }
+    for (i=0, axis=vec3(0,1,0); i<frames; ++i)
+    { rotate(axis, angle); render_frame(); }
+    for (i=0, axis=vec3(0,0,1); i<frames; ++i)
+    { rotate(axis, angle); render_frame(); }
+	
+    glFinish();
+
+	timer.stop();
+	fps = (1000.0 / timer.elapsed() * (3.0 * frames));
+
+    // re-enable vsync
+    glfwSwapInterval(1);
+
+    return fps;
+}
+
+#if __EMSCRIPTEN__
+
+void TrackballViewer::touchstart(const EmscriptenTouchEvent* event) 
+{
+    num_touches_ = event->numTouches;
+
+    // invalidate touch-based transform
+    prev_point_ok_ = false;
+    prev_pinch_distance_ = -1;
+}
+
+void TrackballViewer::touchmove(const EmscriptenTouchEvent* event)
+{
+    if (num_touches_ == 2)
+    {
+        const vec2 pos0 = high_dpi_scaling() * vec2(event->touches[0].pageX, event->touches[0].pageY);
+        const vec2 pos1 = high_dpi_scaling() * vec2(event->touches[1].pageX, event->touches[1].pageY);
+        const vec2 pos = 0.5*(pos0 + pos1);
+        const float pinch_distance = distance(pos0, pos1);
+
+        // pan
+        if (prev_point_ok_)
+        {
+            translation(pos[0], pos[1]);
+        }
+        prev_point_2d_ = ivec2(pos[0], pos[1]);
+        prev_point_ok_ = true;
+
+        // scale
+        if (prev_pinch_distance_ > 0)
+        {
+            const float h = height();
+            translate(vec3(0.0, 0.0, radius_ * (pinch_distance-prev_pinch_distance_) * 5.0 / h));
+        }
+        prev_pinch_distance_ = pinch_distance;
+    }
+}
+
+void TrackballViewer::touchend(const EmscriptenTouchEvent* event) 
+{
+    num_touches_ = event->numTouches-1;
+
+    // invalidate touch-based transform
+    prev_point_ok_ = false;
+    prev_pinch_distance_ = -1;
+}
+
+#endif
 
 } // namespace pmp
