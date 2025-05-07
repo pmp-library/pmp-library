@@ -131,6 +131,13 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwSetDropCallback(window_, glfw_drop);
     glfwSetWindowContentScaleCallback(window_, glfw_scale);
 
+#if defined(__EMSCRIPTEN__)
+    // touch event handlers
+    emscripten_set_touchstart_callback("#canvas", nullptr, true, emscripten_touchstart);
+    emscripten_set_touchmove_callback("#canvas", nullptr, true, emscripten_touchmove);
+    emscripten_set_touchend_callback("#canvas", nullptr, true, emscripten_touchend);
+#endif
+
     // setup imgui
     init_imgui();
 
@@ -679,5 +686,27 @@ void Window::screenshot()
     // clean up
     delete[] data;
 }
+
+#if __EMSCRIPTEN__
+
+EM_BOOL Window::emscripten_touchstart(int, const EmscriptenTouchEvent* evt, void*)
+{
+    instance_->touchstart(evt);
+    return EM_TRUE;
+}
+
+EM_BOOL Window::emscripten_touchmove(int, const EmscriptenTouchEvent* evt, void*)
+{
+    instance_->touchmove(evt);
+    return EM_TRUE;
+}
+
+EM_BOOL Window::emscripten_touchend(int, const EmscriptenTouchEvent* evt, void*)
+{
+    instance_->touchend(evt);
+    return EM_TRUE;
+}
+
+#endif
 
 } // namespace pmp

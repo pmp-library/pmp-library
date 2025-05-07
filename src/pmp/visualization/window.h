@@ -12,6 +12,11 @@
 
 #include <GLFW/glfw3.h>
 
+#if __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#include <emscripten/html5.h>
+#endif
+
 namespace pmp {
 
 //! A window provided by GLFW
@@ -54,6 +59,12 @@ protected:
 
     //! this function is called if a file is dropped onto the window
     virtual void drop(int /*count*/, const char** /*paths*/) {}
+
+#if __EMSCRIPTEN__
+    virtual void touchstart(const EmscriptenTouchEvent*) {}
+    virtual void touchmove(const EmscriptenTouchEvent*) {}
+    virtual void touchend(const EmscriptenTouchEvent*) {}
+#endif
 
     //! this function renders the ImGUI elements and handles their events
     virtual void process_imgui() {}
@@ -137,6 +148,13 @@ private:
     static void glfw_drop(GLFWwindow* window, int count, const char** paths);
     static void glfw_scale(GLFWwindow* window, float xscale, float yscale);
 
+#if __EMSCRIPTEN__
+    static EM_BOOL emscripten_touchstart(int, const EmscriptenTouchEvent*, void*);
+    static EM_BOOL emscripten_touchmove(int, const EmscriptenTouchEvent*, void*);
+    static EM_BOOL emscripten_touchend(int, const EmscriptenTouchEvent*, void*);
+#endif
+
+    // the active window
     static Window* instance_;
 
     // GLFW window pointer

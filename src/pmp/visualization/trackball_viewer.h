@@ -47,6 +47,13 @@ protected:
     //! this function handles mouse scroll events
     void scroll(double xoffset, double yoffset) override;
 
+#if __EMSCRIPTEN__
+    int num_touches_{0};
+    void touchstart(const EmscriptenTouchEvent*) override;
+    void touchmove(const EmscriptenTouchEvent*) override;
+    void touchend(const EmscriptenTouchEvent*) override;
+#endif
+
 protected:
     //! reset the list of draw modes
     void clear_draw_modes();
@@ -92,6 +99,9 @@ protected:
     //! virtual trackball: map 2D screen point to unit sphere. used by rotate().
     bool map_to_sphere(const ivec2& point, vec3& result);
 
+    //! measure performance, returns frames/second
+    double measure_fps();
+
 protected:
     //! draw modes
     unsigned int draw_mode_;
@@ -110,9 +120,10 @@ protected:
     mat4 modelview_matrix_;
 
     //! trackball helpers
-    ivec2 last_point_2d_;
-    vec3 last_point_3d_;
-    bool last_point_ok_;
+    ivec2 prev_point_2d_;
+    vec3 prev_point_3d_;
+    bool prev_point_ok_;
+    float prev_pinch_distance_;
 };
 
 } // namespace pmp
