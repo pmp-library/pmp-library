@@ -163,9 +163,8 @@ void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 
 void TrackballViewer::motion(double xpos, double ypos)
 {
-#ifdef __EMSCRIPTEN__
     if (num_touches_ > 1) return;
-#endif
+
 
     if (prev_point_ok_)
     {
