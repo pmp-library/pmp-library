@@ -69,40 +69,6 @@ TEST_F(SurfaceMeshTest, insert_remove_single_polygonal_face)
     EXPECT_EQ(mesh.n_faces(), size_t(0));
 }
 
-TEST_F(SurfaceMeshTest, add_vertex_unique)
-{
-    std::vector<Vertex> v(8);
-    v[0] = mesh.add_vertex_unique(Point(0, 0, 0));
-    v[1] = mesh.add_vertex_unique(Point(1, 0, 0));
-    v[2] = mesh.add_vertex_unique(Point(0, 1, 0));
-    v[3] = mesh.add_vertex_unique(Point(0, 0, 1));
-    v[4] = mesh.add_vertex_unique(Point(0, 0, 0));
-    v[5] = mesh.add_vertex_unique(Point(1, 0, 0));
-    v[6] = mesh.add_vertex_unique(Point(0, 1, 0));
-    v[7] = mesh.add_vertex_unique(Point(0, 0, 1));
-    EXPECT_EQ(v[0], v[4]);
-    EXPECT_EQ(v[1], v[5]);
-    EXPECT_EQ(v[2], v[6]);
-    EXPECT_EQ(v[3], v[7]);
-    mesh.add_triangle(v[0], v[1], v[3]);
-    mesh.add_triangle(v[1], v[2], v[3]);
-    mesh.add_triangle(v[2], v[0], v[3]);
-    mesh.add_triangle(v[0], v[2], v[1]);
-    mesh.delete_vertex(v[2]);
-    v[2] = mesh.add_vertex_unique(Point(0, 1, 0));
-    v[6] = mesh.add_vertex_unique(Point(0, 1, 0));
-    EXPECT_EQ(v[2], v[6]);
-    mesh.garbage_collection();
-    v[0] = mesh.add_vertex_unique(Point(0, 0, 0));
-    v[1] = mesh.add_vertex_unique(Point(1, 0, 0));
-    v[2] = mesh.add_vertex_unique(Point(0, 1, 0));
-    v[3] = mesh.add_vertex_unique(Point(0, 0, 1));
-    EXPECT_EQ(v[0].idx(), IndexType(0));
-    EXPECT_EQ(v[1].idx(), IndexType(1));
-    EXPECT_EQ(v[2].idx(), IndexType(2));
-    EXPECT_EQ(v[3].idx(), IndexType(3));
-}
-
 TEST_F(SurfaceMeshTest, delete_center_vertex)
 {
     mesh = vertex_onering();

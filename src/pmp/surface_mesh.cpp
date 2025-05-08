@@ -47,8 +47,6 @@ SurfaceMesh& SurfaceMesh::operator=(const SurfaceMesh& rhs)
         deleted_edges_ = rhs.deleted_edges_;
         deleted_faces_ = rhs.deleted_faces_;
 
-        unique_vertices_set_ = rhs.unique_vertices_set_;
-
         has_garbage_ = rhs.has_garbage_;
     }
 
@@ -85,8 +83,6 @@ SurfaceMesh& SurfaceMesh::assign(const SurfaceMesh& rhs)
         edeleted_.array() = rhs.edeleted_.array();
         fdeleted_.array() = rhs.fdeleted_.array();
 
-        unique_vertices_set_ = rhs.unique_vertices_set_;
-
         // resize (needed by property containers)
         vprops_.resize(rhs.vertices_size());
         hprops_.resize(rhs.halfedges_size());
@@ -122,8 +118,6 @@ void SurfaceMesh::clear()
     vdeleted_ = add_vertex_property<bool>("v:deleted", false);
     edeleted_ = add_edge_property<bool>("e:deleted", false);
     fdeleted_ = add_face_property<bool>("f:deleted", false);
-
-    unique_vertices_set_.clear();
 
     // set initial status (as in constructor)
     deleted_vertices_ = 0;
@@ -198,23 +192,6 @@ Vertex SurfaceMesh::add_vertex(const Point& p)
     Vertex v = new_vertex();
     if (v.is_valid())
         vpoint_[v] = p;
-    return v;
-}
-
-Vertex SurfaceMesh::add_vertex_unique(const Point& p)
-{
-    Vertex v;
-    unique_vertices_point_ = p;
-    auto it = unique_vertices_set_.lower_bound(Vertex());
-
-    if (it == unique_vertices_set_.end() ||
-        p != position(*it) || is_deleted(*it))
-    {
-        v = add_vertex(p);  // unique point
-        unique_vertices_set_.insert(it, v);
-    }
-    else
-        v = *it;  // duplicate
     return v;
 }
 
@@ -1144,16 +1121,6 @@ void SurfaceMesh::garbage_collection()
     for (size_t i = 0; i < nf; ++i)
         fmap[Face(i)] = Face(i);
 
-    // remove deleted vertices from unique_vertices_set_
-    for (auto it = unique_vertices_set_.begin();
-             it != unique_vertices_set_.end(); )
-    {
-        if ((*it).idx() >= nv || is_deleted(*it))
-            it = unique_vertices_set_.erase(it);
-        else
-            ++it;
-    }
-
     // remove deleted vertices
     if (nv > 0)
     {
@@ -1176,20 +1143,6 @@ void SurfaceMesh::garbage_collection()
 
         // remember new size
         nv = vdeleted_[Vertex(i0)] ? i0 : i0 + 1;
-    }
-
-    // reload unique vertices
-    for (auto it = unique_vertices_set_.begin();
-             it != unique_vertices_set_.end(); )
-    {
-        if ((*it).idx() >= vmap[*it].idx())
-        {
-            Vertex v = vmap[*it];
-            it = unique_vertices_set_.erase(it);
-            unique_vertices_set_.insert(it, v);
-        }
-        else
-            ++it;
     }
 
     // remove deleted edges
