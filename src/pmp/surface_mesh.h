@@ -8,8 +8,10 @@
 #include <cstddef>
 #include <compare>
 #include <filesystem>
+#include <functional>
 #include <iterator>
 #include <ostream>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -1160,6 +1162,11 @@ public:
     //! add a new vertex with position \p p
     Vertex add_vertex(const Point& p);
 
+    //! add a new vertex with position \p p. if the position is
+    //! equal to a vertex position already in the unique vertex set,
+    //! return the existing vertex and do not add a new vertex.
+    Vertex add_vertex_unique(const Point& p);
+
     //! \brief Add a new face with vertex list \p vertices
     //! \throw TopologyException in case a topological error occurs.
     //! \sa add_triangle, add_quad
@@ -2014,6 +2021,30 @@ private:
     std::vector<bool> add_face_is_new_;
     std::vector<bool> add_face_needs_adjust_;
     NextCache add_face_next_cache_;
+
+    // helper data for add_vertex_unique()
+    using VertexCompare = std::function<bool (const Vertex&, const Vertex&)>;
+    VertexCompare vertex_compare =
+        [this](const Vertex& lv, const Vertex& rv) -> bool
+    {
+        const Point& lp =
+            (is_valid(lv)) ? position(lv) : unique_vertices_point_;
+        const Point& rp =
+            (is_valid(rv)) ? position(rv) : unique_vertices_point_;
+        if (lp[0] != rp[0])
+          return(lp[0] < rp[0]);
+        if (lp[1] != rp[1])
+          return(lp[1] < rp[1]);
+        if (lp[2] != rp[2])
+          return(lp[2] < rp[2]);
+
+        // deleted vertex sorts after vertex
+        bool lpd = (is_valid(lv)) ? is_deleted(lv) : false;
+        bool rpd = (is_valid(rv)) ? is_deleted(rv) : false;
+        return(lpd < rpd);
+    };
+    std::set<Vertex, VertexCompare>unique_vertices_set_{vertex_compare};
+    Point unique_vertices_point_;
 };
 
 //!@}
