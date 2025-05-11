@@ -181,6 +181,11 @@ void Window::init_imgui()
 #endif
     ImGui_ImplOpenGL3_Init(glsl_version);
 
+#ifdef __EMSCRIPTEN__
+    // install callbacks for wheel event
+    ImGui_ImplGlfw_InstallEmscriptenCallbacks(window_, "#canvas");
+#endif
+
     // load Lato font from pre-compiled ttf file
     io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
                                              LatoLatin_compressed_size,
