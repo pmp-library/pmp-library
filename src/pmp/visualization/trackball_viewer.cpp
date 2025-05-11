@@ -3,6 +3,7 @@
 
 #include "trackball_viewer.h"
 #include "pmp/stop_watch.h"
+#include <imgui.h>
 #include <algorithm>
 #include <numbers>
 
@@ -419,7 +420,7 @@ void TrackballViewer::touchstart(const EmscriptenTouchEvent* event)
 
 void TrackballViewer::touchmove(const EmscriptenTouchEvent* event)
 {
-    if (num_touches_ == 2)
+    if (num_touches_ == 2 && !ImGui::GetIO().WantCaptureMouse)
     {
         const vec2 pos0 = high_dpi_scaling() * vec2(event->touches[0].pageX, event->touches[0].pageY);
         const vec2 pos1 = high_dpi_scaling() * vec2(event->touches[1].pageX, event->touches[1].pageY);
