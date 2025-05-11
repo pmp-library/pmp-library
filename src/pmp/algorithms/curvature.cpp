@@ -323,6 +323,9 @@ void CurvatureAnalyzer::set_boundary_curvatures()
 
 void CurvatureAnalyzer::smooth_curvatures(unsigned int iterations)
 {
+    if (iterations == 0)
+        return;
+
     // Laplace matrix (clamp negative cotan weights to zero)
     SparseMatrix L;
     laplace_matrix(mesh_, L, true);
