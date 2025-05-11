@@ -42,7 +42,7 @@ void geodesics_heat(SurfaceMesh& mesh, const std::vector<Vertex>& seeds);
 
 //! \brief Use the normalized distances as texture coordinates
 //! \details Stores the normalized distances in a vertex property of type
-//! TexCoord named "v:tex". Re-uses any existing vertex property of the
+//! TexCoord named "v:tex". Reuses any existing vertex property of the
 //! same type and name.
 void distance_to_texture_coordinates(SurfaceMesh& mesh);
 

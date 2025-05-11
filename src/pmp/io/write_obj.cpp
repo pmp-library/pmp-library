@@ -44,7 +44,7 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
 
     // write texture coordinates
     auto tex_coords = mesh.get_halfedge_property<TexCoord>("h:tex");
-    bool write_texcoords = tex_coords && flags.use_halfedge_texcoords;
+    const bool write_texcoords = tex_coords && flags.use_halfedge_texcoords;
 
     if (write_texcoords)
     {

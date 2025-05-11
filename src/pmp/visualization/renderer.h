@@ -66,9 +66,9 @@ public:
     void set_crease_angle(Scalar ca);
 
     //! get point size for visualization of points
-    float point_size() const { return point_size_; }
+    int point_size() const { return point_size_; }
     //! set point size for visualization of points
-    void set_point_size(float ps) { point_size_ = ps; }
+    void set_point_size(int ps) { point_size_ = ps; }
 
     //! \brief Control usage of color information.
     //! \details Either per-vertex or per-face colors can be used. Vertex colors
@@ -154,8 +154,8 @@ protected:
 
     // triangulate a polygon such that the sum of squared triangle areas is minimized.
     // this prevents overlapping/folding triangles for non-convex polygons.
-    void tesselate(const std::vector<vec3>& points,
-                   std::vector<ivec3>& triangles);
+    void tessellate(const std::vector<vec3>& points,
+                    std::vector<ivec3>& triangles);
 
     // OpenGL buffers
     GLuint vertex_array_object_;
@@ -184,7 +184,7 @@ protected:
     bool use_srgb_;
     bool use_colors_;
     float crease_angle_;
-    float point_size_;
+    int point_size_;
 
     // 1D texture for scalar field rendering
     GLuint texture_;

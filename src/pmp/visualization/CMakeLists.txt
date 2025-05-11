@@ -18,7 +18,8 @@ else()
     add_library(pmp_vis STATIC ${SRCS} ${HDRS})
     target_include_directories(
       pmp_vis PRIVATE ${PROJECT_SOURCE_DIR}/${STB_IMAGE_WRITE_SOURCE_DIR}
-                      ${PROJECT_SOURCE_DIR}/${STB_IMAGE_SOURCE_DIR})
+                      ${PROJECT_SOURCE_DIR}/${STB_IMAGE_SOURCE_DIR}
+              PUBLIC  ${PROJECT_SOURCE_DIR}/${GLAD_SOURCE_DIR}/include)
     target_link_libraries(
       pmp_vis
       pmp
@@ -26,7 +27,6 @@ else()
       stb_image_write
       imgui
       glfw
-      glew
       ${OPENGL_LIBRARIES})
     if(PMP_INSTALL)
       install(TARGETS pmp_vis DESTINATION lib)

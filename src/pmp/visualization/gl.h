@@ -8,60 +8,53 @@
 #include <Windows.h>
 #endif
 
+#if __EMSCRIPTEN__
 #include <GL/glew.h>
+#else
+#include <glad/gl.h>
+#endif
 
 #include <iostream>
 
 //! Check for OpenGL errors.
-inline void glCheckError(bool force = false)
+inline void check_gl_errors()
 {
     GLenum error = glGetError();
-
-    if (error == GL_NO_ERROR)
+    while (error != GL_NO_ERROR)
     {
-        if (force)
+        switch (error)
         {
-            std::cout << " No GL error!" << std::endl;
+            case GL_INVALID_ENUM:
+                std::cerr << " GL error: invalid enum\n";
+                break;
+
+            case GL_INVALID_VALUE:
+                std::cerr << " GL error: invalid value (out of range)\n";
+                break;
+
+            case GL_INVALID_OPERATION:
+                std::cerr << " GL error: invalid operation (not allowed in "
+                             "current state)\n";
+                break;
+
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+                std::cerr << " GL error: invalid framebuffer operation "
+                             "(framebuffer not complete)\n";
+                break;
+
+            case GL_OUT_OF_MEMORY:
+                std::cerr << " GL error: out of memory\n";
+                break;
+
+            case GL_STACK_UNDERFLOW:
+                std::cerr << " GL error: stack underflow\n";
+                break;
+
+            case GL_STACK_OVERFLOW:
+                std::cerr << " GL error: stack overflow\n";
+                break;
         }
-    }
-    else
-    {
-        do
-        {
-            switch (error)
-            {
-                case GL_INVALID_ENUM:
-                    std::cerr << " GL error: invalid enum\n";
-                    break;
 
-                case GL_INVALID_VALUE:
-                    std::cerr << " GL error: invalid value (out of range)\n";
-                    break;
-
-                case GL_INVALID_OPERATION:
-                    std::cerr << " GL error: invalid operation (not allowed in "
-                                 "current state)\n";
-                    break;
-
-                case GL_INVALID_FRAMEBUFFER_OPERATION:
-                    std::cerr << " GL error: invalid framebuffer operation "
-                                 "(framebuffer not complete)\n";
-                    break;
-
-                case GL_OUT_OF_MEMORY:
-                    std::cerr << " GL error: out of memory\n";
-                    break;
-
-                case GL_STACK_UNDERFLOW:
-                    std::cerr << " GL error: stack underflow\n";
-                    break;
-
-                case GL_STACK_OVERFLOW:
-                    std::cerr << " GL error: stack overflow\n";
-                    break;
-            }
-
-            error = glGetError();
-        } while (error != GL_NO_ERROR);
+        error = glGetError();
     }
 }

@@ -103,14 +103,14 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
         if (rescale)
         {
             // restore original surface area
-            Scalar area_after = surface_area(mesh);
-            Scalar scale = sqrt(area_before / area_after);
+            const Scalar area_after = surface_area(mesh);
+            const Scalar scale = sqrt(area_before / area_after);
             for (auto v : mesh.vertices())
                 mesh.position(v) *= scale;
 
             // restore original center
-            Point center_after = centroid(mesh);
-            Point trans = center_before - center_after;
+            const Point center_after = centroid(mesh);
+            const Point trans = center_before - center_after;
             for (auto v : mesh.vertices())
                 mesh.position(v) += trans;
         }

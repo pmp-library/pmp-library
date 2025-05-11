@@ -24,7 +24,7 @@ Some parts of PMP depend on the following third-party libraries:
 | --------------------------------------------------- | --------------------------------- | ----------- |
 | [Eigen](http://eigen.tuxfamily.org)                 | C++ linear algebra library        | &ge; 3.4.0  |
 | [OpenGL](http://opengl.org)                         | Open Graphics Library             | &ge; 3.3    |
-| [GLEW](http://glew.sourceforge.net)                 | OpenGL Extension Wrangler Library | &ge; 2.1.0  |
+| [GLAD](https://github.com/Dav1dde/glad)             | OpenGL loader library             | &ge; 2.0.8  |
 | [GLFW](http://glfw.org)                             | Graphics Library Framework        | &ge; 3.4    |
 | [ImGui](https://github.com/ocornut/imgui)           | Immediate Mode GUI                | &ge; 1.90.4 |
 | [Google Test](https://github.com/google/googletest) | C++ Test Framework                | &ge; 1.13.0 |
@@ -124,7 +124,7 @@ This way, you can simply link your own target against PMP
 target_link_libraries(your_target pmp)
 ```
 
-**Note:** The usage described above is currently limited to the @ref core and @ref algorithms modules of PMP. If you want to use the @ref visualization module you need to link your target against `pmp_vis` and its dependencies: `stb_image`, `imgui`, `glfw`, `glew`, as well as your platform OpenGL library.
+**Note:** The usage described above is currently limited to the @ref core and @ref algorithms modules of PMP. If you want to use the @ref visualization module you need to link your target against `pmp_vis` and its dependencies: `stb_image`, `imgui`, `glfw`, as well as your platform OpenGL library.
 
 ## Build Options
 

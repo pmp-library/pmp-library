@@ -14,6 +14,10 @@
 #if __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
 #include <emscripten/html5.h>
+#include <GL/gl.h>
+#else
+#define GLAD_GL_IMPLEMENTATION
+#include <glad/gl.h>
 #endif
 
 namespace pmp {
@@ -52,11 +56,20 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwMakeContextCurrent(window_);
     instance_ = this;
 
+#ifndef __EMSCRIPTEN__
+    const auto version = gladLoadGL(glfwGetProcAddress);
+    if (version == 0)
+    {
+        std::cout << "Failed to initialize OpenGL context\n";
+        exit(EXIT_FAILURE);
+    }
+#endif
+
     // check for sufficient OpenGL version
     GLint major, minor;
     glGetIntegerv(GL_MAJOR_VERSION, &major);
     glGetIntegerv(GL_MINOR_VERSION, &minor);
-    GLint glversion = 10 * major + minor;
+    const GLint glversion = 10 * major + minor;
 #ifdef __EMSCRIPTEN__
     if (glversion < 30)
     {
@@ -80,18 +93,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     // enable v-sync
     glfwSwapInterval(1);
 
-    // now that we have a GL context, initialize GLEW
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
-    if (err != GLEW_OK)
-    {
-        std::cerr << "Error initializing GLEW: " << glewGetErrorString(err)
-                  << std::endl;
-        exit(1);
-    }
-
     // debug: print GL and GLSL version
-    std::cout << "GLEW   " << glewGetString(GLEW_VERSION) << std::endl;
     std::cout << "GL     " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL   " << glGetString(GL_SHADING_LANGUAGE_VERSION)
               << std::endl;
@@ -105,7 +107,8 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwGetFramebufferSize(window_, &framebuffer_width, &framebuffer_height);
     width_ = framebuffer_width;
     height_ = framebuffer_height;
-    scaling_ = framebuffer_width / window_width;
+    scaling_ = static_cast<float>(framebuffer_width) /
+               static_cast<float>(window_width);
     if (scaling_ != 1)
         std::cout << "highDPI scaling: " << scaling_ << std::endl;
 
@@ -127,6 +130,13 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwSetFramebufferSizeCallback(window_, glfw_resize);
     glfwSetDropCallback(window_, glfw_drop);
     glfwSetWindowContentScaleCallback(window_, glfw_scale);
+
+#if defined(__EMSCRIPTEN__)
+    // touch event handlers
+    emscripten_set_touchstart_callback("#canvas", nullptr, true, emscripten_touchstart);
+    emscripten_set_touchmove_callback("#canvas", nullptr, true, emscripten_touchmove);
+    emscripten_set_touchend_callback("#canvas", nullptr, true, emscripten_touchend);
+#endif
 
     // setup imgui
     init_imgui();
@@ -165,14 +175,16 @@ void Window::init_imgui()
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window_, false);
 #ifdef __EMSCRIPTEN__
-    ImGui_ImplGlfw_InstallEmscriptenCanvasResizeCallback("#canvas");
-#endif
-#ifdef __EMSCRIPTEN__
     const char* glsl_version = "#version 300 es";
 #else
     const char* glsl_version = "#version 330";
 #endif
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+#ifdef __EMSCRIPTEN__
+    // install callbacks for wheel event
+    ImGui_ImplGlfw_InstallEmscriptenCallbacks(window_, "#canvas");
+#endif
 
     // load Lato font from pre-compiled ttf file
     io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
@@ -244,7 +256,7 @@ void Window::scale_imgui(float scale)
     // get content scale (HighDPI display)
     float sx, sy;
     glfwGetWindowContentScale(window_, &sx, &sy);
-    float content_scale = std::max(1.0f, 0.5f * (sx + sy));
+    const float content_scale = std::max(1.0f, 0.5f * (sx + sy));
 
     // reload font
     ImGuiIO& io = ImGui::GetIO();
@@ -359,6 +371,13 @@ void Window::render_frame()
 {
     glfwMakeContextCurrent(instance_->window_);
 
+#if __EMSCRIPTEN__
+    // dynamicall adjust window size based on container
+    double dw, dh;
+    emscripten_get_element_css_size("#canvas_container", &dw, &dh);
+    glfwSetWindowSize(instance_->window_, (int)dw, (int)dh);
+#endif
+
     // do some computations
     instance_->do_processing();
 
@@ -388,10 +407,15 @@ void Window::render_frame()
         ImGui::Render();
     }
 
+    // (re)determine scaling
+    int window_width, window_height, framebuffer_width, framebuffer_height;
+    glfwGetWindowSize(instance_->window_, &window_width, &window_height);
+    glfwGetFramebufferSize(instance_->window_, &framebuffer_width, &framebuffer_height);
+    instance_->scaling_ = static_cast<float>(framebuffer_width) /
+                          static_cast<float>(window_width);
+
     // setup viewport
-    int display_w, display_h;
-    glfwGetFramebufferSize(instance_->window_, &display_w, &display_h);
-    glViewport(0, 0, display_w, display_h);
+    glViewport(0, 0, framebuffer_width, framebuffer_height);
 
     // draw scene
     instance_->display();
@@ -525,50 +549,24 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
     }
 }
 
-// fullscreen handling from here:
-// https://github.com/emscripten-core/emscripten/issues/5124
 
-#ifdef __EMSCRIPTEN__
 
 bool Window::is_fullscreen() const
 {
+#ifdef __EMSCRIPTEN__
     EmscriptenFullscreenChangeEvent fsce;
     emscripten_get_fullscreen_status(&fsce);
     return fsce.isFullscreen;
-}
-
-void Window::enter_fullscreen()
-{
-    // get screen size
-    int w = EM_ASM_INT({ return screen.width; });
-    int h = EM_ASM_INT({ return screen.height; });
-
-    // Workaround https://github.com/kripken/emscripten/issues/5124#issuecomment-292849872
-    EM_ASM(JSEvents.inEventHandler = true);
-    EM_ASM(JSEvents.currentEventHandler = {allowsDeferredCalls : true});
-
-    // remember window size
-    glfwGetWindowSize(window_, &backup_width_, &backup_height_);
-
-    // setting window to screen size triggers fullscreen mode
-    glfwSetWindowSize(window_, w, h);
-}
-
-void Window::exit_fullscreen()
-{
-    emscripten_exit_fullscreen();
-    glfwSetWindowSize(window_, backup_width_, backup_height_);
-}
-
 #else
-
-bool Window::is_fullscreen() const
-{
     return glfwGetWindowMonitor(window_) != nullptr;
+#endif
 }
 
 void Window::enter_fullscreen()
 {
+#ifdef __EMSCRIPTEN__
+    emscripten_request_fullscreen("#canvas_container", false);
+#else
     // get monitor
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 
@@ -582,28 +580,47 @@ void Window::enter_fullscreen()
     // switch to fullscreen on primary monitor
     glfwSetWindowMonitor(window_, monitor, 0, 0, mode->width, mode->height,
                          GLFW_DONT_CARE);
+#endif
 }
 
 void Window::exit_fullscreen()
 {
+#ifdef __EMSCRIPTEN__
+    emscripten_exit_fullscreen();
+#else
     glfwSetWindowMonitor(window_, nullptr, backup_xpos_, backup_ypos_,
                          backup_width_, backup_height_, GLFW_DONT_CARE);
+#endif
 }
 
-#endif
-
-void Window::glfw_motion(GLFWwindow* /*window*/, double xpos, double ypos)
+void Window::glfw_motion(GLFWwindow* window, double xpos, double ypos)
 {
-    // correct for highDPI scaling
-    instance_->motion(instance_->scaling_ * xpos, instance_->scaling_ * ypos);
+    ImGui_ImplGlfw_CursorPosCallback(window, instance_->scaling_ * xpos, instance_->scaling_ * ypos);
+
+    if (!ImGui::GetIO().WantCaptureMouse)
+    {
+        // correct for highDPI scaling
+        instance_->motion(instance_->scaling_ * xpos, instance_->scaling_ * ypos);
+    }
 }
 
 void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
 {
+#ifdef __EMSCRIPTEN__
+    // since touch input does not trigger hover events,
+    // we have to set mouse position before button press.
+    // since we cannot distinguish mouse and touch events,
+    // we simply do this all the time.
+    double x,y; 
+    glfwGetCursorPos(window, &x, &y);
+    ImGui_ImplGlfw_CursorPosCallback(window, x, y);
+#endif
+
     ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
+
+    instance_->button_[button] = (action == GLFW_PRESS);
     if (!ImGui::GetIO().WantCaptureMouse)
     {
-        instance_->button_[button] = (action == GLFW_PRESS);
         instance_->mouse(button, action, mods);
     }
 }
@@ -674,5 +691,27 @@ void Window::screenshot()
     // clean up
     delete[] data;
 }
+
+#if __EMSCRIPTEN__
+
+EM_BOOL Window::emscripten_touchstart(int, const EmscriptenTouchEvent* evt, void*)
+{
+    instance_->touchstart(evt);
+    return EM_TRUE;
+}
+
+EM_BOOL Window::emscripten_touchmove(int, const EmscriptenTouchEvent* evt, void*)
+{
+    instance_->touchmove(evt);
+    return EM_TRUE;
+}
+
+EM_BOOL Window::emscripten_touchend(int, const EmscriptenTouchEvent* evt, void*)
+{
+    instance_->touchend(evt);
+    return EM_TRUE;
+}
+
+#endif
 
 } // namespace pmp

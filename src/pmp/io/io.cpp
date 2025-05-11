@@ -3,6 +3,8 @@
 
 #include "pmp/io/io.h"
 
+#include <algorithm>
+
 #include "pmp/io/read_obj.h"
 #include "pmp/io/read_off.h"
 #include "pmp/io/read_pmp.h"
@@ -21,7 +23,7 @@ void read(SurfaceMesh& mesh, const std::filesystem::path& file)
 
     // extension determines reader
     auto ext = file.extension().string();
-    std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+    std::ranges::transform(ext, ext.begin(), ::tolower);
 
     if (ext == ".obj")
         read_obj(mesh, file);
@@ -39,7 +41,7 @@ void write(const SurfaceMesh& mesh, const std::filesystem::path& file,
            const IOFlags& flags)
 {
     auto ext = file.extension().string();
-    std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
+    std::ranges::transform(ext, ext.begin(), tolower);
 
     // extension determines reader
     if (ext == ".obj")

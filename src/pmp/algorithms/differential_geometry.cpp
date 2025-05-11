@@ -39,8 +39,8 @@ Scalar surface_area(const SurfaceMesh& mesh)
 Scalar edge_area(const SurfaceMesh& mesh, Edge e)
 {
     Scalar A(0.0);
-    Face f0 = mesh.face(e, 0);
-    Face f1 = mesh.face(e, 1);
+    const Face f0 = mesh.face(e, 0);
+    const Face f1 = mesh.face(e, 1);
     if (f0.is_valid())
         A += face_area(mesh, f0) / mesh.valence(f0);
     if (f1.is_valid())

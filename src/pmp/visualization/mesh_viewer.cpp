@@ -25,6 +25,7 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
     set_draw_mode("Smooth Shading");
 
     crease_angle_ = 180.0;
+    point_size_ = 5;
 
     // add help items
     add_help_item("Backspace", "Reload mesh", 3);
@@ -47,7 +48,7 @@ void MeshViewer::load_mesh(const char* filename)
     }
 
     // update scene center and bounds
-    BoundingBox bb = bounds(mesh_);
+    const BoundingBox bb = bounds(mesh_);
     set_scene((vec3)bb.center(), 0.5 * bb.size());
 
     // compute face & vertex normals, update face indices
@@ -125,7 +126,7 @@ void MeshViewer::drop(int count, const char** paths)
 void MeshViewer::update_mesh()
 {
     // update scene center and radius, but don't update camera view
-    BoundingBox bb = bounds(mesh_);
+    const BoundingBox bb = bounds(mesh_);
     center_ = (vec3)bb.center();
     radius_ = 0.5f * bb.size();
 
@@ -137,19 +138,51 @@ void MeshViewer::process_imgui()
 {
     if (ImGui::CollapsingHeader("Mesh Info", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        // output mesh statistics
+        // mesh statistics
         ImGui::BulletText("%d vertices", (int)mesh_.n_vertices());
         ImGui::BulletText("%d edges", (int)mesh_.n_edges());
         ImGui::BulletText("%d faces", (int)mesh_.n_faces());
-
-        // control crease angle
-        ImGui::PushItemWidth(100);
-        ImGui::SliderFloat("Crease Angle", &crease_angle_, 0.0f, 180.0f,
-                           "%.0f");
-        ImGui::PopItemWidth();
-        if (crease_angle_ != renderer_.crease_angle())
+        
+        // draw mode
+        ImGui::PushItemWidth(120);
+        const char* current_item = draw_mode_names_[draw_mode_].c_str();
+        if (ImGui::BeginCombo("Draw Mode", current_item))
         {
-            renderer_.set_crease_angle(crease_angle_);
+            for (unsigned int i=0; i<n_draw_modes_; ++i)
+            {
+                const char* item = draw_mode_names_[i].c_str();
+                bool is_selected = (current_item == item);
+                if (ImGui::Selectable(item, is_selected))
+                    draw_mode_ = i;
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+        ImGui::PopItemWidth();
+
+        if (draw_mode_names_[draw_mode_] == "Points")
+        {
+            // point size
+            ImGui::PushItemWidth(120);
+            ImGui::SliderInt("Point Size", &point_size_, 1, 20);
+            ImGui::PopItemWidth();
+            if (point_size_ != renderer_.point_size())
+            {
+                renderer_.set_point_size(point_size_);
+            }
+        }
+        else 
+        {
+            // crease angle
+            ImGui::PushItemWidth(120);
+            ImGui::SliderFloat("Crease Angle", &crease_angle_, 0.0f, 180.0f,
+                            "%.0f");
+            ImGui::PopItemWidth();
+            if (crease_angle_ != renderer_.crease_angle())
+            {
+                renderer_.set_crease_angle(crease_angle_);
+            }
         }
     }
 }
@@ -197,7 +230,7 @@ Vertex MeshViewer::pick_vertex(int x, int y)
 
     if (TrackballViewer::pick(x, y, p))
     {
-        Point picked_position(p);
+        const Point picked_position(p);
         for (auto v : mesh_.vertices())
         {
             d = distance(mesh_.position(v), picked_position);

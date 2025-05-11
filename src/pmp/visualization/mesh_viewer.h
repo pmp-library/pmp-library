@@ -57,6 +57,7 @@ protected:
     Renderer renderer_;
     std::string filename_; //!< the current file
     float crease_angle_;
+    int point_size_;
 };
 
 } // namespace pmp
