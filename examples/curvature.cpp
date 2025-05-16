@@ -26,15 +26,31 @@ void Viewer::process_imgui()
 {
     MeshViewer::process_imgui();
 
+    ImGui::Spacing();
+    ImGui::Spacing();
+
     if (ImGui::CollapsingHeader("Curvature", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        static int iters = 1;
-        ImGui::SliderInt("Smoothing Iterations", &iters, 0, 10);
-        static bool tensor = true;
-        ImGui::Checkbox("Analyze Tensor", &tensor);
+        static int method = 1;
+        ImGui::RadioButton("Cotan Laplace", &method, 0);
+        ImGui::RadioButton("Curvature Tensor", &method, 1);
+        bool tensor = (method==1);
+
+        ImGui::Spacing();
+
         static bool two_ring = true;
-        if (tensor)
-            ImGui::Checkbox("Two-Ring Neighborhood", &two_ring);
+        static int iters = 1;
+        if (ImGui::CollapsingHeader("Options", ImGuiTreeNodeFlags_None))
+        {
+            if (tensor)
+                ImGui::Checkbox("Two-Ring Neighborhood", &two_ring);
+
+            ImGui::PushItemWidth(100);
+            ImGui::SliderInt("Smoothing Iterations", &iters, 0, 10);
+            ImGui::PopItemWidth();
+        }
+
+        ImGui::Spacing();
 
         if (ImGui::Button("Mean Curvature"))
         {
