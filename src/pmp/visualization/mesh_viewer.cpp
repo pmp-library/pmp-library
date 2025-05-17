@@ -144,7 +144,7 @@ void MeshViewer::process_imgui()
         ImGui::BulletText("%d faces", (int)mesh_.n_faces());
         
         // draw mode
-        ImGui::PushItemWidth(120);
+        ImGui::PushItemWidth(120 * imgui_scaling());
         const char* current_item = draw_mode_names_[draw_mode_].c_str();
         if (ImGui::BeginCombo("Draw Mode", current_item))
         {
@@ -164,7 +164,7 @@ void MeshViewer::process_imgui()
         if (draw_mode_names_[draw_mode_] == "Points")
         {
             // point size
-            ImGui::PushItemWidth(120);
+            ImGui::PushItemWidth(120 * imgui_scaling());
             ImGui::SliderInt("Point Size", &point_size_, 1, 20);
             ImGui::PopItemWidth();
             if (point_size_ != renderer_.point_size())

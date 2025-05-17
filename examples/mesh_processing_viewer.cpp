@@ -49,34 +49,26 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 
     switch (key)
     {
-        case GLFW_KEY_A:
-        {
-            detect_features(mesh_, 25);
-            update_mesh();
-            break;
-        }
-        case GLFW_KEY_D: // dualize mesh
-        {
-            dual(mesh_);
-            update_mesh();
-            break;
-        }
-        case GLFW_KEY_H:
-        {
-            set_draw_mode("Hidden Line");
-            break;
-        }
+        // case GLFW_KEY_A:
+        // {
+        //     detect_features(mesh_, 25);
+        //     update_mesh();
+        //     break;
+        // }
+        // case GLFW_KEY_D: // dualize mesh
+        // {
+        //     dual(mesh_);
+        //     update_mesh();
+        //     break;
+        // }
+        // case GLFW_KEY_H:
+        // {
+        //     set_draw_mode("Hidden Line");
+        //     break;
+        // }
         case GLFW_KEY_O: // change face orientation
         {
-#ifdef __EMSCRIPTEN__
-            // [fileHandle] = await window.showOpenFilePicker();
-            instance = this;
-            EM_ASM(console.log("mario"););
-            emscripten_async_wget("icosphere.off", "input.off", onload,
-                                  onerror);
-#else
             flip_faces(mesh_);
-#endif
             update_mesh();
             break;
         }

@@ -110,9 +110,6 @@ void TrackballViewer::keyboard(int key, int code, int action, int mods)
 
 void TrackballViewer::display()
 {
-    // clear buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     // adjust clipping planes to tightly fit bounding sphere
     const vec4 mc(center_, 1.0);
     vec4 ec = modelview_matrix_ * mc;

@@ -2,13 +2,14 @@
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #include "window.h"
+#include "font-lato.h"
+#include "font-awesome.h"
+#include "font-icons.h"
 
 #include <sstream>
 
-#include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
-#include <lato-font.h>
 #include <stb_image_write.h>
 
 #if __EMSCRIPTEN__
@@ -133,9 +134,12 @@ Window::Window(const char* title, int width, int height, bool showgui)
 
 #if defined(__EMSCRIPTEN__)
     // touch event handlers
-    emscripten_set_touchstart_callback("#canvas", nullptr, true, emscripten_touchstart);
-    emscripten_set_touchmove_callback("#canvas", nullptr, true, emscripten_touchmove);
-    emscripten_set_touchend_callback("#canvas", nullptr, true, emscripten_touchend);
+    emscripten_set_touchstart_callback("#canvas", nullptr, true,
+                                       emscripten_touchstart);
+    emscripten_set_touchmove_callback("#canvas", nullptr, true,
+                                      emscripten_touchmove);
+    emscripten_set_touchend_callback("#canvas", nullptr, true,
+                                     emscripten_touchend);
 #endif
 
     // setup imgui
@@ -172,80 +176,42 @@ void Window::init_imgui()
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
     io.IniFilename = nullptr;
-    ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window_, false);
 #ifdef __EMSCRIPTEN__
-    const char* glsl_version = "#version 300 es";
-#else
-    const char* glsl_version = "#version 330";
-#endif
-    ImGui_ImplOpenGL3_Init(glsl_version);
-
-#ifdef __EMSCRIPTEN__
-    // install callbacks for wheel event
+    ImGui_ImplOpenGL3_Init("#version 300 es");
     ImGui_ImplGlfw_InstallEmscriptenCallbacks(window_, "#canvas");
+#else
+    ImGui_ImplOpenGL3_Init("#version 330");
 #endif
 
-    // load Lato font from pre-compiled ttf file
-    io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
-                                             LatoLatin_compressed_size,
-                                             14 * imgui_scale_);
+    // setup font and border radii
+    scale_imgui(1.0);
 
-    // window style
+    // setup colors
+    color_mode(color_mode_);
+}
+
+void Window::color_mode(ColorMode c)
+{
     ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowBorderSize = 0;
-    style.WindowRounding = 4 * imgui_scale_;
-    style.FrameRounding = 4 * imgui_scale_;
-    style.GrabMinSize = 10 * imgui_scale_;
-    style.GrabRounding = 4 * imgui_scale_;
+    ImVec4* colors = style.Colors;
 
-    // color scheme adapted from
-    // https://github.com/ocornut/imgui/pull/511#issuecomment-175719267
-    style.Colors[ImGuiCol_Text] = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
-    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.90f, 0.90f, 0.90f, 0.70f);
-    style.Colors[ImGuiCol_ChildBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-    style.Colors[ImGuiCol_PopupBg] = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
-    style.Colors[ImGuiCol_Border] = ImVec4(0.00f, 0.00f, 0.00f, 0.39f);
-    style.Colors[ImGuiCol_BorderShadow] = ImVec4(1.00f, 1.00f, 1.00f, 0.10f);
-    style.Colors[ImGuiCol_FrameBg] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
-    style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
-    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_TitleBgCollapsed] =
-        ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
-    style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.98f, 0.98f, 0.98f, 0.53f);
-    style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.69f, 0.69f, 0.69f, 0.80f);
-    style.Colors[ImGuiCol_ScrollbarGrabHovered] =
-        ImVec4(0.49f, 0.49f, 0.49f, 0.80f);
-    style.Colors[ImGuiCol_ScrollbarGrabActive] =
-        ImVec4(0.49f, 0.49f, 0.49f, 1.00f);
-    style.Colors[ImGuiCol_CheckMark] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.16f, 0.62f, 0.87f, 0.78f);
-    style.Colors[ImGuiCol_SliderGrabActive] =
-        ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Button] = ImVec4(0.16f, 0.62f, 0.87f, 0.40f);
-    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_Header] = ImVec4(0.16f, 0.62f, 0.87f, 0.31f);
-    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.16f, 0.62f, 0.87f, 0.80f);
-    style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.16f, 0.62f, 0.87f, 1.00f);
-    style.Colors[ImGuiCol_ResizeGrip] = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
-    style.Colors[ImGuiCol_ResizeGripHovered] =
-        ImVec4(0.16f, 0.62f, 0.87f, 0.67f);
-    style.Colors[ImGuiCol_ResizeGripActive] =
-        ImVec4(0.16f, 0.62f, 0.87f, 0.95f);
-    style.Colors[ImGuiCol_PlotLines] = ImVec4(0.39f, 0.39f, 0.39f, 1.00f);
-    style.Colors[ImGuiCol_PlotLinesHovered] =
-        ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
-    style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.90f, 0.70f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_PlotHistogramHovered] =
-        ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
-    style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.16f, 0.62f, 0.87f, 0.35f);
-    style.Colors[ImGuiCol_ModalWindowDimBg] =
-        ImVec4(0.20f, 0.20f, 0.20f, 0.70f);
+    switch (color_mode_ = c)
+    {
+        case LightMode:
+            ImGui::StyleColorsLight();
+            colors[ImGuiCol_WindowBg] = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
+            colors[ImGuiCol_Border] = ImVec4(0, 0, 0, 0);
+            clear_color_ = vec3(1.0, 1.0, 1.0);
+            break;
+
+        case DarkMode:
+            ImGui::StyleColorsDark();
+            colors[ImGuiCol_WindowBg] = ImVec4(0.1, 0.1, 0.1, 0.9);
+            colors[ImGuiCol_Border] = ImVec4(0, 0, 0, 0);
+            clear_color_ = vec3(0.11, 0.12, 0.13);
+            break;
+    }
 }
 
 void Window::scale_imgui(float scale)
@@ -253,17 +219,16 @@ void Window::scale_imgui(float scale)
     // scale imgui scale by new factor
     imgui_scale_ *= scale;
 
-    // get content scale (HighDPI display)
-    float sx, sy;
-    glfwGetWindowContentScale(window_, &sx, &sy);
-    const float content_scale = std::max(1.0f, 0.5f * (sx + sy));
-
-    // reload font
+    // (re)load fonts
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->Clear();
     io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
                                              LatoLatin_compressed_size,
-                                             14 * content_scale * imgui_scale_);
+                                             16 * imgui_scaling());
+    static ImWchar icons_ranges[] = {0x0020, 0xf8ff, 0};
+    FontAwesome = io.Fonts->AddFontFromMemoryCompressedTTF(
+        FontAwesome_compressed_data, FontAwesome_compressed_size,
+        16 * imgui_scaling(), nullptr, icons_ranges);
 
     // trigger font texture regeneration
     ImGui_ImplOpenGL3_DestroyFontsTexture();
@@ -354,14 +319,114 @@ void Window::show_help()
     }
 }
 
+void Window::draw_imgui()
+{
+    // start imgui frame
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    // start window
+    ImGui::SetNextWindowBgAlpha(show_imgui_ ? 0.8 : 0.0);
+    ImGui::SetNextWindowPos(ImVec2(4, 4), ImGuiCond_Once);
+    ImGui::Begin(
+        "GUI", nullptr,
+        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
+
+    if (show_imgui_)
+    {
+        // icons toolbar
+        ImVec2 icon_size(35 * imgui_scale_, 35 * imgui_scale_);
+        float icon_spacing =
+            (ImGui::GetContentRegionAvail().x - 4 * icon_size.x) / 6.0;
+
+        ImGui::PushFont(FontAwesome);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 30 * imgui_scale_);
+
+        if (ImGui::Button(ICON_FA_XMARK, icon_size))
+        {
+            show_imgui_ = false;
+            std::cerr << "hide gui\n";
+        }
+
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + icon_spacing);
+        if (color_mode() == LightMode)
+        {
+            if (ImGui::Button(ICON_FA_MOON, icon_size))
+                color_mode(DarkMode);
+        }
+        else
+        {
+            if (ImGui::Button(ICON_FA_SUN, icon_size))
+                color_mode(LightMode);
+        }
+
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + icon_spacing);
+        if (is_fullscreen())
+        {
+            if (ImGui::Button(ICON_FA_DOWN_LEFT_AND_UP_RIGHT_TO_CENTER,
+                              icon_size))
+                exit_fullscreen();
+        }
+        else
+        {
+            if (ImGui::Button(ICON_FA_UP_RIGHT_AND_DOWN_LEFT_FROM_CENTER,
+                              icon_size))
+                enter_fullscreen();
+        }
+
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + icon_spacing);
+        if (ImGui::Button(ICON_FA_QUESTION, icon_size))
+        {
+            show_help_ = true;
+        }
+
+        ImGui::PopStyleVar();
+        ImGui::PopFont();
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        // application's GUI
+        process_imgui();
+
+        // show help window?
+        if (show_help_)
+            show_help();
+    }
+    else
+    {
+        ImVec2 icon_size(35 * imgui_scale_, 35 * imgui_scale_);
+        ImGui::PushFont(FontAwesome);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 30 * imgui_scale_);
+        if (ImGui::Button(ICON_FA_BARS, icon_size))
+        {
+            show_imgui_ = true;
+            std::cerr << "show gui\n";
+        }
+        ImGui::PopStyleVar();
+        ImGui::PopFont();
+    }
+
+    // end window
+    ImGui::End();
+
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
 int Window::run()
 {
 #if __EMSCRIPTEN__
-    emscripten_set_main_loop(Window::render_frame, 0, 1);
+    emscripten_set_main_loop(Window::render_frame_, 0, 1);
 #else
     while (!glfwWindowShouldClose(window_))
     {
-        Window::render_frame();
+        Window::render_frame_();
     }
 #endif
     return EXIT_SUCCESS;
@@ -369,62 +434,38 @@ int Window::run()
 
 void Window::render_frame()
 {
-    glfwMakeContextCurrent(instance_->window_);
+    glfwMakeContextCurrent(window_);
 
 #if __EMSCRIPTEN__
     // dynamicall adjust window size based on container
     double dw, dh;
     emscripten_get_element_css_size("#canvas_container", &dw, &dh);
-    glfwSetWindowSize(instance_->window_, (int)dw, (int)dh);
+    glfwSetWindowSize(window_, (int)dw, (int)dh);
 #endif
 
     // do some computations
-    instance_->do_processing();
-
-    // prepare and process ImGUI elements
-    if (instance_->show_imgui())
-    {
-        // start imgui frame
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        // prepare, process, and finish applications ImGUI dialog
-        ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
-        ImGui::Begin(
-            "Mesh Info", nullptr,
-            ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::Text("Press '?' for help");
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Spacing();
-        instance_->process_imgui();
-        ImGui::End();
-
-        // show imgui help
-        instance_->show_help();
-
-        ImGui::Render();
-    }
+    do_processing();
 
     // (re)determine scaling
     int window_width, window_height, framebuffer_width, framebuffer_height;
-    glfwGetWindowSize(instance_->window_, &window_width, &window_height);
-    glfwGetFramebufferSize(instance_->window_, &framebuffer_width, &framebuffer_height);
-    instance_->scaling_ = static_cast<float>(framebuffer_width) /
-                          static_cast<float>(window_width);
+    glfwGetWindowSize(window_, &window_width, &window_height);
+    glfwGetFramebufferSize(instance_->window_, &framebuffer_width,
+                           &framebuffer_height);
+    scaling_ = static_cast<float>(framebuffer_width) /
+               static_cast<float>(window_width);
 
     // setup viewport
     glViewport(0, 0, framebuffer_width, framebuffer_height);
 
+    // clear buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(clear_color_[0], clear_color_[1], clear_color_[2], 0.0);
+
     // draw scene
-    instance_->display();
+    display();
 
     // draw GUI
-    if (instance_->show_imgui())
-    {
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    }
+    draw_imgui();
 
 #if __EMSCRIPTEN__
     // to avoid problems with premultiplied alpha in WebGL,
@@ -441,7 +482,7 @@ void Window::render_frame()
 #endif
 
     // swap buffers
-    glfwSwapBuffers(instance_->window_);
+    glfwSwapBuffers(window_);
 
     // handle events
     glfwPollEvents();
@@ -549,8 +590,6 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
     }
 }
 
-
-
 bool Window::is_fullscreen() const
 {
 #ifdef __EMSCRIPTEN__
@@ -595,12 +634,14 @@ void Window::exit_fullscreen()
 
 void Window::glfw_motion(GLFWwindow* window, double xpos, double ypos)
 {
-    ImGui_ImplGlfw_CursorPosCallback(window, instance_->scaling_ * xpos, instance_->scaling_ * ypos);
+    ImGui_ImplGlfw_CursorPosCallback(window, instance_->scaling_ * xpos,
+                                     instance_->scaling_ * ypos);
 
     if (!ImGui::GetIO().WantCaptureMouse)
     {
         // correct for highDPI scaling
-        instance_->motion(instance_->scaling_ * xpos, instance_->scaling_ * ypos);
+        instance_->motion(instance_->scaling_ * xpos,
+                          instance_->scaling_ * ypos);
     }
 }
 
@@ -611,7 +652,7 @@ void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
     // we have to set mouse position before button press.
     // since we cannot distinguish mouse and touch events,
     // we simply do this all the time.
-    double x,y; 
+    double x, y;
     glfwGetCursorPos(window, &x, &y);
     ImGui_ImplGlfw_CursorPosCallback(window, x, y);
 #endif
@@ -694,13 +735,15 @@ void Window::screenshot()
 
 #if __EMSCRIPTEN__
 
-EM_BOOL Window::emscripten_touchstart(int, const EmscriptenTouchEvent* evt, void*)
+EM_BOOL Window::emscripten_touchstart(int, const EmscriptenTouchEvent* evt,
+                                      void*)
 {
     instance_->touchstart(evt);
     return EM_TRUE;
 }
 
-EM_BOOL Window::emscripten_touchmove(int, const EmscriptenTouchEvent* evt, void*)
+EM_BOOL Window::emscripten_touchmove(int, const EmscriptenTouchEvent* evt,
+                                     void*)
 {
     instance_->touchmove(evt);
     return EM_TRUE;
@@ -712,6 +755,19 @@ EM_BOOL Window::emscripten_touchend(int, const EmscriptenTouchEvent* evt, void*)
     return EM_TRUE;
 }
 
+extern "C" {
+EMSCRIPTEN_KEEPALIVE void light_mode()
+{
+    pmp::Window::light_mode();
+    std::cerr << "light mode\n";
+}
+
+EMSCRIPTEN_KEEPALIVE void dark_mode()
+{
+    pmp::Window::dark_mode();
+    std::cerr << "dark mode\n";
+}
+}
 #endif
 
 } // namespace pmp
