@@ -34,7 +34,7 @@ void Viewer::process_imgui()
         static int method = 1;
         ImGui::RadioButton("Cotan Laplace", &method, 0);
         ImGui::RadioButton("Curvature Tensor", &method, 1);
-        bool tensor = (method==1);
+        bool tensor = (method == 1);
 
         ImGui::Spacing();
 
