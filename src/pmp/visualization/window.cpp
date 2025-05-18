@@ -1,5 +1,7 @@
 // Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include "imgui.h"
 
 #include "window.h"
 #include "font-lato.h"
@@ -20,6 +22,9 @@
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #endif
+
+static inline float  ImTrunc(float f)         { return (float)(int)(f); }
+static inline ImVec2 ImTrunc(const ImVec2& v) { return ImVec2((float)(int)(v.x), (float)(int)(v.y)); }
 
 namespace pmp {
 
@@ -236,21 +241,30 @@ void Window::scale_imgui(float scale)
 
     // adjust element styles (scaled version of default style or pmp style)
     ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowPadding = ImVec2(8 * imgui_scale_, 8 * imgui_scale_);
-    style.WindowRounding = 4 * imgui_scale_;
-    style.FramePadding = ImVec2(4 * imgui_scale_, 2 * imgui_scale_);
-    style.FrameRounding = 4 * imgui_scale_;
-    style.ItemSpacing = ImVec2(8 * imgui_scale_, 4 * imgui_scale_);
-    style.ItemInnerSpacing = ImVec2(4 * imgui_scale_, 4 * imgui_scale_);
-    style.IndentSpacing = 21 * imgui_scale_;
-    style.ColumnsMinSpacing = 6 * imgui_scale_;
-    style.ScrollbarSize = 16 * imgui_scale_;
-    style.ScrollbarRounding = 9 * imgui_scale_;
-    style.GrabMinSize = 10 * imgui_scale_;
-    style.GrabRounding = 4 * imgui_scale_;
-    style.TabRounding = 4 * imgui_scale_;
-    style.DisplayWindowPadding = ImVec2(19 * imgui_scale_, 19 * imgui_scale_);
-    style.DisplaySafeAreaPadding = ImVec2(3 * imgui_scale_, 3 * imgui_scale_);
+    style.WindowPadding = ImTrunc(ImVec2(8,8) * imgui_scale_);
+    style.WindowRounding = ImTrunc(4 * imgui_scale_);
+    style.WindowMinSize = ImTrunc(ImVec2(32,32) * imgui_scale_);
+    style.ChildRounding = ImTrunc(4 * imgui_scale_);
+    style.PopupRounding = ImTrunc(4 * imgui_scale_);
+    style.FramePadding = ImTrunc(ImVec2(4,3) * imgui_scale_);
+    style.FrameRounding = ImTrunc(4 * imgui_scale_);
+    style.ItemSpacing = ImTrunc(ImVec2(4,4) * imgui_scale_);
+    style.ItemInnerSpacing = ImTrunc(ImVec2(4,4) * imgui_scale_);
+    style.CellPadding = ImTrunc(ImVec2(4,2) * imgui_scale_);
+    style.TouchExtraPadding = ImVec2(0,0);
+    style.IndentSpacing = ImTrunc(21 * imgui_scale_);
+    style.ColumnsMinSpacing = ImTrunc(6 * imgui_scale_);
+    style.ScrollbarSize = ImTrunc(14 * imgui_scale_);
+    style.ScrollbarRounding = ImTrunc(9 * imgui_scale_);
+    style.GrabMinSize = ImTrunc(12 * imgui_scale_);
+    style.GrabRounding = ImTrunc(0 * imgui_scale_);
+    style.LogSliderDeadzone = ImTrunc(4 * imgui_scale_);
+    style.TabRounding = ImTrunc(5 * imgui_scale_);
+    style.TabMinWidthForCloseButton = ImTrunc(0 * imgui_scale_);
+    style.TabBarOverlineSize = ImTrunc(1 * imgui_scale_);
+    style.SeparatorTextPadding = ImTrunc(ImVec2(20,3) * imgui_scale_);
+    style.DisplayWindowPadding = ImTrunc(ImVec2(19,19) * imgui_scale_);
+    style.DisplaySafeAreaPadding = ImTrunc(ImVec2(3,3) * imgui_scale_);
 }
 
 void Window::add_help_item(std::string key, std::string description, int pos)
@@ -336,21 +350,21 @@ void Window::draw_imgui()
     if (show_imgui_)
     {
         // icons toolbar
-        ImVec2 icon_size(35 * imgui_scale_, 35 * imgui_scale_);
-        float icon_spacing =
-            (ImGui::GetContentRegionAvail().x - 4 * icon_size.x) / 6.0;
-
         ImGui::PushFont(FontAwesome);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 30 * imgui_scale_);
+        ImGui::BeginGroup();
+
+        ImVec2 icon_size(35 * imgui_scale_, 35 * imgui_scale_);
+        float icon_spacing = 20 * imgui_scale_;
 
         if (ImGui::Button(ICON_FA_XMARK, icon_size))
         {
             show_imgui_ = false;
-            std::cerr << "hide gui\n";
         }
 
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + icon_spacing);
+
         if (color_mode() == LightMode)
         {
             if (ImGui::Button(ICON_FA_MOON, icon_size))
@@ -364,6 +378,7 @@ void Window::draw_imgui()
 
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + icon_spacing);
+
         if (is_fullscreen())
         {
             if (ImGui::Button(ICON_FA_DOWN_LEFT_AND_UP_RIGHT_TO_CENTER,
@@ -379,11 +394,13 @@ void Window::draw_imgui()
 
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + icon_spacing);
+
         if (ImGui::Button(ICON_FA_QUESTION, icon_size))
         {
             show_help_ = true;
         }
 
+        ImGui::EndGroup();
         ImGui::PopStyleVar();
         ImGui::PopFont();
 
@@ -406,7 +423,6 @@ void Window::draw_imgui()
         if (ImGui::Button(ICON_FA_BARS, icon_size))
         {
             show_imgui_ = true;
-            std::cerr << "show gui\n";
         }
         ImGui::PopStyleVar();
         ImGui::PopFont();
