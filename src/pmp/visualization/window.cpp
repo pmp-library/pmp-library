@@ -1,5 +1,6 @@
-// Copyright 2011-2019 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2025 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 
