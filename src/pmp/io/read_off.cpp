@@ -244,8 +244,9 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
                 g /= 255.0f;
                 b /= 255.0f;
             }
-            if (!face_colors) face_colors = mesh.face_property<Color>("f:color");
-            face_colors[f] = Color(r,g,b);
+            if (!face_colors)
+                face_colors = mesh.face_property<Color>("f:color");
+            face_colors[f] = Color(r, g, b);
         }
     }
 }

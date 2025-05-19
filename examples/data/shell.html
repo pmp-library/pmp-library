@@ -1,176 +1,219 @@
 <!doctype html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <style>
-      body { margin:0px; padding: 0px; overflow: hidden; }
-      .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
-      div.emscripten { text-align: center; }
-      #canvas { 
-          border:           0px none;  /* no border, otherwise mouse coords will be wrong */
-          padding:          0px;       /* no padding, otherwise mouse coords will be wrong */
-          background-color: white;
-          width:            100%;
-          height:           100%;
-          max-height:       100%;
-          max-width:        100%;
-          display:          block;
-          overflow:         hidden;    /* avoids scrollbars during loading */
-      }
-      #canvas_container {
-          border:           0px none;  /* no border, otherwise mouse coords will be wrong */
-          padding:          0px;       /* no padding, otherwise mouse coords will be wrong */
-          background-color: white;
-          width:            100vw;     /* be as wide as possible */
-          height:           100vh;     /* be as tall as possible */
-          max-width:        100vw;     /* don't grow more than screen height */
-          max-height:       100vh;     /* don't grow more than screen height */
-          display:          block;
-          overflow:         hidden;    /* avoids scrollbars during loading */
-      }
-    </style>
-  </head>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <style>
+            body { 
+                margin: 0px; 
+                padding: 0px; 
+                overflow: hidden; 
+            }
+            
+            .emscripten { 
+                padding-right: 0; 
+                margin-left: auto; 
+                margin-right: auto; 
+                display: block; 
+            }
+            
+            div.emscripten { 
+                text-align: center; 
+            }
 
-  <body>
-    <div class="emscripten" id="status">Downloading...</div>
-    <div class="emscripten">
-      <progress value="0" max="100" id="progress" hidden=1></progress>  
-    </div>
-    <div id="canvas_container">
-        <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-    </div>
+            #canvas { 
+                border:           0px none;  /* no border, otherwise mouse coords will be wrong */
+                padding:          0px;       /* no padding, otherwise mouse coords will be wrong */
+                background-color: white;
+                width:            100%;
+                height:           100%;
+                max-height:       100%;
+                max-width:        100%;
+                display:          block;
+                overflow:         hidden;    /* avoids scrollbars during loading */
+            }
+
+            #canvas_container {
+                border:           0px none;  /* no border, otherwise mouse coords will be wrong */
+                padding:          0px;       /* no padding, otherwise mouse coords will be wrong */
+                background-color: white;
+                width:            100vw;     /* be as wide as possible */
+                height:           100vh;     /* be as tall as possible */
+                max-width:        100vw;     /* don't grow more than screen height */
+                max-height:       100vh;     /* don't grow more than screen height */
+                display:          block;
+                overflow:         hidden;    /* avoids scrollbars during loading */
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="emscripten" id="status">Downloading...</div>
+        <div class="emscripten">
+            <progress value="0" max="100" id="progress" hidden=1></progress>  
+        </div>
+        <div id="canvas_container">
+            <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+        </div>
     
-    <script type='text/javascript'>
-      var statusElement = document.getElementById('status');
-      var progressElement = document.getElementById('progress');
-
-      var urlParams = new URLSearchParams(window.location.search);
-      var frameElem = window.frameElement;
+        <script type='text/javascript'>
+            const statusElement = document.getElementById('status');
+            const progressElement = document.getElementById('progress');
+            const urlParams = new URLSearchParams(window.location.search);
+            const frameElem = window.frameElement;
       
-      function hasParam(name) {
-          if (urlParams && urlParams.has(name))
-              return true;
-          else if (frameElem && frameElem.hasAttribute("data-"+name))
-              return true;
-          return false;
-      }
+            function hasParam(name) {
+                if (urlParams && urlParams.has(name))
+                    return true;
+                else if (frameElem && frameElem.hasAttribute("data-"+name))
+                    return true;
+                return false;
+            }
       
-      function getParam(name) {
-          if (urlParams && urlParams.has(name))
-              return urlParams.get(name);
-          else if (frameElem && frameElem.hasAttribute("data-"+name))
-              return frameElem.getAttribute("data-"+name);
-          return undefined;
-      }
+            function getParam(name) {
+                if (urlParams && urlParams.has(name))
+                    return urlParams.get(name);
+                else if (frameElem && frameElem.hasAttribute("data-"+name))
+                    return frameElem.getAttribute("data-"+name);
+                return undefined;
+            }
       
-      function getFile(name) {
-          var base = (window.location != window.parent.location) ? window.parent.location.href : window.location.href;
-          var url  = new URL(name, base);
-          var path = url.pathname;
-          var file = path.split('/').pop();
-          return [ file, path ];
-      }
+            function getFile(name) {
+                const base = (window.location != window.parent.location) ? window.parent.location.href : window.location.href;
+                const url  = new URL(name, base);
+                const path = url.pathname;
+                const file = path.split('/').pop();
+                return [ file, path ];
+            }
 
-      // here we collect the command line arguments to pass to the main function
-      var argv = [];
+            // here we collect the command line arguments to pass to the main function
+            var argv = [];
 
-      var Module = {
+            var Module = {
 
-          preRun: [ function(){
+                preRun: [ function(){
+                    // show imgui controls?
+                    if (hasParam('controls'))
+                    { 
+                        argv.push("-g");
+                    }
+                    // model to be loaded 
+                    if (hasParam('model'))
+                    {
+                        const [filename, pathname ] = getFile(getParam('model'));
+                        FS.createPreloadedFile('./', filename, pathname, true, false);
+                        argv.push(filename);
+                    }
+                    // matcap to be used
+                    if (hasParam('material'))
+                    {
+                        const [filename, pathname] = getFile(getParam('material'));
+                        FS.createPreloadedFile('./', filename, pathname, true, false);
+                        argv.push("-m");
+                        argv.push(filename);
+                    }
+                    // texture to be used
+                    if (hasParam('texture'))
+                    {
+                        const [filename, pathname] = getFile(getParam('texture'));
+                        FS.createPreloadedFile('./', filename, pathname, true, false);
+                        argv.push("-t");
+                        argv.push(filename);
+                    }
+                }],
 
-              // show imgui controls?
-              if (hasParam('controls'))
-              { 
-                  argv.push("-g");
-              }
+                arguments: argv,
 
-              // model to be loaded 
-              if (hasParam('model'))
-              {
-                  var [filename, pathname ] = getFile(getParam('model'));
-                  FS.createPreloadedFile('./', filename, pathname, true, false);
-                  argv.push(filename);
-              }
+                postRun: [ 
+                    function() {
+                        if (window.matchMedia) {
+                            // set light/dark mode based on user preferences
+                            function updateColorMode() {
+                                let mode = "light";
 
-              // matcap to be used
-              if (hasParam('material'))
-              {
-                  var [filename, pathname] = getFile(getParam('material'));
-                  FS.createPreloadedFile('./', filename, pathname, true, false);
-                  argv.push("-m");
-                  argv.push(filename);
-              }
+                                // check user preferences
+                                if (window.matchMedia("(prefers-color-scheme: dark)").matches)
+                                    mode = "dark";
 
-              // texture to be used
-              if (hasParam('texture'))
-              {
-                  var [filename, pathname] = getFile(getParam('texture'));
-                  FS.createPreloadedFile('./', filename, pathname, true, false);
-                  argv.push("-t");
-                  argv.push(filename);
-              }
-          }],
+                                // check embedding Decker context
+                                if (frameElem) {
+                                    if (frameElem.closest("html.dark")) mode = "dark";
+                                    if (frameElem.closest("html.light")) mode = "light";
+                                }
 
-          arguments: argv,
+                                if (mode == "dark")
+                                    Module.ccall("dark_mode");
+                                else
+                                    Module.ccall("light_mode");
+                            }
 
-          postRun: [],
+                            // install event handler for light/dark changes
+                            const query = window.matchMedia("(prefers-color-scheme: dark)");
+                            query.addEventListener("change", updateColorMode);
+                            
+                            // set mode initially
+                            updateColorMode();
+                        }
+                    }
+                ],
 
-          print: function(text) {
-              console.log(text);
-          },
+                print: function(text) {
+                    console.log(text);
+                },
 
-          printErr: function(text) {
-              console.error(text);
-          },
+                printErr: function(text) {
+                    console.error(text);
+                },
 
-          canvas: (function() {
-              var canvas = document.getElementById('canvas');
+                canvas: (function() {
+                    const canvas = document.getElementById('canvas');
 
-              // As a default initial behavior, pop up an alert when webgl context is lost. To make your
-              // application robust, you may want to override this behavior before shipping!
-              // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
-              canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+                    // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+                    // application robust, you may want to override this behavior before shipping!
+                    // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+                    canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
 
-              return canvas;
-          })(),
+                    return canvas;
+                })(),
 
-          setStatus: function(text) {
-              if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
-              if (text === Module.setStatus.text) return;
-              var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
-              var now = Date.now();
-              if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
-              if (m) {
-                  text = m[1];
-                  progressElement.value = parseInt(m[2])*100;
-                  progressElement.max = parseInt(m[4])*100;
-                  progressElement.hidden = false;
-              } else {
-                  progressElement.value = null;
-                  progressElement.max = null;
-                  progressElement.hidden = true;
-              }
-              statusElement.innerHTML = text;
-          },
+                setStatus: function(text) {
+                    if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+                    if (text === Module.setStatus.text) return;
+                    var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+                    var now = Date.now();
+                    if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
+                    if (m) {
+                        text = m[1];
+                        progressElement.value = parseInt(m[2])*100;
+                        progressElement.max = parseInt(m[4])*100;
+                        progressElement.hidden = false;
+                    } else {
+                        progressElement.value = null;
+                        progressElement.max = null;
+                        progressElement.hidden = true;
+                    }
+                    statusElement.innerHTML = text;
+                },
 
-          totalDependencies: 0,
+                totalDependencies: 0,
 
-          monitorRunDependencies: function(left) {
-              this.totalDependencies = Math.max(this.totalDependencies, left);
-              Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
-          }
+                monitorRunDependencies: function(left) {
+                    this.totalDependencies = Math.max(this.totalDependencies, left);
+                    Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+                }
+            };
 
-      };
+            Module.setStatus('Downloading...');
 
-      Module.setStatus('Downloading...');
-      window.onerror = function() {
-        Module.setStatus('Exception thrown, see JavaScript console');
-        Module.setStatus = function(text) {
-          if (text) Module.printErr('[post-exception status] ' + text);
-        };
-      };
-    </script>
-    {{{ SCRIPT }}}
-  </body>
+            window.onerror = function() {
+                Module.setStatus('Exception thrown, see JavaScript console');
+                Module.setStatus = function(text) {
+                    if (text) Module.printErr('[post-exception status] ' + text);
+                };
+            };
+        </script>
+
+        {{{ SCRIPT }}}
+
+    </body>
 </html>

@@ -142,13 +142,13 @@ void MeshViewer::process_imgui()
         ImGui::BulletText("%d vertices", (int)mesh_.n_vertices());
         ImGui::BulletText("%d edges", (int)mesh_.n_edges());
         ImGui::BulletText("%d faces", (int)mesh_.n_faces());
-        
+
         // draw mode
-        ImGui::PushItemWidth(120);
+        ImGui::PushItemWidth(120 * imgui_scaling());
         const char* current_item = draw_mode_names_[draw_mode_].c_str();
         if (ImGui::BeginCombo("Draw Mode", current_item))
         {
-            for (unsigned int i=0; i<n_draw_modes_; ++i)
+            for (unsigned int i = 0; i < n_draw_modes_; ++i)
             {
                 const char* item = draw_mode_names_[i].c_str();
                 bool is_selected = (current_item == item);
@@ -164,7 +164,7 @@ void MeshViewer::process_imgui()
         if (draw_mode_names_[draw_mode_] == "Points")
         {
             // point size
-            ImGui::PushItemWidth(120);
+            ImGui::PushItemWidth(120 * imgui_scaling());
             ImGui::SliderInt("Point Size", &point_size_, 1, 20);
             ImGui::PopItemWidth();
             if (point_size_ != renderer_.point_size())
@@ -172,12 +172,12 @@ void MeshViewer::process_imgui()
                 renderer_.set_point_size(point_size_);
             }
         }
-        else 
+        else
         {
             // crease angle
             ImGui::PushItemWidth(120);
             ImGui::SliderFloat("Crease Angle", &crease_angle_, 0.0f, 180.0f,
-                            "%.0f");
+                               "%.0f");
             ImGui::PopItemWidth();
             if (crease_angle_ != renderer_.crease_angle())
             {

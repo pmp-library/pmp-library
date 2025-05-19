@@ -3,6 +3,7 @@
 
 #include "trackball_viewer.h"
 #include "pmp/stop_watch.h"
+#include <imgui.h>
 #include <algorithm>
 #include <numbers>
 
@@ -92,12 +93,12 @@ void TrackballViewer::keyboard(int key, int code, int action, int mods)
             rotate(vec3(1, 0, 0), 5.0);
             break;
         }
-        case GLFW_KEY_F:
-        {
-            double fps = measure_fps();
-            std::cout << "FPS: " << fps << std::endl;
-            break;
-        }
+            // case GLFW_KEY_F:
+            // {
+            //     double fps = measure_fps();
+            //     std::cout << "FPS: " << fps << std::endl;
+            //     break;
+            // }
 
         default:
         {
@@ -109,9 +110,6 @@ void TrackballViewer::keyboard(int key, int code, int action, int mods)
 
 void TrackballViewer::display()
 {
-    // clear buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     // adjust clipping planes to tightly fit bounding sphere
     const vec4 mc(center_, 1.0);
     vec4 ec = modelview_matrix_ * mc;
@@ -164,7 +162,8 @@ void TrackballViewer::scroll(double /*xoffset*/, double yoffset)
 void TrackballViewer::motion(double xpos, double ypos)
 {
 #ifdef __EMSCRIPTEN__
-    if (num_touches_ > 1) return;
+    if (num_touches_ > 1)
+        return;
 #endif
 
     if (prev_point_ok_)
@@ -377,28 +376,37 @@ void TrackballViewer::rotate(const vec3& axis, float angle)
 
 double TrackballViewer::measure_fps()
 {
-	double        fps(0.0);
-    unsigned int  i, frames = 360;
-    const float   angle = 360.0/(float)frames;
-    vec3          axis;
-	
+    double fps(0.0);
+    unsigned int i, frames = 360;
+    const float angle = 360.0 / (float)frames;
+    vec3 axis;
+
     // disable vsync
     glfwSwapInterval(0);
 
-	StopWatch timer;
-	timer.start();
-	
-    for (i=0, axis=vec3(1,0,0); i<frames; ++i)
-    { rotate(axis, angle); render_frame(); }
-    for (i=0, axis=vec3(0,1,0); i<frames; ++i)
-    { rotate(axis, angle); render_frame(); }
-    for (i=0, axis=vec3(0,0,1); i<frames; ++i)
-    { rotate(axis, angle); render_frame(); }
-	
+    StopWatch timer;
+    timer.start();
+
+    for (i = 0, axis = vec3(1, 0, 0); i < frames; ++i)
+    {
+        rotate(axis, angle);
+        render_frame();
+    }
+    for (i = 0, axis = vec3(0, 1, 0); i < frames; ++i)
+    {
+        rotate(axis, angle);
+        render_frame();
+    }
+    for (i = 0, axis = vec3(0, 0, 1); i < frames; ++i)
+    {
+        rotate(axis, angle);
+        render_frame();
+    }
+
     glFinish();
 
-	timer.stop();
-	fps = (1000.0 / timer.elapsed() * (3.0 * frames));
+    timer.stop();
+    fps = (1000.0 / timer.elapsed() * (3.0 * frames));
 
     // re-enable vsync
     glfwSwapInterval(1);
@@ -408,7 +416,7 @@ double TrackballViewer::measure_fps()
 
 #if __EMSCRIPTEN__
 
-void TrackballViewer::touchstart(const EmscriptenTouchEvent* event) 
+void TrackballViewer::touchstart(const EmscriptenTouchEvent* event)
 {
     num_touches_ = event->numTouches;
 
@@ -419,11 +427,13 @@ void TrackballViewer::touchstart(const EmscriptenTouchEvent* event)
 
 void TrackballViewer::touchmove(const EmscriptenTouchEvent* event)
 {
-    if (num_touches_ == 2)
+    if (num_touches_ == 2 && !ImGui::GetIO().WantCaptureMouse)
     {
-        const vec2 pos0 = high_dpi_scaling() * vec2(event->touches[0].pageX, event->touches[0].pageY);
-        const vec2 pos1 = high_dpi_scaling() * vec2(event->touches[1].pageX, event->touches[1].pageY);
-        const vec2 pos = 0.5*(pos0 + pos1);
+        const vec2 pos0 = high_dpi_scaling() * vec2(event->touches[0].pageX,
+                                                    event->touches[0].pageY);
+        const vec2 pos1 = high_dpi_scaling() * vec2(event->touches[1].pageX,
+                                                    event->touches[1].pageY);
+        const vec2 pos = 0.5 * (pos0 + pos1);
         const float pinch_distance = distance(pos0, pos1);
 
         // pan
@@ -438,15 +448,17 @@ void TrackballViewer::touchmove(const EmscriptenTouchEvent* event)
         if (prev_pinch_distance_ > 0)
         {
             const float h = height();
-            translate(vec3(0.0, 0.0, radius_ * (pinch_distance-prev_pinch_distance_) * 5.0 / h));
+            translate(vec3(
+                0.0, 0.0,
+                radius_ * (pinch_distance - prev_pinch_distance_) * 5.0 / h));
         }
         prev_pinch_distance_ = pinch_distance;
     }
 }
 
-void TrackballViewer::touchend(const EmscriptenTouchEvent* event) 
+void TrackballViewer::touchend(const EmscriptenTouchEvent* event)
 {
-    num_touches_ = event->numTouches-1;
+    num_touches_ = event->numTouches - 1;
 
     // invalidate touch-based transform
     prev_point_ok_ = false;

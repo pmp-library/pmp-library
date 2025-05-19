@@ -1,6 +1,7 @@
 build
 release
 debug
+html
 .cache
 .vscode
 .DS_store

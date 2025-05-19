@@ -1,9 +1,12 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2025 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
 #include "pmp/visualization/gl.h"
+#include "pmp/mat_vec.h"
+
+#include <imgui.h>
 
 #include <vector>
 #include <utility>
@@ -78,6 +81,18 @@ protected:
     //! scale ImGUI elements and font
     void scale_imgui(float scale);
 
+    //! setup ImGui frame and render main GUI
+    void draw_imgui();
+
+    // light/dark mode
+    enum ColorMode
+    {
+        LightMode,
+        DarkMode
+    };
+    ColorMode color_mode() const { return color_mode_; }
+    void color_mode(ColorMode c);
+
     //! is ImGUI visible or hidden?
     bool show_imgui() const { return show_imgui_; }
 
@@ -133,7 +148,12 @@ protected:
     //! is SHIFT modifier key pressed down?
     bool shift_pressed() const { return shift_pressed_; }
 
-    static void render_frame();
+    static void render_frame_()
+    {
+        if (instance_)
+            instance_->render_frame();
+    }
+    void render_frame();
 
 private:
     static void glfw_error(int error, const char* description);
@@ -149,8 +169,10 @@ private:
     static void glfw_scale(GLFWwindow* window, float xscale, float yscale);
 
 #if __EMSCRIPTEN__
-    static EM_BOOL emscripten_touchstart(int, const EmscriptenTouchEvent*, void*);
-    static EM_BOOL emscripten_touchmove(int, const EmscriptenTouchEvent*, void*);
+    static EM_BOOL emscripten_touchstart(int, const EmscriptenTouchEvent*,
+                                         void*);
+    static EM_BOOL emscripten_touchmove(int, const EmscriptenTouchEvent*,
+                                        void*);
     static EM_BOOL emscripten_touchend(int, const EmscriptenTouchEvent*, void*);
 #endif
 
@@ -195,6 +217,26 @@ private:
 
     // screenshot number
     unsigned int screenshot_number_{0};
+
+protected:
+    // light/dark mode
+    ColorMode color_mode_{LightMode};
+    vec3 clear_color_{1.0, 1.0, 1.0};
+
+    // icon font: enable with ImGui::PushFont(FontAwesome)
+    ImFont* FontAwesome;
+
+public:
+    static void dark_mode()
+    {
+        if (instance_)
+            instance_->color_mode(DarkMode);
+    }
+    static void light_mode()
+    {
+        if (instance_)
+            instance_->color_mode(LightMode);
+    }
 };
 
 } // namespace pmp
