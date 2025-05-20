@@ -223,9 +223,6 @@ protected:
     ColorMode color_mode_{LightMode};
     vec3 clear_color_{1.0, 1.0, 1.0};
 
-    // icon font: enable with ImGui::PushFont(FontAwesome)
-    ImFont* FontAwesome;
-
 public:
     static void dark_mode()
     {

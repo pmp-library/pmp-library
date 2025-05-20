@@ -225,16 +225,20 @@ void Window::scale_imgui(float scale)
     // scale imgui scale by new factor
     imgui_scale_ *= scale;
 
-    // (re)load fonts
+    // load Lato font 
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->Clear();
     io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
                                              LatoLatin_compressed_size,
                                              16 * imgui_scaling());
-    static ImWchar icons_ranges[] = {0x0020, 0xf8ff, 0};
-    FontAwesome = io.Fonts->AddFontFromMemoryCompressedTTF(
+    
+    // load & merge FontAwesome
+    static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
+    ImFontConfig config;
+    config.MergeMode = true;
+    io.Fonts->AddFontFromMemoryCompressedTTF(
         FontAwesome_compressed_data, FontAwesome_compressed_size,
-        16 * imgui_scaling(), nullptr, icons_ranges);
+        16 * imgui_scaling(), &config, icons_ranges);
 
     // trigger font texture regeneration
     ImGui_ImplOpenGL3_DestroyFontsTexture();
@@ -351,7 +355,7 @@ void Window::draw_imgui()
     if (show_imgui_)
     {
         // icons toolbar
-        ImGui::PushFont(FontAwesome);
+        // ImGui::PushFont(FontAwesome);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 30 * imgui_scale_);
         ImGui::BeginGroup();
 
@@ -396,14 +400,14 @@ void Window::draw_imgui()
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + icon_spacing);
 
-        if (ImGui::Button(ICON_FA_QUESTION, icon_size))
+        if (ImGui::Button(ICON_FA_CIRCLE_QUESTION, icon_size))
         {
             show_help_ = true;
         }
 
         ImGui::EndGroup();
         ImGui::PopStyleVar();
-        ImGui::PopFont();
+        // ImGui::PopFont();
 
         ImGui::Spacing();
         ImGui::Separator();
@@ -419,14 +423,12 @@ void Window::draw_imgui()
     else
     {
         ImVec2 icon_size(35 * imgui_scale_, 35 * imgui_scale_);
-        ImGui::PushFont(FontAwesome);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 30 * imgui_scale_);
         if (ImGui::Button(ICON_FA_BARS, icon_size))
         {
             show_imgui_ = true;
         }
         ImGui::PopStyleVar();
-        ImGui::PopFont();
     }
 
     // end window
