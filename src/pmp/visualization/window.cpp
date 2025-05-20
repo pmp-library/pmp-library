@@ -340,11 +340,6 @@ void Window::show_help()
 
 void Window::draw_imgui()
 {
-    // start imgui frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
     // start window
     ImGui::SetNextWindowBgAlpha(show_imgui_ ? 0.8 : 0.0);
     ImGui::SetNextWindowPos(ImVec2(4, 4), ImGuiCond_Once);
@@ -355,7 +350,6 @@ void Window::draw_imgui()
     if (show_imgui_)
     {
         // icons toolbar
-        // ImGui::PushFont(FontAwesome);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 30 * imgui_scale_);
         ImGui::BeginGroup();
 
@@ -407,7 +401,6 @@ void Window::draw_imgui()
 
         ImGui::EndGroup();
         ImGui::PopStyleVar();
-        // ImGui::PopFont();
 
         ImGui::Spacing();
         ImGui::Separator();
@@ -431,11 +424,7 @@ void Window::draw_imgui()
         ImGui::PopStyleVar();
     }
 
-    // end window
     ImGui::End();
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 int Window::run()
@@ -484,7 +473,12 @@ void Window::render_frame()
     display();
 
     // draw GUI
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
     draw_imgui();
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 #if __EMSCRIPTEN__
     // to avoid problems with premultiplied alpha in WebGL,

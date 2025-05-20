@@ -81,8 +81,8 @@ protected:
     //! scale ImGUI elements and font
     void scale_imgui(float scale);
 
-    //! setup ImGui frame and render main GUI
-    void draw_imgui();
+    //! draw ImGUI frame
+    virtual void draw_imgui();
 
     // light/dark mode
     enum ColorMode
