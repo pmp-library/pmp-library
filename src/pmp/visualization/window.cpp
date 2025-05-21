@@ -291,9 +291,9 @@ void Window::clear_help_items()
     help_items_.clear();
 }
 
-void Window::show_help()
+void Window::draw_help_dialog()
 {
-    if (!show_help_)
+    if (!show_help())
         return;
 
     ImGui::OpenPopup("Key Bindings");
@@ -396,7 +396,7 @@ void Window::draw_imgui()
 
         if (ImGui::Button(ICON_FA_CIRCLE_QUESTION, icon_size))
         {
-            show_help_ = true;
+            show_help(true);
         }
 
         ImGui::EndGroup();
@@ -410,8 +410,8 @@ void Window::draw_imgui()
         process_imgui();
 
         // show help window?
-        if (show_help_)
-            show_help();
+        if (show_help())
+            draw_help_dialog();
     }
     else
     {
@@ -660,7 +660,7 @@ void Window::glfw_motion(GLFWwindow* window, double xpos, double ypos)
 
 void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
 {
-#ifdef __EMSCRIPTEN__
+// #ifdef __EMSCRIPTEN__
     // since touch input does not trigger hover events,
     // we have to set mouse position before button press.
     // since we cannot distinguish mouse and touch events,
@@ -668,7 +668,7 @@ void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
     double x, y;
     glfwGetCursorPos(window, &x, &y);
     ImGui_ImplGlfw_CursorPosCallback(window, x, y);
-#endif
+// #endif
 
     ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
 

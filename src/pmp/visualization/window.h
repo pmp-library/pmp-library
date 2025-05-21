@@ -106,8 +106,12 @@ protected:
     void add_help_item(std::string key, std::string description,
                        int position = -1);
 
-    //! show ImGUI help dialog
-    void show_help();
+    //! is help dialog visible/hidden?
+    bool show_help() { return show_help_; }
+    //!  show or hide help dialog
+    void show_help(bool b) { show_help_ = b; }
+    //!  render help dialog
+    void draw_help_dialog();
 
     //! take a screenshot, save it to `title-n.png` using the window title
     //! and an incremented number `n`.
@@ -154,6 +158,10 @@ protected:
             instance_->render_frame();
     }
     void render_frame();
+
+    bool is_fullscreen() const;
+    void enter_fullscreen();
+    void exit_fullscreen();
 
 private:
     static void glfw_error(int error, const char* description);
@@ -211,9 +219,6 @@ private:
     int backup_ypos_;
     int backup_width_;
     int backup_height_;
-    bool is_fullscreen() const;
-    void enter_fullscreen();
-    void exit_fullscreen();
 
     // screenshot number
     unsigned int screenshot_number_{0};
