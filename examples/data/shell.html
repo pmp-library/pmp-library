@@ -195,6 +195,9 @@
                             // set mode initially
                             updateColorMode();
                         }
+
+                        // prevent embedded iframe to catch focus
+                        if (frameElem) frameElem.blur();
                     }
                 ],
 
