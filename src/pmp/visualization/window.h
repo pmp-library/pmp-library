@@ -91,7 +91,7 @@ protected:
         DarkMode
     };
     ColorMode color_mode() const { return color_mode_; }
-    void color_mode(ColorMode c);
+    virtual void color_mode(ColorMode c);
 
     //! is ImGUI visible or hidden?
     bool show_imgui() const { return show_imgui_; }
