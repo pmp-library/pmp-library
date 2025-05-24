@@ -394,7 +394,7 @@ void Window::draw_imgui()
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + icon_spacing);
 
-        if (ImGui::Button(ICON_FA_CIRCLE_QUESTION, icon_size))
+        if (ImGui::Button(ICON_FA_QUESTION, icon_size))
         {
             show_help(true);
         }

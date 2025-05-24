@@ -4,10 +4,18 @@
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <style>
+            :root {
+                color-scheme: light dark;
+                --accent-color: rgb(66, 150, 249);
+                accent-color: var(--accent-color);
+            }
+
             body { 
                 margin: 0px; 
                 padding: 0px; 
                 overflow: hidden; 
+                width: 100dvw;
+                height: 100dvh;
             }
             
             .emscripten { 
@@ -15,16 +23,13 @@
                 margin-left: auto; 
                 margin-right: auto; 
                 display: block; 
-            }
-            
-            div.emscripten { 
                 text-align: center; 
             }
-
+            
             #canvas { 
                 border:           0px none;  /* no border, otherwise mouse coords will be wrong */
                 padding:          0px;       /* no padding, otherwise mouse coords will be wrong */
-                background-color: white;
+                background-color: light-dark(white, rgb(30,30,30));
                 width:            100%;
                 height:           100%;
                 max-height:       100%;
@@ -36,31 +41,67 @@
             #canvas_container {
                 border:           0px none;  /* no border, otherwise mouse coords will be wrong */
                 padding:          0px;       /* no padding, otherwise mouse coords will be wrong */
-                background-color: white;
-                width:            100vw;     /* be as wide as possible */
-                height:           100vh;     /* be as tall as possible */
-                max-width:        100vw;     /* don't grow more than screen height */
-                max-height:       100vh;     /* don't grow more than screen height */
+                background-color: light-dark(white, rgb(30,30,30));
+                width:            100dvw;    /* be as wide as possible */
+                height:           100dvh;    /* be as tall as possible */
+                max-width:        100dvw;    /* don't grow more than screen height */
+                max-height:       100dvh;    /* don't grow more than screen height */
                 display:          block;
                 overflow:         hidden;    /* avoids scrollbars during loading */
+            }
+
+            #dialog {
+                padding: 1em;
+                border-radius: 0.5em;
+                outline: none;
+                background: light-dark(rgb(211,211,211), rgb(60,60,60));
+                border: none;
+                color: light-dark(black, white);
+            }
+
+            #spinner {
+                width: 50px;
+                height: 50px;
+                margin: 0px auto;
+                border-radius: 50%;
+                background: radial-gradient(farthest-side, var(--accent-color) 94%, #0000) top/8px 8px no-repeat,
+                            conic-gradient(#0000 30%, var(--accent-color));
+                mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
+                animation: rotation 1s infinite linear;
+            }
+
+            @keyframes rotation {
+                from {transform: rotate(0deg);}
+                to {transform: rotate(360deg);}
             }
         </style>
     </head>
 
     <body>
-        <div class="emscripten" id="status">Downloading...</div>
-        <div class="emscripten">
+        <dialog id="dialog">
+            <div id="spinner" class="spinner"></div>
+            <div class="emscripten" id="status">Downloading...</div>
             <progress value="0" max="100" id="progress" hidden=1></progress>  
-        </div>
+        </dialog>
+
         <div id="canvas_container">
             <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
         </div>
-    
+
         <script type='text/javascript'>
+            const dialog = document.getElementById('dialog');
             const statusElement = document.getElementById('status');
             const progressElement = document.getElementById('progress');
+            const spinnerElement = document.getElementById('spinner');
+            const canvasElement = document.getElementById('canvas');
+
             const urlParams = new URLSearchParams(window.location.search);
             const frameElem = window.frameElement;
+
+            canvasElement.addEventListener("webglcontextlost", (e) => {
+                alert('WebGL context lost. You will need to reload the page.');
+                e.preventDefault();
+            }, false);
       
             function hasParam(name) {
                 if (urlParams && urlParams.has(name))
@@ -165,23 +206,16 @@
                     console.error(text);
                 },
 
-                canvas: (function() {
-                    const canvas = document.getElementById('canvas');
+                canvas: canvasElement,
 
-                    // As a default initial behavior, pop up an alert when webgl context is lost. To make your
-                    // application robust, you may want to override this behavior before shipping!
-                    // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
-                    canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
-
-                    return canvas;
-                })(),
-
-                setStatus: function(text) {
-                    if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
-                    if (text === Module.setStatus.text) return;
+                setStatus(text) {
+                    Module.setStatus.last ??= { time: Date.now(), text: '' };
+                    if (text === Module.setStatus.last.text) return;
                     var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
                     var now = Date.now();
-                    if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
+                    if (m && now - Module.setStatus.last.time < 30) return; // if this is a progress update, skip it if too soon
+                    Module.setStatus.last.time = now;
+                    Module.setStatus.last.text = text;
                     if (m) {
                         text = m[1];
                         progressElement.value = parseInt(m[2])*100;
@@ -193,11 +227,14 @@
                         progressElement.hidden = true;
                     }
                     statusElement.innerHTML = text;
+
+                    if (text) dialog.showModal();
+                    else dialog.close();
                 },
 
                 totalDependencies: 0,
 
-                monitorRunDependencies: function(left) {
+                monitorRunDependencies(left) {
                     this.totalDependencies = Math.max(this.totalDependencies, left);
                     Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
                 }
