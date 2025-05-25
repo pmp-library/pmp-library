@@ -229,8 +229,6 @@ void Window::color_mode(ColorMode c)
             bg = ImVec4(0.58, 0.75, 0.27, 1.0);
             bg_active = ImVec4(0.39, 0.60, 0.0, 1.0);
             bg_inactive = ImVec4(0.7, 0.7, 0.7, 1.0);
-            // bg_light = ImVec4(0.91, 0.96, 0.84, 1.0);
-            // bg_light = ImVec4(0.81, 0.49, 0.51, 1.0);
             bg_light = ImVec4(0.76, 0.89, 0.54, 1.0);
             grey = ImVec4(0.8, 0.8, 0.8, 1.0);
             break;
