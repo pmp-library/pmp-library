@@ -103,6 +103,11 @@
                 e.preventDefault();
             }, false);
       
+            // copy accent color from embedding iframe
+            if (frameElem) {
+                document.documentElement.style.setProperty("--accent-color", window.getComputedStyle(frameElem).accentColor);
+            }
+
             function hasParam(name) {
                 if (urlParams && urlParams.has(name))
                     return true;

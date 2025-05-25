@@ -157,6 +157,11 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" AND NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 endif()
 
+# TU Dortmund color scheme
+if (TUDO)
+  add_definitions(-DTUDO)
+endif()
+
 # choose size of the scalar type
 if(PMP_SCALAR_TYPE EQUAL 64)
   message(STATUS "Using 64-bit scalar type")

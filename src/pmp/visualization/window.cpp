@@ -199,8 +199,7 @@ void Window::init_imgui()
 
 void Window::color_mode(ColorMode c)
 {
-    ImGuiStyle& style = ImGui::GetStyle();
-    ImVec4* colors = style.Colors;
+    ImVec4* colors = ImGui::GetStyle().Colors;
 
     switch (color_mode_ = c)
     {
@@ -218,6 +217,60 @@ void Window::color_mode(ColorMode c)
             clear_color_ = vec3(0.11, 0.12, 0.13);
             break;
     }
+
+#ifdef TUDO // color scheme of TU Dortmund
+
+    ImVec4 fg, bg, bg_active, bg_inactive, bg_light, grey;
+    switch (color_mode_)
+    {
+        case LightMode:
+        {
+            fg = ImVec4(0,0,0,1);
+            bg = ImVec4(0.58, 0.75, 0.27, 1.0);
+            bg_active = ImVec4(0.39, 0.60, 0.0, 1.0);
+            bg_inactive = ImVec4(0.7, 0.7, 0.7, 1.0);
+            // bg_light = ImVec4(0.91, 0.96, 0.84, 1.0);
+            // bg_light = ImVec4(0.81, 0.49, 0.51, 1.0);
+            bg_light = ImVec4(0.76, 0.89, 0.54, 1.0);
+            grey = ImVec4(0.8, 0.8, 0.8, 1.0);
+            break;
+        }
+
+        case DarkMode:
+            fg = ImVec4(1,1,1,1);
+            bg = ImVec4(0.39, 0.60, 0.0, 1.0);
+            bg_active = ImVec4(0.49, 0.65, 0.16, 1.0);
+            bg_inactive = ImVec4(0.7, 0.7, 0.7, 1.0);
+            bg_light = ImVec4(0.18, 0.27, 0.0, 1.0);
+            grey = ImVec4(0.2, 0.2, 0.2, 1.0);
+            break;
+    }
+
+    colors[ImGuiCol_Text]                   = fg;
+    colors[ImGuiCol_TitleBg]                = bg;
+    colors[ImGuiCol_TitleBgActive]          = bg_active;
+    colors[ImGuiCol_FrameBg]                = grey;
+    colors[ImGuiCol_FrameBgHovered]         = bg_light;
+    colors[ImGuiCol_FrameBgActive]          = bg_light;
+    colors[ImGuiCol_CheckMark]              = bg_active;
+    colors[ImGuiCol_SliderGrab]             = bg_active;
+    colors[ImGuiCol_SliderGrabActive]       = bg_active;
+    colors[ImGuiCol_Button]                 = bg;
+    colors[ImGuiCol_ButtonHovered]          = bg_active;
+    colors[ImGuiCol_ButtonActive]           = bg_active;
+    colors[ImGuiCol_Header]                 = bg;
+    colors[ImGuiCol_HeaderHovered]          = bg_active;
+    colors[ImGuiCol_HeaderActive]           = bg;
+    colors[ImGuiCol_Separator]              = bg;
+    colors[ImGuiCol_SeparatorHovered]       = bg;
+    colors[ImGuiCol_SeparatorActive]        = bg_light;
+    colors[ImGuiCol_Tab]                    = grey;
+    colors[ImGuiCol_TabSelected]            = bg;
+    colors[ImGuiCol_TabSelectedOverline]    = bg;
+    colors[ImGuiCol_TabHovered]             = bg_active;
+    colors[ImGuiCol_TabDimmed]              = bg_active;
+    colors[ImGuiCol_TabDimmedSelected]      = bg_active;
+#endif
 }
 
 void Window::scale_imgui(float scale)
