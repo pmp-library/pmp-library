@@ -163,7 +163,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     // init mouse button state and modifiers
     for (bool& i : button_)
         i = false;
-    ctrl_pressed_ = shift_pressed_ = alt_pressed_ = false;
+    ctrl_pressed_ = shift_pressed_ = alt_pressed_ = super_pressed_ = false;
 }
 
 Window::~Window()
@@ -206,15 +206,15 @@ void Window::color_mode(ColorMode c)
         case LightMode:
             ImGui::StyleColorsLight();
             colors[ImGuiCol_WindowBg] = ImVec4(0.90f, 0.90f, 0.90f, 0.90f);
-            colors[ImGuiCol_Border] = ImVec4(0, 0, 0, 0);
+            colors[ImGuiCol_Border] = colors[ImGuiCol_WindowBg];
             clear_color_ = vec3(1.0, 1.0, 1.0);
             break;
 
         case DarkMode:
             ImGui::StyleColorsDark();
             colors[ImGuiCol_WindowBg] = ImVec4(0.1, 0.1, 0.1, 0.9);
-            colors[ImGuiCol_Border] = ImVec4(0, 0, 0, 0);
-            clear_color_ = vec3(0.11, 0.12, 0.13);
+            colors[ImGuiCol_Border] = colors[ImGuiCol_WindowBg];
+            clear_color_ = vec3(0.15, 0.16, 0.17);
             break;
     }
 
@@ -299,12 +299,12 @@ void Window::scale_imgui(float scale)
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowPadding = ImTrunc(ImVec2(8,8) * imgui_scale_);
     style.WindowRounding = ImTrunc(4 * imgui_scale_);
-    style.WindowMinSize = ImTrunc(ImVec2(32,32) * imgui_scale_);
+    style.WindowMinSize = ImTrunc(ImVec2(24,24) * imgui_scale_);
     style.ChildRounding = ImTrunc(4 * imgui_scale_);
     style.PopupRounding = ImTrunc(4 * imgui_scale_);
     style.FramePadding = ImTrunc(ImVec2(4,3) * imgui_scale_);
     style.FrameRounding = ImTrunc(4 * imgui_scale_);
-    style.ItemSpacing = ImTrunc(ImVec2(4,4) * imgui_scale_);
+    style.ItemSpacing = ImTrunc(ImVec2(8,4) * imgui_scale_);
     style.ItemInnerSpacing = ImTrunc(ImVec2(4,4) * imgui_scale_);
     style.CellPadding = ImTrunc(ImVec2(4,2) * imgui_scale_);
     style.TouchExtraPadding = ImVec2(0,0);
@@ -586,6 +586,10 @@ void Window::glfw_keyboard(GLFWwindow* window, int key, int scancode,
         case GLFW_KEY_RIGHT_ALT:
             instance_->alt_pressed_ = (action != GLFW_RELEASE);
             break;
+        case GLFW_KEY_LEFT_SUPER:
+        case GLFW_KEY_RIGHT_SUPER:
+            instance_->super_pressed_ = (action != GLFW_RELEASE);
+            break;
     }
 
     if (!ImGui::GetIO().WantCaptureKeyboard)
@@ -823,13 +827,11 @@ extern "C" {
 EMSCRIPTEN_KEEPALIVE void light_mode()
 {
     pmp::Window::light_mode();
-    std::cerr << "light mode\n";
 }
 
 EMSCRIPTEN_KEEPALIVE void dark_mode()
 {
     pmp::Window::dark_mode();
-    std::cerr << "dark mode\n";
 }
 }
 #endif

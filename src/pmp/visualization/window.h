@@ -151,6 +151,8 @@ protected:
     bool alt_pressed() const { return alt_pressed_; }
     //! is SHIFT modifier key pressed down?
     bool shift_pressed() const { return shift_pressed_; }
+    //! is SUPER modifier key pressed down?
+    bool super_pressed() const { return super_pressed_; }
 
     static void render_frame_()
     {
@@ -213,6 +215,7 @@ private:
     bool ctrl_pressed_;
     bool alt_pressed_;
     bool shift_pressed_;
+    bool super_pressed_;
 
     // fullscreen-related backups
     int backup_xpos_;
