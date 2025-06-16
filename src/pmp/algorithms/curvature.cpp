@@ -427,7 +427,7 @@ void curvature(SurfaceMesh& mesh, Curvature c, int smoothing_steps,
         case Curvature::Mean:
         {
             for (auto v : mesh.vertices())
-                curvatures[v] = fabs(analyzer.mean_curvature(v));
+                curvatures[v] = analyzer.mean_curvature(v);
             break;
         }
         case Curvature::Gauss:
