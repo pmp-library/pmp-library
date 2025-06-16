@@ -64,7 +64,7 @@ Renderer::~Renderer()
     glDeleteVertexArrays(1, &vertex_array_object_);
 }
 
-void Renderer::load_texture(const char* filename, GLint format,
+void Renderer::load_texture(const std::filesystem::path& filename, GLint format,
                             GLint min_filter, GLint mag_filter, GLint wrap)
 {
 #ifdef __EMSCRIPTEN__
@@ -103,7 +103,7 @@ void Renderer::load_texture(const char* filename, GLint format,
     int width, height, n;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* img =
-        stbi_load(filename, &width, &height, &n, load_components);
+        stbi_load(filename.c_str(), &width, &height, &n, load_components);
     if (!img)
         throw IOException("Failed to load texture file: " +
                           std::string(filename));
@@ -142,7 +142,7 @@ void Renderer::load_texture(const char* filename, GLint format,
     texture_mode_ = TextureMode::Other;
 }
 
-void Renderer::load_matcap(const char* filename)
+void Renderer::load_matcap(const std::filesystem::path& filename)
 {
     try
     {
