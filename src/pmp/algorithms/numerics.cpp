@@ -164,4 +164,18 @@ void mesh_to_matrices(const pmp::SurfaceMesh& mesh, Eigen::MatrixXd& V,
     }
 }
 
+void coordinates_to_matrix(const SurfaceMesh& mesh, DenseMatrix& X)
+{
+    X.resize(mesh.n_vertices(), 3);
+    for (auto v : mesh.vertices())
+        X.row(v.idx()) = static_cast<Eigen::Vector3d>(mesh.position(v));
+}
+
+void matrix_to_coordinates(const DenseMatrix& X, SurfaceMesh& mesh)
+{
+    assert((size_t)X.rows() == mesh.n_vertices() && X.cols() == 3);
+    for (auto v : mesh.vertices())
+        mesh.position(v) = X.row(v.idx());
+}
+
 } // namespace pmp
