@@ -34,7 +34,7 @@ MeshViewer::MeshViewer(const char* title, int width, int height, bool showgui)
 #endif
 }
 
-void MeshViewer::load_mesh(const char* filename)
+void MeshViewer::load_mesh(const std::filesystem::path& filename)
 {
     // load mesh
     try
@@ -68,7 +68,7 @@ void MeshViewer::load_mesh(const char* filename)
     renderer_.set_crease_angle(crease_angle_);
 }
 
-void MeshViewer::load_matcap(const char* filename)
+void MeshViewer::load_matcap(const std::filesystem::path& filename)
 {
     try
     {
@@ -82,7 +82,7 @@ void MeshViewer::load_matcap(const char* filename)
     set_draw_mode("Texture");
 }
 
-void MeshViewer::load_texture(const char* filename, GLint format,
+void MeshViewer::load_texture(const std::filesystem::path& filename, GLint format,
                               GLint min_filter, GLint mag_filter, GLint wrap)
 {
     // load texture from file

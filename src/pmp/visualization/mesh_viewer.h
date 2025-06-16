@@ -21,13 +21,14 @@ public:
     ~MeshViewer() override = default;
 
     //! load a mesh from file \p filename
-    virtual void load_mesh(const char* filename);
+    virtual void load_mesh(const std::filesystem::path& filename);
 
     //! load a matcap texture from file \p filename
-    void load_matcap(const char* filename);
+    void load_matcap(const std::filesystem::path& filename);
 
     //! load a texture from file \p filename
-    void load_texture(const char* filename, GLint format = GL_RGB,
+    void load_texture(const std::filesystem::path& filename, 
+                      GLint format = GL_RGB,
                       GLint min_filter = GL_LINEAR_MIPMAP_LINEAR,
                       GLint mag_filter = GL_LINEAR,
                       GLint wrap = GL_CLAMP_TO_EDGE);
