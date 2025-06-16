@@ -4,6 +4,7 @@
 #pragma once
 
 #include <limits>
+#include <filesystem>
 
 #include "pmp/types.h"
 #include "pmp/visualization/gl.h"
@@ -99,7 +100,7 @@ public:
     //! \param mag_filter interpolation filter for magnification
     //! \param wrap texture coordinates wrap preference
     //! \throw IOException in case of failure to load texture from file
-    void load_texture(const char* filename, GLint format = GL_RGB,
+    void load_texture(const std::filesystem::path& filename, GLint format = GL_RGB,
                       GLint min_filter = GL_LINEAR_MIPMAP_LINEAR,
                       GLint mag_filter = GL_LINEAR,
                       GLint wrap = GL_CLAMP_TO_EDGE);
@@ -110,7 +111,7 @@ public:
     //! \param filename the location and name of the texture
     //! \sa See src/apps/mview.cpp for an example usage.
     //! \throw IOException in case of failure to load texture from file
-    void load_matcap(const char* filename);
+    void load_matcap(const std::filesystem::path& filename);
 
 protected:
     const SurfaceMesh& mesh_;
