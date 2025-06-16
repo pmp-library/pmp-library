@@ -51,6 +51,11 @@
             }
 
             #dialog {
+                display: none;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
                 padding: 1em;
                 border-radius: 0.5em;
                 outline: none;
@@ -78,11 +83,11 @@
     </head>
 
     <body>
-        <dialog id="dialog">
+        <div id="dialog">
             <div id="spinner" class="spinner"></div>
             <div class="emscripten" id="status">Downloading...</div>
             <progress value="0" max="100" id="progress" hidden=1></progress>  
-        </dialog>
+        </div>
 
         <div id="canvas_container">
             <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
@@ -236,8 +241,7 @@
                     }
                     statusElement.innerHTML = text;
 
-                    if (text) dialog.showModal();
-                    else dialog.close();
+                    dialog.style.display = text ? "block" : "none";
                 },
 
                 totalDependencies: 0,
