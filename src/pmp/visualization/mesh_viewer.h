@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <filesystem>
 #include "pmp/visualization/trackball_viewer.h"
 #include "pmp/surface_mesh.h"
 #include "pmp/visualization/renderer.h"
@@ -56,7 +57,7 @@ public:
 protected:
     SurfaceMesh mesh_;
     Renderer renderer_;
-    std::string filename_; //!< the current file
+    std::filesystem::path filename_; //!< the current file
     float crease_angle_;
     int point_size_;
 };

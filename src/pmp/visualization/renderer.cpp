@@ -68,6 +68,7 @@ Renderer::~Renderer()
 }
 
 void Renderer::load_texture(const std::filesystem::path& filename, GLint format,
+void Renderer::load_texture(const std::filesystem::path& filename, GLint format,
                             GLint min_filter, GLint mag_filter, GLint wrap)
 {
 #ifdef __EMSCRIPTEN__
@@ -106,10 +107,9 @@ void Renderer::load_texture(const std::filesystem::path& filename, GLint format,
     int width, height, n;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* img =
-        stbi_load(filename.c_str(), &width, &height, &n, load_components);
+        stbi_load(filename.string().c_str(), &width, &height, &n, load_components);
     if (!img)
-        throw IOException("Failed to load texture file: " +
-                          std::string(filename));
+        throw IOException("Failed to load texture file: " + filename.string());
 
     // delete old texture
     glDeleteTextures(1, &texture_);
