@@ -105,8 +105,7 @@ void Renderer::load_texture(const std::filesystem::path& filename, GLint format,
     unsigned char* img =
         stbi_load(filename.string().c_str(), &width, &height, &n, load_components);
     if (!img)
-        throw IOException("Failed to load texture file: " +
-                          std::string(filename));
+        throw IOException("Failed to load texture file: " + filename.string());
 
     // delete old texture
     glDeleteTextures(1, &texture_);

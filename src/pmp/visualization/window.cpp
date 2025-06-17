@@ -298,7 +298,7 @@ void Window::scale_imgui(float scale)
     // adjust element styles (scaled version of default style or pmp style)
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowPadding = ImTrunc(ImVec2(8,8) * imgui_scale_);
-    style.WindowRounding = ImTrunc(4 * imgui_scale_);
+    style.WindowRounding = 0; //ImTrunc(4 * imgui_scale_);
     style.WindowMinSize = ImTrunc(ImVec2(24,24) * imgui_scale_);
     style.ChildRounding = ImTrunc(4 * imgui_scale_);
     style.PopupRounding = ImTrunc(4 * imgui_scale_);
