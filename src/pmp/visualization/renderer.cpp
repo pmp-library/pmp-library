@@ -21,6 +21,7 @@ Renderer::Renderer(const SurfaceMesh& mesh) : mesh_(mesh)
     vertex_array_object_ = 0;
     vertex_buffer_ = 0;
     color_buffer_ = 0;
+    selection_buffer_ = 0;
     normal_buffer_ = 0;
     tex_coord_buffer_ = 0;
     edge_buffer_ = 0;
@@ -33,6 +34,7 @@ Renderer::Renderer(const SurfaceMesh& mesh) : mesh_(mesh)
     n_features_ = 0;
     has_texcoords_ = false;
     has_vertex_colors_ = false;
+    has_vertex_selection_ = false;
 
     // material parameters
     front_color_ = vec3(0.6, 0.6, 0.6);
@@ -57,6 +59,7 @@ Renderer::~Renderer()
     // delete OpenGL buffers
     glDeleteBuffers(1, &vertex_buffer_);
     glDeleteBuffers(1, &color_buffer_);
+    glDeleteBuffers(1, &selection_buffer_);
     glDeleteBuffers(1, &normal_buffer_);
     glDeleteBuffers(1, &tex_coord_buffer_);
     glDeleteBuffers(1, &edge_buffer_);
@@ -64,7 +67,7 @@ Renderer::~Renderer()
     glDeleteVertexArrays(1, &vertex_array_object_);
 }
 
-void Renderer::load_texture(const char* filename, GLint format,
+void Renderer::load_texture(const std::filesystem::path& filename, GLint format,
                             GLint min_filter, GLint mag_filter, GLint wrap)
 {
 #ifdef __EMSCRIPTEN__
@@ -103,7 +106,7 @@ void Renderer::load_texture(const char* filename, GLint format,
     int width, height, n;
     stbi_set_flip_vertically_on_load(true);
     unsigned char* img =
-        stbi_load(filename, &width, &height, &n, load_components);
+        stbi_load(filename.c_str(), &width, &height, &n, load_components);
     if (!img)
         throw IOException("Failed to load texture file: " +
                           std::string(filename));
@@ -142,7 +145,7 @@ void Renderer::load_texture(const char* filename, GLint format,
     texture_mode_ = TextureMode::Other;
 }
 
-void Renderer::load_matcap(const char* filename)
+void Renderer::load_matcap(const std::filesystem::path& filename)
 {
     try
     {
@@ -249,6 +252,7 @@ void Renderer::update_opengl_buffers()
         glGenBuffers(1, &tex_coord_buffer_);
         glGenBuffers(1, &edge_buffer_);
         glGenBuffers(1, &feature_buffer_);
+        glGenBuffers(1, &selection_buffer_);
     }
 
     // activate VAO
@@ -256,6 +260,7 @@ void Renderer::update_opengl_buffers()
 
     // get properties
     auto vpos = mesh_.get_vertex_property<Point>("v:point");
+    auto vsel = mesh_.get_vertex_property<bool>("v:selected");
     auto vcolor = mesh_.get_vertex_property<Color>("v:color");
     auto vtex = mesh_.get_vertex_property<TexCoord>("v:tex");
     auto htex = mesh_.get_halfedge_property<TexCoord>("h:tex");
@@ -269,6 +274,7 @@ void Renderer::update_opengl_buffers()
     // produce arrays of points, normals, and texcoords
     // (duplicate vertices to allow for flat shading)
     std::vector<vec3> position_array;
+    std::vector<float> selection_array;
     std::vector<vec3> color_array;
     std::vector<vec3> normal_array;
     std::vector<vec2> tex_array;
@@ -282,9 +288,10 @@ void Renderer::update_opengl_buffers()
         normal_array.reserve(3 * mesh_.n_faces());
         if (htex || vtex)
             tex_array.reserve(3 * mesh_.n_faces());
-
         if ((vcolor || fcolor) && use_colors_)
             color_array.reserve(3 * mesh_.n_faces());
+        if (vsel)
+            selection_array.reserve(3 * mesh_.n_faces());
 
         // precompute normals for easy cases
         std::vector<Normal> face_normals;
@@ -313,6 +320,7 @@ void Renderer::update_opengl_buffers()
         std::vector<vec3> corner_colors;
         std::vector<vec3> corner_normals;
         std::vector<vec2> corner_texcoords;
+        std::vector<float> corner_selections;
 
         // convert from degrees to radians
         const Scalar crease_angle_radians =
@@ -330,6 +338,7 @@ void Renderer::update_opengl_buffers()
             corner_colors.clear();
             corner_normals.clear();
             corner_texcoords.clear();
+            corner_selections.clear();
             Vertex v;
             Normal n;
 
@@ -371,6 +380,11 @@ void Renderer::update_opengl_buffers()
                 {
                     corner_colors.push_back((vec3)fcolor[f]);
                 }
+
+                if (vsel)
+                {
+                    corner_selections.push_back(vsel[v] ? 1.0 : 0.0);
+                }
             }
             assert(corner_vertices.size() >= 3);
 
@@ -402,6 +416,13 @@ void Renderer::update_opengl_buffers()
                     color_array.push_back(corner_colors[i0]);
                     color_array.push_back(corner_colors[i1]);
                     color_array.push_back(corner_colors[i2]);
+                }
+
+                if (vsel)
+                {
+                    selection_array.push_back(corner_selections[i0]);
+                    selection_array.push_back(corner_selections[i1]);
+                    selection_array.push_back(corner_selections[i2]);
                 }
 
                 vertex_indices[corner_vertices[i0].idx()] = vidx++;
@@ -466,6 +487,22 @@ void Renderer::update_opengl_buffers()
     else
     {
         glDisableVertexAttribArray(1);
+    }
+
+    // upload selection
+    if (!selection_array.empty())
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, selection_buffer_);
+        glBufferData(GL_ARRAY_BUFFER, selection_array.size() * sizeof(float),
+                     selection_array.data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glEnableVertexAttribArray(4);
+        has_vertex_selection_ = true;
+    }
+    else
+    {
+        glDisableVertexAttribArray(4);
+        has_vertex_selection_ = false;
     }
 
     // upload texture coordinates
@@ -630,11 +667,14 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     phong_shader_.set_uniform("show_texture_layout", false);
     phong_shader_.set_uniform("use_vertex_color",
                               has_vertex_colors_ && use_colors_);
+    phong_shader_.set_uniform("use_vertex_selection", false);
+
 
     glBindVertexArray(vertex_array_object_);
 
     if (draw_mode == "Points")
     {
+        phong_shader_.set_uniform("use_vertex_selection", has_vertex_selection_);
         phong_shader_.set_uniform("use_round_points", true);
 #ifndef __EMSCRIPTEN__
         glEnable(GL_PROGRAM_POINT_SIZE);
@@ -646,7 +686,9 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     {
         if (mesh_.n_faces())
         {
+
             // draw faces
+            phong_shader_.set_uniform("use_vertex_selection", has_vertex_selection_);
             glDepthRange(0.01, 1.0);
             glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
             glDisable(GL_SAMPLE_ALPHA_TO_COVERAGE);
@@ -654,6 +696,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
             // overlay edges
             glDepthRange(0.0, 1.0);
             glDepthFunc(GL_LEQUAL);
+            phong_shader_.set_uniform("use_vertex_selection", false);
             phong_shader_.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
             phong_shader_.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
             phong_shader_.set_uniform("use_lighting", false);
@@ -668,6 +711,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     {
         if (mesh_.n_faces())
         {
+            phong_shader_.set_uniform("use_vertex_selection", has_vertex_selection_);
             glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
         }
     }
@@ -683,11 +727,13 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
                                            mvp_matrix);
                 matcap_shader_.set_uniform("normal_matrix", n_matrix);
                 matcap_shader_.set_uniform("alpha", alpha_);
+                matcap_shader_.set_uniform("use_vertex_selection", has_vertex_selection_);
                 glBindTexture(GL_TEXTURE_2D, texture_);
                 glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
             }
             else
             {
+                phong_shader_.set_uniform("use_vertex_selection", false);
                 phong_shader_.set_uniform("front_color", vec3(0.9, 0.9, 0.9));
                 phong_shader_.set_uniform("back_color", vec3(0.3, 0.3, 0.3));
                 phong_shader_.set_uniform("use_texture", true);
@@ -708,6 +754,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
             phong_shader_.set_uniform("use_lighting", false);
 
             // draw faces
+            phong_shader_.set_uniform("use_vertex_selection", has_vertex_selection_);
             phong_shader_.set_uniform("front_color", vec3(0.8, 0.8, 0.8));
             phong_shader_.set_uniform("back_color", vec3(0.9, 0.0, 0.0));
             glDepthRange(0.01, 1.0);

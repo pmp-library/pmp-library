@@ -14,11 +14,13 @@ layout (location=0) in vec4 v_position;
 layout (location=1) in vec3 v_normal;
 layout (location=2) in vec2 v_tex;
 layout (location=3) in vec3 v_color;
+layout (location=4) in float v_selection;
 
 out vec3 v2f_normal;
 out vec2 v2f_tex;
 out vec3 v2f_view;
 out vec3 v2f_color;
+out float v2f_selection;
 
 uniform mat4 modelview_projection_matrix;
 uniform mat4 modelview_matrix;
@@ -33,6 +35,7 @@ void main()
     vec4 pos     = show_texture_layout ? vec4(v_tex, 0.0, 1.0) : v_position;
     v2f_view     = -(modelview_matrix * pos).xyz;
     v2f_color    = v_color;
+    v2f_selection = v_selection;
     gl_PointSize = point_size;
     gl_Position  = modelview_projection_matrix * pos;
 }
@@ -51,12 +54,14 @@ precision mediump float;
 in vec3  v2f_normal;
 in vec2  v2f_tex;
 in vec3  v2f_view;
-in vec3  v2f_color;
+in vec3  v2f_color; 
+in float  v2f_selection;
 
 uniform bool   use_lighting;
 uniform bool   use_texture;
 uniform bool   use_srgb;
 uniform bool   use_vertex_color;
+uniform bool   use_vertex_selection;
 uniform bool   use_round_points;
 uniform vec3   front_color;
 uniform vec3   back_color;
@@ -121,6 +126,10 @@ void main()
     }
 
     if (use_texture) rgb *= texture(mytexture, v2f_tex).xyz;
+
+    if (use_vertex_selection)
+        rgb *= v2f_selection > 0.5 ? vec3(0.7, 1.0, 0.7) : vec3(1.0, 0.7, 0.7);
+
     if (use_srgb)    rgb  = pow(clamp(rgb, 0.0, 1.0), vec3(0.45));
 
     // round points

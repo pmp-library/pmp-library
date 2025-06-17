@@ -16,13 +16,18 @@ static const char* matcap_vshader =
 R"glsl(
 layout (location=0) in vec4 v_position;
 layout (location=1) in vec3 v_normal;
+layout (location=4) in float v_selection;
+
 out vec3 v2f_normal;
+out float v2f_selection;
+
 uniform mat4 modelview_projection_matrix;
 uniform mat3 normal_matrix;
 
 void main()
 {
     v2f_normal = normalize(normal_matrix * v_normal);
+    v2f_selection = v_selection;
     gl_Position = modelview_projection_matrix * v_position;
 }
 )glsl";
@@ -38,8 +43,12 @@ R"glsl(
 precision mediump float;
 
 in vec3 v2f_normal;
+in float v2f_selection;
+
 uniform sampler2D matcap;
-uniform float  alpha;
+uniform float alpha;
+uniform bool use_vertex_selection;
+
 out vec4 f_color;
 
 vec2 uv;
@@ -59,6 +68,11 @@ void main()
         rgba = texture(matcap, uv);
         rgba.rgb *= 0.5;
     }
+
+    if (use_vertex_selection)
+        rgba.rgb *= v2f_selection > 0.5 ? vec3(0.7, 1.0, 0.7) : vec3(1.0, 0.7, 0.7);
+
+    rgba.rgb  = pow(clamp(rgba.rgb, 0.0, 1.0), vec3(0.45));
 
     rgba.a *= alpha;
     f_color = rgba;
