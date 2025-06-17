@@ -3,6 +3,7 @@
 
 #include "pmp/io/read_obj.h"
 #include "pmp/exceptions.h"
+#include "pmp/stop_watch.h"
 
 namespace pmp {
 
@@ -10,13 +11,19 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
 {
     std::array<char, 200> s;
     float x, y, z;
-    std::vector<Vertex> vertices;
+    Vertex v;
+    std::vector<Vertex> vertices, vmap;
     std::vector<TexCoord> all_tex_coords; //individual texture coordinates
     std::vector<int>
         halfedge_tex_idx; //texture coordinates sorted for halfedges
     HalfedgeProperty<TexCoord> tex_coords =
         mesh.halfedge_property<TexCoord>("h:tex");
     bool with_tex_coord = false;
+
+    bool use_add_vertex_unique = true;
+
+    StopWatch stop_watch;
+    stop_watch.start();
 
     // open file (in ASCII mode)
     FILE* in = fopen(file.string().c_str(), "r");
@@ -38,7 +45,11 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
         {
             if (sscanf(s.data(), "v %f %f %f", &x, &y, &z))
             {
-                mesh.add_vertex(Point(x, y, z));
+                if (use_add_vertex_unique)
+                    v = mesh.add_vertex_unique(Point(x, y, z));
+                else
+                    v = mesh.add_vertex(Point(x, y, z));
+                vmap.emplace_back(v);
             }
         }
 
@@ -115,7 +126,7 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
                             int idx = atoi(p0);
                             if (idx < 0)
                                 idx = mesh.n_vertices() + idx + 1;
-                            vertices.emplace_back(idx - 1);
+                            vertices.emplace_back(vmap[idx - 1]);
                             break;
                         }
                         case 1: // texture coord
@@ -175,6 +186,18 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
     }
 
     fclose(in);
+
+    stop_watch.stop();
+    if (use_add_vertex_unique)
+    {
+        std::cout << "Time to load mesh (add_vertex_unique) = "
+                  << stop_watch.elapsed() / 1000 << " secs\n";
+    }
+    else
+    {
+        std::cout << "Time to load mesh (add_vertex) = "
+                  << stop_watch.elapsed() / 1000 << " secs\n";
+    }
 }
 
 } // namespace pmp
