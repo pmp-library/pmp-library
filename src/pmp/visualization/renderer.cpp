@@ -68,7 +68,6 @@ Renderer::~Renderer()
 }
 
 void Renderer::load_texture(const std::filesystem::path& filename, GLint format,
-void Renderer::load_texture(const std::filesystem::path& filename, GLint format,
                             GLint min_filter, GLint mag_filter, GLint wrap)
 {
 #ifdef __EMSCRIPTEN__
