@@ -58,6 +58,7 @@ private:
     void collapse_short_edges(const Scalar lmin);
     void flip_edges();
     void relaxation();
+    void remove_caps();
     void fairing();
 
     // return i'th vertex of hole
@@ -323,6 +324,7 @@ void HoleFilling::refine()
         flip_edges();
         relaxation();
     }
+    remove_caps();
     fairing();
 }
 
@@ -531,6 +533,51 @@ void HoleFilling::relaxation()
     mesh_.remove_vertex_property(idx);
 }
 
+void HoleFilling::remove_caps()
+{
+    Halfedge h;
+    Vertex v, vb, vd;
+    Scalar a0, a1, amin;
+    const Scalar aa(::cos(170.0 * std::numbers::pi / 180.0));
+    Point a, b, c, d;
+
+    for (auto e : mesh_.edges())
+    {
+        if (mesh_.is_flip_ok(e))
+        {
+            h = mesh_.halfedge(e, 0);
+            a = points_[mesh_.to_vertex(h)];
+            h = mesh_.next_halfedge(h);
+            b = points_[vb = mesh_.to_vertex(h)];
+            h = mesh_.halfedge(e, 1);
+            c = points_[mesh_.to_vertex(h)];
+            h = mesh_.next_halfedge(h);
+            d = points_[vd = mesh_.to_vertex(h)];
+
+            a0 = dot(normalize(a - b), normalize(c - b));
+            a1 = dot(normalize(a - d), normalize(c - d));
+
+            if (a0 < a1)
+            {
+                amin = a0;
+                v = vb;
+            }
+            else
+            {
+                amin = a1;
+                v = vd;
+            }
+
+            // is it a cap?
+            if (amin < aa)
+            {
+                // flip
+                mesh_.flip(e);
+            }
+        }
+    }
+}
+
 void HoleFilling::fairing()
 {
     // did the refinement insert new vertices?
@@ -543,6 +590,7 @@ void HoleFilling::fairing()
         return;
 
     // convert non-locked into selection
+    bool add_vsel = !mesh_.has_vertex_property("v:selected");
     auto vsel = mesh_.vertex_property<bool>("v:selected");
     for (auto v : mesh_.vertices())
         vsel[v] = !vlocked_[v];
@@ -555,13 +603,16 @@ void HoleFilling::fairing()
     catch (SolverException& e)
     {
         // clean up
-        mesh_.remove_vertex_property(vsel);
+        if (add_vsel)
+            mesh_.remove_vertex_property(vsel);
         throw e;
     }
 
     // clean up
-    mesh_.remove_vertex_property(vsel);
+    if (add_vsel)
+        mesh_.remove_vertex_property(vsel);
 }
+
 } // namespace
 
 void fill_hole(SurfaceMesh& mesh, Halfedge h)
