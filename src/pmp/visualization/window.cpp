@@ -702,8 +702,7 @@ void Window::exit_fullscreen()
 
 void Window::glfw_motion(GLFWwindow* window, double xpos, double ypos)
 {
-    ImGui_ImplGlfw_CursorPosCallback(window, instance_->scaling_ * xpos,
-                                     instance_->scaling_ * ypos);
+    ImGui_ImplGlfw_CursorPosCallback(window, xpos, ypos);
 
     if (!ImGui::GetIO().WantCaptureMouse)
     {
