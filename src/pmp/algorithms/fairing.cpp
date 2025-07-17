@@ -108,7 +108,7 @@ void fair(SurfaceMesh& mesh, unsigned int k)
 
     // build matrix
     SparseMatrix L;
-    laplace_matrix(mesh, L, true);
+    laplace_matrix(mesh, L);
     DiagonalMatrix M;
     mass_matrix(mesh, M);
     const DiagonalMatrix Minv = M.inverse();
