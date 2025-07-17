@@ -137,8 +137,7 @@ Window::Window(const char* title, int width, int height, bool showgui)
     glfwSetFramebufferSizeCallback(window_, glfw_resize);
     glfwSetDropCallback(window_, glfw_drop);
     glfwSetWindowContentScaleCallback(window_, glfw_scale);
-    glfwSetWindowFocusCallback(window_, ImGui_ImplGlfw_WindowFocusCallback);
-    glfwSetCursorEnterCallback(window_, ImGui_ImplGlfw_CursorEnterCallback);
+
 #if defined(__EMSCRIPTEN__)
     // touch event handlers
     emscripten_set_touchstart_callback("#canvas", nullptr, true,
