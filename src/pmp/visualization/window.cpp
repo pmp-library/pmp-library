@@ -217,7 +217,7 @@ void Window::color_mode(ColorMode c)
             clear_color_ = vec3(0.15, 0.16, 0.17);
             break;
     }
-
+    
 #ifdef TUDO // color scheme of TU Dortmund
 
     ImVec4 fg, bg, bg_active, bg_inactive, bg_light, grey;
@@ -391,6 +391,14 @@ void Window::draw_help_dialog()
 
 void Window::draw_imgui()
 {
+    // hide border if imgui is hidden (only menu icon shown)
+    bool pop_border_color = false;
+    if (!show_imgui_) 
+    {
+        ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0,0,0,0));
+        pop_border_color = true;
+    }
+
     // start window
     ImGui::SetNextWindowBgAlpha(show_imgui_ ? 0.8 : 0.0);
     ImGui::SetNextWindowPos(ImVec2(4, 4), ImGuiCond_Once);
@@ -476,6 +484,12 @@ void Window::draw_imgui()
     }
 
     ImGui::End();
+
+    // undo border hiding
+    if (pop_border_color)
+    {
+        ImGui::PopStyleColor();
+    }
 }
 
 int Window::run()
