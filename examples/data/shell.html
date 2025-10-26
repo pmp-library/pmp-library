@@ -94,6 +94,13 @@
         </div>
 
         <script type='text/javascript'>
+            // this hack is suddenly required in Safari for iPadOS26 and iOS26
+            if (!('exitPointerLock' in document)) {
+                document.exitPointerLock = function () { };
+            }
+        </script>
+        
+        <script type='text/javascript'>
             const dialog = document.getElementById('dialog');
             const statusElement = document.getElementById('status');
             const progressElement = document.getElementById('progress');
