@@ -30,6 +30,11 @@ inline Scalar edge_length(const SurfaceMesh& mesh, Edge e)
 //! Compute mean edge length of \p mesh .
 Scalar mean_edge_length(const SurfaceMesh& mesh);
 
+//! Compute connected components in \p mesh .
+//! \return the number of connected components.
+//! \post Adds a new vertex property \c v:component containing the component index.
+int connected_components(SurfaceMesh& mesh);
+
 //! @}
 
 } // namespace pmp

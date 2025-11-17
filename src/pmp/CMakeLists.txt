@@ -8,6 +8,8 @@ else()
   set_property(TARGET pmp PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
+target_compile_features(pmp PUBLIC cxx_std_20)
+
 find_package(OpenMP)
 if(OpenMP_CXX_FOUND)
   target_link_libraries(pmp PUBLIC OpenMP::OpenMP_CXX)
@@ -26,8 +28,6 @@ if(NOT EMSCRIPTEN AND PMP_INSTALL)
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
            $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>
            $<INSTALL_INTERFACE:include/>)
-
-  target_compile_features(pmp PUBLIC cxx_std_17)
 
   install(
     TARGETS pmp

@@ -33,7 +33,8 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
 
     // write normals
     auto normals = mesh.get_vertex_property<Normal>("v:normal");
-    if (normals && flags.use_vertex_normals)
+    const bool write_normals = normals && flags.use_vertex_normals;
+    if (write_normals)
     {
         for (auto v : mesh.vertices())
         {
@@ -44,7 +45,7 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
 
     // write texture coordinates
     auto tex_coords = mesh.get_halfedge_property<TexCoord>("h:tex");
-    bool write_texcoords = tex_coords && flags.use_halfedge_texcoords;
+    const bool write_texcoords = tex_coords && flags.use_halfedge_texcoords;
 
     if (write_texcoords)
     {
@@ -67,18 +68,31 @@ void write_obj(const SurfaceMesh& mesh, const std::filesystem::path& file,
         auto h = mesh.halfedges(f);
         for (auto v : mesh.vertices(f))
         {
-            auto idx = v.idx() + 1;
+            auto idx = (uint32_t)(v.idx() + 1);
             if (write_texcoords)
             {
-                // write vertex index, texCoord index and normal index
-                fprintf(out, " %d/%d/%d", (uint32_t)idx,
-                        (uint32_t)(*h).idx() + 1, (uint32_t)idx);
+                if (write_normals)
+                {
+                    // write vertex index, texCoord index and normal index
+                    fprintf(out, " %d/%d/%d", idx, (uint32_t)(*h).idx() + 1,
+                            idx);
+                }
+                else
+                {
+                    // write vertex index, texCoord index
+                    fprintf(out, " %d/%d/", idx, (uint32_t)(*h).idx() + 1);
+                }
                 ++h;
+            }
+            else if (write_normals)
+            {
+                // write vertex index and normal index
+                fprintf(out, " %d//%d", idx, idx);
             }
             else
             {
-                // write vertex index and normal index
-                fprintf(out, " %d//%d", (uint32_t)idx, (uint32_t)idx);
+                // write only vertex index
+                fprintf(out, " %d", idx);
             }
         }
         fprintf(out, "\n");

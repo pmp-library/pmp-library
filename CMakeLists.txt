@@ -25,8 +25,8 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if(PMP_BUILD_VIS)
   set(GLFW_SOURCE_DIR_INTERNAL "external/glfw-3.4")
-  set(GLEW_SOURCE_DIR "external/glew-2.2.0")
-  set(IMGUI_SOURCE_DIR "external/imgui-1.90.4")
+  set(GLAD_SOURCE_DIR "external/glad-2.0.8")
+  set(IMGUI_SOURCE_DIR "external/imgui-1.91.8")
   set(STB_IMAGE_SOURCE_DIR "external/stb_image-2.28")
   set(STB_IMAGE_WRITE_SOURCE_DIR "external/stb_image_write-1.16")
 
@@ -56,17 +56,10 @@ if(PMP_BUILD_VIS)
     set(GLFW_BUILD_WAYLAND False)
   endif()
 
-  # setup use of GLFW and GLEW
+  # setup use of GLFW and GLAD
   if(NOT EMSCRIPTEN)
-    add_subdirectory(${GLFW_SOURCE_DIR_INTERNAL} ${GLEW_SOURCE_DIR})
-
-    add_definitions(-DGLEW_STATIC)
-    add_library(glew STATIC ${GLEW_SOURCE_DIR}/src/glew.c
-                            ${GLEW_SOURCE_DIR}/include)
-    set_property(TARGET glew PROPERTY POSITION_INDEPENDENT_CODE ON)
-    target_include_directories(glew PUBLIC ${GLEW_SOURCE_DIR}/include
-                                           ${GLFW_SOURCE_DIR_INTERNAL}/include)
-    target_link_libraries(glew ${GLFW_LIBRARIES})
+    add_subdirectory(${GLFW_SOURCE_DIR_INTERNAL})
+    include_directories(${GLAD_SOURCE_DIR}/include)
   endif()
 
   # setup IMGUI
@@ -100,15 +93,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug"
     COMMAND
       ${LCOV} --directory . --capture --exclude '*/external/*' --exclude
       '*/tests/*' --exclude '/usr/*' --exclude '/Applications/*' --exclude
-      'v1/*' --output-file coverage.info
+      'v1/*' --output-file coverage.info --ignore-errors unused
     # generate report
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # set default compiler flags for both gcc and clang
@@ -147,7 +137,7 @@ if(EMSCRIPTEN)
   add_compile_options(-fexceptions)
   add_link_options(-fexceptions)
   add_link_options(
-    "SHELL:-sWASM=1 -sUSE_WEBGL2=1 -sUSE_GLFW=3 -sALLOW_MEMORY_GROWTH=1 -sALLOW_TABLE_GROWTH=1 -sSTACK_SIZE=5MB"
+    "SHELL:-sWASM=1 -sUSE_WEBGL2=1 -sUSE_GLFW=3 -sALLOW_MEMORY_GROWTH=1 -sALLOW_TABLE_GROWTH=1 -sSTACK_SIZE=5MB -sEXPORTED_RUNTIME_METHODS=[ccall]"
   )
   set(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
@@ -165,6 +155,11 @@ endif()
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" AND NOT WIN32)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
+endif()
+
+# TU Dortmund color scheme
+if (TUDO)
+  add_definitions(-DTUDO)
 endif()
 
 # choose size of the scalar type

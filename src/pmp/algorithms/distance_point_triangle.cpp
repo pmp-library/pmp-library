@@ -13,7 +13,7 @@ Scalar dist_point_line_segment(const Point& p, const Point& v0, const Point& v1,
                                Point& nearest_point)
 {
     Point d1(p - v0);
-    Point d2(v1 - v0);
+    const Point d2(v1 - v0);
     Point min_v(v0);
     Scalar t = dot(d2, d2);
 
@@ -36,7 +36,7 @@ Scalar dist_point_triangle(const Point& p, const Point& v0, const Point& v1,
     Point v0v1 = v1 - v0;
     Point v0v2 = v2 - v0;
     Point n = cross(v0v1, v0v2); // not normalized !
-    Scalar d = sqrnorm(n);
+    const Scalar d = sqrnorm(n);
 
     // Check if the triangle is degenerated -> measure dist to line segments
     if (fabs(d) < std::numeric_limits<Scalar>::min())
@@ -64,14 +64,14 @@ Scalar dist_point_triangle(const Point& p, const Point& v0, const Point& v1,
         return distance;
     }
 
-    Scalar inv_d = 1.0 / d;
+    const Scalar inv_d = 1.0 / d;
     Point v1v2 = v2;
     v1v2 -= v1;
     Point v0p = p;
     v0p -= v0;
-    Point t = cross(v0p, n);
-    Scalar a = dot(t, v0v2) * -inv_d;
-    Scalar b = dot(t, v0v1) * inv_d;
+    const Point t = cross(v0p, n);
+    const Scalar a = dot(t, v0v2) * -inv_d;
+    const Scalar b = dot(t, v0v1) * inv_d;
     Scalar s01, s02, s12;
 
     // Calculate the distance to an edge or a corner vertex

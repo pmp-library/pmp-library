@@ -11,7 +11,7 @@ class Viewer : public MeshViewer
 {
 public:
     Viewer(const char* title, int width, int height);
-    void load_mesh(const char* filename) override;
+    void load_mesh(const std::filesystem::path& filename) override;
 
 protected:
     void process_imgui() override;
@@ -23,7 +23,7 @@ Viewer::Viewer(const char* title, int width, int height)
 {
 }
 
-void Viewer::load_mesh(const char* filename)
+void Viewer::load_mesh(const std::filesystem::path& filename)
 {
     try
     {

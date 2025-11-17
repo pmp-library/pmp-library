@@ -26,19 +26,35 @@ void Viewer::process_imgui()
 {
     MeshViewer::process_imgui();
 
+    ImGui::Spacing();
+    ImGui::Spacing();
+
     if (ImGui::CollapsingHeader("Curvature", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        static int iters = 1;
-        ImGui::SliderInt("Smoothing Iterations", &iters, 0, 10);
-        static bool tensor = true;
-        ImGui::Checkbox("Analyze Tensor", &tensor);
+        static int method = 1;
+        ImGui::RadioButton("Cotan Laplace", &method, 0);
+        ImGui::RadioButton("Curvature Tensor", &method, 1);
+        bool tensor = (method == 1);
+
+        ImGui::Spacing();
+
         static bool two_ring = true;
-        if (tensor)
-            ImGui::Checkbox("Two-Ring Neighborhood", &two_ring);
+        static int iters = 1;
+        if (ImGui::CollapsingHeader("Options", ImGuiTreeNodeFlags_None))
+        {
+            if (tensor)
+                ImGui::Checkbox("Two-Ring Neighborhood", &two_ring);
+
+            ImGui::PushItemWidth(100);
+            ImGui::SliderInt("Smoothing Iterations", &iters, 0, 10);
+            ImGui::PopItemWidth();
+        }
+
+        ImGui::Spacing();
 
         if (ImGui::Button("Mean Curvature"))
         {
-            curvature(mesh_, Curvature::mean, iters, tensor, two_ring);
+            curvature(mesh_, Curvature::Mean, iters, tensor, two_ring);
             curvature_to_texture_coordinates(mesh_);
             renderer_.use_cold_warm_texture();
             update_mesh();
@@ -46,7 +62,7 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Gauss Curvature"))
         {
-            curvature(mesh_, Curvature::gauss, iters, tensor, two_ring);
+            curvature(mesh_, Curvature::Gauss, iters, tensor, two_ring);
             curvature_to_texture_coordinates(mesh_);
             renderer_.use_cold_warm_texture();
             update_mesh();
@@ -54,7 +70,7 @@ void Viewer::process_imgui()
         }
         if (ImGui::Button("Abs. Max. Curvature"))
         {
-            curvature(mesh_, Curvature::max_abs, iters, tensor, two_ring);
+            curvature(mesh_, Curvature::MaxAbs, iters, tensor, two_ring);
             curvature_to_texture_coordinates(mesh_);
             renderer_.use_cold_warm_texture();
             update_mesh();

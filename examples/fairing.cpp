@@ -33,7 +33,7 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            curvature(mesh_, Curvature::mean, 1, true, true);
+            curvature(mesh_, Curvature::Mean, 1, true, true);
             curvature_to_texture_coordinates(mesh_);
             update_mesh();
             renderer_.use_cold_warm_texture();

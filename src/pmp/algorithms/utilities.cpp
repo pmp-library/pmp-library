@@ -3,7 +3,9 @@
 
 #include "pmp/algorithms/utilities.h"
 #include "pmp/algorithms/differential_geometry.h"
+#include <algorithm>
 #include <limits>
+#include <queue>
 
 namespace pmp {
 
@@ -29,7 +31,7 @@ void flip_faces(SurfaceMesh& mesh)
         {
             vertices.push_back(v);
         }
-        std::reverse(vertices.begin(), vertices.end());
+        std::ranges::reverse(vertices);
         new_mesh.add_face(vertices);
     }
     mesh = new_mesh;
@@ -53,6 +55,44 @@ Scalar mean_edge_length(const SurfaceMesh& mesh)
         length += edge_length(mesh, e);
     length /= (Scalar)mesh.n_edges();
     return length;
+}
+
+int connected_components(SurfaceMesh& mesh)
+{
+    auto component = mesh.vertex_property<int>("v:component");
+
+    // make sure to initialize all vertices with -1
+    for (auto v : mesh.vertices())
+        component[v] = -1;
+
+    int idx = 0;
+    for (auto v : mesh.vertices())
+    {
+        if (component[v] != -1)
+            continue;
+
+        std::queue<Vertex> vertices;
+        vertices.push(v);
+
+        while (!vertices.empty())
+        {
+            auto vv = vertices.front();
+            vertices.pop();
+            component[vv] = idx;
+
+            for (auto vc : mesh.vertices(vv))
+            {
+                if (component[vc] != idx)
+                {
+                    component[vc] = idx;
+                    vertices.push(vc);
+                }
+            }
+        }
+        idx++;
+    }
+
+    return idx;
 }
 
 } // namespace pmp

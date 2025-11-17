@@ -70,16 +70,4 @@ void gradient_matrix(const SurfaceMesh& mesh, SparseMatrix& G);
 //! \ingroup algorithms
 void divergence_matrix(const SurfaceMesh& mesh, SparseMatrix& D);
 
-//! For a mesh with N vertices, construct an Nx3 matrix containing the vertex coordinates in its rows.
-//! \param mesh The input mesh.
-//! \param X The output matrix.
-//! \ingroup algorithms
-void coordinates_to_matrix(const SurfaceMesh& mesh, DenseMatrix& X);
-
-//! For a mesh with N vertices, set the vertex coordinates from the rows of an Nx3 matrix.
-//! \param X The input matrix.
-//! \param mesh The mesh.
-//! \ingroup algorithms
-void matrix_to_coordinates(const DenseMatrix& X, SurfaceMesh& mesh);
-
 } // namespace pmp

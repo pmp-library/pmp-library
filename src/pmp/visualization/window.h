@@ -1,9 +1,12 @@
-// Copyright 2011-2020 the Polygon Mesh Processing Library developers.
+// Copyright 2011-2025 the Polygon Mesh Processing Library developers.
 // Distributed under a MIT-style license, see LICENSE.txt for details.
 
 #pragma once
 
 #include "pmp/visualization/gl.h"
+#include "pmp/mat_vec.h"
+
+#include <imgui.h>
 
 #include <vector>
 #include <utility>
@@ -11,6 +14,11 @@
 #include <string>
 
 #include <GLFW/glfw3.h>
+
+#if __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#include <emscripten/html5.h>
+#endif
 
 namespace pmp {
 
@@ -55,6 +63,12 @@ protected:
     //! this function is called if a file is dropped onto the window
     virtual void drop(int /*count*/, const char** /*paths*/) {}
 
+#if __EMSCRIPTEN__
+    virtual void touchstart(const EmscriptenTouchEvent*) {}
+    virtual void touchmove(const EmscriptenTouchEvent*) {}
+    virtual void touchend(const EmscriptenTouchEvent*) {}
+#endif
+
     //! this function renders the ImGUI elements and handles their events
     virtual void process_imgui() {}
 
@@ -66,6 +80,18 @@ protected:
 
     //! scale ImGUI elements and font
     void scale_imgui(float scale);
+
+    //! draw ImGUI frame
+    virtual void draw_imgui();
+
+    // light/dark mode
+    enum ColorMode
+    {
+        LightMode,
+        DarkMode
+    };
+    ColorMode color_mode() const { return color_mode_; }
+    virtual void color_mode(ColorMode c);
 
     //! is ImGUI visible or hidden?
     bool show_imgui() const { return show_imgui_; }
@@ -80,8 +106,12 @@ protected:
     void add_help_item(std::string key, std::string description,
                        int position = -1);
 
-    //! show ImGUI help dialog
-    void show_help();
+    //! is help dialog visible/hidden?
+    bool show_help() { return show_help_; }
+    //!  show or hide help dialog
+    void show_help(bool b) { show_help_ = b; }
+    //!  render help dialog
+    void draw_help_dialog();
 
     //! take a screenshot, save it to `title-n.png` using the window title
     //! and an incremented number `n`.
@@ -121,6 +151,19 @@ protected:
     bool alt_pressed() const { return alt_pressed_; }
     //! is SHIFT modifier key pressed down?
     bool shift_pressed() const { return shift_pressed_; }
+    //! is SUPER modifier key pressed down?
+    bool super_pressed() const { return super_pressed_; }
+
+    static void render_frame_()
+    {
+        if (instance_)
+            instance_->render_frame();
+    }
+    void render_frame();
+
+    bool is_fullscreen() const;
+    void enter_fullscreen();
+    void exit_fullscreen();
 
 private:
     static void glfw_error(int error, const char* description);
@@ -135,8 +178,15 @@ private:
     static void glfw_drop(GLFWwindow* window, int count, const char** paths);
     static void glfw_scale(GLFWwindow* window, float xscale, float yscale);
 
-    static void render_frame();
+#if __EMSCRIPTEN__
+    static EM_BOOL emscripten_touchstart(int, const EmscriptenTouchEvent*,
+                                         void*);
+    static EM_BOOL emscripten_touchmove(int, const EmscriptenTouchEvent*,
+                                        void*);
+    static EM_BOOL emscripten_touchend(int, const EmscriptenTouchEvent*, void*);
+#endif
 
+    // the active window
     static Window* instance_;
 
     // GLFW window pointer
@@ -165,18 +215,33 @@ private:
     bool ctrl_pressed_;
     bool alt_pressed_;
     bool shift_pressed_;
+    bool super_pressed_;
 
     // fullscreen-related backups
     int backup_xpos_;
     int backup_ypos_;
     int backup_width_;
     int backup_height_;
-    bool is_fullscreen() const;
-    void enter_fullscreen();
-    void exit_fullscreen();
 
     // screenshot number
     unsigned int screenshot_number_{0};
+
+protected:
+    // light/dark mode
+    ColorMode color_mode_{LightMode};
+    vec3 clear_color_{1.0, 1.0, 1.0};
+
+public:
+    static void dark_mode()
+    {
+        if (instance_)
+            instance_->color_mode(DarkMode);
+    }
+    static void light_mode()
+    {
+        if (instance_)
+            instance_->color_mode(LightMode);
+    }
 };
 
 } // namespace pmp

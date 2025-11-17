@@ -34,7 +34,7 @@ void Viewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            curvature(mesh_, Curvature::mean, 1, true, true);
+            curvature(mesh_, Curvature::Mean, 1, true, true);
             curvature_to_texture_coordinates(mesh_);
             update_mesh();
             renderer_.use_cold_warm_texture();
@@ -75,14 +75,19 @@ void Viewer::process_imgui()
         static float timestep = 0.001;
         if (implicit)
         {
-            ImGui::Spacing();
-            ImGui::Spacing();
             ImGui::PushItemWidth(100);
-            if (implicit)
-                ImGui::SliderFloat("TimeStep", &timestep, 0.001, 1.0);
-            else
+            if (uniform_laplace)
                 ImGui::SliderFloat("TimeStep", &timestep, 1.0, 100.0);
+            else
+                ImGui::SliderFloat("TimeStep", &timestep, 0.001, 1.0);
             ImGui::PopItemWidth();
+        }
+
+        static bool rescale = false;
+        if (implicit)
+        {
+            ImGui::PushItemWidth(100);
+            ImGui::Checkbox("Preserve Area", &rescale);
         }
 
         ImGui::Spacing();
@@ -96,13 +101,6 @@ void Viewer::process_imgui()
             }
             else
             {
-                // only re-scale if we don't have a (fixed) boundary
-                bool has_boundary = false;
-                for (auto v : mesh_.vertices())
-                    if (mesh_.is_boundary(v))
-                        has_boundary = true;
-                bool rescale = !has_boundary;
-
                 Scalar dt =
                     uniform_laplace ? timestep : timestep * radius_ * radius_;
                 try

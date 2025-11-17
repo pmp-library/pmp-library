@@ -25,23 +25,23 @@ TEST_F(CurvatureTest, curvature)
     Scalar gmin = std::numeric_limits<Scalar>::max();
     Scalar gmax = -std::numeric_limits<Scalar>::max();
 
-    curvature(mesh, Curvature::min, 1);
+    curvature(mesh, Curvature::Min, 1);
     auto vcurv = mesh.vertex_property<Scalar>("v:curv");
     for (auto v : mesh.vertices())
         kmin = std::min(kmin, vcurv[v]);
 
-    curvature(mesh, Curvature::max, 1);
+    curvature(mesh, Curvature::Max, 1);
     for (auto v : mesh.vertices())
         kmax = std::max(kmax, vcurv[v]);
 
-    curvature(mesh, Curvature::mean, 1);
+    curvature(mesh, Curvature::Mean, 1);
     for (auto v : mesh.vertices())
     {
         mmin = std::min(mmin, vcurv[v]);
         mmax = std::max(mmax, vcurv[v]);
     }
 
-    curvature(mesh, Curvature::gauss, 1);
+    curvature(mesh, Curvature::Gauss, 1);
     for (auto v : mesh.vertices())
     {
         gmin = std::min(gmin, vcurv[v]);
@@ -58,7 +58,7 @@ TEST_F(CurvatureTest, curvature)
 
 TEST_F(CurvatureTest, curvature_to_texture_coordinates)
 {
-    curvature(mesh, Curvature::mean, 1);
+    curvature(mesh, Curvature::Mean, 1);
     curvature_to_texture_coordinates(mesh);
     auto tex = mesh.vertex_property<TexCoord>("v:tex");
     EXPECT_TRUE(tex);

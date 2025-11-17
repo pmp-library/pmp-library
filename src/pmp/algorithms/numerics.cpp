@@ -140,9 +140,9 @@ void matrices_to_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
 
     for (int i = 0; i < F.rows(); i++)
     {
-        pmp::Vertex a(F(i, 0));
-        pmp::Vertex b(F(i, 1));
-        pmp::Vertex c(F(i, 2));
+        const pmp::Vertex a(F(i, 0));
+        const pmp::Vertex b(F(i, 1));
+        const pmp::Vertex c(F(i, 2));
         mesh.add_triangle(a, b, c);
     }
 }
@@ -162,6 +162,20 @@ void mesh_to_matrices(const pmp::SurfaceMesh& mesh, Eigen::MatrixXd& V,
         for (auto v : mesh.vertices(f))
             F(i, j++) = v.idx();
     }
+}
+
+void coordinates_to_matrix(const SurfaceMesh& mesh, DenseMatrix& X)
+{
+    X.resize(mesh.n_vertices(), 3);
+    for (auto v : mesh.vertices())
+        X.row(v.idx()) = static_cast<Eigen::Vector3d>(mesh.position(v));
+}
+
+void matrix_to_coordinates(const DenseMatrix& X, SurfaceMesh& mesh)
+{
+    assert((size_t)X.rows() == mesh.n_vertices() && X.cols() == 3);
+    for (auto v : mesh.vertices())
+        mesh.position(v) = X.row(v.idx());
 }
 
 } // namespace pmp

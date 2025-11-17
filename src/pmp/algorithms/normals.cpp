@@ -8,13 +8,13 @@ namespace pmp {
 Normal face_normal(const SurfaceMesh& mesh, Face f)
 {
     Halfedge h = mesh.halfedge(f);
-    Halfedge hend = h;
+    const Halfedge hend = h;
 
     auto vpoint = mesh.get_vertex_property<Point>("v:point");
 
     Point p0 = vpoint[mesh.to_vertex(h)];
     h = mesh.next_halfedge(h);
-    Point p1 = vpoint[mesh.to_vertex(h)];
+    const Point p1 = vpoint[mesh.to_vertex(h)];
     h = mesh.next_halfedge(h);
     Point p2 = vpoint[mesh.to_vertex(h)];
 

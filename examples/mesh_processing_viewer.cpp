@@ -49,34 +49,26 @@ void MeshProcessingViewer::keyboard(int key, int scancode, int action, int mods)
 
     switch (key)
     {
-        case GLFW_KEY_A:
-        {
-            detect_features(mesh_, 25);
-            update_mesh();
-            break;
-        }
-        case GLFW_KEY_D: // dualize mesh
-        {
-            dual(mesh_);
-            update_mesh();
-            break;
-        }
-        case GLFW_KEY_H:
-        {
-            set_draw_mode("Hidden Line");
-            break;
-        }
+        // case GLFW_KEY_A:
+        // {
+        //     detect_features(mesh_, 25);
+        //     update_mesh();
+        //     break;
+        // }
+        // case GLFW_KEY_D: // dualize mesh
+        // {
+        //     dual(mesh_);
+        //     update_mesh();
+        //     break;
+        // }
+        // case GLFW_KEY_H:
+        // {
+        //     set_draw_mode("Hidden Line");
+        //     break;
+        // }
         case GLFW_KEY_O: // change face orientation
         {
-#ifdef __EMSCRIPTEN__
-            // [fileHandle] = await window.showOpenFilePicker();
-            instance = this;
-            EM_ASM(console.log("mario"););
-            emscripten_async_wget("icosphere.off", "input.off", onload,
-                                  onerror);
-#else
             flip_faces(mesh_);
-#endif
             update_mesh();
             break;
         }
@@ -178,7 +170,7 @@ void MeshProcessingViewer::process_imgui()
     {
         if (ImGui::Button("Mean Curvature"))
         {
-            curvature(mesh_, Curvature::mean, 1, true, true);
+            curvature(mesh_, Curvature::Mean, 1, true, true);
             curvature_to_texture_coordinates(mesh_);
             renderer_.use_cold_warm_texture();
             update_mesh();
@@ -186,7 +178,7 @@ void MeshProcessingViewer::process_imgui()
         }
         if (ImGui::Button("Gauss Curvature"))
         {
-            curvature(mesh_, Curvature::gauss, 1, true, true);
+            curvature(mesh_, Curvature::Gauss, 1, true, true);
             curvature_to_texture_coordinates(mesh_);
             renderer_.use_cold_warm_texture();
             update_mesh();
@@ -194,7 +186,7 @@ void MeshProcessingViewer::process_imgui()
         }
         if (ImGui::Button("Abs. Max. Curvature"))
         {
-            curvature(mesh_, Curvature::max_abs, 1, true, true);
+            curvature(mesh_, Curvature::MaxAbs, 1, true, true);
             curvature_to_texture_coordinates(mesh_);
             renderer_.use_cold_warm_texture();
             update_mesh();

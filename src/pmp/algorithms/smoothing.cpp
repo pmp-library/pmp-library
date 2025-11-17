@@ -20,16 +20,11 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iterations,
     else
         laplace_matrix(mesh, L, true);
 
-    SparseMatrix G, D, L1, L2;
-    laplace_matrix(mesh, L1);
-    gradient_matrix(mesh, G);
-    divergence_matrix(mesh, D);
-    L2 = D * G;
-
     // normalize each row by sum of weights
     // scale by 0.5 to make it more robust
     // multiply by -1 to make it neg. definite again
-    L = -0.5 * L.diagonal().asDiagonal().inverse() * L;
+    DiagonalMatrix D = -0.5 * L.diagonal().asDiagonal().inverse();
+    L = D * L;
 
     // cancel out boundary vertices
     SparseMatrix S;
@@ -103,14 +98,14 @@ void implicit_smoothing(SurfaceMesh& mesh, Scalar timestep,
         if (rescale)
         {
             // restore original surface area
-            Scalar area_after = surface_area(mesh);
-            Scalar scale = sqrt(area_before / area_after);
+            const Scalar area_after = surface_area(mesh);
+            const Scalar scale = sqrt(area_before / area_after);
             for (auto v : mesh.vertices())
                 mesh.position(v) *= scale;
 
             // restore original center
-            Point center_after = centroid(mesh);
-            Point trans = center_before - center_after;
+            const Point center_after = centroid(mesh);
+            const Point trans = center_before - center_after;
             for (auto v : mesh.vertices())
                 mesh.position(v) += trans;
         }

@@ -12,14 +12,18 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 - Add `linear_subdivision()` function performing linear quad/tri subdivision.
 - Add `BoundaryHandling` option to subdivision functions (Loop, Catmull-Clark, Quad/Tri).
+- Add `connected_components` function.
 
 ### Changed
 
-- Upgrade C++ standard to C++20
-- Remove `SurfaceMesh::property_stats()`
+- Upgrade C++ standard to C++20.
+- Remove `SurfaceMesh::property_stats()`.
 - Throw exception when trying to add a property with the same name as an existing one.
+- Rename `Curvature` scoped enum constants for consistency.
+- Rename `glCheckError` to `check_gl_errors`.
 - Make `is_constrained()` predicate in `cholesky_solve()` a const reference.
 - Make `is_selection()` predicate in `selector_matrix()` a const reference.
+- Switch from GLEW to GLAD
 - Update ImGui to version 1.90.4
 - Update GLFW to version 3.4
 

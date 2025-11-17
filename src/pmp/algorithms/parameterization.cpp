@@ -49,7 +49,8 @@ void setup_boundary_constraints(SurfaceMesh& mesh)
     } while (hh != mesh.halfedge(vh));
 
     // map boundary loop to unit circle in texture domain
-    unsigned int i, n = loop.size();
+    unsigned int i;
+    const auto n = loop.size();
     Scalar angle, l, length;
     TexCoord t;
 
@@ -57,7 +58,7 @@ void setup_boundary_constraints(SurfaceMesh& mesh)
     for (i = 0, length = 0.0; i < n; ++i)
         length += distance(points[loop[i]], points[loop[(i + 1) % n]]);
 
-    // map length intervalls to unit circle intervals
+    // map length intervals to unit circle intervals
     for (i = 0, l = 0.0; i < n;)
     {
         // go from 2pi to 0 to preserve orientation
@@ -201,8 +202,8 @@ void lscm_parameterization(SurfaceMesh& mesh)
 
         // calculate local coordinate system
         dvec3 z = normalize(cross(normalize(c - b), normalize(a - b)));
-        dvec3 x = normalize(b - a);
-        dvec3 y = normalize(cross(z, x));
+        const dvec3 x = normalize(b - a);
+        const dvec3 y = normalize(cross(z, x));
 
         // calculate local vertex coordinates
         dvec2 a2d(0.0, 0.0);
@@ -219,12 +220,12 @@ void lscm_parameterization(SurfaceMesh& mesh)
         //area = 1.0;
 
         // calculate W_j,Ti (index by corner a,b,c and real/imaginary)
-        double w_ar = c2d[0] - b2d[0];
-        double w_br = a2d[0] - c2d[0];
-        double w_cr = b2d[0] - a2d[0];
-        double w_ai = c2d[1] - b2d[1];
-        double w_bi = a2d[1] - c2d[1];
-        double w_ci = b2d[1] - a2d[1];
+        const double w_ar = c2d[0] - b2d[0];
+        const double w_br = a2d[0] - c2d[0];
+        const double w_cr = b2d[0] - a2d[0];
+        const double w_ai = c2d[1] - b2d[1];
+        const double w_bi = a2d[1] - c2d[1];
+        const double w_ci = b2d[1] - a2d[1];
 
         // store matrix information per halfedge
         weight[ha] = dvec2(w_ar * area, w_ai * area);
@@ -327,7 +328,7 @@ void lscm_parameterization(SurfaceMesh& mesh)
     A.setFromTriplets(triplets.begin(), triplets.end());
 
     // solve A*X = B
-    Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver(A);
+    const Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> solver(A);
     Eigen::VectorXd x = solver.solve(b);
     if (solver.info() != Eigen::Success)
     {
@@ -355,7 +356,7 @@ void lscm_parameterization(SurfaceMesh& mesh)
         bbmax = max(bbmax, tex[v]);
     }
     bbmax -= bbmin;
-    Scalar s = std::max(bbmax[0], bbmax[1]);
+    const Scalar s = std::max(bbmax[0], bbmax[1]);
     for (auto v : mesh.vertices())
     {
         tex[v] -= bbmin;

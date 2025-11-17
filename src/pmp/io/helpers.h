@@ -10,7 +10,7 @@
 #include <cstdint>
 
 template <typename T>
-void tfread(FILE* in, const T& t)
+void tfread(FILE* in, T& t)
 {
     [[maybe_unused]] auto n_items = fread((char*)&t, 1, sizeof(t), in);
 }

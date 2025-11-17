@@ -116,11 +116,13 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     long int nv, nf, ne;
     float x, y, z, r, g, b;
     Vertex v;
+    Face f;
 
     // properties
     VertexProperty<Normal> normals;
     VertexProperty<TexCoord> texcoords;
     VertexProperty<Color> colors;
+    FaceProperty<Color> face_colors;
     if (has_normals)
         normals = mesh.vertex_property<Normal>("v:normal");
     if (has_texcoords)
@@ -195,7 +197,7 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         }
     }
 
-    // read faces: #N v[1] v[2] ... v[n-1]
+    // read faces: #N v[1] v[2] ... v[n-1]  [optional: r g b]
     std::vector<Vertex> vertices;
     for (i = 0; i < nf; ++i)
     {
@@ -226,11 +228,25 @@ void read_off_ascii(SurfaceMesh& mesh, FILE* in, const bool has_normals,
         }
         try
         {
-            mesh.add_face(vertices);
+            f = mesh.add_face(vertices);
         }
         catch (const TopologyException& e)
         {
             std::cerr << e.what() << std::endl;
+        }
+
+        // face color
+        if (sscanf(lp, "%f %f %f", &r, &g, &b) == 3)
+        {
+            if (r > 1.0f || g > 1.0f || b > 1.0f)
+            {
+                r /= 255.0f;
+                g /= 255.0f;
+                b /= 255.0f;
+            }
+            if (!face_colors)
+                face_colors = mesh.face_property<Color>("f:color");
+            face_colors[f] = Color(r, g, b);
         }
     }
 }
@@ -278,7 +294,7 @@ void read_off_binary(SurfaceMesh& mesh, FILE* in, const bool has_normals,
     // Swap the ordering if the total file size is smaller than the size
     // required to store all vertex coordinates.
     auto file_size = std::filesystem::file_size(file);
-    bool swap = file_size < nv * 3 * 4 ? true : false;
+    const bool swap = file_size < nv * 3 * 4 ? true : false;
     if (swap)
         nv = byteswap32(nv);
 

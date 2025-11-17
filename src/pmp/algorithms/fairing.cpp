@@ -108,13 +108,13 @@ void fair(SurfaceMesh& mesh, unsigned int k)
 
     // build matrix
     SparseMatrix L;
-    laplace_matrix(mesh, L, true);
+    laplace_matrix(mesh, L);
     DiagonalMatrix M;
     mass_matrix(mesh, M);
-    DiagonalMatrix invM = M.inverse();
+    const DiagonalMatrix Minv = M.inverse();
     SparseMatrix A = L;
     for (unsigned int i = 1; i < k; ++i)
-        A = L * invM * A;
+        A = L * Minv * A;
     B = M * B;
 
     // solve system
