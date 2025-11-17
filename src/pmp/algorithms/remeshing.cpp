@@ -254,14 +254,15 @@ public:
     Remeshing(SurfaceMesh& mesh);
 
     void uniform_remeshing(Scalar edge_length, unsigned int iterations = 10,
-                           bool use_projection = true);
+                           bool use_projection = true,
+                           double sharp_angle = 0.0);
 
     void adaptive_remeshing(Scalar min_edge_length, Scalar max_edge_length,
                             Scalar approx_error, unsigned int iterations = 10,
-                            bool use_projection = true);
+                            bool use_projection = true, double sharp_angle = 0.0);
 
     void custom_remeshing(std::vector<double>& target_edge_lengths,
-                          unsigned int iterations = 10, bool use_projection = true);
+                          unsigned int iterations = 10, bool use_projection = true, double sharp_angle = 0.0);
                             
 
 private:
@@ -303,7 +304,7 @@ private:
     Scalar min_edge_length_;
     Scalar max_edge_length_;
     Scalar approx_error_;
-
+    Scalar sharp_angle_;
     bool has_feature_vertices_{false};
     bool has_feature_edges_{false};
     VertexProperty<Point> points_;
@@ -335,13 +336,13 @@ Remeshing::Remeshing(SurfaceMesh& mesh)
 }
 
 void Remeshing::uniform_remeshing(Scalar edge_length, unsigned int iterations,
-                                  bool use_projection)
+                                  bool use_projection, double sharp_angle)
 {
     uniform_ = true;
     custom_vertex_edgeLengths_ = false;
     use_projection_ = use_projection;
     target_edge_length_ = edge_length;
-
+    sharp_angle_ = static_cast<Scalar>(sharp_angle);
     preprocessing();
 
     for (unsigned int i = 0; i < iterations; ++i)
@@ -364,7 +365,7 @@ void Remeshing::uniform_remeshing(Scalar edge_length, unsigned int iterations,
 
 void Remeshing::adaptive_remeshing(Scalar min_edge_length,
                                    Scalar max_edge_length, Scalar approx_error,
-                                   unsigned int iterations, bool use_projection)
+                                   unsigned int iterations, bool use_projection, double sharp_angle)
 {
     uniform_ = false;
     custom_vertex_edgeLengths_ = false;
@@ -372,7 +373,7 @@ void Remeshing::adaptive_remeshing(Scalar min_edge_length,
     max_edge_length_ = max_edge_length;
     approx_error_ = approx_error;
     use_projection_ = use_projection;
-
+    sharp_angle_ = static_cast<Scalar>(sharp_angle);
     preprocessing();
 
     for (unsigned int i = 0; i < iterations; ++i)
@@ -395,12 +396,13 @@ void Remeshing::adaptive_remeshing(Scalar min_edge_length,
 
 
 void Remeshing::custom_remeshing(std::vector<double>& target_edge_lengths,
-                                 unsigned int iterations, bool use_projection)
+                                 unsigned int iterations, bool use_projection, double sharp_angle)
 {
     uniform_ = false;
     custom_vertex_edgeLengths_ = true;
     target_edge_lengths_per_vertex_ = target_edge_lengths;
     use_projection_ = use_projection;
+    sharp_angle_ = static_cast<Scalar>(sharp_angle);
     preprocessing();
 
     for (unsigned int i = 0; i < iterations; ++i)
@@ -427,6 +429,12 @@ void Remeshing::preprocessing()
     vlocked_ = mesh_.add_vertex_property<bool>("v:locked", false);
     elocked_ = mesh_.add_edge_property<bool>("e:locked", false);
     vsizing_ = mesh_.add_vertex_property<Scalar>("v:sizing");
+
+    //Check sharp angle and detect features if needed
+    if (sharp_angle_ > 0.0 && sharp_angle_ <= 180.0)
+    {
+        pmp::detect_feature_edges(mesh_, sharp_angle_);
+    }
 
     if (!vsizing_)
     {
@@ -1228,26 +1236,26 @@ Point Remeshing::weighted_centroid(Vertex v)
 } // namespace
 
 void uniform_remeshing(SurfaceMesh& mesh, Scalar edge_length,
-                       unsigned int iterations, bool use_projection)
+                       unsigned int iterations, bool use_projection, double sharp_angle)
 {
-    Remeshing(mesh).uniform_remeshing(edge_length, iterations, use_projection);
+    Remeshing(mesh).uniform_remeshing(edge_length, iterations, use_projection, sharp_angle);
 }
 
 void adaptive_remeshing(SurfaceMesh& mesh, Scalar min_edge_length,
                         Scalar max_edge_length, Scalar approx_error,
-                        unsigned int iterations, bool use_projection)
+                        unsigned int iterations, bool use_projection, double sharp_angle)
 {
     Remeshing(mesh).adaptive_remeshing(min_edge_length, max_edge_length,
                                        approx_error, iterations,
-                                       use_projection);
+                                       use_projection, sharp_angle);
 }
 
 void custom_remeshing(SurfaceMesh& mesh, 
                       std::vector<double>& target_edge_lengths,
-                      unsigned int iterations, bool use_projection)
+                      unsigned int iterations, bool use_projection, double sharp_angle)
 {
     Remeshing(mesh).custom_remeshing(target_edge_lengths, iterations,
-                                       use_projection);
+                                       use_projection, sharp_angle);
 }
 
 } // namespace pmp
