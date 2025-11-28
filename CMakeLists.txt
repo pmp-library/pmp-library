@@ -71,6 +71,19 @@ if(NOT DEFINED EIGEN3_INCLUDE_DIR)
 endif()
 find_package(Eigen3 3.4.0 REQUIRED)
 
+# Enable Eigen vectorization optimizations
+if(NOT EMSCRIPTEN)
+  # Let compiler auto-detect and use SIMD instructions for current CPU
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-march=native)
+  elseif(MSVC)
+    add_compile_options(/arch:AVX2)
+  endif()
+
+  # Ensure Eigen vectorization is enabled (usually auto-detected with -march=native)
+  add_compile_definitions(EIGEN_VECTORIZE)
+endif()
+
 include_directories(${PROJECT_SOURCE_DIR}/src/)
 
 # setup for code coverage testing
