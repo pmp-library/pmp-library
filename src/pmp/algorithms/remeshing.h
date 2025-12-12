@@ -15,13 +15,12 @@ namespace pmp {
 //! \param edge_length The target edge length.
 //! \param iterations The number of iterations
 //! \param use_projection Use back-projection to the input surface.
-//! \param sharp_angle The sharp angle threshold for sharp feature preservation.
 //! \pre Input mesh needs to be a triangle mesh.
 //! \throw InvalidInputException if the input precondition is violated.
 //! \ingroup algorithms
 void uniform_remeshing(SurfaceMesh& mesh, Scalar edge_length,
                        unsigned int iterations = 10,
-                       bool use_projection = true, double sharp_angle = 0.0);
+                       bool use_projection = true);
 
 //! \brief Perform adaptive remeshing.
 //! \details Performs incremental remeshing based
@@ -33,18 +32,17 @@ void uniform_remeshing(SurfaceMesh& mesh, Scalar edge_length,
 //! \param approx_error The maximum approximation error.
 //! \param iterations The number of iterations.
 //! \param use_projection Use back-projection to the input surface.
-//! \param sharp_angle The sharp angle threshold for sharp feature preservation.
 //! \pre Input mesh needs to be a triangle mesh.
 //! \throw InvalidInputException if the input precondition is violated.
 //! \ingroup algorithms
 void adaptive_remeshing(SurfaceMesh& mesh, Scalar min_edge_length,
                         Scalar max_edge_length, Scalar approx_error,
                         unsigned int iterations = 10,
-                        bool use_projection = true, double sharp_angle = 0.0);
+                        bool use_projection = true);
 
 
 void custom_remeshing(SurfaceMesh& mesh, std::vector<double>& target_edge_lengths,
                         unsigned int iterations = 10,
-                        bool use_projection = true, double sharp_angle = 0.0);
+                        bool use_projection = true);
 
 } // namespace pmp
