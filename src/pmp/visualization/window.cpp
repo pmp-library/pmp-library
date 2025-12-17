@@ -639,7 +639,8 @@ void Window::keyboard(int key, int /*code*/, int action, int /*mods*/)
         case GLFW_KEY_ESCAPE:
         case GLFW_KEY_Q:
         {
-            exit(0);
+            glfwSetWindowShouldClose(window_, GL_TRUE);
+            break;
         }
 
         case GLFW_KEY_PRINT_SCREEN:
