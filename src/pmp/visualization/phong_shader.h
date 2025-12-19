@@ -72,6 +72,7 @@ uniform float  shininess;
 uniform float  alpha;
 uniform vec3   light1;
 uniform vec3   light2;
+uniform bool   show_texture_layout;
 
 uniform sampler2D mytexture;
 
@@ -125,7 +126,12 @@ void main()
         rgb = color;
     }
 
-    if (use_texture) rgb *= texture(mytexture, v2f_tex).xyz;
+    if (use_texture) 
+    {
+        // MARIO HACK
+        if (show_texture_layout) rgb *= texture(mytexture, vec2(v2f_color.x,0)).xyz;
+        else rgb *= texture(mytexture, v2f_tex).xyz;
+    }
 
     if (use_vertex_selection)
         rgb *= v2f_selection > 0.5 ? vec3(0.7, 1.0, 0.7) : vec3(1.0, 0.7, 0.7);

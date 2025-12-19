@@ -668,6 +668,8 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
                               has_vertex_colors_ && use_colors_);
     phong_shader_.set_uniform("use_vertex_selection", false);
 
+    // MARIO HACK
+    phong_shader_.set_uniform("use_vertex_color", false);
 
     glBindVertexArray(vertex_array_object_);
 
@@ -748,22 +750,25 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     {
         if (mesh_.n_faces() && has_texcoords_)
         {
+            // MARIO HACK
             phong_shader_.set_uniform("show_texture_layout", true);
+            phong_shader_.set_uniform("use_vertex_selection", false);
             phong_shader_.set_uniform("use_vertex_color", false);
             phong_shader_.set_uniform("use_lighting", false);
+            glBindTexture(GL_TEXTURE_2D, texture_);
 
             // draw faces
-            phong_shader_.set_uniform("use_vertex_selection", has_vertex_selection_);
-            phong_shader_.set_uniform("front_color", vec3(0.8, 0.8, 0.8));
-            phong_shader_.set_uniform("back_color", vec3(0.9, 0.0, 0.0));
+            phong_shader_.set_uniform("front_color", vec3(1,1,1));
+            phong_shader_.set_uniform("use_texture", true);
             glDepthRange(0.01, 1.0);
             glDrawArrays(GL_TRIANGLES, 0, n_vertices_);
 
             // overlay edges
             glDepthRange(0.0, 1.0);
             glDepthFunc(GL_LEQUAL);
-            phong_shader_.set_uniform("front_color", vec3(0.1, 0.1, 0.1));
-            phong_shader_.set_uniform("back_color", vec3(0.1, 0.1, 0.1));
+            phong_shader_.set_uniform("front_color", vec3(0.5, 0.5, 0.5));
+            phong_shader_.set_uniform("use_texture", true);
+            // phong_shader_.set_uniform("use_texture", false);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, edge_buffer_);
             glDrawElements(GL_LINES, n_edges_, GL_UNSIGNED_INT, nullptr);
             glDepthFunc(GL_LESS);
