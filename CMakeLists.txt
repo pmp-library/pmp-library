@@ -133,7 +133,7 @@ if(MSVC)
 endif()
 
 if(EMSCRIPTEN)
-  add_compile_options(--no-heap-copy)
+  # add_compile_options(--no-heap-copy)
   add_compile_options(-fexceptions)
   add_link_options(-fexceptions)
   add_link_options(
