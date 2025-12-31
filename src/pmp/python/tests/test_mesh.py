@@ -123,6 +123,9 @@ def test_add_triangle(surface_mesh, points):
     f = surface_mesh.add_triangle(vertices)
     assert type(f) is Face
     assert f.idx() == 0
+    assert surface_mesh.position(Vertex(0)) == Point(0)
+    assert np.linalg.norm(surface_mesh.position(Vertex(1))) == 1.
+    assert surface_mesh.positions() == points
 
 def test_add_quad_unwrap_points(surface_mesh, four_points):
     vertices = [surface_mesh.add_vertex(p) for p in four_points]
@@ -173,23 +176,27 @@ def test_add_tetrahedron(four_points, surface_mesh):
 
 def test_point_property(vertex_onering):
     assert vertex_onering.has_vertex_property("v:point")
-    v_point = vertex_onering.vertex_property("v:point", Point(0))
+    v_point = vertex_onering.vertex_vector3d_property("v:point", Point(0))
     assert v_point[Vertex(0)] == Point(0.4499998093, 0.5196152329, 0.0000000000)
 
 @pytest.mark.parametrize(
-    ["property_name", "property_value_type"],
+    ["property_name", "type_name", "property_value_type"],
     [
-        ("quad_tri:new_position", Point),
-        ("is_selected", bool),
-        ("index", int),
-        ("scalar", float),
-        ("texcoord", TexCoord),
-        ("normal", Normal)
+        ("quad_tri:new_position", "vector3d", Point),
+        ("quad_tri:new_position", "Point", Point),
+        ("is_selected", "bool", bool),
+        ("index", "int", int),
+        ("scalar", "scalar", float),
+        ("texcoord", "vector2d", TexCoord),
+        ("texcoord", "TexCoord", TexCoord),
+        ("vector3d", "vector3d", Vector3D),
+        ("normal", "Normal", Normal),
+        ("color", "Color", Color)
     ]
 )
-def test_vertex_property(vertex_onering, property_name, property_value_type):
+def test_vertex_property(vertex_onering, property_name, type_name, property_value_type):
     assert not vertex_onering.has_vertex_property(property_name)
-    new_pos = vertex_onering.vertex_property(property_name, property_value_type(0))
+    new_pos = getattr(vertex_onering, "vertex_"+type_name+"_property")(property_name, property_value_type(0))
     assert vertex_onering.has_vertex_property(property_name)
 
     for i, v in enumerate(vertex_onering.vertices()):
@@ -204,19 +211,23 @@ def test_vertex_property(vertex_onering, property_name, property_value_type):
     assert not vertex_onering.has_vertex_property(property_name)
 
 @pytest.mark.parametrize(
-    ["property_name", "property_value_type"],
+    ["property_name", "type_name", "property_value_type"],
     [
-        ("quad_tri:new_position", Point),
-        ("is_selected", bool),
-        ("index", int),
-        ("scalar", float),
-        ("texcoord", TexCoord),
-        ("normal", Normal)
+        ("quad_tri:new_position", "vector3d", Point),
+        ("quad_tri:new_position", "Point", Point),
+        ("is_selected", "bool", bool),
+        ("index", "int", int),
+        ("scalar", "scalar", float),
+        ("texcoord", "vector2d", TexCoord),
+        ("texcoord", "TexCoord", TexCoord),
+        ("vector3d", "vector3d", Vector3D),
+        ("normal", "Normal", Normal),
+        ("color", "Color", Color)
     ]
 )
-def test_face_property(vertex_onering, property_name, property_value_type):
+def test_face_property(vertex_onering, property_name, type_name, property_value_type):
     assert not vertex_onering.has_face_property(property_name)
-    new_pos = vertex_onering.face_property(property_name, property_value_type(0))
+    new_pos = getattr(vertex_onering, "face_"+type_name+"_property")(property_name, property_value_type(0))
     assert vertex_onering.has_face_property(property_name)
 
     for i, f in enumerate(vertex_onering.faces()):
@@ -229,19 +240,23 @@ def test_face_property(vertex_onering, property_name, property_value_type):
     assert not vertex_onering.has_face_property(property_name)
 
 @pytest.mark.parametrize(
-    ["property_name", "property_value_type"],
+    ["property_name", "type_name", "property_value_type"],
     [
-        ("quad_tri:new_position", Point),
-        ("is_selected", bool),
-        ("index", int),
-        ("scalar", float),
-        ("texcoord", TexCoord),
-        ("normal", Normal)
+        ("quad_tri:new_position", "vector3d", Point),
+        ("quad_tri:new_position", "Point", Point),
+        ("is_selected", "bool", bool),
+        ("index", "int", int),
+        ("scalar", "scalar", float),
+        ("texcoord", "vector2d", TexCoord),
+        ("texcoord", "TexCoord", TexCoord),
+        ("vector3d", "vector3d", Vector3D),
+        ("normal", "Normal", Normal),
+        ("color", "Color", Color)
     ]
 )
-def test_edge_property(vertex_onering, property_name, property_value_type):
+def test_edge_property(vertex_onering, property_name, type_name, property_value_type):
     assert not vertex_onering.has_edge_property(property_name)
-    new_pos = vertex_onering.edge_property(property_name, property_value_type(0))
+    new_pos = getattr(vertex_onering, "edge_"+type_name+"_property")(property_name, property_value_type(0))
     assert vertex_onering.has_edge_property(property_name)
 
     for i, e in enumerate(vertex_onering.edges()):
@@ -254,19 +269,23 @@ def test_edge_property(vertex_onering, property_name, property_value_type):
     assert not vertex_onering.has_edge_property(property_name)
 
 @pytest.mark.parametrize(
-    ["property_name", "property_value_type"],
+    ["property_name", "type_name", "property_value_type"],
     [
-        ("quad_tri:new_position", Point),
-        ("is_selected", bool),
-        ("index", int),
-        ("scalar", float),
-        ("texcoord", TexCoord),
-        ("normal", Normal)
+        ("quad_tri:new_position", "vector3d", Point),
+        ("quad_tri:new_position", "Point", Point),
+        ("is_selected", "bool", bool),
+        ("index", "int", int),
+        ("scalar", "scalar", float),
+        ("texcoord", "vector2d", TexCoord),
+        ("texcoord", "TexCoord", TexCoord),
+        ("vector3d", "vector3d", Vector3D),
+        ("normal", "Normal", Normal),
+        ("color", "Color", Color)
     ]
 )
-def test_halfedge_property(vertex_onering, property_name, property_value_type):
+def test_halfedge_property(vertex_onering, property_name, type_name, property_value_type):
     assert not vertex_onering.has_halfedge_property(property_name)
-    new_pos = vertex_onering.halfedge_property(property_name, property_value_type(0))
+    new_pos = getattr(vertex_onering, "halfedge_"+type_name+"_property")(property_name, property_value_type(0))
     assert vertex_onering.has_halfedge_property(property_name)
 
     for i, h in enumerate(vertex_onering.halfedges()):
@@ -277,3 +296,29 @@ def test_halfedge_property(vertex_onering, property_name, property_value_type):
 
     vertex_onering.remove_halfedge_property(new_pos)
     assert not vertex_onering.has_halfedge_property(property_name)
+
+def test_valence(surface_mesh_with_face):
+    assert surface_mesh_with_face.valence(Vertex(0)) == 2
+    assert surface_mesh_with_face.valence(Face(0)) == 3
+
+@pytest.mark.parametrize(
+    ["handle", "delete_handle", "n_handle", "handle_property"],
+    [
+        (Vertex(0), "delete_vertex", "n_vertices", "vertex_property"),
+        (Edge(0), "delete_edge", "n_edges", "edge_property"),
+        (Face(0), "delete_face", "n_faces", "face_property")
+    ]
+)
+def test_delete(handle, delete_handle, n_handle, handle_property, surface_mesh_with_face):
+    assert surface_mesh_with_face.is_valid(handle)
+    assert getattr(surface_mesh_with_face, "has_"+handle_property)(
+        handle_property[0] + ":deleted"
+    )
+    assert surface_mesh_with_face.is_deleted(handle) == False
+    delete_handle = getattr(surface_mesh_with_face, delete_handle)(handle)
+    assert surface_mesh_with_face.is_deleted(handle)
+    
+    assert getattr(surface_mesh_with_face, n_handle)() == 0
+    surface_mesh_with_face.garbage_collection()
+    
+    

@@ -51,6 +51,25 @@ void bind_surface_mesh(py::module_& m) {
             "Add a new quad connecting vertices in array",
             "array"_a
         )
+        .def("add_face", [](SurfaceMesh &self, const std::vector<Vertex>& vertices) {
+            return self.add_face(vertices);
+        },
+            R"pbdoc(
+                add_face(vertices: List[Vertex]) -> Face
+
+                Add a new face with vertex list `vertices`
+
+                Raises
+                ------
+                TopologyException in case a topological error occurs.            
+
+                See Also
+                --------
+                add_triangle
+                add_quad
+            )pbdoc",
+            "vertices"_a
+            )
 
         // Mesh properties
         .def("n_vertices", &SurfaceMesh::n_vertices,
@@ -115,6 +134,197 @@ void bind_surface_mesh(py::module_& m) {
         },
             "Return whether face f is valid",
             "f"_a
+        )
+        .def("halfedge", [](const SurfaceMesh &self, Vertex v){
+            return self.halfedge(v);
+        },
+            "Return an outgoing halfedge of vertex `v`. if `v` is a boundary vertex this will be a boundary halfedge.",
+            "v"_a
+        )
+        .def("halfedge", [](const SurfaceMesh &self, Edge e, unsigned int i){
+            if (i > 1 || i < 0) throw py::value_error("Value can be only 0 or 1");
+            return self.halfedge(e, i);
+        },
+            "Return the `i`'th halfedge of edge `e`. `i` has to be 0 or 1.",
+            "v"_a, "i"_a
+        )
+        .def("opposite_halfedge", [](const SurfaceMesh &self, Halfedge h){
+            return self.opposite_halfedge(h);
+        },
+            "Return the opposite halfedge of `h`",
+            "h"_a
+        )
+        .def("prev_halfedge", &SurfaceMesh::prev_halfedge,
+            "Return the previous halfedge withing the incident face.",
+            "h"_a
+        )
+        .def("find_edge", &SurfaceMesh::find_edge,
+            "Find the edge of two vertices (a,b)",
+            "a"_a, "b"_a
+        )
+        .def("position", [](SurfaceMesh &self, Vertex v){
+            return self.position(v);
+        },
+            "position of a vertex",
+            "v"_a
+        )
+        .def("positions", [](SurfaceMesh &self){
+            return self.positions();
+        },
+            "Return vector of point positions"
+        )
+        .def("valence", [](SurfaceMesh &self, Vertex v){
+            return self.valence(v);
+        },
+            "Compute the valence of vertex `v` (number of incident edges).",
+            "v"_a
+        )
+        .def("valence", [](SurfaceMesh &self, Face f){
+            return self.valence(f);
+        },
+            "Compute the valence of face `f` (its number of vertices).",
+            "v"_a
+        )
+        .def("delete_vertex", [](SurfaceMesh &self, Vertex v){
+            self.delete_vertex(v);
+        },
+            R"pbdoc(
+                delete_vertex(v: Vertex) -> None
+
+                Delete vertex `v` from the mesh.
+
+                Notes
+                -----
+                Only marks the vertex as deleted. Call `garbage_collection()` to finally remove deleted entities.
+            )pbdoc",
+            "v"_a
+        )
+        .def("delete_edge", [](SurfaceMesh &self, Edge e){
+            self.delete_edge(e);
+        },
+            R"pbdoc(
+                delete_edge(e: Edge) -> None
+
+                Delete edge `e` from the mesh.
+
+                Notes
+                -----
+                Only marks the edge as deleted. Call `garbage_collection()` to finally remove deleted entities.
+            )pbdoc",
+            "e"_a
+        )
+        .def("delete_face", [](SurfaceMesh &self, Face f){
+            self.delete_face(f);
+        },
+            R"pbdoc(
+                delete_face(f: Face) -> None
+
+                Delete face `f` from the mesh.
+
+                Notes
+                -----
+                Only marks the face as deleted. Call `garbage_collection()` to finally remove deleted entities.
+            )pbdoc",
+            "f"_a
+        )
+        .def("garbage_collection", [](SurfaceMesh &self){
+            self.garbage_collection();
+        },
+            R"pbdoc(
+                garbage_collection() -> None
+
+                Remove deleted elements.
+            )pbdoc"
+        )
+        .def("is_deleted", [](SurfaceMesh &self, Vertex v){
+            return self.is_deleted(v);
+        },
+            R"pbdoc(
+                is_deleted(v: Vertex) -> bool
+                
+                Returns
+                -------
+                Whether vertex `v` is deleted.
+
+                See Also
+                --------
+                garbage_collection
+
+            )pbdoc",
+            "v"_a
+        )
+        .def("is_deleted", [](SurfaceMesh &self, Halfedge h){
+            return self.is_deleted(h);
+        },
+            R"pbdoc(
+                is_deleted(h: Halfedge) -> bool
+                
+                Returns
+                -------
+                Whether halfedge `h` is deleted.
+
+                See Also
+                --------
+                garbage_collection
+
+            )pbdoc",
+            "h"_a
+        )
+        .def("is_deleted", [](SurfaceMesh &self, Edge e){
+            return self.is_deleted(e);
+        },
+            R"pbdoc(
+                is_deleted(e: Edge) -> bool
+                
+                Returns
+                -------
+                Whether edge `e` is deleted.
+
+                See Also
+                --------
+                garbage_collection
+
+            )pbdoc",
+            "e"_a
+        )
+        .def("is_deleted", [](SurfaceMesh &self, Face f){
+            return self.is_deleted(f);
+        },
+            R"pbdoc(
+                is_deleted(f: Face) -> bool
+                
+                Returns
+                -------
+                Whether face `f` is deleted.
+
+                See Also
+                --------
+                garbage_collection
+
+            )pbdoc",
+            "f"_a
+        )
+        .def("is_triangle_mesh", &SurfaceMesh::is_triangle_mesh,
+            R"pbdoc(
+                is_triangle_mesh() -> bool
+
+                Returns
+                -------
+                bool 
+                    whether the mesh a triangle mesh. this function simply tests
+                    each face, and therefore is not very efficient.
+            )pbdoc"
+        )
+        .def("is_quad_mesh", &SurfaceMesh::is_quad_mesh,
+            R"pbdoc(
+                is_quad_mesh() -> bool
+
+                Returns
+                -------
+                bool 
+                    whether the mesh a quad mesh. this function simply tests
+                    each face, and therefore is not very efficient.
+            )pbdoc"
         )
 
         // Iterators
