@@ -36,6 +36,18 @@ def four_points():
     ]
 
 @pytest.fixture
+def quad_face(surface_mesh):
+    points = [
+        Point(0),
+        Point(1,0,0),
+        Point(0,1,0),
+        Point(1,1,0)
+    ]
+    vertices = [surface_mesh.add_vertex(p) for p in points]
+    _ = surface_mesh.add_quad(vertices)
+    return surface_mesh
+
+@pytest.fixture
 def vertex_onering():
     mesh = SurfaceMesh()
 
