@@ -11,8 +11,8 @@ namespace py = pybind11;
 using namespace pybind11::literals;
 
 template <typename Property, typename T>
-auto get_property(py::module_& m, const std::string& name, const std::unordered_map<std::type_index, std::string>& type_map) {
-    const std::string name_type = name + type_map.find(std::type_index(typeid(T)))->second + "Property";
+auto get_property(py::module_& m, const std::unordered_map<std::type_index, std::string>& type_map) {
+    const std::string name_type = type_map.find(std::type_index(typeid(T)))->second + "Property";
     return py::class_<Property>(m, name_type.c_str())
         .def("__getitem__", [](Property& prop, uint i) {
             if (i >= prop.vector().size()) throw py::index_error("Property data out of range.");
@@ -33,7 +33,7 @@ auto get_property(py::module_& m, const std::string& name, const std::unordered_
 template <typename Property, typename Handle, typename T>
 auto get_property_handle(py::module_& m, const std::string& name, const std::unordered_map<std::type_index, std::string>& type_map) {
     // necessary to distinguish between the different templates
-    const std::string name_type = name + type_map.find(std::type_index(typeid(T)))->second;
+    const std::string name_type = name + type_map.find(std::type_index(typeid(T)))->second + "Property";
     return py::class_<Property, pmp::Property<T>>(m, name_type.c_str())
         .def("__getitem__", [](Property& prop, Handle &i) {
             if (i.idx() >= prop.vector().size()) throw py::index_error("Property data out of range.");
@@ -50,8 +50,8 @@ auto get_property_handle(py::module_& m, const std::string& name, const std::uno
 }
 
 template <template <typename> class Property, typename... Types>
-void bind_property(py::module_& m, const std::string& name, const std::unordered_map<std::type_index, std::string>& type_map) {
-    (get_property<Property<Types>, Types>(m, name, type_map), ...);
+void bind_property(py::module_& m, const std::unordered_map<std::type_index, std::string>& type_map) {
+    (get_property<Property<Types>, Types>(m, type_map), ...);
 }
 
 template <template <typename> class Property, typename Handle, typename... Types>

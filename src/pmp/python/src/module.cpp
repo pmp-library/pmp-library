@@ -44,7 +44,7 @@ PYBIND11_MODULE(pypmp, m, py::mod_gil_not_used()) {
     };
 
     // Properties
-    bind_property<Property, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "Property", type_map);
+    bind_property<Property, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, type_map);
     bind_property_handle<VertexProperty, Vertex, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "Vertex", type_map);
     bind_property_handle<EdgeProperty, Edge, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "Edge", type_map);
     bind_property_handle<HalfedgeProperty, Halfedge, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "Halfedge", type_map);
