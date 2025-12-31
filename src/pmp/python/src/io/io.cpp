@@ -42,7 +42,8 @@ void bind_io(py::module_ &io) {
     
     io.def("read", [](const std::filesystem::path& file){
         pmp::SurfaceMesh mesh = pmp::SurfaceMesh();
-        return pmp::read(mesh, file);
+        pmp::read(mesh, file);
+        return mesh;
     }, 
         R"pbdoc(
             read(file: str) -> SurfaceMesh

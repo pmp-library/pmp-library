@@ -9,8 +9,14 @@ void bind_algorithms(py::module_& algorithms) {
     bind_remeshing(algorithms);
     bind_smoothing(algorithms);
     bind_subdivision(algorithms);
+    bind_normals(algorithms);
     bind_hole_filling(algorithms);
     bind_features(algorithms);
+    bind_differential_geometry(algorithms);
+    bind_utilities(algorithms);
+    bind_parameterization(algorithms);
+    bind_distance_point_triangle(algorithms);
+    bind_geodesics(algorithms);
 }
     
 
@@ -132,12 +138,12 @@ void bind_triangulation(py::module_& algorithms) {
 }
 
 void bind_decimation(py::module_& algorithms) {
-    py::module_ triangulate = algorithms.def_submodule(
+    py::module_ decimation = algorithms.def_submodule(
         "decimation",
         "Module for decimation"
     );
 
-    triangulate.def("decimate", &pmp::decimate,
+    decimation.def("decimate", &pmp::decimate,
         R"pbdoc(
             decimate(mesh: SurfaceMesh, n_vertices: int, aspect_ratio: float = 0.0,
             edge_length: float = 0.0, max_valence: int = 0, normal_deviation: float = 0.0,
@@ -732,3 +738,489 @@ void bind_features(py::module_& algorithms) {
     );
 }
             
+void bind_differential_geometry(py::module_& algorithms) {
+    py::module_ differential_geometry = algorithms.def_submodule(
+        "differential_geometry",
+        "Module for mesh analysis"
+    );
+
+    differential_geometry.def("triangle_area", &pmp::triangle_area,
+        R"pbdoc(
+            triangle_area(p0: Point, p1: Point, p2: Point) -> float
+
+            Compute the area of a triangle given by three points.
+
+            Returns
+            -------
+            float
+                The surface area.
+            
+        )pbdoc",
+        "p0"_a, "p1"_a, "p2"_a
+    );
+    
+    differential_geometry.def("face_area", &pmp::face_area,
+        R"pbdoc(
+            face_area(mesh: SurfaceMesh, f: Face) -> float
+
+            Compute area of face `f`.
+
+            Extended Summary
+            ----------------
+            Computes standard area for triangles and norm of vector area for other polygons.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                Mesh corresponding to face `f`.
+            face : Face
+                The face for computing the surface area
+
+            Returns
+            -------
+            float
+                The surface area
+            
+        )pbdoc",
+        "mesh"_a, "f"_a
+    );
+    
+    differential_geometry.def("surface_area", &pmp::surface_area,
+        R"pbdoc(
+            surface_area(mesh: SurfaceMesh) -> float
+
+            Compute the surface area of `mesh` as the sum of face areas.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The mesh for computing the surface area.
+
+            Returns
+            -------
+            float
+                The surface area
+            
+        )pbdoc",
+        "mesh"_a
+    );
+
+    differential_geometry.def("volume", &pmp::volume,
+        R"pbdoc(
+            volume(mesh: SurfaceMesh) -> float
+
+            Compute the volume of a mesh.
+
+            Extended Summary
+            ----------------
+            See [13] for details
+            .. [13] Cha Zhang and Tsuhan Chen. Efficient feature extraction for 2d/3d objects in mesh representation. In Proceedings 2001 International Conference on Image Processing (Cat. No.01CH37205), 2002.
+
+            Warnings
+            --------
+            Input mesh needs to be a triangle mesh.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The mesh for computing the volume.
+
+            Returns
+            -------
+            float
+                The mesh volume
+
+            Raises
+            ------
+                InvalidInputException if the input precondition is violated.
+            
+        )pbdoc",
+        "mesh"_a
+    );
+    
+    differential_geometry.def("centroid", [](const pmp::SurfaceMesh& mesh){
+        return centroid(mesh);
+    },
+        R"pbdoc(
+            centroid(mesh: SurfaceMesh) -> float
+
+            Compute the barycenter (centroid) of the `mesh`.
+
+            Extended Summary
+            ----------------
+            Computed as area-weighted mean of vertices.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The mesh for computing the centroid.
+
+            Returns
+            -------
+            float
+                The mesh centroid
+            
+        )pbdoc",
+        "mesh"_a
+    );
+
+    differential_geometry.def("dual", &pmp::dual,
+        R"pbdoc(
+            dual(mesh: SurfaceMesh) -> None
+
+            Compute dual of a `mesh`.
+
+            Warnings
+            --------
+            Changes the mesh in place. All properties are cleared.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The mesh for computing the dual. Modified in place.
+            
+        )pbdoc",
+        "mesh"_a
+    );
+ 
+    differential_geometry.def("voronoi_area", &pmp::voronoi_area,
+        R"pbdoc(
+            dual(mesh: SurfaceMesh, v: Vertex) -> float
+
+            Compute the (barycentric) Voronoi area of vertex `v`.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The mesh for computing the voronoi_area.
+            v : Vertex
+                Voronoi vertex.
+
+            Returns
+            -------
+            float
+                The voronoi area
+            
+        )pbdoc",
+        "mesh"_a, "v"_a
+    );
+    
+    differential_geometry.def("laplace", &pmp::laplace,
+        R"pbdoc(
+            laplace(mesh: SurfaceMesh, v: Vertex) -> Point
+
+            Compute the Laplace vector for vertex `v`, normalized by Voronoi area.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The mesh for computing the Laplace vector.
+            v : Vertex
+                Voronoi vertex.
+
+            Returns
+            -------
+            Point
+                The Laplace vector
+
+            Notes
+            -----
+            Input mesh needs to be a triangle mesh.
+            
+        )pbdoc",
+        "mesh"_a, "v"_a
+    );
+
+}
+
+void bind_utilities(py::module_& algorithms) {
+    py::module_ utilities = algorithms.def_submodule(
+        "utilities",
+        "Module for mesh utilities"
+    );
+
+    py::class_<pmp::BoundingBox>(utilities, "BoundingBox")
+        .def(py::init<pmp::Point, pmp::Point>(),
+            "Construct from min and max points.",
+            "min"_a, "max"_a
+        )
+        .def(py::self += pmp::Point())
+        .def(py::self += py::self)
+        .def("min", &pmp::BoundingBox::min,
+            "Get min point."
+        )
+        .def("max", &pmp::BoundingBox::max,
+            "Get max point."
+        )
+        .def("center", &pmp::BoundingBox::center,
+            "Get center point."
+        )
+        .def("is_empty", &pmp::BoundingBox::is_empty,
+            "Indicate if the bounding box is empty."    
+        )
+        .def("size", &pmp::BoundingBox::size,
+            "Get the size of the bounding box."
+        );
+    
+    utilities.def("bounds", &pmp::bounds,
+        "Compute bounding box of `mesh`.",
+        "mesh"_a
+    );
+
+    utilities.def("flip_faces", &pmp::flip_faces,
+        "Flip the orientation of all faces in `mesh`.",
+        "mesh"_a
+    );
+
+    utilities.def("min_face_area", &pmp::min_face_area,
+        "Compute the minimum area of all faces in `mesh`.",
+        "mesh"_a
+    );
+
+    utilities.def("edge_length", &pmp::edge_length,
+        "Compute length of an edge `e` in `mesh`.",
+        "mesh"_a, "e"_a
+    );
+
+    utilities.def("mean_edge_length", &pmp::mean_edge_length,
+        "Compute mean edge length of `mesh`.",
+        "mesh"_a
+    );
+
+    utilities.def("connected_components", &pmp::connected_components,
+        R"pbdoc(
+            connected_components(mesh: SurfaceMesh) -> int
+
+            Compute connected components in `mesh`.
+
+            Extended Summary
+            ----------------
+            Adds a new vertex property `v:component` containing the component index.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The mesh for computing the connected components.
+            
+            Returns
+            -------
+            int
+                The number of connected components.
+        )pbdoc",
+        "mesh"_a
+    );
+
+}
+
+void bind_parameterization(py::module_& algorithms) {
+    py::module_ parameterization = algorithms.def_submodule(
+        "parameterization",
+        "Module for computing mesh parameterization"
+    );
+
+    parameterization.def("harmonic_parameterization", &pmp::harmonic_parameterization,
+        R"pbdoc(
+            harmonic_parameterization(mesh: SurfaceMesh, use_uniform_weights: bool = False)
+
+            Compute discrete harmonic parameterization.
+
+            Extended Summary
+            ----------------
+            See [14] for details.
+            .. [14] Mathieu Desbrun, Mark Meyer, and Pierre Alliez. Intrinsic parameterizations of surface meshes. Computer Graphics Forum, 21(3):209–218, 2002.
+
+            Notes
+            -----
+            This algorithm works on general polygon meshes. 
+
+            Warnings
+            --------
+            The mesh needs a boundary.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The mesh for computing the harmonic parameterization.
+            use_uniform_weights : bool = False
+                Use uniform weights for the harmonic parameterization.
+            
+            Raises
+            ------
+            InvalidInputException
+                if the input precondition is violated.
+            SolverException
+                in case of failure to solve the linear system.
+        )pbdoc",
+        "mesh"_a, "use_uniform_weights"_a=false
+    );
+    
+    parameterization.def("lscm_parameterization", &pmp::lscm_parameterization,
+        R"pbdoc(
+            lscm_parameterization(mesh: SurfaceMesh)
+
+            Compute parameterization based on least squares conformal mapping.
+
+            Extended Summary
+            ----------------
+            See [15] for details.
+            .. [15] Bruno Lévy, Sylvain Petitjean, Nicolas Ray, and Jérome Maillot. Least squares conformal maps for automatic texture atlas generation. ACM Transaction on Graphics, 21(3):362–371, 2002.
+
+            Notes
+            -----
+            This algorithm works on triangular meshes. 
+
+            Warnings
+            --------
+            The mesh needs a boundary.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The mesh for computing the least squares parameterization.
+            
+            Raises
+            ------
+            InvalidInputException
+                if the input precondition is violated.
+            SolverException
+                in case of failure to solve the linear system.
+        )pbdoc",
+        "mesh"_a
+    );
+}
+
+void bind_distance_point_triangle(py::module_& algorithms) {
+    py::module_ distance_point_triangle = algorithms.def_submodule(
+        "distance_point_triangle",
+        "Module for computing the distance of point and triangle/line segment"
+    );
+
+    distance_point_triangle.def("dist_point_line_segment", &pmp::dist_point_line_segment,
+        "Compute the distance of a point `p` to a line segment given by points `v0`, `v1`.",
+        "p"_a, "v0"_a, "v1"_a, "nearest_point"_a
+    );
+    
+    distance_point_triangle.def("dist_point_triangle", &pmp::dist_point_triangle,
+        "Compute the distance of a point `p` to the triangle given by points `v0`, `v1` and `v2`.",
+        "p"_a, "v0"_a, "v1"_a, "v2"_a, "nearest_point"_a
+    );
+}
+
+void bind_geodesics(py::module_& algorithms) {
+    py::module_ geodesics = algorithms.def_submodule(
+        "geodesics",
+        "Module for computing the geodesic distance from a set of vertices"
+    );
+
+    geodesics.def("geodesics", [](
+        pmp::SurfaceMesh& mesh, 
+        const std::vector<pmp::Vertex>& seeds,
+        pmp::Scalar maxdist = std::numeric_limits<pmp::Scalar>::max(),
+        unsigned int maxnum = std::numeric_limits<unsigned int>::max()
+    ){
+        std::vector<pmp::Vertex> neighbors;
+        auto num = pmp::geodesics(
+            mesh,
+            seeds,
+            maxdist,
+            maxnum,
+            &neighbors
+        );
+        return py::make_tuple(num, neighbors);
+    },
+        R"pbdoc(
+            geodesics(mesh: SurfaceMesh, seeds: List[Vertex], maxdist: float = sys.float_info.max, 
+                maxnum: int = 4294967295)
+
+            Compute geodesic distance from a set of seed vertices
+
+            Extended Summary
+            ----------------
+            The method works by a Dijkstra-like breadth first traversal from
+            the seed vertices, implemented by a heap structure.
+            
+            See [16] for details.
+            .. [16] Ron Kimmel and James Albert Sethian. Computing geodesic paths on manifolds. Proceedings of the National Academy of Sciences, 95(15):8431–8435, 1998.
+
+            Notes
+            -----
+            This algorithm works on triangular meshes. 
+
+            Warnings
+            --------
+            The mesh needs a boundary.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh, modified in place.
+            seeds : List[Vertex]
+                The vector of seed vertices.
+            maxdist : float = sys.float_info.max
+                The maximum distance up to which to compute the
+                geodesic distances.
+            maxnum : int = 4294967295
+                The maximum number of neighbors up to which to
+                compute the geodesic distances.
+
+            Returns
+            -------
+            tuple
+                The number of neighbors that have been found and corresponding neighbors list
+        )pbdoc",
+        "mesh"_a, "seeds"_a, "maxdist"_a=std::numeric_limits<pmp::Scalar>::max(),
+        "maxnum"_a=std::numeric_limits<unsigned int>::max()
+    );
+    
+    geodesics.def("geodesics_heat", &pmp::geodesics_heat,
+        R"pbdoc(
+            geodesics_heat(mesh: SurfaceMesh, seeds: List[Vertex])
+
+            Compute geodesic distance from a set of seed vertices
+
+            Extended Summary
+            ----------------
+            Compute geodesic distances based on the heat method,
+            by solving two Poisson systems. Works on general polygon meshes.
+            
+            See [17] for details.
+            .. [17] Keenan Crane, Clarisse Weischedel, and Max Wardetzky. Geodesics in heat: A new approach to computing distance based on heat flow. ACM Transactions on Graphics, 32(5), 2013.
+
+            Notes
+            -----
+            This algorithm works on general polygon meshes.
+
+            Warnings
+            --------
+            The mesh needs a boundary.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh, modified in place.
+            seeds : List[Vertex]
+                The vector of seed vertices.
+        )pbdoc",
+        "mesh"_a, "seeds"_a
+    );
+
+    geodesics.def("distance_to_texture_coordinates", &pmp::distance_to_texture_coordinates,
+        R"pbdoc(
+            distance_to_texture_coordinates(mesh: SurfaceMesh)
+
+            Use the normalized distances as texture coordinates
+
+            Extended Summary
+            ----------------
+            Stores the normalized distances in a vertex property of type
+            TexCoord named "v:tex". Reuses any existing vertex property of the
+            same type and name.
+            
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh, modified in place.
+        )pbdoc",
+        "mesh"_a
+    );
+}

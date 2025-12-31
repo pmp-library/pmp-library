@@ -81,21 +81,21 @@ void bind_vertex_property(py::class_<pmp::SurfaceMesh>& cls) {
     cls.def("vertex_int_property", [](pmp::SurfaceMesh& self, const std::string& name, const int t = int()){
         return self.vertex_property<int>(name, t);
     },
-        "name"_a, "T"_a,
+        "name"_a, "T"_a=int(),
         "If a vertex property of type T with name name exists, it is "
         "returned. Otherwise this property is added (with default value t)"
     );
     cls.def("vertex_bool_property", [](pmp::SurfaceMesh& self, const std::string& name, const bool t = bool()){
         return self.vertex_property<bool>(name, t);
     },
-        "name"_a, "T"_a,
+        "name"_a, "T"_a=false,
         "If a vertex property of type T with name name exists, it is "
         "returned. Otherwise this property is added (with default value t)"
     );
     cls.def("vertex_uint_property", [](pmp::SurfaceMesh& self, const std::string& name, const uint t = uint()){
         return self.vertex_property<uint>(name, t);
     },
-        "name"_a, "T"_a,
+        "name"_a, "T"_a=uint(),
         "If a vertex property of type T with name name exists, it is "
         "returned. Otherwise this property is added (with default value t)"
     );
@@ -214,21 +214,21 @@ void bind_halfedge_property(py::class_<pmp::SurfaceMesh>& cls) {
     cls.def("halfedge_int_property", [](pmp::SurfaceMesh& self, const std::string& name, const int t = int()){
         return self.halfedge_property<int>(name, t);
     },
-        "name"_a, "T"_a,
+        "name"_a, "T"_a=int(),
         "If a halfedge property of type T with name name exists, it is "
         "returned. Otherwise this property is added (with default value t)"
     );
     cls.def("halfedge_bool_property", [](pmp::SurfaceMesh& self, const std::string& name, const bool t = bool()){
         return self.halfedge_property<bool>(name, t);
     },
-        "name"_a, "T"_a,
+        "name"_a, "T"_a=false,
         "If a halfedge property of type T with name name exists, it is "
         "returned. Otherwise this property is added (with default value t)"
     );
     cls.def("halfedge_uint_property", [](pmp::SurfaceMesh& self, const std::string& name, const uint t = uint()){
         return self.halfedge_property<uint>(name, t);
     },
-        "name"_a, "T"_a,
+        "name"_a, "T"_a=uint(),
         "If a halfedge property of type T with name name exists, it is "
         "returned. Otherwise this property is added (with default value t)"
     );
@@ -281,21 +281,21 @@ void bind_face_property(py::class_<pmp::SurfaceMesh>& cls) {
     cls.def("face_int_property", [](pmp::SurfaceMesh& self, const std::string& name, const int t = int()){
         return self.face_property<int>(name, t);
     },
-        "name"_a, "T"_a,
+        "name"_a, "T"_a=int(),
         "If a face property of type T with name name exists, it is "
         "returned. Otherwise this property is added (with default value t)"
     );
     cls.def("face_bool_property", [](pmp::SurfaceMesh& self, const std::string& name, const bool t = bool()){
         return self.face_property<bool>(name, t);
     },
-        "name"_a, "T"_a,
+        "name"_a, "T"_a=false,
         "If a face property of type T with name name exists, it is "
         "returned. Otherwise this property is added (with default value t)"
     );
     cls.def("face_uint_property", [](pmp::SurfaceMesh& self, const std::string& name, const uint t = uint()){
         return self.face_property<uint>(name, t);
     },
-        "name"_a, "T"_a,
+        "name"_a, "T"_a=uint(),
         "If a face property of type T with name name exists, it is "
         "returned. Otherwise this property is added (with default value t)"
     );
