@@ -235,6 +235,9 @@ void bind_surface_mesh(py::module_& m) {
                 Remove deleted elements.
             )pbdoc"
         )
+        .def("clear", &SurfaceMesh::clear,
+            "clear mesh: remove all vertices, edges, faces"
+        )
         .def("is_deleted", [](SurfaceMesh &self, Vertex v){
             return self.is_deleted(v);
         },
