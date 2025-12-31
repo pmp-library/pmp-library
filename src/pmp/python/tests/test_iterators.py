@@ -28,7 +28,7 @@ def test_vertex_circulator_prev(vertex, vertex_onering):
     vertex_circulator = vertex_onering.vertices(vertex)
 
     # Calling custom method previous as Python stdlib lacks __prev__
-    vv = vertex_circulator.previous()
+    vv = vertex_circulator.prev()
     assert isinstance(vv, Vertex)
     assert vv.idx() == 4
 
@@ -49,7 +49,7 @@ def test_vertex_circulator_distance_backwards(vertex, vertex_onering):
     vertex_circulator = vertex_onering.vertices(vertex)
     count = 0
     try:
-        while vertex_circulator.previous() != vertex:
+        while vertex_circulator.prev() != vertex:
             count+=1
     except StopIteration:
         pass

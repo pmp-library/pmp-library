@@ -168,3 +168,112 @@ def test_add_tetrahedron(four_points, surface_mesh):
     assert mesh.n_vertices() == 4
     assert mesh.n_edges() == 6
     assert mesh.n_faces() == 4
+
+# Region mesh properties
+
+def test_point_property(vertex_onering):
+    assert vertex_onering.has_vertex_property("v:point")
+    v_point = vertex_onering.vertex_property("v:point", Point(0))
+    assert v_point[Vertex(0)] == Point(0.4499998093, 0.5196152329, 0.0000000000)
+
+@pytest.mark.parametrize(
+    ["property_name", "property_value_type"],
+    [
+        ("quad_tri:new_position", Point),
+        ("is_selected", bool),
+        ("index", int),
+        ("scalar", float),
+        ("texcoord", TexCoord),
+        ("normal", Normal)
+    ]
+)
+def test_vertex_property(vertex_onering, property_name, property_value_type):
+    assert not vertex_onering.has_vertex_property(property_name)
+    new_pos = vertex_onering.vertex_property(property_name, property_value_type(0))
+    assert vertex_onering.has_vertex_property(property_name)
+
+    for i, v in enumerate(vertex_onering.vertices()):
+        new_pos[v] = property_value_type(i)
+
+    for i, v in enumerate(vertex_onering.vertices()):
+        assert new_pos[v] == property_value_type(i)
+
+    assert property_name in vertex_onering.vertex_properties()
+
+    vertex_onering.remove_vertex_property(new_pos)
+    assert not vertex_onering.has_vertex_property(property_name)
+
+@pytest.mark.parametrize(
+    ["property_name", "property_value_type"],
+    [
+        ("quad_tri:new_position", Point),
+        ("is_selected", bool),
+        ("index", int),
+        ("scalar", float),
+        ("texcoord", TexCoord),
+        ("normal", Normal)
+    ]
+)
+def test_face_property(vertex_onering, property_name, property_value_type):
+    assert not vertex_onering.has_face_property(property_name)
+    new_pos = vertex_onering.face_property(property_name, property_value_type(0))
+    assert vertex_onering.has_face_property(property_name)
+
+    for i, f in enumerate(vertex_onering.faces()):
+        new_pos[f] = property_value_type(i)
+
+    for i, f in enumerate(vertex_onering.faces()):
+        assert new_pos[f] == property_value_type(i)
+
+    vertex_onering.remove_face_property(new_pos)
+    assert not vertex_onering.has_face_property(property_name)
+
+@pytest.mark.parametrize(
+    ["property_name", "property_value_type"],
+    [
+        ("quad_tri:new_position", Point),
+        ("is_selected", bool),
+        ("index", int),
+        ("scalar", float),
+        ("texcoord", TexCoord),
+        ("normal", Normal)
+    ]
+)
+def test_edge_property(vertex_onering, property_name, property_value_type):
+    assert not vertex_onering.has_edge_property(property_name)
+    new_pos = vertex_onering.edge_property(property_name, property_value_type(0))
+    assert vertex_onering.has_edge_property(property_name)
+
+    for i, e in enumerate(vertex_onering.edges()):
+        new_pos[e] = property_value_type(i)
+
+    for i, e in enumerate(vertex_onering.edges()):
+        assert new_pos[e] == property_value_type(i)
+
+    vertex_onering.remove_edge_property(new_pos)
+    assert not vertex_onering.has_edge_property(property_name)
+
+@pytest.mark.parametrize(
+    ["property_name", "property_value_type"],
+    [
+        ("quad_tri:new_position", Point),
+        ("is_selected", bool),
+        ("index", int),
+        ("scalar", float),
+        ("texcoord", TexCoord),
+        ("normal", Normal)
+    ]
+)
+def test_halfedge_property(vertex_onering, property_name, property_value_type):
+    assert not vertex_onering.has_halfedge_property(property_name)
+    new_pos = vertex_onering.halfedge_property(property_name, property_value_type(0))
+    assert vertex_onering.has_halfedge_property(property_name)
+
+    for i, h in enumerate(vertex_onering.halfedges()):
+        new_pos[h] = property_value_type(i)
+
+    for i, h in enumerate(vertex_onering.halfedges()):
+        assert new_pos[h] == property_value_type(i)
+
+    vertex_onering.remove_halfedge_property(new_pos)
+    assert not vertex_onering.has_halfedge_property(property_name)

@@ -105,25 +105,7 @@ auto bind_matrix(py::module_& m, const std::string& name)
                 "Construct 3x3 matrix");
     }*/
 }
-/*
 
-template <typename Derived, typename Base, typename Scalar>
-void bind_vector_alias(py::module_ &m, const std::string &name) {
-    py::class_<Derived, Base>(m, name.c_str())
-        //.def(py::init<>())
-        //.def(py::init<Scalar>(), "fill"_a)
-        .def(py::init<Scalar,
-                      Scalar,
-                      Scalar>(),
-             "x"_a, "y"_a, "z"_a)
-        .def(py::init([](const py::sequence &seq) {
-            if (seq.size() != 3) throw py::value_error("Expected 3 elements");
-            return Derived(seq[0].cast<Scalar>(),
-                           seq[1].cast<Scalar>(),
-                           seq[2].cast<Scalar>());
-        }));
-}
-*/
 template <typename Circulator, typename HandleOut, typename HandleIn>
 struct CirculatorWrapper {
     Circulator circ;
@@ -163,63 +145,30 @@ void bind_circulator(py::module_& m, const std::string& name) {
             return self;
         })
         .def("__next__", &CirculatorWrapper<Circulator, HandleOut, HandleIn>::next)
-        .def("previous", &CirculatorWrapper<Circulator, HandleOut, HandleIn>::prev);
+        .def("prev", &CirculatorWrapper<Circulator, HandleOut, HandleIn>::prev);
 }
 
-//struct PropertyWrapper {
-    //typename T;
-    /*Property<T> property;
-    const std::string property_name;
-
-    PropertyWrapper(typename T, const std::string &property_name) 
-        : T(T), property_name(property_name), property(Property<T>()) {}
-    
-    std::vector<T>& vector() { return property.vector(); }
-    */
-/*
-    std::any property;
-    const std::string property_name;
-
-    template <typename T>
-    PropertyWrapper(T property, const std::string &property_name)
-        : T(property), property_name(property_name)
-
-    auto vector() { return property.vector(); }
-}*/
-
 template <typename Property, typename T>
-auto get_property(py::module_& m, const std::string& name) {
-    const std::string name_type = name + typeid(T).name();
+auto get_property(py::module_& m, const std::string& name, const std::unordered_map<std::type_index, std::string>& type_map) {
+    const std::string name_type = name + type_map.find(std::type_index(typeid(T)))->second;
     return py::class_<Property>(m, name_type.c_str())
-        //.def(py::init<>())
-        //.def(py::init<pmp::PropertyArray<T>>(), "p"_a)
         .def("__getitem__", [](Property& prop, uint i) {
             if (i >= prop.vector().size()) throw py::index_error("Property data out of range.");
             return prop[i];
         })
-        /*.def("__getitem__", [](Property& prop, pmp::Vertex &i) {
-            if (i.idx() >= prop.vector().size()) throw py::index_error("Property data out of range.");
-            return prop[i];
-        })*/
         .def("__setitem__", [](Property& prop, uint i, T value) {
             if (i >= prop.vector().size()) throw py::index_error("Property data out of range.");
             prop[i] = value;
         })
-        /*.def("__setitem__", [](Property& prop, pmp::Vertex &i, T value) {
-            if (i.idx() >= prop.vector().size()) throw py::index_error("Property data out of range.");
-            prop[i] = value;
-        })*/
         .def("vector", &Property::vector,
             "Get reference to the underlying vector.");
 }
 
 template <typename Property, typename Handle, typename T>
-auto get_property_handle(py::module_& m, const std::string& name) {
+auto get_property_handle(py::module_& m, const std::string& name, const std::unordered_map<std::type_index, std::string>& type_map) {
     // necessary to distinguish between the different templates
-    const std::string name_type = name + typeid(T).name();
+    const std::string name_type = name + type_map.find(std::type_index(typeid(T)))->second;
     return py::class_<Property, pmp::Property<T>>(m, name_type.c_str())
-        //.def(py::init<>())
-        //.def(py::init<pmp::PropertyArray<T>>(), "p"_a)
         .def("__getitem__", [](Property& prop, Handle &i) {
             if (i.idx() >= prop.vector().size()) throw py::index_error("Property data out of range.");
             return prop[i];
@@ -228,74 +177,129 @@ auto get_property_handle(py::module_& m, const std::string& name) {
             if (i.idx() >= prop.vector().size()) throw py::index_error("Property data out of range.");
             prop[i] = value;
         });
-        //.def("vector", &Property::vector,
-        //    "Get reference to the underlying vector.");
 }
 
 template <template <typename> class Property, typename... Types>
-void bind_property(py::module_& m, const std::string& name) {
-    (get_property<Property<Types>, Types>(m, name), ...);
+void bind_property(py::module_& m, const std::string& name, const std::unordered_map<std::type_index, std::string>& type_map) {
+    (get_property<Property<Types>, Types>(m, name, type_map), ...);
 }
 
 template <template <typename> class Property, typename Handle, typename... Types>
-void bind_property_handle(py::module_& m, const std::string& name) {
-    (get_property_handle<Property<Types>, Handle, Types>(m, name), ...);
-}
-        
-/*
-template <class Property>
-void bind_property_wrapper(py::module_& m, const std::string& name) {
-    py::class_<PropertyWrapper<Property>>(m, name.c_str())
-    */
-    /*
-    .def(py::init([](typename T, const std::string& property_name) {
-        return PropertyWrapper(T, property_name).property;
-        })
-        )
-        */
-        /*
-        .def("__getitem__", [](const PropertyWrapper<Property>& prop, size_t i) {
-            if (i > prop.property.data_.size()) throw py::index_error("Property data out of range.");
-            return prop.property[i];
-        })
-        .def("vector", &PropertyWrapper<Property>::vector,
-        "Get reference to the underlying vector.");
-    }
-    */
-
-
-
-// Recursively detect list dimensionality
-/*
-int list_dim(const py::list& list) {
-    py::list l = list.cast<py::list>();
-    if (l.empty())
-    return 1;  // empty list counts as 1D
-    
-    // Recurse into first element
-    return 1 + list_dim(l[0]);
+void bind_property_handle(py::module_& m, const std::string& name, const std::unordered_map<std::type_index, std::string>& type_map) {
+    (get_property_handle<Property<Types>, Handle, Types>(m, name, type_map), ...);
 }
 
-pmp::Matrix matrix_from_list(py::list list) {
-    if (!py::isinstance<py::list>(list))
-    throw py::value_error();
-    
-    int dim = list_dim(list);
-    int M, N;
-    
-    if (dim > 2)
-    throw py::value_error();
-    
-    if (list.size() == 0)
-    throw py::value_error();
-    
-    for (int d = 0; i < dim; d++) {
-        M = list.size();
-        
-    }
+template <typename T>
+void vertex_property(py::class_<pmp::SurfaceMesh>& cls) {
+    cls.def("vertex_property", [](pmp::SurfaceMesh& self, const std::string& name, const T t = T()){
+        return self.vertex_property<T>(name, t);
+    },
+        "name"_a, "T"_a,
+        "If a vertex property of type T with name name exists, it is "
+        "returned. Otherwise this property is added (with default value t)"
+    );
+    cls.def("remove_vertex_property", [](pmp::SurfaceMesh& self, pmp::VertexProperty<T>& p) {
+        self.remove_vertex_property(p);
+    }, 
+        "p"_a,
+        "Remove the vertex property p"  
+    );
+    cls.def("has_vertex_property", &pmp::SurfaceMesh::has_vertex_property,
+        "name"_a, "does the mesh has a vertex property with name name?"
+    );
+    cls.def("vertex_properties", &pmp::SurfaceMesh::vertex_properties,
+        "return the names of all vertex properties"
+    );
 }
 
-*/
+template <typename ... Types>
+void bind_vertex_property(py::class_<pmp::SurfaceMesh>& cls) {
+    (vertex_property<Types>(cls), ...);
+}
+
+template <typename T>
+void get_edge_property(py::class_<pmp::SurfaceMesh>& cls) {
+    cls.def("edge_property", [](pmp::SurfaceMesh& self, const std::string& name, const T t = T()){
+        return self.edge_property<T>(name, t);
+    },
+        "name"_a, "T"_a,
+        "If an edge property of type T with name name exists, it is "
+        "returned. Otherwise this property is added (with default value t)"
+    );
+    cls.def("remove_edge_property", [](pmp::SurfaceMesh& self, pmp::EdgeProperty<T>& p) {
+        self.remove_edge_property(p);
+    }, 
+        "p"_a,
+        "Remove the edge property p"  
+    );
+    cls.def("has_edge_property", &pmp::SurfaceMesh::has_edge_property,
+        "name"_a, "does the mesh has an edge property with name name?"
+    );
+    cls.def("edge_properties", &pmp::SurfaceMesh::vertex_properties,
+        "return the names of all edge properties"
+    );
+}
+
+template <typename ... Types>
+void bind_edge_property(py::class_<pmp::SurfaceMesh>& cls) {
+    (get_edge_property<Types>(cls), ...);
+}
+
+template <typename T>
+void get_halfedge_property(py::class_<pmp::SurfaceMesh>& cls) {
+    cls.def("halfedge_property", [](pmp::SurfaceMesh& self, const std::string& name, const T t = T()){
+        return self.halfedge_property<T>(name, t);
+    },
+        "name"_a, "T"_a,
+        "If a halfedge property of type T with name name exists, it is "
+        "returned. Otherwise this property is added (with default value t)"
+    );
+    cls.def("remove_halfedge_property", [](pmp::SurfaceMesh& self, pmp::HalfedgeProperty<T>& p) {
+        self.remove_halfedge_property(p);
+    }, 
+        "p"_a,
+        "Remove the halfedge property p"  
+    );
+    cls.def("has_halfedge_property", &pmp::SurfaceMesh::has_halfedge_property,
+        "name"_a, "does the mesh has a halfedge property with name name?"
+    );
+    cls.def("halfedge_properties", &pmp::SurfaceMesh::vertex_properties,
+        "return the names of all halfedge properties"
+    );
+}
+
+template <typename ... Types>
+void bind_halfedge_property(py::class_<pmp::SurfaceMesh>& cls) {
+    (get_halfedge_property<Types>(cls), ...);
+}
+
+template <typename T>
+void get_face_property(py::class_<pmp::SurfaceMesh>& cls) {
+    cls.def("face_property", [](pmp::SurfaceMesh& self, const std::string& name, const T t = T()){
+        return self.face_property<T>(name, t);
+    },
+        "name"_a, "T"_a,
+        "If a face property of type T with name name exists, it is "
+        "returned. Otherwise this property is added (with default value t)"
+    );
+    cls.def("remove_face_property", [](pmp::SurfaceMesh& self, pmp::FaceProperty<T>& p) {
+        self.remove_face_property(p);
+    }, 
+        "p"_a,
+        "Remove the face property p"  
+    );
+    cls.def("has_face_property", &pmp::SurfaceMesh::has_face_property,
+        "name"_a, "does the mesh has a face property with name name?"
+    );
+    cls.def("face_properties", &pmp::SurfaceMesh::vertex_properties,
+        "return the names of all face properties"
+    );
+}
+
+template <typename ... Types>
+void bind_face_property(py::class_<pmp::SurfaceMesh>& cls) {
+    (get_face_property<Types>(cls), ...);
+}
 
 
 
@@ -307,12 +311,10 @@ PYBIND11_MODULE(pypmp, m, py::mod_gil_not_used()) {
     using namespace pmp;
 
     // Base Matrix types
-    //bind_matrix<Matrix<Scalar,3,1>, Scalar, 3, 1>(m, "Point");
     auto vector3d = bind_matrix<Matrix<Scalar,3,1>, Scalar, 3, 1>(m, "Vector3D");
-    //bind_matrix<Matrix<Scalar,3,1>, Scalar, 3, 1>(m, "Color");
-    //bind_matrix<Matrix<Scalar,3,1>, Scalar, 3, 1>(m, "Normal");
     auto vector2d = bind_matrix<Matrix<Scalar,2,1>, Scalar, 2, 1>(m, "Vector2D");
 
+    // Derive basic vector types from Matrix
     m.attr("Point") = vector3d;
     m.attr("Color") = vector3d;
     m.attr("Normal") = vector3d;
@@ -326,11 +328,6 @@ PYBIND11_MODULE(pypmp, m, py::mod_gil_not_used()) {
     m.attr("Point") = Point;
     */
 
-    //bind_vector_alias<Point, Matrix<Scalar,3,1>, Scalar>(m, "Point");
-    //py::class_<Point, Matrix<Scalar,3,1>>(m, "Point");
-    /*py::class_<Normal, Point>(m, "Normal");
-    py::class_<TexCoord, Point>(m, "TextCoord");
-    */
     //bind_matrix<Matrix<Scalar,3,3>, Scalar, 3, 3>(m, "Mat3");
 
     // Circulators
@@ -348,11 +345,20 @@ PYBIND11_MODULE(pypmp, m, py::mod_gil_not_used()) {
     using HalfedgeAroundFaceCirculator = CirculatorWrapper<SurfaceMesh::HalfedgeAroundFaceCirculator, Halfedge, Face>;
 
     // Explicit declaration of possible properties and their types
-    bind_property<Property, Scalar, int, bool, uint, Matrix<Scalar,3,1>>(m, "Property"); //
-    bind_property_handle<VertexProperty, Vertex, Scalar, int, bool, uint, Matrix<Scalar,3,1>>(m, "VertexProperty");
-    bind_property_handle<EdgeProperty, Edge, Scalar, int, bool, uint, Matrix<Scalar,3,1>>(m, "EdgeProperty");
-    bind_property_handle<HalfedgeProperty, Halfedge, Scalar, int, bool, uint, Matrix<Scalar,3,1>>(m, "HalfedgeProperty");
-    bind_property_handle<FaceProperty, Face, Scalar, int, bool, uint, Matrix<Scalar,3,1>>(m, "FaceProperty");
+    std::unordered_map<std::type_index, std::string> type_map = {
+        { typeid(Scalar), "Scalar" },
+        { typeid(int), "Int" },
+        { typeid(bool), "Bool" },
+        { typeid(uint), "Uint" },
+        { typeid(Matrix<Scalar,3,1>), "Vector3D" },
+        { typeid(Matrix<Scalar,2,1>), "Vector2D" }
+    };
+
+    bind_property<Property, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "Property", type_map);
+    bind_property_handle<VertexProperty, Vertex, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "VertexProperty", type_map);
+    bind_property_handle<EdgeProperty, Edge, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "EdgeProperty", type_map);
+    bind_property_handle<HalfedgeProperty, Halfedge, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "HalfedgeProperty", type_map);
+    bind_property_handle<FaceProperty, Face, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "FaceProperty", type_map);
 
     py::class_<SurfaceMesh> cls(m, "SurfaceMesh");
     cls
@@ -451,8 +457,6 @@ PYBIND11_MODULE(pypmp, m, py::mod_gil_not_used()) {
             "Return whether face f is valid",
             "f"_a
         )
-        //.def("add_vertex_property", []())
-        // TODO: Add properties for V, E, H, F
 
         // Iterators
         .def("vertices", [](const SurfaceMesh &self) {
@@ -500,7 +504,10 @@ PYBIND11_MODULE(pypmp, m, py::mod_gil_not_used()) {
             return HalfedgeAroundFaceCirculator(&self, f);
         }, py::keep_alive<0, 1>(), "f"_a);
 
-    // TODO: bind add_vertex_property and others using cls and void 
+    bind_vertex_property<Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(cls);
+    bind_face_property<Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(cls);
+    bind_edge_property<Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(cls);
+    bind_halfedge_property<Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(cls);
 
     py::class_<Handle>(m, "Handle")
         .def(py::init<>(),
