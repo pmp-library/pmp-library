@@ -7,6 +7,10 @@ void bind_algorithms(py::module_& algorithms) {
     bind_triangulation(algorithms);
     bind_decimation(algorithms);
     bind_remeshing(algorithms);
+    bind_smoothing(algorithms);
+    bind_subdivision(algorithms);
+    bind_hole_filling(algorithms);
+    bind_features(algorithms);
 }
     
 
@@ -275,3 +279,456 @@ void bind_remeshing(py::module_& algorithms) {
         "approx_error"_a, "iterations"_a = 10, "use_projection"_a = true
     );
 }
+
+void bind_smoothing(py::module_& algorithms) {
+    py::module_ smoothing = algorithms.def_submodule(
+        "smoothing",
+        "Module for mesh Laplacian smoothing"
+    );
+
+    smoothing.def("explicit_smoothing", &pmp::explicit_smoothing,
+        R"pbdoc(
+            explicit_smoothing(mesh: SurfaceMesh, iterations: int = 10, use_uniform_laplace : bool = True
+            ) -> None
+
+            Perform explicit Laplacian smoothing.
+
+            Extended Summary
+            ----------------
+            See [7]_ for details.
+            .. [7] Mathieu Desbrun, Mark Meyer, , Peter Schröder, and Alan H. Barr. Implicit fairing of irregular meshes using diffusion and curvature flow. In Proceedings of SIGGRAPH, pages 317–324, 1999.
+
+            Notes
+            -----
+            This algorithm works on general polygon meshes.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. Modified in place.
+            iterations : int = 10
+                The number of iterations performed.
+            use_uniform_laplace : bool = True
+                Use uniform or cotan Laplacian. Default: cotan.
+
+        )pbdoc",
+        "mesh"_a, "iterations"_a = 10, "use_uniform_laplace"_a = true
+    );
+    
+    smoothing.def("implicit_smoothing", &pmp::implicit_smoothing,
+        R"pbdoc(
+            implicit_smoothing(mesh: SurfaceMesh, timestep: float = 0.001, 
+            iterations: int = 1, use_uniform_laplace : bool = True,
+            rescale: bool = True
+            ) -> None
+
+            Perform implicit Laplacian smoothing.
+
+            Extended Summary
+            ----------------
+            See [7]_ and [8]_ for details.
+            .. [7] Mathieu Desbrun, Mark Meyer, , Peter Schröder, and Alan H. Barr. Implicit fairing of irregular meshes using diffusion and curvature flow. In Proceedings of SIGGRAPH, pages 317–324, 1999.
+            .. [8] Misha Kazhdan, Justin Solomon, and Mirela Ben-Chen. Can mean-curvature flow be modified to be non-singular? Computer Graphics Forum, 31(5), 2012.
+
+            Notes
+            -----
+            This algorithm works on general polygon meshes.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. Modified in place.
+            timestep : float
+                The time step taken.
+            iterations : int = 1
+                The number of iterations performed.
+            use_uniform_laplace : bool = True
+                Use uniform or cotan Laplacian. Default: cotan.
+            rescale : bool = True
+                Re-center and re-scale model after smoothing.
+
+            Raises
+            ------
+            SolverException in case of a failure to solve the linear system.
+
+        )pbdoc",
+        "mesh"_a, "timestep"_a = 0.001, "iterations"_a = 1, "use_uniform_laplace"_a = true,
+        "rescale"_a = true
+    );
+}
+
+void bind_subdivision(py::module_& algorithms) {
+    py::module_ subdivision = algorithms.def_submodule(
+        "subdivision",
+        "Module for mesh subdivision"
+    );
+
+    py::enum_<pmp::BoundaryHandling>(subdivision, "BoundaryHandling")
+        .value("Interpolate", pmp::BoundaryHandling::Interpolate)
+        .value("Preserve", pmp::BoundaryHandling::Preserve);
+
+    subdivision.def("catmull_clark_subdivision", &pmp::catmull_clark_subdivision,
+        R"pbdoc(
+            catmull_clark_subdivision(mesh: SurfaceMesh, boundary_handling: BoundaryHandling
+            ) -> None
+
+            Perform one step of Catmull-Clark subdivision.
+
+            Extended Summary
+            ----------------
+            See [8]_ for details.
+            .. [8] Edwin Catmull and James Clark. Recursively generated b-spline surfaces on arbitrary topological meshes. Computer-Aided Design, 10(6):350–355, 1978.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. Modified in place.
+            boundary_handling : BoundaryHandling = BoundaryHandling.Interpolate
+                Specify to interpolate or preserve boundary edges. Available options: `BoundaryHandling.Interpolate` or `BoundaryHandling.Preserve`.
+
+        )pbdoc",
+        "mesh"_a, "boundary_handling"_a=pmp::BoundaryHandling::Interpolate
+    );
+    
+    subdivision.def("loop_subdivision", &pmp::loop_subdivision,
+        R"pbdoc(
+            loop_subdivision(mesh: SurfaceMesh, boundary_handling: BoundaryHandling
+            ) -> None
+
+            Perform one step of Loop subdivision.
+
+            Extended Summary
+            ----------------
+            See [9]_ for details.
+            .. [9] Charles Teorell Loop. Smooth subdivision surfaces based on triangles. Master's thesis, University of Utah, Department of Mathematics, 1987.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. Modified in place.
+            boundary_handling : BoundaryHandling = BoundaryHandling.Interpolate
+                Specify to interpolate or preserve boundary edges. Available options: `BoundaryHandling.Interpolate` or `BoundaryHandling.Preserve`.
+
+            Warnings
+            --------
+            Requires a triangle mesh as input.
+
+            Raises
+            ------
+            InvalidInputException in case the input violates the precondition.
+        )pbdoc",
+        "mesh"_a, "boundary_handling"_a=pmp::BoundaryHandling::Interpolate
+    );
+    
+    subdivision.def("quad_tri_subdivision", &pmp::quad_tri_subdivision,
+        R"pbdoc(
+            quad_tri_subdivision(mesh: SurfaceMesh, boundary_handling: BoundaryHandling
+            ) -> None
+
+            Perform one step of quad-tri subdivision.
+
+            Extended Summary
+            ----------------
+            Suitable for mixed quad/triangle meshes. See [10]_ for details.
+            .. [10] Jos Stam and Charles Loop. Quad/triangle subdivision. Computer Graphics Forum, 22(1), 2003.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. Modified in place.
+            boundary_handling : BoundaryHandling = BoundaryHandling.Interpolate
+                Specify to interpolate or preserve boundary edges. Available options: `BoundaryHandling.Interpolate` or `BoundaryHandling.Preserve`.
+
+        )pbdoc",
+        "mesh"_a, "boundary_handling"_a=pmp::BoundaryHandling::Interpolate
+    );
+    
+    subdivision.def("linear_subdivision", &pmp::linear_subdivision,
+        R"pbdoc(
+            linear_subdivision(mesh: SurfaceMesh) -> None
+
+            Perform one step of linear quad-tri subdivision.
+
+            Extended Summary
+            ----------------
+            Suitable for mixed quad/triangle meshes.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. Modified in place.
+
+        )pbdoc",
+        "mesh"_a
+    );
+    
+}
+
+void bind_normals(py::module_& algorithms) {
+    py::module_ normals = algorithms.def_submodule(
+        "normals",
+        "Module for mesh normals computation"
+    );
+
+    normals.def("vertex_normals", &pmp::vertex_normals,
+        R"pbdoc(
+            vertex_normals(mesh: SurfaceMesh) -> None
+
+            Compute vertex normals for the whole `mesh`.
+
+            Extended Summary
+            ----------------
+            Calls vertex_normal() for each vertex and adds a new 
+            vertex property of type `Normal` named "v:normal".
+
+            Notes
+            -----
+            This algorithm works on general polygon meshes.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. Modified in place.
+
+        )pbdoc",
+        "mesh"_a
+    );
+    
+    normals.def("face_normals", &pmp::face_normals,
+        R"pbdoc(
+            face_normals(mesh: SurfaceMesh) -> None
+
+            Compute face normals for the whole `mesh`.
+
+            Extended Summary
+            ----------------
+            Calls face_normal() for each face and adds a new 
+            face property of type `Normal` named "f:normal".
+
+            Notes
+            -----
+            This algorithm works on general polygon meshes.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. Modified in place.
+
+        )pbdoc",
+        "mesh"_a
+    );
+    
+    normals.def("vertex_normal", &pmp::vertex_normal,
+        R"pbdoc(
+            vertex_normal(mesh: SurfaceMesh, v: Vertex) -> Normal
+
+            Compute the normal vector of vertex `v`.
+
+            Notes
+            -----
+            This algorithm works on general polygon meshes.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. 
+            v : Vertex
+                The input vertex.
+
+            Returns
+            -------
+            Normal
+                Normal vector
+
+        )pbdoc",
+        "mesh"_a, "v"_a
+    );
+    
+    normals.def("face_normal", &pmp::face_normal,
+        R"pbdoc(
+            face_normal(mesh: SurfaceMesh, f: Face) -> Normal
+
+            Compute the normal vector of face `f`.
+
+            Extended Summary
+            ----------------
+            Normal is computed as (normalized) sum of per-corner
+            cross products of the two incident edges. This corresponds to
+            the normalized vector area in [11].
+            .. [11] Marc Alexa and Max Wardetzky. Discrete laplacians on general polygonal meshes. ACM Transactions on Graphics, 30(4), 2011.
+
+            Notes
+            -----
+            This algorithm works on general polygon meshes.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. 
+            f : Face
+                The input face.
+
+            Returns
+            -------
+            Normal
+                Normal vector
+
+        )pbdoc",
+        "mesh"_a, "f"_a
+    );
+    
+    normals.def("corner_normal", &pmp::corner_normal,
+        R"pbdoc(
+            corner_normal(mesh: SurfaceMesh, h: Halfedge, crease_angle: float) -> Normal
+
+            Compute the normal vector of the polygon corner specified by the
+            target vertex of halfedge `h`.
+
+            Extended Summary
+            ----------------
+            Averages incident corner normals if they are within `crease_angle`
+            of the face normal. `crease_angle` is in radians, not degrees.
+
+            Notes
+            -----
+            This algorithm works on general polygon meshes.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. 
+            h : Halfedge
+                The input halfedge.
+            crease_angle : float
+                The crease angle.
+
+            Returns
+            -------
+            Normal
+                Normal vector
+
+        )pbdoc",
+        "mesh"_a, "h"_a, "crease_angle"_a
+    );
+
+}
+
+void bind_hole_filling(py::module_& algorithms) {
+    py::module_ hole_filling = algorithms.def_submodule(
+        "hole_filling",
+        "Module for mesh hole filling"
+    );
+
+    hole_filling.def("fill_hole", &pmp::fill_hole,
+        R"pbdoc(
+            fill_hole(mesh: SurfaceMesh, h: Halfedge) -> None
+
+            Fill the hole specified by halfedge `h`.
+
+            Extended Summary
+            ----------------
+            Close simple holes (boundary loops of manifold vertices) by first
+            filling the hole with an angle/area-minimizing triangulation, followed
+            by isometric remeshing, and finished by curvature-minimizing fairing of the
+            filled-in patch.
+            See [12] for details.
+            .. [12] Peter Liepa. Filling holes in meshes. In Proceedings of Eurographics Symposium on Geometry Processing, pages 200–205, 2003.
+            
+            Notes
+            -----
+            This algorithm works on general polygon meshes.
+
+            Warnings
+            --------
+            The specified halfedge is valid. The specified halfedge is a boundary halfedge.
+            The specified halfedge is not adjacent to a non-manifold hole.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. 
+            h : Halfedge
+                The input halfedge.
+
+            Raises
+            ------
+            InvalidInputException 
+                in case on of the input preconditions is violated
+
+        )pbdoc",
+        "mesh"_a, "h"_a
+    );
+}
+
+void bind_features(py::module_& algorithms) {
+    py::module_ features = algorithms.def_submodule(
+        "features",
+        "Module for feature detection"
+    );
+
+    features.def("detect_features", &pmp::detect_features,
+        R"pbdoc(
+            detect_features(mesh: SurfaceMesh, angle: float) -> int
+
+            Mark edges with dihedral angle larger than `angle` as feature.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. 
+            angle : float
+                Angle threshold for marking as feature
+
+            Returns
+            -------
+            int
+                The number of feature edges detected.
+            
+        )pbdoc",
+        "mesh"_a, "angle"_a
+    );
+    
+    features.def("detect_boundary", &pmp::detect_boundary,
+        R"pbdoc(
+            detect_boundary(mesh: SurfaceMesh) -> int
+
+            Mark all boundary edges as features.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. 
+
+            Returns
+            -------
+            int
+                The number of boundary edges detected.
+            
+        )pbdoc",
+        "mesh"_a
+    );
+    
+    features.def("clear_features", &pmp::clear_features,
+        R"pbdoc(
+            clear_features(mesh: SurfaceMesh) -> None
+
+            Clear feature and boundary edges.
+
+            Extended Summary
+            ----------------
+            Sets all `"e:feature"` and `"v:feature"` properties to `false`.
+
+            Notes
+            -----
+            This does not remove the corresponding property arrays.
+
+            Parameters
+            ----------
+            mesh : SurfaceMesh
+                The input mesh. 
+            
+        )pbdoc",
+        "mesh"_a
+    );
+}
+            
