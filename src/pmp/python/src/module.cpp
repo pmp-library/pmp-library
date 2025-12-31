@@ -8,14 +8,13 @@
 #include "circulators.h"
 #include "properties.h"
 #include "matrices.h"
-#include "algorithms.h"
 
 namespace py = pybind11;
 using namespace pybind11::literals;
 
 PYBIND11_MODULE(pypmp, m, py::mod_gil_not_used()) {
     m.doc() = R"pbdoc(
-        PyPMP - Python PMP library Binding
+        PyPMP - Python binding for Polygon Mesh Processing (PMP) library
     )pbdoc";
 
     using namespace pmp;
@@ -50,8 +49,4 @@ PYBIND11_MODULE(pypmp, m, py::mod_gil_not_used()) {
     bind_property_handle<EdgeProperty, Edge, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "EdgeProperty", type_map);
     bind_property_handle<HalfedgeProperty, Halfedge, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "HalfedgeProperty", type_map);
     bind_property_handle<FaceProperty, Face, Scalar, int, bool, uint, Matrix<Scalar,3,1>, Matrix<Scalar,2,1>>(m, "FaceProperty", type_map);
-
-
-    // Algorithms
-    bind_algorithms(m);
 }
