@@ -28,7 +28,7 @@ set(IO_SRC
 # --- Pybind11 modules ---
 pybind11_add_module(pypmp ${PYPMP_SRC})
 pybind11_add_module(algorithms ${ALGORITHMS_SRC})
-pybind11_add_module(io ${IO_SRC})
+pybind11_add_module(pmp_io ${IO_SRC})
 target_include_directories(pypmp PRIVATE 
     ${CMAKE_SOURCE_DIR}/../..
     ${CMAKE_SOURCE_DIR}/include
@@ -37,7 +37,7 @@ target_include_directories(algorithms PRIVATE
     ${CMAKE_SOURCE_DIR}/../..
     ${CMAKE_SOURCE_DIR}/include
 )
-target_include_directories(io PRIVATE 
+target_include_directories(pmp_io PRIVATE 
     ${CMAKE_SOURCE_DIR}/../..
     ${CMAKE_SOURCE_DIR}/include
 )
@@ -51,13 +51,13 @@ target_link_directories(algorithms PRIVATE
     ${CMAKE_SOURCE_DIR}/../../../build
 )
 target_link_libraries(algorithms PRIVATE pmp)
-target_link_directories(io PRIVATE 
+target_link_directories(pmp_io PRIVATE 
     ${CMAKE_SOURCE_DIR}/../../../build
 )
-target_link_libraries(io PRIVATE pmp)
+target_link_libraries(pmp_io PRIVATE pmp)
 
 # Dynamic loader of pypmp dynamic library
-set_target_properties(pypmp algorithms io PROPERTIES
+set_target_properties(pypmp algorithms pmp_io PROPERTIES
     BUILD_RPATH "${CMAKE_SOURCE_DIR}/../../../build"
     INSTALL_RPATH "${CMAKE_SOURCE_DIR}/../../../build"
 )
@@ -70,4 +70,4 @@ endif()
 
 install(TARGETS pypmp DESTINATION pypmp)
 install(TARGETS algorithms DESTINATION pypmp/algorithms)
-install(TARGETS io DESTINATION pypmp/io)
+install(TARGETS pmp_io DESTINATION pypmp/io)
