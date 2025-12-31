@@ -162,16 +162,15 @@ void bind_surface_mesh(py::module_& m) {
             "Find the edge of two vertices (a,b)",
             "a"_a, "b"_a
         )
-        .def("position", [](SurfaceMesh &self, Vertex v){
-            return self.position(v);
-        },
-            "position of a vertex",
+        .def("position",
+            static_cast<Point& (SurfaceMesh::*)(Vertex)>(&SurfaceMesh::position),
+            py::return_value_policy::reference_internal,
+            "Return mutable position of a vertex",
             "v"_a
-        )
-        .def("positions", [](SurfaceMesh &self){
-            return self.positions();
-        },
-            "Return vector of point positions"
+        )        
+        .def("positions", &SurfaceMesh::positions,
+            py::return_value_policy::reference_internal,
+            "Return vector of mutable point positions"
         )
         .def("valence", [](SurfaceMesh &self, Vertex v){
             return self.valence(v);
