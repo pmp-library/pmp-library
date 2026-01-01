@@ -158,7 +158,7 @@ if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" AND NOT WIN32)
 endif()
 
 # TU Dortmund color scheme
-if (TUDO)
+if(TUDO)
   add_definitions(-DTUDO)
 endif()
 
