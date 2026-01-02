@@ -1,0 +1,6 @@
+# Treat C++ files properly
+*.h linguist-language=C++
+*.cpp linguist-language=C++
+
+# Exclude third-party code
+external/** linguist-vendored
