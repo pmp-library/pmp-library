@@ -1,5 +1,5 @@
 // Copyright 2011-2025 the Polygon Mesh Processing Library developers.
-// Distributed under a MIT-style license, see LICENSE.txt for details.
+// SPDX-License-Identifier: MIT
 
 #pragma once
 

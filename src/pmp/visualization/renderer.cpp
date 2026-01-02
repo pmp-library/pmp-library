@@ -1,5 +1,5 @@
 // Copyright 2011-2021 the Polygon Mesh Processing Library developers.
-// Distributed under a MIT-style license, see LICENSE.txt for details.
+// SPDX-License-Identifier: MIT
 
 #include "pmp/visualization/renderer.h"
 
@@ -102,8 +102,8 @@ void Renderer::load_texture(const std::filesystem::path& filename, GLint format,
     // load with stb_image
     int width, height, n;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* img =
-        stbi_load(filename.string().c_str(), &width, &height, &n, load_components);
+    unsigned char* img = stbi_load(filename.string().c_str(), &width, &height,
+                                   &n, load_components);
     if (!img)
         throw IOException("Failed to load texture file: " + filename.string());
 

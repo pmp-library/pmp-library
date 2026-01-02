@@ -1,5 +1,5 @@
 // Copyright 2011-2025 the Polygon Mesh Processing Library developers.
-// Distributed under a MIT-style license, see LICENSE.txt for details.
+// SPDX-License-Identifier: MIT
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
@@ -24,8 +24,14 @@
 #include <glad/gl.h>
 #endif
 
-static inline float  ImTrunc(float f)         { return (float)(int)(f); }
-static inline ImVec2 ImTrunc(const ImVec2& v) { return ImVec2((float)(int)(v.x), (float)(int)(v.y)); }
+static inline float ImTrunc(float f)
+{
+    return (float)(int)(f);
+}
+static inline ImVec2 ImTrunc(const ImVec2& v)
+{
+    return ImVec2((float)(int)(v.x), (float)(int)(v.y));
+}
 
 namespace pmp {
 
@@ -217,7 +223,7 @@ void Window::color_mode(ColorMode c)
             clear_color_ = vec3(0.15, 0.16, 0.17);
             break;
     }
-    
+
 #ifdef TUDO // color scheme of TU Dortmund
 
     ImVec4 fg, bg, bg_active, bg_inactive, bg_light, grey;
@@ -225,7 +231,7 @@ void Window::color_mode(ColorMode c)
     {
         case LightMode:
         {
-            fg = ImVec4(0,0,0,1);
+            fg = ImVec4(0, 0, 0, 1);
             bg = ImVec4(0.58, 0.75, 0.27, 1.0);
             bg_active = ImVec4(0.39, 0.60, 0.0, 1.0);
             bg_inactive = ImVec4(0.7, 0.7, 0.7, 1.0);
@@ -235,7 +241,7 @@ void Window::color_mode(ColorMode c)
         }
 
         case DarkMode:
-            fg = ImVec4(1,1,1,1);
+            fg = ImVec4(1, 1, 1, 1);
             bg = ImVec4(0.39, 0.60, 0.0, 1.0);
             bg_active = ImVec4(0.49, 0.65, 0.16, 1.0);
             bg_inactive = ImVec4(0.7, 0.7, 0.7, 1.0);
@@ -244,30 +250,30 @@ void Window::color_mode(ColorMode c)
             break;
     }
 
-    colors[ImGuiCol_Text]                   = fg;
-    colors[ImGuiCol_TitleBg]                = bg;
-    colors[ImGuiCol_TitleBgActive]          = bg_active;
-    colors[ImGuiCol_FrameBg]                = grey;
-    colors[ImGuiCol_FrameBgHovered]         = bg_light;
-    colors[ImGuiCol_FrameBgActive]          = bg_light;
-    colors[ImGuiCol_CheckMark]              = bg_active;
-    colors[ImGuiCol_SliderGrab]             = bg_active;
-    colors[ImGuiCol_SliderGrabActive]       = bg_active;
-    colors[ImGuiCol_Button]                 = bg;
-    colors[ImGuiCol_ButtonHovered]          = bg_active;
-    colors[ImGuiCol_ButtonActive]           = bg_active;
-    colors[ImGuiCol_Header]                 = bg;
-    colors[ImGuiCol_HeaderHovered]          = bg_active;
-    colors[ImGuiCol_HeaderActive]           = bg;
-    colors[ImGuiCol_Separator]              = bg;
-    colors[ImGuiCol_SeparatorHovered]       = bg;
-    colors[ImGuiCol_SeparatorActive]        = bg_light;
-    colors[ImGuiCol_Tab]                    = grey;
-    colors[ImGuiCol_TabSelected]            = bg;
-    colors[ImGuiCol_TabSelectedOverline]    = bg;
-    colors[ImGuiCol_TabHovered]             = bg_active;
-    colors[ImGuiCol_TabDimmed]              = bg_active;
-    colors[ImGuiCol_TabDimmedSelected]      = bg_active;
+    colors[ImGuiCol_Text] = fg;
+    colors[ImGuiCol_TitleBg] = bg;
+    colors[ImGuiCol_TitleBgActive] = bg_active;
+    colors[ImGuiCol_FrameBg] = grey;
+    colors[ImGuiCol_FrameBgHovered] = bg_light;
+    colors[ImGuiCol_FrameBgActive] = bg_light;
+    colors[ImGuiCol_CheckMark] = bg_active;
+    colors[ImGuiCol_SliderGrab] = bg_active;
+    colors[ImGuiCol_SliderGrabActive] = bg_active;
+    colors[ImGuiCol_Button] = bg;
+    colors[ImGuiCol_ButtonHovered] = bg_active;
+    colors[ImGuiCol_ButtonActive] = bg_active;
+    colors[ImGuiCol_Header] = bg;
+    colors[ImGuiCol_HeaderHovered] = bg_active;
+    colors[ImGuiCol_HeaderActive] = bg;
+    colors[ImGuiCol_Separator] = bg;
+    colors[ImGuiCol_SeparatorHovered] = bg;
+    colors[ImGuiCol_SeparatorActive] = bg_light;
+    colors[ImGuiCol_Tab] = grey;
+    colors[ImGuiCol_TabSelected] = bg;
+    colors[ImGuiCol_TabSelectedOverline] = bg;
+    colors[ImGuiCol_TabHovered] = bg_active;
+    colors[ImGuiCol_TabDimmed] = bg_active;
+    colors[ImGuiCol_TabDimmedSelected] = bg_active;
 #endif
 }
 
@@ -276,13 +282,13 @@ void Window::scale_imgui(float scale)
     // scale imgui scale by new factor
     imgui_scale_ *= scale;
 
-    // load Lato font 
+    // load Lato font
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->Clear();
     io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
                                              LatoLatin_compressed_size,
                                              16 * imgui_scaling());
-    
+
     // load & merge FontAwesome
     static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
     ImFontConfig config;
@@ -297,17 +303,17 @@ void Window::scale_imgui(float scale)
 
     // adjust element styles (scaled version of default style or pmp style)
     ImGuiStyle& style = ImGui::GetStyle();
-    style.WindowPadding = ImTrunc(ImVec2(8,8) * imgui_scale_);
+    style.WindowPadding = ImTrunc(ImVec2(8, 8) * imgui_scale_);
     style.WindowRounding = 0; //ImTrunc(4 * imgui_scale_);
-    style.WindowMinSize = ImTrunc(ImVec2(24,24) * imgui_scale_);
+    style.WindowMinSize = ImTrunc(ImVec2(24, 24) * imgui_scale_);
     style.ChildRounding = ImTrunc(4 * imgui_scale_);
     style.PopupRounding = ImTrunc(4 * imgui_scale_);
-    style.FramePadding = ImTrunc(ImVec2(4,3) * imgui_scale_);
+    style.FramePadding = ImTrunc(ImVec2(4, 3) * imgui_scale_);
     style.FrameRounding = ImTrunc(4 * imgui_scale_);
-    style.ItemSpacing = ImTrunc(ImVec2(8,4) * imgui_scale_);
-    style.ItemInnerSpacing = ImTrunc(ImVec2(4,4) * imgui_scale_);
-    style.CellPadding = ImTrunc(ImVec2(4,2) * imgui_scale_);
-    style.TouchExtraPadding = ImVec2(0,0);
+    style.ItemSpacing = ImTrunc(ImVec2(8, 4) * imgui_scale_);
+    style.ItemInnerSpacing = ImTrunc(ImVec2(4, 4) * imgui_scale_);
+    style.CellPadding = ImTrunc(ImVec2(4, 2) * imgui_scale_);
+    style.TouchExtraPadding = ImVec2(0, 0);
     style.IndentSpacing = ImTrunc(21 * imgui_scale_);
     style.ColumnsMinSpacing = ImTrunc(6 * imgui_scale_);
     style.ScrollbarSize = ImTrunc(14 * imgui_scale_);
@@ -318,9 +324,9 @@ void Window::scale_imgui(float scale)
     style.TabRounding = ImTrunc(4 * imgui_scale_);
     style.TabMinWidthForCloseButton = ImTrunc(0 * imgui_scale_);
     style.TabBarOverlineSize = ImTrunc(1 * imgui_scale_);
-    style.SeparatorTextPadding = ImTrunc(ImVec2(20,3) * imgui_scale_);
-    style.DisplayWindowPadding = ImTrunc(ImVec2(19,19) * imgui_scale_);
-    style.DisplaySafeAreaPadding = ImTrunc(ImVec2(3,3) * imgui_scale_);
+    style.SeparatorTextPadding = ImTrunc(ImVec2(20, 3) * imgui_scale_);
+    style.DisplayWindowPadding = ImTrunc(ImVec2(19, 19) * imgui_scale_);
+    style.DisplaySafeAreaPadding = ImTrunc(ImVec2(3, 3) * imgui_scale_);
 }
 
 void Window::add_help_item(std::string key, std::string description, int pos)
@@ -393,9 +399,9 @@ void Window::draw_imgui()
 {
     // hide border if imgui is hidden (only menu icon shown)
     bool pop_border_color = false;
-    if (!show_imgui_) 
+    if (!show_imgui_)
     {
-        ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0,0,0,0));
+        ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0, 0, 0, 0));
         pop_border_color = true;
     }
 
@@ -728,7 +734,7 @@ void Window::glfw_motion(GLFWwindow* window, double xpos, double ypos)
 
 void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
 {
-// #ifdef __EMSCRIPTEN__
+    // #ifdef __EMSCRIPTEN__
     // since touch input does not trigger hover events,
     // we have to set mouse position before button press.
     // since we cannot distinguish mouse and touch events,
@@ -736,7 +742,7 @@ void Window::glfw_mouse(GLFWwindow* window, int button, int action, int mods)
     double x, y;
     glfwGetCursorPos(window, &x, &y);
     ImGui_ImplGlfw_CursorPosCallback(window, x, y);
-// #endif
+    // #endif
 
     ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
 

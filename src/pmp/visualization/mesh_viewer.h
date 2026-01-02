@@ -1,5 +1,5 @@
 // Copyright 2011-2021 the Polygon Mesh Processing Library developers.
-// Distributed under a MIT-style license, see LICENSE.txt for details.
+// SPDX-License-Identifier: MIT
 
 #pragma once
 
@@ -28,7 +28,7 @@ public:
     void load_matcap(const std::filesystem::path& filename);
 
     //! load a texture from file \p filename
-    void load_texture(const std::filesystem::path& filename, 
+    void load_texture(const std::filesystem::path& filename,
                       GLint format = GL_RGB,
                       GLint min_filter = GL_LINEAR_MIPMAP_LINEAR,
                       GLint mag_filter = GL_LINEAR,

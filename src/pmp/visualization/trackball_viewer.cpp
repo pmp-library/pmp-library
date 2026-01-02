@@ -1,5 +1,5 @@
 // Copyright 2011-2019 the Polygon Mesh Processing Library developers.
-// Distributed under a MIT-style license, see LICENSE.txt for details.
+// SPDX-License-Identifier: MIT
 
 #include "trackball_viewer.h"
 #include "pmp/stop_watch.h"

@@ -1,5 +1,5 @@
 // Copyright 2011-2021 the Polygon Mesh Processing Library developers.
-// Distributed under a MIT-style license, see LICENSE.txt for details.
+// SPDX-License-Identifier: MIT
 
 #pragma once
 
@@ -100,7 +100,8 @@ public:
     //! \param mag_filter interpolation filter for magnification
     //! \param wrap texture coordinates wrap preference
     //! \throw IOException in case of failure to load texture from file
-    void load_texture(const std::filesystem::path& filename, GLint format = GL_RGB,
+    void load_texture(const std::filesystem::path& filename,
+                      GLint format = GL_RGB,
                       GLint min_filter = GL_LINEAR_MIPMAP_LINEAR,
                       GLint mag_filter = GL_LINEAR,
                       GLint wrap = GL_CLAMP_TO_EDGE);

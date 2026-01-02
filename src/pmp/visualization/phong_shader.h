@@ -1,5 +1,5 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
-// Distributed under a MIT-style license, see LICENSE.txt for details.
+// SPDX-License-Identifier: MIT
 
 // clang-format off
 
@@ -124,7 +124,7 @@ void main()
     if (use_srgb)    rgb  = pow(clamp(rgb, 0.0, 1.0), vec3(0.45));
 
     // round points
-    if (use_round_points) 
+    if (use_round_points)
     {
         vec2 uv = 2.0 * gl_PointCoord - 1.0;
         if (dot(uv, uv) > 1.0) discard;

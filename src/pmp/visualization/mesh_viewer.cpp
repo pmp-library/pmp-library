@@ -1,5 +1,5 @@
 // Copyright 2011-2021 the Polygon Mesh Processing Library developers.
-// Distributed under a MIT-style license, see LICENSE.txt for details.
+// SPDX-License-Identifier: MIT
 
 #include "pmp/visualization/mesh_viewer.h"
 #include "pmp/algorithms/utilities.h"
@@ -82,8 +82,9 @@ void MeshViewer::load_matcap(const std::filesystem::path& filename)
     set_draw_mode("Texture");
 }
 
-void MeshViewer::load_texture(const std::filesystem::path& filename, GLint format,
-                              GLint min_filter, GLint mag_filter, GLint wrap)
+void MeshViewer::load_texture(const std::filesystem::path& filename,
+                              GLint format, GLint min_filter, GLint mag_filter,
+                              GLint wrap)
 {
     // load texture from file
     try
