@@ -1,0 +1,4 @@
+from ..algorithms import distance_point_triangle
+
+dist_point_triangle = distance_point_triangle.dist_point_triangle
+dist_point_line_segment = distance_point_triangle.dist_point_line_segment
