@@ -72,17 +72,17 @@ int connected_components(SurfaceMesh& mesh)
             continue;
 
         std::queue<Vertex> vertices;
+        component[v] = idx;
         vertices.push(v);
 
         while (!vertices.empty())
         {
             auto vv = vertices.front();
             vertices.pop();
-            component[vv] = idx;
 
             for (auto vc : mesh.vertices(vv))
             {
-                if (component[vc] != idx)
+                if (component[vc] == -1)
                 {
                     component[vc] = idx;
                     vertices.push(vc);

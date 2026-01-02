@@ -31,6 +31,7 @@ inline Scalar edge_length(const SurfaceMesh& mesh, Edge e)
 Scalar mean_edge_length(const SurfaceMesh& mesh);
 
 //! Compute connected components in \p mesh .
+//! \details Components are determined based on vertex adjacency. Isolated vertices are reported as connected components.
 //! \return the number of connected components.
 //! \post Adds a new vertex property \c v:component containing the component index.
 int connected_components(SurfaceMesh& mesh);
