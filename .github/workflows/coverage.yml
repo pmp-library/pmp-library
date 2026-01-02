@@ -36,7 +36,7 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DENABLE_COVERAGE=true
+        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPMP_BUILD_TESTS=ON -DENABLE_COVERAGE=true
 
       - name: Build
         working-directory: ${{runner.workspace}}/build
