@@ -52,7 +52,7 @@ jobs:
       - name: Configure emscripten
         shell: bash
         working-directory: ${{runner.workspace}}/embuild
-        run: source ./emsdk/emsdk_env.sh && emcmake cmake $GITHUB_WORKSPACE
+        run: source ./emsdk/emsdk_env.sh && emcmake cmake -DPMP_BUILD_EXAMPLES=ON $GITHUB_WORKSPACE
 
       - name: Build emscripten
         working-directory: ${{runner.workspace}}/embuild
@@ -65,7 +65,7 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: cmake -DPMP_BUILD_DOCS=ON -DPMP_BUILD_EXAMPLES=ON -DPMP_BUILD_VIS=OFF $GITHUB_WORKSPACE
+        run: cmake -DPMP_BUILD_DOCS=ON -DPMP_BUILD_VIS=OFF $GITHUB_WORKSPACE
 
       - name: Build docs
         working-directory: ${{runner.workspace}}/build
