@@ -62,10 +62,10 @@ jobs:
       - name: Create build directory
         run: cmake -E make_directory ${{runner.workspace}}/build
 
-      - name: Configure CMkae
+      - name: Configure CMake
         shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: cmake -DPMP_BUILD_DOCS=ON -DPMP_BUILD_VIS=OFF $GITHUB_WORKSPACE
+        run: cmake -DPMP_BUILD_DOCS=ON -DPMP_BUILD_EXAMPLES=ON -DPMP_BUILD_VIS=OFF $GITHUB_WORKSPACE
 
       - name: Build docs
         working-directory: ${{runner.workspace}}/build
