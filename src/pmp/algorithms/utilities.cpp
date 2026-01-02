@@ -57,6 +57,14 @@ Scalar mean_edge_length(const SurfaceMesh& mesh)
     return length;
 }
 
+Scalar min_edge_length(const SurfaceMesh& mesh)
+{
+    Scalar min_length = std::numeric_limits<Scalar>::max();
+    for (auto e : mesh.edges())
+        min_length = std::min(min_length, edge_length(mesh, e));
+    return min_length;
+}
+
 int connected_components(SurfaceMesh& mesh)
 {
     auto component = mesh.vertex_property<int>("v:component");

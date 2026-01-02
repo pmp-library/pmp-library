@@ -54,6 +54,13 @@ TEST_F(UtilitiesTest, mean_edge_length)
     EXPECT_EQ(mean, 1);
 }
 
+TEST_F(UtilitiesTest, min_edge_length)
+{
+    add_quad();
+    auto min = min_edge_length(mesh);
+    EXPECT_EQ(min, 1);
+}
+
 TEST_F(UtilitiesTest, connected_components)
 {
     // add two faces with duplicate vertices

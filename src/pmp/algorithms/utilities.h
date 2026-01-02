@@ -30,6 +30,9 @@ inline Scalar edge_length(const SurfaceMesh& mesh, Edge e)
 //! Compute mean edge length of \p mesh .
 Scalar mean_edge_length(const SurfaceMesh& mesh);
 
+//! Compute minimum edge length of \p mesh .
+Scalar min_edge_length(const SurfaceMesh& mesh);
+
 //! Compute connected components in \p mesh .
 //! \details Components are determined based on vertex adjacency. Isolated vertices are reported as connected components.
 //! \return the number of connected components.
