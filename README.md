@@ -75,4 +75,4 @@ We acknowledge that PMP evolved from our previous work on [Surface_mesh](http://
 
 ## License
 
-PMP is provided under a simple and flexible MIT-style [license](https://github.com/pmp-library/pmp-library/blob/master/LICENSE.txt) allowing for both open-source and commercial usage.
+PMP is provided under a [MIT license](https://github.com/pmp-library/pmp-library/blob/master/LICENSE.txt), allowing for both open-source and commercial usage.
