@@ -93,13 +93,6 @@ void TrackballViewer::keyboard(int key, int code, int action, int mods)
             rotate(vec3(1, 0, 0), 5.0);
             break;
         }
-            // case GLFW_KEY_F:
-            // {
-            //     double fps = measure_fps();
-            //     std::cout << "FPS: " << fps << std::endl;
-            //     break;
-            // }
-
         default:
         {
             Window::keyboard(key, code, action, mods);
