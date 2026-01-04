@@ -162,7 +162,7 @@ void TrackballViewer::motion(double xpos, double ypos)
     if (prev_point_ok_)
     {
         // zoom
-        if (right_mouse_pressed() || (left_mouse_pressed() && shift_pressed()))
+        if (right_mouse_pressed())
         {
             zoom(xpos, ypos);
         }
