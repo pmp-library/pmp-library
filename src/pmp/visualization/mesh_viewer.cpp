@@ -49,6 +49,7 @@ void MeshViewer::load_mesh(const std::filesystem::path& filename)
 
     // update scene center and bounds
     const BoundingBox bb = bounds(mesh_);
+    modelview_matrix_ = mat4::identity();
     set_scene((vec3)bb.center(), 0.5 * bb.size());
 
     // compute face & vertex normals, update face indices
