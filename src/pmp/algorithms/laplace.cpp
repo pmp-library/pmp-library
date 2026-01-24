@@ -4,6 +4,8 @@
 
 #include "pmp/algorithms/laplace.h"
 
+// #define TFEM
+
 namespace pmp {
 
 namespace {
@@ -12,7 +14,21 @@ namespace {
 double triarea(const Eigen::Vector3d& p0, const Eigen::Vector3d& p1,
                const Eigen::Vector3d& p2)
 {
-    return 0.5 * (p1 - p0).cross(p2 - p0).norm();
+    double double_area = (p1 - p0).cross(p2 - p0).norm();
+
+#ifdef TFEM
+    double l0 = (p1 - p2).squaredNorm();
+    double l1 = (p0 - p2).squaredNorm();
+    double l2 = (p0 - p1).squaredNorm();
+    double h = pow((sqrt(l0) + sqrt(l1) + sqrt(l2))/3.0, 2);
+
+    const double hmin = 1e-20; // absolute failsafe bound
+    const double C = 1e-3; // dynamic TFEM constant
+
+    double_area = fmax(double_area, C*fmax(h,hmin));
+#endif
+
+    return 0.5 * double_area;
 }
 
 // compute virtual vertex per polygon, represented by affine weights,
@@ -67,7 +83,11 @@ void triangle_mass_matrix(const Eigen::Vector3d& p0, const Eigen::Vector3d& p1,
         e[i] = p[(i + 1) % 3] - p[i];
 
     // compute and check (twice the) triangle area
+#ifndef TFEM
     const auto tri_area = norm(cross(e[0], e[1]));
+#else
+    const auto tri_area = 2.0 * triarea(p0, p1, p2);
+#endif
     if (tri_area <= std::numeric_limits<double>::min())
     {
         Mtri.setZero(3);
@@ -105,7 +125,6 @@ void triangle_mass_matrix(const Eigen::Vector3d& p0, const Eigen::Vector3d& p1,
                                sqrnorm(e[(i + 2) % 3]) * cot[(i + 1) % 3]);
         }
     }
-
     Mtri = area.asDiagonal();
 }
 
@@ -157,6 +176,7 @@ void triangle_laplace_matrix(const Eigen::Vector3d& p0,
                              const Eigen::Vector3d& p1,
                              const Eigen::Vector3d& p2, DenseMatrix& Ltri)
 {
+#ifndef TFEM
     std::array<double, 3> l, l2, cot;
 
     // squared edge lengths
@@ -188,6 +208,39 @@ void triangle_laplace_matrix(const Eigen::Vector3d& p0,
         Ltri(2, 0) = Ltri(0, 2) = -cot[1];
         Ltri(2, 1) = Ltri(1, 2) = -cot[0];
     }
+#else
+    // double triangle area
+    double area = 2.0*triarea(p0, p1, p2);
+
+    if (area > std::numeric_limits<double>::min())
+    {
+        // squared edge lengths
+        std::array<double, 3> l2{};
+        l2[0] = (p1 - p2).squaredNorm();
+        l2[1] = (p0 - p2).squaredNorm();
+        l2[2] = (p0 - p1).squaredNorm();
+
+        // cotangent values
+        std::array<double, 3> cot{};
+        const double inv_area = 0.25 / area;
+        cot[0] = inv_area * (l2[1] + l2[2] - l2[0]);
+        cot[1] = inv_area * (l2[2] + l2[0] - l2[1]);
+        cot[2] = inv_area * (l2[0] + l2[1] - l2[2]);
+
+        // build 3x3 Laplace matrix
+        Ltri(0, 0) = cot[1] + cot[2];
+        Ltri(1, 1) = cot[0] + cot[2];
+        Ltri(2, 2) = cot[0] + cot[1];
+        Ltri(1, 0) = Ltri(0, 1) = -cot[2];
+        Ltri(2, 0) = Ltri(0, 2) = -cot[1];
+        Ltri(2, 1) = Ltri(1, 2) = -cot[0];
+    }
+    else
+    {
+        std::cerr << "Should not happen\n";
+        Ltri.setZero();
+    }
+#endif
 }
 
 void polygon_laplace_matrix(const DenseMatrix& polygon, DenseMatrix& Lpoly)
@@ -245,10 +298,23 @@ void triangle_gradient_matrix(const Eigen::Vector3d& p0,
 {
     G.resize(3, 3);
     Eigen::Vector3d n = (p1 - p0).cross(p2 - p0);
-    n /= n.squaredNorm();
-    G.col(0) = n.cross(p2 - p1);
-    G.col(1) = n.cross(p0 - p2);
-    G.col(2) = n.cross(p1 - p0);
+#ifndef TFEM
+    double double_area = n.norm();
+#else
+    double double_area = 2.0 * triarea(p0, p1, p2);
+#endif
+    if (double_area > std::numeric_limits<double>::min())
+    {
+        // n /= double_area;
+        n.normalize();
+        G.col(0) = n.cross(p2 - p1) / (double_area);
+        G.col(1) = n.cross(p0 - p2) / (double_area);
+        G.col(2) = n.cross(p1 - p0) / (double_area);
+    }
+    else
+    {
+        G.setZero();
+    }
 }
 
 void polygon_gradient_matrix(const DenseMatrix& polygon, DenseMatrix& Gpoly)
