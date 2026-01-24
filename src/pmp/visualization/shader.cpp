@@ -215,6 +215,19 @@ void Shader::set_uniform(const char* name, int value)
     glUniform1i(location, value);
 }
 
+void Shader::set_uniform(const char* name, const vec2& vec)
+{
+    if (!pid_)
+        return;
+    const int location = glGetUniformLocation(pid_, name);
+    if (location == -1)
+    {
+        std::cerr << "Invalid uniform location for: " << name << std::endl;
+        return;
+    };
+    glUniform2f(location, vec[0], vec[1]);
+}
+
 void Shader::set_uniform(const char* name, const vec3& vec)
 {
     if (!pid_)
