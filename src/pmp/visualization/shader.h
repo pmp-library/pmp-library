@@ -56,6 +56,11 @@ public:
     //! \param value the value for the uniform
     void set_uniform(const char* name, int value);
 
+    //! Upload vec2 uniform.
+    //! \param name string of the uniform name
+    //! \param vec the value for the uniform
+    void set_uniform(const char* name, const vec2& vec);
+
     //! Upload vec3 uniform.
     //! \param name string of the uniform name
     //! \param vec the value for the uniform
