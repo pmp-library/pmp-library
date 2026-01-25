@@ -66,13 +66,10 @@ if(PMP_BUILD_VIS)
   add_subdirectory(${IMGUI_SOURCE_DIR})
 endif(PMP_BUILD_VIS)
 
-find_package(Eigen3 3.4.0 QUIET)
-
-if(NOT Eigen3_FOUND)
-  add_library(pmp_Eigen INTERFACE)
-  target_include_directories(
-    pmp_Eigen SYSTEM INTERFACE "${PROJECT_SOURCE_DIR}/external/eigen-3.4.0")
+if(NOT DEFINED EIGEN3_INCLUDE_DIR)
+  set(EIGEN3_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/external/eigen-3.4.0")
 endif()
+find_package(Eigen3 3.4.0 REQUIRED)
 
 include_directories(${PROJECT_SOURCE_DIR}/src/)
 
