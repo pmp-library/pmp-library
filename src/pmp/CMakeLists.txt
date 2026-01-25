@@ -26,8 +26,8 @@ if(NOT EMSCRIPTEN AND PMP_INSTALL)
   target_include_directories(
     pmp PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
                $<INSTALL_INTERFACE:include/>)
-  target_include_directories(pmp SYSTEM
-                             PUBLIC $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>)
+
+  target_link_libraries(pmp PUBLIC Eigen3::Eigen)
 
   install(
     TARGETS pmp

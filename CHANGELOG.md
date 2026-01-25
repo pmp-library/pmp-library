@@ -24,6 +24,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Rename `glCheckError` to `check_gl_errors`.
 - Make `is_constrained()` predicate in `cholesky_solve()` a const reference.
 - Make `is_selection()` predicate in `selector_matrix()` a const reference.
+- Use CMake native Eigen3 package mechanism, remove FindEigen3.cmake and EIGEN3_INCLUDE_DIR
 - Switch from GLEW to GLAD
 - Update ImGui to version 1.90.4
 - Update GLFW to version 3.4
