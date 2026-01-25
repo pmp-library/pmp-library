@@ -21,13 +21,17 @@ if(WITH_CLANG_TIDY)
   set_target_properties(pmp PROPERTIES CXX_CLANG_TIDY "${CLANG_TIDY_COMMAND}")
 endif()
 
+if(Eigen3_FOUND)
+  target_link_libraries(pmp PUBLIC Eigen3::Eigen)
+else()
+  target_link_libraries(pmp PUBLIC pmp::Eigen)
+endif()
+
 if(NOT EMSCRIPTEN AND PMP_INSTALL)
 
   target_include_directories(
     pmp PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
                $<INSTALL_INTERFACE:include/>)
-
-  target_link_libraries(pmp PUBLIC Eigen3::Eigen)
 
   install(
     TARGETS pmp
@@ -40,8 +44,7 @@ if(NOT EMSCRIPTEN AND PMP_INSTALL)
 
   install(FILES ${HEADERS} DESTINATION include/pmp/)
 else()
-  target_include_directories(pmp PUBLIC ${EIGEN3_INCLUDE_DIR}
-                                        ${CMAKE_CURRENT_SOURCE_DIR}/../)
+  target_include_directories(pmp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../)
 endif()
 
 if(PMP_BUILD_VIS)
