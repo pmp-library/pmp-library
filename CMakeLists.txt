@@ -69,9 +69,9 @@ endif(PMP_BUILD_VIS)
 find_package(Eigen3 3.4.0 QUIET)
 
 if(NOT Eigen3_FOUND)
-  add_library(pmp::Eigen INTERFACE)
+  add_library(pmp_Eigen INTERFACE)
   target_include_directories(
-    pmp::Eigen SYSTEM INTERFACE "${PROJECT_SOURCE_DIR}/external/eigen-3.4.0")
+    pmp_Eigen SYSTEM INTERFACE "${PROJECT_SOURCE_DIR}/external/eigen-3.4.0")
 endif()
 
 include_directories(${PROJECT_SOURCE_DIR}/src/)

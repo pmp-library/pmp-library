@@ -24,7 +24,7 @@ endif()
 if(Eigen3_FOUND)
   target_link_libraries(pmp PUBLIC Eigen3::Eigen)
 else()
-  target_link_libraries(pmp PUBLIC pmp::Eigen)
+  target_link_libraries(pmp PUBLIC pmp_Eigen)
 endif()
 
 if(NOT EMSCRIPTEN AND PMP_INSTALL)
