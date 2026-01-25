@@ -24,10 +24,10 @@ endif()
 if(NOT EMSCRIPTEN AND PMP_INSTALL)
 
   target_include_directories(
-    pmp
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
-           $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>
-           $<INSTALL_INTERFACE:include/>)
+    pmp PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../>
+               $<INSTALL_INTERFACE:include/>)
+  target_include_directories(pmp SYSTEM
+                             PUBLIC $<BUILD_INTERFACE:${EIGEN3_INCLUDE_DIR}>)
 
   install(
     TARGETS pmp
