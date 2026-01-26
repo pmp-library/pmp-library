@@ -461,10 +461,12 @@ void Renderer::update_opengl_buffers()
                      normal_array.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
         glEnableVertexAttribArray(1);
+        has_normals_ = true;
     }
     else
     {
         glDisableVertexAttribArray(1);
+        has_normals_ = false;
     }
 
     // upload texture coordinates
@@ -635,6 +637,8 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     if (draw_mode == "Points")
     {
         phong_shader_.set_uniform("use_round_points", true);
+        phong_shader_.set_uniform("use_lighting", has_normals_);
+        phong_shader_.set_uniform("use_vertex_color", has_vertex_colors_);
 #ifndef __EMSCRIPTEN__
         glEnable(GL_PROGRAM_POINT_SIZE);
 #endif

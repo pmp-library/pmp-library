@@ -173,6 +173,7 @@ protected:
     GLsizei n_edges_;
     GLsizei n_triangles_;
     GLsizei n_features_;
+    bool has_normals_;
     bool has_texcoords_;
     bool has_vertex_colors_;
 

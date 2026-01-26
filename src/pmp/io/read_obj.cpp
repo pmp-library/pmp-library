@@ -9,7 +9,7 @@ namespace pmp {
 void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
 {
     std::array<char, 200> s;
-    float x, y, z;
+    float x, y, z, r, g, b;
     std::vector<Vertex> vertices;
     std::vector<TexCoord> all_tex_coords; //individual texture coordinates
     std::vector<int>
@@ -17,6 +17,7 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
     HalfedgeProperty<TexCoord> tex_coords =
         mesh.halfedge_property<TexCoord>("h:tex");
     bool with_tex_coord = false;
+    VertexProperty<Color> colors;
 
     // open file (in ASCII mode)
     FILE* in = fopen(file.string().c_str(), "r");
@@ -36,9 +37,15 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
         // vertex
         else if (strncmp(s.data(), "v ", 2) == 0)
         {
-            if (sscanf(s.data(), "v %f %f %f", &x, &y, &z))
+            int n = sscanf(s.data(), "v %f %f %f %f %f %f", &x, &y, &z, &r, &g, &b);
+            if (n >= 3)
             {
-                mesh.add_vertex(Point(x, y, z));
+                Vertex v = mesh.add_vertex(Point(x, y, z));
+                if (n >= 6)
+                {
+                    if (!colors) colors = mesh.vertex_property<Color>("v:color");
+                    colors[v] = Color(r,g,b);
+                }
             }
         }
 
