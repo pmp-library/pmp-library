@@ -7,7 +7,7 @@ project(
   HOMEPAGE_URL "https://www.pmp-library.org")
 cmake_policy(SET CMP0072 NEW)
 
-option(PMP_BUILD_EXAMPLES "Build the PMP examples" OFF)
+option(PMP_BUILD_EXAMPLES "Build the PMP examples" ON)
 option(PMP_BUILD_TESTS "Build the PMP test programs" OFF)
 option(PMP_BUILD_DOCS "Build the PMP documentation" OFF)
 option(PMP_BUILD_VIS "Build the PMP visualization tools" ON)
