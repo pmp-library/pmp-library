@@ -25,12 +25,14 @@ Renderer::Renderer(const SurfaceMesh& mesh) : mesh_(mesh)
     tex_coord_buffer_ = 0;
     edge_buffer_ = 0;
     feature_buffer_ = 0;
+    selection_buffer_ = 0;
 
     // initialize buffer sizes
     n_vertices_ = 0;
     n_edges_ = 0;
     n_triangles_ = 0;
     n_features_ = 0;
+    n_selected_ = 0;
     has_texcoords_ = false;
     has_vertex_colors_ = false;
 
@@ -61,6 +63,7 @@ Renderer::~Renderer()
     glDeleteBuffers(1, &tex_coord_buffer_);
     glDeleteBuffers(1, &edge_buffer_);
     glDeleteBuffers(1, &feature_buffer_);
+    glDeleteBuffers(1, &selection_buffer_);
     glDeleteVertexArrays(1, &vertex_array_object_);
 }
 
@@ -248,6 +251,7 @@ void Renderer::update_opengl_buffers()
         glGenBuffers(1, &tex_coord_buffer_);
         glGenBuffers(1, &edge_buffer_);
         glGenBuffers(1, &feature_buffer_);
+        glGenBuffers(1, &selection_buffer_);
     }
 
     // activate VAO
@@ -550,6 +554,28 @@ void Renderer::update_opengl_buffers()
     else
         n_features_ = 0;
 
+    // selected points
+    auto vselected = mesh_.get_vertex_property<bool>("v:selected");
+    if (vselected)
+    {
+        std::vector<unsigned int> selection;
+        for (auto v : mesh_.vertices())
+        {
+            if (vselected[v])
+            {
+                selection.push_back(vertex_indices[v.idx()]);
+            }
+        }
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, selection_buffer_);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                     selection.size() * sizeof(unsigned int), selection.data(),
+                     GL_STATIC_DRAW);
+
+        n_selected_ = selection.size();
+    }
+    else
+        n_selected_ = 0;
+
     // unbind vertex array
     glBindVertexArray(0);
 }
@@ -730,7 +756,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     // draw feature edges
     if (n_features_)
     {
-        phong_shader_.set_uniform("front_color", vec3(0, 1, 0));
+        phong_shader_.set_uniform("front_color", vec3(1, 0, 0));
         phong_shader_.set_uniform("back_color", vec3(0, 1, 0));
         phong_shader_.set_uniform("use_vertex_color", false);
         phong_shader_.set_uniform("use_lighting", false);
@@ -738,6 +764,26 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
         glDepthFunc(GL_LEQUAL);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, feature_buffer_);
         glDrawElements(GL_LINES, n_features_, GL_UNSIGNED_INT, nullptr);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        glDepthFunc(GL_LESS);
+    }
+
+    // draw selected points
+    if (n_selected_)
+    {
+#ifndef __EMSCRIPTEN__
+        glEnable(GL_PROGRAM_POINT_SIZE);
+#endif
+
+        phong_shader_.set_uniform("use_round_points", true);
+        phong_shader_.set_uniform("use_lighting", true);
+        phong_shader_.set_uniform("use_vertex_color", false);
+        phong_shader_.set_uniform("use_texture", false);
+        phong_shader_.set_uniform("front_color", vec3(0, 1, 1));
+        glDepthRange(0.0, 1.0);
+        glDepthFunc(GL_LEQUAL);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, selection_buffer_);
+        glDrawElements(GL_POINTS, n_selected_, GL_UNSIGNED_INT, NULL);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glDepthFunc(GL_LESS);
     }
