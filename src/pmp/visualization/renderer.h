@@ -7,6 +7,7 @@
 #include <filesystem>
 
 #include "pmp/types.h"
+#include "pmp/visualization/drawable.h"
 #include "pmp/visualization/gl.h"
 #include "pmp/visualization/shader.h"
 #include "pmp/mat_vec.h"
@@ -114,6 +115,12 @@ public:
     //! \throw IOException in case of failure to load texture from file
     void load_matcap(const std::filesystem::path& filename);
 
+    //! Add a drawable overlay
+    void add_overlay(std::shared_ptr<Drawable> drawable)
+    {
+        overlays_.push_back(std::move(drawable));
+    }
+
 protected:
     const SurfaceMesh& mesh_;
 
@@ -200,6 +207,9 @@ protected:
         MatCap,
         Other
     } texture_mode_;
+
+    // Overlay drawables
+    std::vector<std::shared_ptr<Drawable>> overlays_;
 };
 
 } // namespace pmp

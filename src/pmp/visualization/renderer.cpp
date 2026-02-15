@@ -578,6 +578,10 @@ void Renderer::update_opengl_buffers()
 
     // unbind vertex array
     glBindVertexArray(0);
+
+    // update overlays
+    for (auto& overlay : overlays_)
+        overlay->update_buffers();
 }
 
 void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
@@ -793,6 +797,10 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
 
     glBindVertexArray(0);
     check_gl_errors();
+
+    // draw overlays
+    for (auto& overlay : overlays_)
+        overlay->draw(projection_matrix, modelview_matrix);
 }
 
 void Renderer::tessellate(const std::vector<vec3>& points,
