@@ -8,4 +8,4 @@ PMP comes with several standard mesh processing algorithms and utility functions
 - @subpage smoothing -- reduce noise and surface roughness
 - @subpage hole_filling -- close holes in the mesh
 
-See the \ref algorithms module API reference documentation for the full details.
+See the \ref algorithms component API reference documentation for the full details.

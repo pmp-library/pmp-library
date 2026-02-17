@@ -26,4 +26,4 @@ The @subpage developers section contains guidelines for developers and contribut
 - @ref contributing -- instructions for submitting contributions
 - @ref codingstyle -- coding guidelines we follow around here
 
-See the [API Reference](modules.html) for detailed information on the classes and functions provided by PMP.
+See the [API Reference](topics.html) for detailed information on the classes and functions provided by PMP.
