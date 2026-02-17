@@ -32,8 +32,16 @@ function(add_emscripten_example NAME SOURCE_FILES)
   # Build preload flags from relative file paths
   set(PRELOAD_FLAGS "")
   foreach(PRELOAD_FILE IN LISTS ARGN)
-    string(APPEND PRELOAD_FLAGS
-           " --preload-file ${PROJECT_SOURCE_DIR}/${PRELOAD_FILE}@input.off")
+    # Extract file extension to determine output filename
+    string(REGEX MATCH "\\.[^.]*$" FILE_EXT "${PRELOAD_FILE}")
+    if(FILE_EXT STREQUAL ".obj")
+      set(OUTPUT_FILE "input.obj")
+    else()
+      set(OUTPUT_FILE "input.off")
+    endif()
+    string(
+      APPEND PRELOAD_FLAGS
+      " --preload-file ${PROJECT_SOURCE_DIR}/${PRELOAD_FILE}@${OUTPUT_FILE}")
   endforeach()
 
   set_target_properties(
@@ -54,8 +62,7 @@ if(EMSCRIPTEN AND PMP_BUILD_VIS)
   add_emscripten_example(
     mpview "mpview.cpp;mesh_processing_viewer.cpp;mesh_processing_viewer.h"
     "data/off/bunny.off")
-  add_emscripten_example(subdivision subdivision.cpp
-                         "data/obj/suzanne.obj@input.obj")
+  add_emscripten_example(subdivision subdivision.cpp "data/obj/suzanne.obj")
   add_emscripten_example(remeshing remeshing.cpp "data/off/bunny.off")
   add_emscripten_example(decimation decimation.cpp "data/off/fandisk.off")
   add_emscripten_example(parameterization parameterization.cpp
