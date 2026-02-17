@@ -1,3 +1,7 @@
+html:not(.dark-mode) {
+  --font-family-monospace: ui-monospace;
+}
+
 #projectname {
   white-space: revert;
 }
