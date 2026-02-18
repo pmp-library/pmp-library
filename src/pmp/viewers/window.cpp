@@ -5,9 +5,9 @@
 #include "imgui.h"
 
 #include "window.h"
-#include "font-lato.h"
-#include "font-awesome.h"
-#include "font-icons.h"
+#include "inter_font.h"
+#include "fa_font.h"
+#include "fa_icons.h"
 
 #include <sstream>
 
@@ -282,12 +282,12 @@ void Window::scale_imgui(float scale)
     // scale imgui scale by new factor
     imgui_scale_ *= scale;
 
-    // load Lato font
+    // // load Inter font
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->Clear();
-    io.Fonts->AddFontFromMemoryCompressedTTF(LatoLatin_compressed_data,
-                                             LatoLatin_compressed_size,
-                                             16 * imgui_scaling());
+    io.Fonts->AddFontFromMemoryCompressedTTF(InterRoman_compressed_data,
+                                             InterRoman_compressed_size,
+                                             15 * imgui_scaling());
 
     // load & merge FontAwesome
     static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
@@ -295,7 +295,7 @@ void Window::scale_imgui(float scale)
     config.MergeMode = true;
     io.Fonts->AddFontFromMemoryCompressedTTF(
         FontAwesome_compressed_data, FontAwesome_compressed_size,
-        16 * imgui_scaling(), &config, icons_ranges);
+        14 * imgui_scaling(), &config, icons_ranges);
 
     // adjust element styles (scaled version of default style or pmp style)
     ImGuiStyle& style = ImGui::GetStyle();
