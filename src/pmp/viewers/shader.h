@@ -5,13 +5,13 @@
 
 #include <vector>
 
-#include "pmp/visualization/gl.h"
+#include "pmp/viewers/gl.h"
 #include "pmp/mat_vec.h"
 
 namespace pmp {
 
 //! Class for handling shaders.
-//! \ingroup visualization
+//! \ingroup viewers
 class Shader
 {
 public:

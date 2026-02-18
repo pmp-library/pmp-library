@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "pmp/visualization/gl.h"
+#include "pmp/viewers/gl.h"
 #include "pmp/mat_vec.h"
 
 #include <imgui.h>
@@ -23,7 +23,7 @@
 namespace pmp {
 
 //! A window provided by GLFW
-//! \ingroup visualization
+//! \ingroup viewers
 class Window
 {
 public:

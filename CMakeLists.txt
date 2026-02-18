@@ -10,7 +10,7 @@ cmake_policy(SET CMP0072 NEW)
 option(PMP_BUILD_EXAMPLES "Build the PMP examples" ON)
 option(PMP_BUILD_TESTS "Build the PMP test programs" OFF)
 option(PMP_BUILD_DOCS "Build the PMP documentation" OFF)
-option(PMP_BUILD_VIS "Build the PMP visualization tools" ON)
+option(PMP_BUILD_VIEWERS "Build the PMP viewers" ON)
 option(PMP_INSTALL "Install the PMP library and headers" ON)
 option(PMP_STRICT_COMPILATION "Treat compiler warnings as errors" ON)
 option(PMP_BUILD_REGRESSIONS "Build the PMP regression test programs" OFF)
@@ -23,7 +23,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
-if(PMP_BUILD_VIS)
+if(PMP_BUILD_VIEWERS)
   set(GLFW_SOURCE_DIR_INTERNAL "external/glfw-3.4")
   set(GLAD_SOURCE_DIR "external/glad-2.0.8")
   set(IMGUI_SOURCE_DIR "external/imgui-1.91.8")
@@ -64,7 +64,7 @@ if(PMP_BUILD_VIS)
 
   # setup IMGUI
   add_subdirectory(${IMGUI_SOURCE_DIR})
-endif(PMP_BUILD_VIS)
+endif(PMP_BUILD_VIEWERS)
 
 if(NOT DEFINED EIGEN3_INCLUDE_DIR)
   set(EIGEN3_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/external/eigen-3.4.0")

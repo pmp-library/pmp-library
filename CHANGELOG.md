@@ -17,6 +17,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Changed
 
+- Breaking change: The `visualization` component has been renamed to `viewers`. The corresponding library is `pmp_viewers`, includes are installed in `pmp/viewers`.
 - Upgrade C++ standard to C++20.
 - Remove `SurfaceMesh::property_stats()`.
 - Throw exception when trying to add a property with the same name as an existing one.
@@ -112,7 +113,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Add function to compute volume of a mesh, thanks to Xiewei Zhong
 - Add post-increment iterators and make low level functions to add elements public. This makes it possible to use CGAL algorithms on a PMP `SurfaceMesh`. Thanks to Andreas Fabri for contributing the changes!
 - Add PMP_INSTALL option to CMake.
-- Add PMP_BUILD_VIS CMake option to enable / disable building the pmp_vis library and its dependencies.
+- Add PMP_BUILD_VIEWERS CMake option to enable / disable building the pmp_vis library and its dependencies.
 
 ### Changed
 

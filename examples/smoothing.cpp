@@ -1,7 +1,7 @@
 // Copyright 2011-2019 the Polygon Mesh Processing Library developers.
 // SPDX-License-Identifier: MIT
 
-#include <pmp/visualization/mesh_viewer.h>
+#include <pmp/viewers/mesh_viewer.h>
 #include <pmp/algorithms/curvature.h>
 #include <pmp/algorithms/smoothing.h>
 #include <imgui.h>

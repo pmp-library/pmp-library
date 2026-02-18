@@ -44,8 +44,8 @@ else()
                                         ${CMAKE_CURRENT_SOURCE_DIR}/../)
 endif()
 
-if(PMP_BUILD_VIS)
-  add_subdirectory(visualization)
+if(PMP_BUILD_VIEWERS)
+  add_subdirectory(viewers)
 endif()
 
 include(algorithms/CMakeLists.txt)

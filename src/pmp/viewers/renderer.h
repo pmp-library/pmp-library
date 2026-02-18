@@ -7,9 +7,9 @@
 #include <filesystem>
 
 #include "pmp/types.h"
-#include "pmp/visualization/drawable.h"
-#include "pmp/visualization/gl.h"
-#include "pmp/visualization/shader.h"
+#include "pmp/viewers/drawable.h"
+#include "pmp/viewers/gl.h"
+#include "pmp/viewers/shader.h"
 #include "pmp/mat_vec.h"
 
 namespace pmp {
@@ -17,7 +17,7 @@ namespace pmp {
 class SurfaceMesh;
 
 //! Class for rendering surface meshes using OpenGL
-//! \ingroup visualization
+//! \ingroup viewers
 class Renderer
 {
 public:

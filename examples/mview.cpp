@@ -1,7 +1,7 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // SPDX-License-Identifier: MIT
 
-#include <pmp/visualization/mesh_viewer.h>
+#include <pmp/viewers/mesh_viewer.h>
 
 using namespace pmp;
 

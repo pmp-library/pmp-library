@@ -1,7 +1,7 @@
 // Copyright 2011-2020 the Polygon Mesh Processing Library developers.
 // SPDX-License-Identifier: MIT
 
-#include "pmp/visualization/shader.h"
+#include "pmp/viewers/shader.h"
 #include "pmp/exceptions.h"
 
 #include <iostream>

@@ -8,7 +8,7 @@
 namespace pmp {
 
 //! Abstract base class for drawable objects
-//! \ingroup visualization
+//! \ingroup viewers
 class Drawable
 {
 public:

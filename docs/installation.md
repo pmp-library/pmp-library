@@ -124,7 +124,7 @@ This way, you can simply link your own target against PMP
 target_link_libraries(your_target pmp)
 ```
 
-**Note:** The usage described above is currently limited to the @ref core and @ref algorithms components of PMP. If you want to use the @ref visualization component you need to link your target against `pmp_vis` and its dependencies: `stb_image`, `imgui`, `glfw`, as well as your platform OpenGL library.
+**Note:** The usage described above is currently limited to the @ref core and @ref algorithms components of PMP. If you want to use the @ref viewers component you need to link your target against `pmp_viewers` and its dependencies: `stb_image`, `imgui`, `glfw`, as well as your platform OpenGL library.
 
 ## Build Options
 

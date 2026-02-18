@@ -59,8 +59,8 @@ using IndexType = std::uint_least32_t;
 //! \defgroup algorithms algorithms
 //! \brief Mesh processing algorithms.
 
-//! \defgroup visualization visualization
-//! \brief Visualization tools using OpenGL.
+//! \defgroup viewers viewers
+//! \brief Viewers tools using OpenGL.
 
 //! \defgroup io io
 //! Read and write common mesh formats.

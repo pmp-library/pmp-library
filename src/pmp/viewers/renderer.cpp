@@ -1,14 +1,14 @@
 // Copyright 2011-2021 the Polygon Mesh Processing Library developers.
 // SPDX-License-Identifier: MIT
 
-#include "pmp/visualization/renderer.h"
+#include "pmp/viewers/renderer.h"
 
 #include <stb_image.h>
 
 #include "pmp/exceptions.h"
-#include "pmp/visualization/phong_shader.h"
-#include "pmp/visualization/mat_cap_shader.h"
-#include "pmp/visualization/cold_warm_texture.h"
+#include "pmp/viewers/phong_shader.h"
+#include "pmp/viewers/mat_cap_shader.h"
+#include "pmp/viewers/cold_warm_texture.h"
 #include "pmp/algorithms/normals.h"
 
 #include <numbers>

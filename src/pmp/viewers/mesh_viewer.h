@@ -4,14 +4,14 @@
 #pragma once
 
 #include <filesystem>
-#include "pmp/visualization/trackball_viewer.h"
+#include "pmp/viewers/trackball_viewer.h"
 #include "pmp/surface_mesh.h"
-#include "pmp/visualization/renderer.h"
+#include "pmp/viewers/renderer.h"
 
 namespace pmp {
 
 //! Simple viewer for a SurfaceMesh
-//! \ingroup visualization
+//! \ingroup viewers
 class MeshViewer : public TrackballViewer
 {
 public:

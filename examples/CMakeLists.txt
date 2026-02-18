@@ -27,7 +27,7 @@ add_dependencies(examples basics io iterators barycenter properties)
 # Function to build Emscripten examples with optional preload files
 function(add_emscripten_example NAME SOURCE_FILES)
   add_executable(${NAME} ${SOURCE_FILES} data/shell.html)
-  target_link_libraries(${NAME} pmp_vis)
+  target_link_libraries(${NAME} pmp_viewers)
 
   # Build preload flags from relative file paths
   set(PRELOAD_FLAGS "")
@@ -53,7 +53,7 @@ function(add_emscripten_example NAME SOURCE_FILES)
 endfunction()
 
 # example apps
-if(EMSCRIPTEN AND PMP_BUILD_VIS)
+if(EMSCRIPTEN AND PMP_BUILD_VIEWERS)
 
   add_emscripten_example(mview mview.cpp)
   add_emscripten_example(curvature curvature.cpp "data/off/bunny.off")
@@ -80,37 +80,37 @@ else()
     target_link_libraries(mconvert pmp)
   endif()
 
-  if(OpenGL_FOUND AND PMP_BUILD_VIS)
+  if(OpenGL_FOUND AND PMP_BUILD_VIEWERS)
     add_executable(mview mview.cpp)
-    target_link_libraries(mview pmp_vis)
+    target_link_libraries(mview pmp_viewers)
 
     add_executable(curvature curvature.cpp)
-    target_link_libraries(curvature pmp_vis)
+    target_link_libraries(curvature pmp_viewers)
 
     add_executable(subdivision subdivision.cpp)
-    target_link_libraries(subdivision pmp_vis)
+    target_link_libraries(subdivision pmp_viewers)
 
     add_executable(smoothing smoothing.cpp)
-    target_link_libraries(smoothing pmp_vis)
+    target_link_libraries(smoothing pmp_viewers)
 
     add_executable(fairing fairing.cpp)
-    target_link_libraries(fairing pmp_vis)
+    target_link_libraries(fairing pmp_viewers)
 
     add_executable(parameterization parameterization.cpp)
-    target_link_libraries(parameterization pmp_vis)
+    target_link_libraries(parameterization pmp_viewers)
 
     add_executable(decimation decimation.cpp)
-    target_link_libraries(decimation pmp_vis)
+    target_link_libraries(decimation pmp_viewers)
 
     add_executable(remeshing remeshing.cpp)
-    target_link_libraries(remeshing pmp_vis)
+    target_link_libraries(remeshing pmp_viewers)
 
     add_executable(hole_filling hole_filling.cpp)
-    target_link_libraries(hole_filling pmp_vis)
+    target_link_libraries(hole_filling pmp_viewers)
 
     add_executable(mpview mpview.cpp mesh_processing_viewer.cpp
                           mesh_processing_viewer.h)
-    target_link_libraries(mpview pmp_vis)
+    target_link_libraries(mpview pmp_viewers)
   endif()
 
 endif()

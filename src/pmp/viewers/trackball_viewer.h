@@ -6,13 +6,13 @@
 #include <string>
 #include <vector>
 
-#include "pmp/visualization/window.h"
+#include "pmp/viewers/window.h"
 #include "pmp/mat_vec.h"
 
 namespace pmp {
 
 //! A simple GLFW viewer with trackball user interface
-//! \ingroup visualization
+//! \ingroup viewers
 class TrackballViewer : public Window
 {
 public:

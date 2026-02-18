@@ -9,7 +9,7 @@ The Polygon Mesh Processing Library is a modern C++ open-source library for proc
 
 - An efficient and easy-to-use mesh data structure
 - Standard algorithms such as decimation, remeshing, subdivision, or smoothing
-- Ready-to-use visualization tools
+- Ready-to-use viewers
 - Seamless cross-compilation to JavaScript ([demo](https://www.pmp-library.org/demos/mpview.html))
 
 ## Get Started

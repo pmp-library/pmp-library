@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <pmp/visualization/mesh_viewer.h>
+#include <pmp/viewers/mesh_viewer.h>
 
 class MeshProcessingViewer : public pmp::MeshViewer
 {
