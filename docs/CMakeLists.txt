@@ -1,4 +1,4 @@
-find_package(Doxygen 1.9.6)
+find_package(Doxygen 1.9.8)
 
 if(DOXYGEN_FOUND)
 

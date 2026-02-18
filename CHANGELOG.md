@@ -28,6 +28,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Switch from GLEW to GLAD
 - Update ImGui to version 1.90.4
 - Update GLFW to version 3.4
+- Update Doxygen to 1.9.8
 - Use plain MIT license, keep disclaimer in separate file.
 
 ### Fixed
