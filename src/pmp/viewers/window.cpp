@@ -297,10 +297,6 @@ void Window::scale_imgui(float scale)
         FontAwesome_compressed_data, FontAwesome_compressed_size,
         16 * imgui_scaling(), &config, icons_ranges);
 
-    // trigger font texture regeneration
-    ImGui_ImplOpenGL3_DestroyFontsTexture();
-    ImGui_ImplOpenGL3_CreateFontsTexture();
-
     // adjust element styles (scaled version of default style or pmp style)
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowPadding = ImTrunc(ImVec2(8, 8) * imgui_scale_);
@@ -322,7 +318,7 @@ void Window::scale_imgui(float scale)
     style.GrabRounding = ImTrunc(4 * imgui_scale_);
     style.LogSliderDeadzone = ImTrunc(4 * imgui_scale_);
     style.TabRounding = ImTrunc(4 * imgui_scale_);
-    style.TabMinWidthForCloseButton = ImTrunc(0 * imgui_scale_);
+    style.TabCloseButtonMinWidthUnselected = ImTrunc(0 * imgui_scale_);
     style.TabBarOverlineSize = ImTrunc(1 * imgui_scale_);
     style.SeparatorTextPadding = ImTrunc(ImVec2(20, 3) * imgui_scale_);
     style.DisplayWindowPadding = ImTrunc(ImVec2(19, 19) * imgui_scale_);
