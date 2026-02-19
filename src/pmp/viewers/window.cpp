@@ -196,6 +196,20 @@ void Window::init_imgui()
     ImGui_ImplOpenGL3_Init("#version 330");
 #endif
 
+    // load Inter font
+    io.Fonts->Clear();
+    io.Fonts->AddFontFromMemoryCompressedTTF(InterRoman_compressed_data,
+        InterRoman_compressed_size,
+        15 * imgui_scaling());
+
+    // load & merge FontAwesome
+    static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
+    ImFontConfig config;
+    config.MergeMode = true;
+    io.Fonts->AddFontFromMemoryCompressedTTF(
+        FontAwesome_compressed_data, FontAwesome_compressed_size,
+        14 * imgui_scaling(), &config, icons_ranges);
+
     // setup font and border radii
     scale_imgui(1.0);
 
@@ -279,26 +293,15 @@ void Window::color_mode(ColorMode c)
 
 void Window::scale_imgui(float scale)
 {
+    ImGuiStyle& style = ImGui::GetStyle();
+
     // scale imgui scale by new factor
     imgui_scale_ *= scale;
 
-    // // load Inter font
-    ImGuiIO& io = ImGui::GetIO();
-    io.Fonts->Clear();
-    io.Fonts->AddFontFromMemoryCompressedTTF(InterRoman_compressed_data,
-                                             InterRoman_compressed_size,
-                                             15 * imgui_scaling());
-
-    // load & merge FontAwesome
-    static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};
-    ImFontConfig config;
-    config.MergeMode = true;
-    io.Fonts->AddFontFromMemoryCompressedTTF(
-        FontAwesome_compressed_data, FontAwesome_compressed_size,
-        14 * imgui_scaling(), &config, icons_ranges);
+    // scale font(s)
+    ImGui::PushFont(NULL, style.FontSizeBase * scale);
 
     // adjust element styles (scaled version of default style or pmp style)
-    ImGuiStyle& style = ImGui::GetStyle();
     style.WindowPadding = ImTrunc(ImVec2(8, 8) * imgui_scale_);
     style.WindowRounding = 0; //ImTrunc(4 * imgui_scale_);
     style.WindowMinSize = ImTrunc(ImVec2(24, 24) * imgui_scale_);
