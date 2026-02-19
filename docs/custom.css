@@ -1,5 +1,5 @@
 html:not(.dark-mode) {
-  --font-family-monospace: ui-monospace;
+  --font-family-monospace: ui-monospace, Menlo, Consolas, monospace;
 }
 
 #projectname {
