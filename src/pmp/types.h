@@ -60,7 +60,7 @@ using IndexType = std::uint_least32_t;
 //! \brief Mesh processing algorithms.
 
 //! \defgroup viewers viewers
-//! \brief Viewers tools using OpenGL.
+//! \brief Viewers using OpenGL.
 
 //! \defgroup io io
 //! Read and write common mesh formats.
