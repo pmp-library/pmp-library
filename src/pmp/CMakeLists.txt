@@ -50,3 +50,10 @@ endif()
 
 include(algorithms/CMakeLists.txt)
 include(io/CMakeLists.txt)
+
+if(CMAKE_C_COMPILER_ID MATCHES "GNU" AND CMAKE_CXX_COMPILER_VERSION
+                                         GREATER_EQUAL 15)
+  set_source_files_properties(
+    algorithms/decimation.cpp
+    PROPERTIES COMPILE_FLAGS "-Wno-array-bounds -Wno-stringop-overflow")
+endif()
