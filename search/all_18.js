@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['uniform_20remeshing_0',['Uniform Remeshing',['../remeshing.html#autotoc_md72',1,'']]],
+  ['uniform_5flaplace_5fmatrix_1',['uniform_laplace_matrix',['../group__algorithms.html#gab6371fadb0df9378b3422b815c0bf189',1,'pmp']]],
+  ['uniform_5fmass_5fmatrix_2',['uniform_mass_matrix',['../group__algorithms.html#ga8fec1c728d2fafe2b201be4214898cef',1,'pmp']]],
+  ['uniform_5fremeshing_3',['uniform_remeshing',['../group__algorithms.html#ga1ddecfc2d08f5dbf820863acc79ee3bc',1,'pmp']]],
+  ['unit_20testing_4',['Unit Testing',['../contributing.html#autotoc_md35',1,'']]],
+  ['update_5fbuffers_5',['update_buffers',['../classpmp_1_1_drawable.html#af96cd67d67ce0d54203a3d2dc5312561',1,'pmp::Drawable']]],
+  ['update_5fmesh_6',['update_mesh',['../classpmp_1_1_mesh_viewer.html#a2c605f25520559589b40d3f807f2c975',1,'pmp::MeshViewer']]],
+  ['update_5fopengl_5fbuffers_7',['update_opengl_buffers',['../classpmp_1_1_renderer.html#a3dfc8ae3f27632f82cdd11c8f8ee8142',1,'pmp::Renderer']]],
+  ['use_8',['use',['../classpmp_1_1_shader.html#a8a05de24712939691a7cf8934d9e5c5f',1,'pmp::Shader']]],
+  ['use_5fbinary_9',['use_binary',['../structpmp_1_1_i_o_flags.html#a124d06692a37b308521167a6a37f558b',1,'pmp::IOFlags']]],
+  ['use_5fcheckerboard_5ftexture_10',['use_checkerboard_texture',['../classpmp_1_1_renderer.html#a780e7317afaf82dfb38930cf62b1939d',1,'pmp::Renderer']]],
+  ['use_5fcold_5fwarm_5ftexture_11',['use_cold_warm_texture',['../classpmp_1_1_renderer.html#a8fe345f073884b9b81f3b0d28d0010d6',1,'pmp::Renderer']]],
+  ['use_5fface_5fcolors_12',['use_face_colors',['../structpmp_1_1_i_o_flags.html#a88a8fd48e82dbf1368036b6be26c90b4',1,'pmp::IOFlags']]],
+  ['use_5fface_5fnormals_13',['use_face_normals',['../structpmp_1_1_i_o_flags.html#ab3504454f18d55fbf514786d94618abc',1,'pmp::IOFlags']]],
+  ['use_5fhalfedge_5ftexcoords_14',['use_halfedge_texcoords',['../structpmp_1_1_i_o_flags.html#a006e47a5b34aeefae4ef6193c2fca859',1,'pmp::IOFlags']]],
+  ['use_5fvertex_5fcolors_15',['use_vertex_colors',['../structpmp_1_1_i_o_flags.html#a59c3c3d9c98afc30e74844b6324d6b26',1,'pmp::IOFlags']]],
+  ['use_5fvertex_5fnormals_16',['use_vertex_normals',['../structpmp_1_1_i_o_flags.html#a0d8fb1a6ddb3f01249bcab1e93bc3a72',1,'pmp::IOFlags']]],
+  ['use_5fvertex_5ftexcoords_17',['use_vertex_texcoords',['../structpmp_1_1_i_o_flags.html#a15038ec6c4cd49938889151f5d86c77e',1,'pmp::IOFlags']]],
+  ['using_20clang_20format_18',['Using clang-format',['../codingstyle.html#using-clang-format',1,'']]],
+  ['using_20exceptions_19',['Using Exceptions',['../version-2-0-released-2022-08-14.html#autotoc_md63',1,'']]],
+  ['uv_5fsphere_20',['uv_sphere',['../group__algorithms.html#gab0b9014c3910d1966795baaaaad5ea3e',1,'pmp']]],
+  ['uvec2_21',['uvec2',['../group__core.html#ga880ec1f6b2fd3e0288693a1f0772a850',1,'pmp']]],
+  ['uvec3_22',['uvec3',['../group__core.html#gad999f4ef0c5a1cd5216a279b010f503d',1,'pmp']]],
+  ['uvec4_23',['uvec4',['../group__core.html#gad8c5cef61b9ae6bc0f887fab1a0d1ad7',1,'pmp']]]
+];
