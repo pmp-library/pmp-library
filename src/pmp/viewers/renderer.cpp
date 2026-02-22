@@ -760,7 +760,7 @@ void Renderer::draw(const mat4& projection_matrix, const mat4& modelview_matrix,
     // draw feature edges
     if (n_features_)
     {
-        phong_shader_.set_uniform("front_color", vec3(1, 0, 0));
+        phong_shader_.set_uniform("front_color", vec3(0, 1, 1));
         phong_shader_.set_uniform("back_color", vec3(0, 1, 0));
         phong_shader_.set_uniform("use_vertex_color", false);
         phong_shader_.set_uniform("use_lighting", false);
