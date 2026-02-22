@@ -18,12 +18,14 @@ TEST_F(IOTest, obj_io)
     add_triangle();
     vertex_normals(mesh);
     mesh.add_halfedge_property<TexCoord>("h:tex", TexCoord(0, 0));
-    write(mesh, "test.obj");
+    auto filename = "test.obj";
+    write(mesh, filename);
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
-    read(mesh, "test.obj");
+    read(mesh, filename);
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
+    std::remove(filename);
 }
 
 TEST_F(IOTest, off_io)
@@ -39,12 +41,14 @@ TEST_F(IOTest, off_io)
     flags.use_vertex_colors = true;
     flags.use_vertex_texcoords = true;
 
-    write(mesh, "test.off", flags);
+    auto filename = "test.off";
+    write(mesh, filename, flags);
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
-    read(mesh, "test.off");
+    read(mesh, filename);
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
+    std::remove(filename);
 }
 
 TEST_F(IOTest, off_io_binary)
@@ -54,23 +58,27 @@ TEST_F(IOTest, off_io_binary)
     IOFlags flags;
     flags.use_binary = true;
 
-    write(mesh, "binary.off", flags);
+    auto filename = "binary.off";
+    write(mesh, filename, flags);
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
-    read(mesh, "binary.off");
+    read(mesh, filename);
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
+    std::remove(filename);
 }
 
 TEST_F(IOTest, pmp_io)
 {
     add_triangle();
-    write(mesh, "test.pmp");
+    auto filename = "test.pmp";
+    write(mesh, filename);
     mesh.clear();
     EXPECT_TRUE(mesh.is_empty());
-    read(mesh, "test.pmp");
+    read(mesh, filename);
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
+    std::remove(filename);
 
     // check malformed file names
     EXPECT_THROW(write(mesh, "testpolyly"), IOException);
@@ -97,17 +105,19 @@ TEST_F(IOTest, write_stl_binary)
     face_normals(mesh);
     IOFlags flags;
     flags.use_binary = true;
-    write(mesh, "binary.stl", flags);
+    auto filename = "binary.stl";
+    write(mesh, filename, flags);
 
     // inject solid keyword to test for robustness
-    auto fp = fopen("binary.stl", "r+b");
+    auto fp = fopen(filename, "r+b");
     std::string key{"solid"};
     fwrite(key.c_str(), 1, key.size(), fp);
     fclose(fp);
 
-    read(mesh, "binary.stl");
+    read(mesh, filename);
     EXPECT_EQ(mesh.n_vertices(), size_t(3));
     EXPECT_EQ(mesh.n_faces(), size_t(1));
+    std::remove(filename);
 }
 
 TEST_F(IOTest, write_stl_no_normals)
@@ -123,6 +133,7 @@ TEST_F(IOTest, write_stl_with_normals)
     add_triangle();
     face_normals(mesh);
     EXPECT_NO_THROW(write(mesh, "test.stl"));
+    std::remove("test.stl");
 }
 
 TEST_F(IOTest, write_stl_no_triangles)
