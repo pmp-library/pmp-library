@@ -11,6 +11,7 @@ option(PMP_BUILD_EXAMPLES "Build the PMP examples" ON)
 option(PMP_BUILD_TESTS "Build the PMP test programs" OFF)
 option(PMP_BUILD_DOCS "Build the PMP documentation" OFF)
 option(PMP_BUILD_VIEWERS "Build the PMP viewers" ON)
+option(PMP_BUILD_POLYGONAL "Build Polygonal" OFF)
 option(PMP_INSTALL "Install the PMP library and headers" ON)
 option(PMP_STRICT_COMPILATION "Treat compiler warnings as errors" ON)
 option(PMP_BUILD_REGRESSIONS "Build the PMP regression test programs" OFF)
@@ -181,6 +182,10 @@ include(clang-tidy)
 # which directories to process
 
 add_subdirectory(src/pmp)
+
+if(PMP_BUILD_POLYGONAL)
+  add_subdirectory(src/polygonal)
+endif()
 
 if(EMSCRIPTEN)
   if(PMP_BUILD_EXAMPLES)

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>Polygonal &ndash; Web-Based Surface Mesh Editor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta
+      name="description"
+      content="Polygonal is a web-based surface mesh editor for creating, modifying, and visualizing polygon meshes."
+    />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0066cc" />
+    <meta name="msapplication-TileColor" content="#0066cc" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <meta property="og:title" content="Polygonal — Web-Based Surface Mesh Editor" />
+    <meta
+      property="og:description"
+      content="Polygonal is a web-based surface mesh editor for creating, modifying, and visualizing polygon meshes."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://polygonal.app/editor" />
+    <meta property="og:image" content="https://polygonal.app/polygonal-og.png" />
+
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+        overflow: hidden;
+        font-family: system-ui, sans-serif;
+      }
+
+      .emscripten {
+        padding-right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+      }
+
+      div.emscripten {
+        text-align: center;
+      }
+
+      #canvas {
+        border: 0px none;
+        /* no border, otherwise mouse coords will be wrong */
+        padding: 0px;
+        /* no padding, otherwise mouse coords will be wrong */
+        background-color: white;
+        width: 100vw;
+        /* be as wide as possible */
+        height: 100vh;
+        /* be as tall as possible */
+        max-height: 100vh;
+        /* don't grow more than screen height */
+        display: block;
+        overflow: hidden;
+        /* avoids scrollbars during loading */
+      }
+
+      #canvas_container {
+        border: 0px none; /* no border, otherwise mouse coords will be wrong */
+        padding: 0px; /* no padding, otherwise mouse coords will be wrong */
+        background-color: white;
+        width: 100vw; /* be as wide as possible */
+        height: 100vh; /* be as tall as possible */
+        max-width: 100vw; /* don't grow more than screen height */
+        max-height: 100vh; /* don't grow more than screen height */
+        display: block;
+        overflow: hidden; /* avoids scrollbars during loading */
+      }
+
+      img#logo {
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 85%;
+        margin-bottom: 20px;
+      }
+
+      @media (min-width: 500px) {
+        img#logo {
+          width: 500px;
+        }
+      }
+
+      #splash {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #333;
+        padding: 20px;
+        padding-top: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        min-width: 350px;
+        text-align: center;
+        display: none;
+      }
+
+      #menu {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        padding: 12px 24px;
+        font-size: 16px;
+        background-color: #0066cc;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      #links {
+        margin-top: 15px;
+        justify-content: center;
+        color: #ccc;
+      }
+
+      #links a {
+        text-decoration: underline;
+        transition: color 0.2s;
+        color: #ccc;
+      }
+
+      #links a:hover {
+        color: #fff;
+        text-decoration: underline;
+      }
+
+      #note {
+        margin-top: 30px;
+        justify-content: center;
+        color: #ccc;
+      }
+
+      #close-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        font-size: 24px;
+        color: #555;
+        cursor: pointer;
+        background: none;
+        padding: 0px 5px;
+      }
+
+      #close-button:hover {
+        color: #fff;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="splash">
+      <button id="close-button" onclick="closeSplash()">×</button>
+      <img id="logo" src="polygonal-dark.svg" alt="Polygonal logo" />
+      <div id="menu">
+        <button id="new-project">New Project</button>
+        <button id="open-file">Open File</button>
+        <button id="load-example">Load Example</button>
+      </div>
+      <div id="note">Supported file formats: .stl .obj .off</div>
+      <div id="links">Read the&nbsp;<a href="/docs">docs</a></div>
+    </div>
+    <input type="file" id="myfile" accept=".off,.stl,.obj" onchange="load_file()" style="display: none" />
+    <div class="emscripten" id="status">Downloading...</div>
+    <div class="emscripten">
+      <progress value="0" max="100" id="progress" hidden="1"></progress>
+    </div>
+    <div id="canvas_container">
+      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+    </div>
+    <script data-goatcounter="https://polygonal.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    <script type="text/javascript">
+      let reader = new FileReader();
+      let fileName = "";
+
+      function is_mobile() {
+        let check = false;
+        (function (a) {
+          if (
+            /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(
+              a
+            ) ||
+            /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
+              a.substr(0, 4)
+            )
+          )
+            check = true;
+        })(navigator.userAgent || navigator.vendor || window.opera);
+        return check;
+      }
+
+      function load_file() {
+        let files = document.getElementById("myfile").files;
+        let file = files[0];
+        fileName = file.name;
+        reader.addEventListener("loadend", file_loaded);
+        reader.readAsArrayBuffer(file);
+        document.getElementById("splash").style.display = "none";
+      }
+
+      function file_loaded(e) {
+        let result = reader.result;
+        const uint8_view = new Uint8Array(result);
+        FS.writeFile(fileName, uint8_view);
+        Module.ccall("load_mesh", "", ["string"], [fileName]);
+      }
+
+      var statusElement = document.getElementById("status");
+      var progressElement = document.getElementById("progress");
+
+      var urlParams = new URLSearchParams(window.location.search);
+      var frameElem = window.frameElement;
+
+      function hasParam(name) {
+        if (urlParams && urlParams.has(name)) return true;
+        else if (frameElem && frameElem.hasAttribute("data-" + name)) return true;
+        return false;
+      }
+
+      function getParam(name) {
+        if (urlParams && urlParams.has(name)) return urlParams.get(name);
+        else if (frameElem && frameElem.hasAttribute("data-" + name)) return frameElem.getAttribute("data-" + name);
+        return undefined;
+      }
+
+      function getFile(name) {
+        var base = window.location != window.parent.location ? window.parent.location.href : window.location.href;
+        var url = new URL(name, base);
+        var path = url.pathname;
+        var file = path.split("/").pop();
+        return [file, path];
+      }
+
+      // here we collect the command line arguments to pass to the main function
+      var argv = [];
+
+      var Module = {
+        preRun: [
+          function () {
+            // if (is_mobile()) {
+            //   window.alert(
+            //     "Mobile and touch devices are currently not supported. Please use a desktop browser."
+            //   );
+            // }
+
+            // show imgui controls?
+            if (hasParam("controls")) {
+              argv.push("-g");
+            }
+
+            // model to be loaded
+            if (hasParam("model")) {
+              var [filename, pathname] = getFile(getParam("model"));
+              FS.createPreloadedFile("./", filename, pathname, true, false);
+              argv.push(filename);
+            }
+
+            // matcap to be used
+            if (hasParam("material")) {
+              var [filename, pathname] = getFile(getParam("material"));
+              FS.createPreloadedFile("./", filename, pathname, true, false);
+              argv.push("-m");
+              argv.push(filename);
+            }
+
+            // texture to be used
+            if (hasParam("texture")) {
+              var [filename, pathname] = getFile(getParam("texture"));
+              FS.createPreloadedFile("./", filename, pathname, true, false);
+              argv.push("-t");
+              argv.push(filename);
+            }
+          },
+        ],
+
+        arguments: argv,
+
+        postRun: [],
+
+        print: function (text) {
+          console.log(text);
+        },
+
+        printErr: function (text) {
+          console.error(text);
+        },
+
+        canvas: (function () {
+          var canvas = document.getElementById("canvas");
+
+          // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+          // application robust, you may want to override this behavior before shipping!
+          // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+          canvas.addEventListener(
+            "webglcontextlost",
+            function (e) {
+              alert("WebGL context lost. You will need to reload the page.");
+              e.preventDefault();
+            },
+            false
+          );
+
+          return canvas;
+        })(),
+
+        setStatus: function (text) {
+          if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: "" };
+          if (text === Module.setStatus.text) return;
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          var now = Date.now();
+          if (m && now - Date.now() < 30) return; // if this is a progress update, skip it if too soon
+          if (m) {
+            text = m[1];
+            progressElement.value = parseInt(m[2]) * 100;
+            progressElement.max = parseInt(m[4]) * 100;
+            progressElement.hidden = false;
+          } else {
+            progressElement.value = null;
+            progressElement.max = null;
+            progressElement.hidden = true;
+          }
+          statusElement.innerHTML = text;
+        },
+
+        totalDependencies: 0,
+
+        monitorRunDependencies: function (left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(
+            left
+              ? "Preparing... (" + (this.totalDependencies - left) + "/" + this.totalDependencies + ")"
+              : "All downloads complete."
+          );
+        },
+      };
+
+      Module.setStatus("Downloading...");
+      window.onerror = function () {
+        Module.setStatus("Exception thrown, see JavaScript console");
+        Module.setStatus = function (text) {
+          if (text) Module.printErr("[post-exception status] " + text);
+        };
+      };
+
+      // Show splash screen after application has fully loaded
+      var originalSetStatus = Module.setStatus;
+      Module.setStatus = function (text) {
+        originalSetStatus.call(Module, text);
+        if (text === "All downloads complete.") {
+          // Application is now fully loaded, show the splash screen
+          document.getElementById("splash").style.display = "block";
+        }
+      };
+    </script>
+    <script>
+      function closeSplash() {
+        document.getElementById("splash").style.display = "none";
+      }
+
+      // Event listeners for buttons
+      document.getElementById("new-project").addEventListener("click", function () {
+        document.getElementById("splash").style.display = "none";
+      });
+      document.getElementById("open-file").addEventListener("click", function () {
+        document.getElementById("myfile").click();
+      });
+      document.getElementById("load-example").addEventListener("click", function () {
+        Module.ccall("load_mesh", "", ["string"], ["input.off"]);
+        document.getElementById("splash").style.display = "none";
+      });
+
+      function closeSplashOnOutsideClick(event) {
+        const splash = document.getElementById("splash");
+        if (!splash.contains(event.target)) {
+          splash.style.display = "none";
+          document.removeEventListener("click", closeSplashOnOutsideClick);
+          document.removeEventListener("touchstart", closeSplashOnOutsideClick);
+        }
+      }
+
+      // Close splash on click or tap outside
+      document.addEventListener("click", closeSplashOnOutsideClick);
+      document.addEventListener("touchstart", closeSplashOnOutsideClick);
+
+      // Warn user before leaving the page
+      // window.addEventListener("beforeunload", function (e) {
+      //   e.preventDefault();
+      //   e.returnValue = "Are you sure you want to leave? Your changes may not be saved.";
+      // });
+    </script>
+    {{{ SCRIPT }}}
+  </body>
+</html>
