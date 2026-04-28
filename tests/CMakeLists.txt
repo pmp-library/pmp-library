@@ -12,6 +12,12 @@ set(GOOGLE_TEST_SOURCES
 add_library(googletest STATIC ${GOOGLE_TEST_SOURCES})
 target_compile_features(googletest PUBLIC cxx_std_14)
 
+# silence warnings, see google/googletest#4762
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_COMPILER_VERSION
+                                             VERSION_GREATER_EQUAL "21")
+  target_compile_options(googletest INTERFACE "-Wno-character-conversion")
+endif()
+
 # set output path so that coverage testing works
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
