@@ -298,8 +298,9 @@ void Window::scale_imgui(float scale)
     // scale imgui scale by new factor
     imgui_scale_ *= scale;
 
-    // scale font(s)
-    ImGui::PushFont(NULL, style.FontSizeBase * scale);
+    // scale font (if it has been loaded already)
+    if (ImGui::GetFont())
+        ImGui::PushFont(NULL, style.FontSizeBase * scale);
 
     // adjust element styles (scaled version of default style or pmp style)
     style.WindowPadding = ImTrunc(ImVec2(8, 8) * imgui_scale_);
