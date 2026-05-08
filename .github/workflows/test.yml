@@ -27,7 +27,7 @@ jobs:
       - name: Configure CMake
         shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+        run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DPMP_SCALAR_TYPE=64 -DPMP_INDEX_TYPE=64
 
       - name: Build
         working-directory: ${{runner.workspace}}/build
