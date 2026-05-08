@@ -63,25 +63,6 @@ SurfaceMesh edge_onering()
     return mesh;
 }
 
-SurfaceMesh subdivided_icosahedron()
-{
-    if (icosahedron_mesh.is_empty())
-    {
-        // use ref for brevity
-        auto& mesh = icosahedron_mesh;
-        mesh = icosahedron();
-
-        // select all edges as features
-        detect_features(mesh, 25);
-
-        // feature-preserving subdivision
-        loop_subdivision(mesh);
-        loop_subdivision(mesh);
-        loop_subdivision(mesh);
-    }
-    return icosahedron_mesh;
-}
-
 SurfaceMesh l_shape()
 {
     SurfaceMesh mesh;

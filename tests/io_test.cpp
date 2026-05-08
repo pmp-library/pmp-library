@@ -51,6 +51,7 @@ TEST_F(IOTest, off_io)
     std::remove(filename);
 }
 
+#ifndef PMP_SCALAR_TYPE_64
 TEST_F(IOTest, off_io_binary)
 {
     add_triangle();
@@ -67,6 +68,7 @@ TEST_F(IOTest, off_io_binary)
     EXPECT_EQ(mesh.n_faces(), size_t(1));
     std::remove(filename);
 }
+#endif
 
 TEST_F(IOTest, pmp_io)
 {

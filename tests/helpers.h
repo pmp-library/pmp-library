@@ -13,11 +13,6 @@ SurfaceMesh vertex_onering();
 // generate onering around an edge
 SurfaceMesh edge_onering();
 
-// generate subdivided icosahedron
-// based on Loop subdivision
-// original icosahedron edges are marked as feature edges
-SurfaceMesh subdivided_icosahedron();
-
 // generate 2d non-convex L shape
 SurfaceMesh l_shape();
 

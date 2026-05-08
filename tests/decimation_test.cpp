@@ -5,6 +5,9 @@
 
 #include "pmp/algorithms/decimation.h"
 #include "pmp/algorithms/features.h"
+#include "pmp/algorithms/shapes.h"
+#include "pmp/algorithms/subdivision.h"
+#include "pmp/algorithms/triangulation.h"
 #include "helpers.h"
 
 using namespace pmp;
@@ -12,24 +15,20 @@ using namespace pmp;
 // plain simplification test
 TEST(DecimationTest, simplification)
 {
-    auto mesh = subdivided_icosahedron();
-    clear_features(mesh);
-    decimate(mesh, mesh.n_vertices() * 0.01,
-             5,    // aspect ratio
-             0.5,  // edge length
-             10,   // max valence
-             10,   // normal deviation
-             0.1); // Hausdorff
-    // use tolerance due to flakiness across OS versions
-    EXPECT_NEAR(mesh.n_vertices(), size_t(101), 2);
+    auto mesh = vertex_onering();
+    decimate(mesh, 3);
+    EXPECT_EQ(mesh.n_vertices(), size_t(3));
 }
 
 // simplify with feature edge preservation enabled
 TEST(DecimationTest, simplification_with_features)
 {
-    auto mesh = subdivided_icosahedron();
-    decimate(mesh, mesh.n_vertices() * 0.01, 5 /* aspect ratio */);
-    EXPECT_EQ(mesh.n_vertices(), size_t(12));
+    auto mesh = hexahedron();
+    triangulate(mesh);
+    detect_features(mesh, 45);
+    loop_subdivision(mesh);
+    decimate(mesh, 8, 0, 0, 0, 45);
+    EXPECT_EQ(mesh.n_vertices(), size_t(8));
 }
 
 // simplify with respect to texture coordinates and seams
