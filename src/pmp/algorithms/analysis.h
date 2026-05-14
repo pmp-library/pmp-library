@@ -22,6 +22,7 @@ struct AnalysisReport
     bool is_triangle_mesh = false;
     bool is_quad_mesh = false;
     int n_components = 0;
+    int n_isolated_vertices = 0;
 };
 
 //! Output operator for AnalysisReport.

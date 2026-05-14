@@ -61,3 +61,12 @@ TEST(AnalysisTest, analyze_components)
     const auto report = analyze(mesh);
     EXPECT_EQ(report.n_components, 2);
 }
+
+TEST(AnalysisTest, analyze_isolated_vertices)
+{
+    SurfaceMesh mesh;
+    mesh.add_vertex(Point(1, 0, 0));
+    mesh.add_vertex(Point(0, 0, 1));
+    const auto report = analyze(mesh);
+    EXPECT_EQ(report.n_isolated_vertices, 2);
+}

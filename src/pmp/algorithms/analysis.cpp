@@ -61,14 +61,14 @@ AnalysisReport analyze(const SurfaceMesh& mesh)
     report.is_quad_mesh = mesh.is_quad_mesh();
 
     // manifoldness and boundary
-    report.is_manifold = true;
-    report.has_boundary = false;
     for (auto v : mesh.vertices())
     {
         if (!mesh.is_manifold(v))
             report.is_manifold = false;
         if (mesh.is_boundary(v))
             report.has_boundary = true;
+        if (mesh.is_isolated(v))
+            ++report.n_isolated_vertices;
     }
 
     report.n_components = count_connected_components(mesh);
@@ -88,6 +88,7 @@ std::ostream& operator<<(std::ostream& os, const AnalysisReport& report)
        << "\n";
     os << "  quad mesh: " << (report.is_quad_mesh ? "yes" : "no") << "\n";
     os << "  components: " << report.n_components << "\n";
+    os << "  isolated vertices: " << report.n_isolated_vertices << "\n";
     return os;
 }
 
