@@ -65,6 +65,65 @@ bool is_degenerate(const SurfaceMesh& mesh, Face f, Scalar eps)
     return degenerate;
 }
 
+// grid-based spatial hashing for duplicate vertex detection
+// see Teschner et al., "Optimized Spatial Hashing for Collision Detection of Deformable Objects", VMV, 2003.
+using Cell = std::tuple<int, int, int>;
+
+struct CellHash
+{
+    size_t operator()(const Cell& c) const
+    {
+        const auto& [x, y, z] = c;
+        size_t hx = std::hash<int>{}(x);
+        size_t hy = std::hash<int>{}(y);
+        size_t hz = std::hash<int>{}(z);
+        return hx ^ (hy << 1) ^ (hz << 2);
+    }
+};
+
+Cell cell_of(const Point& p, Scalar eps)
+{
+    return {int(std::floor(p[0] / eps)), //
+            int(std::floor(p[1] / eps)), //
+            int(std::floor(p[2] / eps))};
+};
+
+int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
+{
+    std::unordered_map<Cell, std::vector<Vertex>, CellHash> grid;
+    std::vector<bool> duplicate(mesh.n_vertices(), false);
+
+    for (auto v : mesh.vertices())
+    {
+        const Point& p = mesh.position(v);
+
+        const Cell c = cell_of(p, eps);
+
+        for (int dx = -1; dx <= 1; ++dx)
+            for (int dy = -1; dy <= 1; ++dy)
+                for (int dz = -1; dz <= 1; ++dz)
+                {
+                    const auto& [x, y, z] = c;
+                    Cell neighbor{x + dx, y + dy, z + dz};
+
+                    auto it = grid.find(neighbor);
+
+                    if (it == grid.end())
+                        continue;
+
+                    for (auto vv : it->second)
+                        if (sqrnorm(mesh.position(vv) - p) < eps * eps)
+                        {
+                            duplicate[vv.idx()] = true;
+                            duplicate[v.idx()] = true;
+                        }
+                }
+
+        grid[c].push_back(v);
+    }
+    return std::count(duplicate.begin(), duplicate.end(), true);
+}
+
 } // namespace
 
 AnalysisReport analyze(const SurfaceMesh& mesh)
@@ -103,6 +162,8 @@ AnalysisReport analyze(const SurfaceMesh& mesh)
 
     report.n_components = count_connected_components(mesh);
 
+    report.n_duplicate_vertices = count_duplicate_vertices(mesh, eps);
+
     return report;
 }
 
@@ -120,6 +181,7 @@ std::ostream& operator<<(std::ostream& os, const AnalysisReport& report)
     os << "  components: " << report.n_components << "\n";
     os << "  isolated vertices: " << report.n_isolated_vertices << "\n";
     os << "  degenerate faces: " << report.n_degenerate_faces << "\n";
+    os << "  duplicate vertices: " << report.n_duplicate_vertices << "\n";
     return os;
 }
 

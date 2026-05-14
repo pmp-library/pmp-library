@@ -24,6 +24,7 @@ struct AnalysisReport
     int n_components = 0;
     int n_isolated_vertices = 0;
     int n_degenerate_faces = 0;
+    int n_duplicate_vertices = 0;
 };
 
 //! Output operator for AnalysisReport.
