@@ -14,14 +14,14 @@ namespace pmp {
 //! Report with basic mesh information.
 struct AnalysisReport
 {
-    int n_vertices;
-    int n_edges;
-    int n_faces;
-    bool has_boundary;
-    bool is_manifold;
-    bool is_triangle_mesh;
-    bool is_quad_mesh;
-    int n_components;
+    int n_vertices = 0;
+    int n_edges = 0;
+    int n_faces = 0;
+    bool has_boundary = false;
+    bool is_manifold = true;
+    bool is_triangle_mesh = false;
+    bool is_quad_mesh = false;
+    int n_components = 0;
 };
 
 //! Output operator for AnalysisReport.
