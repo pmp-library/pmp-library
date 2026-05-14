@@ -21,6 +21,7 @@ struct AnalysisReport
     bool is_manifold;
     bool is_triangle_mesh;
     bool is_quad_mesh;
+    int n_components;
 };
 
 //! Output operator for AnalysisReport.

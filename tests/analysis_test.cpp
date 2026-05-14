@@ -53,3 +53,11 @@ TEST(AnalysisTest, analyze_manifoldness)
     const auto report = analyze(mesh);
     EXPECT_FALSE(report.is_manifold);
 }
+
+TEST(AnalysisTest, analyze_components)
+{
+    auto mesh = plane();
+    mesh.add_vertex(Point(0, 0, 1)); // add isolated vertex
+    const auto report = analyze(mesh);
+    EXPECT_EQ(report.n_components, 2);
+}
