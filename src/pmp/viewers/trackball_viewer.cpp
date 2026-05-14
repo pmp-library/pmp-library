@@ -370,8 +370,9 @@ void TrackballViewer::rotate(const vec3& axis, float angle)
 double TrackballViewer::measure_fps()
 {
     double fps(0.0);
-    unsigned int i, frames = 360;
+    const unsigned int frames = 360;
     const float angle = 360.0 / (float)frames;
+    unsigned int i;
     vec3 axis;
 
     // disable vsync

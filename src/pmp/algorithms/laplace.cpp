@@ -14,7 +14,7 @@ namespace {
 double triarea(const Eigen::Vector3d& p0, const Eigen::Vector3d& p1,
                const Eigen::Vector3d& p2)
 {
-    double double_area = (p1 - p0).cross(p2 - p0).norm();
+    const double double_area = (p1 - p0).cross(p2 - p0).norm();
 
 #ifdef TFEM
     double l0 = (p1 - p2).squaredNorm();
@@ -299,7 +299,7 @@ void triangle_gradient_matrix(const Eigen::Vector3d& p0,
     G.resize(3, 3);
     Eigen::Vector3d n = (p1 - p0).cross(p2 - p0);
 #ifndef TFEM
-    double double_area = n.norm();
+    const double double_area = n.norm();
 #else
     double double_area = 2.0 * triarea(p0, p1, p2);
 #endif

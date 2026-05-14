@@ -23,7 +23,7 @@ void explicit_smoothing(SurfaceMesh& mesh, unsigned int iterations,
     // normalize each row by sum of weights
     // scale by 0.5 to make it more robust
     // multiply by -1 to make it neg. definite again
-    DiagonalMatrix D = -0.5 * L.diagonal().asDiagonal().inverse();
+    const DiagonalMatrix D = -0.5 * L.diagonal().asDiagonal().inverse();
     L = D * L;
 
     // cancel out boundary vertices

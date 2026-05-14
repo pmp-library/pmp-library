@@ -190,7 +190,7 @@ void Renderer::use_checkerboard_texture()
         // generate checkerboard-like image
         const unsigned int res = 512;
         auto* tex = new GLubyte[res * res * 3];
-        GLubyte* tp = tex;
+        GLubyte* tp = tex; // NOLINT(misc-const-correctness)
         for (unsigned int x = 0; x < res; ++x)
         {
             for (unsigned int y = 0; y < res; ++y)

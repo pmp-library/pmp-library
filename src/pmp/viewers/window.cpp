@@ -418,8 +418,8 @@ void Window::draw_imgui()
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 30 * imgui_scale_);
         ImGui::BeginGroup();
 
-        ImVec2 icon_size(35 * imgui_scale_, 35 * imgui_scale_);
-        float icon_spacing = 20 * imgui_scale_;
+        const ImVec2 icon_size(35 * imgui_scale_, 35 * imgui_scale_);
+        const float icon_spacing = 20 * imgui_scale_;
 
         if (ImGui::Button(ICON_FA_XMARK, icon_size))
         {
@@ -480,7 +480,7 @@ void Window::draw_imgui()
     }
     else
     {
-        ImVec2 icon_size(35 * imgui_scale_, 35 * imgui_scale_);
+        const ImVec2 icon_size(35 * imgui_scale_, 35 * imgui_scale_);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 30 * imgui_scale_);
         if (ImGui::Button(ICON_FA_BARS, icon_size))
         {

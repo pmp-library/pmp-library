@@ -153,7 +153,7 @@ void MeshViewer::process_imgui()
             for (unsigned int i = 0; i < n_draw_modes_; ++i)
             {
                 const char* item = draw_mode_names_[i].c_str();
-                bool is_selected = (current_item == item);
+                const bool is_selected = (current_item == item);
                 if (ImGui::Selectable(item, is_selected))
                     draw_mode_ = i;
                 if (is_selected)

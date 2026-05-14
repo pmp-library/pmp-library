@@ -32,7 +32,8 @@ public:
     {
         using std::chrono::duration_cast;
         end_time_ = hclock::now();
-        duration time_span = duration_cast<duration>(end_time_ - start_time_);
+        const duration time_span =
+            duration_cast<duration>(end_time_ - start_time_);
         elapsed_ += time_span.count();
         is_running_ = false;
         return *this;
