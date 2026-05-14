@@ -86,8 +86,8 @@ Polygonal::Polygonal(const char* title, int width, int height)
     config.OversampleV = 3;
     ImGuiIO& io = ImGui::GetIO();
     io.Fonts->Clear();
-    io.Fonts->AddFontFromMemoryCompressedTTF(InterRoman_compressed_data,
-                                             InterRoman_compressed_size,
+    io.Fonts->AddFontFromMemoryCompressedTTF(inter_roman_compressed_data,
+                                             inter_roman_compressed_size,
                                              15 * scale, &config);
 
     // window style
