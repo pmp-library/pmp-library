@@ -37,14 +37,16 @@ void read_obj(SurfaceMesh& mesh, const std::filesystem::path& file)
         // vertex
         else if (strncmp(s.data(), "v ", 2) == 0)
         {
-            int n = sscanf(s.data(), "v %f %f %f %f %f %f", &x, &y, &z, &r, &g, &b);
+            int n =
+                sscanf(s.data(), "v %f %f %f %f %f %f", &x, &y, &z, &r, &g, &b);
             if (n >= 3)
             {
                 Vertex v = mesh.add_vertex(Point(x, y, z));
                 if (n >= 6)
                 {
-                    if (!colors) colors = mesh.vertex_property<Color>("v:color");
-                    colors[v] = Color(r,g,b);
+                    if (!colors)
+                        colors = mesh.vertex_property<Color>("v:color");
+                    colors[v] = Color(r, g, b);
                 }
             }
         }

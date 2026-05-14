@@ -199,8 +199,8 @@ void Window::init_imgui()
     // load Inter font
     io.Fonts->Clear();
     io.Fonts->AddFontFromMemoryCompressedTTF(InterRoman_compressed_data,
-        InterRoman_compressed_size,
-        15 * imgui_scaling());
+                                             InterRoman_compressed_size,
+                                             15 * imgui_scaling());
 
     // load & merge FontAwesome
     static const ImWchar icons_ranges[] = {ICON_MIN_FA, ICON_MAX_FA, 0};

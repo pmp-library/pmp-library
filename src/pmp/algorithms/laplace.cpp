@@ -20,12 +20,12 @@ double triarea(const Eigen::Vector3d& p0, const Eigen::Vector3d& p1,
     double l0 = (p1 - p2).squaredNorm();
     double l1 = (p0 - p2).squaredNorm();
     double l2 = (p0 - p1).squaredNorm();
-    double h = pow((sqrt(l0) + sqrt(l1) + sqrt(l2))/3.0, 2);
+    double h = pow((sqrt(l0) + sqrt(l1) + sqrt(l2)) / 3.0, 2);
 
     const double hmin = 1e-20; // absolute failsafe bound
-    const double C = 1e-3; // dynamic TFEM constant
+    const double C = 1e-3;     // dynamic TFEM constant
 
-    double_area = fmax(double_area, C*fmax(h,hmin));
+    double_area = fmax(double_area, C * fmax(h, hmin));
 #endif
 
     return 0.5 * double_area;
@@ -210,7 +210,7 @@ void triangle_laplace_matrix(const Eigen::Vector3d& p0,
     }
 #else
     // double triangle area
-    double area = 2.0*triarea(p0, p1, p2);
+    double area = 2.0 * triarea(p0, p1, p2);
 
     if (area > std::numeric_limits<double>::min())
     {
