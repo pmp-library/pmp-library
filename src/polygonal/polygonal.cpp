@@ -463,6 +463,10 @@ void Polygonal::draw_menu_bar()
             {
                 select_non_manifold();
             }
+            if (ImGui::MenuItem("Isolated Vertices"))
+            {
+                select_isolated_vertices();
+            }
             ImGui::Separator();
             if (ImGui::MenuItem("Grow", "Ctrl+."))
             {
@@ -1223,6 +1227,20 @@ void Polygonal::select_non_manifold()
     int n_selected = 0;
     for (auto v : mesh_.vertices())
         if (!mesh_.is_manifold(v))
+        {
+            selected[v] = true;
+            n_selected++;
+        }
+    status_ = "Selected " + std::to_string(n_selected) + " vertices";
+    update_mesh();
+}
+
+void Polygonal::select_isolated_vertices()
+{
+    auto selected = mesh_.vertex_property<bool>("v:selected");
+    int n_selected = 0;
+    for (auto v : mesh_.vertices())
+        if (mesh_.is_isolated(v))
         {
             selected[v] = true;
             n_selected++;
