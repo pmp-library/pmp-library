@@ -97,9 +97,6 @@ AnalysisReport analyze(const SurfaceMesh& mesh)
     const Scalar diagonal = bounds(mesh).size();
     const Scalar eps = std::max(relative_eps * diagonal, absolute_eps);
 
-    std::cerr << "Bounding box diagonal: " << diagonal << ", eps: " << eps
-              << std::endl;
-
     for (auto f : mesh.faces())
         if (is_degenerate(mesh, f, eps))
             ++report.n_degenerate_faces;
