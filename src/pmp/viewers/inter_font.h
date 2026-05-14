@@ -1,7 +1,7 @@
 // File: 'Inter-roman.ttf' (601792 bytes)
 // Exported using binary_to_compressed_c.cpp
-static const unsigned int InterRoman_compressed_size = 393813;
-static const unsigned int InterRoman_compressed_data[393816 / 4] = {
+static const unsigned int inter_roman_compressed_size = 393813;
+static const unsigned int inter_roman_compressed_data[393816 / 4] = {
     0x0000bc57, 0x00000000, 0xc02e0900, 0x00000400, 0x00010025, 0x82120000,
     0x00042604, 0x49534420, 0x240d8247, 0x2e090001, 0x080782b8, 0x4447084c,
     0x8ac34645, 0x0300cad5, 0x0000203f, 0x50471809, 0x98db534f, 0x0300874e,

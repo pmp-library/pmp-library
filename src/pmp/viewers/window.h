@@ -154,7 +154,7 @@ protected:
     //! is SUPER modifier key pressed down?
     bool super_pressed() const { return super_pressed_; }
 
-    static void render_frame_()
+    static void instance_render_frame()
     {
         if (instance_)
             instance_->render_frame();

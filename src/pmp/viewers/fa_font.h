@@ -1,7 +1,7 @@
 // File: '/Users/botsch/git/stephandemos/data/fonts/fa-solid-900.ttf' (397728 bytes)
 // Exported using binary_to_compressed_c.exe -u8 "/Users/botsch/git/stephandemos/data/fonts/fa-solid-900.ttf" FontAwesome
-static const unsigned int FontAwesome_compressed_size = 234560;
-static const unsigned char FontAwesome_compressed_data[234560] = {
+static const unsigned int font_awesome_compressed_size = 234560;
+static const unsigned char font_awesome_compressed_data[234560] = {
     87,  188, 0,   0,   0,   0,   0,   0,   0,   6,   17,  160, 0,   4,   0,
     0,   55,  0,   1,   0,   0,   0,   10,  0,   128, 0,   3,   0,   32,  79,
     83,  47,  50,  97,  75,  98,  76,  0,   0,   1,   40,  130, 21,  8,   40,

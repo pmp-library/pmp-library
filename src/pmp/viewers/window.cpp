@@ -24,11 +24,11 @@
 #include <glad/gl.h>
 #endif
 
-static inline float ImTrunc(float f)
+static inline float im_trunc(float f)
 {
     return (float)(int)(f);
 }
-static inline ImVec2 ImTrunc(const ImVec2& v)
+static inline ImVec2 im_trunc(const ImVec2& v)
 {
     return ImVec2((float)(int)(v.x), (float)(int)(v.y));
 }
@@ -198,8 +198,8 @@ void Window::init_imgui()
 
     // load Inter font
     io.Fonts->Clear();
-    io.Fonts->AddFontFromMemoryCompressedTTF(InterRoman_compressed_data,
-                                             InterRoman_compressed_size,
+    io.Fonts->AddFontFromMemoryCompressedTTF(inter_roman_compressed_data,
+                                             inter_roman_compressed_size,
                                              15 * imgui_scaling());
 
     // load & merge FontAwesome
@@ -207,7 +207,7 @@ void Window::init_imgui()
     ImFontConfig config;
     config.MergeMode = true;
     io.Fonts->AddFontFromMemoryCompressedTTF(
-        FontAwesome_compressed_data, FontAwesome_compressed_size,
+        font_awesome_compressed_data, font_awesome_compressed_size,
         14 * imgui_scaling(), &config, icons_ranges);
 
     // setup font and border radii
@@ -303,30 +303,30 @@ void Window::scale_imgui(float scale)
         ImGui::PushFont(NULL, style.FontSizeBase * scale);
 
     // adjust element styles (scaled version of default style or pmp style)
-    style.WindowPadding = ImTrunc(ImVec2(8, 8) * imgui_scale_);
+    style.WindowPadding = im_trunc(ImVec2(8, 8) * imgui_scale_);
     style.WindowRounding = 0; //ImTrunc(4 * imgui_scale_);
-    style.WindowMinSize = ImTrunc(ImVec2(24, 24) * imgui_scale_);
-    style.ChildRounding = ImTrunc(4 * imgui_scale_);
-    style.PopupRounding = ImTrunc(4 * imgui_scale_);
-    style.FramePadding = ImTrunc(ImVec2(4, 3) * imgui_scale_);
-    style.FrameRounding = ImTrunc(4 * imgui_scale_);
-    style.ItemSpacing = ImTrunc(ImVec2(8, 4) * imgui_scale_);
-    style.ItemInnerSpacing = ImTrunc(ImVec2(4, 4) * imgui_scale_);
-    style.CellPadding = ImTrunc(ImVec2(4, 2) * imgui_scale_);
+    style.WindowMinSize = im_trunc(ImVec2(24, 24) * imgui_scale_);
+    style.ChildRounding = im_trunc(4 * imgui_scale_);
+    style.PopupRounding = im_trunc(4 * imgui_scale_);
+    style.FramePadding = im_trunc(ImVec2(4, 3) * imgui_scale_);
+    style.FrameRounding = im_trunc(4 * imgui_scale_);
+    style.ItemSpacing = im_trunc(ImVec2(8, 4) * imgui_scale_);
+    style.ItemInnerSpacing = im_trunc(ImVec2(4, 4) * imgui_scale_);
+    style.CellPadding = im_trunc(ImVec2(4, 2) * imgui_scale_);
     style.TouchExtraPadding = ImVec2(0, 0);
-    style.IndentSpacing = ImTrunc(21 * imgui_scale_);
-    style.ColumnsMinSpacing = ImTrunc(6 * imgui_scale_);
-    style.ScrollbarSize = ImTrunc(14 * imgui_scale_);
-    style.ScrollbarRounding = ImTrunc(9 * imgui_scale_);
-    style.GrabMinSize = ImTrunc(10 * imgui_scale_);
-    style.GrabRounding = ImTrunc(4 * imgui_scale_);
-    style.LogSliderDeadzone = ImTrunc(4 * imgui_scale_);
-    style.TabRounding = ImTrunc(4 * imgui_scale_);
-    style.TabCloseButtonMinWidthUnselected = ImTrunc(0 * imgui_scale_);
-    style.TabBarOverlineSize = ImTrunc(1 * imgui_scale_);
-    style.SeparatorTextPadding = ImTrunc(ImVec2(20, 3) * imgui_scale_);
-    style.DisplayWindowPadding = ImTrunc(ImVec2(19, 19) * imgui_scale_);
-    style.DisplaySafeAreaPadding = ImTrunc(ImVec2(3, 3) * imgui_scale_);
+    style.IndentSpacing = im_trunc(21 * imgui_scale_);
+    style.ColumnsMinSpacing = im_trunc(6 * imgui_scale_);
+    style.ScrollbarSize = im_trunc(14 * imgui_scale_);
+    style.ScrollbarRounding = im_trunc(9 * imgui_scale_);
+    style.GrabMinSize = im_trunc(10 * imgui_scale_);
+    style.GrabRounding = im_trunc(4 * imgui_scale_);
+    style.LogSliderDeadzone = im_trunc(4 * imgui_scale_);
+    style.TabRounding = im_trunc(4 * imgui_scale_);
+    style.TabCloseButtonMinWidthUnselected = im_trunc(0 * imgui_scale_);
+    style.TabBarOverlineSize = im_trunc(1 * imgui_scale_);
+    style.SeparatorTextPadding = im_trunc(ImVec2(20, 3) * imgui_scale_);
+    style.DisplayWindowPadding = im_trunc(ImVec2(19, 19) * imgui_scale_);
+    style.DisplaySafeAreaPadding = im_trunc(ImVec2(3, 3) * imgui_scale_);
 }
 
 void Window::add_help_item(std::string key, std::string description, int pos)
@@ -501,11 +501,11 @@ void Window::draw_imgui()
 int Window::run()
 {
 #if __EMSCRIPTEN__
-    emscripten_set_main_loop(Window::render_frame_, 0, 1);
+    emscripten_set_main_loop(Window::instance_render_frame, 0, 1);
 #else
     while (!glfwWindowShouldClose(window_))
     {
-        Window::render_frame_();
+        Window::instance_render_frame();
     }
 #endif
     return EXIT_SUCCESS;
