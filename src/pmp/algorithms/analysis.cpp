@@ -2,6 +2,9 @@
 // SPDX-License-Identifier: MIT
 
 #include "pmp/algorithms/analysis.h"
+#include "pmp/algorithms/utilities.h"
+#include "pmp/algorithms/differential_geometry.h"
+#include "pmp/tolerances.h"
 
 #include <queue>
 
@@ -45,6 +48,23 @@ int count_connected_components(const SurfaceMesh& mesh)
 
     return count;
 }
+
+bool is_degenerate(const SurfaceMesh& mesh, Face f, Scalar eps)
+{
+    bool degenerate = false;
+
+    // check for zero area
+    if (face_area(mesh, f) < eps * eps)
+        degenerate = true;
+
+    // check for short edges
+    for (auto h : mesh.halfedges(f))
+        if (edge_length(mesh, mesh.edge(h)) < eps)
+            degenerate = true;
+
+    return degenerate;
+}
+
 } // namespace
 
 AnalysisReport analyze(const SurfaceMesh& mesh)
@@ -71,6 +91,19 @@ AnalysisReport analyze(const SurfaceMesh& mesh)
             ++report.n_isolated_vertices;
     }
 
+    // eps according to bounding box diagonal
+    constexpr Scalar relative_eps = detail::relative_epsilon<Scalar>();
+    constexpr Scalar absolute_eps = detail::absolute_epsilon<Scalar>();
+    const Scalar diagonal = bounds(mesh).size();
+    const Scalar eps = std::max(relative_eps * diagonal, absolute_eps);
+
+    std::cerr << "Bounding box diagonal: " << diagonal << ", eps: " << eps
+              << std::endl;
+
+    for (auto f : mesh.faces())
+        if (is_degenerate(mesh, f, eps))
+            ++report.n_degenerate_faces;
+
     report.n_components = count_connected_components(mesh);
 
     return report;
@@ -89,6 +122,7 @@ std::ostream& operator<<(std::ostream& os, const AnalysisReport& report)
     os << "  quad mesh: " << (report.is_quad_mesh ? "yes" : "no") << "\n";
     os << "  components: " << report.n_components << "\n";
     os << "  isolated vertices: " << report.n_isolated_vertices << "\n";
+    os << "  degenerate faces: " << report.n_degenerate_faces << "\n";
     return os;
 }
 

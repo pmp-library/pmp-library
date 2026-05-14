@@ -23,6 +23,7 @@ struct AnalysisReport
     bool is_quad_mesh = false;
     int n_components = 0;
     int n_isolated_vertices = 0;
+    int n_degenerate_faces = 0;
 };
 
 //! Output operator for AnalysisReport.

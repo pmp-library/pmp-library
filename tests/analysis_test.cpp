@@ -70,3 +70,37 @@ TEST(AnalysisTest, analyze_isolated_vertices)
     const auto report = analyze(mesh);
     EXPECT_EQ(report.n_isolated_vertices, 2);
 }
+
+TEST(AnalysisTest, analyze_zero_area_face)
+{
+    SurfaceMesh mesh;
+    auto v0 = mesh.add_vertex(Point(0, 0, 0));
+    auto v1 = mesh.add_vertex(Point(1, 0, 0));
+    auto v2 = mesh.add_vertex(Point(2, 0, 0));
+    mesh.add_face({v0, v1, v2});
+    const auto report = analyze(mesh);
+    EXPECT_EQ(report.n_degenerate_faces, 1);
+}
+
+TEST(AnalysisTest, analyze_short_edge_triangle)
+{
+    SurfaceMesh mesh;
+    auto v0 = mesh.add_vertex(Point(0, 0, 0));
+    auto v1 = mesh.add_vertex(Point(1e-15, 0, 0));
+    auto v2 = mesh.add_vertex(Point(0, 1e-15, 0));
+    mesh.add_face({v0, v1, v2});
+    const auto report = analyze(mesh);
+    EXPECT_EQ(report.n_degenerate_faces, 1);
+}
+
+TEST(AnalysisTest, analyze_short_edge_quad)
+{
+    SurfaceMesh mesh;
+    auto v0 = mesh.add_vertex(Point(0, 0, 0));
+    auto v1 = mesh.add_vertex(Point(1e-15, 0, 0));
+    auto v2 = mesh.add_vertex(Point(0, 1e-15, 0));
+    auto v3 = mesh.add_vertex(Point(1e-15, 1e-15, 0));
+    mesh.add_face({v0, v1, v2, v3});
+    const auto report = analyze(mesh);
+    EXPECT_EQ(report.n_degenerate_faces, 1);
+}
