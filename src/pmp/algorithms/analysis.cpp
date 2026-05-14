@@ -3,6 +3,8 @@
 
 #include "pmp/algorithms/analysis.h"
 
+#include <queue>
+
 namespace pmp {
 
 namespace {
