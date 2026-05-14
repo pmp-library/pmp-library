@@ -10,6 +10,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Added
 
+- Add `analyze()` function.
 - Add `min_edge_length()` function.
 - Add `linear_subdivision()` function performing linear quad/tri subdivision.
 - Add `BoundaryHandling` option to subdivision functions (Loop, Catmull-Clark, Quad/Tri).
