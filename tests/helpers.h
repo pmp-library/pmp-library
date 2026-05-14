@@ -22,4 +22,7 @@ SurfaceMesh open_cone();
 // a mesh with texcoords and texture seams
 SurfaceMesh texture_seams_mesh();
 
+// a mesh with a non-manifold vertex
+SurfaceMesh non_manifold_vertex();
+
 } // namespace pmp
