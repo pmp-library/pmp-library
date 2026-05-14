@@ -4,13 +4,8 @@
 #include "helpers.h"
 
 #include "pmp/algorithms/shapes.h"
-#include "pmp/algorithms/features.h"
-#include "pmp/algorithms/subdivision.h"
-#include "pmp/algorithms/triangulation.h"
 
 namespace pmp {
-
-static SurfaceMesh icosahedron_mesh;
 
 SurfaceMesh vertex_onering()
 {
