@@ -12,7 +12,7 @@ namespace pmp {
 //! @{
 
 //! Report with basic mesh information.
-struct AnalysisReport
+struct MeshAnalysis
 {
     int n_vertices = 0;
     int n_edges = 0;
@@ -27,11 +27,11 @@ struct AnalysisReport
     int n_duplicate_vertices = 0;
 };
 
-//! Output operator for AnalysisReport.
-std::ostream& operator<<(std::ostream& os, const AnalysisReport& report);
+//! Output operator for MeshAnalysis.
+std::ostream& operator<<(std::ostream& os, const MeshAnalysis& report);
 
 //! Analyze mesh and return report with basic stats.
-AnalysisReport analyze(const SurfaceMesh& mesh);
+MeshAnalysis analyze(const SurfaceMesh& mesh);
 
 //! @}
 

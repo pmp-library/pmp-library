@@ -126,28 +126,28 @@ int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
 
 } // namespace
 
-AnalysisReport analyze(const SurfaceMesh& mesh)
+MeshAnalysis analyze(const SurfaceMesh& mesh)
 {
-    AnalysisReport report;
+    MeshAnalysis analysis;
 
     // basic stats
-    report.n_vertices = mesh.n_vertices();
-    report.n_edges = mesh.n_edges();
-    report.n_faces = mesh.n_faces();
+    analysis.n_vertices = mesh.n_vertices();
+    analysis.n_edges = mesh.n_edges();
+    analysis.n_faces = mesh.n_faces();
 
     // mesh type
-    report.is_triangle_mesh = mesh.is_triangle_mesh();
-    report.is_quad_mesh = mesh.is_quad_mesh();
+    analysis.is_triangle_mesh = mesh.is_triangle_mesh();
+    analysis.is_quad_mesh = mesh.is_quad_mesh();
 
     // manifoldness and boundary
     for (auto v : mesh.vertices())
     {
         if (!mesh.is_manifold(v))
-            report.is_manifold = false;
+            analysis.is_manifold = false;
         if (mesh.is_boundary(v))
-            report.has_boundary = true;
+            analysis.has_boundary = true;
         if (mesh.is_isolated(v))
-            ++report.n_isolated_vertices;
+            ++analysis.n_isolated_vertices;
     }
 
     // eps according to bounding box diagonal
@@ -158,30 +158,30 @@ AnalysisReport analyze(const SurfaceMesh& mesh)
 
     for (auto f : mesh.faces())
         if (is_degenerate(mesh, f, eps))
-            ++report.n_degenerate_faces;
+            ++analysis.n_degenerate_faces;
 
-    report.n_components = count_connected_components(mesh);
+    analysis.n_components = count_connected_components(mesh);
 
-    report.n_duplicate_vertices = count_duplicate_vertices(mesh, eps);
+    analysis.n_duplicate_vertices = count_duplicate_vertices(mesh, eps);
 
-    return report;
+    return analysis;
 }
 
-std::ostream& operator<<(std::ostream& os, const AnalysisReport& report)
+std::ostream& operator<<(std::ostream& os, const MeshAnalysis& analysis)
 {
-    os << "Analysis Report:\n";
-    os << "  vertices: " << report.n_vertices << "\n";
-    os << "  edges: " << report.n_edges << "\n";
-    os << "  faces: " << report.n_faces << "\n";
-    os << "  boundary: " << (report.has_boundary ? "yes" : "no") << "\n";
-    os << "  manifold: " << (report.is_manifold ? "yes" : "no") << "\n";
-    os << "  triangle mesh: " << (report.is_triangle_mesh ? "yes" : "no")
+    os << "Mesh analysis:\n";
+    os << "  vertices: " << analysis.n_vertices << "\n";
+    os << "  edges: " << analysis.n_edges << "\n";
+    os << "  faces: " << analysis.n_faces << "\n";
+    os << "  boundary: " << (analysis.has_boundary ? "yes" : "no") << "\n";
+    os << "  manifold: " << (analysis.is_manifold ? "yes" : "no") << "\n";
+    os << "  triangle mesh: " << (analysis.is_triangle_mesh ? "yes" : "no")
        << "\n";
-    os << "  quad mesh: " << (report.is_quad_mesh ? "yes" : "no") << "\n";
-    os << "  components: " << report.n_components << "\n";
-    os << "  isolated vertices: " << report.n_isolated_vertices << "\n";
-    os << "  degenerate faces: " << report.n_degenerate_faces << "\n";
-    os << "  duplicate vertices: " << report.n_duplicate_vertices << "\n";
+    os << "  quad mesh: " << (analysis.is_quad_mesh ? "yes" : "no") << "\n";
+    os << "  components: " << analysis.n_components << "\n";
+    os << "  isolated vertices: " << analysis.n_isolated_vertices << "\n";
+    os << "  degenerate faces: " << analysis.n_degenerate_faces << "\n";
+    os << "  duplicate vertices: " << analysis.n_duplicate_vertices << "\n";
     return os;
 }
 
