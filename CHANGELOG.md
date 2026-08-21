@@ -27,8 +27,10 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Make `is_constrained()` predicate in `cholesky_solve()` a const reference.
 - Make `is_selection()` predicate in `selector_matrix()` a const reference.
 - Switch from GLEW to GLAD
-- Update ImGui to version 1.92.6
-- Update GLFW to version 3.4
+- Update Eigen to 5.0.1
+- Update ImGui to 1.92.8
+- Update GLFW to 3.5.1
+- Update stb_image to 2.30
 - Update Doxygen to 1.9.8
 - Use plain MIT license, keep disclaimer in separate file.
 
