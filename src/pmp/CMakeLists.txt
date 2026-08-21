@@ -10,9 +10,11 @@ endif()
 
 target_compile_features(pmp PUBLIC cxx_std_20)
 
-find_package(OpenMP)
-if(OpenMP_CXX_FOUND)
-  target_link_libraries(pmp PUBLIC OpenMP::OpenMP_CXX)
+if(NOT EMSCRIPTEN)
+  find_package(OpenMP)
+  if(OpenMP_CXX_FOUND)
+    target_link_libraries(pmp PUBLIC OpenMP::OpenMP_CXX)
+  endif()
 endif()
 
 set_target_properties(pmp PROPERTIES VERSION ${PROJECT_VERSION})
