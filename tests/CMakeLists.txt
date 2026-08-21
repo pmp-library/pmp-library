@@ -1,6 +1,9 @@
 set(GOOGLE_TEST_ROOT
-    external/googletest-1.13.0/googletest
+    external/googletest-1.18.0/googletest
     CACHE STRING "Google Test root")
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}
                     ${PROJECT_SOURCE_DIR}/${GOOGLE_TEST_ROOT}/include)
