@@ -106,6 +106,13 @@ TEST(AnalysisTest, analyze_short_edge_quad)
     EXPECT_EQ(analysis.n_degenerate_faces, 1);
 }
 
+TEST(AnalysisTest, analyze_duplicate_vertices_empty_mesh)
+{
+    SurfaceMesh mesh;
+    const auto analysis = analyze(mesh);
+    EXPECT_EQ(analysis.n_duplicate_vertices, 0);
+}
+
 TEST(AnalysisTest, analyze_duplicate_vertices)
 {
     SurfaceMesh mesh;

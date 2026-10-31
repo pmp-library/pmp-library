@@ -74,10 +74,7 @@ struct CellHash
     size_t operator()(const Cell& c) const
     {
         const auto& [x, y, z] = c;
-        size_t hx = std::hash<int>{}(x);
-        size_t hy = std::hash<int>{}(y);
-        size_t hz = std::hash<int>{}(z);
-        return hx ^ (hy << 1) ^ (hz << 2);
+        return ((x * 73856093) ^ (y * 19349663) ^ (z * 83492791));
     }
 };
 
@@ -90,15 +87,34 @@ Cell cell_of(const Point& p, Scalar eps)
 
 int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
 {
-    std::unordered_map<Cell, std::vector<Vertex>, CellHash> grid;
-    std::vector<bool> duplicate(mesh.n_vertices(), false);
+    const size_t n_vertices = mesh.n_vertices();
+    if (n_vertices == 0)
+        return 0;
+
+    std::vector<bool> duplicate(n_vertices, false);
+
+    // Flat hash table with chaining for collision resolution.
+    const size_t table_capacity = n_vertices * 2;
+    std::vector<int> hash_table(table_capacity, -1);
+    std::vector<int> next_node(n_vertices, -1);
+
+    // Precompute keys for cache locality during lookup.
+    std::vector<Cell> vertex_cells(n_vertices);
+    for (auto v : mesh.vertices())
+    {
+        vertex_cells[v.idx()] = cell_of(mesh.position(v), eps);
+    }
+
+    CellHash hasher;
+    const Scalar sqr_eps = eps * eps;
 
     for (auto v : mesh.vertices())
     {
+        int v_idx = v.idx();
         const Point& p = mesh.position(v);
+        const Cell& c = vertex_cells[v_idx];
 
-        const Cell c = cell_of(p, eps);
-
+        // Search 27 cell neighborhood.
         for (int dx = -1; dx <= 1; ++dx)
             for (int dy = -1; dy <= 1; ++dy)
                 for (int dz = -1; dz <= 1; ++dz)
@@ -106,20 +122,34 @@ int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
                     const auto& [x, y, z] = c;
                     Cell neighbor{x + dx, y + dy, z + dz};
 
-                    auto it = grid.find(neighbor);
+                    size_t bucket = hasher(neighbor) % table_capacity;
+                    int current_entry = hash_table[bucket];
 
-                    if (it == grid.end())
-                        continue;
-
-                    for (auto vv : it->second)
-                        if (sqrnorm(mesh.position(vv) - p) < eps * eps)
+                    while (current_entry != -1)
+                    {
+                        // Ensure the stored entry actually belongs to the cell we are searching
+                        if (vertex_cells[current_entry] == neighbor)
                         {
-                            duplicate[vv.idx()] = true;
-                            duplicate[v.idx()] = true;
+                            // Avoid comparing the vertex against itself
+                            if (current_entry != v_idx)
+                            {
+                                if (sqrnorm(
+                                        mesh.position(Vertex(current_entry)) -
+                                        p) < sqr_eps)
+                                {
+                                    duplicate[current_entry] = true;
+                                    duplicate[v_idx] = true;
+                                }
+                            }
                         }
+                        current_entry = next_node[current_entry];
+                    }
                 }
 
-        grid[c].push_back(v);
+        // Insert vertex into hash table.
+        size_t current_bucket = hasher(c) % table_capacity;
+        next_node[v_idx] = hash_table[current_bucket];
+        hash_table[current_bucket] = v_idx;
     }
     return std::count(duplicate.begin(), duplicate.end(), true);
 }
