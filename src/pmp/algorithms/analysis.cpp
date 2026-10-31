@@ -80,7 +80,7 @@ int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
         return ((x * 73856093) ^ (y * 19349663) ^ (z * 83492791));
     };
 
-    const auto cell_of = [](const Point& p, Scalar eps) -> Cell {
+    const auto cell_of = [&](const Point& p) -> Cell {
         return {int(std::floor(p[0] / eps)), //
                 int(std::floor(p[1] / eps)), //
                 int(std::floor(p[2] / eps))};
@@ -97,7 +97,7 @@ int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
     std::vector<Cell> vertex_cells(n_vertices);
     for (auto v : mesh.vertices())
     {
-        vertex_cells[v.idx()] = cell_of(mesh.position(v), eps);
+        vertex_cells[v.idx()] = cell_of(mesh.position(v));
     }
 
     const Scalar sqr_eps = eps * eps;
