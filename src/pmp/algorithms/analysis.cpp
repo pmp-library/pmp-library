@@ -65,31 +65,26 @@ bool is_degenerate(const SurfaceMesh& mesh, Face f, Scalar eps)
     return degenerate;
 }
 
-// grid-based spatial hashing for duplicate vertex detection
-// see Teschner et al., "Optimized Spatial Hashing for Collision Detection of Deformable Objects", VMV, 2003.
-using Cell = std::tuple<int, int, int>;
-
-struct CellHash
-{
-    size_t operator()(const Cell& c) const
-    {
-        const auto& [x, y, z] = c;
-        return ((x * 73856093) ^ (y * 19349663) ^ (z * 83492791));
-    }
-};
-
-Cell cell_of(const Point& p, Scalar eps)
-{
-    return {int(std::floor(p[0] / eps)), //
-            int(std::floor(p[1] / eps)), //
-            int(std::floor(p[2] / eps))};
-};
-
+// Grid-based spatial hashing for duplicate vertex detection.
+// See Teschner et al., "Optimized Spatial Hashing for Collision Detection of Deformable Objects", VMV, 2003.
 int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
 {
     const size_t n_vertices = mesh.n_vertices();
     if (n_vertices == 0)
         return 0;
+
+    using Cell = std::tuple<int, int, int>;
+
+    const auto hasher = [](const Cell& c) {
+        const auto& [x, y, z] = c;
+        return ((x * 73856093) ^ (y * 19349663) ^ (z * 83492791));
+    };
+
+    const auto cell_of = [](const Point& p, Scalar eps) -> Cell {
+        return {int(std::floor(p[0] / eps)), //
+                int(std::floor(p[1] / eps)), //
+                int(std::floor(p[2] / eps))};
+    };
 
     std::vector<bool> duplicate(n_vertices, false);
 
@@ -105,7 +100,6 @@ int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
         vertex_cells[v.idx()] = cell_of(mesh.position(v), eps);
     }
 
-    CellHash hasher;
     const Scalar sqr_eps = eps * eps;
 
     for (auto v : mesh.vertices())
