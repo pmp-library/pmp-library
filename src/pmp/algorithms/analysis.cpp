@@ -65,13 +65,14 @@ bool is_degenerate(const SurfaceMesh& mesh, Face f, Scalar eps)
     return degenerate;
 }
 
-// Grid-based spatial hashing for duplicate vertex detection.
-// See Teschner et al., "Optimized Spatial Hashing for Collision Detection of Deformable Objects", VMV, 2003.
-int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
+} // namespace
+
+std::vector<std::pair<Vertex, Vertex>> find_duplicate_vertices(
+    const SurfaceMesh& mesh, Scalar eps)
 {
     const size_t n_vertices = mesh.n_vertices();
     if (n_vertices == 0)
-        return 0;
+        return {};
 
     using Cell = std::tuple<int, int, int>;
 
@@ -86,7 +87,7 @@ int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
                 int(std::floor(p[2] / eps))};
     };
 
-    std::vector<bool> duplicate(n_vertices, false);
+    std::vector<std::pair<Vertex, Vertex>> duplicates;
 
     // Flat hash table with chaining for collision resolution.
     const size_t table_capacity = n_vertices * 2;
@@ -124,16 +125,11 @@ int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
                         // Ensure the stored entry actually belongs to the cell we are searching
                         if (vertex_cells[current_entry] == neighbor)
                         {
-                            // Avoid comparing the vertex against itself
-                            if (current_entry != v_idx)
-                            {
-                                if (sqrnorm(
-                                        mesh.position(Vertex(current_entry)) -
+                            if (sqrnorm(mesh.position(Vertex(current_entry)) -
                                         p) < sqr_eps)
-                                {
-                                    duplicate[current_entry] = true;
-                                    duplicate[v_idx] = true;
-                                }
+                            {
+                                duplicates.emplace_back(Vertex(current_entry),
+                                                        v);
                             }
                         }
                         current_entry = next_node[current_entry];
@@ -145,10 +141,8 @@ int count_duplicate_vertices(const SurfaceMesh& mesh, Scalar eps)
         next_node[v_idx] = hash_table[current_bucket];
         hash_table[current_bucket] = v_idx;
     }
-    return std::count(duplicate.begin(), duplicate.end(), true);
+    return duplicates;
 }
-
-} // namespace
 
 MeshAnalysis analyze(const SurfaceMesh& mesh)
 {
@@ -186,7 +180,15 @@ MeshAnalysis analyze(const SurfaceMesh& mesh)
 
     analysis.n_components = count_connected_components(mesh);
 
-    analysis.n_duplicate_vertices = count_duplicate_vertices(mesh, eps);
+    const auto duplicate_pairs = find_duplicate_vertices(mesh, eps);
+    std::vector<bool> duplicates(mesh.n_vertices(), false);
+    for (const auto& [v0, v1] : duplicate_pairs)
+    {
+        duplicates[v0.idx()] = true;
+        duplicates[v1.idx()] = true;
+    }
+    analysis.n_duplicate_vertices =
+        std::count(duplicates.begin(), duplicates.end(), true);
 
     return analysis;
 }

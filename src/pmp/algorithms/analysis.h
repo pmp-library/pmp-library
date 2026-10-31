@@ -33,6 +33,13 @@ std::ostream& operator<<(std::ostream& os, const MeshAnalysis& report);
 //! Analyze mesh and return report with basic stats.
 MeshAnalysis analyze(const SurfaceMesh& mesh);
 
+//! Find duplicate vertices in a mesh with a given tolerance.
+//! \return A vector of pairs of duplicate vertices.
+//! \details Uses grid-based spatial hashing for duplicate vertex detection.
+//! \cite teschner_2003_optimized
+std::vector<std::pair<Vertex, Vertex>> find_duplicate_vertices(
+    const SurfaceMesh& mesh, Scalar eps);
+
 //! @}
 
 } // namespace pmp
