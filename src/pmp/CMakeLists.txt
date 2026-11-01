@@ -2,13 +2,15 @@ file(GLOB SOURCES ./*.cpp)
 file(GLOB HEADERS ./*.h)
 
 if(EMSCRIPTEN)
-  add_library(pmp STATIC ${SOURCES} ${HEADERS})
+  add_library(pmp STATIC ${SOURCES} ${HEADERS} $<TARGET_OBJECTS:predicates>)
 else()
-  add_library(pmp ${SOURCES} ${HEADERS})
+  add_library(pmp ${SOURCES} ${HEADERS} $<TARGET_OBJECTS:predicates>)
   set_property(TARGET pmp PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif()
 
 target_compile_features(pmp PUBLIC cxx_std_20)
+
+target_link_libraries(pmp PRIVATE predicates)
 
 if(NOT EMSCRIPTEN)
   find_package(OpenMP)
