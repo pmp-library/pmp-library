@@ -47,6 +47,14 @@ public:
         return intersect_node(root_, orig, dir, double(tmin), double(tmax));
     }
 
+    // find all self-intersecting face pairs
+    std::vector<std::pair<Face, Face>> self_intersections() const
+    {
+        std::vector<std::pair<Face, Face>> result;
+        find_intersecting_faces(root_, root_, result);
+        return result;
+    }
+
 private:
     // node of the tree
     struct Node
@@ -250,6 +258,207 @@ private:
             }
         }
         return closest_hit;
+    }
+
+    void find_intersecting_faces(
+        int idx1, int idx2, std::vector<std::pair<Face, Face>>& result) const
+    {
+        assert(idx1 >= 0 && idx1 < (int)nodes_.size());
+        assert(idx2 >= 0 && idx2 < (int)nodes_.size());
+
+        const Node& node1 = nodes_[idx1];
+        const Node& node2 = nodes_[idx2];
+
+        // check if bounding boxes overlap
+        if (!bbox_overlap(node1.bbox, node2.bbox))
+            return;
+
+        // both are leaf nodes, test the two faces for intersection
+        if (node1.is_leaf() && node2.is_leaf())
+        {
+            // avoid duplicate pairs and same face
+            if (node1.face.idx() < node2.face.idx() &&
+                face_intersect(node1.face, node2.face))
+            {
+                result.emplace_back(node1.face, node2.face);
+            }
+            return;
+        }
+
+        // at least one is an internal node, recurse into children
+        if (node1.is_leaf())
+        {
+            find_intersecting_faces(idx1, node2.left, result);
+            find_intersecting_faces(idx1, node2.right, result);
+        }
+        else if (node2.is_leaf())
+        {
+            find_intersecting_faces(node1.left, idx2, result);
+            find_intersecting_faces(node1.right, idx2, result);
+        }
+        else
+        {
+            // both are internal, traverse all four combinations
+            find_intersecting_faces(node1.left, node2.left, result);
+            find_intersecting_faces(node1.left, node2.right, result);
+            find_intersecting_faces(node1.right, node2.left, result);
+            find_intersecting_faces(node1.right, node2.right, result);
+        }
+    }
+
+    bool bbox_overlap(const BoundingBox& bb1, const BoundingBox& bb2) const
+    {
+        return !(bb1.max()[0] < bb2.min()[0] || bb1.min()[0] > bb2.max()[0] ||
+                 bb1.max()[1] < bb2.min()[1] || bb1.min()[1] > bb2.max()[1] ||
+                 bb1.max()[2] < bb2.min()[2] || bb1.min()[2] > bb2.max()[2]);
+    }
+
+    bool face_intersect(const Face& f1, const Face& f2) const
+    {
+        // collect triangles for f1
+        std::vector<std::array<dvec3, 3>> triangles1;
+        collect_triangles(f1, triangles1);
+
+        // collect triangles for f2
+        std::vector<std::array<dvec3, 3>> triangles2;
+        collect_triangles(f2, triangles2);
+
+        // test all triangle pairs
+        for (const auto& t1 : triangles1)
+            for (const auto& t2 : triangles2)
+                if (triangle_intersect(t1[0], t1[1], t1[2], t2[0], t2[1],
+                                       t2[2]))
+                    return true;
+        return false;
+    }
+
+    void collect_triangles(const Face& f,
+                           std::vector<std::array<dvec3, 3>>& triangles) const
+    {
+        if (mesh_.valence(f) == 3)
+        {
+            // triangle face
+            auto fv = mesh_.vertices(f);
+            std::array<dvec3, 3> tri;
+            tri[0] = dvec3(mesh_.position(*fv));
+            tri[1] = dvec3(mesh_.position(*++fv));
+            tri[2] = dvec3(mesh_.position(*++fv));
+            triangles.push_back(tri);
+        }
+        else
+        {
+            // polygon face: fan triangulation from first vertex
+            std::vector<dvec3> vertices;
+            for (auto v : mesh_.vertices(f))
+                vertices.emplace_back(mesh_.position(v));
+            for (size_t i = 1; i + 1 < vertices.size(); ++i)
+            {
+                std::array<dvec3, 3> tri{vertices[0], vertices[i],
+                                         vertices[i + 1]};
+                triangles.push_back(tri);
+            }
+        }
+    }
+
+    bool triangle_intersect(const dvec3& t1_v0, const dvec3& t1_v1,
+                            const dvec3& t1_v2, const dvec3& t2_v0,
+                            const dvec3& t2_v1, const dvec3& t2_v2) const
+    {
+        const double eps = 1e-12;
+
+        // compute plane of t2
+        dvec3 t2_e1 = t2_v1 - t2_v0;
+        dvec3 t2_e2 = t2_v2 - t2_v0;
+        dvec3 t2_normal = cross(t2_e1, t2_e2);
+
+        // distance from t1 vertices to plane of t2
+        double d1_0 = dot(t2_normal, t1_v0 - t2_v0);
+        double d1_1 = dot(t2_normal, t1_v1 - t2_v0);
+        double d1_2 = dot(t2_normal, t1_v2 - t2_v0);
+
+        // check if all vertices of t1 are on one side of t2's plane
+        if ((d1_0 > eps && d1_1 > eps && d1_2 > eps) ||
+            (d1_0 < -eps && d1_1 < -eps && d1_2 < -eps))
+            return false;
+
+        // compute plane of t1
+        dvec3 t1_e1 = t1_v1 - t1_v0;
+        dvec3 t1_e2 = t1_v2 - t1_v0;
+        dvec3 t1_normal = cross(t1_e1, t1_e2);
+
+        // distance from t2 vertices to plane of t1
+        double d2_0 = dot(t1_normal, t2_v0 - t1_v0);
+        double d2_1 = dot(t1_normal, t2_v1 - t1_v0);
+        double d2_2 = dot(t1_normal, t2_v2 - t1_v0);
+
+        // check if all vertices of t2 are on one side of t1's plane
+        if ((d2_0 > eps && d2_1 > eps && d2_2 > eps) ||
+            (d2_0 < -eps && d2_1 < -eps && d2_2 < -eps))
+            return false;
+
+        // triangles are not on opposite sides of each other's planes
+        // perform edge-triangle intersection tests
+        dvec3 t1_verts[3]{t1_v0, t1_v1, t1_v2};
+        dvec3 t2_verts[3]{t2_v0, t2_v1, t2_v2};
+
+        // test edges of t1 against plane and interior of t2
+        for (int i = 0; i < 3; ++i)
+        {
+            double d_start = dot(t2_normal, t1_verts[i] - t2_v0);
+            double d_end = dot(t2_normal, t1_verts[(i + 1) % 3] - t2_v0);
+            if ((d_start > eps && d_end < -eps) ||
+                (d_start < -eps && d_end > eps))
+            {
+                // edge crosses plane: check if intersection is in t2
+                if (segment_triangle_intersect(t1_verts[i],
+                                               t1_verts[(i + 1) % 3], t2_v0,
+                                               t2_v1, t2_v2))
+                    return true;
+            }
+        }
+
+        // test edges of t2 against plane and interior of t1
+        for (int i = 0; i < 3; ++i)
+        {
+            double d_start = dot(t1_normal, t2_verts[i] - t1_v0);
+            double d_end = dot(t1_normal, t2_verts[(i + 1) % 3] - t1_v0);
+            if ((d_start > eps && d_end < -eps) ||
+                (d_start < -eps && d_end > eps))
+            {
+                // edge crosses plane: check if intersection is in t1
+                if (segment_triangle_intersect(t2_verts[i],
+                                               t2_verts[(i + 1) % 3], t1_v0,
+                                               t1_v1, t1_v2))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool segment_triangle_intersect(const dvec3& p0, const dvec3& p1,
+                                    const dvec3& v0, const dvec3& v1,
+                                    const dvec3& v2) const
+    {
+        const double eps = 1e-12;
+        dvec3 seg = p1 - p0;
+        dvec3 e1 = v1 - v0;
+        dvec3 e2 = v2 - v0;
+        dvec3 h = cross(seg, e2);
+        double a = dot(e1, h);
+        if (std::abs(a) < eps)
+            return false;
+        double f = 1.0 / a;
+        dvec3 s = p0 - v0;
+        double u = f * dot(s, h);
+        if (u < -eps || u > 1.0 + eps)
+            return false;
+        dvec3 q = cross(s, e1);
+        double v = f * dot(seg, q);
+        if (v < -eps || u + v > 1.0 + eps)
+            return false;
+        double t = f * dot(e2, q);
+        return t > -eps && t < 1.0 + eps;
     }
 };
 
