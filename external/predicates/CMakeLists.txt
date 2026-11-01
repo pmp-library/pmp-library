@@ -10,6 +10,7 @@ set_target_properties(
 # enforce strict floating-point behavior across platforms
 if(MSVC)
   target_compile_options(predicates PRIVATE /fp:strict)
+  target_compile_definitions(predicates PRIVATE random=rand)
 else()
   # make sure fast math is disabled
   target_compile_options(predicates PRIVATE -fno-fast-math)
