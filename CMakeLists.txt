@@ -72,6 +72,9 @@ if(NOT DEFINED EIGEN3_INCLUDE_DIR)
 endif()
 find_package(Eigen3 5.0.1 REQUIRED)
 
+add_subdirectory(external/predicates)
+include_directories(external/)
+
 include_directories(${PROJECT_SOURCE_DIR}/src/)
 
 # setup for code coverage testing
