@@ -66,9 +66,13 @@ Polygonal::Polygonal(const char* title, int width, int height)
 #endif
 
     // create and add lasso drawable as an overlay
-    auto lasso = std::make_shared<LassoDrawable>();
-    lasso_drawable_ = lasso;
-    renderer_.add_overlay(lasso);
+    lasso_drawable_ = std::make_shared<LassoDrawable>();
+    renderer_.add_overlay(lasso_drawable_);
+
+    // add isolated vertices overlay
+    isolated_vertices_drawable_ =
+        std::make_shared<IsolatedVerticesDrawable>(mesh_);
+    renderer_.add_overlay(isolated_vertices_drawable_);
 
     // setup draw modes
     clear_draw_modes();
@@ -1223,7 +1227,7 @@ void Polygonal::select_boundary()
             n_selected++;
         }
     update_mesh();
-    status_ = "Selected " + std::to_string(n_selected) + " vertices";
+    status_ = "Selected " + std::to_string(n_selected) + " boundary vertices";
 }
 
 void Polygonal::select_non_manifold()
@@ -1236,7 +1240,8 @@ void Polygonal::select_non_manifold()
             selected[v] = true;
             n_selected++;
         }
-    status_ = "Selected " + std::to_string(n_selected) + " vertices";
+    status_ =
+        "Selected " + std::to_string(n_selected) + " non-manifold vertices";
     update_mesh();
 }
 
@@ -1250,7 +1255,7 @@ void Polygonal::select_isolated_vertices()
             selected[v] = true;
             n_selected++;
         }
-    status_ = "Selected " + std::to_string(n_selected) + " vertices";
+    status_ = "Selected " + std::to_string(n_selected) + " isolated vertices";
     update_mesh();
 }
 

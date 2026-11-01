@@ -6,6 +6,7 @@
 #include <pmp/viewers/trackball_viewer.h>
 #include <pmp/viewers/renderer.h>
 #include "aabb_tree.h"
+#include "isolated_vertices_drawable.h"
 #include "lasso_drawable.h"
 
 #include <memory>
@@ -117,6 +118,7 @@ private:
 
     SurfaceMesh mesh_;
     Renderer renderer_;
+    std::shared_ptr<IsolatedVerticesDrawable> isolated_vertices_drawable_;
     std::shared_ptr<LassoDrawable> lasso_drawable_;
     std::filesystem::path filename_;
 };

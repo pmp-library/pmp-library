@@ -1,5 +1,6 @@
 if(EMSCRIPTEN)
-  add_executable(polygonal main.cpp polygonal.cpp lasso_drawable.cpp)
+  add_executable(polygonal main.cpp polygonal.cpp lasso_drawable.cpp
+                           isolated_vertices_drawable.cpp)
   target_link_libraries(polygonal pmp pmp_viewers stb_image stb_image_write
                         imgui)
   set_target_properties(
@@ -18,7 +19,8 @@ if(EMSCRIPTEN)
       ${PROJECT_BINARY_DIR})
 else()
   find_package(OpenGL REQUIRED)
-  add_executable(polygonal main.cpp polygonal.cpp lasso_drawable.cpp)
+  add_executable(polygonal main.cpp polygonal.cpp lasso_drawable.cpp
+                           isolated_vertices_drawable.cpp)
   target_link_libraries(polygonal pmp_viewers pmp imgui glfw
                         ${OPENGL_LIBRARIES})
 endif()
