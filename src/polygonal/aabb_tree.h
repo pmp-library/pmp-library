@@ -3,13 +3,22 @@
 
 #include "pmp/surface_mesh.h"
 #include "pmp/bounding_box.h"
+#include "pmp/predicates.h"
 
-#include <vector>
 #include <algorithm>
-#include <optional>
+#include <concepts>
 #include <numeric>
+#include <optional>
+#include <vector>
 
 namespace pmp {
+
+namespace detail {
+bool same_strict_sign(Orientation first, std::same_as<Orientation> auto... rest)
+{
+    return first != Orientation::Coplanar && ((rest == first) && ...);
+}
+} // namespace detail
 
 class AABBTree
 {
@@ -366,40 +375,34 @@ private:
     {
         const double eps = 1e-12;
 
-        // compute plane of t2
-        dvec3 t2_e1 = t2_v1 - t2_v0;
-        dvec3 t2_e2 = t2_v2 - t2_v0;
-        dvec3 t2_normal = cross(t2_e1, t2_e2);
+        const auto d1_0 = orient3d(t2_v0, t2_v1, t2_v2, t1_v0);
+        const auto d1_1 = orient3d(t2_v0, t2_v1, t2_v2, t1_v1);
+        const auto d1_2 = orient3d(t2_v0, t2_v1, t2_v2, t1_v2);
 
-        // distance from t1 vertices to plane of t2
-        double d1_0 = dot(t2_normal, t1_v0 - t2_v0);
-        double d1_1 = dot(t2_normal, t1_v1 - t2_v0);
-        double d1_2 = dot(t2_normal, t1_v2 - t2_v0);
-
-        // check if all vertices of t1 are on one side of t2's plane
-        if ((d1_0 > eps && d1_1 > eps && d1_2 > eps) ||
-            (d1_0 < -eps && d1_1 < -eps && d1_2 < -eps))
+        if (detail::same_strict_sign(d1_0, d1_1, d1_2))
             return false;
 
-        // compute plane of t1
-        dvec3 t1_e1 = t1_v1 - t1_v0;
-        dvec3 t1_e2 = t1_v2 - t1_v0;
-        dvec3 t1_normal = cross(t1_e1, t1_e2);
+        const auto d2_0 = orient3d(t1_v0, t1_v1, t1_v2, t2_v0);
+        const auto d2_1 = orient3d(t1_v0, t1_v1, t1_v2, t2_v1);
+        const auto d2_2 = orient3d(t1_v0, t1_v1, t1_v2, t2_v2);
 
-        // distance from t2 vertices to plane of t1
-        double d2_0 = dot(t1_normal, t2_v0 - t1_v0);
-        double d2_1 = dot(t1_normal, t2_v1 - t1_v0);
-        double d2_2 = dot(t1_normal, t2_v2 - t1_v0);
-
-        // check if all vertices of t2 are on one side of t1's plane
-        if ((d2_0 > eps && d2_1 > eps && d2_2 > eps) ||
-            (d2_0 < -eps && d2_1 < -eps && d2_2 < -eps))
+        if (detail::same_strict_sign(d2_0, d2_1, d2_2))
             return false;
 
         // triangles are not on opposite sides of each other's planes
         // perform edge-triangle intersection tests
         dvec3 t1_verts[3]{t1_v0, t1_v1, t1_v2};
         dvec3 t2_verts[3]{t2_v0, t2_v1, t2_v2};
+
+        // compute plane of t2
+        dvec3 t2_e1 = t2_v1 - t2_v0;
+        dvec3 t2_e2 = t2_v2 - t2_v0;
+        dvec3 t2_normal = cross(t2_e1, t2_e2);
+
+        // compute plane of t1
+        dvec3 t1_e1 = t1_v1 - t1_v0;
+        dvec3 t1_e2 = t1_v2 - t1_v0;
+        dvec3 t1_normal = cross(t1_e1, t1_e2);
 
         // test edges of t1 against plane and interior of t2
         for (int i = 0; i < 3; ++i)
