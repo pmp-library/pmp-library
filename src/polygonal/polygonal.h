@@ -54,6 +54,7 @@ private:
     void select_boundary();
     void select_non_manifold();
     void select_isolated_vertices();
+    void select_duplicate_vertices();
     void invert_selection();
     void grow_selection();
     void shrink_selection();

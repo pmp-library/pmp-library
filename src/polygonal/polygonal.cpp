@@ -3,6 +3,7 @@
 
 #include "polygonal.h"
 
+#include <pmp/algorithms/analysis.h>
 #include <pmp/algorithms/curvature.h>
 #include <pmp/algorithms/decimation.h>
 #include <pmp/algorithms/differential_geometry.h>
@@ -466,6 +467,10 @@ void Polygonal::draw_menu_bar()
             if (ImGui::MenuItem("Isolated Vertices"))
             {
                 select_isolated_vertices();
+            }
+            if (ImGui::MenuItem("Duplicate Vertices"))
+            {
+                select_duplicate_vertices();
             }
             ImGui::Separator();
             if (ImGui::MenuItem("Grow", "Ctrl+."))
@@ -1246,6 +1251,25 @@ void Polygonal::select_isolated_vertices()
             n_selected++;
         }
     status_ = "Selected " + std::to_string(n_selected) + " vertices";
+    update_mesh();
+}
+
+void Polygonal::select_duplicate_vertices()
+{
+    auto selected = mesh_.vertex_property<bool>("v:selected");
+
+    const auto duplicates = find_duplicate_vertices(mesh_, 1e-6);
+    for (const auto& pair : duplicates)
+    {
+        selected[pair.first] = true;
+        selected[pair.second] = true;
+    }
+
+    int n_selected = 0;
+    for (auto v : mesh_.vertices())
+        if (selected[v])
+            n_selected++;
+    status_ = "Selected " + std::to_string(n_selected) + " duplicate vertices";
     update_mesh();
 }
 
