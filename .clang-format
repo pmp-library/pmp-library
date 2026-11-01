@@ -32,3 +32,5 @@ BraceWrapping:
 DerivePointerAlignment: false
 PointerAlignment: Left
 QualifierAlignment: Left
+RequiresClausePosition: OwnLine
+IndentRequiresClause: false
