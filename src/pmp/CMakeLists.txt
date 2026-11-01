@@ -9,7 +9,7 @@ else()
 endif()
 
 target_compile_features(pmp PUBLIC cxx_std_20)
-
+target_include_directories(pmp PRIVATE ${PROJECT_SOURCE_DIR}/external)
 target_link_libraries(pmp PRIVATE predicates)
 
 if(NOT EMSCRIPTEN)
