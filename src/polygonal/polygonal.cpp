@@ -472,7 +472,7 @@ void Polygonal::draw_menu_bar()
             {
                 select_isolated_vertices();
             }
-            if (ImGui::MenuItem("Duplicate"))
+            if (ImGui::MenuItem("Duplicates"))
             {
                 select_duplicate_vertices();
             }
