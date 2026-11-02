@@ -468,11 +468,11 @@ void Polygonal::draw_menu_bar()
             {
                 select_non_manifold();
             }
-            if (ImGui::MenuItem("Isolated Vertices"))
+            if (ImGui::MenuItem("Isolated"))
             {
                 select_isolated_vertices();
             }
-            if (ImGui::MenuItem("Duplicate Vertices"))
+            if (ImGui::MenuItem("Duplicate"))
             {
                 select_duplicate_vertices();
             }
