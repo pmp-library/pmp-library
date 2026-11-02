@@ -111,20 +111,15 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
             {
                 tfread(in, p);
 
-                // has vector been referenced before?
-                auto it = vertex_map.find(p);
-                if (it == vertex_map.end())
-                {
-                    // No : add vertex and remember idx/vector mapping
-                    v = mesh.add_vertex((Point)p);
-                    vertices[i] = v;
-                    vertex_map[p] = v;
-                }
-                else
-                {
-                    // Yes : get index from map
-                    vertices[i] = it->second;
-                }
+                // try if point was inserted before
+                auto [it, inserted] = vertex_map.try_emplace(p, Vertex{});
+
+                // set vertex if inserted
+                if (inserted)
+                    it->second = mesh.add_vertex((Point)p);
+
+                // get vertex from map
+                vertices[i] = it->second;
             }
 
             // Add face only if it is not degenerated
@@ -178,20 +173,15 @@ void read_stl(SurfaceMesh& mesh, const std::filesystem::path& file)
                     // read x, y, z
                     sscanf(c + 6, "%f %f %f", &p[0], &p[1], &p[2]);
 
-                    // has vector been referenced before?
-                    auto it = vertex_map.find(p);
-                    if (it == vertex_map.end())
-                    {
-                        // No : add vertex and remember idx/vector mapping
-                        v = mesh.add_vertex((Point)p);
-                        vertices[i] = v;
-                        vertex_map[p] = v;
-                    }
-                    else
-                    {
-                        // Yes : get index from map
-                        vertices[i] = it->second;
-                    }
+                    // try if point was inserted before
+                    auto [it, inserted] = vertex_map.try_emplace(p, Vertex{});
+
+                    // set vertex if inserted
+                    if (inserted)
+                        it->second = mesh.add_vertex((Point)p);
+
+                    // get vertex from map
+                    vertices[i] = it->second;
                 }
 
                 // Add face only if it is not degenerated
