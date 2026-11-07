@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['c_0',['Prefer C++ over C',['../codingstyle.html#autotoc_md30',1,'']]],
+  ['c_20over_20c_1',['Prefer C++ over C',['../codingstyle.html#autotoc_md30',1,'']]],
+  ['certificate_20of_20origin_2',['Developer Certificate of Origin',['../contributing.html#autotoc_md34',1,'']]],
+  ['changed_20to_20mit_3',['License Changed to MIT',['../license-changed-2019-02-16.html',1,'news']]],
+  ['changes_4',['Breaking Changes',['../version-2-0-released-2022-08-14.html#autotoc_md64',1,'']]],
+  ['circulators_5',['Iterators and Circulators',['../tutorial.html#autotoc_md3',1,'']]],
+  ['clang_20format_6',['Using clang-format',['../codingstyle.html#using-clang-format',1,'']]],
+  ['classes_7',['Structs vs. Classes',['../codingstyle.html#autotoc_md28',1,'']]],
+  ['code_8',['Contributing Code',['../contributing.html#autotoc_md33',1,'']]],
+  ['code_20coverage_9',['Code Coverage',['../contributing.html#autotoc_md36',1,'']]],
+  ['coding_20style_10',['Coding Style',['../codingstyle.html',1,'developers']]],
+  ['comments_11',['Comments',['../codingstyle.html#autotoc_md19',1,'Comments'],['../codingstyle.html#autotoc_md20',1,'Doxygen Comments']]],
+  ['commit_20messages_12',['Commit Messages',['../codingstyle.html#commit-messages',1,'']]],
+  ['concepts_13',['Basic Concepts',['../tutorial.html#autotoc_md1',1,'']]],
+  ['configuration_14',['Configuration',['../installation.html#autotoc_md42',1,'']]],
+  ['connectivity_20queries_15',['Connectivity Queries',['../tutorial.html#autotoc_md5',1,'']]],
+  ['consistency_16',['Consistency',['../codingstyle.html#autotoc_md26',1,'Naming Consistency'],['../codingstyle.html#autotoc_md27',1,'Type Consistency']]],
+  ['contribute_17',['Contribute',['../dir_73b54214487fd805581a84fdb206505d.html#autotoc_md82',1,'']]],
+  ['contributing_18',['Contributing',['../contributing.html',1,'developers']]],
+  ['contributing_20code_19',['Contributing Code',['../contributing.html#autotoc_md33',1,'']]],
+  ['core_20',['Core',['../overview.html#autotoc_md48',1,'']]],
+  ['coverage_21',['Code Coverage',['../contributing.html#autotoc_md36',1,'']]]
+];
