@@ -37,6 +37,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 
 ### Fixed
 
+- The `begin()` and `end()` functions of circulators now return copies. Thanks to Martin Heistermann (#249).
 - Fix binary OFF files to use big endian encoding by default (#198).
 - Make OFF file parsing robust to comments and whitespace. Thanks to François Revol (#197).
 - Fix error reporting when shader compilation fails, thanks to Stephan Wenninger (#183).
