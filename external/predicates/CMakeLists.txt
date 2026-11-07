@@ -27,6 +27,7 @@ target_compile_options(
   PRIVATE
     $<$<OR:$<C_COMPILER_ID:Clang>,$<C_COMPILER_ID:GNU>,$<C_COMPILER_ID:AppleClang>>:-Wno-deprecated
     -Wno-deprecated-non-prototype
+    -Wno-old-style-definition
     -Wno-missing-prototypes>
     $<$<CXX_COMPILER_ID:MSVC>:/wd4505> # unreferenced local functions
 )
