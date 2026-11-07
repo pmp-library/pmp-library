@@ -3,13 +3,27 @@ name: docs
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 env:
   EMSDK_RELEASE: 3.1.56
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   docs:
     runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - uses: actions/checkout@v7
@@ -17,31 +31,12 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -o Acquire::Retries=3 doxygen texlive-base build-essential flex bison
 
-      # - name: Fetch doxygen
-      #   run: export DOXYGEN_URL="https://github.com/doxygen/doxygen/releases/download/Release_1_9_6/doxygen-1.9.6.linux.bin.tar.gz" && mkdir doxygen && wget -O - ${DOXYGEN_URL} | tar --strip-components=1 -xz -C doxygen && echo `pwd`/doxygen/bin >> $GITHUB_PATH
-
-      # - name: Create doxygen build directory
-      #   run: cmake -E make_directory ${{runner.workspace}}/doxybuild
-
-      # - name: Build doxygen
-      #   shell: bash
-      #   working-directory: ${{runner.workspace}}/doxybuild
-      #   run: |
-      #     git clone https://github.com/doxygen/doxygen.git
-      #     cd doxygen
-      #     git checkout Release_1_9_6
-      #     mkdir build
-      #     cd build
-      #     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/doxygen ..
-      #     make -j2 install
-      #     echo ${{runner.workspace}}/doxygen/bin >> $GITHUB_PATH
-
       - name: Create emscripten build directory
-        run: cmake -E make_directory ${{runner.workspace}}/embuild
+        run: cmake -E make_directory ${{ runner.workspace }}/embuild
 
       - name: Fetch emscripten
         shell: bash
-        working-directory: ${{runner.workspace}}/embuild
+        working-directory: ${{ runner.workspace }}/embuild
         run: |
           git clone https://github.com/emscripten-core/emsdk.git
           cd emsdk
@@ -51,37 +46,40 @@ jobs:
 
       - name: Configure emscripten
         shell: bash
-        working-directory: ${{runner.workspace}}/embuild
+        working-directory: ${{ runner.workspace }}/embuild
         run: source ./emsdk/emsdk_env.sh && emcmake cmake -DPMP_BUILD_EXAMPLES=ON $GITHUB_WORKSPACE
 
       - name: Build emscripten
-        working-directory: ${{runner.workspace}}/embuild
+        working-directory: ${{ runner.workspace }}/embuild
         shell: bash
         run: cmake --build . --parallel
 
       - name: Create build directory
-        run: cmake -E make_directory ${{runner.workspace}}/build
+        run: cmake -E make_directory ${{ runner.workspace }}/build
 
       - name: Configure CMake
         shell: bash
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ${{ runner.workspace }}/build
         run: cmake -DPMP_BUILD_DOCS=ON -DPMP_BUILD_VIEWERS=OFF $GITHUB_WORKSPACE
 
       - name: Build docs
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ${{ runner.workspace }}/build
         shell: bash
         run: cmake --build . --target docs
 
       - name: Copy emscripten demos
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ${{ runner.workspace }}/build
         shell: bash
-        run: mkdir docs/html/demos/ && cp ${{runner.workspace}}/embuild/*.html ${{runner.workspace}}/embuild/*.js ${{runner.workspace}}/embuild/*.data ${{runner.workspace}}/embuild/*.wasm docs/html/demos
+        run: mkdir -p docs/html/demos/ && cp ${{ runner.workspace }}/embuild/*.html ${{ runner.workspace }}/embuild/*.js ${{ runner.workspace }}/embuild/*.data ${{ runner.workspace }}/embuild/*.wasm docs/html/demos
 
-      - name: GH Pages Deployment
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{runner.workspace}}/build/docs/html
-          force_orphan: true
-          publish_branch: gh-pages
-          cname: www.pmp-library.org
+          path: ${{ runner.workspace }}/build/docs/html
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
