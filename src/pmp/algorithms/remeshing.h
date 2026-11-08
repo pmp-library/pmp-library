@@ -40,4 +40,9 @@ void adaptive_remeshing(SurfaceMesh& mesh, Scalar min_edge_length,
                         unsigned int iterations = 10,
                         bool use_projection = true);
 
+
+void custom_remeshing(SurfaceMesh& mesh, std::vector<double>& target_edge_lengths,
+                        unsigned int iterations = 10,
+                        bool use_projection = true);
+
 } // namespace pmp
