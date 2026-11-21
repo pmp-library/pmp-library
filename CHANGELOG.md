@@ -32,6 +32,7 @@ This project aims to adhere to [Semantic Versioning](https://semver.org/spec/v2.
 - Update ImGui to 1.92.8
 - Update GLFW to 3.5.1
 - Update stb_image to 2.30
+- Update stb_image_write to 1.19
 - Update Doxygen to 1.9.8
 - Use plain MIT license, keep disclaimer in separate file.
 

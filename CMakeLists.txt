@@ -29,7 +29,7 @@ if(PMP_BUILD_VIEWERS)
   set(GLAD_SOURCE_DIR "external/glad-2.0.8")
   set(IMGUI_SOURCE_DIR "external/imgui-1.92.8")
   set(STB_IMAGE_SOURCE_DIR "external/stb_image-2.30")
-  set(STB_IMAGE_WRITE_SOURCE_DIR "external/stb_image_write-1.16")
+  set(STB_IMAGE_WRITE_SOURCE_DIR "external/stb_image_write-1.19")
 
   add_subdirectory(${STB_IMAGE_WRITE_SOURCE_DIR})
   add_subdirectory(${STB_IMAGE_SOURCE_DIR})
